@@ -1,60 +1,20 @@
-/*
-
-<label><input id="" class="switch" type="checkbox">Example</label>
-<label><input id="" class="switch" type="checkbox" checked>Example</label>
-
-.bilibili-cleaner label {
-  display: block;
-}
-.bilibili-cleaner label, .bilibili-cleaner input {
-  vertical-align: middle;
-}
-.bilibili-cleaner .switch {
-  width: 50px;
-  height: 27px;
-  position: relative;
-  border: 1px solid #dfdfdf;
-  background-color: #fdfdfd;
-  box-shadow: #dfdfdf 0 0 0 0 inset;
-  border-radius: 50px;
-  appearance: none;
-  -webkit-appearance: none;
-  user-select: none;
-}
-.bilibili-cleaner .switch:before {
-  content: '';
-  width: 25px;
-  height: 25px;
-  position: absolute;
-  top: 0px;
-  left: 0;
-  border-radius: 50px;
-  background-color: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-}
-.bilibili-cleaner .switch:checked {
-  border-color: #64bd63;
-  box-shadow: #64bd63 0 0 0 16px inset;
-  background-color: #64bd63;
-}
-.bilibili-cleaner .switch:checked:before {
-  left: 25px;
-}
-
-*/
-
 // ==UserScript==
-// @name         Bangumi/bgm.tv 显示中文标题，样式优化
+// @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0
-// @description  我看不懂日文标题啊！
-// @author       Marsen
-// @match        http*://bgm.tv/*
-// @match        http*://bangumi.tv/*
-// @match        http*://chii.in/*
-// @icon         https://bgm.tv/img/favicon.ico
+// @version      1.0.0
+// @description  净化B站页面内的各种元素，高度定制化
+// @author       festoney8
+// @match        https://*.bilibili.com/*
+// @icon         https://www.bilibili.com/favicon.ico
 // @grant        GM_addStyle
-// @run-at       document-start
+// @grant        GM.addStyle
+// @grant        GM_getValue
+// @grant        GM.getValue
+// @grant        GM_setValue
+// @grant        GM.setValue
+// @grant        GM_registerMenuCommand
+// @grant        GM.registerMenuCommand
+// @run-at       document-end
 // ==/UserScript==
 
 (function () {
@@ -62,48 +22,45 @@
     function createConfigPanel() {
         const panelHTML = `
         <div id="bili-cleaner">
-            <div id="bili-cleaner-header">
+            <div id="bili-cleaner-bar">
                 <div id="bili-cleaner-title">
                     <span>bilibili 页面净化</span>
                 </div>
                 <div id="bili-cleaner-close">
-                    <span><svg t="1699596998657" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                            xmlns="http://www.w3.org/2000/svg" p-id="2106" width="28" height="28">
-                            <path
-                                d="M512 456.310154L94.247385 38.557538a39.542154 39.542154 0 0 0-55.689847 0 39.266462 39.266462 0 0 0 0 55.689847L456.310154 512 38.557538 929.752615a39.542154 39.542154 0 0 0 0 55.689847 39.266462 39.266462 0 0 0 55.689847 0L512 567.689846l417.752615 417.752616c15.163077 15.163077 40.290462 15.36 55.689847 0a39.266462 39.266462 0 0 0 0-55.689847L567.689846 512 985.442462 94.247385a39.542154 39.542154 0 0 0 0-55.689847 39.266462 39.266462 0 0 0-55.689847 0L512 456.310154z"
-                                fill="#ffffff" p-id="2107"></path>
-                        </svg>
-                    </span>
+                    <svg t="1699601981125" class="icon" viewBox="0 0 1026 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5964" width="20" height="20"><path d="M996.742543 154.815357L639.810328 511.747572l356.932215 356.932215a90.158906 90.158906 0 0 1-127.490994 127.490994L512.319334 639.195998l-356.932215 356.889647A90.158906 90.158906 0 1 1 27.896126 868.637219L384.82834 511.747572 27.896126 154.815357A90.158906 90.158906 0 1 1 155.387119 27.324364L512.319334 384.256578 869.251549 27.324364a90.158906 90.158906 0 1 1 127.490994 127.490993z" fill="#ffffff" p-id="5965"></path></svg>
                 </div>
             </div>
-        </div>
-        `
-        const panelCSS = `
-          #bili-cleaner {
+        </div>`
+        const panelCSS = `#bili-cleaner {
+            position: fixed;
             left: 50%;
             top: 50%;
-            width: 600px;
-            height: 800px;
-            border-radius: 15px;
+            transform: translate(-50%, -50%);
+            width: 30vw;
+            height: 80vh;
+            border-radius: 10px;
             overflow: hidden;
             background: rgba(250, 250, 250, 1);
-            border: 1px solid rgba(196, 196, 196, 1);
+            border: 1px solid rgba(251, 114, 153, 1);
+            z-index: 2147483647;
           }
-          #bili-cleaner-header {
-            width: 600px;
-            height: 60px;
+          #bili-cleaner-bar {
+            width: 30vw;
+            height: 6vh;
             background: rgba(251, 114, 153, 1);
             position: relative;
+            cursor: move;
+            user-select: none;
           }
           #bili-cleaner-title {
-            width: 600px;
-            height: 60px;
+            width: 30vw;
+            height: 6vh;
             display: flex;
             justify-content: center;
             align-items: center;
             color: white;
             font-weight: bold;
-            font-size: 1.8em;
+            font-size: 1.5em;
           }
           #bili-cleaner-title span {
             text-align: center;
@@ -112,21 +69,70 @@
             position: absolute;
             top: 0;
             right: 0;
-            width: 40px;
-            height: 40px;
-            margin: 10px;
-            border-radius: 5px;
+            width: 6vh;
+            height: 6vh;
+            border-radius: 6vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            cursor: auto;
           }
-          #bili-cleaner-close span {
+          #bili-cleaner-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+          }
+          #bili-cleaner-close svg {
             text-align: center;
-          }
-          #bili-cleaner-close span:hover {
-            zoom: 1.2;
-          }
-        `
+          }`
+        const styleSheet = document.createElement("style");
+        styleSheet.innerText = panelCSS;
+        document.head.appendChild(styleSheet);
+
+        const p = document.createElement('div');
+        p.innerHTML = panelHTML;
+        document.body.appendChild(p);
+
+        // panel关闭按钮
+        function closePanel() {
+            const closeBtn = document.getElementById("bili-cleaner-close");
+            closeBtn.addEventListener('click', function () {
+                const closeBtn = document.getElementById("bili-cleaner-close");
+                p.remove();
+            });
+        }
+        closePanel();
+
+        // 可拖拽panel bar
+        const panel = document.getElementById('bili-cleaner');
+        const bar = document.getElementById('bili-cleaner-bar');
+
+        let isDragging = false;
+        let initX, initY, initLeft, initTop;
+
+        function onMouseDown(e) {
+            isDragging = true;
+            initX = e.clientX;
+            initY = e.clientY;
+            const c = window.getComputedStyle(panel);
+            initLeft = parseInt(c.getPropertyValue('left'), 10);
+            initTop = parseInt(c.getPropertyValue('top'), 10);
+        }
+
+        function onMouseMove(e) {
+            if (isDragging) {
+                const diffX = e.clientX - initX;
+                const diffY = e.clientY - initY;
+                panel.style.left = `${initLeft + diffX}px`;
+                panel.style.top = `${initTop + diffY}px`;
+            }
+        }
+
+        function onMouseUp() {
+            isDragging = false;
+        }
+
+        bar.addEventListener("mousedown", onMouseDown);
+        document.addEventListener("mousemove", onMouseMove);
+        document.addEventListener("mouseup", onMouseUp);
     }
     function createLabelGroup(title) {
 
@@ -134,5 +140,7 @@
     function createLabel() {
 
     }
+
+    createConfigPanel();
 
 })();

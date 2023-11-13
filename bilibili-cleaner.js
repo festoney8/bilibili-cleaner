@@ -388,6 +388,7 @@
     // 直播页
     const liveItems = []
 
+    // 首页脚本 /////////////////////////////////
     homepageItems.push(new Item(
         'hide-recommend-swipe', 'bili-cleaner-group-homepage', '隐藏 大图活动轮播', null,
         `
@@ -436,7 +437,6 @@
         }
         `
     ))
-
     homepageItems.push(new Item(
         'hide-sticky-subarea', 'bili-cleaner-group-homepage', '隐藏 滚动页面时顶部sticky分区栏', null,
         `
@@ -543,6 +543,8 @@
             }
             `
     ))
+
+    // 通用脚本 /////////////////////////////////
     commonItems.push(new Item(
         'hide-nav-homepage', 'bili-cleaner-group-common', '隐藏 顶栏-首页', null,
         `div.bili-header__bar li:has(a[href="//www.bilibili.com"]) {display: none;}`
@@ -623,7 +625,6 @@
         'hide-nav-upload', 'bili-cleaner-group-common', '隐藏 顶栏-投稿', null,
         `.right-entry-item.right-entry-item--upload {display: none !important;}`
     ))
-
     commonItems.push(new Item(
         'hide-flexible-roll-btn', 'bili-cleaner-group-common', '隐藏 右下角-刷新', null,
         `.palette-button-wrap .flexible-roll-btn {display: none !important;}`
@@ -636,6 +637,31 @@
         'hide-top-btn', 'bili-cleaner-group-common', '隐藏 右下角-回顶部', null,
         `.palette-button-wrap .top-btn-wrap {display: none !important;}`
     ))
+
+    // 移除URL中的跟踪参数
+    function removeQueryParams() {
+        let keysToRemove = ['from_source', 'spm_id_from', 'search_source', 'vd_source', 'unique_k', 'is_story_h5', 'from_spmid',
+            'share_plat', 'share_medium', 'share_from', 'share_source', 'share_tag', 'up_id', 'timestamp', 'mid',
+            'live_from', 'launch_id', 'session_id'];
+
+        let url = location.href;
+        let urlObj = new URL(url);
+        let params = new URLSearchParams(urlObj.search);
+
+        keysToRemove.forEach(function (key) {
+            params.delete(key);
+        });
+
+        urlObj.search = params.toString();
+        let newUrl = urlObj.toString();
+        if (newUrl !== url) {
+            history.replaceState(null, null, newUrl);
+        }
+    }
+    commonItems.push(new Item(
+        'url-cleaner', 'bili-cleaner-group-common', 'URL参数净化 (需刷新)', removeQueryParams, null
+    ))
+    // 视频页脚本 /////////////////////////////////
     // BV号转AV号
     function bv2av() {
         // algo by mcfx, https://www.zhihu.com/question/381784377/answer/1099438784
@@ -672,29 +698,6 @@
         'video-page-bv2av', 'bili-cleaner-group-video', 'BV号转AV号 (需刷新)', bv2av, null
     ))
 
-    // 移除URL中的跟踪参数
-    function removeQueryParams() {
-        let keysToRemove = ['from_source', 'spm_id_from', 'search_source', 'vd_source', 'unique_k', 'is_story_h5', 'from_spmid',
-            'share_plat', 'share_medium', 'share_from', 'share_source', 'share_tag', 'up_id', 'timestamp', 'mid',
-            'live_from', 'launch_id', 'session_id'];
-
-        let url = location.href;
-        let urlObj = new URL(url);
-        let params = new URLSearchParams(urlObj.search);
-
-        keysToRemove.forEach(function (key) {
-            params.delete(key);
-        });
-
-        urlObj.search = params.toString();
-        let newUrl = urlObj.toString();
-        if (newUrl !== url) {
-            history.replaceState(null, null, newUrl);
-        }
-    }
-    commonItems.push(new Item(
-        'url-cleaner', 'bili-cleaner-group-common', 'URL参数净化 (需刷新)', removeQueryParams, null
-    ))
 
 
     GROUPS.push(new Group('bili-cleaner-group-common', '通用', 'common', commonItems))
@@ -706,7 +709,7 @@
 
     GROUPS.forEach(e => { e.enableGroup() })
 
-    // 监听各种URL变化
+    // 监听各种形式的URL变化(普通监听无法检测到切换视频)
     let currURL = window.location.href;
     setInterval(function () {
         let testURL = window.location.href;
@@ -714,7 +717,6 @@
             GROUPS.forEach(e => { e.enableGroup() })
         }
     }, 1000);
-
 
     ////////////////////////////////////////////////////////////////////////////////////
     function openSettings() {

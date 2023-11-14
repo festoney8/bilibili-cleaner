@@ -201,7 +201,7 @@
             align-items: center;
             color: white;
             font-weight: bold;
-            font-size: 1.5rem;
+            font-size: 1.5em;
         }
         
         #bili-cleaner-title span {
@@ -253,7 +253,7 @@
         }
 
         .bili-cleaner-group-title {
-            font-size: 1.3rem;
+            font-size: 1.3em;
             font-weight: bold;
             padding: 2px;
         }
@@ -267,7 +267,7 @@
             display: block;
             vertical-align: middle;
             margin: 8px 0;
-            font-size: 1.1rem;
+            font-size: 1.1em;
         }
         
         .bili-cleaner-item-switch {
@@ -433,7 +433,7 @@
             `#i_cecream .header-channel {display: none !important;}`
         ))
         homepageItems.push(new Item(
-            'hide-up-info-icon', 'bili-cleaner-group-homepage', '隐藏 [已关注][1万点赞]信息 (需刷新)', null,
+            'hide-up-info-icon', 'bili-cleaner-group-homepage', '隐藏 [已关注][1万点赞]信息', null,
             `
             /* CSS伪造Logo */
             .bili-video-card .bili-video-card__info--icon-text {
@@ -662,10 +662,6 @@
             'hide-right-container-section-subscribe', 'bili-cleaner-group-video', '隐藏 右栏-视频合集 订阅合集', null,
             `.base-video-sections-v1 .second-line_right {display: none;}`
         ))
-        // videoItems.push(new Item(
-        //     'hide-right-container-activity-vote', 'bili-cleaner-group-video', '隐藏 右栏-视频选集(分P)', null,
-        //     `#multi_page {display: none;}`
-        // ))
         videoItems.push(new Item(
             'hide-right-container-reco-list-next-play-next-button', 'bili-cleaner-group-video', '隐藏 右栏-自动连播按钮', null,
             `#reco_list .next-play .next-button {display: none;}`
@@ -694,7 +690,6 @@
             'hide-sidenav-back-to-top', 'bili-cleaner-group-video', '隐藏 右下角-回顶部', null,
             `.fixed-sidenav-storage .back-to-top {display: none !important;}`
         ))
-
         // 播放器相关
         videoItems.push(new Item(
             'hide-bpx-player-bili-guide-all', 'bili-cleaner-group-video', '隐藏 播放器-视频内一键三连窗口', null,
@@ -760,7 +755,6 @@
             'hide-bpx-player-shadow-progress-area', 'bili-cleaner-group-video', '隐藏 播放器-控制 底边mini视频进度', null,
             `.bpx-player-shadow-progress-area {display: none;}`
         ))
-
         // 弹幕发布相关
         videoItems.push(new Item(
             'hide-bpx-player-dm-hint', 'bili-cleaner-group-video', '隐藏 弹幕发送-弹幕礼仪', null,
@@ -795,7 +789,6 @@
             'hide-bpx-player-sending-area', 'bili-cleaner-group-video', '隐藏 弹幕发送-关闭整个弹幕框', null,
             `.bpx-player-sending-area {display: none;}`
         ))
-
         // 评论区相关
         videoItems.push(new Item(
             'hide-main-reply-box', 'bili-cleaner-group-video', '隐藏 评论区-发评论功能', null,
@@ -1026,7 +1019,7 @@
         GROUPS.push(new Group('bili-cleaner-group-dynamic', '当前是：动态页', dynamicItems))
     }
     else if (host == 'live.bilibili.com') {
-        // GROUPS.push(new Group('bili-cleaner-group-live', '当前是：直播页', liveItems))
+        GROUPS.push(new Group('bili-cleaner-group-live', '当前是：直播页', liveItems))
     }
     // 通用
     {
@@ -1162,7 +1155,6 @@
             e.insertItems()
         })
     }
+    // 注册油猴插件菜单选项
     GM_registerMenuCommand("设置", openSettings)
-    openSettings()
-
 })();

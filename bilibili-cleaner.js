@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.0
+// @version      1.0.1
 // @description  净化B站页面内的各种元素，提供自定义菜单，高度定制自己的B站页面
 // @author       festoney8
+// @license      MIT
 // @match        https://*.bilibili.com/*
 // @icon         https://www.bilibili.com/favicon.ico
 // @grant        GM_addStyle
@@ -12,10 +13,10 @@
 // @grant        GM_registerMenuCommand
 // @run-at       document-start
 // ==/UserScript==
-
+ 
 (function () {
     'use strict'
-
+ 
     class Group {
         // Group id，描述，item数组
         constructor(groupID, description, items) {
@@ -36,7 +37,7 @@
             </div>`
             e.querySelector('.bili-cleaner-group').id = this.groupID
             e.querySelector('.bili-cleaner-group-title').textContent = this.description
-
+ 
             const groupList = document.getElementById('bili-cleaner-group-list')
             groupList.appendChild(e)
         }
@@ -60,11 +61,11 @@
             }
         }
     }
-
+ 
     class Item {
         uncheckedHTML = `<input class="bili-cleaner-item-switch" type="checkbox">`
         checkedHTML = `<input class="bili-cleaner-item-switch" type="checkbox" checked>`
-
+ 
         // item id，所属group，功能描述，功能function，功能CSS
         constructor(itemID, groupID, description, itemFunc, itemCSS) {
             this.itemID = itemID
@@ -130,7 +131,7 @@
                 if (isExist) {
                     return
                 }
-
+ 
                 const style = document.createElement('style')
                 style.innerText = this.itemCSS
                 // 指定CSS片段ID，用于实时启用停用
@@ -165,7 +166,7 @@
             }
         }
     }
-
+ 
     function addGlobalCSS() {
         const panelCSS = `
         /* panel部分 */
@@ -182,7 +183,7 @@
             overflow: auto;
             z-index: 2147483647;
         }
-
+ 
         #bili-cleaner-bar {
             width: 32vw;
             height: 6vh;
@@ -228,12 +229,12 @@
         #bili-cleaner-close svg {
             text-align: center;
         }
-
+ 
         #bili-cleaner-group-list {
             height: 84vh;
             overflow: auto;
         }
-
+ 
         #bili-cleaner-group-list::-webkit-scrollbar {
             display: none;
         }
@@ -251,7 +252,7 @@
         .bili-cleaner-group hr {
             border: 1px solid #eeeeee;
         }
-
+ 
         .bili-cleaner-group-title {
             font-size: 20px;
             font-weight: bold;
@@ -261,7 +262,7 @@
         .bili-cleaner-item-list {
             padding: 2px;
         }
-
+ 
         /* 每行选项的样式, 按钮和文字 */
         .bili-cleaner-item-list label {
             display: block;
@@ -307,7 +308,7 @@
         }`
         GM_addStyle(panelCSS)
     }
-
+ 
     function createPanel() {
         const panelHTML = `
         <div id="bili-cleaner">
@@ -325,19 +326,19 @@
         const p = document.createElement('div')
         p.innerHTML = panelHTML
         document.body.appendChild(p)
-
+ 
         // panel关闭按钮
         const closeBtn = document.getElementById("bili-cleaner-close")
         closeBtn.addEventListener('click', () => {
             p.remove()
         })
-
+ 
         // 可拖拽panel bar
         const panel = document.getElementById('bili-cleaner')
         const bar = document.getElementById('bili-cleaner-bar')
         let isDragging = false
         let initX, initY, initLeft, initTop
-
+ 
         bar.addEventListener("mousedown", (e) => {
             isDragging = true
             initX = e.clientX
@@ -358,8 +359,8 @@
             isDragging = false
         })
     }
-
-
+ 
+ 
     //===================================================================================
     const GROUPS = []
     // 首页
@@ -374,11 +375,11 @@
     const dynamicItems = []
     // 直播页
     const liveItems = []
-
+ 
     const host = location.host
     const url = location.href
     const pathname = location.pathname
-
+ 
     if (url.startsWith('https://www.bilibili.com/') && pathname == '/') {
         // 页面直角化
         homepageItems.push(new Item(
@@ -591,7 +592,7 @@
                 }
                 return (r - add) ^ xor;
             }
-
+ 
             if (location.href.includes('bilibili.com/video/BV')) {
                 let regex = /bilibili.com\/video\/(BV[0-9a-zA-Z]+)/;
                 let match = regex.exec(location.href);
@@ -839,7 +840,7 @@
         ))
         videoItems.push(new Item(
             'video-page-hide-bpx-player-dm-btn-send', 'bili-cleaner-group-video', '隐藏 弹幕发送-发送按钮', null,
-            `.bpx-player-dm-btn-send {display: none;}`
+            `.bpx-player-dm-btn-send {display: none !important;}`
         ))
         videoItems.push(new Item(
             'video-page-hide-bpx-player-video-btn-dm', 'bili-cleaner-group-video', '隐藏 弹幕发送-弹幕样式', null,
@@ -980,7 +981,7 @@
             'video-page-reply-user-name-color-default', 'bili-cleaner-group-video', '隐藏 评论区-用户名全部恢复默认色', null,
             `#comment .reply-item .user-name, #comment .reply-item .sub-user-name {color: #61666d !important;}}`
         ))
-
+ 
         // 视频页Group
         GROUPS.push(new Group('bili-cleaner-group-video', '当前是：播放页', videoItems))
     }
@@ -1023,7 +1024,7 @@
             'hide-search-page-btn-to-top', 'bili-cleaner-group-search', '隐藏 右下角 回顶部', null,
             `.side-buttons .btn-to-top-wrap {display: none;}`
         ))
-
+ 
         GROUPS.push(new Group('bili-cleaner-group-search', '当前是：搜索页', searchItems))
     }
     else if (host == 't.bilibili.com') {
@@ -1110,7 +1111,7 @@
         ))
         dynamicItems.push(new Item(
             'hide-dynamic-page-fan-badge', 'bili-cleaner-group-dynamic', '隐藏 评论区-ID后粉丝牌', null,
-            `.comment-container .fan-badge {display: none;}`
+            `.comment-container .fan-badge {display: none !important;}`
         ))
         dynamicItems.push(new Item(
             'hide-dynamic-page-user-level', 'bili-cleaner-group-dynamic', '隐藏 评论区-一级评论用户等级', null,
@@ -1167,7 +1168,7 @@
             'video-page-reply-user-name-color-default', 'bili-cleaner-group-dynamic', '隐藏 评论区-用户名全部恢复默认色', null,
             `.comment-container .reply-item .user-name, .comment-container .reply-item .sub-user-name {color: #61666d !important;}}`
         ))
-
+ 
         GROUPS.push(new Group('bili-cleaner-group-dynamic', '当前是：动态页', dynamicItems))
     }
     else if (host == 'live.bilibili.com') {
@@ -1378,7 +1379,7 @@
             'live-page-header-go-live', 'bili-cleaner-group-live', '隐藏 顶栏-我要开播', null,
             `#right-part .shortcuts-ctnr .shortcut-item:nth-child(4) {visibility: hidden;}`
         ))
-
+ 
         GROUPS.push(new Group('bili-cleaner-group-live', '当前是：直播页', liveItems))
     }
     // 通用
@@ -1474,15 +1475,15 @@
             let keysToRemove = ['from_source', 'spm_id_from', 'search_source', 'vd_source', 'unique_k', 'is_story_h5', 'from_spmid',
                 'share_plat', 'share_medium', 'share_from', 'share_source', 'share_tag', 'up_id', 'timestamp', 'mid',
                 'live_from', 'launch_id', 'session_id'];
-
+ 
             let url = location.href;
             let urlObj = new URL(url);
             let params = new URLSearchParams(urlObj.search);
-
+ 
             keysToRemove.forEach(function (key) {
                 params.delete(key);
             });
-
+ 
             urlObj.search = params.toString();
             let newUrl = urlObj.toString();
             if (newUrl !== url) {
@@ -1495,18 +1496,18 @@
         // 通用Group
         GROUPS.push(new Group('bili-cleaner-group-common', '通用', commonItems))
     }
-
+ 
     GROUPS.forEach(e => { e.enableGroup() })
-
+ 
     // 监听各种形式的URL变化(普通监听无法检测到切换视频)
     let currURL = window.location.href
     setInterval(() => {
-        let testURL = window.location.href;
+        let testURL = window.location.href
         if (testURL !== currURL) {
             GROUPS.forEach(e => { e.enableGroup() })
         }
     }, 1000)
-
+ 
     //=======================================================================================
     function openSettings() {
         const panel = document.getElementById('bili-cleaner')

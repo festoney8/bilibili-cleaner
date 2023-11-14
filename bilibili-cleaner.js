@@ -1015,10 +1015,176 @@
             `.comment-container .reply-item .user-name, .comment-container .reply-item .sub-user-name {color: #61666d !important;}}`
         ))
 
-
         GROUPS.push(new Group('bili-cleaner-group-dynamic', '当前是：动态页', dynamicItems))
     }
     else if (host == 'live.bilibili.com') {
+        // 播放器上方信息栏
+        liveItems.push(new Item(
+            'live-page-head-info-vm', 'bili-cleaner-group-live', '隐藏 信息栏-关闭整个信息栏', null,
+            `#head-info-vm {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-head-info-vm-upper-row-follow-ctnr', 'bili-cleaner-group-live', '隐藏 信息栏-粉丝团', null,
+            `#head-info-vm .upper-row .follow-ctnr {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-head-info-vm-upper-row-visited', 'bili-cleaner-group-live', '隐藏 信息栏-xx人看过', null,
+            `#head-info-vm .upper-row .right-ctnr div:nth-child(1) {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-head-info-vm-upper-row-like', 'bili-cleaner-group-live', '隐藏 信息栏-点赞', null,
+            `#head-info-vm .upper-row .right-ctnr div:nth-child(2) {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-head-info-vm-upper-row-report', 'bili-cleaner-group-live', '隐藏 信息栏-举报', null,
+            `#head-info-vm .upper-row .right-ctnr div:nth-child(3) {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-head-info-vm-upper-row-share', 'bili-cleaner-group-live', '隐藏 信息栏-分享', null,
+            `#head-info-vm .upper-row .right-ctnr div:nth-child(4) {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-head-info-vm-lower-row-hot-rank', 'bili-cleaner-group-live', '隐藏 信息栏-人气榜', null,
+            `#head-info-vm .lower-row .right-ctnr .popular-and-hot-rank {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-head-info-vm-lower-row-gift-planet-entry', 'bili-cleaner-group-live', '隐藏 信息栏-礼物', null,
+            `#head-info-vm .lower-row .right-ctnr .gift-planet-entry {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-head-info-vm-lower-row-activity-gather-entry', 'bili-cleaner-group-live', '隐藏 信息栏-活动', null,
+            `#head-info-vm .lower-row .right-ctnr .activity-gather-entry {display: none;}`
+        ))
+        // 视频下方
+        liveItems.push(new Item(
+            'live-page-gift-control-vm', 'bili-cleaner-group-live', '隐藏 视频下方-礼物栏', null,
+            `#gift-control-vm {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-flip-view', 'bili-cleaner-group-live', '隐藏 视频下方-活动海报', null,
+            `.flip-view {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-room-info-ctnr', 'bili-cleaner-group-live', '隐藏 视频下方-直播间介绍', null,
+            `.room-info-ctnr {display: none;}`
+        ))
+        // 视频右侧
+        liveItems.push(new Item(
+            'live-page-sidebar-vm', 'bili-cleaner-group-live', '隐藏 右侧-实验室/关注', null,
+            `#sidebar-vm {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-rank-list-vm', 'bili-cleaner-group-live', '隐藏 右侧-高能榜/大航海', null,
+            `#rank-list-vm {display: none;}
+            #aside-area-vm {overflow: hidden;}
+            .chat-history-panel {height: calc(100% - 145px) !important; padding-top: 8px;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-convention-msg', 'bili-cleaner-group-live', '隐藏 右侧-弹幕栏 系统提示', null,
+            `.convention-msg.border-box {display: none !important;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-rank-icon', 'bili-cleaner-group-live', '隐藏 右侧-弹幕栏 用户排名', null,
+            `.danmaku-item-left .rank-icon {display: none !important;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-title-label', 'bili-cleaner-group-live', '隐藏 右侧-弹幕栏 头衔装扮', null,
+            `.danmaku-item-left .title-label {display: none !important;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-wealth-medal-ctnr', 'bili-cleaner-group-live', '隐藏 右侧-弹幕栏 用户等级', null,
+            `.danmaku-item-left .wealth-medal-ctnr {display: none !important;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-fans-medal-item-ctnr', 'bili-cleaner-group-live', '隐藏 右侧-弹幕栏 粉丝牌', null,
+            `.danmaku-item-left .fans-medal-item-ctnr {display: none !important;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-danmaku-item-background-color', 'bili-cleaner-group-live', '隐藏 右侧-弹幕栏 高亮底色去除', null,
+            `.danmaku-item {background-color: unset !important;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-control-panel-icon-row-left', 'bili-cleaner-group-live', '隐藏 右侧-弹幕控制按钮 左侧', null,
+            `#chat-control-panel-vm .control-panel-icon-row .icon-left-part {display: none !important;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-control-panel-icon-row-right', 'bili-cleaner-group-live', '隐藏 右侧-弹幕控制按钮 右侧', null,
+            `#chat-control-panel-vm .control-panel-icon-row .icon-right-part {display: none !important;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-bottom-actions', 'bili-cleaner-group-live', '隐藏 右侧-弹幕发送按钮', null,
+            `#chat-control-panel-vm .bottom-actions {display: none !important;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-chat-input-ctnr', 'bili-cleaner-group-live', '隐藏 右侧-弹幕发送框', null,
+            `#chat-control-panel-vm .chat-input-ctnr, #chat-control-panel-vm .bottom-actions {display: none !important;}
+            .chat-history-panel {height: calc(100% - 50px) !important;}`
+        ))
+
+        // 顶栏相关
+        liveItems.push(new Item(
+            'live-page-header-entry-logo', 'bili-cleaner-group-live', '隐藏 顶栏-直播LOGO', null,
+            `#main-ctnr a.entry_logo[href="//live.bilibili.com"] {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-header-entry-title', 'bili-cleaner-group-live', '隐藏 顶栏-首页', null,
+            `#main-ctnr a.entry-title[href="//www.bilibili.com"] {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-header-live', 'bili-cleaner-group-live', '隐藏 顶栏-直播', null,
+            `#main-ctnr .dp-table-cell a[name="live"] {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-header-all', 'bili-cleaner-group-live', '隐藏 顶栏-全部', null,
+            `#main-ctnr .dp-table-cell a[name="all"] {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-header-net-game', 'bili-cleaner-group-live', '隐藏 顶栏-网游', null,
+            `#main-ctnr .dp-table-cell a[name="网游"] {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-header-mobile-game', 'bili-cleaner-group-live', '隐藏 顶栏-手游', null,
+            `#main-ctnr .dp-table-cell a[name="手游"] {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-header-standalone-game', 'bili-cleaner-group-live', '隐藏 顶栏-单机游戏', null,
+            `#main-ctnr .dp-table-cell a[name="单机游戏"] {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-header-showmore-link', 'bili-cleaner-group-live', '隐藏 顶栏-更多', null,
+            `#main-ctnr .showmore-link {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-header-search-block-placeholder', 'bili-cleaner-group-live', '隐藏 顶栏-搜索框内推荐搜索', null,
+            `#nav-searchform input::placeholder {visibility: hidden;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-header-search-block', 'bili-cleaner-group-live', '隐藏 顶栏-搜索框', null,
+            `#nav-searchform {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-header-avatar', 'bili-cleaner-group-live', '隐藏 顶栏-头像', null,
+            `#right-part .user-panel {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-header-dynamic', 'bili-cleaner-group-live', '隐藏 顶栏-动态', null,
+            `#right-part .shortcuts-ctnr .shortcut-item:nth-child(1) {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-header-checkin', 'bili-cleaner-group-live', '隐藏 顶栏-签到', null,
+            `#right-part .shortcuts-ctnr .shortcut-item:nth-child(2) {display: none;}`
+        ))
+
+        liveItems.push(new Item(
+            'live-page-header-interact', 'bili-cleaner-group-live', '隐藏 顶栏-互动', null,
+            `#right-part .shortcuts-ctnr .shortcut-item:nth-child(3) {display: none;}`
+        ))
+
+        liveItems.push(new Item(
+            'live-page-header-go-live', 'bili-cleaner-group-live', '隐藏 顶栏-我要开播', null,
+            `#right-part .shortcuts-ctnr .shortcut-item:nth-child(4) {visibility: hidden;}`
+        ))
+
         GROUPS.push(new Group('bili-cleaner-group-live', '当前是：直播页', liveItems))
     }
     // 通用

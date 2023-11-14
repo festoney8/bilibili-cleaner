@@ -380,6 +380,48 @@
     const pathname = location.pathname
 
     if (url.startsWith('https://www.bilibili.com/') && pathname == '/') {
+        // 页面直角化
+        homepageItems.push(new Item(
+            'homepage-border-radius', 'bili-cleaner-group-homepage', '页面直角化 去除圆角', null,
+            `
+            #nav-searchform,
+            .nav-search-content,
+            .history-item,
+            .bili-header .search-panel,
+            .bili-header__channel .channel-link,
+            .channel-entry-more__link,
+            .header-channel-fixed-right-item,
+            .recommended-swipe-body,
+            .bili-video-card .bili-video-card__cover,
+            .bili-video-card .bili-video-card__image,
+            .bili-video-card .bili-video-card__info--icon-text,
+            .bili-live-card,
+            .floor-card,
+            .floor-card .badge,
+            .single-card.floor-card .floor-card-inner,
+            .single-card.floor-card .cover-container,
+            .primary-btn,
+            .flexible-roll-btn,
+            .palette-button-wrap .flexible-roll-btn-inner,
+            .palette-button-wrap .storage-box,
+            .palette-button-wrap,
+            .v-popover-content
+             {
+                border-radius: 3px !important;
+            }
+            .bili-video-card__stats {
+                border-bottom-left-radius: 3px !important;
+                border-bottom-right-radius: 3px !important;
+            }
+            .floor-card .layer {
+                display: none !important;
+            }
+            .single-card.floor-card {
+                border: none !important;
+            }
+            `
+        ))
+        // 首页CSS
         homepageItems.push(new Item(
             'hide-recommend-swipe', 'bili-cleaner-group-homepage', '隐藏 大图活动轮播', null,
             `
@@ -790,6 +832,10 @@
             `.bpx-player-sending-area {display: none;}`
         ))
         // 评论区相关
+        videoItems.push(new Item(
+            'hide-reply-notice', 'bili-cleaner-group-video', '隐藏 评论区-活动/notice', null,
+            `#comment .reply-header .reply-notice {display: none;}`
+        ))
         videoItems.push(new Item(
             'hide-main-reply-box', 'bili-cleaner-group-video', '隐藏 评论区-发评论功能', null,
             `.main-reply-box {display: none;}`

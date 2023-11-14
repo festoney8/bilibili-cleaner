@@ -889,7 +889,28 @@
         GROUPS.push(new Group('bili-cleaner-group-video', '当前是：播放页', videoItems))
     }
     else if (host == 'search.bilibili.com') {
-        // GROUPS.push(new Group('bili-cleaner-group-search', '当前是：搜索页', searchItems))
+        searchItems.push(new Item(
+            'hide-search-page-danmaku-count', 'bili-cleaner-group-search', '隐藏 弹幕数量', null,
+            `.bili-video-card .bili-video-card__stats--left .bili-video-card__stats--item:nth-child(2) {display: none;}`
+        ))
+        searchItems.push(new Item(
+            'hide-search-page-date', 'bili-cleaner-group-search', '隐藏 视频日期', null,
+            `.bili-video-card .bili-video-card__info--date {display: none;}`
+        ))
+        searchItems.push(new Item(
+            'hide-search-page-search-sticky-header', 'bili-cleaner-group-search', '隐藏 顶部sticky搜索框', null,
+            `.search-sticky-header {display: none;}`
+        ))
+        searchItems.push(new Item(
+            'hide-search-page-customer-service', 'bili-cleaner-group-search', '隐藏 右下角 客服', null,
+            `.side-buttons div:nth-child(1) {display: none;}`
+        ))
+        searchItems.push(new Item(
+            'hide-search-page-btn-to-top', 'bili-cleaner-group-search', '隐藏 右下角 回顶部', null,
+            `.side-buttons .btn-to-top-wrap {display: none;}`
+        ))
+
+        GROUPS.push(new Group('bili-cleaner-group-search', '当前是：搜索页', searchItems))
     }
     else if (host == 't.bilibili.com') {
         // GROUPS.push(new Group('bili-cleaner-group-dynamic', '当前是：动态页', dynamicItems))

@@ -2,7 +2,7 @@
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
 // @version      1.0.0
-// @description  净化B站页面内的各种元素，高度定制化
+// @description  净化B站页面内的各种元素，提供自定义菜单，高度定制自己的B站页面
 // @author       festoney8
 // @match        https://*.bilibili.com/*
 // @icon         https://www.bilibili.com/favicon.ico
@@ -387,6 +387,7 @@
             #nav-searchform,
             .nav-search-content,
             .history-item,
+            .header-upload-entry,
             .bili-header .search-panel,
             .bili-header__channel .channel-link,
             .channel-entry-more__link,
@@ -643,7 +644,7 @@
         ))
         // header
         videoItems.push(new Item(
-            'video-page-hide-fixed-header', 'bili-cleaner-group-video', '顶栏header 不再吸附顶部', null,
+            'video-page-hide-fixed-header', 'bili-cleaner-group-video', '顶栏 滚动页面后不再吸附顶部', null,
             `.fixed-header .bili-header__bar {position: unset;}`
         ))
         // 视频信息
@@ -1384,11 +1385,12 @@
     {
         commonItems.push(new Item(
             'common-hide-nav-homepage-logo', 'bili-cleaner-group-common', '隐藏 顶栏-主站Logo', null,
-            `div.bili-header__bar li:has(a[href="//www.bilibili.com"]) > svg {display: none;}`
+            `div.bili-header__bar li:has(>a[href="//www.bilibili.com"]) svg {display: none;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-homepage', 'bili-cleaner-group-common', '隐藏 顶栏-首页', null,
-            `div.bili-header__bar li:has(a[href="//www.bilibili.com"]) > .mini-header__title {display: none;}`
+            `div.bili-header__bar li:has(>a[href="//www.bilibili.com"]) span {display: none;}
+            div.bili-header__bar .v-popover-wrap:has(>a[href="//www.bilibili.com"]) {display: none;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-anime', 'bili-cleaner-group-common', '隐藏 顶栏-番剧', null,

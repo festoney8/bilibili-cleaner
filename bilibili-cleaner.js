@@ -9,6 +9,7 @@
 // @grant        GM_addStyle
 // @grant        GM_getValue
 // @grant        GM_setValue
+// @grant        GM_registerMenuCommand
 // @run-at       document-start
 // ==/UserScript==
 
@@ -564,6 +565,11 @@
         videoItems.push(new Item(
             'video-page-bv2av', 'bili-cleaner-group-video', 'BV号转AV号 (需刷新)', bv2av, null
         ))
+        // header
+        videoItems.push(new Item(
+            'hide-video-page-fixed-header', 'bili-cleaner-group-video', '顶栏header 不再吸附顶部', null,
+            `.fixed-header .bili-header__bar {position: unset;}`
+        ))
         // 视频信息
         videoItems.push(new Item(
             'hide-video-info-danmaku-count', 'bili-cleaner-group-video', '隐藏 视频信息-弹幕数', null,
@@ -576,6 +582,10 @@
         videoItems.push(new Item(
             'hide-video-info-copyright', 'bili-cleaner-group-video', '隐藏 视频信息-版权声明', null,
             `.video-info-detail .copyright {display: none !important;}`
+        ))
+        videoItems.push(new Item(
+            'hide-video-info-honor', 'bili-cleaner-group-video', '隐藏 视频信息-视频荣誉(排行榜/每周必看)', null,
+            `.video-info-detail .honor-rank, .video-info-detail .honor-weekly {display: none !important;}`
         ))
         // up主信息
         videoItems.push(new Item(
@@ -883,7 +893,14 @@
                 visibility: visible;
             }`
         ))
-
+        videoItems.push(new Item(
+            'video-page-reply-user-name-color-pink', 'bili-cleaner-group-video', '隐藏 评论区-用户名全部大会员色', null,
+            `#comment .reply-item .user-name, #comment .reply-item .sub-user-name {color: #FB7299 !important;}}`
+        ))
+        videoItems.push(new Item(
+            'video-page-reply-user-name-color-default', 'bili-cleaner-group-video', '隐藏 评论区-用户名全部恢复默认色', null,
+            `#comment .reply-item .user-name, #comment .reply-item .sub-user-name {color: #61666d !important;}}`
+        ))
 
         // 视频页Group
         GROUPS.push(new Group('bili-cleaner-group-video', '当前是：播放页', videoItems))

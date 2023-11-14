@@ -201,7 +201,7 @@
             align-items: center;
             color: white;
             font-weight: bold;
-            font-size: 1.5em;
+            font-size: 22px;
         }
         
         #bili-cleaner-title span {
@@ -253,7 +253,7 @@
         }
 
         .bili-cleaner-group-title {
-            font-size: 1.3em;
+            font-size: 20px;
             font-weight: bold;
             padding: 2px;
         }
@@ -267,7 +267,7 @@
             display: block;
             vertical-align: middle;
             margin: 8px 0;
-            font-size: 1.1em;
+            font-size: 16px;
         }
         
         .bili-cleaner-item-switch {
@@ -471,7 +471,7 @@
             `
         ))
         homepageItems.push(new Item(
-            'hide-sticky-subarea', 'bili-cleaner-group-homepage', '隐藏 滚动页面时顶部sticky分区栏', null,
+            'hide-sticky-subarea', 'bili-cleaner-group-homepage', '隐藏 滚动页面时顶部吸附分区栏', null,
             `#i_cecream .header-channel {display: none !important;}`
         ))
         homepageItems.push(new Item(
@@ -606,6 +606,40 @@
         }
         videoItems.push(new Item(
             'video-page-bv2av', 'bili-cleaner-group-video', 'BV号转AV号 (需刷新)', bv2av, null
+        ))
+        // 去除圆角
+        videoItems.push(new Item(
+            'video-page-border-radius', 'bili-cleaner-group-video', '页面直角化 去除圆角', null,
+            `
+            #nav-searchform,
+            .nav-search-content,
+            .v-popover-content,
+            .van-popover,
+            .v-popover,
+            .pic-box,
+            .card-box .pic-box .pic,
+            .bui-collapse-header,
+            .base-video-sections-v1,
+            .bili-header .search-panel,
+            .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar,
+            .video-tag-container .tag-panel .tag-link,
+            .video-tag-container .tag-panel .show-more-btn,
+            .vcd .cover img,
+            .vcd *,
+            .upinfo-btn-panel *,
+            .reply-box-textarea,
+            .reply-box-send,
+            .reply-box-send:after {
+                border-radius: 3px !important;
+            }
+            .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar .bpx-player-dm-btn-send,
+            .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar-wrap {
+                border-radius: 0 3px 3px 0 !important;
+            }
+            .bpx-player-dm-btn-send .bui-button {
+                border-radius: 3px 0 0 3px !important;
+            }
+            `
         ))
         // header
         videoItems.push(new Item(
@@ -838,7 +872,8 @@
         ))
         videoItems.push(new Item(
             'hide-main-reply-box', 'bili-cleaner-group-video', '隐藏 评论区-发评论功能', null,
-            `.main-reply-box {display: none;}`
+            `#comment .main-reply-box {display: none;}
+            #comment .reply-list {margin-top: -20px !important;}`
         ))
         videoItems.push(new Item(
             'hide-fixed-reply-box', 'bili-cleaner-group-video', '隐藏 评论区-页面底部 浮动评论发送框', null,
@@ -911,6 +946,10 @@
             `#comment .emoji-large {display: none;}`
         ))
         videoItems.push(new Item(
+            'hide-emoji-large-zoom', 'bili-cleaner-group-video', '评论区-大表情变成小表情', null,
+            `#comment .emoji-large {zoom: .5;}`
+        ))
+        videoItems.push(new Item(
             'hide-root-reply-dislike-reply-btn', 'bili-cleaner-group-video', '隐藏 评论区-一级评论 踩/回复/举报 hover时显示', null,
             `#comment .root-reply .reply-btn, 
             #comment .root-reply .reply-dislike {
@@ -946,6 +985,24 @@
     }
     else if (host == 'search.bilibili.com') {
         searchItems.push(new Item(
+            'search-page-border-radius', 'bili-cleaner-group-search', '页面直角化 去除圆角', null,
+            `
+            #nav-searchform,
+            .nav-search-content,
+            .v-popover-content,
+            .van-popover,
+            .v-popover-wrap,
+            .v-popover,
+            .search-sticky-header *,
+            .vui_button,
+            .header-upload-entry,
+            .search-input-wrap *,
+            .bili-video-card__cover {
+                border-radius: 3px !important;
+            }
+            `
+        ))
+        searchItems.push(new Item(
             'hide-search-page-danmaku-count', 'bili-cleaner-group-search', '隐藏 弹幕数量', null,
             `.bili-video-card .bili-video-card__stats--left .bili-video-card__stats--item:nth-child(2) {display: none;}`
         ))
@@ -969,6 +1026,42 @@
         GROUPS.push(new Group('bili-cleaner-group-search', '当前是：搜索页', searchItems))
     }
     else if (host == 't.bilibili.com') {
+        // 去圆角
+        dynamicItems.push(new Item(
+            'dynamic-page-border-radius', 'bili-cleaner-group-dynamic', '页面直角化 去除圆角', null,
+            `
+            #nav-searchform,
+            .nav-search-content,
+            .header-upload-entry,
+            .v-popover-content,
+            .van-popover,
+            .v-popover-wrap,
+            .v-popover,
+            .topic-panel,
+            .bili-dyn-up-list,
+            .bili-dyn-sidebar *,
+            .bili-dyn-up-list__window,
+            .bili-dyn-live-users,
+            .bili-dyn-topic-box,
+            .bili-dyn-list-notification,
+            .bili-dyn-item,
+            .bili-dyn-banner,
+            .bili-dyn-banner__img,
+            .bili-dyn-my-info,
+            .bili-dyn-card-video,
+            .bili-album__preview__picture__gif,
+            .bili-album__preview__picture__img {
+                border-radius: 3px !important;
+            }
+            .bili-dyn-card-video__cover__mask,
+            .bili-dyn-card-video__cover {
+                border-radius: 3px 0 0 3px !important;
+            }
+            .bili-dyn-card-video__body {
+                border-radius: 0 3px 3px 0 !important;
+            }
+            `
+        ))
         dynamicItems.push(new Item(
             'hide-dynamic-page-bili-dyn-my-info', 'bili-cleaner-group-dynamic', '隐藏 左栏 个人信息框', null,
             `.bili-dyn-my-info {display: none;}`
@@ -986,7 +1079,11 @@
             `.bili-dyn-list-tabs {display: none;}`
         ))
         dynamicItems.push(new Item(
-            'hide-dynamic-page-bili-dyn-banner', 'bili-cleaner-group-dynamic', '隐藏 右栏 社区中心  ', null,
+            'hide-dynamic-page-bili-dyn-ornament', 'bili-cleaner-group-dynamic', '隐藏 中栏 动态右侧饰品', null,
+            `.bili-dyn-ornament {display: none;}`
+        ))
+        dynamicItems.push(new Item(
+            'hide-dynamic-page-bili-dyn-banner', 'bili-cleaner-group-dynamic', '隐藏 右栏 社区中心', null,
             `.bili-dyn-banner {display: none;}`
         ))
         dynamicItems.push(new Item(
@@ -1027,8 +1124,17 @@
             `.comment-container .bili-avatar-pendent-dom {display: none;}`
         ))
         dynamicItems.push(new Item(
+            'hide-reply-notice', 'bili-cleaner-group-dynamic', '隐藏 评论区-活动/notice', null,
+            `.comment-container .reply-header .reply-notice {display: none;}`
+        ))
+        dynamicItems.push(new Item(
             'hide-dynamic-page-note-prefix', 'bili-cleaner-group-dynamic', '隐藏 评论区-笔记评论前的小Logo', null,
             `.comment-container .note-prefix {display: none;}`
+        ))
+        dynamicItems.push(new Item(
+            'hide-dynamic-jump-link-search-word', 'bili-cleaner-group-dynamic', '隐藏 评论区-评论内容搜索关键词高亮', null,
+            `.comment-container .reply-content .jump-link.search-word {color: inherit !important;}
+            .comment-container .reply-content .icon.search-word {display: none;}`
         ))
         dynamicItems.push(new Item(
             'hide-root-reply-dislike-reply-btn', 'bili-cleaner-group-dynamic', '隐藏 评论区-一级评论 踩/回复/举报 hover时显示', null,
@@ -1064,6 +1170,45 @@
         GROUPS.push(new Group('bili-cleaner-group-dynamic', '当前是：动态页', dynamicItems))
     }
     else if (host == 'live.bilibili.com') {
+        // 去除圆角
+        liveItems.push(new Item(
+            'live-page-border-radius', 'bili-cleaner-group-live', '页面直角化 去除圆角', null,
+            `
+            #nav-searchform,
+            .nav-search-content,
+            .header-upload-entry,
+            .v-popover-content,
+            .van-popover,
+            .v-popover-wrap,
+            .v-popover,
+            .aside-area,
+            .lower-row .right-ctnr *,
+            .panel-main-ctnr,
+            .startlive-btn,
+            .flip-view,
+            .content-wrapper,
+            .chat-input-ctnr,
+            .bl-button--primary {
+                border-radius: 3px !important;
+            }
+            .head-info-section {
+                border-radius: 3px 3px 0 0 !important;
+            }
+            .gift-control-section {
+                border-radius: 0 0 3px 3px !important;
+            }
+            .follow-ctnr .right-part {
+                border-radius: 0 3px 3px 0 !important;
+            }
+            .chat-control-panel {
+                border-radius: 0 0 3px 3px !important;
+            }
+            .follow-ctnr .left-part,
+            #rank-list-ctnr-box.bgStyle {
+                border-radius: 3px 0 0 3px !important;
+            }
+            `
+        ))
         // 播放器上方信息栏
         liveItems.push(new Item(
             'live-page-head-info-vm', 'bili-cleaner-group-live', '隐藏 信息栏-关闭整个信息栏', null,
@@ -1150,6 +1295,10 @@
             `.danmaku-item {background-color: unset !important;}`
         ))
         liveItems.push(new Item(
+            'live-page-brush-prompt', 'bili-cleaner-group-live', '隐藏 右侧-弹幕栏 底部滚动提示', null,
+            `#brush-prompt {display: none !important;}`
+        ))
+        liveItems.push(new Item(
             'live-page-control-panel-icon-row-left', 'bili-cleaner-group-live', '隐藏 右侧-弹幕控制按钮 左侧', null,
             `#chat-control-panel-vm .control-panel-icon-row .icon-left-part {display: none !important;}`
         ))
@@ -1164,9 +1313,9 @@
         liveItems.push(new Item(
             'live-page-chat-input-ctnr', 'bili-cleaner-group-live', '隐藏 右侧-弹幕发送框', null,
             `#chat-control-panel-vm .chat-input-ctnr, #chat-control-panel-vm .bottom-actions {display: none !important;}
-            .chat-history-panel {height: calc(100% - 50px) !important;}`
+            .chat-control-panel {height: unset !important;}
+            .chat-history-panel {height: calc(100% - 45px) !important; padding-top: 8px;}`
         ))
-
         // 顶栏相关
         liveItems.push(new Item(
             'live-page-header-entry-logo', 'bili-cleaner-group-live', '隐藏 顶栏-直播LOGO', null,
@@ -1220,12 +1369,10 @@
             'live-page-header-checkin', 'bili-cleaner-group-live', '隐藏 顶栏-签到', null,
             `#right-part .shortcuts-ctnr .shortcut-item:nth-child(2) {display: none;}`
         ))
-
         liveItems.push(new Item(
             'live-page-header-interact', 'bili-cleaner-group-live', '隐藏 顶栏-互动', null,
             `#right-part .shortcuts-ctnr .shortcut-item:nth-child(3) {display: none;}`
         ))
-
         liveItems.push(new Item(
             'live-page-header-go-live', 'bili-cleaner-group-live', '隐藏 顶栏-我要开播', null,
             `#right-part .shortcuts-ctnr .shortcut-item:nth-child(4) {visibility: hidden;}`
@@ -1369,4 +1516,5 @@
     }
     // 注册油猴插件菜单选项
     GM_registerMenuCommand("设置", openSettings)
+    openSettings()
 })();

@@ -201,7 +201,7 @@
             align-items: center;
             color: white;
             font-weight: bold;
-            font-size: 1.5em;
+            font-size: 1.5rem;
         }
         
         #bili-cleaner-title span {
@@ -253,7 +253,7 @@
         }
 
         .bili-cleaner-group-title {
-            font-size: 1.5em;
+            font-size: 1.3rem;
             font-weight: bold;
             padding: 2px;
         }
@@ -267,7 +267,7 @@
             display: block;
             vertical-align: middle;
             margin: 8px 0;
-            font-size: 1.2em;
+            font-size: 1.1rem;
         }
         
         .bili-cleaner-item-switch {
@@ -930,7 +930,100 @@
         GROUPS.push(new Group('bili-cleaner-group-search', '当前是：搜索页', searchItems))
     }
     else if (host == 't.bilibili.com') {
-        // GROUPS.push(new Group('bili-cleaner-group-dynamic', '当前是：动态页', dynamicItems))
+        dynamicItems.push(new Item(
+            'hide-dynamic-page-bili-dyn-my-info', 'bili-cleaner-group-dynamic', '隐藏 左栏 个人信息框', null,
+            `.bili-dyn-my-info {display: none;}`
+        ))
+        dynamicItems.push(new Item(
+            'hide-dynamic-page-bili-dyn-live-users__item__living', 'bili-cleaner-group-dynamic', '隐藏 左栏 直播中Logo', null,
+            `.bili-dyn-live-users__item__living {display: none;}`
+        ))
+        dynamicItems.push(new Item(
+            'hide-dynamic-page-bili-dyn-publishing', 'bili-cleaner-group-dynamic', '隐藏 中栏 动态发布框', null,
+            `.bili-dyn-publishing {display: none;}`
+        ))
+        dynamicItems.push(new Item(
+            'hide-dynamic-page-bili-dyn-list-tabs', 'bili-cleaner-group-dynamic', '隐藏 中栏 动态分类Tab', null,
+            `.bili-dyn-list-tabs {display: none;}`
+        ))
+        dynamicItems.push(new Item(
+            'hide-dynamic-page-bili-dyn-banner', 'bili-cleaner-group-dynamic', '隐藏 右栏 社区中心  ', null,
+            `.bili-dyn-banner {display: none;}`
+        ))
+        dynamicItems.push(new Item(
+            'hide-dynamic-page-bili-dyn-topic-box', 'bili-cleaner-group-dynamic', '隐藏 右栏 话题列表', null,
+            `.bili-dyn-topic-box, .topic-panel {display: none;}`
+        ))
+        dynamicItems.push(new Item(
+            'hide-dynamic-page-aside-right', 'bili-cleaner-group-dynamic', '隐藏 整个右栏', null,
+            `aside.right {display: none;}`
+        ))
+        // 动态评论区
+        dynamicItems.push(new Item(
+            'hide-dynamic-page-main-reply-box', 'bili-cleaner-group-dynamic', '隐藏 评论区-发评论功能', null,
+            `.comment-container .main-reply-box {display: none;}`
+        ))
+        dynamicItems.push(new Item(
+            'hide-dynamic-page-reply-box-textarea-placeholder', 'bili-cleaner-group-dynamic', '隐藏 评论区-评论编辑器内占位文字', null,
+            `.comment-container .reply-box-textarea::placeholder {color: transparent !important;}`
+        ))
+        dynamicItems.push(new Item(
+            'hide-dynamic-page-reply-decorate', 'bili-cleaner-group-dynamic', '隐藏 评论区-评论右侧装饰', null,
+            `.comment-container .reply-decorate {display: none;}`
+        ))
+        dynamicItems.push(new Item(
+            'hide-dynamic-page-fan-badge', 'bili-cleaner-group-dynamic', '隐藏 评论区-ID后粉丝牌', null,
+            `.comment-container .fan-badge {display: none;}`
+        ))
+        dynamicItems.push(new Item(
+            'hide-dynamic-page-user-level', 'bili-cleaner-group-dynamic', '隐藏 评论区-一级评论用户等级', null,
+            `.comment-container .user-level {display: none;}`
+        ))
+        dynamicItems.push(new Item(
+            'hide-dynamic-page-sub-user-level', 'bili-cleaner-group-dynamic', '隐藏 评论区-二级评论用户等级', null,
+            `.comment-container .sub-user-level {display: none;}`
+        ))
+        dynamicItems.push(new Item(
+            'hide-dynamic-page-bili-avatar-pendent-dom', 'bili-cleaner-group-dynamic', '隐藏 评论区-用户头像外圈饰品', null,
+            `.comment-container .bili-avatar-pendent-dom {display: none;}`
+        ))
+        dynamicItems.push(new Item(
+            'hide-dynamic-page-note-prefix', 'bili-cleaner-group-dynamic', '隐藏 评论区-笔记评论前的小Logo', null,
+            `.comment-container .note-prefix {display: none;}`
+        ))
+        dynamicItems.push(new Item(
+            'hide-root-reply-dislike-reply-btn', 'bili-cleaner-group-dynamic', '隐藏 评论区-一级评论 踩/回复/举报 hover时显示', null,
+            `.comment-container .root-reply .reply-btn, 
+            .comment-container .root-reply .reply-dislike {
+                visibility: hidden;
+            }
+            .comment-container .reply-item:hover .root-reply .reply-btn, 
+            .comment-container .reply-item:hover .root-reply .reply-dislike {
+                visibility: visible;
+            }`
+        ))
+        dynamicItems.push(new Item(
+            'hide-sub-reply-dislike-reply-btn', 'bili-cleaner-group-dynamic', '隐藏 评论区-二级评论 踩/回复/举报 hover时显示', null,
+            `.comment-container .sub-reply-container .sub-reply-item .sub-reply-btn, 
+            .comment-container .sub-reply-container .sub-reply-item .sub-reply-dislike {
+                visibility: hidden;
+            }
+            .comment-container .sub-reply-container .sub-reply-item:hover .sub-reply-btn, 
+            .comment-container .sub-reply-container .sub-reply-item:hover .sub-reply-dislike {
+                visibility: visible;
+            }`
+        ))
+        dynamicItems.push(new Item(
+            'video-page-reply-user-name-color-pink', 'bili-cleaner-group-dynamic', '隐藏 评论区-用户名全部大会员色', null,
+            `.comment-container .reply-item .user-name, .comment-container .reply-item .sub-user-name {color: #FB7299 !important;}}`
+        ))
+        dynamicItems.push(new Item(
+            'video-page-reply-user-name-color-default', 'bili-cleaner-group-dynamic', '隐藏 评论区-用户名全部恢复默认色', null,
+            `.comment-container .reply-item .user-name, .comment-container .reply-item .sub-user-name {color: #61666d !important;}}`
+        ))
+
+
+        GROUPS.push(new Group('bili-cleaner-group-dynamic', '当前是：动态页', dynamicItems))
     }
     else if (host == 'live.bilibili.com') {
         // GROUPS.push(new Group('bili-cleaner-group-live', '当前是：直播页', liveItems))
@@ -1048,13 +1141,13 @@
     GROUPS.forEach(e => { e.enableGroup() })
 
     // 监听各种形式的URL变化(普通监听无法检测到切换视频)
-    let currURL = window.location.href;
+    let currURL = window.location.href
     setInterval(() => {
         let testURL = window.location.href;
         if (testURL !== currURL) {
             GROUPS.forEach(e => { e.enableGroup() })
         }
-    }, 1000);
+    }, 1000)
 
     //=======================================================================================
     function openSettings() {
@@ -1069,6 +1162,7 @@
             e.insertItems()
         })
     }
-    GM_registerMenuCommand("设置", openSettings);
+    GM_registerMenuCommand("设置", openSettings)
+    openSettings()
 
 })();

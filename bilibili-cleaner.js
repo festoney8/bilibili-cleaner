@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.3
+// @version      1.0.4
 // @description  净化B站页面内的各种元素，提供自定义菜单，高度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -1190,6 +1190,7 @@
             .flip-view,
             .content-wrapper,
             .chat-input-ctnr,
+            .announcement-cntr,
             .bl-button--primary {
                 border-radius: 3px !important;
             }
@@ -1248,10 +1249,15 @@
             'live-page-head-info-vm-lower-row-activity-gather-entry', 'bili-cleaner-group-live', '隐藏 信息栏-活动', null,
             `#head-info-vm .lower-row .right-ctnr .activity-gather-entry {display: none;}`
         ))
+        // 播放器
+        liveItems.push(new Item(
+            'live-page-head-web-player-icon-feedback', 'bili-cleaner-group-live', '隐藏 播放器-右上角反馈', null,
+            `#live-player .web-player-icon-feedback {display: none;}`
+        ))
         // 视频下方
         liveItems.push(new Item(
             'live-page-gift-control-vm', 'bili-cleaner-group-live', '隐藏 视频下方-礼物栏', null,
-            `#gift-control-vm {display: none;}`
+            `#gift-control-vm, #gift-control-vm-new {display: none !important;}`
         ))
         liveItems.push(new Item(
             'live-page-flip-view', 'bili-cleaner-group-live', '隐藏 视频下方-活动海报', null,
@@ -1352,6 +1358,14 @@
             `#main-ctnr .dp-table-cell a[name="单机游戏"] {display: none;}`
         ))
         liveItems.push(new Item(
+            'live-page-header-standalone-entertainment', 'bili-cleaner-group-live', '隐藏 顶栏-娱乐', null,
+            `#main-ctnr .dp-table-cell a[name="娱乐"] {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-header-standalone-radio', 'bili-cleaner-group-live', '隐藏 顶栏-电台', null,
+            `#main-ctnr .dp-table-cell a[name="电台"] {display: none;}`
+        ))
+        liveItems.push(new Item(
             'live-page-header-showmore-link', 'bili-cleaner-group-live', '隐藏 顶栏-更多', null,
             `#main-ctnr .showmore-link {display: none;}`
         ))
@@ -1386,48 +1400,48 @@
 
         GROUPS.push(new Group('bili-cleaner-group-live', '当前是：直播页', liveItems))
     }
-    // 通用
-    {
+    // 通用，直播页除外
+    if (host != 'live.bilibili.com') {
         commonItems.push(new Item(
             'common-hide-nav-homepage-logo', 'bili-cleaner-group-common', '隐藏 顶栏-主站Logo', null,
-            `div.bili-header__bar li:has(>a[href="//www.bilibili.com"]) svg {display: none;}`
+            `div.bili-header__bar li:has(>a[href="//www.bilibili.com"]) svg {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-homepage', 'bili-cleaner-group-common', '隐藏 顶栏-首页', null,
-            `div.bili-header__bar li:has(>a[href="//www.bilibili.com"]) span {display: none;}
-            div.bili-header__bar .v-popover-wrap:has(>a[href="//www.bilibili.com"]) {display: none;}`
+            `div.bili-header__bar li:has(>a[href="//www.bilibili.com"]) span {display: none !important;}
+            div.bili-header__bar .v-popover-wrap:has(>a[href="//www.bilibili.com"]) {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-anime', 'bili-cleaner-group-common', '隐藏 顶栏-番剧', null,
-            `div.bili-header__bar li:has(>a[href="//www.bilibili.com/anime/"])  {display: none;}`
+            `div.bili-header__bar li:has(>a[href="//www.bilibili.com/anime/"])  {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-live', 'bili-cleaner-group-common', '隐藏 顶栏-直播', null,
-            `div.bili-header__bar li:has(>a[href="//live.bilibili.com"])  {display: none;}`
+            `div.bili-header__bar li:has(>a[href="//live.bilibili.com"])  {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-game', 'bili-cleaner-group-common', '隐藏 顶栏-游戏中心', null,
-            `div.bili-header__bar li:has(>a[href^="//game.bilibili.com"])  {display: none;}`
+            `div.bili-header__bar li:has(>a[href^="//game.bilibili.com"])  {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-vipshop', 'bili-cleaner-group-common', '隐藏 顶栏-会员购', null,
-            `div.bili-header__bar li:has(>a[href^="//show.bilibili.com"])  {display: none;}`
+            `div.bili-header__bar li:has(>a[href^="//show.bilibili.com"])  {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-manga', 'bili-cleaner-group-common', '隐藏 顶栏-漫画', null,
-            `div.bili-header__bar li:has(>a[href^="//manga.bilibili.com"])  {display: none;}`
+            `div.bili-header__bar li:has(>a[href^="//manga.bilibili.com"])  {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-match', 'bili-cleaner-group-common', '隐藏 顶栏-赛事', null,
-            `div.bili-header__bar li:has(>a[href^="//www.bilibili.com/match/"])  {display: none;}`
+            `div.bili-header__bar li:has(>a[href^="//www.bilibili.com/match/"])  {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-moveclip', 'bili-cleaner-group-common', '隐藏 顶栏-活动直播', null,
-            `div.bili-header__bar li:has(.loc-mc-box) {display: none;}`
+            `div.bili-header__bar li:has(.loc-mc-box) {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-download-app', 'bili-cleaner-group-common', '隐藏 顶栏-下载客户端', null,
-            `div.bili-header__bar li:has(a[href="//app.bilibili.com"]) {display: none;}`
+            `div.bili-header__bar li:has(a[href="//app.bilibili.com"]) {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-search-rcmd', 'bili-cleaner-group-common', '隐藏 顶栏-搜索框内的推荐搜索', null,
@@ -1443,27 +1457,27 @@
         ))
         commonItems.push(new Item(
             'common-hide-nav-avatar', 'bili-cleaner-group-common', '隐藏 顶栏-头像', null,
-            `.v-popover-wrap.header-avatar-wrap {display: none;}`
+            `.v-popover-wrap.header-avatar-wrap {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-vip', 'bili-cleaner-group-common', '隐藏 顶栏-大会员', null,
-            `.vip-wrap:has([href="//account.bilibili.com/big"]) {display: none;}`
+            `.vip-wrap:has([href="//account.bilibili.com/big"]) {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-message', 'bili-cleaner-group-common', '隐藏 顶栏-消息', null,
-            `.v-popover-wrap:has([href^="//message.bilibili.com"]) {display: none;}`
+            `.v-popover-wrap:has([href^="//message.bilibili.com"]) {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-dynamic', 'bili-cleaner-group-common', '隐藏 顶栏-动态', null,
-            `.v-popover-wrap:has([href^="//t.bilibili.com"]) {display: none;}`
+            `.v-popover-wrap:has([href^="//t.bilibili.com"]) {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-favorite', 'bili-cleaner-group-common', '隐藏 顶栏-收藏', null,
-            `.v-popover-wrap:has(.header-favorite-container) {display: none;}`
+            `.v-popover-wrap:has(.header-favorite-container) {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-history', 'bili-cleaner-group-common', '隐藏 顶栏-历史', null,
-            `.v-popover-wrap:has([href="//www.bilibili.com/account/history"]) {display: none;}`
+            `.v-popover-wrap:has([href="//www.bilibili.com/account/history"]) {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-member', 'bili-cleaner-group-common', '隐藏 顶栏-创作中心', null,

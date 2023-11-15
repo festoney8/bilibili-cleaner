@@ -474,7 +474,65 @@
         ))
         homepageItems.push(new Item(
             'homepage-hide-sticky-header', 'bili-cleaner-group-homepage', '隐藏 滚动页面时 顶部吸附顶栏', null,
-            `#i_cecream .header-channel {display: none !important;}`
+            `
+            .bili-header .left-entry__title svg {
+                display: none !important;
+            }
+            .bili-feed4 .bili-header .slide-down {
+                box-shadow: unset !important;
+            }
+            #nav-searchform.is-actived:before,
+            #nav-searchform.is-exper:before,
+            #nav-searchform.is-exper:hover:before,
+            #nav-searchform.is-focus:before,
+            .bili-header .slide-down {
+                background: unset !important;
+            }
+            .bili-header .slide-down {
+                position: absolute !important;
+                top: 0;
+                animation: unset !important;
+                box-shadow: unset !important;
+            }
+            .bili-header .slide-down .left-entry {
+                margin-right: 30px !important;
+            }
+            .bili-header .slide-down .left-entry .default-entry,
+            .bili-header .slide-down .left-entry .download-entry,
+            .bili-header .slide-down .left-entry .entry-title,
+            .bili-header .slide-down .left-entry .entry-title .zhuzhan-icon,
+            .bili-header .slide-down .left-entry .loc-entry,
+            .bili-header .slide-down .left-entry .loc-mc-box__text,
+            .bili-header .slide-down .left-entry .mini-header__title,
+            .bili-header .slide-down .right-entry .right-entry__outside .right-entry-icon,
+            .bili-header .slide-down .right-entry .right-entry__outside .right-entry-text {
+                color: #fff !important;
+            }
+            .bili-header .slide-down .download-entry,
+            .bili-header .slide-down .loc-entry {
+                display: unset !important;
+            }
+            .bili-header .slide-down .center-search-container,
+            .bili-header .slide-down .center-search-container .center-search__bar {
+                margin: 0 auto !important;
+            }
+            #nav-searchform {
+                background: #f1f2f3 !important;
+            }
+            #nav-searchform:hover {
+                background-color: var(--bg1) !important;
+                opacity: 1
+            }
+            #nav-searchform.is-focus {
+                border: 1px solid var(--line_regular) !important;
+                border-bottom: none !important;
+                background: var(--bg1) !important;
+            }
+            #nav-searchform.is-actived.is-exper4-actived,
+            #nav-searchform.is-focus.is-exper4-actived {
+                border-bottom: unset !important;
+            }
+            `
         ))
         homepageItems.push(new Item(
             'homepage-hide-sticky-subarea', 'bili-cleaner-group-homepage', '隐藏 滚动页面时 顶部吸附分区栏', null,
@@ -650,7 +708,7 @@
         // header
         videoItems.push(new Item(
             'video-page-hide-fixed-header', 'bili-cleaner-group-video', '顶栏 滚动页面后不再吸附顶部', null,
-            `.fixed-header .bili-header__bar {position: unset !important;}`
+            `.fixed-header .bili-header__bar {position: relative !important;}`
         ))
         // 视频信息
         videoItems.push(new Item(
@@ -751,6 +809,10 @@
         videoItems.push(new Item(
             'video-page-hide-right-container-reco-list-rec-list', 'bili-cleaner-group-video', '隐藏 右栏-相关视频', null,
             `#reco_list .rec-list {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-right-container-duration', 'bili-cleaner-group-video', '隐藏 右栏-视频时长', null,
+            `#reco_list .duration {display: none;}`
         ))
         videoItems.push(new Item(
             'video-page-hide-right-container-right-bottom-banner', 'bili-cleaner-group-video', '隐藏 右栏-活动banner', null,
@@ -1004,6 +1066,7 @@
             .vui_button,
             .header-upload-entry,
             .search-input-wrap *,
+            .search-input-container .search-input-wrap,
             .bili-video-card__cover {
                 border-radius: 3px !important;
             }

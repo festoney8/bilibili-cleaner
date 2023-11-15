@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.4
+// @version      1.0.5
 // @description  净化B站页面内的各种元素，提供自定义菜单，高度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -646,7 +646,7 @@
         // header
         videoItems.push(new Item(
             'video-page-hide-fixed-header', 'bili-cleaner-group-video', '顶栏 滚动页面后不再吸附顶部', null,
-            `.fixed-header .bili-header__bar {position: unset;}`
+            `.fixed-header .bili-header__bar {position: unset !important;}`
         ))
         // 视频信息
         videoItems.push(new Item(

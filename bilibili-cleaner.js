@@ -473,7 +473,11 @@
             `
         ))
         homepageItems.push(new Item(
-            'homepage-hide-sticky-subarea', 'bili-cleaner-group-homepage', '隐藏 滚动页面时顶部吸附分区栏', null,
+            'homepage-hide-sticky-header', 'bili-cleaner-group-homepage', '隐藏 滚动页面时 顶部吸附顶栏', null,
+            `#i_cecream .header-channel {display: none !important;}`
+        ))
+        homepageItems.push(new Item(
+            'homepage-hide-sticky-subarea', 'bili-cleaner-group-homepage', '隐藏 滚动页面时 顶部吸附分区栏', null,
             `#i_cecream .header-channel {display: none !important;}`
         ))
         homepageItems.push(new Item(
@@ -861,7 +865,8 @@
         videoItems.push(new Item(
             'video-page-hide-bpx-player-dm-root', 'bili-cleaner-group-video', '隐藏 弹幕发送框-只在hover时显示', null,
             `.bpx-player-dm-root {opacity: 0; transition: ease .1s;}
-            .bpx-player-dm-root:hover {opacity: 1; transition: ease .1s;}`
+            .bpx-player-control-wrap:hover .bpx-player-dm-root {opacity: 1; transition: ease .1s;}
+            .bpx-player-sending-area:hover .bpx-player-dm-root {opacity: 1; transition: ease .1s;}`
         ))
         videoItems.push(new Item(
             'video-page-hide-bpx-player-sending-area', 'bili-cleaner-group-video', '隐藏 弹幕发送-关闭整个弹幕框', null,

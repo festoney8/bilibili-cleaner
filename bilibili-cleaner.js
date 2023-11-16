@@ -1379,6 +1379,10 @@
             'live-page-head-web-player-icon-feedback', 'bili-cleaner-group-live', '隐藏 播放器-右上角反馈', null,
             `#live-player .web-player-icon-feedback {display: none;}`
         ))
+        liveItems.push(new Item(
+            'live-page-head-web-player-awesome-pk-vm', 'bili-cleaner-group-live', '隐藏 播放器-直播PK特效', null,
+            `#pk-vm, #awesome-pk-vm {display: none;}`
+        ))
         // 视频下方
         liveItems.push(new Item(
             'live-page-gift-control-vm', 'bili-cleaner-group-live', '隐藏 视频下方-礼物栏', null,
@@ -1400,12 +1404,6 @@
         liveItems.push(new Item(
             'live-page-sidebar-vm', 'bili-cleaner-group-live', '隐藏 右侧-实验室/关注', null,
             `#sidebar-vm {display: none;}`
-        ))
-        liveItems.push(new Item(
-            'live-page-rank-list-vm', 'bili-cleaner-group-live', '隐藏 右侧-高能榜/大航海', null,
-            `#rank-list-vm {display: none;}
-            #aside-area-vm {overflow: hidden;}
-            .chat-history-panel {height: calc(100% - 145px) !important; padding-top: 8px;}`
         ))
         liveItems.push(new Item(
             'live-page-announcement-cntr', 'bili-cleaner-group-live', '隐藏 右侧-主播公告', null,
@@ -1443,7 +1441,7 @@
         ))
         liveItems.push(new Item(
             'live-page-gift-item', 'bili-cleaner-group-live', '隐藏 右侧-弹幕栏 礼物弹幕', null,
-            `.chat-item.gift-item {display: none !important;}`
+            `.chat-item.gift-item, .chat-item.common-danmuku-msg {display: none !important;}`
         ))
         liveItems.push(new Item(
             'live-page-brush-prompt', 'bili-cleaner-group-live', '隐藏 右侧-弹幕栏 底部滚动提示', null,

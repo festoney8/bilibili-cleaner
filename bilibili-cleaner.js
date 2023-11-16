@@ -55,7 +55,7 @@
                     e.enableItem()
                 })
             } catch (err) {
-                console.log('enableGroup err')
+                console.log('[bili-cleaner] enableGroup err')
                 console.log(err)
                 console.log(this)
             }
@@ -98,7 +98,7 @@
                     itemGroup.appendChild(e)
                 }
             } catch (err) {
-                console.log('insertItem err')
+                console.log('[bili-cleaner] insertItem err')
                 console.log(err)
                 console.log(this)
             }
@@ -118,7 +118,7 @@
                     }
                 })
             } catch (err) {
-                console.log('watchItem err')
+                console.log('[bili-cleaner] watchItem err')
                 console.log(err)
                 console.log(this)
             }
@@ -143,7 +143,6 @@
         removeItemCSS() {
             if (this.itemCSS) {
                 const style = document.querySelector(`style[bili-cleaner-css-item=${this.itemID}]`)
-                console.log('removeItemCSS')
                 if (style) {
                     style.parentNode.removeChild(style)
                 }
@@ -159,7 +158,7 @@
                         this.itemFunc()
                     }
                 } catch (err) {
-                    console.log('enableItem Error')
+                    console.log('[bili-cleaner] enableItem Error')
                     console.log(this)
                     console.log(err)
                 }
@@ -727,113 +726,6 @@
             'video-page-hide-video-info-honor', 'bili-cleaner-group-video', '隐藏 视频信息-视频荣誉(排行榜/每周必看)', null,
             `.video-info-detail .honor-rank, .video-info-detail .honor-weekly {display: none !important;}`
         ))
-        // up主信息
-        videoItems.push(new Item(
-            'video-page-hide-up-sendmsg', 'bili-cleaner-group-video', '隐藏 UP主-给UP发消息', null,
-            `.up-detail .send-msg {display: none;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-up-description', 'bili-cleaner-group-video', '隐藏 UP主-UP简介', null,
-            `.up-detail .up-description {display: none;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-up-charge', 'bili-cleaner-group-video', '隐藏 UP主-充电', null,
-            `.upinfo-btn-panel .new-charge-btn, .upinfo-btn-panel .old-charge-btn {display: none !important;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-up-bili-avatar-pendent-dom', 'bili-cleaner-group-video', '隐藏 UP主-头像外饰品', null,
-            `.up-info-container .bili-avatar-pendent-dom {display: none !important;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-up-membersinfo-normal-header', 'bili-cleaner-group-video', '隐藏 UP主-创作团队header', null,
-            `.membersinfo-normal .header {display: none;}`
-        ))
-        // 视频下信息
-        videoItems.push(new Item(
-            'video-page-hide-below-info-video-ai-assistant', 'bili-cleaner-group-video', '隐藏 视频下方-AI总结', null,
-            `.video-toolbar-right .video-ai-assistant {display: none;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-below-info-video-report-menu', 'bili-cleaner-group-video', '隐藏 视频下方-举报/笔记/稍后再看', null,
-            `.video-toolbar-right .video-tool-more {display: none;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-below-info-desc', 'bili-cleaner-group-video', '隐藏 视频下方-视频简介', null,
-            `#v_desc {display: none;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-below-info-tag', 'bili-cleaner-group-video', '隐藏 视频下方-tag列表', null,
-            `#v_tag {display: none;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-below-activity-vote', 'bili-cleaner-group-video', '隐藏 视频下方-活动宣传', null,
-            `#activity_vote {display: none;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-video-share-popover', 'bili-cleaner-group-video', '隐藏 视频下方-分享按钮弹出菜单', null,
-            `.video-share-popover {display: none;}`
-        ))
-        // 视频右侧
-        videoItems.push(new Item(
-            'video-page-hide-right-container-ad', 'bili-cleaner-group-video', '隐藏 右栏-广告', null,
-            `#slide_ad {display: none !important;}
-            .ad-report.video-card-ad-small {display: none !important;}
-            .video-page-special-card-small {display: none !important;}
-            #reco_list {margin-top: 0 !important;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-right-container-danmaku', 'bili-cleaner-group-video', '隐藏 右栏-弹幕列表', null,
-            `#danmukuBox {display: none;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-right-container-section-next-btn', 'bili-cleaner-group-video', '隐藏 右栏-视频合集 自动连播', null,
-            `.base-video-sections-v1 .next-button {display: none;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-right-container-section-play-num', 'bili-cleaner-group-video', '隐藏 右栏-视频合集 播放量', null,
-            `.base-video-sections-v1 .play-num, .base-video-sections-v1 img {display: none;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-right-container-section-abstract', 'bili-cleaner-group-video', '隐藏 右栏-视频合集 简介', null,
-            `.base-video-sections-v1 .abstract {display: none;}
-            .base-video-sections-v1 .second-line_left img {display: none;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-right-container-section-subscribe', 'bili-cleaner-group-video', '隐藏 右栏-视频合集 订阅合集', null,
-            `.base-video-sections-v1 .second-line_right {display: none;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-right-container-reco-list-next-play-next-button', 'bili-cleaner-group-video', '隐藏 右栏-自动连播按钮', null,
-            `#reco_list .next-play .next-button {display: none;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-right-container-reco-list-rec-list', 'bili-cleaner-group-video', '隐藏 右栏-相关视频', null,
-            `#reco_list .rec-list {display: none;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-right-container-duration', 'bili-cleaner-group-video', '隐藏 右栏-视频时长', null,
-            `#reco_list .duration {display: none;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-right-container-right-bottom-banner', 'bili-cleaner-group-video', '隐藏 右栏-活动banner', null,
-            `#right-bottom-banner {display: none;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-right-container-live', 'bili-cleaner-group-video', '隐藏 右栏-直播间推荐', null,
-            `.right-container .pop-live-small-mode {display: none;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-sidenav-right-container-live', 'bili-cleaner-group-video', '隐藏 右下角-小窗播放器', null,
-            `.fixed-sidenav-storage .mini-player-window {display: none !important;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-sidenav-customer-service', 'bili-cleaner-group-video', '隐藏 右下角-客服', null,
-            `.fixed-sidenav-storage .customer-service {display: none !important;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-sidenav-back-to-top', 'bili-cleaner-group-video', '隐藏 右下角-回顶部', null,
-            `.fixed-sidenav-storage .back-to-top {display: none !important;}`
-        ))
         // 播放器相关
         videoItems.push(new Item(
             'video-page-hide-bpx-player-bili-guide-all', 'bili-cleaner-group-video', '隐藏 播放器-视频内一键三连窗口', null,
@@ -870,6 +762,18 @@
         videoItems.push(new Item(
             'video-page-hide-bpx-player-video-info-dm', 'bili-cleaner-group-video', '隐藏 播放器-控制 载入弹幕数量', null,
             `.bpx-player-video-info-dm, .bpx-player-video-info-divide {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-bpx-player-ctrl-prev', 'bili-cleaner-group-video', '隐藏 播放器-控制 上一个视频', null,
+            `.bpx-player-ctrl-prev {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-bpx-player-ctrl-play', 'bili-cleaner-group-video', '隐藏 播放器-控制 播放/暂停', null,
+            `.bpx-player-ctrl-play {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-bpx-player-ctrl-next', 'bili-cleaner-group-video', '隐藏 播放器-控制 下一个视频', null,
+            `.bpx-player-ctrl-next {display: none;}`
         ))
         videoItems.push(new Item(
             'video-page-hide-bpx-player-ctrl-pip', 'bili-cleaner-group-video', '隐藏 播放器-控制 画中画', null,
@@ -933,6 +837,113 @@
         videoItems.push(new Item(
             'video-page-hide-bpx-player-sending-area', 'bili-cleaner-group-video', '隐藏 弹幕发送-关闭整个弹幕框', null,
             `.bpx-player-sending-area {display: none;}`
+        ))
+        // 视频下信息
+        videoItems.push(new Item(
+            'video-page-hide-below-info-video-ai-assistant', 'bili-cleaner-group-video', '隐藏 视频下方-AI总结', null,
+            `.video-toolbar-right .video-ai-assistant {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-below-info-video-report-menu', 'bili-cleaner-group-video', '隐藏 视频下方-举报/笔记/稍后再看', null,
+            `.video-toolbar-right .video-tool-more {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-below-info-desc', 'bili-cleaner-group-video', '隐藏 视频下方-视频简介', null,
+            `#v_desc {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-below-info-tag', 'bili-cleaner-group-video', '隐藏 视频下方-tag列表', null,
+            `#v_tag {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-below-activity-vote', 'bili-cleaner-group-video', '隐藏 视频下方-活动宣传', null,
+            `#activity_vote {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-video-share-popover', 'bili-cleaner-group-video', '隐藏 视频下方-分享按钮弹出菜单', null,
+            `.video-share-popover {display: none;}`
+        ))
+        // up主信息
+        videoItems.push(new Item(
+            'video-page-hide-up-sendmsg', 'bili-cleaner-group-video', '隐藏 UP主-给UP发消息', null,
+            `.up-detail .send-msg {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-up-description', 'bili-cleaner-group-video', '隐藏 UP主-UP简介', null,
+            `.up-detail .up-description {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-up-charge', 'bili-cleaner-group-video', '隐藏 UP主-充电', null,
+            `.upinfo-btn-panel .new-charge-btn, .upinfo-btn-panel .old-charge-btn {display: none !important;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-up-bili-avatar-pendent-dom', 'bili-cleaner-group-video', '隐藏 UP主-头像外饰品', null,
+            `.up-info-container .bili-avatar-pendent-dom {display: none !important;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-up-membersinfo-normal-header', 'bili-cleaner-group-video', '隐藏 UP主-创作团队header', null,
+            `.membersinfo-normal .header {display: none;}`
+        ))
+        // 视频右侧
+        videoItems.push(new Item(
+            'video-page-hide-right-container-ad', 'bili-cleaner-group-video', '隐藏 右栏-广告', null,
+            `#slide_ad {display: none !important;}
+            .ad-report.video-card-ad-small {display: none !important;}
+            .video-page-special-card-small {display: none !important;}
+            #reco_list {margin-top: 0 !important;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-right-container-danmaku', 'bili-cleaner-group-video', '隐藏 右栏-弹幕列表', null,
+            `#danmukuBox {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-right-container-section-next-btn', 'bili-cleaner-group-video', '隐藏 右栏-视频合集 自动连播', null,
+            `.base-video-sections-v1 .next-button {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-right-container-section-play-num', 'bili-cleaner-group-video', '隐藏 右栏-视频合集 播放量', null,
+            `.base-video-sections-v1 .play-num, .base-video-sections-v1 img {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-right-container-section-abstract', 'bili-cleaner-group-video', '隐藏 右栏-视频合集 简介', null,
+            `.base-video-sections-v1 .abstract {display: none;}
+            .base-video-sections-v1 .second-line_left img {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-right-container-section-subscribe', 'bili-cleaner-group-video', '隐藏 右栏-视频合集 订阅合集', null,
+            `.base-video-sections-v1 .second-line_right {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-right-container-reco-list-next-play-next-button', 'bili-cleaner-group-video', '隐藏 右栏-自动连播按钮', null,
+            `#reco_list .next-play .next-button {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-right-container-reco-list-rec-list', 'bili-cleaner-group-video', '隐藏 右栏-相关视频', null,
+            `#reco_list .rec-list {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-right-container-duration', 'bili-cleaner-group-video', '隐藏 右栏-视频时长', null,
+            `#reco_list .duration {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-right-container-right-bottom-banner', 'bili-cleaner-group-video', '隐藏 右栏-活动banner', null,
+            `#right-bottom-banner {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-right-container-live', 'bili-cleaner-group-video', '隐藏 右栏-直播间推荐', null,
+            `.right-container .pop-live-small-mode {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-sidenav-right-container-live', 'bili-cleaner-group-video', '隐藏 右下角-小窗播放器', null,
+            `.fixed-sidenav-storage .mini-player-window {display: none !important;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-sidenav-customer-service', 'bili-cleaner-group-video', '隐藏 右下角-客服', null,
+            `.fixed-sidenav-storage .customer-service {display: none !important;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-sidenav-back-to-top', 'bili-cleaner-group-video', '隐藏 右下角-回顶部', null,
+            `.fixed-sidenav-storage .back-to-top {display: none !important;}`
         ))
         // 评论区相关
         videoItems.push(new Item(
@@ -1291,19 +1302,19 @@
         ))
         liveItems.push(new Item(
             'live-page-head-info-vm-upper-row-visited', 'bili-cleaner-group-live', '隐藏 信息栏-xx人看过', null,
-            `#head-info-vm .upper-row .right-ctnr div:nth-child(1) {display: none;}`
+            `#head-info-vm .upper-row .right-ctnr div:has(.watched-icon) {display: none;}`
         ))
         liveItems.push(new Item(
             'live-page-head-info-vm-upper-row-like', 'bili-cleaner-group-live', '隐藏 信息栏-点赞', null,
-            `#head-info-vm .upper-row .right-ctnr div:nth-child(2) {display: none;}`
+            `#head-info-vm .upper-row .right-ctnr div:has(.like-icon) {display: none;}`
         ))
         liveItems.push(new Item(
             'live-page-head-info-vm-upper-row-report', 'bili-cleaner-group-live', '隐藏 信息栏-举报', null,
-            `#head-info-vm .upper-row .right-ctnr div:nth-child(3) {display: none;}`
+            `#head-info-vm .upper-row .right-ctnr div:has(.icon-report) {display: none;}`
         ))
         liveItems.push(new Item(
             'live-page-head-info-vm-upper-row-share', 'bili-cleaner-group-live', '隐藏 信息栏-分享', null,
-            `#head-info-vm .upper-row .right-ctnr div:nth-child(4) {display: none;}`
+            `#head-info-vm .upper-row .right-ctnr div:has(.icon-share) {display: none;}`
         ))
         liveItems.push(new Item(
             'live-page-head-info-vm-lower-row-hot-rank', 'bili-cleaner-group-live', '隐藏 信息栏-人气榜', null,
@@ -1335,10 +1346,24 @@
             'live-page-room-info-ctnr', 'bili-cleaner-group-live', '隐藏 视频下方-直播间介绍', null,
             `.room-info-ctnr {display: none;}`
         ))
+        liveItems.push(new Item(
+            'live-page-room-feed', 'bili-cleaner-group-live', '隐藏 视频下方-UP主动态', null,
+            `.room-feed {display: none;}`
+        ))
         // 视频右侧
         liveItems.push(new Item(
             'live-page-sidebar-vm', 'bili-cleaner-group-live', '隐藏 右侧-实验室/关注', null,
             `#sidebar-vm {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-rank-list-vm', 'bili-cleaner-group-live', '隐藏 右侧-高能榜/大航海', null,
+            `#rank-list-vm {display: none;}
+            #aside-area-vm {overflow: hidden;}
+            .chat-history-panel {height: calc(100% - 145px) !important; padding-top: 8px;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-announcement-cntr', 'bili-cleaner-group-live', '隐藏 右侧-主播公告', null,
+            `#sections-vm .announcement-cntr {display: none;}`
         ))
         liveItems.push(new Item(
             'live-page-rank-list-vm', 'bili-cleaner-group-live', '隐藏 右侧-高能榜/大航海', null,

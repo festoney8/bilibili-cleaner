@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.5
+// @version      1.0.6
 // @description  净化B站页面内的各种元素，提供200项自定义功能，高度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -574,6 +574,10 @@
             `.bili-video-card__info--date {display: none;}`
         ))
         homepageItems.push(new Item(
+            'homepage-hide-bili-watch-later', 'bili-cleaner-group-homepage', '隐藏 稍后再看按钮', null,
+            `.bili-watch-later {display: none;}`
+        ))
+        homepageItems.push(new Item(
             'homepage-hide-ad-card', 'bili-cleaner-group-homepage', '隐藏 推荐视频中的广告', null,
             `
             .feed-card:has(.bili-video-card__info--ad) {
@@ -844,6 +848,10 @@
             `.video-toolbar-right .video-ai-assistant {display: none;}`
         ))
         videoItems.push(new Item(
+            'video-page-hide-below-info-video-note', 'bili-cleaner-group-video', '隐藏 视频下方-记笔记', null,
+            `.video-toolbar-right .video-note {display: none;}`
+        ))
+        videoItems.push(new Item(
             'video-page-hide-below-info-video-report-menu', 'bili-cleaner-group-video', '隐藏 视频下方-举报/笔记/稍后再看', null,
             `.video-toolbar-right .video-tool-more {display: none;}`
         ))
@@ -928,6 +936,10 @@
         videoItems.push(new Item(
             'video-page-hide-right-container-reco-list-rec-list', 'bili-cleaner-group-video', '隐藏 右栏-相关视频', null,
             `#reco_list .rec-list {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-right-container-reco-list-watch-later-video', 'bili-cleaner-group-video', '隐藏 右栏-相关视频 稍后再看', null,
+            `#reco_list .watch-later-video {display: none;}`
         ))
         videoItems.push(new Item(
             'video-page-hide-right-container-reco-list-rec-list-info-up', 'bili-cleaner-group-video', '隐藏 右栏-相关视频 UP主', null,

@@ -2,7 +2,7 @@
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
 // @version      1.0.5
-// @description  净化B站页面内的各种元素，提供自定义菜单，高度定制自己的B站页面
+// @description  净化B站页面内的各种元素，提供200项自定义功能，高度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
 // @match        https://*.bilibili.com/*
@@ -897,6 +897,10 @@
             `#danmukuBox {display: none;}`
         ))
         videoItems.push(new Item(
+            'video-page-hide-right-container-section-height', 'bili-cleaner-group-video', '视频合集列表 增加高度', null,
+            `.base-video-sections-v1 .video-sections-content-list {height: fit-content !important; max-height: 350px !important};`
+        ))
+        videoItems.push(new Item(
             'video-page-hide-right-container-section-next-btn', 'bili-cleaner-group-video', '隐藏 右栏-视频合集 自动连播', null,
             `.base-video-sections-v1 .next-button {display: none;}`
         ))
@@ -914,12 +918,38 @@
             `.base-video-sections-v1 .second-line_right {display: none;}`
         ))
         videoItems.push(new Item(
+            'video-page-hide-right-container-multi-page-next-btn', 'bili-cleaner-group-video', '隐藏 右栏-视频选集(分P) 自动连播', null,
+            `#multi_page .next-button {display: none;}`
+        ))
+        videoItems.push(new Item(
             'video-page-hide-right-container-reco-list-next-play-next-button', 'bili-cleaner-group-video', '隐藏 右栏-自动连播按钮', null,
             `#reco_list .next-play .next-button {display: none;}`
         ))
         videoItems.push(new Item(
             'video-page-hide-right-container-reco-list-rec-list', 'bili-cleaner-group-video', '隐藏 右栏-相关视频', null,
             `#reco_list .rec-list {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-right-container-reco-list-rec-list-info-up', 'bili-cleaner-group-video', '隐藏 右栏-相关视频 UP主', null,
+            `#reco_list .rec-list .info .upname {
+                display: none;
+            }
+            #reco_list .rec-list .info {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-right-container-reco-list-rec-list-info-plays', 'bili-cleaner-group-video', '隐藏 右栏-相关视频 播放和弹幕', null,
+            `#reco_list .rec-list .info .playinfo {
+                display: none;
+            }
+            #reco_list .rec-list .info {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }`
         ))
         videoItems.push(new Item(
             'video-page-hide-right-container-duration', 'bili-cleaner-group-video', '隐藏 右栏-视频时长', null,
@@ -1305,6 +1335,10 @@
             `#head-info-vm .upper-row .right-ctnr div:has(.watched-icon) {display: none;}`
         ))
         liveItems.push(new Item(
+            'live-page-head-info-vm-upper-row-popular', 'bili-cleaner-group-live', '隐藏 信息栏-人气', null,
+            `#head-info-vm .upper-row .right-ctnr div:has(.icon-popular) {display: none;}`
+        ))
+        liveItems.push(new Item(
             'live-page-head-info-vm-upper-row-like', 'bili-cleaner-group-live', '隐藏 信息栏-点赞', null,
             `#head-info-vm .upper-row .right-ctnr div:has(.like-icon) {display: none;}`
         ))
@@ -1490,10 +1524,9 @@
             'live-page-header-go-live', 'bili-cleaner-group-live', '隐藏 顶栏-我要开播', null,
             `#right-part .shortcuts-ctnr .shortcut-item:nth-child(4) {visibility: hidden;}`
         ))
-
         GROUPS.push(new Group('bili-cleaner-group-live', '当前是：直播页', liveItems))
     }
-    // 通用，直播页除外
+    // 通用header净化，直播页除外
     if (host != 'live.bilibili.com') {
         commonItems.push(new Item(
             'common-hide-nav-homepage-logo', 'bili-cleaner-group-common', '隐藏 顶栏-主站Logo', null,
@@ -1581,32 +1614,32 @@
             // 不可设定 display: none, 会导致历史和收藏popover显示不全
             `.right-entry-item.right-entry-item--upload {visibility: hidden !important;}`
         ))
-        // 移除URL中的跟踪参数
-        function removeQueryParams() {
-            let keysToRemove = ['from_source', 'spm_id_from', 'search_source', 'vd_source', 'unique_k', 'is_story_h5', 'from_spmid',
-                'share_plat', 'share_medium', 'share_from', 'share_source', 'share_tag', 'up_id', 'timestamp', 'mid',
-                'live_from', 'launch_id', 'session_id'];
-
-            let url = location.href;
-            let urlObj = new URL(url);
-            let params = new URLSearchParams(urlObj.search);
-
-            keysToRemove.forEach(function (key) {
-                params.delete(key);
-            });
-
-            urlObj.search = params.toString();
-            let newUrl = urlObj.toString();
-            if (newUrl !== url) {
-                history.replaceState(null, null, newUrl);
-            }
-        }
-        commonItems.push(new Item(
-            'url-cleaner', 'bili-cleaner-group-common', 'URL参数净化 (需刷新)', removeQueryParams, null
-        ))
-        // 通用Group
-        GROUPS.push(new Group('bili-cleaner-group-common', '通用', commonItems))
     }
+    // 移除URL中的跟踪参数
+    function removeQueryParams() {
+        let keysToRemove = ['from_source', 'spm_id_from', 'search_source', 'vd_source', 'unique_k', 'is_story_h5', 'from_spmid',
+            'share_plat', 'share_medium', 'share_from', 'share_source', 'share_tag', 'up_id', 'timestamp', 'mid',
+            'live_from', 'launch_id', 'session_id'];
+
+        let url = location.href;
+        let urlObj = new URL(url);
+        let params = new URLSearchParams(urlObj.search);
+
+        keysToRemove.forEach(function (key) {
+            params.delete(key);
+        });
+
+        urlObj.search = params.toString();
+        let newUrl = urlObj.toString();
+        if (newUrl !== url) {
+            history.replaceState(null, null, newUrl);
+        }
+    }
+    commonItems.push(new Item(
+        'url-cleaner', 'bili-cleaner-group-common', 'URL参数净化 (需刷新)', removeQueryParams, null
+    ))
+    // 通用Group
+    GROUPS.push(new Group('bili-cleaner-group-common', '通用', commonItems))
 
     GROUPS.forEach(e => { e.enableGroup() })
 

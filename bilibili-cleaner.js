@@ -732,8 +732,16 @@
         ))
         // 播放器相关
         videoItems.push(new Item(
-            'video-page-hide-bpx-player-bili-guide-all', 'bili-cleaner-group-video', '隐藏 播放器-视频内一键三连窗口', null,
+            'video-page-hide-bpx-player-bili-guide-all', 'bili-cleaner-group-video', '隐藏 播放器-视频内 一键三连窗口', null,
             `.bpx-player-video-area .bili-guide.bili-guide-all {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-bpx-player-bili-vote', 'bili-cleaner-group-video', '隐藏 播放器-视频内 投票', null,
+            `.bpx-player-video-area .bili-vote {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-bpx-player-bili-reserve', 'bili-cleaner-group-video', '隐藏 播放器-视频内 视频预告', null,
+            `.bpx-player-video-area .bili-reserve {display: none;}`
         ))
         videoItems.push(new Item(
             'video-page-hide-bpx-player-top-issue', 'bili-cleaner-group-video', '隐藏 播放器-右上角 反馈按钮', null,
@@ -1587,7 +1595,7 @@
             `div.bili-header__bar li:has(a[href="//app.bilibili.com"]) {display: none !important;}`
         ))
         commonItems.push(new Item(
-            'common-hide-nav-blackboard', 'bili-cleaner-group-common', '隐藏 顶栏-所有官方活动', null,
+            'common-hide-nav-blackboard', 'bili-cleaner-group-common', '隐藏 顶栏-所有官方活动(blackboard)', null,
             `div.bili-header__bar li:has(a[href*="bilibili.com/blackboard"]) {display: none !important;}`
         ))
         commonItems.push(new Item(

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.7
+// @version      1.0.8
 // @description  净化B站页面内的各种元素，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -359,6 +359,62 @@
         })
     }
 
+    // BV号转AV号
+    function bv2av() {
+        // algo by mcfx, https://www.zhihu.com/question/381784377/answer/1099438784
+        function dec(x) {
+            let table = 'fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF';
+            let tr = {};
+            for (let i = 0; i < 58; i++) {
+                tr[table[i]] = i;
+            }
+            let s = [11, 10, 3, 8, 4, 6];
+            let xor = 177451812;
+            let add = 8728348608;
+            let r = 0;
+            for (let i = 0; i < 6; i++) {
+                r += tr[x[s[i]]] * 58 ** i;
+            }
+            return (r - add) ^ xor;
+        }
+
+        if (location.href.includes('bilibili.com/video/BV')) {
+            let regex = /bilibili.com\/video\/(BV[0-9a-zA-Z]+)/;
+            let match = regex.exec(location.href);
+            if (match) {
+                let aid = dec(match[1]);
+                let newURL = `https://www.bilibili.com/video/av${aid}`;
+                if (location.hash.slice(1, 6) === 'reply') {
+                    newURL += location.hash;
+                }
+                history.replaceState(null, null, newURL);
+            }
+        }
+    }
+
+    // 移除URL中的跟踪参数
+    function removeQueryParams() {
+        let keysToRemove = ['from_source', 'spm_id_from', 'search_source', 'vd_source', 'unique_k', 'is_story_h5', 'from_spmid',
+            'share_plat', 'share_medium', 'share_from', 'share_source', 'share_tag', 'up_id', 'timestamp', 'mid',
+            'live_from', 'launch_id', 'session_id'];
+
+        let url = location.href;
+        let urlObj = new URL(url);
+        let params = new URLSearchParams(urlObj.search);
+
+        keysToRemove.forEach(function (key) {
+            params.delete(key);
+        });
+
+        urlObj.search = params.toString();
+        let newUrl = urlObj.toString();
+        if (newUrl.endsWith('/')) {
+            newUrl = newUrl.slice(0, -1);
+        }
+        if (newUrl !== url) {
+            history.replaceState(null, null, newUrl);
+        }
+    }
 
     //===================================================================================
     const GROUPS = []
@@ -575,7 +631,7 @@
         ))
         homepageItems.push(new Item(
             'homepage-hide-bili-watch-later', 'bili-cleaner-group-homepage', '隐藏 稍后再看按钮', null,
-            `.bili-watch-later {display: none;}`
+            `.bili-watch-later {display: none !important;}`
         ))
         homepageItems.push(new Item(
             'homepage-hide-ad-card', 'bili-cleaner-group-homepage', '隐藏 推荐视频中的广告', null,
@@ -640,37 +696,6 @@
     }
     else if (url.startsWith('https://www.bilibili.com/video/')) {
         // BV号转AV号
-        function bv2av() {
-            // algo by mcfx, https://www.zhihu.com/question/381784377/answer/1099438784
-            function dec(x) {
-                let table = 'fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF';
-                let tr = {};
-                for (let i = 0; i < 58; i++) {
-                    tr[table[i]] = i;
-                }
-                let s = [11, 10, 3, 8, 4, 6];
-                let xor = 177451812;
-                let add = 8728348608;
-                let r = 0;
-                for (let i = 0; i < 6; i++) {
-                    r += tr[x[s[i]]] * 58 ** i;
-                }
-                return (r - add) ^ xor;
-            }
-
-            if (location.href.includes('bilibili.com/video/BV')) {
-                let regex = /bilibili.com\/video\/(BV[0-9a-zA-Z]+)/;
-                let match = regex.exec(location.href);
-                if (match) {
-                    let aid = dec(match[1]);
-                    let newURL = `https://www.bilibili.com/video/av${aid}`;
-                    if (location.hash.slice(1, 6) === 'reply') {
-                        newURL += location.hash;
-                    }
-                    history.replaceState(null, null, newURL);
-                }
-            }
-        }
         videoItems.push(new Item(
             'video-page-bv2av', 'bili-cleaner-group-video', 'BV号转AV号 (需刷新)', bv2av, null
         ))
@@ -790,6 +815,10 @@
         videoItems.push(new Item(
             'video-page-hide-bpx-player-ctrl-pip', 'bili-cleaner-group-video', '隐藏 播放器-控制 画中画', null,
             `.bpx-player-ctrl-pip {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-bpx-player-ctrl-eplist', 'bili-cleaner-group-video', '隐藏 播放器-控制 选集', null,
+            `.bpx-player-ctrl-eplist {display: none;}`
         ))
         videoItems.push(new Item(
             'video-page-hide-bpx-player-ctrl-wide', 'bili-cleaner-group-video', '隐藏 播放器-控制 宽屏', null,
@@ -948,7 +977,7 @@
         ))
         videoItems.push(new Item(
             'video-page-hide-right-container-reco-list-watch-later-video', 'bili-cleaner-group-video', '隐藏 右栏-相关视频 稍后再看', null,
-            `#reco_list .watch-later-video {display: none;}`
+            `#reco_list .watch-later-video {display: none !important;}`
         ))
         videoItems.push(new Item(
             'video-page-hide-right-container-reco-list-rec-list-info-up', 'bili-cleaner-group-video', '隐藏 右栏-相关视频 UP主', null,
@@ -1596,7 +1625,8 @@
         ))
         commonItems.push(new Item(
             'common-hide-nav-blackboard', 'bili-cleaner-group-common', '隐藏 顶栏-所有官方活动(blackboard)', null,
-            `div.bili-header__bar li:has(a[href*="bilibili.com/blackboard"]) {display: none !important;}`
+            `div.bili-header__bar li:has(>a[href*="bilibili.com/blackboard"]) {display: none !important;}
+            div.bili-header__bar li:has(>div>a[href*="bilibili.com/blackboard"]) {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-search-rcmd', 'bili-cleaner-group-common', '隐藏 顶栏-搜索框内的推荐搜索', null,
@@ -1644,26 +1674,6 @@
             `.right-entry-item.right-entry-item--upload {visibility: hidden !important;}`
         ))
     }
-    // 移除URL中的跟踪参数
-    function removeQueryParams() {
-        let keysToRemove = ['from_source', 'spm_id_from', 'search_source', 'vd_source', 'unique_k', 'is_story_h5', 'from_spmid',
-            'share_plat', 'share_medium', 'share_from', 'share_source', 'share_tag', 'up_id', 'timestamp', 'mid',
-            'live_from', 'launch_id', 'session_id'];
-
-        let url = location.href;
-        let urlObj = new URL(url);
-        let params = new URLSearchParams(urlObj.search);
-
-        keysToRemove.forEach(function (key) {
-            params.delete(key);
-        });
-
-        urlObj.search = params.toString();
-        let newUrl = urlObj.toString();
-        if (newUrl !== url) {
-            history.replaceState(null, null, newUrl);
-        }
-    }
     commonItems.push(new Item(
         'url-cleaner', 'bili-cleaner-group-common', 'URL参数净化 (需刷新)', removeQueryParams, null
     ))
@@ -1673,11 +1683,12 @@
     GROUPS.forEach(e => { e.enableGroup() })
 
     // 监听各种形式的URL变化(普通监听无法检测到切换视频)
-    let currURL = window.location.href
+    let currURL = location.href
     setInterval(() => {
-        let testURL = window.location.href
-        if (testURL !== currURL) {
+        let newURL = location.href
+        if (newURL !== currURL) {
             GROUPS.forEach(e => { e.enableGroup() })
+            currURL = newURL
         }
     }, 1000)
 

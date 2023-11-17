@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.6
-// @description  净化B站页面内的各种元素，提供200项自定义功能，高度定制自己的B站页面
+// @version      1.0.7
+// @description  净化B站页面内的各种元素，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
 // @match        https://*.bilibili.com/*
@@ -886,7 +886,8 @@
         ))
         videoItems.push(new Item(
             'video-page-hide-up-bili-avatar-pendent-dom', 'bili-cleaner-group-video', '隐藏 UP主-头像外饰品', null,
-            `.up-info-container .bili-avatar-pendent-dom {display: none !important;}`
+            `.up-info-container .bili-avatar-pendent-dom {display: none !important;}
+            .up-avatar-wrap .up-avatar {background-color: transparent !important;}`
         ))
         videoItems.push(new Item(
             'video-page-hide-up-membersinfo-normal-header', 'bili-cleaner-group-video', '隐藏 UP主-创作团队header', null,
@@ -1036,6 +1037,7 @@
         videoItems.push(new Item(
             'video-page-hide-jump-link-search-word', 'bili-cleaner-group-video', '隐藏 评论区-评论内容搜索关键词高亮', null,
             `#comment .reply-content .jump-link.search-word {color: inherit !important;}
+            #comment .reply-content .jump-link.search-word:hover {color: #008AC5 !important;}
             #comment .reply-content .icon.search-word {display: none;}`
         ))
         videoItems.push(new Item(
@@ -1184,6 +1186,11 @@
                 border-radius: 0 3px 3px 0 !important;
             }
             `
+        ))
+        dynamicItems.push(new Item(
+            'hide-dynamic-page-bili-dyn-my-info', 'bili-cleaner-group-dynamic', '顶栏 不再吸附顶部', null,
+            `.fixed-header .bili-header__bar {position: relative !important;}
+            .bili-dyn-live-users {top: 15px !important;}`
         ))
         dynamicItems.push(new Item(
             'hide-dynamic-page-bili-dyn-my-info', 'bili-cleaner-group-dynamic', '隐藏 左栏 个人信息框', null,
@@ -1578,6 +1585,10 @@
         commonItems.push(new Item(
             'common-hide-nav-download-app', 'bili-cleaner-group-common', '隐藏 顶栏-下载客户端', null,
             `div.bili-header__bar li:has(a[href="//app.bilibili.com"]) {display: none !important;}`
+        ))
+        commonItems.push(new Item(
+            'common-hide-nav-blackboard', 'bili-cleaner-group-common', '隐藏 顶栏-所有官方活动', null,
+            `div.bili-header__bar li:has(a[href*="bilibili.com/blackboard"]) {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-search-rcmd', 'bili-cleaner-group-common', '隐藏 顶栏-搜索框内的推荐搜索', null,

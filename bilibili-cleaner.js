@@ -533,7 +533,8 @@
             .bili-header .left-entry__title svg {
                 display: none !important;
             }
-            .bili-feed4 .bili-header .slide-down {
+            /* 高优先覆盖!important */
+            #i_cecream .bili-feed4 .bili-header .slide-down {
                 box-shadow: unset !important;
             }
             #nav-searchform.is-actived:before,
@@ -636,10 +637,10 @@
         homepageItems.push(new Item(
             'homepage-hide-ad-card', 'bili-cleaner-group-homepage', '隐藏 推荐视频中的广告', null,
             `
-            .feed-card:has(.bili-video-card__info--ad) {
+            .feed-card:has(.bili-video-card__info--ad, [href*="cm.bilibili.com"]) {
                 display: none;
             }
-            .bili-video-card.is-rcmd:has(.bili-video-card__info--ad) {
+            .bili-video-card.is-rcmd:has(.bili-video-card__info--ad, [href*="cm.bilibili.com"]) {
                 display: none;
             }
     
@@ -1065,7 +1066,13 @@
         ))
         videoItems.push(new Item(
             'video-page-hide-bili-avatar-pendent-dom', 'bili-cleaner-group-video', '隐藏 评论区-用户头像外圈饰品', null,
-            `#comment .bili-avatar-pendent-dom {display: none;}`
+            `#comment .root-reply-avatar .bili-avatar-pendent-dom {display: none;}
+            #comment .root-reply-avatar .bili-avatar {width: 48px !important; height:48px !important;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-bili-avatar-nft-icon', 'bili-cleaner-group-video', '隐藏 评论区-用户头像右下小icon', null,
+            `#comment .root-reply-avatar .bili-avatar-nft-icon {display: none !important;}
+            #comment .root-reply-avatar .bili-avatar-icon {display: none !important;}`
         ))
         videoItems.push(new Item(
             'video-page-hide-reply-tag-list', 'bili-cleaner-group-video', '隐藏 评论区-评论内容下tag(UP觉得很赞)', null,
@@ -1167,6 +1174,10 @@
                 border-radius: 3px !important;
             }
             `
+        ))
+        searchItems.push(new Item(
+            'hide-search-page-danmaku-count', 'bili-cleaner-group-search', '隐藏 搜索结果中的广告', null,
+            `.video-list.row>div:has([href*="cm.bilibili.com"]) {display: none;}`
         ))
         searchItems.push(new Item(
             'hide-search-page-danmaku-count', 'bili-cleaner-group-search', '隐藏 弹幕数量', null,

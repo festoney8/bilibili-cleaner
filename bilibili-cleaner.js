@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.8
+// @version      1.0.9
 // @description  净化B站页面内的各种元素，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -939,6 +939,10 @@
             #reco_list {margin-top: 0 !important;}`
         ))
         videoItems.push(new Item(
+            'video-page-hide-right-container-video-page-game-card-small', 'bili-cleaner-group-video', '隐藏 右栏-游戏推荐', null,
+            `#reco_list .video-page-game-card-small {display: none !important;}`
+        ))
+        videoItems.push(new Item(
             'video-page-hide-right-container-danmaku', 'bili-cleaner-group-video', '隐藏 右栏-弹幕列表', null,
             `#danmukuBox {display: none;}`
         ))
@@ -1227,7 +1231,7 @@
         dynamicItems.push(new Item(
             'hide-dynamic-page-bili-dyn-my-info', 'bili-cleaner-group-dynamic', '顶栏 不再吸附顶部', null,
             `.fixed-header .bili-header__bar {position: relative !important;}
-            .bili-dyn-live-users {top: 15px !important;}`
+            .bili-dyn-live-users {top: 15px !important; transform: unset !important;}`
         ))
         dynamicItems.push(new Item(
             'hide-dynamic-page-bili-dyn-my-info', 'bili-cleaner-group-dynamic', '隐藏 左栏 个人信息框', null,
@@ -1424,8 +1428,16 @@
             `#live-player .web-player-icon-feedback {display: none;}`
         ))
         liveItems.push(new Item(
+            'live-page-head-web-player-shop-popover-vm', 'bili-cleaner-group-live', '隐藏 播放器-购物小橙车提示', null,
+            `#shop-popover-vm {display: none;}`
+        ))
+        liveItems.push(new Item(
             'live-page-head-web-player-awesome-pk-vm', 'bili-cleaner-group-live', '隐藏 播放器-直播PK特效', null,
             `#pk-vm, #awesome-pk-vm {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-head-web-player-announcement-wrapper', 'bili-cleaner-group-live', '隐藏 播放器-滚动礼物通告', null,
+            `#live-player .announcement-wrapper {display: none;}`
         ))
         // 视频下方
         liveItems.push(new Item(

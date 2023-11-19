@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.9
+// @version      1.0.10
 // @description  净化B站页面内的各种元素，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -766,6 +766,10 @@
             `.bpx-player-video-area .bili-vote {display: none;}`
         ))
         videoItems.push(new Item(
+            'video-page-hide-bpx-player-bili-score', 'bili-cleaner-group-video', '隐藏 播放器-视频内 评分', null,
+            `.bpx-player-video-area .bili-score {display: none;}`
+        ))
+        videoItems.push(new Item(
             'video-page-hide-bpx-player-bili-reserve', 'bili-cleaner-group-video', '隐藏 播放器-视频内 视频预告', null,
             `.bpx-player-video-area .bili-reserve {display: none;}`
         ))
@@ -1176,12 +1180,12 @@
             `
         ))
         searchItems.push(new Item(
-            'hide-search-page-danmaku-count', 'bili-cleaner-group-search', '隐藏 搜索结果中的广告', null,
+            'hide-search-page-ad', 'bili-cleaner-group-search', '隐藏 搜索结果中的广告', null,
             `.video-list.row>div:has([href*="cm.bilibili.com"]) {display: none;}`
         ))
         searchItems.push(new Item(
             'hide-search-page-danmaku-count', 'bili-cleaner-group-search', '隐藏 弹幕数量', null,
-            `.bili-video-card .bili-video-card__stats--left .bili-video-card__stats--item:nth-child(2) {display: none;}`
+            `.bili-video-card .bili-video-card__stats--left .bili-video-card__stats--item:nth-child(2) {display: none !important;}`
         ))
         searchItems.push(new Item(
             'hide-search-page-date', 'bili-cleaner-group-search', '隐藏 视频日期', null,
@@ -1189,7 +1193,7 @@
         ))
         searchItems.push(new Item(
             'hide-search-page-search-sticky-header', 'bili-cleaner-group-search', '隐藏 顶部sticky搜索框', null,
-            `.search-sticky-header {display: none;}`
+            `.search-sticky-header {display: none !important;}`
         ))
         searchItems.push(new Item(
             'hide-search-page-customer-service', 'bili-cleaner-group-search', '隐藏 右下角 客服', null,

@@ -1591,19 +1591,19 @@
         ))
         liveItems.push(new Item(
             'live-page-header-dynamic', 'bili-cleaner-group-live', '隐藏 顶栏-动态', null,
-            `#right-part .shortcuts-ctnr .shortcut-item:nth-child(1) {display: none;}`
+            `#right-part .shortcuts-ctnr .shortcut-item:has(.link-panel-ctnr) {display: none;}`
         ))
         liveItems.push(new Item(
             'live-page-header-checkin', 'bili-cleaner-group-live', '隐藏 顶栏-签到', null,
-            `#right-part .shortcuts-ctnr .shortcut-item:nth-child(2) {display: none;}`
+            `#right-part .shortcuts-ctnr .shortcut-item:has(.calendar-checkin) {display: none;}`
         ))
         liveItems.push(new Item(
             'live-page-header-interact', 'bili-cleaner-group-live', '隐藏 顶栏-互动', null,
-            `#right-part .shortcuts-ctnr .shortcut-item:nth-child(3) {display: none;}`
+            `#right-part .shortcuts-ctnr .shortcut-item:has(.fanbox-panel-ctnr) {display: none;}`
         ))
         liveItems.push(new Item(
             'live-page-header-go-live', 'bili-cleaner-group-live', '隐藏 顶栏-我要开播', null,
-            `#right-part .shortcuts-ctnr .shortcut-item:nth-child(4) {visibility: hidden;}`
+            `#right-part .shortcuts-ctnr .shortcut-item:has(.download-panel-ctnr) {visibility: hidden;}`
         ))
         GROUPS.push(new Group('bili-cleaner-group-live', '当前是：直播页', liveItems))
     }

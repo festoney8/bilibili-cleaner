@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.10
+// @version      1.0.11
 // @description  净化B站页面内的各种元素，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -1244,7 +1244,7 @@
             `
         ))
         dynamicItems.push(new Item(
-            'hide-dynamic-page-bili-dyn-my-info', 'bili-cleaner-group-dynamic', '顶栏 不再吸附顶部', null,
+            'hide-dynamic-page-fixed-header', 'bili-cleaner-group-dynamic', '顶栏 不再吸附顶部', null,
             `.fixed-header .bili-header__bar {position: relative !important;}
             .bili-dyn-live-users {top: 15px !important; transform: unset !important;}`
         ))
@@ -1572,6 +1572,38 @@
         liveItems.push(new Item(
             'live-page-header-standalone-radio', 'bili-cleaner-group-live', '隐藏 顶栏-电台', null,
             `#main-ctnr .dp-table-cell a[name="电台"] {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-header-standalone-vtuber', 'bili-cleaner-group-live', '隐藏 顶栏-虚拟主播', null,
+            `#main-ctnr .dp-table-cell a[name="虚拟主播"] {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-header-standalone-chatroom', 'bili-cleaner-group-live', '隐藏 顶栏-聊天室', null,
+            `#main-ctnr .dp-table-cell a[name="聊天室"] {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-header-standalone-living', 'bili-cleaner-group-live', '隐藏 顶栏-生活', null,
+            `#main-ctnr .dp-table-cell a[name="生活"] {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-header-standalone-knowledge', 'bili-cleaner-group-live', '隐藏 顶栏-知识', null,
+            `#main-ctnr .dp-table-cell a[name="知识"] {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-header-standalone-match', 'bili-cleaner-group-live', '隐藏 顶栏-赛事', null,
+            `#main-ctnr .dp-table-cell a[name="赛事"] {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-header-standalone-helpmeplay', 'bili-cleaner-group-live', '隐藏 顶栏-帮我玩', null,
+            `#main-ctnr .dp-table-cell a[name="帮我玩"] {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-header-standalone-interact', 'bili-cleaner-group-live', '隐藏 顶栏-互动玩法', null,
+            `#main-ctnr .dp-table-cell a[name="互动玩法"] {display: none;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-header-standalone-shopping', 'bili-cleaner-group-live', '隐藏 顶栏-购物', null,
+            `#main-ctnr .dp-table-cell a[name="购物"] {display: none;}`
         ))
         liveItems.push(new Item(
             'live-page-header-showmore-link', 'bili-cleaner-group-live', '隐藏 顶栏-更多', null,

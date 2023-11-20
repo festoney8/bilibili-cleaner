@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.12
+// @version      1.0.13
 // @description  净化B站页面内的各种元素，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -589,6 +589,10 @@
             #nav-searchform.is-actived.is-exper4-actived,
             #nav-searchform.is-focus.is-exper4-actived {
                 border-bottom: unset !important;
+            }
+            /* 只隐藏吸附header时的吸附分区栏 */
+            #i_cecream .header-channel {
+                top: 0 !important;
             }
             `
         ))
@@ -1456,6 +1460,10 @@
             'live-page-head-web-player-announcement-wrapper', 'bili-cleaner-group-live', '隐藏 播放器-滚动礼物通告', null,
             `#live-player .announcement-wrapper {display: none;}`
         ))
+        liveItems.push(new Item(
+            'live-page-head-web-player-game-id', 'bili-cleaner-group-live', '隐藏 播放器-幻星互动游戏', null,
+            `#game-id {display: none !important;}`
+        ))
         // 视频下方
         liveItems.push(new Item(
             'live-page-gift-control-vm', 'bili-cleaner-group-live', '隐藏 视频下方-礼物栏', null,
@@ -1509,8 +1517,8 @@
             `.chat-item .fans-medal-item-ctnr {display: none !important;}`
         ))
         liveItems.push(new Item(
-            'live-page-chat-item-background-color', 'bili-cleaner-group-live', '隐藏 右侧-弹幕栏 高亮底色去除', null,
-            `.chat-item {background-color: unset !important;}`
+            'live-page-chat-item-background-color', 'bili-cleaner-group-live', '隐藏 右侧-弹幕栏 弹幕的高亮底色', null,
+            `.chat-item {background-color: unset !important; border-image-source: unset !important;}`
         ))
         liveItems.push(new Item(
             'live-page-gift-item', 'bili-cleaner-group-live', '隐藏 右侧-弹幕栏 礼物弹幕', null,
@@ -1519,6 +1527,11 @@
         liveItems.push(new Item(
             'live-page-brush-prompt', 'bili-cleaner-group-live', '隐藏 右侧-弹幕栏 底部滚动提示', null,
             `#brush-prompt {display: none !important;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-compact-danmaku', 'bili-cleaner-group-live', '右侧-弹幕栏 使弹幕列表紧凑', null,
+            `.chat-history-panel .chat-history-list .chat-item.danmaku-item.chat-colorful-bubble {margin: 2px 0 !important;}
+            .chat-history-panel .chat-history-list .chat-item {padding: 2px 5px !important; font-size: 1.1em;}`
         ))
         liveItems.push(new Item(
             'live-page-control-panel-icon-row-left', 'bili-cleaner-group-live', '隐藏 右侧-弹幕控制按钮 左侧', null,

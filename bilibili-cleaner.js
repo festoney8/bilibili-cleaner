@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.13
+// @version      1.0.14
 // @description  净化B站页面内的各种元素，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -256,6 +256,7 @@
             font-size: 20px;
             font-weight: bold;
             padding: 2px;
+            color: black;
         }
         
         .bili-cleaner-item-list {

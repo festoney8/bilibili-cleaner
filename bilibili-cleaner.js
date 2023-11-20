@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.11
+// @version      1.0.12
 // @description  净化B站页面内的各种元素，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -268,12 +268,14 @@
             vertical-align: middle;
             margin: 8px 0;
             font-size: 16px;
+            color: black;
         }
         
         .bili-cleaner-item-switch {
             vertical-align: middle;
             width: 50px;
             height: 27px;
+            margin: 0;
             position: relative;
             border: 1px solid #dfdfdf;
             background-color: #fdfdfd;

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.14
+// @version      1.0.15
 // @description  净化B站页面内的各种元素，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -781,6 +781,10 @@
             `.bpx-player-video-area .bili-reserve {display: none;}`
         ))
         videoItems.push(new Item(
+            'video-page-hide-bpx-player-bili-link', 'bili-cleaner-group-video', '隐藏 播放器-视频内 视频链接', null,
+            `.bpx-player-video-area .bili-link {display: none;}`
+        ))
+        videoItems.push(new Item(
             'video-page-hide-bpx-player-top-issue', 'bili-cleaner-group-video', '隐藏 播放器-右上角 反馈按钮', null,
             `.bpx-player-top-issue {display: none;}`
         ))
@@ -959,7 +963,7 @@
             `#danmukuBox {display: none;}`
         ))
         videoItems.push(new Item(
-            'video-page-hide-right-container-section-height', 'bili-cleaner-group-video', '视频合集列表 增加高度', null,
+            'video-page-hide-right-container-section-height', 'bili-cleaner-group-video', '右栏 视频合集 增加列表高度', null,
             `.base-video-sections-v1 .video-sections-content-list {height: fit-content !important; max-height: 350px !important};`
         ))
         videoItems.push(new Item(
@@ -1057,7 +1061,7 @@
         ))
         videoItems.push(new Item(
             'video-page-hide-reply-box-textarea-placeholder', 'bili-cleaner-group-video', '隐藏 评论区-评论编辑器内占位文字', null,
-            `.reply-box-textarea::placeholder {color: transparent !important;}`
+            `.main-reply-box .reply-box-textarea::placeholder {color: transparent !important;}`
         ))
         videoItems.push(new Item(
             'video-page-hide-reply-decorate', 'bili-cleaner-group-video', '隐藏 评论区-评论右侧装饰', null,
@@ -1082,8 +1086,8 @@
         ))
         videoItems.push(new Item(
             'video-page-hide-bili-avatar-nft-icon', 'bili-cleaner-group-video', '隐藏 评论区-用户头像右下小icon', null,
-            `#comment .root-reply-avatar .bili-avatar-nft-icon {display: none !important;}
-            #comment .root-reply-avatar .bili-avatar-icon {display: none !important;}`
+            `#comment .bili-avatar-nft-icon {display: none !important;}
+            #comment .bili-avatar-icon {display: none !important;}`
         ))
         videoItems.push(new Item(
             'video-page-hide-reply-tag-list', 'bili-cleaner-group-video', '隐藏 评论区-评论内容下tag(UP觉得很赞)', null,
@@ -1318,7 +1322,7 @@
         ))
         dynamicItems.push(new Item(
             'hide-reply-notice', 'bili-cleaner-group-dynamic', '隐藏 评论区-活动/notice', null,
-            `.comment-container .reply-header .reply-notice {display: none;}`
+            `.comment-container .reply-header .reply-notice {display: none !important;}`
         ))
         dynamicItems.push(new Item(
             'hide-dynamic-page-note-prefix', 'bili-cleaner-group-dynamic', '隐藏 评论区-笔记评论前的小Logo', null,

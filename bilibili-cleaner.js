@@ -2,7 +2,7 @@
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
 // @version      1.0.16
-// @description  净化B站页面内的各种元素，深度去广告，提供200项自定义功能，深度定制自己的B站页面
+// @description  净化B站页面内的各种元素，去广告，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
 // @match        https://*.bilibili.com/*
@@ -727,6 +727,7 @@
             .vcd .cover img,
             .vcd *,
             .upinfo-btn-panel *,
+            .fixed-sidenav-storage div,
             .reply-box-textarea,
             .reply-box-send,
             .reply-box-send:after {
@@ -1325,7 +1326,7 @@
         // 动态评论区
         dynamicItems.push(new Item(
             'hide-dynamic-page-main-reply-box', 'bili-cleaner-group-dynamic', '隐藏 评论区-发评论功能', null,
-            `.comment-container .main-reply-box {display: none;}`
+            `.comment-container .main-reply-box, .fixed-reply-box {display: none;}`
         ))
         dynamicItems.push(new Item(
             'hide-dynamic-page-reply-box-textarea-placeholder', 'bili-cleaner-group-dynamic', '隐藏 评论区-评论编辑器内占位文字', null,
@@ -1567,7 +1568,7 @@
         liveItems.push(new Item(
             'live-page-compact-danmaku', 'bili-cleaner-group-live', '右侧-弹幕栏 使弹幕列表紧凑', null,
             `.chat-history-panel .chat-history-list .chat-item.danmaku-item.chat-colorful-bubble {margin: 2px 0 !important;}
-            .chat-history-panel .chat-history-list .chat-item {padding: 2px 5px !important; font-size: 1.1em;}`
+            .chat-history-panel .chat-history-list .chat-item {padding: 2px 5px !important; font-size: 1.2em;}`
         ))
         liveItems.push(new Item(
             'live-page-control-panel-icon-row-left', 'bili-cleaner-group-live', '隐藏 右侧-弹幕控制按钮 左侧', null,
@@ -1699,7 +1700,7 @@
         commonItems.push(new Item(
             'common-hide-nav-homepage', 'bili-cleaner-group-common', '隐藏 顶栏-首页', null,
             `div.bili-header__bar li:has(>a[href="//www.bilibili.com"]) span {display: none !important;}
-            div.bili-header__bar .v-popover-wrap:has(>a[href="//www.bilibili.com"]) {display: none !important;}`
+            div.bili-header__bar .v-popover-wrap:has(>a[href="//www.bilibili.com"]) div {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-anime', 'bili-cleaner-group-common', '隐藏 顶栏-番剧', null,

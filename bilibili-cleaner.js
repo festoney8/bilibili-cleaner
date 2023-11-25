@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.16
+// @version      1.0.17
 // @description  净化B站页面内的各种元素，去广告，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -763,6 +763,10 @@
         videoItems.push(new Item(
             'video-page-hide-video-info-honor', 'bili-cleaner-group-video', '隐藏 视频信息-视频荣誉(排行榜/每周必看)', null,
             `.video-info-detail .honor-rank, .video-info-detail .honor-weekly {display: none !important;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-video-info-argue', 'bili-cleaner-group-video', '隐藏 视频信息-温馨提示(过量饮酒/危险操作)', null,
+            `.video-info-detail .argue {display: none !important;}`
         ))
         // 播放器相关
         videoItems.push(new Item(

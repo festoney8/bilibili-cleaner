@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.17
+// @version      1.0.18
 // @description  净化B站页面内的各种元素，去广告，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -1510,8 +1510,8 @@
             `#game-id {display: none !important;}`
         ))
         liveItems.push(new Item(
-            'live-page-combo-brush-aggregated-content', 'bili-cleaner-group-live', '隐藏 播放器-复读计数弹幕', null,
-            `.combo-brush-aggregated-content {display: none !important;}`
+            'live-page-combo-danmaku', 'bili-cleaner-group-live', '隐藏 播放器-复读计数弹幕', null,
+            `.danmaku-item-container > div.combo {display: none !important;}`
         ))
         // 视频下方
         liveItems.push(new Item(
@@ -1579,7 +1579,7 @@
         ))
         liveItems.push(new Item(
             'live-page-combo-card', 'bili-cleaner-group-live', '隐藏 右侧-弹幕栏 互动框(他们都在说)', null,
-            `#combo-card {display: none !important;}`
+            `#combo-card:has(.combo-tips) {display: none !important;}`
         ))
         liveItems.push(new Item(
             'live-page-service-card-container', 'bili-cleaner-group-live', '隐藏 右侧-弹幕栏 互动框(找TA玩)', null,

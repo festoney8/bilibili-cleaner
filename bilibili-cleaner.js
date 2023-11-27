@@ -1228,7 +1228,7 @@
         ))
         searchItems.push(new Item(
             'hide-search-page-ad', 'bili-cleaner-group-search', '隐藏 搜索结果中的广告', null,
-            `.video-list.row>div:has([href*="cm.bilibili.com"]) {display: none;}`
+            `.video-list.row>div:has([href*="cm.bilibili.com"]) {display: none !important;}`
         ))
         searchItems.push(new Item(
             'hide-search-page-danmaku-count', 'bili-cleaner-group-search', '隐藏 弹幕数量', null,
@@ -1236,7 +1236,11 @@
         ))
         searchItems.push(new Item(
             'hide-search-page-date', 'bili-cleaner-group-search', '隐藏 视频日期', null,
-            `.bili-video-card .bili-video-card__info--date {display: none;}`
+            `.bili-video-card .bili-video-card__info--date {display: none !important;}`
+        ))
+        searchItems.push(new Item(
+            'hide-search-page-bili-watch-later', 'bili-cleaner-group-search', '隐藏 稍后再看', null,
+            `.bili-video-card .bili-watch-later {display: none !important;}`
         ))
         searchItems.push(new Item(
             'hide-search-page-search-sticky-header', 'bili-cleaner-group-search', '隐藏 顶部sticky搜索框', null,
@@ -1244,11 +1248,11 @@
         ))
         searchItems.push(new Item(
             'hide-search-page-customer-service', 'bili-cleaner-group-search', '隐藏 右下角 客服', null,
-            `.side-buttons div:nth-child(1) {display: none;}`
+            `.side-buttons div:nth-child(1) {display: !important;}`
         ))
         searchItems.push(new Item(
             'hide-search-page-btn-to-top', 'bili-cleaner-group-search', '隐藏 右下角 回顶部', null,
-            `.side-buttons .btn-to-top-wrap {display: none;}`
+            `.side-buttons .btn-to-top-wrap {display: !important;}`
         ))
 
         GROUPS.push(new Group('bili-cleaner-group-search', '当前是：搜索页', searchItems))
@@ -1505,6 +1509,10 @@
             'live-page-head-web-player-game-id', 'bili-cleaner-group-live', '隐藏 播放器-幻星互动游戏', null,
             `#game-id {display: none !important;}`
         ))
+        liveItems.push(new Item(
+            'live-page-combo-brush-aggregated-content', 'bili-cleaner-group-live', '隐藏 播放器-复读计数弹幕', null,
+            `.combo-brush-aggregated-content {display: none !important;}`
+        ))
         // 视频下方
         liveItems.push(new Item(
             'live-page-gift-control-vm', 'bili-cleaner-group-live', '隐藏 视频下方-礼物栏', null,
@@ -1532,7 +1540,7 @@
             `#sections-vm .announcement-cntr {display: none;}`
         ))
         liveItems.push(new Item(
-            'live-page-rank-list-vm', 'bili-cleaner-group-live', '隐藏 右侧-高能榜/大航海', null,
+            'live-page-rank-list-vm', 'bili-cleaner-group-live', '隐藏 右侧-高能榜/大航海 (需刷新)', null,
             `#rank-list-vm {display: none;}
             #aside-area-vm {overflow: hidden;}
             .chat-history-panel {height: calc(100% - 145px) !important; padding-top: 8px;}`
@@ -1568,6 +1576,14 @@
         liveItems.push(new Item(
             'live-page-brush-prompt', 'bili-cleaner-group-live', '隐藏 右侧-弹幕栏 底部滚动提示', null,
             `#brush-prompt {display: none !important;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-combo-card', 'bili-cleaner-group-live', '隐藏 右侧-弹幕栏 互动框(他们都在说)', null,
+            `#combo-card {display: none !important;}`
+        ))
+        liveItems.push(new Item(
+            'live-page-service-card-container', 'bili-cleaner-group-live', '隐藏 右侧-弹幕栏 互动框(找TA玩)', null,
+            `.play-together-service-card-container {display: none !important;}`
         ))
         liveItems.push(new Item(
             'live-page-compact-danmaku', 'bili-cleaner-group-live', '右侧-弹幕栏 使弹幕列表紧凑', null,

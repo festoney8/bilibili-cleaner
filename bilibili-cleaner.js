@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.18
+// @version      1.0.19
 // @description  净化B站页面内的各种元素，去广告，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -438,7 +438,7 @@
     const url = location.href
     const pathname = location.pathname
 
-    if (url.startsWith('https://www.bilibili.com/') && pathname == '/') {
+    if (url.startsWith('https://www.bilibili.com/') && ['/index.html', '/'].includes(pathname)) {
         // 页面直角化
         homepageItems.push(new Item(
             'homepage-border-radius', 'bili-cleaner-group-homepage', '页面直角化 去除圆角', null,
@@ -771,7 +771,7 @@
         // 播放器相关
         videoItems.push(new Item(
             'video-page-hide-bpx-player-bili-guide-all', 'bili-cleaner-group-video', '隐藏 播放器-视频内 一键三连窗口', null,
-            `.bpx-player-video-area .bili-guide.bili-guide-all {display: none;}`
+            `.bpx-player-video-area .bili-guide, .bpx-player-video-area .bili-guide-all {display: none !important;}`
         ))
         videoItems.push(new Item(
             'video-page-hide-bpx-player-bili-vote', 'bili-cleaner-group-video', '隐藏 播放器-视频内 投票', null,
@@ -1153,7 +1153,7 @@
             `#reco_list .rec-list {display: none;}`
         ))
         videoItems.push(new Item(
-            'video-page-hide-right-container-reco-list-watch-later-video', 'bili-cleaner-group-video', '隐藏 右栏-相关视频 稍后再看', null,
+            'video-page-hide-right-container-reco-list-watch-later-video', 'bili-cleaner-group-video', '隐藏 右栏-相关视频 稍后再看按钮', null,
             `#reco_list .watch-later-video {display: none !important;}`
         ))
         videoItems.push(new Item(
@@ -1239,7 +1239,7 @@
             `.bili-video-card .bili-video-card__info--date {display: none !important;}`
         ))
         searchItems.push(new Item(
-            'hide-search-page-bili-watch-later', 'bili-cleaner-group-search', '隐藏 稍后再看', null,
+            'hide-search-page-bili-watch-later', 'bili-cleaner-group-search', '隐藏 稍后再看按钮', null,
             `.bili-video-card .bili-watch-later {display: none !important;}`
         ))
         searchItems.push(new Item(
@@ -1562,6 +1562,10 @@
             `.chat-item .wealth-medal-ctnr {display: none !important;}`
         ))
         liveItems.push(new Item(
+            'live-page-group-medal-ctnr', 'bili-cleaner-group-live', '隐藏 右侧-弹幕栏 团体勋章', null,
+            `.chat-item .group-medal-ctnr {display: none !important;}`
+        ))
+        liveItems.push(new Item(
             'live-page-fans-medal-item-ctnr', 'bili-cleaner-group-live', '隐藏 右侧-弹幕栏 粉丝牌', null,
             `.chat-item .fans-medal-item-ctnr {display: none !important;}`
         ))
@@ -1806,7 +1810,7 @@
         ))
     }
     commonItems.push(new Item(
-        'url-cleaner', 'bili-cleaner-group-common', 'URL参数净化 (需刷新)', removeQueryParams, null
+        'url-cleaner', 'bili-cleaner-group-common', 'URL参数净化 (需刷新, 会导致充电功能报错)', removeQueryParams, null
     ))
     // 通用Group
     GROUPS.push(new Group('bili-cleaner-group-common', '通用', commonItems))

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.20
+// @version      1.0.21
 // @description  净化B站页面内的各种元素，去广告，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -488,7 +488,7 @@
             .header-banner__inner, .bili-header__banner {
                 display: none !important;
             }
-            .bili-header .bili-header__bar {
+            .bili-header .bili-header__bar:not(.slide-down) {
                 position: relative !important;
                 box-shadow: 0 2px 4px #00000014;
             }

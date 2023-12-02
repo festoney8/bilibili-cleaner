@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.19
+// @version      1.0.20
 // @description  净化B站页面内的各种元素，去广告，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -482,6 +482,33 @@
             `
         ))
         // 首页CSS
+        homepageItems.push(new Item(
+            'homepage-hide-banner', 'bili-cleaner-group-homepage', '隐藏 横幅banner', null,
+            `
+            .header-banner__inner, .bili-header__banner {
+                display: none !important;
+            }
+            .bili-header .bili-header__bar {
+                position: relative !important;
+                box-shadow: 0 2px 4px #00000014;
+            }
+            .bili-header__channel {
+                margin-top: 5px !important;
+            }
+            /* icon和文字颜色 */
+            .bili-header .right-entry__outside .right-entry-icon {
+                color: #18191c !important;
+            }
+            .bili-header .left-entry .entry-title, .bili-header .left-entry .download-entry, .bili-header .left-entry .default-entry, .bili-header .left-entry .loc-entry {
+                color: #18191c !important;
+            }
+            .bili-header .left-entry .entry-title .zhuzhan-icon {
+                color: #00aeec !important;
+            }
+            .bili-header .right-entry__outside .right-entry-text {
+                color: #61666d !important;
+            }`
+        ))
         homepageItems.push(new Item(
             'homepage-hide-recommend-swipe', 'bili-cleaner-group-homepage', '隐藏 大图活动轮播', null,
             `

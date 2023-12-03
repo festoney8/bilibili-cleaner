@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.21
-// @description  净化B站页面内的各种元素，去广告，提供200项自定义功能，深度定制自己的B站页面
+// @version      1.0.22
+// @description  净化 B站/哔哩哔哩 页面内的各种元素，去广告，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
 // @match        https://*.bilibili.com/*
@@ -1144,7 +1144,13 @@
         ))
         videoItems.push(new Item(
             'video-page-hide-right-container-danmaku', 'bili-cleaner-group-video', '隐藏 右栏-弹幕列表', null,
-            `#danmukuBox {display: none;}`
+            `
+            /* 不可使用 display:none 否则播放器宽屏模式下danmukuBox的margin-top失效，导致视频覆盖右侧列表 */
+            #danmukuBox {
+                visibility: hidden !important;
+                height: 0 !important;
+                margin-bottom: 0 !important;
+            }`
         ))
         videoItems.push(new Item(
             'video-page-hide-right-container-section-height', 'bili-cleaner-group-video', '右栏 视频合集 增加列表高度', null,

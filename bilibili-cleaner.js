@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.23
+// @version      1.0.24
 // @description  净化 B站/哔哩哔哩 页面内的各种元素，去广告，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -399,7 +399,8 @@
     function removeQueryParams() {
         let keysToRemove = ['from_source', 'spm_id_from', 'search_source', 'vd_source', 'unique_k', 'is_story_h5', 'from_spmid',
             'share_plat', 'share_medium', 'share_from', 'share_source', 'share_tag', 'up_id', 'timestamp', 'mid',
-            'live_from', 'launch_id', 'session_id'];
+            'live_from', 'launch_id', 'session_id', 'share_session_id', 'broadcast_type', 'is_room_feed',
+            'spmid', 'plat_id', 'goto', 'report_flow_data', 'trackid'];
 
         let url = location.href;
         let urlObj = new URL(url);
@@ -738,7 +739,7 @@
             'homepage-hide-up-info-icon-bilibili-app-recommend', 'bili-cleaner-group-homepage', '隐藏 视频tag (bilibili-app-recommend)', null,
             `
             /* adapt bilibili-app-recommend */
-            .bilibili-app-recommend-root .bili-video-card:not(:has(.ant-avatar)) .bili-video-card__info--owner>span:nth-child(1) {
+            .bilibili-app-recommend-root .bili-video-card:not(:has(.ant-avatar)) .bili-video-card__info--owner>span[class^="_recommend-reason"] {
                 width: 17px;
                 height: 17px;
                 color: transparent !important;
@@ -750,7 +751,7 @@
                 padding: unset !important;
                 user-select: none;
             }
-            .bilibili-app-recommend-root .bili-video-card:not(:has(.ant-avatar)) .bili-video-card__info--owner>span:nth-child(1)::before {
+            .bilibili-app-recommend-root .bili-video-card:not(:has(.ant-avatar)) .bili-video-card__info--owner>span[class^="_recommend-reason"]::before {
                 content: "";
                 display: inline-block;
                 width: 100%;
@@ -1683,7 +1684,7 @@
         liveItems.push(new Item(
             'live-page-compact-danmaku', 'bili-cleaner-group-live', '右侧-弹幕栏 使弹幕列表紧凑', null,
             `.chat-history-panel .chat-history-list .chat-item.danmaku-item.chat-colorful-bubble {margin: 2px 0 !important;}
-            .chat-history-panel .chat-history-list .chat-item {padding: 2px 5px !important; font-size: 1.2em;}`
+            .chat-history-panel .chat-history-list .chat-item {padding: 2px 5px !important; font-size: 1.2em !important;}`
         ))
         liveItems.push(new Item(
             'live-page-control-panel-icon-row-left', 'bili-cleaner-group-live', '隐藏 右侧-弹幕控制按钮 左侧', null,

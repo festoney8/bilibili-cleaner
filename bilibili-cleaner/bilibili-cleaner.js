@@ -382,11 +382,17 @@
         }
 
         if (location.href.includes('bilibili.com/video/BV')) {
-            let regex = /bilibili.com\/video\/(BV[0-9a-zA-Z]+)/;
-            let match = regex.exec(location.href);
+            const regex = /bilibili.com\/video\/(BV[0-9a-zA-Z]+)/;
+            const match = regex.exec(location.href);
             if (match) {
-                let aid = dec(match[1]);
+                const aid = dec(match[1]);
                 let newURL = `https://www.bilibili.com/video/av${aid}`;
+                // query string中分P参数, anchor中reply定位
+                const urlParams = new URLSearchParams(location.search);
+                if (urlParams.has('p')) {
+                    const partNum = urlParams.get('p');
+                    newURL += `?p=${partNum}`;
+                }
                 if (location.hash.slice(1, 6) === 'reply') {
                     newURL += location.hash;
                 }
@@ -908,6 +914,10 @@
         videoItems.push(new Item(
             'video-page-hide-bpx-player-ctrl-next', 'bili-cleaner-group-video', '隐藏 播放器-控制 下一个视频', null,
             `.bpx-player-ctrl-next {display: none;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-bpx-player-ctrl-viewpoint', 'bili-cleaner-group-video', '隐藏 播放器-控制 章节列表', null,
+            `.bpx-player-ctrl-viewpoint {display: none;}`
         ))
         videoItems.push(new Item(
             'video-page-hide-bpx-player-ctrl-pip', 'bili-cleaner-group-video', '隐藏 播放器-控制 画中画', null,
@@ -1684,7 +1694,8 @@
         liveItems.push(new Item(
             'live-page-compact-danmaku', 'bili-cleaner-group-live', '右侧-弹幕栏 使弹幕列表紧凑', null,
             `.chat-history-panel .chat-history-list .chat-item.danmaku-item.chat-colorful-bubble {margin: 2px 0 !important;}
-            .chat-history-panel .chat-history-list .chat-item {padding: 2px 5px !important; font-size: 1.2em !important;}`
+            .chat-history-panel .chat-history-list .chat-item {padding: 3px 5px !important; font-size: 1.2em !important;}
+            .chat-history-panel .chat-history-list .chat-item.danmaku-item .user-name {font-size: 1.2em !important;}`
         ))
         liveItems.push(new Item(
             'live-page-control-panel-icon-row-left', 'bili-cleaner-group-live', '隐藏 右侧-弹幕控制按钮 左侧', null,

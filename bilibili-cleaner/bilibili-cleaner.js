@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.24
+// @version      1.0.25
 // @description  净化 B站/哔哩哔哩 页面内的各种元素，去广告，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -401,6 +401,47 @@
         }
     }
 
+    // 重写分享按钮功能
+    let isSimpleShareBtn = false;
+    function simpleShare() {
+        if (isSimpleShareBtn) {
+            return
+        }
+        // 监听shareBtn出现
+        let shareBtn;
+        let counter = 0;
+        const checkElement = setInterval(() => {
+            counter++
+            shareBtn = document.getElementById('share-btn-outer')
+            if (shareBtn) {
+                isSimpleShareBtn = true
+                clearInterval(checkElement)
+                // 删除全部事件
+                const newShareBtn = shareBtn.cloneNode(true)
+                shareBtn.parentNode.replaceChild(newShareBtn, shareBtn)
+                // 重写click事件
+                newShareBtn.addEventListener('click', () => {
+                    const title = document.querySelector("#viewbox_report > h1")?.innerText
+                    let pName = location.pathname
+                    if (pName.endsWith('/')) {
+                        pName = pName.slice(0, -1)
+                    }
+                    navigator.clipboard.writeText(`${title} \nhttps://www.bilibili.com${pName}${location.search}`)
+                })
+                // 点击后CSS反馈
+                newShareBtn.addEventListener('click', () => {
+                    newShareBtn.addEventListener('animationend', () => {
+                        newShareBtn.classList.remove('animated');
+                    });
+                    // 监听动画结束, 移除类
+                    newShareBtn.classList.add('animated');
+                });
+            } else if (counter > 50) {
+                clearInterval(checkElement)
+            }
+        }, 200)
+    }
+
     // 移除URL中的跟踪参数
     function removeQueryParams() {
         let keysToRemove = ['from_source', 'spm_id_from', 'search_source', 'vd_source', 'unique_k', 'is_story_h5', 'from_spmid',
@@ -789,6 +830,21 @@
         videoItems.push(new Item(
             'video-page-bv2av', 'bili-cleaner-group-video', 'BV号转AV号 (需刷新)', bv2av, null
         ))
+        // 净化分享
+        videoItems.push(new Item(
+            'video-page-simple-share', 'bili-cleaner-group-video', '净化分享功能 (需刷新)', simpleShare,
+            // 分享按钮点击反馈动画
+            `@keyframes share-btn-animation {
+                0% { transform: scale(1); }
+                25% { transform: scale(1.15); }
+                50% { transform: scale(1); }
+                75% { transform: scale(1.15); }
+                100% { transform: scale(1); }
+            }
+            #share-btn-outer.animated {
+                animation: share-btn-animation .75s;
+            }`
+        ))
         // 去除圆角
         videoItems.push(new Item(
             'video-page-border-radius', 'bili-cleaner-group-video', '页面直角化 去除圆角', null,
@@ -967,6 +1023,14 @@
         videoItems.push(new Item(
             'video-page-hide-bpx-player-dm-input', 'bili-cleaner-group-video', '隐藏 弹幕发送-占位文字', null,
             `.bpx-player-dm-input::placeholder {color: transparent !important;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-bpx-player-postpanel', 'bili-cleaner-group-video', '隐藏 弹幕发送-智能弹幕/广告弹幕', null,
+            `.bpx-player-postpanel-sug,
+            .bpx-player-postpanel-carousel,
+            .bpx-player-postpanel-popup {
+                color: transparent !important;
+            }`
         ))
         videoItems.push(new Item(
             'video-page-hide-bpx-player-dm-setting', 'bili-cleaner-group-video', '隐藏 弹幕发送-弹幕显示设置', null,

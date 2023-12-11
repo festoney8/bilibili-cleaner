@@ -416,11 +416,9 @@
             if (shareBtn) {
                 isSimpleShareBtn = true
                 clearInterval(checkElement)
-                // 删除全部事件
-                const newShareBtn = shareBtn.cloneNode(true)
-                shareBtn.parentNode.replaceChild(newShareBtn, shareBtn)
-                // 重写click事件
-                newShareBtn.addEventListener('click', () => {
+                // 新增click事件
+                // 若replace element, 会在切换视频后无法更新视频分享数量, 故直接新增click事件覆盖剪贴板
+                shareBtn.addEventListener('click', () => {
                     const title = document.querySelector("#viewbox_report > h1")?.innerText
                     let pName = location.pathname
                     if (pName.endsWith('/')) {
@@ -428,14 +426,6 @@
                     }
                     navigator.clipboard.writeText(`${title} \nhttps://www.bilibili.com${pName}${location.search}`)
                 })
-                // 点击后CSS反馈
-                newShareBtn.addEventListener('click', () => {
-                    newShareBtn.addEventListener('animationend', () => {
-                        newShareBtn.classList.remove('animated');
-                    });
-                    // 监听动画结束, 移除类
-                    newShareBtn.classList.add('animated');
-                });
             } else if (counter > 50) {
                 clearInterval(checkElement)
             }
@@ -832,18 +822,7 @@
         ))
         // 净化分享
         videoItems.push(new Item(
-            'video-page-simple-share', 'bili-cleaner-group-video', '净化分享功能 (需刷新)', simpleShare,
-            // 分享按钮点击反馈动画
-            `@keyframes share-btn-animation {
-                0% { transform: scale(1); }
-                25% { transform: scale(1.15); }
-                50% { transform: scale(1); }
-                75% { transform: scale(1.15); }
-                100% { transform: scale(1); }
-            }
-            #share-btn-outer.animated {
-                animation: share-btn-animation .75s;
-            }`
+            'video-page-simple-share', 'bili-cleaner-group-video', '净化分享功能 (需刷新)', simpleShare, null
         ))
         // 去除圆角
         videoItems.push(new Item(

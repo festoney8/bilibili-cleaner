@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.25
+// @version      1.0.26
 // @description  净化 B站/哔哩哔哩 页面内的各种元素，去广告，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -437,7 +437,7 @@
         let keysToRemove = ['from_source', 'spm_id_from', 'search_source', 'vd_source', 'unique_k', 'is_story_h5', 'from_spmid',
             'share_plat', 'share_medium', 'share_from', 'share_source', 'share_tag', 'up_id', 'timestamp', 'mid',
             'live_from', 'launch_id', 'session_id', 'share_session_id', 'broadcast_type', 'is_room_feed',
-            'spmid', 'plat_id', 'goto', 'report_flow_data', 'trackid'];
+            'spmid', 'plat_id', 'goto', 'report_flow_data', 'trackid', 'live_form'];
 
         let url = location.href;
         let urlObj = new URL(url);
@@ -882,8 +882,8 @@
             `.video-info-detail .honor-rank, .video-info-detail .honor-weekly {display: none !important;}`
         ))
         videoItems.push(new Item(
-            'video-page-hide-video-info-argue', 'bili-cleaner-group-video', '隐藏 视频信息-温馨提示(过量饮酒/危险操作)', null,
-            `.video-info-detail .argue {display: none !important;}`
+            'video-page-hide-video-info-argue', 'bili-cleaner-group-video', '隐藏 视频信息-温馨提示(饮酒/危险/AI生成)', null,
+            `.video-info-detail .argue, .video-info-detail .video-argue {display: none !important;}`
         ))
         // 播放器相关
         videoItems.push(new Item(
@@ -1738,7 +1738,8 @@
             'live-page-compact-danmaku', 'bili-cleaner-group-live', '右侧-弹幕栏 使弹幕列表紧凑', null,
             `.chat-history-panel .chat-history-list .chat-item.danmaku-item.chat-colorful-bubble {margin: 2px 0 !important;}
             .chat-history-panel .chat-history-list .chat-item {padding: 3px 5px !important; font-size: 1.2em !important;}
-            .chat-history-panel .chat-history-list .chat-item.danmaku-item .user-name {font-size: 1.2em !important;}`
+            .chat-history-panel .chat-history-list .chat-item.danmaku-item .user-name {font-size: 1.2em !important;}
+            .chat-history-panel .chat-history-list .chat-item.danmaku-item .reply-uname {font-size: 1.2em !important;}`
         ))
         liveItems.push(new Item(
             'live-page-control-panel-icon-row-left', 'bili-cleaner-group-live', '隐藏 右侧-弹幕控制按钮 左侧', null,
@@ -1756,7 +1757,8 @@
             'live-page-chat-input-ctnr', 'bili-cleaner-group-live', '隐藏 右侧-弹幕发送框', null,
             `#chat-control-panel-vm .chat-input-ctnr, #chat-control-panel-vm .bottom-actions {display: none !important;}
             .chat-control-panel {height: unset !important;}
-            .chat-history-panel {height: calc(100% - 45px) !important; padding-top: 8px;}`
+            .chat-history-panel {height: calc(100% - 45px) !important; padding-top: 8px;}
+            .chat-history-panel .danmaku-at-prompt {bottom: 50px !important;}`
         ))
         // 顶栏相关
         liveItems.push(new Item(

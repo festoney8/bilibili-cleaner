@@ -434,19 +434,20 @@
 
     // 移除URL中的跟踪参数
     function removeQueryParams() {
-        let keysToRemove = ['from_source', 'spm_id_from', 'search_source', 'vd_source', 'unique_k', 'is_story_h5', 'from_spmid',
+        let keysToRemove = new Set(['from_source', 'spm_id_from', 'search_source', 'vd_source', 'unique_k', 'is_story_h5', 'from_spmid',
             'share_plat', 'share_medium', 'share_from', 'share_source', 'share_tag', 'up_id', 'timestamp', 'mid',
             'live_from', 'launch_id', 'session_id', 'share_session_id', 'broadcast_type', 'is_room_feed',
-            'spmid', 'plat_id', 'goto', 'report_flow_data', 'trackid', 'live_form'];
+            'spmid', 'plat_id', 'goto', 'report_flow_data', 'trackid', 'live_form']);
 
         let url = location.href;
         let urlObj = new URL(url);
         let params = new URLSearchParams(urlObj.search);
 
-        keysToRemove.forEach(function (key) {
-            params.delete(key);
-        });
-
+        for (let key of params.keys()) {
+            if (keysToRemove.has(key)) {
+                params.delete(key);
+            }
+        }
         urlObj.search = params.toString();
         let newUrl = urlObj.toString();
         if (newUrl.endsWith('/')) {
@@ -1958,7 +1959,7 @@
         ))
     }
     commonItems.push(new Item(
-        'url-cleaner', 'bili-cleaner-group-common', 'URL参数净化 (需刷新, 会导致充电功能报错)', removeQueryParams, null
+        'url-cleaner', 'bili-cleaner-group-common', 'URL参数净化 (需刷新, 给UP充电时需关闭)', removeQueryParams, null
     ))
     // 通用Group
     GROUPS.push(new Group('bili-cleaner-group-common', '通用', commonItems))

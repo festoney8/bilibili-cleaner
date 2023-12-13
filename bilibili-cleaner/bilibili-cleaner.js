@@ -49,10 +49,11 @@
             })
         }
         // 启用group，启用group内items
-        enableGroup() {
+        // mustContainsFunc 控制 enableItem 是否跳过纯CSS条目
+        enableGroup(mustContainsFunc = false) {
             try {
                 this.items.forEach(e => {
-                    e.enableItem()
+                    e.enableItem(mustContainsFunc)
                 })
             } catch (err) {
                 console.log('[bili-cleaner] enableGroup err')
@@ -149,9 +150,13 @@
             }
         }
         // 执行功能（由group调用）
-        enableItem() {
+        // mustContainsFunc用于非刷新但URL变动情况, 此时已注入CSS, 只重新运行func
+        enableItem(mustContainsFunc = false) {
             this.getStatus()
             if (this.isEnable) {
+                if (mustContainsFunc && !this.itemFunc) {
+                    return
+                }
                 try {
                     this.insertItemCSS()
                     if (this.itemFunc instanceof Function) {
@@ -1971,10 +1976,10 @@
     setInterval(() => {
         let newURL = location.href
         if (newURL !== currURL) {
-            GROUPS.forEach(e => { e.enableGroup() })
+            GROUPS.forEach(e => { e.enableGroup(true) })
             currURL = newURL
         }
-    }, 1000)
+    }, 500)
 
     //=======================================================================================
     function openSettings() {

@@ -429,7 +429,18 @@
                     if (pName.endsWith('/')) {
                         pName = pName.slice(0, -1)
                     }
-                    navigator.clipboard.writeText(`${title} \nhttps://www.bilibili.com${pName}${location.search}`)
+                    let urlObj = new URL(location.href)
+                    let params = new URLSearchParams(urlObj.search)
+                    for (let key of params.keys()) {
+                        if (key != 'p') {
+                            params.delete(key)
+                        }
+                    }
+                    let shareText = `${title} \nhttps://www.bilibili.com${pName}`
+                    if (params.size) {
+                        shareText += `?${params.toString()}`
+                    }
+                    navigator.clipboard.writeText(shareText)
                 })
             } else if (counter > 50) {
                 clearInterval(checkElement)
@@ -1747,10 +1758,10 @@
         liveItems.push(new Item(
             'live-page-compact-danmaku', 'bili-cleaner-group-live', '右侧-弹幕栏 使弹幕列表紧凑', null,
             `.chat-history-panel .chat-history-list .chat-item.danmaku-item.chat-colorful-bubble {margin: 2px 0 !important;}
-            .chat-history-panel .chat-history-list .chat-item {padding: 3px 5px !important; font-size: 1.2em !important;}
-            .chat-history-panel .chat-history-list .chat-item.danmaku-item .user-name {font-size: 1.2em !important;}
-            .chat-history-panel .chat-history-list .chat-item.danmaku-item .reply-uname {font-size: 1.2em !important;}
-            .chat-history-panel .chat-history-list .chat-item.danmaku-item .reply-uname .common-nickname-wrapper {font-size: 1.2em !important;}`
+            .chat-history-panel .chat-history-list .chat-item {padding: 3px 5px !important; font-size: 1.2rem !important;}
+            .chat-history-panel .chat-history-list .chat-item.danmaku-item .user-name {font-size: 1.2rem !important;}
+            .chat-history-panel .chat-history-list .chat-item.danmaku-item .reply-uname {font-size: 1.2rem !important;}
+            .chat-history-panel .chat-history-list .chat-item.danmaku-item .reply-uname .common-nickname-wrapper {font-size: 1.2rem !important;}`
         ))
         liveItems.push(new Item(
             'live-page-control-panel-icon-row-left', 'bili-cleaner-group-live', '隐藏 右侧-弹幕控制按钮 左侧', null,

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.28
+// @version      1.0.29
 // @description  净化 B站/哔哩哔哩 页面内的各种元素，去广告，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -1415,11 +1415,11 @@
         ))
         searchItems.push(new Item(
             'hide-search-page-customer-service', 'bili-cleaner-group-search', '隐藏 右下角 客服', null,
-            `.side-buttons div:nth-child(1) {display: !important;}`
+            `.side-buttons div:has(>a[href*="customer-service"]) {display: none !important;}`
         ))
         searchItems.push(new Item(
             'hide-search-page-btn-to-top', 'bili-cleaner-group-search', '隐藏 右下角 回顶部', null,
-            `.side-buttons .btn-to-top-wrap {display: !important;}`
+            `.side-buttons .btn-to-top-wrap {display: none !important;}`
         ))
 
         GROUPS.push(new Group('bili-cleaner-group-search', '当前是：搜索页', searchItems))

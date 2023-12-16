@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.27
+// @version      1.0.28
 // @description  净化 B站/哔哩哔哩 页面内的各种元素，去广告，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -371,50 +371,47 @@
     function bv2av() {
         // algo by mcfx, https://www.zhihu.com/question/381784377/answer/1099438784
         function dec(x) {
-            let table = 'fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF';
-            let tr = {};
+            let table = 'fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF'
+            let tr = {}
             for (let i = 0; i < 58; i++) {
-                tr[table[i]] = i;
+                tr[table[i]] = i
             }
-            let s = [11, 10, 3, 8, 4, 6];
-            let xor = 177451812;
-            let add = 8728348608;
-            let r = 0;
+            let s = [11, 10, 3, 8, 4, 6]
+            let xor = 177451812
+            let add = 8728348608
+            let r = 0
             for (let i = 0; i < 6; i++) {
-                r += tr[x[s[i]]] * 58 ** i;
+                r += tr[x[s[i]]] * 58 ** i
             }
-            return (r - add) ^ xor;
+            return (r - add) ^ xor
         }
 
         if (location.href.includes('bilibili.com/video/BV')) {
-            const regex = /bilibili.com\/video\/(BV[0-9a-zA-Z]+)/;
-            const match = regex.exec(location.href);
+            const regex = /bilibili.com\/video\/(BV[0-9a-zA-Z]+)/
+            const match = regex.exec(location.href)
             if (match) {
-                const aid = dec(match[1]);
-                let newURL = `https://www.bilibili.com/video/av${aid}`;
                 // query string中分P参数, anchor中reply定位
-                const urlParams = new URLSearchParams(location.search);
-                if (urlParams.has('p')) {
-                    const partNum = urlParams.get('p');
-                    newURL += `?p=${partNum}`;
+                let partNum = ''
+                const params = new URLSearchParams(location.search)
+                if (params.has('p')) {
+                    partNum += `?p=${params.get('p')}`
                 }
-                if (location.hash.slice(1, 6) === 'reply') {
-                    newURL += location.hash;
-                }
-                history.replaceState(null, null, newURL);
+                const aid = dec(match[1])
+                const newURL = `https://www.bilibili.com/video/av${aid}${partNum}${location.hash}`
+                history.replaceState(null, null, newURL)
             }
         }
     }
 
     // 重写分享按钮功能
-    let isSimpleShareBtn = false;
+    let isSimpleShareBtn = false
     function simpleShare() {
         if (isSimpleShareBtn) {
             return
         }
         // 监听shareBtn出现
-        let shareBtn;
-        let counter = 0;
+        let shareBtn
+        let counter = 0
         const checkElement = setInterval(() => {
             counter++
             shareBtn = document.getElementById('share-btn-outer')
@@ -431,14 +428,9 @@
                     }
                     let urlObj = new URL(location.href)
                     let params = new URLSearchParams(urlObj.search)
-                    for (let key of params.keys()) {
-                        if (key != 'p') {
-                            params.delete(key)
-                        }
-                    }
                     let shareText = `${title} \nhttps://www.bilibili.com${pName}`
-                    if (params.size) {
-                        shareText += `?${params.toString()}`
+                    if (params.has('p')) {
+                        shareText += `?p=${params.get('p')}`
                     }
                     navigator.clipboard.writeText(shareText)
                 })
@@ -453,24 +445,29 @@
         let keysToRemove = new Set(['from_source', 'spm_id_from', 'search_source', 'vd_source', 'unique_k', 'is_story_h5', 'from_spmid',
             'share_plat', 'share_medium', 'share_from', 'share_source', 'share_tag', 'up_id', 'timestamp', 'mid',
             'live_from', 'launch_id', 'session_id', 'share_session_id', 'broadcast_type', 'is_room_feed',
-            'spmid', 'plat_id', 'goto', 'report_flow_data', 'trackid', 'live_form']);
+            'spmid', 'plat_id', 'goto', 'report_flow_data', 'trackid', 'live_form', 'track_id', 'from'])
 
-        let url = location.href;
-        let urlObj = new URL(url);
-        let params = new URLSearchParams(urlObj.search);
+        let url = location.href
+        let urlObj = new URL(url)
+        let params = new URLSearchParams(urlObj.search)
 
-        for (let key of params.keys()) {
-            if (keysToRemove.has(key)) {
-                params.delete(key);
+        let temp = []
+        for (let k of params.keys()) {
+            if (keysToRemove.has(k)) {
+                temp.push(k)
             }
         }
-        urlObj.search = params.toString();
-        let newUrl = urlObj.toString();
-        if (newUrl.endsWith('/')) {
-            newUrl = newUrl.slice(0, -1);
+        for (let k of temp) {
+            params.delete(k)
         }
-        if (newUrl !== url) {
-            history.replaceState(null, null, newUrl);
+
+        urlObj.search = params.toString()
+        let newURL = urlObj.toString()
+        if (newURL.endsWith('/')) {
+            newURL = newURL.slice(0, -1)
+        }
+        if (newURL !== url) {
+            history.replaceState(null, null, newURL)
         }
     }
 
@@ -1094,7 +1091,7 @@
             #comment .reply-list {margin-top: -20px !important;}`
         ))
         videoItems.push(new Item(
-            'video-page-hide-fixed-reply-box', 'bili-cleaner-group-video', '隐藏 评论区-页面底部 浮动评论发送框', null,
+            'video-page-hide-fixed-reply-box', 'bili-cleaner-group-video', '隐藏 评论区-页面底部 吸附评论框', null,
             `.fixed-reply-box {display: none !important;}`
         ))
         videoItems.push(new Item(
@@ -1228,11 +1225,11 @@
             }`
         ))
         videoItems.push(new Item(
-            'video-page-reply-user-name-color-pink', 'bili-cleaner-group-video', '隐藏 评论区-用户名全部大会员色', null,
+            'video-page-reply-user-name-color-pink', 'bili-cleaner-group-video', '评论区-用户名 全部大会员色', null,
             `#comment .reply-item .user-name, #comment .reply-item .sub-user-name {color: #FB7299 !important;}}`
         ))
         videoItems.push(new Item(
-            'video-page-reply-user-name-color-default', 'bili-cleaner-group-video', '隐藏 评论区-用户名全部恢复默认色', null,
+            'video-page-reply-user-name-color-default', 'bili-cleaner-group-video', '评论区-用户名 全部恢复默认色', null,
             `#comment .reply-item .user-name, #comment .reply-item .sub-user-name {color: #61666d !important;}}`
         ))
         // up主信息

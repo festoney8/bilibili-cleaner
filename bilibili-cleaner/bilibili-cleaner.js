@@ -5,8 +5,12 @@
 // @description  净化 B站/哔哩哔哩 页面内的各种元素，去广告，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
-// @match        https://*.bilibili.com/*
-// @icon         https://www.bilibili.com/favicon.ico
+// @match        *://*.bilibili.com/*
+// @exclude      *://message.bilibili.com/pages/nav/header_sync
+// @exclude      *://data.bilibili.com/*
+// @exclude      *://api.bilibili.com/*
+// @exclude      *://api.*.bilibili.com/*
+// @icon         *://www.bilibili.com/favicon.ico
 // @grant        GM_addStyle
 // @grant        GM_getValue
 // @grant        GM_setValue

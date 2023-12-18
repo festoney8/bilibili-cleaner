@@ -1,13 +1,16 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.0.29
+// @version      1.0.30
 // @description  净化 B站/哔哩哔哩 页面内的各种元素，去广告，提供200项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
 // @match        *://*.bilibili.com/*
 // @exclude      *://message.bilibili.com/pages/nav/header_sync
 // @exclude      *://data.bilibili.com/*
+// @exclude      *://*.chat.bilibili.com/*
+// @exclude      *://cm.bilibili.com/*
+// @exclude      *://passport.bilibili.com/*
 // @exclude      *://api.bilibili.com/*
 // @exclude      *://api.*.bilibili.com/*
 // @icon         *://www.bilibili.com/favicon.ico
@@ -914,7 +917,7 @@
         ))
         videoItems.push(new Item(
             'video-page-hide-bpx-player-bili-vote', 'bili-cleaner-group-video', '隐藏 播放器-视频内 投票', null,
-            `.bpx-player-video-area .bili-vote {display: none !important;}`
+            `.bpx-player-video-area .bili-vote, .bpx-player-video-area .bili-cmd-shrink {display: none !important;}`
         ))
         videoItems.push(new Item(
             'video-page-hide-bpx-player-bili-score', 'bili-cleaner-group-video', '隐藏 播放器-视频内 评分', null,
@@ -1199,14 +1202,6 @@
             `#comment .reply-item:has(.st1.lv3):not(:has(.sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`
         ))
         videoItems.push(new Item(
-            'video-page-hide-emoji-large', 'bili-cleaner-group-video', '隐藏 评论区-大表情', null,
-            `#comment .emoji-large {display: none !important;}`
-        ))
-        videoItems.push(new Item(
-            'video-page-hide-emoji-large-zoom', 'bili-cleaner-group-video', '评论区-大表情变成小表情', null,
-            `#comment .emoji-large {zoom: .5;}`
-        ))
-        videoItems.push(new Item(
             'video-page-hide-root-reply-dislike-reply-btn', 'bili-cleaner-group-video', '隐藏 一级评论 踩/回复/举报 hover时显示', null,
             `#comment .root-reply .reply-btn, 
             #comment .root-reply .reply-dislike {
@@ -1227,6 +1222,14 @@
             #comment .sub-reply-container .sub-reply-item:hover .sub-reply-dislike {
                 visibility: visible;
             }`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-emoji-large', 'bili-cleaner-group-video', '隐藏 评论区-大表情', null,
+            `#comment .emoji-large {display: none !important;}`
+        ))
+        videoItems.push(new Item(
+            'video-page-hide-emoji-large-zoom', 'bili-cleaner-group-video', '评论区-大表情变成小表情', null,
+            `#comment .emoji-large {zoom: .5;}`
         ))
         videoItems.push(new Item(
             'video-page-reply-user-name-color-pink', 'bili-cleaner-group-video', '评论区-用户名 全部大会员色', null,
@@ -1919,10 +1922,12 @@
         ))
         commonItems.push(new Item(
             'common-hide-nav-match', 'bili-cleaner-group-common', '隐藏 顶栏-赛事', null,
-            `div.bili-header__bar li:has(>a[href^="//www.bilibili.com/match/"])  {display: none !important;}`
+            `div.bili-header__bar li:has(>a[href^="//www.bilibili.com/match/"], >a[href^="//www.bilibili.com/v/game/match/"]) {
+                display: none !important;
+            }`
         ))
         commonItems.push(new Item(
-            'common-hide-nav-moveclip', 'bili-cleaner-group-common', '隐藏 顶栏-活动直播', null,
+            'common-hide-nav-moveclip', 'bili-cleaner-group-common', '隐藏 顶栏-活动/活动直播', null,
             `div.bili-header__bar li:has(.loc-mc-box) {display: none !important;}`
         ))
         commonItems.push(new Item(
@@ -1935,15 +1940,15 @@
             div.bili-header__bar li:has(>div>a[href*="bilibili.com/blackboard"]) {display: none !important;}`
         ))
         commonItems.push(new Item(
-            'common-hide-nav-search-rcmd', 'bili-cleaner-group-common', '隐藏 顶栏-搜索框内的推荐搜索', null,
+            'common-hide-nav-search-rcmd', 'bili-cleaner-group-common', '隐藏 顶栏-搜索框 推荐搜索', null,
             `#nav-searchform .nav-search-input::placeholder {color: transparent;}`
         ))
         commonItems.push(new Item(
-            'common-hide-nav-search-history', 'bili-cleaner-group-common', '隐藏 顶栏-搜索框内搜索历史', null,
+            'common-hide-nav-search-history', 'bili-cleaner-group-common', '隐藏 顶栏-搜索框 搜索历史', null,
             `.search-panel .history {display: none;}`
         ))
         commonItems.push(new Item(
-            'common-hide-nav-search-trending', 'bili-cleaner-group-common', '隐藏 顶栏-搜索框内bilibili热搜', null,
+            'common-hide-nav-search-trending', 'bili-cleaner-group-common', '隐藏 顶栏-搜索框 bilibili热搜', null,
             `.search-panel .trending {display: none;}`
         ))
         commonItems.push(new Item(

@@ -24,6 +24,29 @@
 (function () {
     'use strict'
 
+    // 计时日志，debug用
+    const debugMode = false
+    let lastTime = performance.now()
+    let startTime = lastTime
+    let currTime = lastTime
+    function log(...args) {
+        if (!debugMode) { return }
+        currTime = performance.now()
+        console.log(`[bili-cleaner] ${(currTime - lastTime).toFixed(1)} / ${(currTime - startTime).toFixed(1)} ms | ${args.join(' ')}`)
+        lastTime = currTime
+    }
+    function error(...args) {
+        if (!debugMode) { return }
+        currTime = performance.now()
+        console.error(`[bili-cleaner] ${(currTime - lastTime).toFixed(1)} / ${(currTime - startTime).toFixed(1)} ms | ${args.join(' ')}`)
+        lastTime = currTime
+    }
+    function trace() {
+        if (!debugMode) { return }
+        console.trace('[bili-cleaner]')
+    }
+
+    //===================================================================================
     class Group {
         // Group id，描述，item数组
         constructor(groupID, description, items) {
@@ -63,9 +86,9 @@
                     e.enableItem(mustContainsFunc)
                 })
             } catch (err) {
-                console.log(`[bili-cleaner] enableGroup ${this.groupID} err`)
-                console.log(err)
-                console.log(this)
+                error(`enableGroup ${this.groupID} err`)
+                error(err)
+                trace()
             }
         }
     }
@@ -106,9 +129,9 @@
                     itemGroup.appendChild(e)
                 }
             } catch (err) {
-                console.log(`[bili-cleaner] insertItem ${this.itemID} err`)
-                console.log(err)
-                console.log(this)
+                error(`insertItem ${this.itemID} err`)
+                error(err)
+                trace()
             }
         }
         // 监听item check状态
@@ -126,33 +149,37 @@
                     }
                 })
             } catch (err) {
-                console.log(`[bili-cleaner] watchItem ${this.itemID} err`)
-                console.log(err)
-                console.log(this)
+                error(`watchItem ${this.itemID} err`)
+                error(err)
+                trace()
             }
         }
         // 启用CSS片段
         insertItemCSS() {
             if (this.itemCSS) {
                 // check if CSS exist
-                const isExist = document.querySelector(`style[bili-cleaner-css-item=${this.itemID}]`)
+                const isExist = document.querySelector(`head style[bili-cleaner-css=${this.itemID}]`)
                 if (isExist) {
                     return
                 }
 
                 const style = document.createElement('style')
-                style.innerText = this.itemCSS
+                // 不设置innerText, 否则多行CSS插入head后会产生<br>标签
+                style.innerHTML = this.itemCSS
                 // 指定CSS片段ID，用于实时启用停用
-                style.setAttribute('bili-cleaner-css-item', this.itemID)
+                style.setAttribute('bili-cleaner-css', this.itemID)
                 document.head.appendChild(style)
+
+                log(`insertCSS ${this.itemID} OK`)
             }
         }
         // 停用CSS片段
         removeItemCSS() {
             if (this.itemCSS) {
-                const style = document.querySelector(`style[bili-cleaner-css-item=${this.itemID}]`)
+                const style = document.querySelector(`head style[bili-cleaner-css=${this.itemID}]`)
                 if (style) {
                     style.parentNode.removeChild(style)
+                    log(`removeCSS ${this.itemID} OK`)
                 }
             }
         }
@@ -170,9 +197,9 @@
                         this.itemFunc()
                     }
                 } catch (err) {
-                    console.log(`[bili-cleaner] enableItem ${this.itemID} Error`)
-                    console.log(this)
-                    console.log(err)
+                    error(`enableItem ${this.itemID} Error`)
+                    error(err)
+                    trace()
                 }
             }
         }
@@ -194,7 +221,6 @@
             overflow: auto;
             z-index: 2147483647;
         }
- 
         #bili-cleaner-bar {
             width: 32vw;
             height: 6vh;
@@ -204,7 +230,6 @@
             cursor: move;
             user-select: none;
         }
-        
         #bili-cleaner-title {
             width: 32vw;
             height: 6vh;
@@ -215,11 +240,9 @@
             font-weight: bold;
             font-size: 22px;
         }
-        
         #bili-cleaner-title span {
             text-align: center;
         }
-        
         #bili-cleaner-close {
             position: absolute;
             top: 0;
@@ -232,24 +255,19 @@
             align-items: center;
             cursor: auto;
         }
-        
         #bili-cleaner-close:hover {
             background: rgba(255, 255, 255, 0.2);
         }
-        
         #bili-cleaner-close svg {
             text-align: center;
         }
- 
         #bili-cleaner-group-list {
             height: 84vh;
             overflow: auto;
         }
- 
         #bili-cleaner-group-list::-webkit-scrollbar {
             display: none;
         }
-        
         /* panel内的group */
         .bili-cleaner-group {
             margin: 10px;
@@ -259,22 +277,18 @@
             box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
             user-select: none;
         }
-        
         .bili-cleaner-group hr {
             border: 1px solid #eeeeee;
         }
- 
         .bili-cleaner-group-title {
             font-size: 20px;
             font-weight: bold;
             padding: 2px;
             color: black;
         }
-        
         .bili-cleaner-item-list {
             padding: 2px;
         }
- 
         /* 每行选项的样式, 按钮和文字 */
         .bili-cleaner-item-list label {
             display: block;
@@ -283,7 +297,6 @@
             font-size: 16px;
             color: black;
         }
-        
         .bili-cleaner-item-switch {
             vertical-align: middle;
             width: 50px;
@@ -298,7 +311,6 @@
             -webkit-appearance: none;
             user-select: none;
         }
-        
         .bili-cleaner-item-switch:before {
             content: '';
             width: 25px;
@@ -310,13 +322,11 @@
             background-color: white;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
         }
-        
         .bili-cleaner-item-switch:checked {
             border-color: rgba(251, 114, 153, 1);
             box-shadow: rgba(251, 114, 153, 1) 0 0 0 16px inset;
             background-color: rgba(251, 114, 153, 1);
         }
-        
         .bili-cleaner-item-switch:checked:before {
             left: 25px;
         }`
@@ -406,6 +416,7 @@
                 const aid = dec(match[1])
                 const newURL = `https://www.bilibili.com/video/av${aid}${partNum}${location.hash}`
                 history.replaceState(null, null, newURL)
+                log('bv2av complete')
             }
         }
     }
@@ -441,8 +452,10 @@
                     }
                     navigator.clipboard.writeText(shareText)
                 })
+                log('simpleShare complete')
             } else if (counter > 50) {
                 clearInterval(checkElement)
+                log('simpleShare timeout')
             }
         }, 200)
     }
@@ -466,11 +479,13 @@
                 shareBtn.addEventListener('click', () => {
                     const mainTitle = document.querySelector("[class^='mediainfo_mediaTitle']")?.textContent
                     const subTitle = document.getElementById('player-title')?.textContent
-                    let shareText = `${mainTitle} ${subTitle} \nhttps://www.bilibili.com${location.pathname}`
+                    let shareText = `《${mainTitle}》${subTitle} \nhttps://www.bilibili.com${location.pathname}`
                     navigator.clipboard.writeText(shareText)
                 })
+                log('bangumiSimpleShare complete')
             } else if (counter > 50) {
                 clearInterval(checkElement)
+                log('bangumiSimpleShare timeout')
             }
         }, 200)
     }
@@ -480,7 +495,7 @@
         let keysToRemove = new Set(['from_source', 'spm_id_from', 'search_source', 'vd_source', 'unique_k', 'is_story_h5', 'from_spmid',
             'share_plat', 'share_medium', 'share_from', 'share_source', 'share_tag', 'up_id', 'timestamp', 'mid',
             'live_from', 'launch_id', 'session_id', 'share_session_id', 'broadcast_type', 'is_room_feed',
-            'spmid', 'plat_id', 'goto', 'report_flow_data', 'trackid', 'live_form', 'track_id', 'from'])
+            'spmid', 'plat_id', 'goto', 'report_flow_data', 'trackid', 'live_form', 'track_id', 'from', 'visit_id'])
 
         let url = location.href
         let urlObj = new URL(url)
@@ -507,9 +522,12 @@
         if (newURL !== url) {
             history.replaceState(null, null, newURL)
         }
+        log('cleanURL complete')
     }
 
     //===================================================================================
+    log('main process start')
+
     const GROUPS = []
     // 首页
     const homepageItems = []
@@ -748,9 +766,9 @@
                 width: 100%;
                 height: 100%;
                 background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="24" height="24" fill="currentColor" class="bili-video-card__info--owner__up"><!--[--><path d="M6.15 8.24805C6.5642 8.24805 6.9 8.58383 6.9 8.99805L6.9 12.7741C6.9 13.5881 7.55988 14.248 8.3739 14.248C9.18791 14.248 9.8478 13.5881 9.8478 12.7741L9.8478 8.99805C9.8478 8.58383 10.1836 8.24805 10.5978 8.24805C11.012 8.24805 11.3478 8.58383 11.3478 8.99805L11.3478 12.7741C11.3478 14.41655 10.01635 15.748 8.3739 15.748C6.73146 15.748 5.4 14.41655 5.4 12.7741L5.4 8.99805C5.4 8.58383 5.73578 8.24805 6.15 8.24805z" fill="rgb(148, 153, 160)"></path><path d="M12.6522 8.99805C12.6522 8.58383 12.98795 8.24805 13.4022 8.24805L15.725 8.24805C17.31285 8.24805 18.6 9.53522 18.6 11.123C18.6 12.71085 17.31285 13.998 15.725 13.998L14.1522 13.998L14.1522 14.998C14.1522 15.4122 13.8164 15.748 13.4022 15.748C12.98795 15.748 12.6522 15.4122 12.6522 14.998L12.6522 8.99805zM14.1522 12.498L15.725 12.498C16.4844 12.498 17.1 11.8824 17.1 11.123C17.1 10.36365 16.4844 9.74804 15.725 9.74804L14.1522 9.74804L14.1522 12.498z" fill="rgb(148, 153, 160)"></path><path d="M12 4.99805C9.48178 4.99805 7.283 5.12616 5.73089 5.25202C4.65221 5.33949 3.81611 6.16352 3.72 7.23254C3.60607 8.4998 3.5 10.171 3.5 11.998C3.5 13.8251 3.60607 15.4963 3.72 16.76355C3.81611 17.83255 4.65221 18.6566 5.73089 18.7441C7.283 18.8699 9.48178 18.998 12 18.998C14.5185 18.998 16.7174 18.8699 18.2696 18.74405C19.3481 18.65655 20.184 17.8328 20.2801 16.76405C20.394 15.4973 20.5 13.82645 20.5 11.998C20.5 10.16965 20.394 8.49877 20.2801 7.23205C20.184 6.1633 19.3481 5.33952 18.2696 5.25205C16.7174 5.12618 14.5185 4.99805 12 4.99805zM5.60965 3.75693C7.19232 3.62859 9.43258 3.49805 12 3.49805C14.5677 3.49805 16.8081 3.62861 18.3908 3.75696C20.1881 3.90272 21.6118 5.29278 21.7741 7.09773C21.8909 8.3969 22 10.11405 22 11.998C22 13.88205 21.8909 15.5992 21.7741 16.8984C21.6118 18.7033 20.1881 20.09335 18.3908 20.23915C16.8081 20.3675 14.5677 20.498 12 20.498C9.43258 20.498 7.19232 20.3675 5.60965 20.2392C3.81206 20.0934 2.38831 18.70295 2.22603 16.8979C2.10918 15.5982 2 13.8808 2 11.998C2 10.1153 2.10918 8.39787 2.22603 7.09823C2.38831 5.29312 3.81206 3.90269 5.60965 3.75693z" fill="rgb(148, 153, 160)"></path><!--]--></svg>');
-                background-size: contain; 
+                background-size: contain;
                 background-repeat: no-repeat;
-                background-position: center; 
+                background-position: center;
             }
             `
         ))
@@ -775,7 +793,7 @@
             .bili-video-card.is-rcmd:has(.bili-video-card__info--ad, [href*="cm.bilibili.com"]) {
                 display: none !important;
             }
-    
+
             /* 布局调整 */
             .recommended-container_floor-aside .container>*:nth-of-type(5) {
                 margin-top: 0 !important;
@@ -848,9 +866,9 @@
                 width: 100%;
                 height: 100%;
                 background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="24" height="24" fill="currentColor" class="bili-video-card__info--owner__up"><!--[--><path d="M6.15 8.24805C6.5642 8.24805 6.9 8.58383 6.9 8.99805L6.9 12.7741C6.9 13.5881 7.55988 14.248 8.3739 14.248C9.18791 14.248 9.8478 13.5881 9.8478 12.7741L9.8478 8.99805C9.8478 8.58383 10.1836 8.24805 10.5978 8.24805C11.012 8.24805 11.3478 8.58383 11.3478 8.99805L11.3478 12.7741C11.3478 14.41655 10.01635 15.748 8.3739 15.748C6.73146 15.748 5.4 14.41655 5.4 12.7741L5.4 8.99805C5.4 8.58383 5.73578 8.24805 6.15 8.24805z" fill="rgb(148, 153, 160)"></path><path d="M12.6522 8.99805C12.6522 8.58383 12.98795 8.24805 13.4022 8.24805L15.725 8.24805C17.31285 8.24805 18.6 9.53522 18.6 11.123C18.6 12.71085 17.31285 13.998 15.725 13.998L14.1522 13.998L14.1522 14.998C14.1522 15.4122 13.8164 15.748 13.4022 15.748C12.98795 15.748 12.6522 15.4122 12.6522 14.998L12.6522 8.99805zM14.1522 12.498L15.725 12.498C16.4844 12.498 17.1 11.8824 17.1 11.123C17.1 10.36365 16.4844 9.74804 15.725 9.74804L14.1522 9.74804L14.1522 12.498z" fill="rgb(148, 153, 160)"></path><path d="M12 4.99805C9.48178 4.99805 7.283 5.12616 5.73089 5.25202C4.65221 5.33949 3.81611 6.16352 3.72 7.23254C3.60607 8.4998 3.5 10.171 3.5 11.998C3.5 13.8251 3.60607 15.4963 3.72 16.76355C3.81611 17.83255 4.65221 18.6566 5.73089 18.7441C7.283 18.8699 9.48178 18.998 12 18.998C14.5185 18.998 16.7174 18.8699 18.2696 18.74405C19.3481 18.65655 20.184 17.8328 20.2801 16.76405C20.394 15.4973 20.5 13.82645 20.5 11.998C20.5 10.16965 20.394 8.49877 20.2801 7.23205C20.184 6.1633 19.3481 5.33952 18.2696 5.25205C16.7174 5.12618 14.5185 4.99805 12 4.99805zM5.60965 3.75693C7.19232 3.62859 9.43258 3.49805 12 3.49805C14.5677 3.49805 16.8081 3.62861 18.3908 3.75696C20.1881 3.90272 21.6118 5.29278 21.7741 7.09773C21.8909 8.3969 22 10.11405 22 11.998C22 13.88205 21.8909 15.5992 21.7741 16.8984C21.6118 18.7033 20.1881 20.09335 18.3908 20.23915C16.8081 20.3675 14.5677 20.498 12 20.498C9.43258 20.498 7.19232 20.3675 5.60965 20.2392C3.81206 20.0934 2.38831 18.70295 2.22603 16.8979C2.10918 15.5982 2 13.8808 2 11.998C2 10.1153 2.10918 8.39787 2.22603 7.09823C2.38831 5.29312 3.81206 3.90269 5.60965 3.75693z" fill="rgb(148, 153, 160)"></path><!--]--></svg>');
-                background-size: contain; 
+                background-size: contain;
                 background-repeat: no-repeat;
-                background-position: center; 
+                background-position: center;
             }
             .bilibili-app-recommend-root .bili-video-card:has(.ant-avatar) [class^="_recommend-reason"] {
                 display: none !important;
@@ -1235,24 +1253,24 @@
         ))
         videoItems.push(new Item(
             'video-page-hide-root-reply-dislike-reply-btn', 'video', '隐藏 一级评论 踩/回复/举报 hover时显示', null,
-            `#comment .root-reply .reply-btn, 
-            #comment .root-reply .reply-dislike {
+            `#comment .reply-info:not(:has(i.disliked)) .reply-btn,
+            #comment .reply-info:not(:has(i.disliked)) .reply-dislike {
                 visibility: hidden;
             }
-            #comment .reply-item:hover .root-reply .reply-btn, 
-            #comment .reply-item:hover .root-reply .reply-dislike {
-                visibility: visible;
+            #comment .reply-item:hover .reply-btn,
+            #comment .reply-item:hover .reply-dislike {
+                visibility: visible !important;
             }`
         ))
         videoItems.push(new Item(
             'video-page-hide-sub-reply-dislike-reply-btn', 'video', '隐藏 二级评论 踩/回复/举报 hover时显示', null,
-            `#comment .sub-reply-container .sub-reply-item .sub-reply-btn, 
-            #comment .sub-reply-container .sub-reply-item .sub-reply-dislike {
+            `#comment .sub-reply-item:not(:has(i.disliked)) .sub-reply-btn,
+            #comment .sub-reply-item:not(:has(i.disliked)) .sub-reply-dislike {
                 visibility: hidden;
             }
-            #comment .sub-reply-container .sub-reply-item:hover .sub-reply-btn, 
-            #comment .sub-reply-container .sub-reply-item:hover .sub-reply-dislike {
-                visibility: visible;
+            #comment .sub-reply-item:hover .sub-reply-btn,
+            #comment .sub-reply-item:hover .sub-reply-dislike {
+                visibility: visible !important;
             }`
         ))
         videoItems.push(new Item(
@@ -1417,42 +1435,7 @@
             #share-container-id [class^='Share_boxTopRight'] {display: none !important;}
             #share-container-id [class^='Share_boxTopLeft'] {padding: 0 !important;}`
         ))
-        // 去除圆角
-        bangumiItems.push(new Item(
-            'video-page-border-radius', 'bangumi', '页面直角化 去除圆角', null,
-            `
-            #nav-searchform,
-            .nav-search-content,
-            .v-popover-content,
-            .van-popover,
-            .v-popover,
-            .pic-box,
-            .card-box .pic-box .pic,
-            .bui-collapse-header,
-            .base-video-sections-v1,
-            .bili-header .search-panel,
-            .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar,
-            .video-tag-container .tag-panel .tag-link,
-            .video-tag-container .tag-panel .show-more-btn,
-            .vcd .cover img,
-            .vcd *,
-            .upinfo-btn-panel *,
-            .fixed-sidenav-storage div,
-            .reply-box-textarea,
-            .reply-box-send,
-            .reply-box-send:after {
-                border-radius: 3px !important;
-            }
-            .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar .bpx-player-dm-btn-send,
-            .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar-wrap {
-                border-radius: 0 3px 3px 0 !important;
-            }
-            .bpx-player-dm-btn-send .bui-button {
-                border-radius: 3px 0 0 3px !important;
-            }
-            `
-        ))
-        // header
+        // header吸附
         bangumiItems.push(new Item(
             'video-page-hide-fixed-header', 'bangumi', '顶栏 滚动页面后不再吸附顶部', null,
             `.fixed-header .bili-header__bar {position: relative !important;}`
@@ -1475,6 +1458,7 @@
             'video-page-hide-bpx-player-state-wrap', 'bangumi', '隐藏 播放器-视频暂停时大Logo', null,
             `.bpx-player-state-wrap {display: none !important;}`
         ))
+        // bangumi独有项：视频内封审核号
         bangumiItems.push(new Item(
             'bangumi-page-hide-bpx-player-record-item-wrap', 'bangumi', '隐藏 播放器-视频内封审核号(非内嵌)', null,
             `.bpx-player-record-item-wrap {display: none !important;}`
@@ -1573,23 +1557,45 @@
         ))
         // 视频下信息
         bangumiItems.push(new Item(
-            'video-page-hide-video-share-popover', 'bangumi', '隐藏 工具栏-分享按钮弹出菜单', null,
+            'video-page-hide-video-share-popover', 'bangumi', '隐藏 视频下方-分享按钮弹出菜单', null,
             `#share-container-id [class^='Share_share'] {display: none !important;}`
         ))
         // bangumi独有项：用手机观看
         bangumiItems.push(new Item(
-            'bangumi-page-hide-watch-on-phone', 'bangumi', '隐藏 工具栏-用手机观看', null,
+            'bangumi-page-hide-watch-on-phone', 'bangumi', '隐藏 视频下方-用手机观看', null,
             `.toolbar span:has(>[class^='Phone_mobile']) {display: none !important;}`
         ))
         // bangumi独有项：一起看
         bangumiItems.push(new Item(
-            'bangumi-page-hide-watch-together', 'bangumi', '隐藏 工具栏-一起看', null,
+            'bangumi-page-hide-watch-together', 'bangumi', '隐藏 视频下方-一起看', null,
             `.toolbar span:has(>#watch_together_tab) {display: none !important;}`
         ))
-        // bangumi独有项：关闭整栏
+        // bangumi独有项：关闭整个工具栏
         bangumiItems.push(new Item(
-            'bangumi-page-hide-toolbar', 'bangumi', '隐藏 工具栏-关闭整栏(赞/币/转/一起看)', null,
+            'bangumi-page-hide-toolbar', 'bangumi', '隐藏 视频下方-整个工具栏(赞/币/转/一起看)', null,
             `.player-left-components .toolbar {display: none !important;}`
+        ))
+        // bangumi独有项：作品介绍
+        bangumiItems.push(new Item(
+            'bangumi-page-hide-media-info', 'bangumi', '隐藏 视频下方-作品介绍', null,
+            `[class^='mediainfo_mediaInfo'] {display: none !important;}`
+        ))
+        // bangumi独有项：精简作品介绍
+        bangumiItems.push(new Item(
+            'bangumi-page-simple-media-info', 'bangumi', '视频下方-作品介绍 精简', null,
+            `[class^='mediainfo_btnHome'], [class^='upinfo_upInfoCard'] {display: none !important;}
+            [class^='mediainfo_score'] {font-size: 25px !important;}
+            [class^='mediainfo_mediaDesc']:has( + [class^='mediainfo_media_desc_section']) {
+                visibility: hidden !important;
+                height: 0 !important;
+                margin-bottom: 8px !important;
+            }
+            [class^='mediainfo_media_desc_section'] {height: 60px !important;}`
+        ))
+        // bangumi独有项：承包榜
+        bangumiItems.push(new Item(
+            'bangumi-page-hide-sponsor-module', 'bangumi', '隐藏 视频下方-承包榜', null,
+            `#sponsor_module {display: none !important;}`
         ))
         // 右栏
         // bangumi独有项：大会员栏
@@ -1607,27 +1613,10 @@
             `[class^='eplist_ep_list_wrapper'] [class^='imageListItem_badge'] {display: none !important;}
             [class^='eplist_ep_list_wrapper'] [class^='numberListItem_badge'] {display: none !important;}`
         ))
+        // bangumi独有项：相关版权作品推荐
         bangumiItems.push(new Item(
-            'video-page-hide-right-container-reco-list-rec-list', 'bangumi', '隐藏 右栏-全部相关推荐', null,
+            'bangumi-page-hide-recommend', 'bangumi', '隐藏 右栏-全部相关推荐', null,
             `.plp-r [class^='recommend_wrap'] {display: none !important;}`
-        ))
-        // 右下角
-        // bangumi独有项：新版反馈
-        bangumiItems.push(new Item(
-            'bangumi-page-hide-sidenav-issue', 'bangumi', '隐藏 右下角-新版反馈', null,
-            `[class*='navTools_navMenu'] [title='新版反馈'] {display: none !important;}`
-        ))
-        bangumiItems.push(new Item(
-            'video-page-hide-sidenav-mini', 'bangumi', '隐藏 右下角-小窗播放器', null,
-            `[class*='navTools_navMenu'] [title*='迷你播放器'] {display: none !important;}`
-        ))
-        bangumiItems.push(new Item(
-            'video-page-hide-sidenav-customer-service', 'bangumi', '隐藏 右下角-客服', null,
-            `[class*='navTools_navMenu'] [title='帮助反馈'] {display: none !important;}`
-        ))
-        bangumiItems.push(new Item(
-            'video-page-hide-sidenav-back-to-top', 'bangumi', '隐藏 右下角-回顶部', null,
-            `[class*='navTools_navMenu'] [title='返回顶部'] {display: none !important;}`
         ))
         // 评论区相关
         bangumiItems.push(new Item(
@@ -1746,22 +1735,22 @@
         ))
         bangumiItems.push(new Item(
             'video-page-hide-root-reply-dislike-reply-btn', 'bangumi', '隐藏 一级评论 踩/回复/举报 hover时显示', null,
-            `#comment-module .reply-info:not(:has(i.disliked)) .reply-btn, 
+            `#comment-module .reply-info:not(:has(i.disliked)) .reply-btn,
             #comment-module .reply-info:not(:has(i.disliked)) .reply-dislike {
                 visibility: hidden;
             }
-            #comment-module .reply-item:hover .reply-info .reply-btn, 
+            #comment-module .reply-item:hover .reply-info .reply-btn,
             #comment-module .reply-item:hover .reply-info .reply-dislike {
                 visibility: visible !important;
             }`
         ))
         bangumiItems.push(new Item(
             'video-page-hide-sub-reply-dislike-reply-btn', 'bangumi', '隐藏 二级评论 踩/回复/举报 hover时显示', null,
-            `#comment-module .sub-reply-container .sub-reply-item:not(:has(i.disliked)) .sub-reply-btn, 
+            `#comment-module .sub-reply-container .sub-reply-item:not(:has(i.disliked)) .sub-reply-btn,
             #comment-module .sub-reply-container .sub-reply-item:not(:has(i.disliked)) .sub-reply-dislike {
                 visibility: hidden;
             }
-            #comment-module .sub-reply-container .sub-reply-item:hover .sub-reply-btn, 
+            #comment-module .sub-reply-container .sub-reply-item:hover .sub-reply-btn,
             #comment-module .sub-reply-container .sub-reply-item:hover .sub-reply-dislike {
                 visibility: visible !important;
             }`
@@ -1781,6 +1770,24 @@
         bangumiItems.push(new Item(
             'video-page-reply-user-name-color-default', 'bangumi', '评论区-用户名 全部恢复默认色', null,
             `#comment-module .reply-item .user-name, #comment-module .reply-item .sub-user-name {color: #61666d !important;}}`
+        ))
+        // 右下角
+        // bangumi独有项：新版反馈
+        bangumiItems.push(new Item(
+            'bangumi-page-hide-sidenav-issue', 'bangumi', '隐藏 右下角-新版反馈', null,
+            `[class*='navTools_navMenu'] [title='新版反馈'] {display: none !important;}`
+        ))
+        bangumiItems.push(new Item(
+            'video-page-hide-sidenav-mini', 'bangumi', '隐藏 右下角-小窗播放器', null,
+            `[class*='navTools_navMenu'] [title*='迷你播放器'] {display: none !important;}`
+        ))
+        bangumiItems.push(new Item(
+            'video-page-hide-sidenav-customer-service', 'bangumi', '隐藏 右下角-客服', null,
+            `[class*='navTools_navMenu'] [title='帮助反馈'] {display: none !important;}`
+        ))
+        bangumiItems.push(new Item(
+            'video-page-hide-sidenav-back-to-top', 'bangumi', '隐藏 右下角-回顶部', null,
+            `[class*='navTools_navMenu'] [title='返回顶部'] {display: none !important;}`
         ))
     }
     else if (host == 'search.bilibili.com') {
@@ -1950,22 +1957,22 @@
         ))
         dynamicItems.push(new Item(
             'hide-root-reply-dislike-reply-btn', 'dynamic', '隐藏 一级评论 踩/回复/举报 hover时显示', null,
-            `.comment-container .root-reply .reply-btn, 
+            `.comment-container .root-reply .reply-btn,
             .comment-container .root-reply .reply-dislike {
                 visibility: hidden;
             }
-            .comment-container .reply-item:hover .root-reply .reply-btn, 
+            .comment-container .reply-item:hover .root-reply .reply-btn,
             .comment-container .reply-item:hover .root-reply .reply-dislike {
                 visibility: visible;
             }`
         ))
         dynamicItems.push(new Item(
             'hide-sub-reply-dislike-reply-btn', 'dynamic', '隐藏 二级评论 踩/回复/举报 hover时显示', null,
-            `.comment-container .sub-reply-container .sub-reply-item .sub-reply-btn, 
+            `.comment-container .sub-reply-container .sub-reply-item .sub-reply-btn,
             .comment-container .sub-reply-container .sub-reply-item .sub-reply-dislike {
                 visibility: hidden;
             }
-            .comment-container .sub-reply-container .sub-reply-item:hover .sub-reply-btn, 
+            .comment-container .sub-reply-container .sub-reply-item:hover .sub-reply-btn,
             .comment-container .sub-reply-container .sub-reply-item:hover .sub-reply-dislike {
                 visibility: visible;
             }`
@@ -2395,6 +2402,8 @@
         'url-cleaner', 'common', 'URL参数净化 (需刷新, 给UP充电时需关闭)', cleanURL, null
     ))
 
+    log('item list complete')
+
     homepageItems.length && GROUPS.push(new Group('homepage', '当前是：首页', homepageItems))
     videoItems.length && GROUPS.push(new Group('video', '当前是：播放页', videoItems))
     bangumiItems.length && GROUPS.push(new Group('bangumi', '当前是：版权视频播放页', bangumiItems))
@@ -2403,13 +2412,18 @@
     liveItems.length && GROUPS.push(new Group('live', '当前是：直播页', liveItems))
     commonItems.length && GROUPS.push(new Group('common', '通用', commonItems))
 
+    log('build group complete')
+
     GROUPS.forEach(e => { e.enableGroup() })
+
+    log('enable group complete')
 
     // 监听各种形式的URL变化(普通监听无法检测到切换视频)
     let currURL = location.href
     setInterval(() => {
         let newURL = location.href
         if (newURL !== currURL) {
+            log('url change detect, run itemFunc again')
             GROUPS.forEach(e => { e.enableGroup(true) })
             currURL = newURL
         }
@@ -2421,17 +2435,16 @@
         if (panel) {
             return
         }
+        log('panel create start')
         addGlobalCSS()
         createPanel()
         GROUPS.forEach(e => {
             e.insertGroup()
             e.insertItems()
         })
+        log('panel create complete')
     }
     // 注册油猴插件菜单选项
     GM_registerMenuCommand("设置", openSettings)
-    // 测试用
-    window.addEventListener("load", () => {
-        openSettings()
-    })
+    log('register menu complete')
 })();

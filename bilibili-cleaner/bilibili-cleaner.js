@@ -1441,7 +1441,7 @@
         ))
         // bangumi独有项：追番/追剧按钮
         bangumiItems.push(new Item(
-            'bangumi-page-hide-bpx-player-top-follow', 'bangumi', '隐藏 播放器-追番/追剧按钮', null,
+            'bangumi-page-hide-bpx-player-top-follow', 'bangumi', '隐藏 播放器-追番/追剧按钮 ★', null,
             `.bpx-player-top-follow {display: none !important;}`
         ))
         bangumiItems.push(new Item(
@@ -1454,7 +1454,7 @@
         ))
         // bangumi独有项：视频内封审核号
         bangumiItems.push(new Item(
-            'bangumi-page-hide-bpx-player-record-item-wrap', 'bangumi', '隐藏 播放器-视频内封审核号(非内嵌)', null,
+            'bangumi-page-hide-bpx-player-record-item-wrap', 'bangumi', '隐藏 播放器-视频内封审核号(非内嵌) ★', null,
             `.bpx-player-record-item-wrap {display: none !important;}`
         ))
         bangumiItems.push(new Item(
@@ -1550,27 +1550,27 @@
         ))
         // bangumi独有项：用手机观看
         bangumiItems.push(new Item(
-            'bangumi-page-hide-watch-on-phone', 'bangumi', '隐藏 视频下方-用手机观看', null,
+            'bangumi-page-hide-watch-on-phone', 'bangumi', '隐藏 视频下方-用手机观看 ★', null,
             `.toolbar span:has(>[class^='Phone_mobile']) {display: none !important;}`
         ))
         // bangumi独有项：一起看
         bangumiItems.push(new Item(
-            'bangumi-page-hide-watch-together', 'bangumi', '隐藏 视频下方-一起看', null,
+            'bangumi-page-hide-watch-together', 'bangumi', '隐藏 视频下方-一起看 ★', null,
             `.toolbar span:has(>#watch_together_tab) {display: none !important;}`
         ))
         // bangumi独有项：关闭整个工具栏
         bangumiItems.push(new Item(
-            'bangumi-page-hide-toolbar', 'bangumi', '隐藏 视频下方-整个工具栏(赞/币/转/一起看)', null,
+            'bangumi-page-hide-toolbar', 'bangumi', '隐藏 视频下方-整个工具栏(赞币转) ★', null,
             `.player-left-components .toolbar {display: none !important;}`
         ))
         // bangumi独有项：作品介绍
         bangumiItems.push(new Item(
-            'bangumi-page-hide-media-info', 'bangumi', '隐藏 视频下方-作品介绍', null,
+            'bangumi-page-hide-media-info', 'bangumi', '隐藏 视频下方-作品介绍 ★', null,
             `[class^='mediainfo_mediaInfo'] {display: none !important;}`
         ))
         // bangumi独有项：精简作品介绍
         bangumiItems.push(new Item(
-            'bangumi-page-simple-media-info', 'bangumi', '视频下方-作品介绍 精简', null,
+            'bangumi-page-simple-media-info', 'bangumi', '视频下方-作品介绍 精简 ★', null,
             `[class^='mediainfo_btnHome'], [class^='upinfo_upInfoCard'] {display: none !important;}
             [class^='mediainfo_score'] {font-size: 25px !important;}
             [class^='mediainfo_mediaDesc']:has( + [class^='mediainfo_media_desc_section']) {
@@ -1582,13 +1582,13 @@
         ))
         // bangumi独有项：承包榜
         bangumiItems.push(new Item(
-            'bangumi-page-hide-sponsor-module', 'bangumi', '隐藏 视频下方-承包榜', null,
+            'bangumi-page-hide-sponsor-module', 'bangumi', '隐藏 视频下方-承包榜 ★', null,
             `#sponsor_module {display: none !important;}`
         ))
         // 右栏
         // bangumi独有项：大会员栏
         bangumiItems.push(new Item(
-            'bangumi-page-hide-right-container-section-height', 'bangumi', '隐藏 右栏-大会员按钮', null,
+            'bangumi-page-hide-right-container-section-height', 'bangumi', '隐藏 右栏-大会员按钮 ★', null,
             `[class^='vipPaybar_'] {display: none !important;}`
         ))
         bangumiItems.push(new Item(
@@ -1597,13 +1597,13 @@
         ))
         // bangumi独有项：会员标记
         bangumiItems.push(new Item(
-            'bangumi-page-hide-eplist-badge', 'bangumi', '隐藏 右栏-视频列表 会员标记', null,
+            'bangumi-page-hide-eplist-badge', 'bangumi', '隐藏 右栏-视频列表 会员标记 ★', null,
             `[class^='eplist_ep_list_wrapper'] [class^='imageListItem_badge'] {display: none !important;}
             [class^='eplist_ep_list_wrapper'] [class^='numberListItem_badge'] {display: none !important;}`
         ))
         // bangumi独有项：相关版权作品推荐
         bangumiItems.push(new Item(
-            'bangumi-page-hide-recommend', 'bangumi', '隐藏 右栏-全部相关推荐', null,
+            'bangumi-page-hide-recommend', 'bangumi', '隐藏 右栏-相关作品推荐 ★', null,
             `.plp-r [class^='recommend_wrap'] {display: none !important;}`
         ))
         // 评论区相关
@@ -1762,7 +1762,7 @@
         // 右下角
         // bangumi独有项：新版反馈
         bangumiItems.push(new Item(
-            'bangumi-page-hide-sidenav-issue', 'bangumi', '隐藏 右下角-新版反馈', null,
+            'bangumi-page-hide-sidenav-issue', 'bangumi', '隐藏 右下角-新版反馈 ★', null,
             `[class*='navTools_navMenu'] [title='新版反馈'] {display: none !important;}`
         ))
         bangumiItems.push(new Item(

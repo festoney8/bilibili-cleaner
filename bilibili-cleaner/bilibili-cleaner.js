@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.1.0
-// @description  净化 B站/哔哩哔哩 页面内的各种元素，去广告，提供200项自定义功能，深度定制自己的B站页面
+// @version      1.1.1
+// @description  净化 B站/哔哩哔哩 页面内的各种元素，去广告，提供300+项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
 // @match        *://*.bilibili.com/*
@@ -2386,9 +2386,38 @@
             `.right-entry-item.right-entry-item--upload {visibility: hidden !important;}`
         ))
     }
+    // 通用滚动条样式
+    commonItems.push(new Item(
+        'beauty-scrollbar', 'common', '美化页面滚动条', null,
+        `
+        ::-webkit-scrollbar {
+            width: 8px !important;
+            height: 8px !important;
+            background: transparent !important;
+        }
+        ::-webkit-scrollbar:hover {
+            background: rgba(128, 128, 128, 0.4) !important;
+        }
+        ::-webkit-scrollbar-thumb {
+            border: 1px solid rgba(255, 255, 255, 0.4) !important;
+            background-color: rgba(0, 0, 0, 0.4) !important;
+            z-index: 2147483647;
+            -webkit-border-radius: 8px !important;
+            background-clip: content-box !important;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(0, 0, 0, 0.8) !important;
+        }
+        ::-webkit-scrollbar-thumb:active {
+            background-color: rgba(0, 0, 0, 0.6) !important;
+        }
+        `
+    ))
+    // 通用URL净化
     commonItems.push(new Item(
         'url-cleaner', 'common', 'URL参数净化 (需刷新, 给UP充电时需关闭)', cleanURL, null
     ))
+
 
     log('item list complete')
 

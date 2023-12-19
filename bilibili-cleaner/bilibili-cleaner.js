@@ -1093,12 +1093,6 @@
             }`
         ))
         videoItems.push(new Item(
-            'video-page-hide-bpx-player-dm-root', 'video', '隐藏 弹幕栏-只在hover时显示弹幕栏', null,
-            `.bpx-player-dm-root {opacity: 0; transition: ease .1s;}
-            .bpx-player-control-wrap:hover .bpx-player-dm-root {opacity: 1; transition: ease .1s;}
-            .bpx-player-sending-area:hover .bpx-player-dm-root {opacity: 1; transition: ease .1s;}`
-        ))
-        videoItems.push(new Item(
             'video-page-hide-bpx-player-sending-area', 'video', '隐藏 弹幕栏-关闭整个弹幕栏', null,
             `.bpx-player-sending-area {display: none !important;}`
         ))
@@ -1548,12 +1542,6 @@
         bangumiItems.push(new Item(
             'video-page-hide-bpx-player-sending-area', 'bangumi', '隐藏 弹幕栏-关闭整个弹幕栏', null,
             `.bpx-player-sending-area {display: none !important;}`
-        ))
-        bangumiItems.push(new Item(
-            'video-page-hide-bpx-player-dm-root', 'bangumi', '隐藏 弹幕栏-只在hover时显示弹幕框', null,
-            `.bpx-player-dm-root {opacity: 0; transition: ease .1s;}
-            .bpx-player-control-wrap:hover .bpx-player-dm-root {opacity: 1; transition: ease .1s;}
-            .bpx-player-sending-area:hover .bpx-player-dm-root {opacity: 1; transition: ease .1s;}`
         ))
         // 视频下信息
         bangumiItems.push(new Item(

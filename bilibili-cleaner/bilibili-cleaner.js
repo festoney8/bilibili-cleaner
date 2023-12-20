@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.1.3
+// @version      1.1.4
 // @description  净化 B站/哔哩哔哩 页面内的各种元素，去广告，提供300+项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -1021,7 +1021,9 @@
         ))
         videoItems.push(new Item(
             'video-page-hide-bpx-player-top-left-title', 'video', '隐藏 播放器-左上角 播放器内标题', null,
-            `.bpx-player-top-left-title {display: none !important;}`
+            `.bpx-player-top-title {display: none !important;}
+            /* 播放器上方阴影渐变 */
+            .bpx-player-top-mask {display: none !important;}`
         ))
         videoItems.push(new Item(
             'video-page-hide-bpx-player-top-left-music', 'video', '隐藏 播放器-左上角 视频音乐链接', null,
@@ -1039,6 +1041,20 @@
             'video-page-hide-bpx-player-dialog-wrap', 'video', '隐藏 播放器-弹幕悬停点赞/复制/举报', null,
             `.bpx-player-dialog-wrap {display: none !important;}`
         ))
+        videoItems.push(new Item(
+            'video-page-bpx-player-bili-dm-vip-white', 'video', '播放器-彩色渐变弹幕 变成白色', null,
+            `#bilibili-player .bili-dm>.bili-dm-vip {
+                background: unset !important;
+                background-size: unset !important;
+                /* 父元素未指定 var(--textShadow), 默认重墨描边凑合用 */
+                text-shadow: 1px 0 1px #000000,0 1px 1px #000000,0 -1px 1px #000000,-1px 0 1px #000000 !important;
+                text-stroke: none !important;
+                -webkit-text-stroke: none !important;
+                -moz-text-stroke: none !important;
+                -ms-text-stroke: none !important;
+            }`
+        ))
+        // 播放控制
         videoItems.push(new Item(
             'video-page-hide-bpx-player-ctrl-prev', 'video', '隐藏 播放控制-上一个视频', null,
             `.bpx-player-ctrl-prev {display: none !important;}`
@@ -1456,7 +1472,7 @@
     }
     // 版权视频播放页
     // 尽可能与普通播放页共用itemID, 实现开关状态同步
-    // 与普通播放页不同的项目使用独立ID
+    // 与普通播放页不同的项目使用独立ID, 并在功能介绍重点标注
     else if (url.startsWith('https://www.bilibili.com/bangumi/play/')) {
         // 净化分享
         bangumiItems.push(new Item(
@@ -1473,8 +1489,10 @@
         ))
         // 播放器相关
         bangumiItems.push(new Item(
-            'video-page-hide-bpx-player-top-left-title', 'bangumi', '隐藏 播放器-播放器内视频标题', null,
-            `.bpx-player-top-title {display: none !important;}`
+            'video-page-hide-bpx-player-top-left-title', 'bangumi', '隐藏 播放器-播放器内标题', null,
+            `.bpx-player-top-title {display: none !important;}
+            /* 播放器上方阴影渐变 */
+            .bpx-player-top-mask {display: none !important;}`
         ))
         // bangumi独有项：追番/追剧按钮
         bangumiItems.push(new Item(
@@ -1497,6 +1515,19 @@
         bangumiItems.push(new Item(
             'video-page-hide-bpx-player-dialog-wrap', 'bangumi', '隐藏 播放器-弹幕悬停点赞/复制/举报', null,
             `.bpx-player-dialog-wrap {display: none !important;}`
+        ))
+        bangumiItems.push(new Item(
+            'video-page-bpx-player-bili-dm-vip-white', 'bangumi', '播放器-彩色渐变弹幕 变成白色', null,
+            `#bilibili-player .bili-dm>.bili-dm-vip {
+                background: unset !important;
+                background-size: unset !important;
+                /* 父元素未指定 var(--textShadow), 默认重墨描边凑合用 */
+                text-shadow: 1px 0 1px #000000,0 1px 1px #000000,0 -1px 1px #000000,-1px 0 1px #000000 !important;
+                text-stroke: none !important;
+                -webkit-text-stroke: none !important;
+                -moz-text-stroke: none !important;
+                -ms-text-stroke: none !important;
+            }`
         ))
         // 播放控制
         bangumiItems.push(new Item(

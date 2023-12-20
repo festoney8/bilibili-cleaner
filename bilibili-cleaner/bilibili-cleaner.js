@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.1.2
+// @version      1.1.3
 // @description  净化 B站/哔哩哔哩 页面内的各种元素，去广告，提供300+项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -300,6 +300,9 @@
         }
         #bili-cleaner-group-list::-webkit-scrollbar {
             display: none;
+        }
+        #bili-cleaner-group-list {
+            scrollbar-width: none !important;
         }
         /* panel内的group */
         .bili-cleaner-group {
@@ -1052,8 +1055,9 @@
             'video-page-hide-bpx-player-ctrl-viewpoint', 'video', '隐藏 播放控制-章节列表', null,
             `.bpx-player-ctrl-viewpoint {display: none !important;}`
         ))
+        // Firefox的画中画按钮为浏览器自带，无法通过CSS隐藏，只可通过浏览器设置关闭
         videoItems.push(new Item(
-            'video-page-hide-bpx-player-ctrl-pip', 'video', '隐藏 播放控制-画中画', null,
+            'video-page-hide-bpx-player-ctrl-pip', 'video', '隐藏 播放控制-画中画(Chrome)', null,
             `.bpx-player-ctrl-pip {display: none !important;}`
         ))
         videoItems.push(new Item(
@@ -1508,7 +1512,7 @@
             `.bpx-player-ctrl-next {display: none !important;}`
         ))
         bangumiItems.push(new Item(
-            'video-page-hide-bpx-player-ctrl-pip', 'bangumi', '隐藏 播放控制-画中画', null,
+            'video-page-hide-bpx-player-ctrl-pip', 'bangumi', '隐藏 播放控制-画中画(Chrome)', null,
             `.bpx-player-ctrl-pip {display: none !important;}`
         ))
         bangumiItems.push(new Item(
@@ -1630,7 +1634,7 @@
         ))
         // bangumi独有项：会员标记
         bangumiItems.push(new Item(
-            'bangumi-page-hide-eplist-badge', 'bangumi', '隐藏 右栏-视频列表 会员标记 ★', null,
+            'bangumi-page-hide-eplist-badge', 'bangumi', '隐藏 右栏-视频列表 会员/限免标记 ★', null,
             `[class^='eplist_ep_list_wrapper'] [class^='imageListItem_badge'] {display: none !important;}
             [class^='eplist_ep_list_wrapper'] [class^='numberListItem_badge'] {display: none !important;}`
         ))
@@ -2423,6 +2427,7 @@
     commonItems.push(new Item(
         'beauty-scrollbar', 'common', '美化页面滚动条', null,
         `
+        /* WebKit */
         ::-webkit-scrollbar {
             width: 8px !important;
             height: 8px !important;
@@ -2443,6 +2448,12 @@
         }
         ::-webkit-scrollbar-thumb:active {
             background-color: rgba(0, 0, 0, 0.6) !important;
+        }
+
+        /* Firefox */
+        * {
+            scrollbar-color: rgba(0, 0, 0, 0.6) transparent !important;
+            scrollbar-width: thin !important;
         }
         `
     ))
@@ -2473,7 +2484,7 @@
     setInterval(() => {
         let newURL = location.href
         if (newURL !== currURL) {
-            log('url change detect, run itemFunc again')
+            log('url change detected, run itemFunc again')
             GROUPS.forEach(e => { e.enableGroup(true) })
             currURL = newURL
         }

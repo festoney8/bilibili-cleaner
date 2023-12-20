@@ -21,7 +21,7 @@
 // @run-at       document-start
 // ==/UserScript==
 
-(function () {
+(async function () {
     'use strict'
 
     // 计时日志，debug用
@@ -45,6 +45,47 @@
         if (!debugMode) { return }
         console.trace('[bili-cleaner]')
     }
+
+    //===================================================================================
+    // run-at document-start下, 向head内插入style时小概率报错 TypeError: document.head is null, 导致规则载入不全
+    // chrome和firefox均复现，chrome下捕捉不到error, firefox下可捕捉
+    // 出现概率低, 多见于首次开启某个页面(猜测是无缓存状态)
+    // https://github.com/greasemonkey/greasemonkey/issues/2515
+
+    // 观测head出现
+    function waitForHead() {
+        return new Promise((resolve) => {
+            const observer = new MutationObserver(() => {
+                observer.disconnect()
+                resolve()
+            })
+            observer.observe(document.documentElement, { childList: true })
+        })
+    }
+
+    // 观测head内子元素, 出现子元素标志着head已构建完成
+    function waitForHeadBuild() {
+        return new Promise((resolve) => {
+            const observer = new MutationObserver((mutationsList) => {
+                for (const mutation of mutationsList) {
+                    if (mutation.type === 'childList' && mutation.target === document.head) {
+                        observer.disconnect()
+                        resolve()
+                    }
+                }
+            })
+            observer.observe(document.head, { childList: true })
+        })
+    }
+
+    // chrominum系head永远非空, firefox可捕捉到空head, 故让firefox等待head出现
+    if (navigator.userAgent.toLowerCase().includes('firefox') && document.head === null) {
+        await waitForHead()
+        log('firefox waitForHead complete')
+    }
+    // 此时head非空, 可输出innerHTML, 但存在尚未渲染的可能, 仍有概率插入失败, 故观测head的child出现
+    await waitForHeadBuild()
+    log('waitForHeadBuild complete')
 
     //===================================================================================
     class Group {
@@ -171,19 +212,9 @@
                     // 指定CSS片段ID，用于实时启用停用
                     style.setAttribute('bili-cleaner-css', this.itemID)
 
-                    // 随机报错 TypeError: document.head is null
-                    // document-start下, 页面载入时head标签内部分style标签插入失败, 导致脚本规则载入不全
-                    // 出现概率1/20, 多见于首次开启某个页面(猜测是无缓存状态)
-                    // https://github.com/greasemonkey/greasemonkey/issues/2515
-                    if (document.head !== null) {
-                        document.head.appendChild(style)
-                        log(`insertCSS ${this.itemID} OK`)
-                    } else {
-                        waitForDocumentHead().then(() => {
-                            document.head.appendChild(style)
-                            log(`insertCSS ${this.itemID}, after waiting head, OK`)
-                        })
-                    }
+                    // 随机规则丢失通过观测document.head解决
+                    document.head.appendChild(style)
+                    log(`insertCSS ${this.itemID} OK`)
                 } catch (err) {
                     error(`insertCSS ${this.itemID} failed`)
                     error(err)
@@ -221,21 +252,6 @@
                 }
             }
         }
-    }
-
-    // 等待head出现
-    // https://github.com/greasemonkey/greasemonkey/issues/2515
-    async function waitForDocumentHead() {
-        return new Promise((resolve) => {
-            const checkHead = () => {
-                if (document.head) {
-                    resolve(document.head)
-                } else {
-                    setTimeout(checkHead, 100)
-                }
-            }
-            checkHead()
-        })
     }
 
     function addGlobalCSS() {
@@ -2493,9 +2509,6 @@
         'url-cleaner', 'common', 'URL参数净化 (需刷新, 给UP充电时需关闭)', cleanURL, null
     ))
 
-
-    log('item list complete')
-
     homepageItems.length && GROUPS.push(new Group('homepage', '当前是：首页', homepageItems))
     videoItems.length && GROUPS.push(new Group('video', '当前是：播放页', videoItems))
     bangumiItems.length && GROUPS.push(new Group('bangumi', '当前是：版权视频播放页', bangumiItems))
@@ -2539,4 +2552,8 @@
     // 注册油猴插件菜单选项
     GM_registerMenuCommand("设置", openSettings)
     log('register menu complete')
-})();
+
+})().catch(err => {
+    console.error('[bili-cleaner] fault, exit')
+    console.error(err)
+});

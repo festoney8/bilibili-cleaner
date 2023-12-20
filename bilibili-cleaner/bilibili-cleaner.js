@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.1.1
+// @version      1.1.2
 // @description  净化 B站/哔哩哔哩 页面内的各种元素，去广告，提供300+项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -157,20 +157,38 @@
         // 启用CSS片段
         insertItemCSS() {
             if (this.itemCSS) {
-                // check if CSS exist
-                const isExist = document.querySelector(`head style[bili-cleaner-css=${this.itemID}]`)
-                if (isExist) {
-                    return
+                try {
+                    // check if CSS exist
+                    const isExist = document.querySelector(`head style[bili-cleaner-css=${this.itemID}]`)
+                    if (isExist) {
+                        log(`insertCSS ${this.itemID} CSS exist, ignore`)
+                        return
+                    }
+
+                    const style = document.createElement('style')
+                    // 不设置innerText, 否则多行CSS插入head后会产生<br>标签
+                    style.innerHTML = this.itemCSS
+                    // 指定CSS片段ID，用于实时启用停用
+                    style.setAttribute('bili-cleaner-css', this.itemID)
+
+                    // 随机报错 TypeError: document.head is null
+                    // document-start下, 页面载入时head标签内部分style标签插入失败, 导致脚本规则载入不全
+                    // 出现概率1/20, 多见于首次开启某个页面(猜测是无缓存状态)
+                    // https://github.com/greasemonkey/greasemonkey/issues/2515
+                    if (document.head !== null) {
+                        document.head.appendChild(style)
+                        log(`insertCSS ${this.itemID} OK`)
+                    } else {
+                        waitForDocumentHead().then(() => {
+                            document.head.appendChild(style)
+                            log(`insertCSS ${this.itemID}, after waiting head, OK`)
+                        })
+                    }
+                } catch (err) {
+                    error(`insertCSS ${this.itemID} failed`)
+                    error(err)
+                    trace()
                 }
-
-                const style = document.createElement('style')
-                // 不设置innerText, 否则多行CSS插入head后会产生<br>标签
-                style.innerHTML = this.itemCSS
-                // 指定CSS片段ID，用于实时启用停用
-                style.setAttribute('bili-cleaner-css', this.itemID)
-                document.head.appendChild(style)
-
-                log(`insertCSS ${this.itemID} OK`)
             }
         }
         // 停用CSS片段
@@ -203,6 +221,21 @@
                 }
             }
         }
+    }
+
+    // 等待head出现
+    // https://github.com/greasemonkey/greasemonkey/issues/2515
+    async function waitForDocumentHead() {
+        return new Promise((resolve) => {
+            const checkHead = () => {
+                if (document.head) {
+                    resolve(document.head)
+                } else {
+                    setTimeout(checkHead, 100)
+                }
+            }
+            checkHead()
+        })
     }
 
     function addGlobalCSS() {

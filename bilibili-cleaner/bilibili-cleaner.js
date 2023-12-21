@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.1.4
+// @version      1.1.5
 // @description  净化 B站/哔哩哔哩 页面内的各种元素，去广告，提供300+项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -24,12 +24,17 @@
 (async function () {
     'use strict'
 
-    // 计时日志，debug用
+    // 计时日志
     const debugMode = false
     let lastTime = performance.now()
     let startTime = lastTime
     let currTime = lastTime
     function log(...args) {
+        currTime = performance.now()
+        console.log(`[bili-cleaner] ${(currTime - lastTime).toFixed(1)} / ${(currTime - startTime).toFixed(1)} ms | ${args.join(' ')}`)
+        lastTime = currTime
+    }
+    function debug(...args) {
         if (!debugMode) { return }
         currTime = performance.now()
         console.log(`[bili-cleaner] ${(currTime - lastTime).toFixed(1)} / ${(currTime - startTime).toFixed(1)} ms | ${args.join(' ')}`)
@@ -45,6 +50,7 @@
         if (!debugMode) { return }
         console.trace('[bili-cleaner]')
     }
+    log('script start')
 
     //===================================================================================
     // run-at document-start下, 向head内插入style时小概率报错 TypeError: document.head is null, 导致规则载入不全
@@ -52,40 +58,41 @@
     // 出现概率低, 多见于首次开启某个页面(猜测是无缓存状态)
     // https://github.com/greasemonkey/greasemonkey/issues/2515
 
-    // 观测head出现
-    function waitForHead() {
-        return new Promise((resolve) => {
-            const observer = new MutationObserver(() => {
-                observer.disconnect()
-                resolve()
-            })
-            observer.observe(document.documentElement, { childList: true })
-        })
-    }
-
-    // 观测head内子元素, 出现子元素标志着head已构建完成
-    function waitForHeadBuild() {
-        return new Promise((resolve) => {
-            const observer = new MutationObserver((mutationsList) => {
-                for (const mutation of mutationsList) {
-                    if (mutation.type === 'childList' && mutation.target === document.head) {
-                        observer.disconnect()
-                        resolve()
-                    }
-                }
-            })
-            observer.observe(document.head, { childList: true })
-        })
-    }
-
-    // chrominum系head永远非空, firefox可捕捉到空head, 故让firefox等待head出现
+    // firefox document.head观测
+    // firefox可捕捉到空head, 让firefox等待head出现+等待head渲染
+    // chrome系head永远非空, head渲染完成后仍会出现规则丢失情况, 故此时不处理, 由监听load事件的补丁解决
     if (navigator.userAgent.toLowerCase().includes('firefox') && document.head === null) {
+        // 观测head出现
+        function waitForHead() {
+            return new Promise((resolve) => {
+                const observer = new MutationObserver(() => {
+                    observer.disconnect()
+                    resolve()
+                })
+                observer.observe(document.documentElement, { childList: true })
+            })
+        }
+        // 观测head内子元素, 出现子元素标志着head已构建完成
+        function waitForHeadBuild() {
+            return new Promise((resolve) => {
+                const observer = new MutationObserver((mutationsList) => {
+                    for (const mutation of mutationsList) {
+                        if (mutation.type === 'childList' && mutation.target === document.head) {
+                            observer.disconnect()
+                            resolve()
+                        }
+                    }
+                })
+                observer.observe(document.head, { childList: true })
+            })
+        }
         await waitForHead()
-        log('firefox waitForHead complete')
+        debug('firefox waitForHead complete')
+        // 此时head非空, 可输出innerHTML, 但存在尚未渲染的可能, 仍有概率插入失败, 故观测head的child出现
+        await waitForHeadBuild()
+        debug('waitForHeadBuild complete')
     }
-    // 此时head非空, 可输出innerHTML, 但存在尚未渲染的可能, 仍有概率插入失败, 故观测head的child出现
-    await waitForHeadBuild()
-    log('waitForHeadBuild complete')
+    log('wait for head complete')
 
     //===================================================================================
     class Group {
@@ -202,7 +209,7 @@
                     // check if CSS exist
                     const isExist = document.querySelector(`head style[bili-cleaner-css=${this.itemID}]`)
                     if (isExist) {
-                        log(`insertCSS ${this.itemID} CSS exist, ignore`)
+                        debug(`insertCSS ${this.itemID} CSS exist, ignore`)
                         return
                     }
 
@@ -214,7 +221,7 @@
 
                     // 随机规则丢失通过观测document.head解决
                     document.head.appendChild(style)
-                    log(`insertCSS ${this.itemID} OK`)
+                    debug(`insertCSS ${this.itemID} OK`)
                 } catch (err) {
                     error(`insertCSS ${this.itemID} failed`)
                     error(err)
@@ -228,7 +235,7 @@
                 const style = document.querySelector(`head style[bili-cleaner-css=${this.itemID}]`)
                 if (style) {
                     style.parentNode.removeChild(style)
-                    log(`removeCSS ${this.itemID} OK`)
+                    debug(`removeCSS ${this.itemID} OK`)
                 }
             }
         }
@@ -468,7 +475,7 @@
                 const aid = dec(match[1])
                 const newURL = `https://www.bilibili.com/video/av${aid}${partNum}${location.hash}`
                 history.replaceState(null, null, newURL)
-                log('bv2av complete')
+                debug('bv2av complete')
             }
         }
     }
@@ -504,10 +511,10 @@
                     }
                     navigator.clipboard.writeText(shareText)
                 })
-                log('simpleShare complete')
+                debug('simpleShare complete')
             } else if (counter > 50) {
                 clearInterval(checkElement)
-                log('simpleShare timeout')
+                debug('simpleShare timeout')
             }
         }, 200)
     }
@@ -534,10 +541,10 @@
                     let shareText = `《${mainTitle}》${subTitle} \nhttps://www.bilibili.com${location.pathname}`
                     navigator.clipboard.writeText(shareText)
                 })
-                log('bangumiSimpleShare complete')
+                debug('bangumiSimpleShare complete')
             } else if (counter > 50) {
                 clearInterval(checkElement)
-                log('bangumiSimpleShare timeout')
+                debug('bangumiSimpleShare timeout')
             }
         }, 200)
     }
@@ -574,7 +581,7 @@
         if (newURL !== url) {
             history.replaceState(null, null, newURL)
         }
-        log('cleanURL complete')
+        debug('cleanURL complete')
     }
 
     //===================================================================================
@@ -1163,7 +1170,9 @@
         ))
         videoItems.push(new Item(
             'video-page-hide-bpx-player-sending-area', 'video', '隐藏 弹幕栏-关闭整个弹幕栏', null,
-            `.bpx-player-sending-area {display: none !important;}`
+            `.bpx-player-sending-area {display: none !important;}
+            /* video page的player, height由JS动态设定, 无法去黑边 */
+            #bilibili-player-wrap {height: calc(var(--video-width)*.5625)}`
         ))
         // 视频下信息
         videoItems.push(new Item(
@@ -1625,7 +1634,11 @@
         ))
         bangumiItems.push(new Item(
             'video-page-hide-bpx-player-sending-area', 'bangumi', '隐藏 弹幕栏-关闭整个弹幕栏', null,
-            `.bpx-player-sending-area {display: none !important;}`
+            `.bpx-player-sending-area {display: none !important;}
+            /* 关闭弹幕栏后 播放器去黑边 */
+            #bilibili-player-wrap[class^='video_playerNormal'] {height: calc(var(--video-width)*.5625)}
+            #bilibili-player-wrap[class^='video_playerWide'] {height: calc(var(--containerWidth)*.5625)}
+            `
         ))
         // 视频下信息
         bangumiItems.push(new Item(
@@ -2446,23 +2459,23 @@
         ))
         commonItems.push(new Item(
             'common-hide-nav-message', 'common', '隐藏 顶栏-消息', null,
-            `.v-popover-wrap:has([href^="//message.bilibili.com"]) {display: none !important;}`
+            `.v-popover-wrap:has([href^="//message.bilibili.com"], [data-idx="message"]) {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-dynamic', 'common', '隐藏 顶栏-动态', null,
-            `.v-popover-wrap:has([href^="//t.bilibili.com"]) {display: none !important;}`
+            `.v-popover-wrap:has([href^="//t.bilibili.com"], [data-idx="dynamic"]) {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-favorite', 'common', '隐藏 顶栏-收藏', null,
-            `.v-popover-wrap:has(.header-favorite-container) {display: none !important;}`
+            `.v-popover-wrap:has(.header-favorite-container, [data-idx="fav"]) {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-history', 'common', '隐藏 顶栏-历史', null,
-            `.v-popover-wrap:has([href="//www.bilibili.com/account/history"]) {display: none !important;}`
+            `.v-popover-wrap:has([href="//www.bilibili.com/account/history"], [data-idx="history"]) {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-member', 'common', '隐藏 顶栏-创作中心', null,
-            `.right-entry-item:has(a[href="//member.bilibili.com/platform/home"]) {display: none !important;}`
+            `.right-entry-item:has(a[href="//member.bilibili.com/platform/home"], [data-idx="creation"]) {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-upload', 'common', '隐藏 顶栏-投稿', null,
@@ -2516,21 +2529,36 @@
     dynamicItems.length && GROUPS.push(new Group('dynamic', '当前是：动态页', dynamicItems))
     liveItems.length && GROUPS.push(new Group('live', '当前是：直播页', liveItems))
     commonItems.length && GROUPS.push(new Group('common', '通用', commonItems))
-
-    log('build group complete')
+    debug('build groups complete')
 
     GROUPS.forEach(e => { e.enableGroup() })
+    log('enable groups complete')
 
-    log('enable group complete')
+    // chrome补丁, 二次检查解决规则载入不全问题, 基本只出现在bangumi page
+    // firefox可用观测head解决null, chrome系观测到head构建后仍极小可能可能出bug
+    // 测试可知:
+    // chrome的head内插入style均成功, 在DOMContentLoaded时, style数量正确
+    // 在readyState=complete后, style数量有概率会减少, 规则丢失, 原因不明
+    if (url.startsWith('https://www.bilibili.com/bangumi/play/') && navigator.userAgent.toLowerCase().includes('chrome')) {
+        window.addEventListener('load', () => {
+            debug('chrome recheck start')
+            for (let i = GROUPS.length - 1; i >= 0; i--) {
+                GROUPS[i].enableGroup()
+            }
+            debug('chrome recheck complete')
+        })
+        debug('patching chrome complete')
+    }
 
     // 监听各种形式的URL变化(普通监听无法检测到切换视频)
-    let currURL = location.href
+    let lastURL = location.href
     setInterval(() => {
-        let newURL = location.href
-        if (newURL !== currURL) {
-            log('url change detected, run itemFunc again')
+        let currURL = location.href
+        if (currURL !== lastURL) {
+            debug('url change detected')
             GROUPS.forEach(e => { e.enableGroup(true) })
-            currURL = newURL
+            lastURL = currURL
+            debug('url change reload group complete')
         }
     }, 500)
 
@@ -2540,20 +2568,21 @@
         if (panel) {
             return
         }
-        log('panel create start')
+        debug('panel create start')
         addGlobalCSS()
         createPanel()
         GROUPS.forEach(e => {
             e.insertGroup()
             e.insertItems()
         })
-        log('panel create complete')
+        debug('panel create complete')
     }
     // 注册油猴插件菜单选项
     GM_registerMenuCommand("设置", openSettings)
-    log('register menu complete')
+    debug('register menu complete')
+    log('script end')
 
 })().catch(err => {
-    console.error('[bili-cleaner] fault, exit')
+    console.error('[bili-cleaner] WAITING FOR HEAD FATAL, EXIT')
     console.error(err)
 });

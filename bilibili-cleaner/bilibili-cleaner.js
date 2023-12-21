@@ -480,7 +480,7 @@
         }
     }
 
-    // 重写分享按钮功能
+    // 覆盖分享按钮功能
     let isSimpleShareBtn = false
     function simpleShare() {
         if (isSimpleShareBtn) {
@@ -498,14 +498,17 @@
                 // 新增click事件
                 // 若replace element, 会在切换视频后无法更新视频分享数量, 故直接新增click事件覆盖剪贴板
                 shareBtn.addEventListener('click', () => {
-                    const title = document.querySelector("#viewbox_report > h1")?.textContent
-                    let pName = location.pathname
-                    if (pName.endsWith('/')) {
-                        pName = pName.slice(0, -1)
+                    let title = document.querySelector("#viewbox_report > h1")?.textContent
+                    if (title[0] != '[' && title[0] != '【') {
+                        title = `【${title}】`
+                    }
+                    let urlpath = location.pathname
+                    if (urlpath.endsWith('/')) {
+                        urlpath = urlpath.slice(0, -1)
                     }
                     let urlObj = new URL(location.href)
                     let params = new URLSearchParams(urlObj.search)
-                    let shareText = `${title} \nhttps://www.bilibili.com${pName}`
+                    let shareText = `${title} \nhttps://www.bilibili.com${urlpath}`
                     if (params.has('p')) {
                         shareText += `?p=${params.get('p')}`
                     }
@@ -519,7 +522,7 @@
         }, 200)
     }
 
-    // 重写版权视频页分享按钮功能
+    // 覆盖版权视频页分享按钮功能 (疑似firefox在bangumi page覆盖失败)
     let isBangumiSimpleShareBtn = false
     function bangumiSimpleShare() {
         if (isBangumiSimpleShareBtn) {
@@ -538,7 +541,7 @@
                 shareBtn.addEventListener('click', () => {
                     const mainTitle = document.querySelector("[class^='mediainfo_mediaTitle']")?.textContent
                     const subTitle = document.getElementById('player-title')?.textContent
-                    let shareText = `《${mainTitle}》${subTitle} \nhttps://www.bilibili.com${location.pathname}`
+                    const shareText = `《${mainTitle}》${subTitle} \nhttps://www.bilibili.com${location.pathname}`
                     navigator.clipboard.writeText(shareText)
                 })
                 debug('bangumiSimpleShare complete')
@@ -1695,8 +1698,9 @@
         // bangumi独有项：会员标记
         bangumiItems.push(new Item(
             'bangumi-page-hide-eplist-badge', 'bangumi', '隐藏 右栏-视频列表 会员/限免标记 ★', null,
-            `[class^='eplist_ep_list_wrapper'] [class^='imageListItem_badge'] {display: none !important;}
-            [class^='eplist_ep_list_wrapper'] [class^='numberListItem_badge'] {display: none !important;}`
+            // 蓝色预告badge不可隐藏
+            `[class^='eplist_ep_list_wrapper'] [class^='imageListItem_badge']:not([style*='#00C0FF']) {display: none !important;}
+            [class^='eplist_ep_list_wrapper'] [class^='numberListItem_badge']:not([style*='#00C0FF']) {display: none !important;}`
         ))
         // bangumi独有项：相关版权作品推荐
         bangumiItems.push(new Item(
@@ -2422,7 +2426,8 @@
         ))
         commonItems.push(new Item(
             'common-hide-nav-moveclip', 'common', '隐藏 顶栏-活动/活动直播', null,
-            `div.bili-header__bar li:has(.loc-mc-box) {display: none !important;}`
+            `div.bili-header__bar li:has(.loc-mc-box) {display: none !important;}
+            div.bili-header__bar li:has([href^="https://live.bilibili.com/"]) {display: none !important;}`
         ))
         commonItems.push(new Item(
             'common-hide-nav-bdu', 'common', '隐藏 顶栏-百大评选', null,

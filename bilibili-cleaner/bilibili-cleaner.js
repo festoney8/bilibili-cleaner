@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      1.1.5
+// @version      1.1.6
 // @description  净化 B站/哔哩哔哩 页面内的各种元素，去广告，提供300+项自定义功能，深度定制自己的B站页面
 // @author       festoney8
 // @license      MIT
@@ -1368,6 +1368,16 @@
             'video-page-reply-user-name-color-default', 'video', '评论区-用户名 全部恢复默认色', null,
             `#comment .reply-item .user-name, #comment .reply-item .sub-user-name {color: #61666d !important;}}`
         ))
+        videoItems.push(new Item(
+            'video-page-reply-view-image-optimize', 'video', '评论区-笔记图片 优化观看体验(大图)', null,
+            // 单图模式隐藏底部图片列表, 多图模式淡化列表, hover复原, 左右按钮增大
+            `.reply-view-image .last-image, .reply-view-image .next-image {zoom: 1.4;}
+            .reply-view-image:has(.preview-item-box:only-child) .last-image {display: none !important;}
+            .reply-view-image:has(.preview-item-box:only-child) .next-image {display: none !important;}
+            .reply-view-image .preview-list:has(.preview-item-box:only-child) {display: none !important;}
+            .reply-view-image .preview-list {opacity: 0.2; transition: opacity 0.1s ease-in-out;}
+            .reply-view-image .preview-list:hover {opacity: 1; transition: opacity 0.1s ease-in-out;}`
+        ))
         // up主信息
         videoItems.push(new Item(
             'video-page-hide-up-sendmsg', 'video', '隐藏 右栏-给UP发消息', null,
@@ -1867,6 +1877,16 @@
         bangumiItems.push(new Item(
             'video-page-reply-user-name-color-default', 'bangumi', '评论区-用户名 全部恢复默认色', null,
             `#comment-module .reply-item .user-name, #comment-module .reply-item .sub-user-name {color: #61666d !important;}}`
+        ))
+        bangumiItems.push(new Item(
+            'video-page-reply-view-image-optimize', 'bangumi', '评论区-笔记图片 优化观看体验(大图)', null,
+            // 单图模式隐藏底部图片列表, 多图模式淡化列表, hover复原, 左右按钮增大
+            `.reply-view-image .last-image, .reply-view-image .next-image {zoom: 1.4;}
+            .reply-view-image:has(.preview-item-box:only-child) .last-image {display: none !important;}
+            .reply-view-image:has(.preview-item-box:only-child) .next-image {display: none !important;}
+            .reply-view-image .preview-list:has(.preview-item-box:only-child) {display: none !important;}
+            .reply-view-image .preview-list {opacity: 0.2; transition: opacity 0.1s ease-in-out;}
+            .reply-view-image .preview-list:hover {opacity: 1; transition: opacity 0.1s ease-in-out;}`
         ))
         // 右下角
         // bangumi独有项：新版反馈

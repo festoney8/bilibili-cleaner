@@ -1068,6 +1068,10 @@
             `.bpx-player-dialog-wrap {display: none !important;}`
         ))
         videoItems.push(new Item(
+            'video-page-bpx-player-bili-high-icon', 'video', '隐藏 播放器-高赞弹幕前点赞按钮', null,
+            `.bili-dm .bili-high-icon {display: none !important}`
+        ))
+        videoItems.push(new Item(
             'video-page-bpx-player-bili-dm-vip-white', 'video', '播放器-彩色渐变弹幕 变成白色', null,
             `#bilibili-player .bili-dm>.bili-dm-vip {
                 background: unset !important;
@@ -1543,6 +1547,10 @@
         bangumiItems.push(new Item(
             'video-page-hide-bpx-player-dialog-wrap', 'bangumi', '隐藏 播放器-弹幕悬停点赞/复制/举报', null,
             `.bpx-player-dialog-wrap {display: none !important;}`
+        ))
+        bangumiItems.push(new Item(
+            'video-page-bpx-player-bili-high-icon', 'bangumi', '隐藏 播放器-高赞弹幕前点赞按钮', null,
+            `.bili-high-icon {display: none !important}`
         ))
         bangumiItems.push(new Item(
             'video-page-bpx-player-bili-dm-vip-white', 'bangumi', '播放器-彩色渐变弹幕 变成白色', null,

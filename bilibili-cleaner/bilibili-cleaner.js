@@ -1369,7 +1369,7 @@
             `#comment .reply-item .user-name, #comment .reply-item .sub-user-name {color: #61666d !important;}}`
         ))
         videoItems.push(new Item(
-            'video-page-reply-view-image-optimize', 'video', '评论区-笔记图片 优化观看体验(大图)', null,
+            'video-page-reply-view-image-optimize', 'video', '评论区-笔记图片 查看大图优化', null,
             // 单图模式隐藏底部图片列表, 多图模式淡化列表, hover复原, 左右按钮增大
             `.reply-view-image .last-image, .reply-view-image .next-image {zoom: 1.4;}
             .reply-view-image:has(.preview-item-box:only-child) .last-image {display: none !important;}
@@ -1879,7 +1879,7 @@
             `#comment-module .reply-item .user-name, #comment-module .reply-item .sub-user-name {color: #61666d !important;}}`
         ))
         bangumiItems.push(new Item(
-            'video-page-reply-view-image-optimize', 'bangumi', '评论区-笔记图片 优化观看体验(大图)', null,
+            'video-page-reply-view-image-optimize', 'bangumi', '评论区-笔记图片 查看大图优化', null,
             // 单图模式隐藏底部图片列表, 多图模式淡化列表, hover复原, 左右按钮增大
             `.reply-view-image .last-image, .reply-view-image .next-image {zoom: 1.4;}
             .reply-view-image:has(.preview-item-box:only-child) .last-image {display: none !important;}

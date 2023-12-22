@@ -1,16 +1,26 @@
 {
-  "name": "bilibili-cleaner",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "typescript": "^5.1.6",
-    "vite": "^4.4.8",
-    "vite-plugin-monkey": "^3.4.0"
-  }
+    "name": "bilibili-cleaner",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "prepare": "husky install",
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "preview": "vite preview",
+        "format": "prettier --write \"./**/*.{html,css,scss,ts,js,json,md}\"",
+        "lint": "eslint . --ext .vue,.js,.ts,.jsx,.tsx --fix"
+    },
+    "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^6.15.0",
+        "@typescript-eslint/parser": "^6.15.0",
+        "eslint": "^8.56.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-prettier": "^5.1.1",
+        "husky": "^8.0.3",
+        "prettier": "^3.1.1",
+        "typescript": "^5.1.6",
+        "vite": "^4.4.8",
+        "vite-plugin-monkey": "^3.4.0"
+    }
 }

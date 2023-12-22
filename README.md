@@ -1,1 +1,1 @@
-# userscripts-collection
+# bilibili-cleaner

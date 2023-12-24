@@ -1,6 +1,16 @@
-import { debug, error, trace } from '../utils/logging'
+import { debug, error, trace } from '../utils/logger'
 
-export class Panel {
+interface IPanel {
+    readonly panelCSS: myCSS
+    readonly panelHTML: myHTML
+    insertPanelCSS(): void
+    insertPanelHTML(): void
+    watchCloseBtn(): void
+    draggableBar(): void
+    createPanel(): void
+}
+
+export class Panel implements IPanel {
     panelCSS = `
     /* panel部分 */
     #bili-cleaner {
@@ -76,12 +86,12 @@ export class Panel {
         user-select: none;
     }
     .bili-cleaner-group hr {
-        border: 1px solid #eeeeee;
-        margin-top: 5px;
-        margin-bottom: 5px;
+        border: 1px solid #ddd;
+        margin-top: 3px;
+        margin-bottom: 3px;
     }
     .bili-cleaner-group-title {
-        font-size: 20px;
+        font-size: 22px;
         font-weight: bold;
         padding: 2px;
         color: black;
@@ -96,6 +106,10 @@ export class Panel {
         margin: 8px 0;
         font-size: 16px;
         color: black;
+    }
+    .bili-cleaner-item-list hr {
+        border: 1px solid #eee;
+        margin: 12px 15px;
     }
     .bili-cleaner-item-switch {
         vertical-align: middle;
@@ -155,7 +169,7 @@ export class Panel {
                 return
             }
             const style = document.createElement('style')
-            style.innerHTML = this.panelCSS
+            style.innerHTML = this.panelCSS.trim()
             style.setAttribute('id', 'bili-cleaner-panel-css')
             document.head.appendChild(style)
             debug('insertPanelCSS OK')

@@ -1,4 +1,4 @@
-import { log, debug } from './utils/logging'
+import { log, debug } from './utils/logger'
 
 /**
  * 初始化项目

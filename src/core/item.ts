@@ -1,20 +1,16 @@
-import { GM_getValue, GM_listValues, GM_setValue } from '$'
-import { debug, error, trace } from '../utils/logging'
+import { GM_getValue, GM_setValue } from '$'
+import { debug, error, trace } from '../utils/logger'
 
-/**
- * Iitem是插件的每项功能设定, 在每个panel group内显示为一行功能
- */
+/** Iitem是插件的每项功能设定, 在每个panel group内显示为一行功能 */
 interface IItem {
-    readonly uncheckedHTML?: string
-    readonly checkedHTML?: string
-    readonly itemHTML?: string
+    readonly uncheckedHTML?: myHTML
+    readonly checkedHTML?: myHTML
     insertItem(groupID: string): void
 }
 
-export class BaseItem implements IItem {
+export class NormalItem implements IItem {
     uncheckedHTML = `<input class="bili-cleaner-item-switch" type="checkbox">`
     checkedHTML = `<input class="bili-cleaner-item-switch" type="checkbox" checked>`
-    // item当前状态
     private isEnable: boolean
     // item对应的HTML input node
     private itemEle: HTMLInputElement | undefined
@@ -31,9 +27,9 @@ export class BaseItem implements IItem {
         private itemID: string,
         private description: string,
         private defaultStatus: boolean,
-        private itemFunc: () => void | null,
+        private itemFunc: (() => void) | undefined,
         private isItemFuncReload: boolean,
-        private itemCSS: string,
+        private itemCSS: myCSS,
     ) {
         this.isEnable = false
         this.itemEle = undefined
@@ -46,20 +42,10 @@ export class BaseItem implements IItem {
         GM_setValue(`BILICLEANER_${this.itemID}`, value)
         this.isEnable = value
     }
-    /**
-     * 获取item开关状态, 若第一次安装时不存在该key, 使用默认值
-     */
+    /** 获取item开关状态, 若第一次安装时不存在该key, 使用默认值 */
     getStatus() {
-        this.isEnable = GM_getValue(`BILICLEANER_${this.itemID}`)
-        if (!this.isEnable) {
-            // 初次安装时, 采用item默认设定
-            const keys = GM_listValues()
-            if (!keys.includes(`BILICLEANER_${this.itemID}`)) {
-                this.isEnable = this.defaultStatus
-                this.setStatus(this.isEnable)
-                debug(`item ${this.itemID} status not exist, use default: ${this.defaultStatus}`)
-            }
-        }
+        this.isEnable = GM_getValue(`BILICLEANER_${this.itemID}`, this.defaultStatus)
+        this.setStatus(this.isEnable)
     }
     /**
      * 在相应group内添加item
@@ -86,9 +72,7 @@ export class BaseItem implements IItem {
             trace()
         }
     }
-    /**
-     * 启用CSS片段, 向document.head插入style
-     */
+    /** 启用CSS片段, 向document.head插入style */
     insertItemCSS() {
         if (!this.itemCSS) {
             return
@@ -96,39 +80,35 @@ export class BaseItem implements IItem {
         try {
             // check if CSS exist
             if (document.querySelector(`head style[bili-cleaner-css=${this.itemID}]`)) {
-                debug(`insertCSS ${this.itemID} CSS exist, ignore`)
+                debug(`insertItemCSS ${this.itemID} CSS exist, ignore`)
                 return
             }
             const style = document.createElement('style')
             // 若使用innerText, 多行CSS插入head后会产生<br>标签
-            style.innerHTML = this.itemCSS
+            style.innerHTML = this.itemCSS.trim()
             // 指定CSS片段ID，用于实时启用停用
             style.setAttribute('bili-cleaner-css', this.itemID)
 
             // chrome系浏览器上可能出现style插入成功, 但DOMContentLoaded后规则丢失, 通过后续监听load事件打补丁解决
             document.head.appendChild(style)
-            debug(`insertCSS ${this.itemID} OK`)
+            debug(`insertItemCSS ${this.itemID} OK`)
         } catch (err) {
-            error(`insertCSS ${this.itemID} failed`)
+            error(`insertItemCSS ${this.itemID} failed`)
             error(err)
             trace()
         }
     }
-    /**
-     * 停用CSS片段, 从document.head移除style
-     */
+    /** 停用CSS片段, 从document.head移除style */
     removeItemCSS() {
         if (this.itemCSS) {
             const style = document.querySelector(`head style[bili-cleaner-css=${this.itemID}]`) as HTMLStyleElement
             if (style) {
                 style.parentNode?.removeChild(style)
-                debug(`removeCSS ${this.itemID} OK`)
+                debug(`removeItemCSS ${this.itemID} OK`)
             }
         }
     }
-    /**
-     * 监听item chekbox开关
-     */
+    /** 监听item chekbox开关 */
     watchItem() {
         try {
             this.itemEle = document.getElementById(this.itemID) as HTMLInputElement
@@ -149,9 +129,7 @@ export class BaseItem implements IItem {
             trace()
         }
     }
-    /**
-     * 执行item功能, 在页面head添加CSS并执行func
-     */
+    /** 执行item功能, 在页面head添加CSS并执行func */
     enableItem() {
         this.getStatus()
         if (this.isEnable) {
@@ -187,15 +165,14 @@ export class BaseItem implements IItem {
 }
 
 export class SeparatorItem implements IItem {
-    itemHTML = `<hr>`
     constructor() {}
     /**
-     * 向item list中添加分隔符, 用于划分功能组别
+     * 向item list中添加分隔符<hr>, 用于划分功能组别
      * @param groupID 由调用SeparatorItem的上级Group提供
      */
     insertItem(groupID: string) {
         try {
-            const e = document.createElement('label')
+            const e = document.createElement('hr')
             const itemGroupList = document.querySelector(`#${groupID} .bili-cleaner-item-list`) as HTMLFormElement
             if (itemGroupList) {
                 itemGroupList.appendChild(e)

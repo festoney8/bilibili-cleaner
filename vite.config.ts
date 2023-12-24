@@ -24,6 +24,7 @@ export default defineConfig({
                     '*://*.chat.bilibili.com/*',
                 ],
                 icon: 'https://www.bilibili.com/favicon.ico',
+                'run-at': 'document-start',
             },
         }),
     ],

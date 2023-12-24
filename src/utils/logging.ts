@@ -12,11 +12,11 @@ let currTime: number = startTime
  *
  * @param loggingFunc console.log等带级别打印日志的函数
  * @param forceEnable 强制启用日志输出, 用于log级别
- * @param debugMode 在debug模式启用日志输出, 用于debug和error
+ * @param isDebugMode 在debug模式启用日志输出, 用于debug和error
  * @returns 返回wrap后的日志函数
  */
-const wrapper = (loggingFunc: (..._args: any[]) => void | undefined, forceEnable: boolean, debugMode: boolean) => {
-    if (forceEnable || debugMode) {
+const wrapper = (loggingFunc: (..._args: any[]) => void | undefined, forceEnable: boolean, isDebugMode: boolean) => {
+    if (forceEnable || isDebugMode) {
         return (...innerArgs: any[]) => {
             currTime = performance.now()
             const during: string = (currTime - lastTime).toFixed(1)
@@ -30,10 +30,10 @@ const wrapper = (loggingFunc: (..._args: any[]) => void | undefined, forceEnable
     }
 }
 
-export const log = wrapper(console.log, debugMode, true)
-/** debugMode下, 仍使用log级别输出 */
-export const debug = wrapper(console.log, debugMode, false)
-export const error = wrapper(console.error, debugMode, false)
+export const log = wrapper(console.log, true, debugMode)
+// debugMode下, 仍使用log级别输出
+export const debug = wrapper(console.log, false, debugMode)
+export const error = wrapper(console.error, false, debugMode)
 
 export const trace = () => {
     if (!debugMode) {

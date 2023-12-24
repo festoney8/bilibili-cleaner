@@ -1,7 +1,17 @@
 import { GM_getValue, GM_listValues, GM_setValue } from '$'
 import { debug, error, trace } from '../utils/logging'
 
-class Item {
+/**
+ * Iitem是插件的每项功能设定, 在每个panel group内显示为一行功能
+ */
+interface IItem {
+    readonly uncheckedHTML?: string
+    readonly checkedHTML?: string
+    readonly itemHTML?: string
+    insertItem(groupID: string): void
+}
+
+export class BaseItem implements IItem {
     uncheckedHTML = `<input class="bili-cleaner-item-switch" type="checkbox">`
     checkedHTML = `<input class="bili-cleaner-item-switch" type="checkbox" checked>`
     // item当前状态
@@ -172,6 +182,29 @@ class Item {
                 error(err)
                 trace()
             }
+        }
+    }
+}
+
+export class SeparatorItem implements IItem {
+    itemHTML = `<hr>`
+    constructor() {}
+    /**
+     * 向item list中添加分隔符, 用于划分功能组别
+     * @param groupID 由调用SeparatorItem的上级Group提供
+     */
+    insertItem(groupID: string) {
+        try {
+            const e = document.createElement('label')
+            const itemGroupList = document.querySelector(`#${groupID} .bili-cleaner-item-list`) as HTMLFormElement
+            if (itemGroupList) {
+                itemGroupList.appendChild(e)
+                debug(`insertItem separator OK`)
+            }
+        } catch (err) {
+            error(`insertItem separator err`)
+            error(err)
+            trace()
         }
     }
 }

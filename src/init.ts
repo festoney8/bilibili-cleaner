@@ -19,15 +19,16 @@ export const init = async () => {
 
 /**
  * 观测head出现
- * run-at document-start下, 向head内插入style时小概率报错 TypeError: document.head is null, 导致规则载入不全
- * chrome和firefox均复现，chrome下捕捉不到error, firefox下可捕捉
+ * run-at document-start下, 向head内插入style时小概率报错 TypeError: document.head is null
+ * 导致规则载入不全, chrome和firefox均复现，chrome下捕捉不到error, firefox下可捕捉
  * 出现概率低, 多见于首次开启某个页面(猜测是无缓存状态)
- * Ref: https://github.com/greasemonkey/greasemonkey/issues/2515
+ * @see https://github.com/greasemonkey/greasemonkey/issues/2515
  * @returns Promise<void>
  */
 const waitForHead = () => {
     return new Promise<void>((resolve) => {
         const observer = new MutationObserver(() => {
+            // html元素下出现的第一批childList必定包含head
             observer.disconnect()
             resolve()
         })

@@ -5,47 +5,36 @@ let lastTime: number = startTime
 let currTime: number = startTime
 
 /**
- * 计时日志
+ * 计时日志wrapper
  * 输出格式: [bili-cleaner] 0.1 / 2.4 ms | XXXXXXXXXXXXXX
  * 第一个时间为上一条日志到本条日志间隔, 第二个时间为脚本开始总时长
  * 使用 performance.now() 做精确计时
+ *
+ * @param loggingFunc console.log等带级别打印日志的函数
+ * @param forceEnable 强制启用日志输出, 用于log级别
+ * @param debugMode 在debug模式启用日志输出, 用于debug和error
+ * @returns 返回wrap后的日志函数
  */
-export const log = (...args: any[]) => {
-    currTime = performance.now()
-    const during: string = (currTime - lastTime).toFixed(1)
-    const total: string = (currTime - startTime).toFixed(1)
-    console.log(`[bili-cleaner] ${during} / ${total} ms | ${args.join(' ')}`)
-    lastTime = currTime
-}
-/**
- * 在debugMode下, 用log级别打印debug info
- */
-export const debug = (...args: any[]) => {
-    if (!debugMode) {
-        return
+const wrapper = (loggingFunc: (..._args: any[]) => void | undefined, forceEnable: boolean, debugMode: boolean) => {
+    if (forceEnable || debugMode) {
+        return (...innerArgs: any[]) => {
+            currTime = performance.now()
+            const during: string = (currTime - lastTime).toFixed(1)
+            const total: string = (currTime - startTime).toFixed(1)
+            loggingFunc(`[bili-cleaner] ${during} / ${total} ms | ${innerArgs.join(' ')}`)
+            lastTime = currTime
+        }
     }
-    const currTime = performance.now()
-    const during: string = (currTime - lastTime).toFixed(1)
-    const total: string = (currTime - startTime).toFixed(1)
-    console.debug(`[bili-cleaner] ${during} / ${total} ms | ${args.join(' ')}`)
-    lastTime = currTime
-}
-/**
- * 在debugMode下, 打印error信息
- */
-export const error = (...args: any[]) => {
-    if (!debugMode) {
-        return
+    return (..._args: any) => {
+        return undefined
     }
-    const currTime = performance.now()
-    const during: string = (currTime - lastTime).toFixed(1)
-    const total: string = (currTime - startTime).toFixed(1)
-    console.error(`[bili-cleaner] ${during} / ${total} ms | ${args.join(' ')}`)
-    lastTime = currTime
 }
-/**
- * 在debugMode下, 打印error trace
- */
+
+export const log = wrapper(console.log, debugMode, true)
+/** debugMode下, 仍使用log级别输出 */
+export const debug = wrapper(console.log, debugMode, false)
+export const error = wrapper(console.error, debugMode, false)
+
 export const trace = () => {
     if (!debugMode) {
         return

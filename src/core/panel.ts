@@ -101,7 +101,7 @@ export class Panel {
         vertical-align: middle;
         width: 50px;
         height: 27px;
-        margin: 0;
+        margin: 0 1em 0 0;
         position: relative;
         border: 1px solid #dfdfdf;
         background-color: #fdfdfd;

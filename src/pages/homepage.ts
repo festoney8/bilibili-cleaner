@@ -73,7 +73,14 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
             }
             .recommended-container_floor-aside .container .floor-single-card:first-of-type {
                 margin-top: 0 !important;
-            }`,
+            }
+            /* 压缩分区栏高度, 压缩16px */
+            @media (max-width: 1099.9px) {.bili-header .bili-header__channel {height:84px!important}}
+            @media (min-width: 1100px) and (max-width: 1366.9px) {.bili-header .bili-header__channel {height:84px!important}}
+            @media (min-width: 1367px) and (max-width: 1700.9px) {.bili-header .bili-header__channel {height:94px!important}}
+            @media (min-width: 1701px) and (max-width: 2199.9px) {.bili-header .bili-header__channel {height:104px!important}}
+            @media (min-width: 2200px) {.bili-header .bili-header__channel {height:114px!important}}
+            `,
         ),
     )
     // 隐藏 整个分区栏
@@ -84,17 +91,18 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
             false,
             undefined,
             false,
-            `.bili-header__channel .channel-icons {
+            // 高权限, 否则被压缩分区栏高度影响
+            `#i_cecream .bili-header__channel .channel-icons {
                 display: none !important;
             }
-            .bili-header__channel .right-channel-container {
+            #i_cecream .bili-header__channel .right-channel-container {
                 display: none !important;
             }
             /* adapt bilibili-app-recommend */
-            .bili-header__channel {
+            #i_cecream .bili-header__channel {
                 height: 0 !important;
             }
-            main.bili-feed4-layout:not(:has(.bilibili-app-recommend-root)) {
+            #i_cecream main.bili-feed4-layout:not(:has(.bilibili-app-recommend-root)) {
                 margin-top: 20px !important;
             }`,
         ),

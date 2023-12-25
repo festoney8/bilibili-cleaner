@@ -5,17 +5,6 @@ const liveItems: (NormalItem | SeparatorItem)[] = []
 
 /** 直播页面规则, 只适用于直播间内, 不适用于直播首页 */
 if (location.host == 'live.bilibili.com') {
-    // 隐藏 信息栏-关闭整个信息栏
-    liveItems.push(
-        new NormalItem(
-            'live-page-head-info-vm',
-            '隐藏 信息栏-关闭整个信息栏',
-            false,
-            undefined,
-            false,
-            `#head-info-vm {display: none !important;}`,
-        ),
-    )
     // 隐藏 信息栏-粉丝团
     liveItems.push(
         new NormalItem(
@@ -113,6 +102,17 @@ if (location.host == 'live.bilibili.com') {
             undefined,
             false,
             `#head-info-vm .lower-row .right-ctnr .activity-gather-entry {display: none !important;}`,
+        ),
+    )
+    // 隐藏 信息栏-关闭整个信息栏
+    liveItems.push(
+        new NormalItem(
+            'live-page-head-info-vm',
+            '隐藏 信息栏-关闭整个信息栏',
+            false,
+            undefined,
+            false,
+            `#head-info-vm {display: none !important;}`,
         ),
     )
     ///////////////////////////////////////////////////////////////////////////
@@ -767,6 +767,7 @@ if (location.host == 'live.bilibili.com') {
             .bl-button--primary {
                 border-radius: 3px !important;
             }
+            #rank-list-vm,
             .head-info-section {
                 border-radius: 3px 3px 0 0 !important;
             }

@@ -645,7 +645,14 @@
             }
             .recommended-container_floor-aside .container .floor-single-card:first-of-type {
                 margin-top: 0 !important;
-            }`
+            }
+            /* 压缩分区栏高度, 压缩16px */
+            @media (max-width: 1099.9px) {.bili-header .bili-header__channel {height:84px!important}}
+            @media (min-width: 1100px) and (max-width: 1366.9px) {.bili-header .bili-header__channel {height:84px!important}}
+            @media (min-width: 1367px) and (max-width: 1700.9px) {.bili-header .bili-header__channel {height:94px!important}}
+            @media (min-width: 1701px) and (max-width: 2199.9px) {.bili-header .bili-header__channel {height:104px!important}}
+            @media (min-width: 2200px) {.bili-header .bili-header__channel {height:114px!important}}
+            `
       )
     );
     homepageItems.push(
@@ -655,17 +662,18 @@
         false,
         void 0,
         false,
-        `.bili-header__channel .channel-icons {
+        // 高权限, 否则被压缩分区栏高度影响
+        `#i_cecream .bili-header__channel .channel-icons {
                 display: none !important;
             }
-            .bili-header__channel .right-channel-container {
+            #i_cecream .bili-header__channel .right-channel-container {
                 display: none !important;
             }
             /* adapt bilibili-app-recommend */
-            .bili-header__channel {
+            #i_cecream .bili-header__channel {
                 height: 0 !important;
             }
-            main.bili-feed4-layout:not(:has(.bilibili-app-recommend-root)) {
+            #i_cecream main.bili-feed4-layout:not(:has(.bilibili-app-recommend-root)) {
                 margin-top: 20px !important;
             }`
       )
@@ -2182,10 +2190,10 @@ https://www.bilibili.com${urlPath}`;
         false,
         void 0,
         false,
-        `#reco_list .rec-list .info .upname {
+        `#reco_list .info .upname {
                 display: none !important;
             }
-            #reco_list .rec-list .info {
+            #reco_list .info {
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
@@ -2199,10 +2207,10 @@ https://www.bilibili.com${urlPath}`;
         false,
         void 0,
         false,
-        `#reco_list .rec-list .info .playinfo {
+        `#reco_list .info .playinfo {
                 display: none !important;
             }
-            #reco_list .rec-list .info {
+            #reco_list .info {
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
@@ -3552,16 +3560,6 @@ https://www.bilibili.com${location.pathname}`;
   if (location.host == "live.bilibili.com") {
     liveItems.push(
       new NormalItem(
-        "live-page-head-info-vm",
-        "隐藏 信息栏-关闭整个信息栏",
-        false,
-        void 0,
-        false,
-        `#head-info-vm {display: none !important;}`
-      )
-    );
-    liveItems.push(
-      new NormalItem(
         "live-page-head-info-vm-upper-row-follow-ctnr",
         "隐藏 信息栏-粉丝团",
         false,
@@ -3648,6 +3646,16 @@ https://www.bilibili.com${location.pathname}`;
         void 0,
         false,
         `#head-info-vm .lower-row .right-ctnr .activity-gather-entry {display: none !important;}`
+      )
+    );
+    liveItems.push(
+      new NormalItem(
+        "live-page-head-info-vm",
+        "隐藏 信息栏-关闭整个信息栏",
+        false,
+        void 0,
+        false,
+        `#head-info-vm {display: none !important;}`
       )
     );
     liveItems.push(new SeparatorItem());
@@ -4233,6 +4241,7 @@ https://www.bilibili.com${location.pathname}`;
             .bl-button--primary {
                 border-radius: 3px !important;
             }
+            #rank-list-vm,
             .head-info-section {
                 border-radius: 3px 3px 0 0 !important;
             }

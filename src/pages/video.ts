@@ -926,10 +926,10 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             false,
             undefined,
             false,
-            `#reco_list .rec-list .info .upname {
+            `#reco_list .info .upname {
                 display: none !important;
             }
-            #reco_list .rec-list .info {
+            #reco_list .info {
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
@@ -944,10 +944,10 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             false,
             undefined,
             false,
-            `#reco_list .rec-list .info .playinfo {
+            `#reco_list .info .playinfo {
                 display: none !important;
             }
-            #reco_list .rec-list .info {
+            #reco_list .info {
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;

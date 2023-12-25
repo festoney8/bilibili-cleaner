@@ -2,7 +2,10 @@ import { Group } from '../core/group'
 import { NormalItem, SeparatorItem } from '../core/item'
 import { debug } from '../utils/logger'
 
-/** URL净化，移除query string中的跟踪参数/无用参数 */
+/**
+ * URL净化，移除query string中的跟踪参数/无用参数
+ * 净化掉vd_source参数会导致充电窗口载入失败
+ */
 const cleanURL = () => {
     const keysToRemove = new Set([
         'from_source',
@@ -215,7 +218,9 @@ if (location.host != 'live.bilibili.com') {
             undefined,
             false,
             `div.bili-header__bar li:has(.loc-mc-box) {display: none !important;}
-            div.bili-header__bar .left-entry li:has([href^="https://live.bilibili.com/"]) {display: none !important;}`,
+            div.bili-header__bar .left-entry li:not(:has(.v-popover)):has([href^="https://live.bilibili.com/"]) {
+                display: none !important;
+            }`,
         ),
     )
     // 隐藏 顶栏-百大评选

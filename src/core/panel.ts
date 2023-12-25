@@ -18,7 +18,7 @@ export class Panel implements IPanel {
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
-        width: 32vw;
+        width: 33vw;
         height: 90vh;
         border-radius: 10px;
         background: rgba(250, 250, 250, 1);
@@ -27,7 +27,7 @@ export class Panel implements IPanel {
         z-index: 2147483647;
     }
     #bili-cleaner-bar {
-        width: 32vw;
+        width: 33vw;
         height: 6vh;
         background: rgba(251, 114, 153, 1);
         border-top-left-radius: 10px;
@@ -36,7 +36,7 @@ export class Panel implements IPanel {
         user-select: none;
     }
     #bili-cleaner-title {
-        width: 32vw;
+        width: 33vw;
         height: 6vh;
         display: flex;
         justify-content: center;

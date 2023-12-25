@@ -60,34 +60,34 @@ if (location.host == 'live.bilibili.com') {
             `#head-info-vm .upper-row .right-ctnr div:has(.like-icon) {display: none !important;}`,
         ),
     )
-    // 隐藏 信息栏-举报
+    // 隐藏 信息栏-举报, 默认开启
     liveItems.push(
         new NormalItem(
             'live-page-head-info-vm-upper-row-report',
             '隐藏 信息栏-举报',
-            false,
+            true,
             undefined,
             false,
             `#head-info-vm .upper-row .right-ctnr div:has(.icon-report) {display: none !important;}`,
         ),
     )
-    // 隐藏 信息栏-分享
+    // 隐藏 信息栏-分享, 默认开启
     liveItems.push(
         new NormalItem(
             'live-page-head-info-vm-upper-row-share',
             '隐藏 信息栏-分享',
-            false,
+            true,
             undefined,
             false,
             `#head-info-vm .upper-row .right-ctnr div:has(.icon-share) {display: none !important;}`,
         ),
     )
-    // 隐藏 信息栏-人气榜
+    // 隐藏 信息栏-人气榜, 默认开启
     liveItems.push(
         new NormalItem(
             'live-page-head-info-vm-lower-row-hot-rank',
             '隐藏 信息栏-人气榜',
-            false,
+            true,
             undefined,
             false,
             `#head-info-vm .lower-row .right-ctnr .popular-and-hot-rank {display: none !important;}`,
@@ -104,12 +104,12 @@ if (location.host == 'live.bilibili.com') {
             `#head-info-vm .lower-row .right-ctnr .gift-planet-entry {display: none !important;}`,
         ),
     )
-    // 隐藏 信息栏-活动
+    // 隐藏 信息栏-活动, 默认开启
     liveItems.push(
         new NormalItem(
             'live-page-head-info-vm-lower-row-activity-gather-entry',
             '隐藏 信息栏-活动',
-            false,
+            true,
             undefined,
             false,
             `#head-info-vm .lower-row .right-ctnr .activity-gather-entry {display: none !important;}`,
@@ -118,23 +118,23 @@ if (location.host == 'live.bilibili.com') {
     ///////////////////////////////////////////////////////////////////////////
     // 播放器part
     liveItems.push(new SeparatorItem())
-    // 隐藏 播放器-右上角反馈
+    // 隐藏 播放器-右上角反馈, 默认开启
     liveItems.push(
         new NormalItem(
             'live-page-head-web-player-icon-feedback',
             '隐藏 播放器-右上角反馈',
-            false,
+            true,
             undefined,
             false,
             `#live-player .web-player-icon-feedback {display: none !important;}`,
         ),
     )
-    // 隐藏 播放器-购物小橙车提示
+    // 隐藏 播放器-购物小橙车提示, 默认开启
     liveItems.push(
         new NormalItem(
             'live-page-head-web-player-shop-popover-vm',
             '隐藏 播放器-购物小橙车提示',
-            false,
+            true,
             undefined,
             false,
             `#shop-popover-vm {display: none !important;}`,
@@ -211,12 +211,12 @@ if (location.host == 'live.bilibili.com') {
         .chat-history-panel {height: calc(100% - 145px) !important; padding-top: 8px;}`,
         ),
     )
-    // 隐藏 右侧-弹幕栏 系统提示
+    // 隐藏 右侧-弹幕栏 系统提示, 默认开启
     liveItems.push(
         new NormalItem(
             'live-page-convention-msg',
             '隐藏 右侧-弹幕栏 系统提示',
-            false,
+            true,
             undefined,
             false,
             `.convention-msg.border-box {display: none !important;}`,
@@ -244,12 +244,12 @@ if (location.host == 'live.bilibili.com') {
             `.chat-item .title-label {display: none !important;}`,
         ),
     )
-    // 隐藏 右侧-弹幕栏 用户等级
+    // 隐藏 右侧-弹幕栏 用户等级, 默认开启
     liveItems.push(
         new NormalItem(
             'live-page-wealth-medal-ctnr',
             '隐藏 右侧-弹幕栏 用户等级',
-            false,
+            true,
             undefined,
             false,
             `.chat-item .wealth-medal-ctnr {display: none !important;}`,
@@ -299,15 +299,17 @@ if (location.host == 'live.bilibili.com') {
             `.chat-item.gift-item, .chat-item.common-danmuku-msg {display: none !important;}`,
         ),
     )
-    // 隐藏 右侧-弹幕栏 底部滚动提示
+    // 隐藏 右侧-弹幕栏 底部滚动提示, 默认开启
     liveItems.push(
         new NormalItem(
             'live-page-brush-prompt',
             '隐藏 右侧-弹幕栏 底部滚动提示',
-            false,
+            true,
             undefined,
             false,
-            `#brush-prompt {display: none !important;}`,
+            `#brush-prompt {display: none !important;}
+            /* 弹幕栏高度 */
+            .chat-history-panel .chat-history-list.with-brush-prompt {height: 100% !important;}`,
         ),
     )
     // 隐藏 右侧-弹幕栏 互动框(他们都在说)
@@ -332,12 +334,12 @@ if (location.host == 'live.bilibili.com') {
             `.play-together-service-card-container {display: none !important;}`,
         ),
     )
-    // 右侧-弹幕栏 使弹幕列表紧凑
+    // 右侧-弹幕栏 使弹幕列表紧凑, 默认开启
     liveItems.push(
         new NormalItem(
             'live-page-compact-danmaku',
             '右侧-弹幕栏 使弹幕列表紧凑',
-            false,
+            true,
             undefined,
             false,
             `.chat-history-panel .chat-history-list .chat-item.danmaku-item.chat-colorful-bubble {margin: 2px 0 !important;}
@@ -369,17 +371,6 @@ if (location.host == 'live.bilibili.com') {
             `#chat-control-panel-vm .control-panel-icon-row .icon-right-part {display: none !important;}`,
         ),
     )
-    // 隐藏 右侧-弹幕发送按钮
-    liveItems.push(
-        new NormalItem(
-            'live-page-bottom-actions',
-            '隐藏 右侧-弹幕发送按钮',
-            false,
-            undefined,
-            false,
-            `#chat-control-panel-vm .bottom-actions {display: none !important;}`,
-        ),
-    )
     // 隐藏 右侧-弹幕发送框
     liveItems.push(
         new NormalItem(
@@ -397,12 +388,12 @@ if (location.host == 'live.bilibili.com') {
     ///////////////////////////////////////////////////////////////////////////
     // 视频下方页面part
     liveItems.push(new SeparatorItem())
-    // 隐藏 视频下方-活动海报
+    // 隐藏 视频下方-活动海报, 默认开启
     liveItems.push(
         new NormalItem(
             'live-page-flip-view',
             '隐藏 视频下方-活动海报',
-            false,
+            true,
             undefined,
             false,
             `.flip-view {display: none !important;}`,
@@ -642,12 +633,12 @@ if (location.host == 'live.bilibili.com') {
             `#main-ctnr .dp-table-cell a[name="购物"] {display: none !important;}`,
         ),
     )
-    // 隐藏 顶栏-更多
+    // 隐藏 顶栏-更多, 默认开启
     liveItems.push(
         new NormalItem(
             'live-page-header-showmore-link',
             '隐藏 顶栏-更多',
-            false,
+            true,
             undefined,
             false,
             `#main-ctnr .showmore-link {display: none !important;}`,
@@ -714,23 +705,23 @@ if (location.host == 'live.bilibili.com') {
             `#right-part .shortcuts-ctnr .shortcut-item:has(.calendar-checkin) {display: none !important;}`,
         ),
     )
-    // 隐藏 顶栏-互动
+    // 隐藏 顶栏-幻星互动, 默认开启
     liveItems.push(
         new NormalItem(
             'live-page-header-interact',
-            '隐藏 顶栏-互动',
-            false,
+            '隐藏 顶栏-幻星互动',
+            true,
             undefined,
             false,
             `#right-part .shortcuts-ctnr .shortcut-item:has(.fanbox-panel-ctnr) {display: none !important;}`,
         ),
     )
-    // 隐藏 顶栏-我要开播
+    // 隐藏 顶栏-我要开播, 默认开启
     liveItems.push(
         new NormalItem(
             'live-page-header-go-live',
             '隐藏 顶栏-我要开播',
-            false,
+            true,
             undefined,
             false,
             `#right-part .shortcuts-ctnr .shortcut-item:has(.download-panel-ctnr) {visibility: hidden;}`,
@@ -739,12 +730,12 @@ if (location.host == 'live.bilibili.com') {
     ///////////////////////////////////////////////////////////////////////////
     // 杂项part
     liveItems.push(new SeparatorItem())
-    // 隐藏 右侧浮动按钮-实验室/关注
+    // 隐藏 右侧浮动按钮-实验室/关注, 默认开启
     liveItems.push(
         new NormalItem(
             'live-page-sidebar-vm',
             '隐藏 右侧浮动按钮-实验室/关注',
-            false,
+            true,
             undefined,
             false,
             `#sidebar-vm {display: none !important;}`,

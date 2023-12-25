@@ -672,12 +672,12 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
             `#comment-module .note-prefix {display: none !important;}`,
         ),
     )
-    // 隐藏 评论区-评论内容搜索关键词高亮
+    // 隐藏 评论区-评论内容搜索关键词高亮, 默认开启
     bangumiItems.push(
         new NormalItem(
             'video-page-hide-jump-link-search-word',
             '隐藏 评论区-评论内容搜索关键词高亮',
-            false,
+            true,
             undefined,
             false,
             `#comment-module .reply-content .jump-link.search-word {color: inherit !important;}
@@ -697,12 +697,12 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
             #comment-module .sub-reply-container .reply-content .jump-link.user:hover {color: #40C5F1 !important;}`,
         ),
     )
-    // 隐藏 评论区-召唤AI机器人的评论
+    // 隐藏 评论区-召唤AI机器人的评论, 默认开启
     bangumiItems.push(
         new NormalItem(
             'video-page-hide-at-reply-at-bots',
             '隐藏 评论区-召唤AI机器人的评论',
-            false,
+            true,
             undefined,
             false,
             // 8455326 @机器工具人
@@ -936,4 +936,4 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
     )
 }
 
-export const bangumiGroup = new Group('bangumi', '当前是：版权视频播放页', bangumiItems)
+export const bangumiGroup = new Group('bangumi', '当前是：版权视频播放页 ★是独有项', bangumiItems)

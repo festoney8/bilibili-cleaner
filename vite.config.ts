@@ -9,9 +9,9 @@ export default defineConfig({
                 name: 'bilibili 页面净化大师',
                 namespace: 'http://tampermonkey.net/',
                 version: '2.0.0',
-                description: '净化 B站/哔哩哔哩 页面内的各种元素，去广告，提供300+项自定义功能，深度定制自己的B站页面',
+                description: '净化 B站/哔哩哔哩 页面内各种元素，去广告，BV号转AV号，提供300+项功能，定制自己的B站页面',
                 author: 'festoney8',
-                supportURL: 'https://github.com/festoney8/bilibili-cleaner',
+                homepage: 'https://github.com/festoney8/bilibili-cleaner',
                 license: 'MIT',
                 match: ['*://*.bilibili.com/*'],
                 exclude: [

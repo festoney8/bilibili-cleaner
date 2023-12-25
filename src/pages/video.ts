@@ -204,12 +204,12 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             `.video-info-detail .honor-rank, .video-info-detail .honor-weekly {display: none !important;}`,
         ),
     )
-    // 隐藏 视频信息-温馨提示(饮酒/危险/AI生成)
+    // 隐藏 视频信息-温馨提示(饮酒/危险/AI生成), 默认开启
     videoItems.push(
         new NormalItem(
             'video-page-hide-video-info-argue',
             '隐藏 视频信息-温馨提示(饮酒/危险/AI生成)',
-            false,
+            true,
             undefined,
             false,
             `.video-info-detail .argue, .video-info-detail .video-argue {display: none !important;}`,
@@ -293,6 +293,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             undefined,
             false,
             `.bpx-player-top-title {display: none !important;}
+            .bpx-player-top-left-title {display: none !important;}
             /* 播放器上方阴影渐变 */
             .bpx-player-top-mask {display: none !important;}`,
         ),
@@ -308,12 +309,12 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             `.bpx-player-top-left-music {display: none !important;}`,
         ),
     )
-    // 隐藏 播放器-左上角 关注UP主
+    // 隐藏 播放器-左上角 关注UP主, 默认开启
     videoItems.push(
         new NormalItem(
             'video-page-hide-bpx-player-top-left-follow',
             '隐藏 播放器-左上角 关注UP主',
-            false,
+            true,
             undefined,
             false,
             `.bpx-player-top-left-follow {display: none !important;}`,
@@ -721,44 +722,44 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // up主信息part
     videoItems.push(new SeparatorItem())
-    // 隐藏 右栏-给UP发消息, 默认开启
+    // 隐藏 UP主信息-给UP发消息, 默认开启
     videoItems.push(
         new NormalItem(
             'video-page-hide-up-sendmsg',
-            '隐藏 右栏-给UP发消息',
+            '隐藏 UP主信息-给UP发消息',
             true,
             undefined,
             false,
             `.up-detail .send-msg {display: none !important;}`,
         ),
     )
-    // 隐藏 右栏-UP简介
+    // 隐藏 UP主信息-UP简介
     videoItems.push(
         new NormalItem(
             'video-page-hide-up-description',
-            '隐藏 右栏-UP简介',
+            '隐藏 UP主信息-UP简介',
             false,
             undefined,
             false,
             `.up-detail .up-description {display: none !important;}`,
         ),
     )
-    // 隐藏 右栏-充电
+    // 隐藏 UP主信息-充电
     videoItems.push(
         new NormalItem(
             'video-page-hide-up-charge',
-            '隐藏 右栏-充电',
+            '隐藏 UP主信息-充电',
             false,
             undefined,
             false,
             `.upinfo-btn-panel .new-charge-btn, .upinfo-btn-panel .old-charge-btn {display: none !important;}`,
         ),
     )
-    // 隐藏 右栏-UP主头像外饰品
+    // 隐藏 UP主信息-UP主头像外饰品
     videoItems.push(
         new NormalItem(
             'video-page-hide-up-bili-avatar-pendent-dom',
-            '隐藏 右栏-UP主头像外饰品',
+            '隐藏 UP主信息-UP主头像外饰品',
             false,
             undefined,
             false,
@@ -766,11 +767,11 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             .up-avatar-wrap .up-avatar {background-color: transparent !important;}`,
         ),
     )
-    // 隐藏 右栏-创作团队header, 默认开启
+    // 隐藏 UP主信息-创作团队header, 默认开启
     videoItems.push(
         new NormalItem(
             'video-page-hide-up-membersinfo-normal-header',
-            '隐藏 右栏-创作团队header',
+            '隐藏 UP主信息-创作团队header',
             true,
             undefined,
             false,
@@ -822,12 +823,23 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             }`,
         ),
     )
-    // 右栏 视频合集 增加列表高度
+    // 隐藏 右栏-自动连播按钮
+    videoItems.push(
+        new NormalItem(
+            'video-page-hide-right-container-reco-list-next-play-next-button',
+            '隐藏 右栏-自动连播按钮',
+            false,
+            undefined,
+            false,
+            `#reco_list .next-play .next-button {display: none !important;}`,
+        ),
+    )
+    // 右栏 视频合集 增加合集列表高度, 默认开启
     videoItems.push(
         new NormalItem(
             'video-page-hide-right-container-section-height',
-            '右栏 视频合集 增加列表高度',
-            false,
+            '右栏 视频合集 增加合集列表高度',
+            true,
             undefined,
             false,
             `.base-video-sections-v1 .video-sections-content-list {height: fit-content !important; max-height: 350px !important};
@@ -858,12 +870,12 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             .video-sections-head_second-line .play-num {display: none !important;}`,
         ),
     )
-    // 隐藏 右栏-视频合集 简介
+    // 隐藏 右栏-视频合集 简介, 默认开启
     videoItems.push(
         new NormalItem(
             'video-page-hide-right-container-section-abstract',
             '隐藏 右栏-视频合集 简介',
-            false,
+            true,
             undefined,
             false,
             `.base-video-sections-v1 .abstract {display: none !important;}
@@ -884,37 +896,15 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             .video-sections-head_second-line .second-line_right {display: none !important;}`,
         ),
     )
-    // 隐藏 右栏-视频选集(分P) 自动连播
+    // 隐藏 右栏-分P视频 自动连播
     videoItems.push(
         new NormalItem(
             'video-page-hide-right-container-multi-page-next-btn',
-            '隐藏 右栏-视频选集(分P) 自动连播',
+            '隐藏 右栏-分P视频 自动连播',
             false,
             undefined,
             false,
             `#multi_page .next-button {display: none !important;}`,
-        ),
-    )
-    // 隐藏 右栏-自动连播按钮
-    videoItems.push(
-        new NormalItem(
-            'video-page-hide-right-container-reco-list-next-play-next-button',
-            '隐藏 右栏-自动连播按钮',
-            false,
-            undefined,
-            false,
-            `#reco_list .next-play .next-button {display: none !important;}`,
-        ),
-    )
-    // 隐藏 右栏-全部相关视频
-    videoItems.push(
-        new NormalItem(
-            'video-page-hide-right-container-reco-list-rec-list',
-            '隐藏 右栏-全部相关视频',
-            false,
-            undefined,
-            false,
-            `#reco_list .rec-list {display: none !important;}`,
         ),
     )
     // 隐藏 右栏-相关视频 稍后再看按钮
@@ -968,19 +958,30 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
     videoItems.push(
         new NormalItem(
             'video-page-hide-right-container-duration',
-            '隐藏 右栏-视频时长',
+            '隐藏 右栏-相关视频 视频时长',
             false,
             undefined,
             false,
             `#reco_list .duration {display: none !important;}`,
         ),
     )
-    // 隐藏 右栏-活动banner
+    // 隐藏 右栏-全部相关视频
+    videoItems.push(
+        new NormalItem(
+            'video-page-hide-right-container-reco-list-rec-list',
+            '隐藏 右栏-全部相关视频',
+            false,
+            undefined,
+            false,
+            `#reco_list .rec-list {display: none !important;}`,
+        ),
+    )
+    // 隐藏 右栏-活动banner, 默认开启
     videoItems.push(
         new NormalItem(
             'video-page-hide-right-container-right-bottom-banner',
             '隐藏 右栏-活动banner',
-            false,
+            true,
             undefined,
             false,
             `#right-bottom-banner {display: none !important;}`,
@@ -1137,12 +1138,12 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             `#comment .note-prefix {display: none !important;}`,
         ),
     )
-    // 隐藏 评论区-评论内容搜索关键词高亮
+    // 隐藏 评论区-评论内容搜索关键词高亮, 默认开启
     videoItems.push(
         new NormalItem(
             'video-page-hide-jump-link-search-word',
             '隐藏 评论区-评论内容搜索关键词高亮',
-            false,
+            true,
             undefined,
             false,
             `#comment .reply-content .jump-link.search-word {color: inherit !important;}

@@ -11,7 +11,7 @@ interface IItem {
 export class NormalItem implements IItem {
     uncheckedHTML = `<input class="bili-cleaner-item-switch" type="checkbox">`
     checkedHTML = `<input class="bili-cleaner-item-switch" type="checkbox" checked>`
-    private isEnable: boolean
+    private isEnable: boolean | undefined
     // item对应的HTML input node
     private itemEle: HTMLInputElement | undefined
 
@@ -31,7 +31,7 @@ export class NormalItem implements IItem {
         private isItemFuncReload: boolean,
         private itemCSS: myCSS | null,
     ) {
-        this.isEnable = false
+        this.isEnable = undefined
         this.itemEle = undefined
     }
     /**
@@ -44,8 +44,11 @@ export class NormalItem implements IItem {
     }
     /** 获取item开关状态, 若第一次安装时不存在该key, 使用默认值 */
     getStatus() {
-        this.isEnable = GM_getValue(`BILICLEANER_${this.itemID}`, this.defaultStatus)
-        this.setStatus(this.isEnable)
+        this.isEnable = GM_getValue(`BILICLEANER_${this.itemID}`)
+        if (this.isEnable === undefined) {
+            this.isEnable = this.defaultStatus
+            this.setStatus(this.isEnable)
+        }
     }
     /**
      * 在相应group内添加item

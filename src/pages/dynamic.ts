@@ -7,49 +7,7 @@ const dynamicItems: (NormalItem | SeparatorItem)[] = []
  * 动态页面规则
  * 动态评论区的规则尽可能使用与video page相同的itemID, 同步开关状态
  */
-if (location.host == 't.bilibili.com') {
-    // 页面直角化 去除圆角
-    dynamicItems.push(
-        new NormalItem(
-            'dynamic-page-border-radius',
-            '页面直角化 去除圆角',
-            false,
-            undefined,
-            false,
-            `
-        #nav-searchform,
-        .nav-search-content,
-        .header-upload-entry,
-        .v-popover-content,
-        .van-popover,
-        .v-popover-wrap,
-        .v-popover,
-        .topic-panel,
-        .bili-dyn-up-list,
-        .bili-dyn-sidebar *,
-        .bili-dyn-up-list__window,
-        .bili-dyn-live-users,
-        .bili-dyn-topic-box,
-        .bili-dyn-list-notification,
-        .bili-dyn-item,
-        .bili-dyn-banner,
-        .bili-dyn-banner__img,
-        .bili-dyn-my-info,
-        .bili-dyn-card-video,
-        .bili-album__preview__picture__gif,
-        .bili-album__preview__picture__img {
-            border-radius: 3px !important;
-        }
-        .bili-dyn-card-video__cover__mask,
-        .bili-dyn-card-video__cover {
-            border-radius: 3px 0 0 3px !important;
-        }
-        .bili-dyn-card-video__body {
-            border-radius: 0 3px 3px 0 !important;
-        }
-        `,
-        ),
-    )
+if (location.host === 't.bilibili.com') {
     // 顶栏 不再吸附顶部
     dynamicItems.push(
         new NormalItem(
@@ -60,6 +18,48 @@ if (location.host == 't.bilibili.com') {
             false,
             `.fixed-header .bili-header__bar {position: relative !important;}
         .bili-dyn-live-users {top: 15px !important; transform: unset !important;}`,
+        ),
+    )
+    // 页面直角化 去除圆角
+    dynamicItems.push(
+        new NormalItem(
+            'dynamic-page-border-radius',
+            '页面直角化 去除圆角',
+            false,
+            undefined,
+            false,
+            `#nav-searchform,
+            .nav-search-content,
+            .header-upload-entry,
+            .v-popover-content,
+            .van-popover,
+            .v-popover-wrap,
+            .v-popover,
+            .topic-panel,
+            .bili-dyn-up-list,
+            .bili-dyn-publishing,
+            .bili-dyn-sidebar *,
+            .bili-dyn-up-list__window,
+            .bili-dyn-live-users,
+            .bili-dyn-topic-box,
+            .bili-dyn-list-notification,
+            .bili-dyn-item,
+            .bili-dyn-banner,
+            .bili-dyn-banner__img,
+            .bili-dyn-my-info,
+            .bili-dyn-card-video,
+            .bili-dyn-list-tabs,
+            .bili-album__preview__picture__gif,
+            .bili-album__preview__picture__img {
+                border-radius: 3px !important;
+            }
+            .bili-dyn-card-video__cover__mask,
+            .bili-dyn-card-video__cover {
+                border-radius: 3px 0 0 3px !important;
+            }
+            .bili-dyn-card-video__body {
+                border-radius: 0 3px 3px 0 !important;
+            }`,
         ),
     )
     ///////////////////////////////////////////////////////////////////////////
@@ -73,7 +73,8 @@ if (location.host == 't.bilibili.com') {
             false,
             undefined,
             false,
-            `.bili-dyn-my-info {display: none !important;}`,
+            `section:has(> .bili-dyn-my-info) {display: none !important;}
+            .bili-dyn-live-users {top: 8px !important;}`,
         ),
     )
     // 隐藏 左栏 直播中Logo
@@ -98,7 +99,8 @@ if (location.host == 't.bilibili.com') {
             false,
             undefined,
             false,
-            `.bili-dyn-publishing {display: none !important;}`,
+            `.bili-dyn-publishing {display: none !important;}
+            main section:nth-child(1) {margin-bottom: 0 !important;}`,
         ),
     )
     // 隐藏 中栏 动态分类Tab
@@ -145,7 +147,9 @@ if (location.host == 't.bilibili.com') {
             true,
             undefined,
             false,
-            `.bili-dyn-banner {display: none !important;}`,
+            `section:has(.bili-dyn-ads) {display: none !important;}
+            aside.right section {margin-bottom: 0 !important;}
+            aside.right section.sticky {top: 15px !important;}`,
         ),
     )
     // 隐藏 右栏 话题列表
@@ -295,12 +299,12 @@ if (location.host == 't.bilibili.com') {
             `.comment-container .note-prefix {display: none !important;}`,
         ),
     )
-    // 隐藏 评论区-评论内容搜索关键词高亮
+    // 隐藏 评论区-评论内容搜索关键词高亮, 默认开启
     dynamicItems.push(
         new NormalItem(
             'video-page-hide-jump-link-search-word',
             '隐藏 评论区-评论内容搜索关键词高亮',
-            false,
+            true,
             undefined,
             false,
             `.comment-container .reply-content .jump-link.search-word {color: inherit !important;}
@@ -507,6 +511,42 @@ if (location.host == 't.bilibili.com') {
             .reply-view-image .preview-list:has(.preview-item-box:only-child) {display: none !important;}
             .reply-view-image .preview-list {opacity: 0.2; transition: opacity 0.1s ease-in-out;}
             .reply-view-image .preview-list:hover {opacity: 1; transition: opacity 0.1s ease-in-out;}`,
+        ),
+    )
+    ///////////////////////////////////////////////////////////////////////////
+    // 右下角part
+    dynamicItems.push(new SeparatorItem())
+    // 隐藏 右下角-新版反馈, 默认开启
+    dynamicItems.push(
+        new NormalItem(
+            'hide-dynamic-page-sidebar-feedback',
+            '隐藏 右下角-新版反馈',
+            true,
+            undefined,
+            false,
+            `.bili-dyn-sidebar .bili-dyn-sidebar__btn:nth-child(1) {visibility: hidden !important;}`,
+        ),
+    )
+    // 隐藏 右下角-回到旧版, 默认开启
+    dynamicItems.push(
+        new NormalItem(
+            'hide-dynamic-page-sidebar-old-version',
+            '隐藏 右下角-回到旧版',
+            true,
+            undefined,
+            false,
+            `.bili-dyn-sidebar .bili-dyn-sidebar__btn:nth-child(2) {visibility: hidden !important;}`,
+        ),
+    )
+    // 隐藏 右下角-回顶部
+    dynamicItems.push(
+        new NormalItem(
+            'hide-dynamic-page-sidebar-back-to-top',
+            '隐藏 右下角-回顶部',
+            false,
+            undefined,
+            false,
+            `.bili-dyn-sidebar .bili-dyn-sidebar__btn:nth-child(3) {visibility: hidden !important;}`,
         ),
     )
 }

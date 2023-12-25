@@ -45,42 +45,62 @@
 # 净化效果示意
 
 <details>
-<summary>首页 对比图</summary>
-### before
+<summary>查看 首页 对比图</summary>
+
+## before
+
 ![](images/screenshot-homepage-before-4col.png)
 ![](images/screenshot-homepage-before-5col.png)
-### after
+
+## after
+
 ![](images/screenshot-homepage-after-4col.png)
 ![](images/screenshot-homepage-after-5col.png)
+
 </details>
 
 <details>
-<summary>播放页 对比图</summary>
-### before
+<summary>查看 播放页 对比图</summary>
+
+## before
+
 ![](images/screenshot-video-before.png)
-### after
+
+## after
+
 ![](images/screenshot-video-after.png)
+
 </details>
 
 <details>
-<summary>直播页 对比图</summary>
-### before
+<summary>查看 直播页 对比图</summary>
+
+## before
+
 ![](images/screenshot-live-before.png)
-### after
+
+## after
+
 ![](images/screenshot-live-after.png)
+
 </details>
 
 <details>
-<summary>动态页 对比图</summary>
+<summary>查看 动态页 对比图</summary>
+
 ### before
+
 ![](images/screenshot-dynamic-before.png)
+
 ### after
+
 ![](images/screenshot-dynamic-after.png)
+
 </details>
 
 # 如何导入导出数据
 
-### 导出数据
+### 导出数据 (以 Tampermonkey 为例)
 
 ![](images/how-to-export.png)
 

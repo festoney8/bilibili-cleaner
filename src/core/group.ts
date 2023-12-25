@@ -1,8 +1,9 @@
-import { debug, error, trace } from '../utils/logger'
+import { debug, error } from '../utils/logger'
 import { NormalItem, SeparatorItem } from './item'
 
 interface IGroup {
     readonly groupHTML: myHTML
+    isEmpty(): boolean
     insertGroup(): void
     insertGroupItems(): void
     enableGroup(): void
@@ -33,7 +34,13 @@ export class Group implements IGroup {
         this.groupID = 'bili-cleaner-group-' + groupID
     }
 
-    // 在panel内添加一个group
+    /**
+     * @returns group内规则是否为空
+     */
+    isEmpty(): boolean {
+        return this.items.length === 0
+    }
+    /** 在panel内添加一个group */
     insertGroup() {
         const e = document.createElement('div')
         e.innerHTML = this.groupHTML
@@ -43,7 +50,7 @@ export class Group implements IGroup {
         const groupList = document.getElementById('bili-cleaner-group-list') as HTMLFormElement
         groupList.appendChild(e)
     }
-    // 添加group内item并监听状态
+    /** 插入group内item列表, 并逐一监听 */
     insertGroupItems() {
         try {
             this.items.forEach((e) => {
@@ -56,10 +63,9 @@ export class Group implements IGroup {
         } catch (err) {
             error(`insertGroupItems ${this.groupID} err`)
             error(err)
-            trace()
         }
     }
-    // 启用group，启用group内items
+    /** 启用group，启用group内items */
     enableGroup() {
         try {
             this.items.forEach((e) => {
@@ -71,10 +77,9 @@ export class Group implements IGroup {
         } catch (err) {
             error(`enableGroup ${this.groupID} err`)
             error(err)
-            trace()
         }
     }
-
+    /** 在URL变动时, 重载group内需要重载的项目 */
     reloadGroup() {
         try {
             this.items.forEach((e) => {
@@ -86,7 +91,6 @@ export class Group implements IGroup {
         } catch (err) {
             error(`reloadGroup ${this.groupID} err`)
             error(err)
-            trace()
         }
     }
 }

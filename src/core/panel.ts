@@ -1,4 +1,4 @@
-import { debug, error, trace } from '../utils/logger'
+import { debug, error } from '../utils/logger'
 
 interface IPanel {
     readonly panelCSS: myCSS
@@ -86,7 +86,7 @@ export class Panel implements IPanel {
         user-select: none;
     }
     .bili-cleaner-group hr {
-        border: 1px solid #ddd;
+        border: 1px solid #eee;
         margin-top: 3px;
         margin-bottom: 3px;
     }
@@ -109,7 +109,7 @@ export class Panel implements IPanel {
     }
     .bili-cleaner-item-list hr {
         border: 1px solid #eee;
-        margin: 12px 15px;
+        margin: 15px 20px;
     }
     .bili-cleaner-item-switch {
         vertical-align: middle;
@@ -176,7 +176,6 @@ export class Panel implements IPanel {
         } catch (err) {
             error(`insertPanelCSS failed`)
             error(err)
-            trace()
         }
     }
     /**
@@ -195,7 +194,6 @@ export class Panel implements IPanel {
         } catch (err) {
             error(`insertPanelHTML failed`)
             error(err)
-            trace()
         }
     }
     /**
@@ -212,7 +210,6 @@ export class Panel implements IPanel {
         } catch (err) {
             error(`watchCloseBtn failed`)
             error(err)
-            trace()
         }
     }
     /**
@@ -248,7 +245,6 @@ export class Panel implements IPanel {
         } catch (err) {
             error(`draggableBar failed`)
             error(err)
-            trace()
         }
     }
     /**

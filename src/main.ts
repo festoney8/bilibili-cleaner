@@ -1,37 +1,70 @@
 // @ts-ignore isolatedModules
-import { init } from './init'
-import { log, error, debug } from './utils/logger'
-import { Panel } from './core/panel'
 import { GM_registerMenuCommand } from '$'
+import { log, error, debug } from './utils/logger'
+import { init } from './init'
+import { Panel } from './core/panel'
+import { Group } from './core/group'
 import { homepageGroup } from './pages/homepage'
+import { commonGroup } from './pages/common'
+import { videoGroup } from './pages/video'
+import { bangumiGroup } from './pages/bangumi'
+import { searchGroup } from './pages/search'
+import { liveGroup } from './pages/live'
 
 log('script start')
 
+const main = () => {
+    // 初始化
+    try {
+        init()
+    } catch (err) {
+        error('init error, try continue')
+    }
+
+    // 载入规则
+    const GROUPS: Group[] = []
+    homepageGroup.isEmpty() || GROUPS.push(homepageGroup)
+    videoGroup.isEmpty() || GROUPS.push(videoGroup)
+    bangumiGroup.isEmpty() || GROUPS.push(bangumiGroup)
+    searchGroup.isEmpty() || GROUPS.push(searchGroup)
+    liveGroup.isEmpty() || GROUPS.push(liveGroup)
+    commonGroup.isEmpty() || GROUPS.push(commonGroup)
+    GROUPS.forEach((e) => e.enableGroup())
+
+    // 监听各种形式的URL变化 (普通监听无法检测到切换视频)
+    let lastURL = location.href
+    setInterval(() => {
+        const currURL = location.href
+        if (currURL !== lastURL) {
+            debug('url change detected')
+            GROUPS.forEach((e) => e.reloadGroup())
+            lastURL = currURL
+            debug('url change reload groups complete')
+        }
+    }, 500)
+
+    // 注册油猴插件菜单
+    const openSettings = () => {
+        if (document.getElementById('bili-cleaner')) {
+            return
+        }
+        debug('panel create start')
+        const panel = new Panel()
+        panel.createPanel()
+        GROUPS.forEach((e) => {
+            e.insertGroup()
+            e.insertGroupItems()
+        })
+        debug('panel create complete')
+    }
+    GM_registerMenuCommand('设置', openSettings)
+    debug('register menu complete')
+}
+
 try {
-    init()
+    main()
 } catch (err) {
     error(err)
-    error('FATAL ERROR, EXIT')
 }
 
-const Groups = [homepageGroup]
-Groups.forEach((e) => e.enableGroup())
-
-const openSettings = () => {
-    if (document.getElementById('bili-cleaner')) {
-        return
-    }
-    debug('panel create start')
-    const panel = new Panel()
-    panel.createPanel()
-    Groups.forEach((e) => {
-        e.insertGroup()
-        e.insertGroupItems()
-    })
-    debug('panel create complete')
-}
-
-// 注册油猴插件菜单
-GM_registerMenuCommand('设置', openSettings)
-debug('register menu complete')
 log('script end')

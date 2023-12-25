@@ -1,5 +1,5 @@
 import { GM_getValue, GM_setValue } from '$'
-import { debug, error, trace } from '../utils/logger'
+import { debug, error } from '../utils/logger'
 
 /** Iitem是插件的每项功能设定, 在每个panel group内显示为一行功能 */
 interface IItem {
@@ -29,7 +29,7 @@ export class NormalItem implements IItem {
         private defaultStatus: boolean,
         private itemFunc: (() => void) | undefined,
         private isItemFuncReload: boolean,
-        private itemCSS: myCSS,
+        private itemCSS: myCSS | null,
     ) {
         this.isEnable = false
         this.itemEle = undefined
@@ -69,7 +69,6 @@ export class NormalItem implements IItem {
         } catch (err) {
             error(`insertItem ${this.itemID} err`)
             error(err)
-            trace()
         }
     }
     /** 启用CSS片段, 向document.head插入style */
@@ -95,7 +94,6 @@ export class NormalItem implements IItem {
         } catch (err) {
             error(`insertItemCSS ${this.itemID} failed`)
             error(err)
-            trace()
         }
     }
     /** 停用CSS片段, 从document.head移除style */
@@ -126,7 +124,6 @@ export class NormalItem implements IItem {
         } catch (err) {
             error(`watchItem ${this.itemID} err`)
             error(err)
-            trace()
         }
     }
     /** 执行item功能, 在页面head添加CSS并执行func */
@@ -142,7 +139,6 @@ export class NormalItem implements IItem {
             } catch (err) {
                 error(`enableItem ${this.itemID} Error`)
                 error(err)
-                trace()
             }
         }
     }
@@ -158,7 +154,6 @@ export class NormalItem implements IItem {
             } catch (err) {
                 error(`reloadItem ${this.itemID} Error`)
                 error(err)
-                trace()
             }
         }
     }
@@ -181,7 +176,6 @@ export class SeparatorItem implements IItem {
         } catch (err) {
             error(`insertItem separator err`)
             error(err)
-            trace()
         }
     }
 }

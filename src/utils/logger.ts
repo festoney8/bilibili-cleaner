@@ -34,10 +34,3 @@ export const log = wrapper(console.log, true, debugMode)
 // debugMode下, 仍使用log级别输出
 export const debug = wrapper(console.log, false, debugMode)
 export const error = wrapper(console.error, false, debugMode)
-
-export const trace = () => {
-    if (!debugMode) {
-        return
-    }
-    console.trace('[bili-cleaner]')
-}

@@ -14,7 +14,6 @@ export class NormalItem implements IItem {
     private isEnable: boolean | undefined
     // item对应的HTML input node
     private itemEle: HTMLInputElement | undefined
-    private itemCSS: string | undefined
 
     /**
      * @param itemID item的唯一ID, 与GM database中的Key对应, 使用相同ID可共享item状态
@@ -30,11 +29,10 @@ export class NormalItem implements IItem {
         private defaultStatus: boolean,
         private itemFunc: (() => void) | undefined,
         private isItemFuncReload: boolean,
-        itemCSS: myCSS | null,
+        private itemCSS: myCSS | null,
     ) {
         this.isEnable = undefined
         this.itemEle = undefined
-        this.itemCSS = itemCSS?.replace(/\n\s*/g, '').trim()
     }
     /**
      * 设定并记录item开关状态
@@ -47,7 +45,7 @@ export class NormalItem implements IItem {
     /** 获取item开关状态, 若第一次安装时不存在该key, 使用默认值 */
     getStatus() {
         this.isEnable = GM_getValue(`BILICLEANER_${this.itemID}`)
-        if (this.isEnable === undefined) {
+        if (this.defaultStatus && this.isEnable === undefined) {
             this.isEnable = this.defaultStatus
             this.setStatus(this.isEnable)
         }
@@ -88,7 +86,8 @@ export class NormalItem implements IItem {
             }
             const style = document.createElement('style')
             // 若使用innerText, 多行CSS插入head后会产生<br>标签
-            style.innerHTML = this.itemCSS.trim()
+            // 简单压缩
+            style.innerHTML = this.itemCSS.replace(/\n\s*/g, '').trim()
             // 指定CSS片段ID，用于实时启用停用
             style.setAttribute('bili-cleaner-css', this.itemID)
 

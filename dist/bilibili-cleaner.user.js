@@ -348,15 +348,14 @@
       __publicField(this, "isEnable");
       // item对应的HTML input node
       __publicField(this, "itemEle");
-      __publicField(this, "itemCSS");
       this.itemID = itemID;
       this.description = description;
       this.defaultStatus = defaultStatus;
       this.itemFunc = itemFunc;
       this.isItemFuncReload = isItemFuncReload;
+      this.itemCSS = itemCSS;
       this.isEnable = void 0;
       this.itemEle = void 0;
-      this.itemCSS = itemCSS == null ? void 0 : itemCSS.replace(/\n\s*/g, "").trim();
     }
     /**
      * 设定并记录item开关状态
@@ -369,7 +368,7 @@
     /** 获取item开关状态, 若第一次安装时不存在该key, 使用默认值 */
     getStatus() {
       this.isEnable = _GM_getValue(`BILICLEANER_${this.itemID}`);
-      if (this.isEnable === void 0) {
+      if (this.defaultStatus && this.isEnable === void 0) {
         this.isEnable = this.defaultStatus;
         this.setStatus(this.isEnable);
       }
@@ -409,7 +408,7 @@
           return;
         }
         const style = document.createElement("style");
-        style.innerHTML = this.itemCSS.trim();
+        style.innerHTML = this.itemCSS.replace(/\n\s*/g, "").trim();
         style.setAttribute("bili-cleaner-css", this.itemID);
         document.head.appendChild(style);
         debug(`insertItemCSS ${this.itemID} OK`);

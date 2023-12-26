@@ -33,7 +33,10 @@
   var _GM_getValue = /* @__PURE__ */ (() => typeof GM_getValue != "undefined" ? GM_getValue : void 0)();
   var _GM_registerMenuCommand = /* @__PURE__ */ (() => typeof GM_registerMenuCommand != "undefined" ? GM_registerMenuCommand : void 0)();
   var _GM_setValue = /* @__PURE__ */ (() => typeof GM_setValue != "undefined" ? GM_setValue : void 0)();
-  const debugMode = true;
+  const settings = {
+    debugMode: true
+    // enableCSSMinify: true,
+  };
   const startTime = performance.now();
   let lastTime = startTime;
   let currTime = startTime;
@@ -51,9 +54,9 @@
       return void 0;
     };
   };
-  const log = wrapper(console.log, true, debugMode);
-  const debug = wrapper(console.log, false, debugMode);
-  const error = wrapper(console.error, false, debugMode);
+  const log = wrapper(console.log, true, settings.debugMode);
+  const debug = wrapper(console.log, false, settings.debugMode);
+  const error = wrapper(console.error, false, settings.debugMode);
   const init = async () => {
     if (navigator.userAgent.toLowerCase().includes("firefox") && document.head === null) {
       await waitForHead();

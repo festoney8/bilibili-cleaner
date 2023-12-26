@@ -80,7 +80,6 @@ export class NormalItem implements IItem {
             return
         }
         try {
-            // check if CSS exist
             if (document.querySelector(`head style[bili-cleaner-css=${this.itemID}]`)) {
                 debug(`insertItemCSS ${this.itemID} CSS exist, ignore`)
                 return

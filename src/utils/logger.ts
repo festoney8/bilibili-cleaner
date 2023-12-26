@@ -1,4 +1,4 @@
-import { debugMode } from '../setting'
+import settings from '../settings'
 
 const startTime: number = performance.now()
 let lastTime: number = startTime
@@ -30,7 +30,7 @@ const wrapper = (loggingFunc: (..._args: any[]) => void | undefined, forceEnable
     }
 }
 
-export const log = wrapper(console.log, true, debugMode)
+export const log = wrapper(console.log, true, settings.debugMode)
 // debugMode下, 仍使用log级别输出
-export const debug = wrapper(console.log, false, debugMode)
-export const error = wrapper(console.error, false, debugMode)
+export const debug = wrapper(console.log, false, settings.debugMode)
+export const error = wrapper(console.error, false, settings.debugMode)

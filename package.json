@@ -7,6 +7,7 @@
         "prepare": "husky install",
         "dev": "vite",
         "build": "tsc && vite build",
+        "build:minify": "tsc && vite build --minify",
         "preview": "vite preview",
         "format": "prettier --write \"./**/*.{html,css,scss,ts,js,json,md}\"",
         "lint": "eslint ./src --ext .vue,.js,.ts,.jsx,.tsx --fix"

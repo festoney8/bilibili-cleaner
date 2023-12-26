@@ -14,10 +14,10 @@ import { dynamicGroup } from './pages/dynamic'
 
 log('script start')
 
-const main = () => {
+const main = async () => {
     // 初始化
     try {
-        init()
+        await init()
     } catch (err) {
         error('init error, try continue')
     }
@@ -84,5 +84,4 @@ try {
 } catch (err) {
     error(err)
 }
-
 log('script end')

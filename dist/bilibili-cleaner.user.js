@@ -1928,7 +1928,7 @@ https://www.bilibili.com${urlPath}`;
       new NormalItem(
         "video-page-hide-video-share-popover",
         "隐藏 视频下方-分享按钮弹出菜单",
-        false,
+        true,
         void 0,
         false,
         `.video-share-popover {display: none !important;}`
@@ -2262,7 +2262,7 @@ https://www.bilibili.com${urlPath}`;
       new NormalItem(
         "video-page-hide-reply-notice",
         "隐藏 评论区-活动/notice",
-        false,
+        true,
         void 0,
         false,
         `#comment .reply-header .reply-notice {display: none !important;}`
@@ -2686,7 +2686,7 @@ https://www.bilibili.com${location.pathname}`;
       new NormalItem(
         "bangumi-page-hide-bpx-player-top-follow",
         "隐藏 播放器-追番/追剧按钮 ★",
-        false,
+        true,
         void 0,
         false,
         `.bpx-player-top-follow {display: none !important;}`
@@ -2972,7 +2972,7 @@ https://www.bilibili.com${location.pathname}`;
       new NormalItem(
         "video-page-hide-video-share-popover",
         "隐藏 视频下方-分享按钮弹出菜单",
-        false,
+        true,
         void 0,
         false,
         `#share-container-id [class^='Share_share'] {display: none !important;}`
@@ -3093,7 +3093,7 @@ https://www.bilibili.com${location.pathname}`;
       new NormalItem(
         "video-page-hide-reply-notice",
         "隐藏 评论区-活动/notice",
-        false,
+        true,
         void 0,
         false,
         `#comment-module .reply-header .reply-notice {display: none !important;}`
@@ -4418,7 +4418,7 @@ https://www.bilibili.com${location.pathname}`;
       new NormalItem(
         "video-page-hide-reply-notice",
         "隐藏 评论区-活动/notice",
-        false,
+        true,
         void 0,
         false,
         `.comment-container .reply-header .reply-notice {display: none !important;}`
@@ -4758,9 +4758,9 @@ https://www.bilibili.com${location.pathname}`;
   }
   const dynamicGroup = new Group("dynamic", "当前是：动态页", dynamicItems);
   log("script start");
-  const main = () => {
+  const main = async () => {
     try {
-      init();
+      await init();
     } catch (err) {
       error("init error, try continue");
     }

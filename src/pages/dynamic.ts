@@ -177,12 +177,12 @@ if (location.host === 't.bilibili.com') {
     ///////////////////////////////////////////////////////////////////////////
     // 动态评论区part, 尽可能与video page设定同步
     dynamicItems.push(new SeparatorItem())
-    // 隐藏 评论区-活动/notice
+    // 隐藏 评论区-活动/notice, 默认开启
     dynamicItems.push(
         new NormalItem(
             'video-page-hide-reply-notice',
             '隐藏 评论区-活动/notice',
-            false,
+            true,
             undefined,
             false,
             `.comment-container .reply-header .reply-notice {display: none !important;}`,

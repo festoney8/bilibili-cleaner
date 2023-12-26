@@ -631,12 +631,12 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // 视频下方part
     videoItems.push(new SeparatorItem())
-    // 隐藏 视频下方-分享按钮弹出菜单
+    // 隐藏 视频下方-分享按钮弹出菜单, 默认开启
     videoItems.push(
         new NormalItem(
             'video-page-hide-video-share-popover',
             '隐藏 视频下方-分享按钮弹出菜单',
-            false,
+            true,
             undefined,
             false,
             `.video-share-popover {display: none !important;}`,
@@ -1001,12 +1001,12 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // 评论区part
     videoItems.push(new SeparatorItem())
-    // 隐藏 评论区-活动/notice
+    // 隐藏 评论区-活动/notice, 默认开启
     videoItems.push(
         new NormalItem(
             'video-page-hide-reply-notice',
             '隐藏 评论区-活动/notice',
-            false,
+            true,
             undefined,
             false,
             `#comment .reply-header .reply-notice {display: none !important;}`,

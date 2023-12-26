@@ -81,12 +81,12 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
             .bpx-player-top-mask {display: none !important;}`,
         ),
     )
-    // bangumi独有项：隐藏 播放器-追番/追剧按钮
+    // bangumi独有项：隐藏 播放器-追番/追剧按钮, 默认开启
     bangumiItems.push(
         new NormalItem(
             'bangumi-page-hide-bpx-player-top-follow',
             '隐藏 播放器-追番/追剧按钮 ★',
-            false,
+            true,
             undefined,
             false,
             `.bpx-player-top-follow {display: none !important;}`,
@@ -114,7 +114,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
             `.bpx-player-state-wrap {display: none !important;}`,
         ),
     )
-    // bangumi独有项：隐藏 播放器-视频内封审核号(非内嵌), 默认启用
+    // bangumi独有项：隐藏 播放器-视频内封审核号(非内嵌), 默认开启
     bangumiItems.push(
         new NormalItem(
             'bangumi-page-hide-bpx-player-record-item-wrap',
@@ -400,18 +400,18 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // 视频下信息part
     bangumiItems.push(new SeparatorItem())
-    // 隐藏 视频下方-分享按钮弹出菜单
+    // 隐藏 视频下方-分享按钮弹出菜单, 默认开启
     bangumiItems.push(
         new NormalItem(
             'video-page-hide-video-share-popover',
             '隐藏 视频下方-分享按钮弹出菜单',
-            false,
+            true,
             undefined,
             false,
             `#share-container-id [class^='Share_share'] {display: none !important;}`,
         ),
     )
-    // bangumi独有项：隐藏 视频下方-用手机观看, 默认启用
+    // bangumi独有项：隐藏 视频下方-用手机观看, 默认开启
     bangumiItems.push(
         new NormalItem(
             'bangumi-page-hide-watch-on-phone',
@@ -422,7 +422,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
             `.toolbar span:has(>[class^='Phone_mobile']) {display: none !important;}`,
         ),
     )
-    // bangumi独有项：隐藏 视频下方-一起看, 默认启用
+    // bangumi独有项：隐藏 视频下方-一起看, 默认开启
     bangumiItems.push(
         new NormalItem(
             'bangumi-page-hide-watch-together',
@@ -455,7 +455,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
             `[class^='mediainfo_mediaInfo'] {display: none !important;}`,
         ),
     )
-    // bangumi独有项：精简 视频下方-作品介绍, 默认启用
+    // bangumi独有项：精简 视频下方-作品介绍, 默认开启
     bangumiItems.push(
         new NormalItem(
             'bangumi-page-simple-media-info',
@@ -487,7 +487,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // 右栏part
     bangumiItems.push(new SeparatorItem())
-    // bangumi独有项：隐藏 右栏-大会员按钮, 默认启用
+    // bangumi独有项：隐藏 右栏-大会员按钮, 默认开启
     bangumiItems.push(
         new NormalItem(
             'bangumi-page-hide-right-container-section-height',
@@ -536,12 +536,12 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // 评论区part
     bangumiItems.push(new SeparatorItem())
-    // 隐藏 评论区-活动/notice
+    // 隐藏 评论区-活动/notice, 默认开启
     bangumiItems.push(
         new NormalItem(
             'video-page-hide-reply-notice',
             '隐藏 评论区-活动/notice',
-            false,
+            true,
             undefined,
             false,
             `#comment-module .reply-header .reply-notice {display: none !important;}`,

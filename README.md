@@ -53,7 +53,7 @@
 | ------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | Chrome  | [链接](https://chrome.google.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo)                      | [链接](https://chrome.google.com/webstore/detail/violentmonkey/jinjaccalgkegednnccohejagnlnfdag) |
 | Edge    | [链接](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd) | [链接](https://microsoftedge.microsoft.com/addons/detail/eeagobfjdenkkddmbclomhiblgggliao)       |
-| Firefox | [链接](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/)                                    | [链接](https://addons.mozilla.org/firefox/addon/violentmonkey/)                                  |
+| Firefox | [链接](https://addons.mozilla.org/firefox/addon/tampermonkey/)                                          | [链接](https://addons.mozilla.org/firefox/addon/violentmonkey/)                                  |
 | 测试    | **已测试，推荐**                                                                                        | 未完全测试，基本支持                                                                             |
 
 ## 与其他 bilibili 插件的兼容性
@@ -77,16 +77,19 @@
 
 ## 功能介绍
 
--   目前支持「首页、播放页、版权作品播放页、直播间、搜索页、动态页」这 6 个页面的定制净化，在每个页面下开启插件设置，可查看功能列表
+-   适用于 **净化新版 bilibili 网页**，不做老版本页面适配
+-   目前支持 **「首页、播放页、版权作品播放页、直播间、搜索页、动态页」** 这 6 个页面，可在每个页面下开启插件菜单，查看功能列表
 -   「通用」功能主要用于净化顶栏，对全站所有页面生效
--   脚本默认会开启一些基础功能，其余功能由用户自行定义
--   大多数屏蔽功能会实时生效，方便用户进行页面定制
--   脚本在开启网页后立即注入规则，所有隐藏元素的规则在开启页面后 1 秒内生效。其他需要等待元素出现的功能，如「净化分享功能」生效较慢
+-   脚本默认用户已登录，大会员下(开发环境)体验最佳
+-   脚本默认开启少数基础功能，其余功能由用户自行设定
+-   大多数功能实时生效，方便用户进行页面定制
+-   脚本在开启网页后立即注入，所有隐藏元素规则在开启页面后 1 秒内生效。其他需要等待元素出现的功能，如「净化分享」生效较慢
 
--   **注意：通用功能「URL参数净化」**，由于比较激进，会导致 **充电窗口载入失败 (报错NaN)**，需充电时请关闭该功能，并刷新页面
+### 注意事项
+
+-   **通用功能「URL参数净化」**，由于比较激进，会导致 **充电窗口载入失败 (报错NaN)**，需充电时请关闭该功能，并刷新页面
 -   **「版权视频播放页」大部分功能与「普通播放页」一致且互相同步，小部分功能为该页面独有，已用 "★" 重点标出**
-
--   **已知Bug：** Chrome 内核浏览器在打开「版权作品播放页」时，有概率出现顶栏未净化的情况，已通过打补丁的方式暂时补救，副作用为打开版权页数秒后顶栏净化规则才生效
+-   **已知Bug：** Chrome 内核浏览器在打开「版权作品播放页」时，小概率出现顶栏未净化的情况。已通过打补丁的方式暂时补救，副作用为打开页面数秒后顶栏净化规则才生效
 
 ## 净化效果对比
 
@@ -112,7 +115,7 @@
 
 ### after
 
-## ![](images/screenshot-homepage-after-4col.png)
+![](images/screenshot-homepage-after-4col.png)
 
 ### before，5 列模式，浏览器缩放 90%~100%
 

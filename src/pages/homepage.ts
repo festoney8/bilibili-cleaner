@@ -159,8 +159,9 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
                 .bili-header .slide-down .center-search-container .center-search__bar {
                     margin: 0 auto !important;
                 }
+                /* 不可添加important, 否则与Evolved的黑暗模式冲突 */
                 #nav-searchform {
-                    background: #f1f2f3 !important;
+                    background: #f1f2f3;
                 }
                 #nav-searchform:hover {
                     background-color: var(--bg1) !important;

@@ -60,9 +60,9 @@ export class NormalItem implements IItem {
             const e = document.createElement('label')
             e.id = this.itemID
             if (this.isEnable) {
-                e.innerHTML = this.checkedHTML + this.description
+                e.innerHTML = `${this.checkedHTML}<span>${this.description}</span>`
             } else {
-                e.innerHTML = this.uncheckedHTML + this.description
+                e.innerHTML = `${this.uncheckedHTML}<span>${this.description}</span>`
             }
             const itemGroupList = document.querySelector(`#${groupID} .bili-cleaner-item-list`) as HTMLFormElement
             if (itemGroupList) {

@@ -43,7 +43,7 @@ export class Group implements IGroup {
     /** 在panel内添加一个group */
     insertGroup() {
         const e = document.createElement('div')
-        e.innerHTML = this.groupHTML
+        e.innerHTML = this.groupHTML.trim()
         e.querySelector('.bili-cleaner-group')!.id = this.groupID
         e.querySelector('.bili-cleaner-group-title')!.textContent = this.title
 

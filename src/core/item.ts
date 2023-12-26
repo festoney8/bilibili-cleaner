@@ -14,6 +14,7 @@ export class NormalItem implements IItem {
     private isEnable: boolean | undefined
     // item对应的HTML input node
     private itemEle: HTMLInputElement | undefined
+    private itemCSS: string | undefined
 
     /**
      * @param itemID item的唯一ID, 与GM database中的Key对应, 使用相同ID可共享item状态
@@ -29,10 +30,11 @@ export class NormalItem implements IItem {
         private defaultStatus: boolean,
         private itemFunc: (() => void) | undefined,
         private isItemFuncReload: boolean,
-        private itemCSS: myCSS | null,
+        itemCSS: myCSS | null,
     ) {
         this.isEnable = undefined
         this.itemEle = undefined
+        this.itemCSS = itemCSS?.replace(/\n\s*/g, '').trim()
     }
     /**
      * 设定并记录item开关状态

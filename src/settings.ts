@@ -1,4 +1,4 @@
 export default {
-    debugMode: true,
-    // enableCSSMinify: true,
+    debugMode: false,
+    themeColor: `rgba(251, 114, 153, 1)`,
 }

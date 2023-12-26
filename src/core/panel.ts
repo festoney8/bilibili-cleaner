@@ -1,4 +1,5 @@
 import { debug, error } from '../utils/logger'
+import settings from '../settings'
 
 interface IPanel {
     readonly panelCSS: myCSS
@@ -22,14 +23,14 @@ export class Panel implements IPanel {
         height: 90vh;
         border-radius: 10px;
         background: rgba(250, 250, 250, 1);
-        box-shadow: 0 2px 5px rgba(251, 114, 153, 1);
+        box-shadow: 0 2px 5px ${settings.themeColor};
         overflow: auto;
         z-index: 2147483647;
     }
     #bili-cleaner-bar {
         width: 33vw;
         height: 6vh;
-        background: rgba(251, 114, 153, 1);
+        background: ${settings.themeColor};
         border-top-left-radius: 10px;
         border-top-right-radius: 10px;
         cursor: move;
@@ -137,9 +138,9 @@ export class Panel implements IPanel {
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
     }
     .bili-cleaner-item-switch:checked {
-        border-color: rgba(251, 114, 153, 1);
-        box-shadow: rgba(251, 114, 153, 1) 0 0 0 16px inset;
-        background-color: rgba(251, 114, 153, 1);
+        border-color: ${settings.themeColor};
+        box-shadow: ${settings.themeColor} 0 0 0 16px inset;
+        background-color: ${settings.themeColor};
     }
     .bili-cleaner-item-switch:checked:before {
         left: 25px;
@@ -169,7 +170,7 @@ export class Panel implements IPanel {
                 return
             }
             const style = document.createElement('style')
-            style.innerHTML = this.panelCSS.trim()
+            style.innerHTML = this.panelCSS.replace(/\n\s*/g, '').trim()
             style.setAttribute('id', 'bili-cleaner-panel-css')
             document.head.appendChild(style)
             debug('insertPanelCSS OK')

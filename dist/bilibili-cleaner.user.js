@@ -34,8 +34,8 @@
   var _GM_registerMenuCommand = /* @__PURE__ */ (() => typeof GM_registerMenuCommand != "undefined" ? GM_registerMenuCommand : void 0)();
   var _GM_setValue = /* @__PURE__ */ (() => typeof GM_setValue != "undefined" ? GM_setValue : void 0)();
   const settings = {
-    debugMode: true
-    // enableCSSMinify: true,
+    debugMode: false,
+    themeColor: `rgba(251, 114, 153, 1)`
   };
   const startTime = performance.now();
   let lastTime = startTime;
@@ -101,14 +101,14 @@
         height: 90vh;
         border-radius: 10px;
         background: rgba(250, 250, 250, 1);
-        box-shadow: 0 2px 5px rgba(251, 114, 153, 1);
+        box-shadow: 0 2px 5px ${settings.themeColor};
         overflow: auto;
         z-index: 2147483647;
     }
     #bili-cleaner-bar {
         width: 33vw;
         height: 6vh;
-        background: rgba(251, 114, 153, 1);
+        background: ${settings.themeColor};
         border-top-left-radius: 10px;
         border-top-right-radius: 10px;
         cursor: move;
@@ -216,9 +216,9 @@
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
     }
     .bili-cleaner-item-switch:checked {
-        border-color: rgba(251, 114, 153, 1);
-        box-shadow: rgba(251, 114, 153, 1) 0 0 0 16px inset;
-        background-color: rgba(251, 114, 153, 1);
+        border-color: ${settings.themeColor};
+        box-shadow: ${settings.themeColor} 0 0 0 16px inset;
+        background-color: ${settings.themeColor};
     }
     .bili-cleaner-item-switch:checked:before {
         left: 25px;
@@ -246,7 +246,7 @@
           return;
         }
         const style = document.createElement("style");
-        style.innerHTML = this.panelCSS.trim();
+        style.innerHTML = this.panelCSS.replace(/\n\s*/g, "").trim();
         style.setAttribute("id", "bili-cleaner-panel-css");
         document.head.appendChild(style);
         debug("insertPanelCSS OK");
@@ -348,14 +348,15 @@
       __publicField(this, "isEnable");
       // item对应的HTML input node
       __publicField(this, "itemEle");
+      __publicField(this, "itemCSS");
       this.itemID = itemID;
       this.description = description;
       this.defaultStatus = defaultStatus;
       this.itemFunc = itemFunc;
       this.isItemFuncReload = isItemFuncReload;
-      this.itemCSS = itemCSS;
       this.isEnable = void 0;
       this.itemEle = void 0;
+      this.itemCSS = itemCSS == null ? void 0 : itemCSS.replace(/\n\s*/g, "").trim();
     }
     /**
      * 设定并记录item开关状态

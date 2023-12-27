@@ -1,8 +1,10 @@
 name: dev-ci
 on:
   push:
+    paths:
+      - src
     branches:
-    - dev
+      - dev
 
 jobs:
   dev-build:

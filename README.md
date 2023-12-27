@@ -1,5 +1,5 @@
 <div align="center">
-<image src="./images/logo.png"></image>
+<image src="./images/logo.png" height="160"></image>
 <h1>bilibili 页面净化大师</h1>
 <div><b>高度定制化的 bilibili 网页净化插件，提供 300+ 个功能开关，深度净化页面元素</b></div>
 <br>
@@ -19,10 +19,11 @@
 
 ## 安装
 
-### **稳定版：[点此安装](https://greasyfork.org/zh-CN/scripts/479861)**
+### **稳定版：请查看 [浏览器适配](#%E6%B5%8F%E8%A7%88%E5%99%A8%E9%80%82%E9%85%8D)，并 [点此安装](https://greasyfork.org/zh-CN/scripts/479861)**
 
--   稳定版会持续在 Greasyfork 更新，油猴插件会定期自动检测更新
--   开发测试版在 GitHub
+-   稳定版持续在 Greasyfork 发布，油猴插件会定期检查，自动更新
+
+### 开发测试版：[点此安装dev版](https://github.com/festoney8/bilibili-cleaner/raw/dev/dist/bilibili-cleaner.user.js)
 
 ## 使用
 
@@ -33,8 +34,6 @@
 ![](images/usage.png)
 
 ## 浏览器适配
-
-### 1. 浏览器
 
 ### Chrome / Edge
 
@@ -47,14 +46,14 @@
     -   搜索 `layout.css.has-selector.enabled` ，将这一项的开关改为 `true`，并重启浏览器
 -   **Firefox版本 > 121，无需修改设定**
 
-### 2. 浏览器扩展
+### 脚本管理插件
 
 |         | [Tampermonkey](https://www.tampermonkey.net/) (油猴插件)                                                | [Violentmonkey](https://violentmonkey.github.io/) (暴力猴)                                       |
 | ------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | Chrome  | [链接](https://chrome.google.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo)                      | [链接](https://chrome.google.com/webstore/detail/violentmonkey/jinjaccalgkegednnccohejagnlnfdag) |
 | Edge    | [链接](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd) | [链接](https://microsoftedge.microsoft.com/addons/detail/eeagobfjdenkkddmbclomhiblgggliao)       |
 | Firefox | [链接](https://addons.mozilla.org/firefox/addon/tampermonkey/)                                          | [链接](https://addons.mozilla.org/firefox/addon/violentmonkey/)                                  |
-| 测试    | **已测试，推荐**                                                                                        | 未完全测试，基本支持                                                                             |
+| 测试    | **已测试，推荐**                                                                                        | 支持，未完全测试                                                                                 |
 
 ## 与其他 bilibili 插件的兼容性
 

@@ -1,0 +1,57 @@
+name: main-release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    # environment
+    - name: checkout code
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.head_ref }}
+    - name: install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+
+    # prepare
+    - run: pnpm install
+    - run: pnpm run lint
+    - run: pnpm run format
+
+    # build normal and minify version, save to folder
+    - name: build minify
+      run: pnpm run build:minify
+    - name: mkdir
+      run: mkdir build-release
+    - name: move and rename file
+      run: mv dist/bilibili-cleaner.user.js build-release/bilibili-cleaner.user.min.js
+    - name: build default
+      run: pnpm run build
+    - name: copy file
+      run: cp dist/bilibili-cleaner.user.js build-release/
+    - name: list files
+      run: ls -lah build-release/
+
+    # release
+    - name: Get version num
+      run: |
+        version=${{ github.ref_name }}
+        version_num=${version/v|./}
+        echo "version_num: $version_num"
+
+    - name: release action
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: 'build-release/*.js'
+        allowUpdates: true
+        replacesArtifacts: true
+        generateReleaseNotes: true
+        body: "[CHANGELOG.md](https://github.com/festoney8/bilibili-cleaner/blob/main/CHANGELOG.md#${version_num})"

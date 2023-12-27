@@ -19,11 +19,11 @@
 
 ## 安装
 
-### **稳定版：[点此安装](https://greasyfork.org/zh-CN/scripts/479861)**
+### **稳定版：请查看 [浏览器适配](#%E6%B5%8F%E8%A7%88%E5%99%A8%E9%80%82%E9%85%8D)，并 [点此安装](https://greasyfork.org/zh-CN/scripts/479861)**
 
--   稳定版持续在 Greasyfork 发布，油猴插件会定期自动更新
+-   稳定版持续在 Greasyfork 发布，油猴插件会定期检查，自动更新
 
-### 开发测试版：[点此安装dev版](https://github.com/festoney8/bilibili-cleaner/raw/dev/dist/bilibili-cleaner.user.js)，也可以前往 GitHub Release 安装
+### 开发测试版：[点此安装dev版](https://github.com/festoney8/bilibili-cleaner/raw/dev/dist/bilibili-cleaner.user.js)
 
 ## 使用
 

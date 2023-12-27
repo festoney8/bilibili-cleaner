@@ -1,0 +1,33 @@
+name: dev-ci
+on:
+  push:
+    branches:
+    - dev
+
+jobs:
+  build-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: upload-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dev-ci-build
+          path: |
+            dist/bilibili-cleaner.user.js
+
+      - name: install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: install dependencies
+        run: pnpm install
+      - name: lint
+        run: pnpm run lint
+      - name: format
+        run: pnpm run format
+      - name: build
+        run: pnpm run build

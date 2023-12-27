@@ -5,11 +5,15 @@ on:
     - dev
 
 jobs:
-  build-dev:
+  dev-build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: checkout code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
 
       - name: install pnpm
         uses: pnpm/action-setup@v2
@@ -26,15 +30,22 @@ jobs:
       # build两个版本
       - name: build minify
         run: pnpm run build:minify
-      - name: rename artifact
-        run: mv dist/bilibili-cleaner.user.js dist/bilibili-cleaner.user.min.js
-      - name: build normal
+      - name: mkdir
+        run: mkdir output
+      - name: move and rename file
+        run: mv dist/bilibili-cleaner.user.js output/bilibili-cleaner.user.min.js
+      - name: build default
         run: pnpm run build
+      - name: copy file
+        run: cp dist/bilibili-cleaner.user.js output/
+      - name: add doc
+        run: cp LICENSE README.md CHANGELOG.md output/
+      - name: list files
+        run: ls -lah output/
 
+      # 上传产物
       - name: upload-artifact
         uses: actions/upload-artifact@v4
         with:
-          name: dev-build
-          path: |
-            dist/bilibili-cleaner.user.js
-            dist/bilibili-cleaner.user.min.js
+          name: bilibili-cleaner
+          path: output/*

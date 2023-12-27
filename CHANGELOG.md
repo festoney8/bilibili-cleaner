@@ -11,6 +11,8 @@
 -   优化：与 Evolved 黑暗模式的适配
 -   优化：CSS注入
 -   修复：一些bug
+-   文档：完善 README 和 CHANGELOG
+-   构建：添加 CI
 
 ## 1.1.7
 

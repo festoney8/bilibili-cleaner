@@ -4,12 +4,12 @@ on:
   push:
     tags:
       - "v*.*.*"
-    branches:
-      - main
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
     # environment
     - name: checkout code
@@ -41,11 +41,13 @@ jobs:
       run: ls -lah build-release/
 
     # release
-    - name: Get version num
+    - name: get version num
+      id: get_vernum
       run: |
         version=${{ github.ref_name }}
-        version_num=${version/v|./}
-        echo "version_num: $version_num"
+        vernum=$( echo $version | sed 's/[^0-9]//g')
+        echo "New version: $vernum"
+        echo "VERSION_NUM=$vernum" >> "$GITHUB_OUTPUT"
 
     - name: release action
       uses: ncipollo/release-action@v1
@@ -54,4 +56,5 @@ jobs:
         allowUpdates: true
         replacesArtifacts: true
         generateReleaseNotes: true
-        body: "[CHANGELOG.md](https://github.com/festoney8/bilibili-cleaner/blob/main/CHANGELOG.md#${version_num})"
+        body: '## [更新日志](https://github.com/festoney8/bilibili-cleaner/blob/main/CHANGELOG.md#${{ steps.get_vernum.outputs.VERSION_NUM }})'
+        token: ${{ secrets.GITHUB_TOKEN }}

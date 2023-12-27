@@ -11,13 +11,6 @@ jobs:
       - name: checkout code
         uses: actions/checkout@v4
 
-      - name: upload-artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: dev-ci-build
-          path: |
-            dist/bilibili-cleaner.user.js
-
       - name: install pnpm
         uses: pnpm/action-setup@v2
         with:
@@ -29,5 +22,19 @@ jobs:
         run: pnpm run lint
       - name: format
         run: pnpm run format
-      - name: build
+
+      # build两个版本
+      - name: build minify
+        run: pnpm run build:minify
+      - name: rename artifact
+        run: mv dist/bilibili-cleaner.user.js dist/bilibili-cleaner.user.min.js
+      - name: build normal
         run: pnpm run build
+
+      - name: upload-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dev-build
+          path: |
+            dist/bilibili-cleaner.user.js
+            dist/bilibili-cleaner.user.min.js

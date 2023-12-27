@@ -1,5 +1,5 @@
 <div align="center">
-<image src="./images/logo.png" height="160"></image>
+<image src="./images/logo.png" height="150"></image>
 <h1>bilibili 页面净化大师</h1>
 <div><b>高度定制化的 bilibili 网页净化插件，提供 300+ 个功能开关，深度净化页面元素</b></div>
 <br>
@@ -19,8 +19,9 @@
 
 ## 安装
 
-### **稳定版：请查看 [浏览器适配](#%E6%B5%8F%E8%A7%88%E5%99%A8%E9%80%82%E9%85%8D)，并 [点此安装](https://greasyfork.org/zh-CN/scripts/479861)**
+### **稳定版：[点此安装](https://greasyfork.org/zh-CN/scripts/479861)**
 
+-   请查看 [浏览器适配](#%E6%B5%8F%E8%A7%88%E5%99%A8%E9%80%82%E9%85%8D)
 -   稳定版持续在 Greasyfork 发布，油猴插件会定期检查，自动更新
 
 ### 开发测试版：[点此安装dev版](https://github.com/festoney8/bilibili-cleaner/raw/dev/dist/bilibili-cleaner.user.js)

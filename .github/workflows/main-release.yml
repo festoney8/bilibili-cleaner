@@ -4,8 +4,6 @@ on:
   push:
     tags:
       - "v*.*.*"
-    branches:
-      - main
 
 jobs:
   release:
@@ -44,14 +42,16 @@ jobs:
     - name: Get version num
       run: |
         version=${{ github.ref_name }}
-        version_num=${version/v|./}
+        version_num=${echo $version |sed 's/v//g'| tr -d '.'}
         echo "version_num: $version_num"
 
     - name: release action
       uses: ncipollo/release-action@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         artifacts: 'build-release/*.js'
         allowUpdates: true
         replacesArtifacts: true
         generateReleaseNotes: true
-        body: "[CHANGELOG.md](https://github.com/festoney8/bilibili-cleaner/blob/main/CHANGELOG.md#${version_num})"
+        body: "[更新日志](https://github.com/festoney8/bilibili-cleaner/blob/main/CHANGELOG.md#${version_num})"

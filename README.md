@@ -21,7 +21,7 @@
 
 ### 稳定版：[**前往 Greasyfork 安装**](https://greasyfork.org/zh-CN/scripts/479861)
 
--   请查看 [**浏览器适配**](#%E6%B5%8F%E8%A7%88%E5%99%A8%E9%80%82%E9%85%8D)
+-   **Firefox** 浏览器请查看 [**浏览器适配**](#%E6%B5%8F%E8%A7%88%E5%99%A8%E9%80%82%E9%85%8D)
 -   稳定版持续在 Greasyfork 发布，油猴插件会定期检查，自动更新
 
 ### 测试版：[Release安装](https://github.com/festoney8/bilibili-cleaner/releases/)

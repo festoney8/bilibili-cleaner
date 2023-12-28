@@ -56,6 +56,8 @@
 | Firefox | [链接](https://addons.mozilla.org/firefox/addon/tampermonkey/)                                          | [链接](https://addons.mozilla.org/firefox/addon/violentmonkey/)                                  |
 | 测试    | **已测试，推荐**                                                                                        | 支持，未完全测试                                                                                 |
 
+-   [Greasemonkey](https://www.greasespot.net/) 和 [ScriptCat](https://docs.scriptcat.org/) 未进行测试
+
 ## 与其他 bilibili 插件的兼容性
 
 ### 与 [Bilibili-Evolved](https://github.com/the1812/Bilibili-Evolved) 的兼容性
@@ -169,3 +171,12 @@
 ### 导入数据
 
 ![](images/how-to-import.png)
+
+## Ref
+
+-   [vite-plugin-monkey](https://github.com/lisonge/vite-plugin-monkey)
+
+## Contribution
+
+-   main branch 用于发布测试版和稳定版
+-   dev branch 用于开发

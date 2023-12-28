@@ -19,7 +19,8 @@ if (location.host === 't.bilibili.com') {
                 undefined,
                 false,
                 `.fixed-header .bili-header__bar {position: relative !important;}
-            .bili-dyn-live-users {top: 15px !important; transform: unset !important;}`,
+                /* 高权限覆盖*/
+                aside.right section.sticky {top: 15px !important;}`,
             ),
         )
         // 页面直角化 去除圆角
@@ -78,7 +79,7 @@ if (location.host === 't.bilibili.com') {
                 undefined,
                 false,
                 `section:has(> .bili-dyn-my-info) {display: none !important;}
-                .bili-dyn-live-users {top: 8px !important;}`,
+                .bili-dyn-live-users {top: 15px !important;}`,
             ),
         )
         // 隐藏 左栏 直播中Logo
@@ -157,7 +158,8 @@ if (location.host === 't.bilibili.com') {
                 false,
                 `section:has(.bili-dyn-ads) {display: none !important;}
                 aside.right section {margin-bottom: 0 !important;}
-                aside.right section.sticky {top: 15px !important;}`,
+                /* header吸附时 */
+                aside.right section.sticky {top: 72px}`,
             ),
         )
         // 隐藏 右栏 话题列表

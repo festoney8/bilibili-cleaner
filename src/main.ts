@@ -81,7 +81,7 @@ const main = async () => {
 }
 
 try {
-    main()
+    await main()
 } catch (err) {
     error(err)
 }

@@ -6,11 +6,11 @@ const searchItems: (NormalItem | SeparatorItem)[] = []
 if (location.host == 'search.bilibili.com') {
     // 基本功能part
     {
-        // 隐藏 滚动页面后 顶栏吸附
+        // 顶栏 滚动页面后不再吸附顶部
         searchItems.push(
             new NormalItem(
                 'hide-search-page-search-sticky-header',
-                '隐藏 滚动页面后 顶栏吸附',
+                '顶栏 滚动页面后不再吸附顶部',
                 false,
                 undefined,
                 false,

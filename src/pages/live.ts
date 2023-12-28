@@ -5,7 +5,111 @@ const liveItems: (NormalItem | SeparatorItem)[] = []
 
 /** 直播页面规则, 只适用于直播间内, 不适用于直播首页 */
 if (location.host == 'live.bilibili.com') {
+    // 杂项part
+    {
+        // 隐藏 右侧浮动按钮-实验室/关注, 默认开启
+        liveItems.push(
+            new NormalItem(
+                'live-page-sidebar-vm',
+                '隐藏 右侧浮动按钮-实验室/关注',
+                true,
+                undefined,
+                false,
+                `#sidebar-vm {display: none !important;}`,
+            ),
+        )
+        // 页面直角化 去除圆角
+        liveItems.push(
+            new NormalItem(
+                'live-page-border-radius',
+                '页面直角化 去除圆角',
+                false,
+                undefined,
+                false,
+                `#nav-searchform,
+                #player-ctnr,
+                .nav-search-content,
+                .header-upload-entry,
+                .v-popover-content,
+                .van-popover,
+                .v-popover-wrap,
+                .v-popover,
+                .aside-area,
+                .lower-row .right-ctnr *,
+                .panel-main-ctnr,
+                .startlive-btn,
+                .flip-view,
+                .content-wrapper,
+                .chat-input-ctnr,
+                .announcement-cntr,
+                .bl-button--primary {
+                    border-radius: 3px !important;
+                }
+                #rank-list-vm,
+                .head-info-section {
+                    border-radius: 3px 3px 0 0 !important;
+                }
+                .gift-control-section {
+                    border-radius: 0 0 3px 3px !important;
+                }
+                .follow-ctnr .right-part {
+                    border-radius: 0 3px 3px 0 !important;
+                }
+                .chat-control-panel {
+                    border-radius: 0 0 3px 3px !important;
+                }
+                .follow-ctnr .left-part,
+                #rank-list-ctnr-box.bgStyle {
+                    border-radius: 3px 0 0 3px !important;
+                }`,
+            ),
+        )
+        // 播放器皮肤 恢复默认配色
+        liveItems.push(
+            new NormalItem(
+                'live-page-default-skin',
+                '播放器皮肤 恢复默认配色',
+                false,
+                undefined,
+                false,
+                `#head-info-vm {
+                    background-image: unset !important;
+                    /* color不加important, 适配Evolved黑暗模式 */
+                    background-color: white;
+                }
+                .live-title .text {
+                    color: #61666D !important;
+                }
+                .header-info-ctnr .rows-ctnr .upper-row .room-owner-username {
+                    color: #18191C !important;
+                }
+                /* 高权限覆盖 */
+                #head-info-vm .live-skin-coloration-area .live-skin-normal-a-text {
+                    color: unset !important;
+                }
+                #head-info-vm .live-skin-coloration-area .live-skin-main-text {
+                    color: #61666D !important;
+                    fill: #61666D !important;
+                }
+                /* 右侧弹幕框背景 */
+                #chat-control-panel-vm .live-skin-coloration-area .live-skin-main-text {
+                    color: #C9CCD0 !important;
+                    fill: #C9CCD0 !important;
+                }
+                #chat-control-panel-vm {
+                    background-image: unset !important;
+                    background-color: #f6f7f8;
+                }
+                #chat-control-panel-vm .bl-button--primary {
+                    background-color: #23ade5;
+                }
+                `,
+            ),
+        )
+    }
+
     // 信息栏part
+    liveItems.push(new SeparatorItem())
     {
         // 隐藏 信息栏-粉丝团
         liveItems.push(
@@ -114,7 +218,13 @@ if (location.host == 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `#head-info-vm {display: none !important;}`,
+                `#head-info-vm {display: none !important;}
+                /* 补齐圆角, 不可important */
+                #player-ctnr {
+                    border-top-left-radius: 12px;
+                    border-top-right-radius: 12px;
+                    overflow: hidden;
+                }`,
             ),
         )
     }
@@ -196,7 +306,13 @@ if (location.host == 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `#gift-control-vm, #gift-control-vm-new {display: none !important;}`,
+                `#gift-control-vm, #gift-control-vm-new {display: none !important;}
+                /* 补齐圆角, 不可important */
+                #player-ctnr {
+                    border-bottom-left-radius: 12px;
+                    border-bottom-right-radius: 12px;
+                    overflow: hidden;
+                }`,
             ),
         )
     }
@@ -303,6 +419,17 @@ if (location.host == 'live.bilibili.com') {
                 undefined,
                 false,
                 `.chat-item.gift-item, .chat-item.common-danmuku-msg {display: none !important;}`,
+            ),
+        )
+        // 隐藏 右侧-弹幕栏 高能用户提示
+        liveItems.push(
+            new NormalItem(
+                'live-page-chat-item-top3-notice',
+                '隐藏 右侧-弹幕栏 高能用户提示',
+                false,
+                undefined,
+                false,
+                `.chat-item.top3-notice {display: none !important;}`,
             ),
         )
         // 隐藏 右侧-弹幕栏 底部滚动提示, 默认开启
@@ -739,67 +866,6 @@ if (location.host == 'live.bilibili.com') {
                 undefined,
                 false,
                 `#right-part .shortcuts-ctnr .shortcut-item:has(.download-panel-ctnr) {visibility: hidden;}`,
-            ),
-        )
-    }
-
-    // 杂项part
-    liveItems.push(new SeparatorItem())
-    {
-        // 隐藏 右侧浮动按钮-实验室/关注, 默认开启
-        liveItems.push(
-            new NormalItem(
-                'live-page-sidebar-vm',
-                '隐藏 右侧浮动按钮-实验室/关注',
-                true,
-                undefined,
-                false,
-                `#sidebar-vm {display: none !important;}`,
-            ),
-        )
-        // 页面直角化 去除圆角
-        liveItems.push(
-            new NormalItem(
-                'live-page-border-radius',
-                '页面直角化 去除圆角',
-                false,
-                undefined,
-                false,
-                `#nav-searchform,
-                .nav-search-content,
-                .header-upload-entry,
-                .v-popover-content,
-                .van-popover,
-                .v-popover-wrap,
-                .v-popover,
-                .aside-area,
-                .lower-row .right-ctnr *,
-                .panel-main-ctnr,
-                .startlive-btn,
-                .flip-view,
-                .content-wrapper,
-                .chat-input-ctnr,
-                .announcement-cntr,
-                .bl-button--primary {
-                    border-radius: 3px !important;
-                }
-                #rank-list-vm,
-                .head-info-section {
-                    border-radius: 3px 3px 0 0 !important;
-                }
-                .gift-control-section {
-                    border-radius: 0 0 3px 3px !important;
-                }
-                .follow-ctnr .right-part {
-                    border-radius: 0 3px 3px 0 !important;
-                }
-                .chat-control-panel {
-                    border-radius: 0 0 3px 3px !important;
-                }
-                .follow-ctnr .left-part,
-                #rank-list-ctnr-box.bgStyle {
-                    border-radius: 3px 0 0 3px !important;
-                }`,
             ),
         )
     }

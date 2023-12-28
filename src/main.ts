@@ -19,6 +19,7 @@ const main = async () => {
     try {
         await init()
     } catch (err) {
+        error(err)
         error('init error, try continue')
     }
 

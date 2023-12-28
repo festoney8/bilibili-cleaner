@@ -38,6 +38,7 @@ const cleanURL = () => {
         'track_id',
         'from',
         'visit_id',
+        'extra_jump_from',
     ])
     // 搜索页参数, 意义不明所以做一下判断
     if (location.host === 'search.bilibili.com') {

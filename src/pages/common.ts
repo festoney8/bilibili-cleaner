@@ -126,7 +126,13 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `div.bili-header__bar .left-entry li:has(>a[href="//www.bilibili.com"]) svg {display: none !important;}`,
+                `div.bili-header__bar .left-entry li:has(>a[href="//www.bilibili.com"]) svg {
+                    display: none !important;
+                }
+                /* 旧版header */
+                #internationalHeader li.nav-link-item:has(>span>a[href="//www.bilibili.com"]) .navbar_logo {
+                    display: none !important;
+                }`,
             ),
         )
         // 隐藏 顶栏-首页
@@ -137,8 +143,20 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `div.bili-header__bar li:has(>a[href="//www.bilibili.com"]) span {display: none !important;}
-            div.bili-header__bar .left-entry .v-popover-wrap:has(>a[href="//www.bilibili.com"]) div {display: none !important;}`,
+                `div.bili-header__bar li:has(>a[href="//www.bilibili.com"]) span {
+                    display: none !important;
+                }
+                div.bili-header__bar .left-entry .v-popover-wrap:has(>a[href="//www.bilibili.com"]) div {
+                    display: none !important;
+                }
+                /* 旧版header */
+                #internationalHeader li.nav-link-item:has(>span>a[href="//www.bilibili.com"]) :not(svg) {
+                    color: transparent;
+                    user-select: none;
+                }
+                #internationalHeader li.nav-link-item:has(>span>a[href="//www.bilibili.com"]) .navbar_pullup {
+                    display: none !important;
+                }`,
             ),
         )
         // 隐藏 顶栏-番剧
@@ -149,7 +167,13 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `div.bili-header__bar .left-entry li:has(>a[href="//www.bilibili.com/anime/"])  {display: none !important;}`,
+                `div.bili-header__bar .left-entry li:has(>a[href="//www.bilibili.com/anime/"]) {
+                    display: none !important;
+                }
+                /* 旧版header */
+                #internationalHeader li.nav-link-item:has(>a[href*="bilibili.com/anime"]) {
+                    display: none !important;
+                }`,
             ),
         )
         // 隐藏 顶栏-直播
@@ -160,7 +184,13 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `div.bili-header__bar .left-entry li:has(>a[href="//live.bilibili.com"])  {display: none !important;}`,
+                `div.bili-header__bar .left-entry li:has(>a[href="//live.bilibili.com"]) {
+                    display: none !important;
+                }
+                /* 旧版header */
+                #internationalHeader li.nav-link-item:has(>span>a[href*="live.bilibili.com"]) {
+                    display: none !important;
+                }`,
             ),
         )
         // 隐藏 顶栏-游戏中心
@@ -171,7 +201,13 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `div.bili-header__bar .left-entry li:has(>a[href^="//game.bilibili.com"])  {display: none !important;}`,
+                `div.bili-header__bar .left-entry li:has(>a[href^="//game.bilibili.com"]) {
+                    display: none !important;
+                }
+                /* 旧版header */
+                #internationalHeader li.nav-link-item:has(>span>a[href*="game.bilibili.com"]) {
+                    display: none !important;
+                }`,
             ),
         )
         // 隐藏 顶栏-会员购
@@ -182,7 +218,13 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `div.bili-header__bar .left-entry li:has(>a[href^="//show.bilibili.com"])  {display: none !important;}`,
+                `div.bili-header__bar .left-entry li:has(>a[href^="//show.bilibili.com"]) {
+                    display: none !important;
+                }
+                /* 旧版header */
+                #internationalHeader li.nav-link-item:has(>a[href*="show.bilibili.com"]) {
+                    display: none !important;
+                }`,
             ),
         )
         // 隐藏 顶栏-漫画
@@ -193,7 +235,13 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `div.bili-header__bar .left-entry li:has(>a[href^="//manga.bilibili.com"])  {display: none !important;}`,
+                `div.bili-header__bar .left-entry li:has(>a[href^="//manga.bilibili.com"]) {
+                    display: none !important;
+                }
+                /* 旧版header */
+                #internationalHeader li.nav-link-item:has(>span>a[href*="manga.bilibili.com"]) {
+                    display: none !important;
+                }`,
             ),
         )
         // 隐藏 顶栏-赛事
@@ -206,6 +254,10 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 `div.bili-header__bar .left-entry li:has(>a[href^="//www.bilibili.com/match/"], >a[href^="//www.bilibili.com/v/game/match/"]) {
                     display: none !important;
+                }
+                /* 旧版header */
+                #internationalHeader li.nav-link-item:has(>a[href*="bilibili.com/match/"]) {
+                    display: none !important;
                 }`,
             ),
         )
@@ -217,8 +269,17 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `div.bili-header__bar li:has(.loc-mc-box) {display: none !important;}
+                `div.bili-header__bar li:has(.loc-mc-box) {
+                    display: none !important;
+                }
                 div.bili-header__bar .left-entry li:not(:has(.v-popover)):has([href^="https://live.bilibili.com/"]) {
+                    display: none !important;
+                }
+                /* 旧版header */
+                #internationalHeader li.nav-link-item:has(a[href*="live.bilibili.com/blackboard"]) {
+                    display: none !important;
+                }
+                #internationalHeader li.nav-link-item:has(.loc-mc-box, [href^="https://live.bilibili.com/"]) {
                     display: none !important;
                 }`,
             ),
@@ -242,7 +303,13 @@ if (location.host != 'live.bilibili.com') {
                 true,
                 undefined,
                 false,
-                `div.bili-header__bar .left-entry li:has(a[href="//app.bilibili.com"]) {display: none !important;}`,
+                `div.bili-header__bar .left-entry li:has(a[href="//app.bilibili.com"]) {
+                    display: none !important;
+                }
+                /* 旧版header */
+                #internationalHeader li.nav-link-item:has(a[href="//app.bilibili.com"]) {
+                    display: none !important;
+                }`,
             ),
         )
         // 隐藏 顶栏-所有官方活动(blackboard)
@@ -253,8 +320,16 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `div.bili-header__bar .left-entry li:has(>a[href*="bilibili.com/blackboard"]) {display: none !important;}
-                div.bili-header__bar .left-entry li:has(>div>a[href*="bilibili.com/blackboard"]) {display: none !important;}`,
+                `div.bili-header__bar .left-entry li:has(>a[href*="bilibili.com/blackboard"]) {
+                    display: none !important;
+                }
+                div.bili-header__bar .left-entry li:has(>div>a[href*="bilibili.com/blackboard"]) {
+                    display: none !important;
+                }
+                /* 旧版header */
+                #internationalHeader li.nav-link-item:has(.loc-mc-box, span>a[href*="bilibili.com/blackboard"]) {
+                    display: none !important;
+                }`,
             ),
         )
     }
@@ -270,7 +345,9 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `#nav-searchform .nav-search-input::placeholder {color: transparent;}`,
+                `#nav-searchform .nav-search-input::placeholder {color: transparent;}
+                /* 旧版header */
+                #internationalHeader #nav_searchform input::placeholder {color: transparent;}`,
             ),
         )
         // 隐藏 顶栏-搜索框 搜索历史
@@ -281,7 +358,9 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `.search-panel .history {display: none;}`,
+                `.search-panel .history {display: none;}
+                /* 旧版header */
+                #internationalHeader .nav-search-box .history {display: none !important;}`,
             ),
         )
         // 隐藏 顶栏-搜索框 bilibili热搜
@@ -292,7 +371,9 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `.search-panel .trending {display: none;}`,
+                `.search-panel .trending {display: none;}
+                /* 旧版header */
+                #internationalHeader .nav-search-box .trending {display: none !important;}`,
             ),
         )
     }
@@ -308,7 +389,13 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `.right-entry .v-popover-wrap.header-avatar-wrap {display: none !important;}`,
+                `.right-entry .v-popover-wrap.header-avatar-wrap {
+                    display: none !important;
+                }
+                /* 旧版header */
+                #internationalHeader .nav-user-center .item:has(.mini-avatar) {
+                    display: none !important;
+                }`,
             ),
         )
         // 隐藏 顶栏-大会员, 默认开启
@@ -319,7 +406,13 @@ if (location.host != 'live.bilibili.com') {
                 true,
                 undefined,
                 false,
-                `.right-entry .vip-wrap:has([href="//account.bilibili.com/big"]) {display: none !important;}`,
+                `.right-entry .vip-wrap:has([href="//account.bilibili.com/big"]) {
+                    display: none !important;
+                }
+                /* 旧版header */
+                #internationalHeader .nav-user-center .item:has(.mini-vip) {
+                    display: none !important;
+                }`,
             ),
         )
         // 隐藏 顶栏-消息
@@ -330,7 +423,13 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `.right-entry .v-popover-wrap:has([href^="//message.bilibili.com"], [data-idx="message"]) {display: none !important;}`,
+                `.right-entry .v-popover-wrap:has([href^="//message.bilibili.com"], [data-idx="message"]) {
+                    display: none !important;
+                }
+                /* 旧版header */
+                #internationalHeader .nav-user-center .item:has(.nav-item-message) {
+                    display: none !important;
+                }`,
             ),
         )
         // 隐藏 顶栏-动态
@@ -341,7 +440,13 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `.right-entry .v-popover-wrap:has([href^="//t.bilibili.com"], [data-idx="dynamic"]) {display: none !important;}`,
+                `.right-entry .v-popover-wrap:has([href^="//t.bilibili.com"], [data-idx="dynamic"]) {
+                    display: none !important;
+                }
+                /* 旧版header */
+                #internationalHeader .nav-user-center .item:has(.nav-item-dynamic) {
+                    display: none !important;
+                }`,
             ),
         )
         // 隐藏 顶栏-收藏
@@ -352,7 +457,13 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `.right-entry .v-popover-wrap:has(.header-favorite-container, [data-idx="fav"]) {display: none !important;}`,
+                `.right-entry .v-popover-wrap:has(.header-favorite-container, [data-idx="fav"]) {
+                    display: none !important;
+                }
+                /* 旧版header */
+                #internationalHeader .nav-user-center .item:has(.mini-favorite) {
+                    display: none !important;
+                }`,
             ),
         )
         // 隐藏 顶栏-历史
@@ -363,7 +474,13 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `.right-entry .v-popover-wrap:has([href="//www.bilibili.com/account/history"], [data-idx="history"]) {display: none !important;}`,
+                `.right-entry .v-popover-wrap:has([href="//www.bilibili.com/account/history"], [data-idx="history"]) {
+                    display: none !important;
+                }
+                /* 旧版header */
+                #internationalHeader .nav-user-center .item:has(.mini-history) {
+                    display: none !important;
+                }`,
             ),
         )
         // 隐藏 顶栏-创作中心
@@ -374,7 +491,13 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `.right-entry .right-entry-item:has(a[href="//member.bilibili.com/platform/home"], [data-idx="creation"]) {display: none !important;}`,
+                `.right-entry .right-entry-item:has(a[href="//member.bilibili.com/platform/home"], [data-idx="creation"]) {
+                    display: none !important;
+                }
+                /* 旧版header */
+                #internationalHeader .nav-user-center .item:has(a[href="//member.bilibili.com/platform/home"]) {
+                    display: none !important;
+                }`,
             ),
         )
         // 隐藏 顶栏-投稿
@@ -386,7 +509,13 @@ if (location.host != 'live.bilibili.com') {
                 undefined,
                 false,
                 // 不可设定 display: none, 会导致历史和收藏popover显示不全
-                `.right-entry .right-entry-item.right-entry-item--upload {visibility: hidden !important;}`,
+                `.right-entry .right-entry-item.right-entry-item--upload {
+                    visibility: hidden !important;
+                }
+                /* 旧版header */
+                #internationalHeader .nav-user-center >div:has(.mini-upload) {
+                    visibility: hidden !important;
+                }`,
             ),
         )
     }

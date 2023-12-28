@@ -107,6 +107,17 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 .video-share-popover .video-share-dropdown .dropdown-top .dropdown-top-left {padding-right: 0 !important;}`,
             ),
         )
+        // 顶栏 滚动页面后不再吸附顶部
+        videoItems.push(
+            new NormalItem(
+                'video-page-hide-fixed-header',
+                '顶栏 滚动页面后不再吸附顶部',
+                false,
+                undefined,
+                false,
+                `.fixed-header .bili-header__bar {position: relative !important;}`,
+            ),
+        )
         // 页面直角化 去除圆角
         videoItems.push(
             new NormalItem(
@@ -126,6 +137,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 .bui-collapse-header,
                 .base-video-sections-v1,
                 .bili-header .search-panel,
+                .bili-header .header-upload-entry,
                 .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar,
                 .video-tag-container .tag-panel .tag-link,
                 .video-tag-container .tag-panel .show-more-btn,
@@ -146,17 +158,6 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                     border-radius: 3px 0 0 3px !important;
                 }
                 `,
-            ),
-        )
-        // 顶栏 滚动页面后不再吸附顶部
-        videoItems.push(
-            new NormalItem(
-                'video-page-hide-fixed-header',
-                '顶栏 滚动页面后不再吸附顶部',
-                false,
-                undefined,
-                false,
-                `.fixed-header .bili-header__bar {position: relative !important;}`,
             ),
         )
     }
@@ -376,6 +377,42 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                     -webkit-text-stroke: none !important;
                     -moz-text-stroke: none !important;
                     -ms-text-stroke: none !important;
+                }`,
+            ),
+        )
+        // 播放器-CC字幕 字体优化
+        videoItems.push(
+            new NormalItem(
+                'video-page-bpx-player-subtitle-font-family',
+                '播放器-CC字幕 字体优化 (实验性)',
+                false,
+                undefined,
+                false,
+                `#bilibili-player .bpx-player-subtitle-panel-text {
+                    font-family: inherit;
+                }`,
+            ),
+        )
+        // 播放器-CC字幕 字体优化
+        videoItems.push(
+            new NormalItem(
+                'video-page-bpx-player-subtitle-text-stroke',
+                '播放器-CC字幕 字体描边 (实验性)',
+                false,
+                undefined,
+                false,
+                `#bilibili-player .bpx-player-subtitle-panel-text {
+                    background: unset !important;
+                    background-color: rgba(0,0,0,0.75) !important;
+                    text-shadow: none !important;
+                    background-clip: text !important;
+                    text-stroke: 3px transparent !important;
+                    -webkit-background-clip: text !important;
+                    -webkit-text-stroke: 3px transparent;
+                    -moz-background-clip: text !important;
+                    -moz-text-stroke: 3px transparent;
+                    -ms-background-clip: text !important;
+                    -ms-text-stroke: 3px transparent;
                 }`,
             ),
         )

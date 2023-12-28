@@ -1,8 +1,6 @@
 name: dev-ci
 on:
   push:
-    paths:
-      - src
     branches:
       - dev
 
@@ -22,7 +20,7 @@ jobs:
         with:
           version: 8
 
-      - name: install dependencies
+      - name: install
         run: pnpm install
       - name: lint
         run: pnpm run lint

@@ -39,6 +39,10 @@ const cleanURL = () => {
         'from',
         'visit_id',
     ])
+    // 搜索页参数, 意义不明所以做一下判断
+    if (location.host === 'search.bilibili.com') {
+        keysToRemove.add('vt')
+    }
     const url = location.href
     const urlObj = new URL(url)
     const params = new URLSearchParams(urlObj.search)
@@ -184,7 +188,7 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `div.bili-header__bar .left-entry li:has(>a[href="//live.bilibili.com"]) {
+                `div.bili-header__bar .left-entry li:has(>a[href="//live.bilibili.com"], >a[href="//live.bilibili.com/"]) {
                     display: none !important;
                 }
                 /* 旧版header */

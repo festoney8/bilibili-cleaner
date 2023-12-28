@@ -210,6 +210,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
                 .history-item,
                 .header-upload-entry,
                 .bili-header .search-panel,
+                .bili-header .header-upload-entry,
                 .bili-header__channel .channel-link,
                 .channel-entry-more__link,
                 .header-channel-fixed-right-item,
@@ -367,11 +368,23 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
                 `.bili-live-card.is-rcmd {display: none !important;}`,
             ),
         )
-        // 隐藏 视频列表-分区视频推荐
+        // 精简 视频列表-分区推荐视频
+        homepageItems.push(
+            new NormalItem(
+                'homepage-simple-sub-area-card-recommend',
+                '简化 视频列表-分区推荐视频',
+                false,
+                undefined,
+                false,
+                `.floor-single-card >.layer {display: none !important;}
+                .floor-single-card .floor-card {box-shadow: unset !important;}`,
+            ),
+        )
+        // 隐藏 视频列表-分区推荐视频
         homepageItems.push(
             new NormalItem(
                 'homepage-hide-sub-area-card-recommend',
-                '隐藏 视频列表-分区视频推荐',
+                '隐藏 视频列表-分区推荐视频',
                 false,
                 undefined,
                 false,

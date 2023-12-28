@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.0.1
+
+-   新增：脚本URL元数据绑定Greasyfork
+-   新增：通用项 header净化支持旧版本header
+
 ## 2.0.0
 
 -   重构：项目重构

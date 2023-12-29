@@ -107,47 +107,6 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 .video-share-popover .video-share-dropdown .dropdown-top .dropdown-top-left {padding-right: 0 !important;}`,
             ),
         )
-        // 页面直角化 去除圆角
-        videoItems.push(
-            new NormalItem(
-                'video-page-border-radius',
-                '页面直角化 去除圆角',
-                false,
-                undefined,
-                false,
-                `
-                #nav-searchform,
-                .nav-search-content,
-                .v-popover-content,
-                .van-popover,
-                .v-popover,
-                .pic-box,
-                .card-box .pic-box .pic,
-                .bui-collapse-header,
-                .base-video-sections-v1,
-                .bili-header .search-panel,
-                .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar,
-                .video-tag-container .tag-panel .tag-link,
-                .video-tag-container .tag-panel .show-more-btn,
-                .vcd .cover img,
-                .vcd *,
-                .upinfo-btn-panel *,
-                .fixed-sidenav-storage div,
-                .reply-box-textarea,
-                .reply-box-send,
-                .reply-box-send:after {
-                    border-radius: 3px !important;
-                }
-                .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar .bpx-player-dm-btn-send,
-                .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar-wrap {
-                    border-radius: 0 3px 3px 0 !important;
-                }
-                .bpx-player-dm-btn-send .bui-button {
-                    border-radius: 3px 0 0 3px !important;
-                }
-                `,
-            ),
-        )
         // 顶栏 滚动页面后不再吸附顶部
         videoItems.push(
             new NormalItem(
@@ -379,6 +338,42 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 }`,
             ),
         )
+        // 播放器-CC字幕 字体优化
+        videoItems.push(
+            new NormalItem(
+                'video-page-bpx-player-subtitle-font-family',
+                '播放器-CC字幕 字体优化 (实验性)',
+                false,
+                undefined,
+                false,
+                `#bilibili-player .bpx-player-subtitle-panel-text {
+                    font-family: inherit;
+                }`,
+            ),
+        )
+        // 播放器-CC字幕 字体优化
+        videoItems.push(
+            new NormalItem(
+                'video-page-bpx-player-subtitle-text-stroke',
+                '播放器-CC字幕 字体描边 (实验性)',
+                false,
+                undefined,
+                false,
+                `#bilibili-player .bpx-player-subtitle-panel-text {
+                    background: unset !important;
+                    background-color: rgba(0,0,0,0.7) !important;
+                    text-shadow: none !important;
+                    background-clip: text !important;
+                    text-stroke: 3px transparent !important;
+                    -webkit-background-clip: text !important;
+                    -webkit-text-stroke: 3px transparent;
+                    -moz-background-clip: text !important;
+                    -moz-text-stroke: 3px transparent;
+                    -ms-background-clip: text !important;
+                    -ms-text-stroke: 3px transparent;
+                }`,
+            ),
+        )
     }
 
     // 播放控制part
@@ -428,18 +423,6 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 `.bpx-player-ctrl-viewpoint {display: none !important;}`,
             ),
         )
-        // 隐藏 播放控制-画中画(Chrome)
-        // Firefox的画中画按钮为浏览器自带，无法通过CSS隐藏，只可通过浏览器设置关闭
-        videoItems.push(
-            new NormalItem(
-                'video-page-hide-bpx-player-ctrl-pip',
-                '隐藏 播放控制-画中画(Chrome)',
-                false,
-                undefined,
-                false,
-                `.bpx-player-ctrl-pip {display: none !important;}`,
-            ),
-        )
         // 隐藏 播放控制-选集
         videoItems.push(
             new NormalItem(
@@ -449,39 +432,6 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 undefined,
                 false,
                 `.bpx-player-ctrl-eplist {display: none !important;}`,
-            ),
-        )
-        // 隐藏 播放控制-宽屏
-        videoItems.push(
-            new NormalItem(
-                'video-page-hide-bpx-player-ctrl-wide',
-                '隐藏 播放控制-宽屏',
-                false,
-                undefined,
-                false,
-                `.bpx-player-ctrl-wide {display: none !important;}`,
-            ),
-        )
-        // 隐藏 播放控制-音量
-        videoItems.push(
-            new NormalItem(
-                'video-page-hide-bpx-player-ctrl-volume',
-                '隐藏 播放控制-音量',
-                false,
-                undefined,
-                false,
-                `.bpx-player-ctrl-volume {display: none !important;}`,
-            ),
-        )
-        // 隐藏 播放控制-字幕
-        videoItems.push(
-            new NormalItem(
-                'video-page-hide-bpx-player-ctrl-subtitle',
-                '隐藏 播放控制-字幕',
-                false,
-                undefined,
-                false,
-                `.bpx-player-ctrl-subtitle {display: none !important;}`,
             ),
         )
         // 隐藏 播放控制-倍速
@@ -495,6 +445,28 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 `.bpx-player-ctrl-playbackrate {display: none !important;}`,
             ),
         )
+        // 隐藏 播放控制-字幕
+        videoItems.push(
+            new NormalItem(
+                'video-page-hide-bpx-player-ctrl-subtitle',
+                '隐藏 播放控制-字幕',
+                false,
+                undefined,
+                false,
+                `.bpx-player-ctrl-subtitle {display: none !important;}`,
+            ),
+        )
+        // 隐藏 播放控制-音量
+        videoItems.push(
+            new NormalItem(
+                'video-page-hide-bpx-player-ctrl-volume',
+                '隐藏 播放控制-音量',
+                false,
+                undefined,
+                false,
+                `.bpx-player-ctrl-volume {display: none !important;}`,
+            ),
+        )
         // 隐藏 播放控制-视频设置
         videoItems.push(
             new NormalItem(
@@ -504,6 +476,51 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 undefined,
                 false,
                 `.bpx-player-ctrl-setting {display: none !important;}`,
+            ),
+        )
+        // 隐藏 播放控制-画中画(Chrome)
+        // Firefox的画中画按钮为浏览器自带，无法通过CSS隐藏，只可通过浏览器设置关闭
+        videoItems.push(
+            new NormalItem(
+                'video-page-hide-bpx-player-ctrl-pip',
+                '隐藏 播放控制-画中画(Chrome)',
+                false,
+                undefined,
+                false,
+                `.bpx-player-ctrl-pip {display: none !important;}`,
+            ),
+        )
+        // 隐藏 播放控制-宽屏
+        videoItems.push(
+            new NormalItem(
+                'video-page-hide-bpx-player-ctrl-wide',
+                '隐藏 播放控制-宽屏',
+                false,
+                undefined,
+                false,
+                `.bpx-player-ctrl-wide {display: none !important;}`,
+            ),
+        )
+        // 隐藏 播放控制-网页全屏
+        videoItems.push(
+            new NormalItem(
+                'video-page-hide-bpx-player-ctrl-web',
+                '隐藏 播放控制-网页全屏',
+                false,
+                undefined,
+                false,
+                `.bpx-player-ctrl-web {display: none !important;}`,
+            ),
+        )
+        // 隐藏 播放控制-全屏
+        videoItems.push(
+            new NormalItem(
+                'video-page-hide-bpx-player-ctrl-full',
+                '隐藏 播放控制-全屏',
+                false,
+                undefined,
+                false,
+                `.bpx-player-ctrl-full {display: none !important;}`,
             ),
         )
         // 隐藏 播放控制-底边mini视频进度, 默认开启

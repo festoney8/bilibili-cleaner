@@ -36,6 +36,13 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
                 }
                 .bili-header .right-entry__outside .right-entry-text {
                     color: #61666d !important;
+                }
+                /* header滚动后渐变出现, 否则闪动 */
+                #i_cecream .bili-header__bar.slide-down {
+                    transition: background-color 0.3s ease-out, box-shadow 0.3s ease-out !important;
+                }
+                #i_cecream .bili-header__bar:not(.slide-down) {
+                    transition: background-color 0.3s ease-out !important;
                 }`,
             ),
         )
@@ -194,51 +201,13 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
                 true,
                 undefined,
                 false,
-                `#i_cecream .header-channel {display: none !important;}`,
-            ),
-        )
-        // 页面直角化 去除圆角
-        homepageItems.push(
-            new NormalItem(
-                'homepage-border-radius',
-                '页面直角化 去除圆角',
-                false,
-                undefined,
-                false,
-                `#nav-searchform,
-                .nav-search-content,
-                .history-item,
-                .header-upload-entry,
-                .bili-header .search-panel,
-                .bili-header__channel .channel-link,
-                .channel-entry-more__link,
-                .header-channel-fixed-right-item,
-                .recommended-swipe-body,
-                .bili-video-card .bili-video-card__cover,
-                .bili-video-card .bili-video-card__image,
-                .bili-video-card .bili-video-card__info--icon-text,
-                .bili-live-card,
-                .floor-card,
-                .floor-card .badge,
-                .single-card.floor-card .floor-card-inner,
-                .single-card.floor-card .cover-container,
-                .primary-btn,
-                .flexible-roll-btn,
-                .palette-button-wrap .flexible-roll-btn-inner,
-                .palette-button-wrap .storage-box,
-                .palette-button-wrap,
-                .v-popover-content {
-                    border-radius: 3px !important;
+                `#i_cecream .header-channel {display: none !important;}
+                /* 吸附分区栏的动效转移给吸附header, 滚动后渐变出现 */
+                #i_cecream .bili-header__bar.slide-down {
+                    transition: background-color 0.3s ease-out, box-shadow 0.3s ease-out !important;
                 }
-                .bili-video-card__stats {
-                    border-bottom-left-radius: 3px !important;
-                    border-bottom-right-radius: 3px !important;
-                }
-                .floor-card .layer {
-                    display: none !important;
-                }
-                .single-card.floor-card {
-                    border: none !important;
+                #i_cecream .bili-header__bar:not(.slide-down) {
+                    transition: background-color 0.3s ease-out;
                 }`,
             ),
         )
@@ -367,15 +336,63 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
                 `.bili-live-card.is-rcmd {display: none !important;}`,
             ),
         )
-        // 隐藏 视频列表-分区视频推荐
+        // 精简 视频列表-分区推荐视频, 默认开启
+        homepageItems.push(
+            new NormalItem(
+                'homepage-simple-sub-area-card-recommend',
+                '简化 视频列表-分区推荐视频',
+                true,
+                undefined,
+                false,
+                `.floor-single-card .layer {display: none !important;}
+                .floor-single-card .floor-card {box-shadow: unset !important; border: none !important;}`,
+            ),
+        )
+        // 隐藏 视频列表-分区推荐视频
         homepageItems.push(
             new NormalItem(
                 'homepage-hide-sub-area-card-recommend',
-                '隐藏 视频列表-分区视频推荐',
+                '隐藏 视频列表-分区推荐视频',
                 false,
                 undefined,
                 false,
                 `.floor-single-card {display: none !important;}`,
+            ),
+        )
+        // 关闭 视频载入 骨架动效(skeleton animation) 实验性
+        homepageItems.push(
+            new NormalItem(
+                'homepage-hide-skeleton-animation',
+                '关闭 视频载入 骨架动效 (实验性)',
+                false,
+                undefined,
+                false,
+                `.bili-video-card .loading_animation .bili-video-card__skeleton--light,
+                .bili-video-card .loading_animation .bili-video-card__skeleton--text,
+                .bili-video-card .loading_animation .bili-video-card__skeleton--face,
+                .bili-video-card .loading_animation .bili-video-card__skeleton--cover {
+                    animation: none !important;
+                }
+                .skeleton .skeleton-item {
+                    animation: none !important;
+                }`,
+            ),
+        )
+        // 隐藏 视频载入 骨架(skeleton) 实验性
+        homepageItems.push(
+            new NormalItem(
+                'homepage-hide-skeleton',
+                '隐藏 视频载入 骨架 (实验性)',
+                false,
+                undefined,
+                false,
+                // anchor占位也隐藏
+                `.bili-video-card:has(.loading_animation), .load-more-anchor {
+                    visibility: hidden;
+                }
+                .floor-single-card:has(.skeleton, .skeleton-item) {
+                    visibility: hidden;
+                }`,
             ),
         )
     }

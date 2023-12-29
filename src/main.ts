@@ -60,6 +60,21 @@ const main = async () => {
         })
     }
 
+    // 启动/关闭快捷键：Alt+B
+    let isGroupEnable = true
+    document.addEventListener('keydown', (event) => {
+        if (event.altKey && event.key === 'b') {
+            debug('keydown Alt+B detected')
+            if (isGroupEnable) {
+                GROUPS.forEach((e) => e.disableGroup())
+                isGroupEnable = false
+            } else {
+                GROUPS.forEach((e) => e.enableGroup(true))
+                isGroupEnable = true
+            }
+        }
+    })
+
     // 注册油猴插件菜单
     const openSettings = () => {
         if (document.getElementById('bili-cleaner')) {

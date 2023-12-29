@@ -8,6 +8,7 @@ interface IGroup {
     insertGroupItems(): void
     enableGroup(): void
     reloadGroup(): void
+    disableGroup(): void
 }
 
 export class Group implements IGroup {
@@ -65,12 +66,15 @@ export class Group implements IGroup {
             error(err)
         }
     }
-    /** 启用group，启用group内items */
-    enableGroup() {
+    /**
+     * 启用group，启用group内items
+     * @param enableFunc 是否启用item功能, 默认true
+     */
+    enableGroup(enableFunc = true) {
         try {
             this.items.forEach((e) => {
                 if (e instanceof NormalItem) {
-                    e.enableItem()
+                    e.enableItem(enableFunc)
                 }
             })
             debug(`enableGroup ${this.groupID} OK`)
@@ -90,6 +94,20 @@ export class Group implements IGroup {
             debug(`reloadGroup ${this.groupID} OK`)
         } catch (err) {
             error(`reloadGroup ${this.groupID} err`)
+            error(err)
+        }
+    }
+    /** 禁用Group, 临时使用, 移除全部CSS, 监听函数保持不变 */
+    disableGroup() {
+        try {
+            this.items.forEach((e) => {
+                if (e instanceof NormalItem) {
+                    e.removeItemCSS()
+                }
+            })
+            debug(`disableGroup ${this.groupID} OK`)
+        } catch (err) {
+            error(`disableGroup ${this.groupID} err`)
             error(err)
         }
     }

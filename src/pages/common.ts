@@ -74,8 +74,9 @@ const cleanURL = () => {
 
 const commonItems: (NormalItem | SeparatorItem)[] = []
 
-// URL参数净化, 在urlchange时需重载
-commonItems.push(new NormalItem('url-cleaner', 'URL参数净化 (需刷新, 给UP充电时需关闭)', false, cleanURL, true, null))
+// URL参数净化, 在urlchange时需重载, 默认开启
+// 以前会出现URL缺少参数导致充电窗口载入失败报错NaN的bug, 现无法复现, 猜测已修复
+commonItems.push(new NormalItem('url-cleaner', 'URL参数净化 (需刷新)', true, cleanURL, true, null))
 
 // 滚动条美化, 默认开启
 commonItems.push(
@@ -216,7 +217,8 @@ if (host === 'search.bilibili.com') {
         }`
 }
 if (href.startsWith('https://www.bilibili.com/video/')) {
-    borderRadiusCSS = `#nav-searchform,
+    borderRadiusCSS = `
+        #nav-searchform,
         .nav-search-content,
         .v-popover-content,
         .van-popover,
@@ -234,6 +236,7 @@ if (href.startsWith('https://www.bilibili.com/video/')) {
         .vcd *,
         .upinfo-btn-panel *,
         .fixed-sidenav-storage div,
+        .fixed-sidenav-storage a,
         .reply-box-textarea,
         .reply-box-send,
         .reply-box-send:after {

@@ -361,7 +361,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 false,
                 `#bilibili-player .bpx-player-subtitle-panel-text {
                     background: unset !important;
-                    background-color: rgba(0,0,0,0.75) !important;
+                    background-color: rgba(0,0,0,0.7) !important;
                     text-shadow: none !important;
                     background-clip: text !important;
                     text-stroke: 3px transparent !important;

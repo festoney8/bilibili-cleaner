@@ -46,13 +46,11 @@ const main = async () => {
         }
     }, 500)
 
-    // chrome系浏览器补丁
-    // firefox可用观测head解决head null, chrome系观测到head构建后仍小可能出bug, 只出现在bangumi page
-    // 测试可知, 从document-start开始, chrome系的head永远非null, head内插入style均成功
-    // 在DOMContentLoaded时, style数量正确
+    // bangumi page规则丢失补丁, 在打开bangumipage新标签页时, 可能丢失规则, firefox和chrome均复现
+    // 测试可知, head内插入style均成功, 在DOMContentLoaded时, style数量正确
     // 在readyState=complete后, style数量有概率会减少, 规则丢失, 原因不明
     // 故在bangumi page监听load, 二次检查解决规则载入不全问题
-    if (location.pathname.startsWith('/bangumi/play') && navigator.userAgent.toLowerCase().includes('chrome')) {
+    if (location.pathname.startsWith('/bangumi/play')) {
         window.addEventListener('load', () => {
             debug('chrome patch, recheck start')
             for (let i = GROUPS.length - 1; i >= 0; i--) {

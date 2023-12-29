@@ -36,6 +36,13 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
                 }
                 .bili-header .right-entry__outside .right-entry-text {
                     color: #61666d !important;
+                }
+                /* header滚动后渐变出现, 否则闪动 */
+                #i_cecream .bili-header__bar.slide-down {
+                    transition: background-color 0.3s ease-out !important;
+                }
+                #i_cecream .bili-header__bar:not(.slide-down) {
+                    transition: background-color 0.3s ease-out !important;
                 }`,
             ),
         )
@@ -194,7 +201,14 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
                 true,
                 undefined,
                 false,
-                `#i_cecream .header-channel {display: none !important;}`,
+                `#i_cecream .header-channel {display: none !important;}
+                /* 吸附分区栏的动效转移给吸附header, 滚动后渐变出现 */
+                #i_cecream .bili-header__bar.slide-down {
+                    transition: background-color 0.3s ease-out !important;
+                }
+                #i_cecream .bili-header__bar:not(.slide-down) {
+                    transition: background-color 0.3s ease-out !important;
+                }`,
             ),
         )
         // 页面直角化 去除圆角

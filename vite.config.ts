@@ -33,7 +33,7 @@ export default defineConfig({
             },
         }),
     ],
-    server: {
-        hmr: false,
-    },
+    // server: {
+    //     hmr: false,
+    // },
 })

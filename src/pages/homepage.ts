@@ -405,6 +405,42 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
                 `.floor-single-card {display: none !important;}`,
             ),
         )
+        // 关闭 视频载入 骨架动效(skeleton animation) 实验性
+        homepageItems.push(
+            new NormalItem(
+                'homepage-hide-skeleton-animation',
+                '关闭 视频载入 骨架动效 (实验性)',
+                false,
+                undefined,
+                false,
+                `.bili-video-card .loading_animation .bili-video-card__skeleton--light,
+                .bili-video-card .loading_animation .bili-video-card__skeleton--text,
+                .bili-video-card .loading_animation .bili-video-card__skeleton--face,
+                .bili-video-card .loading_animation .bili-video-card__skeleton--cover {
+                    animation: none !important;
+                }
+                .skeleton .skeleton-item {
+                    animation: none !important;
+                }`,
+            ),
+        )
+        // 隐藏 视频载入 骨架(skeleton) 实验性
+        homepageItems.push(
+            new NormalItem(
+                'homepage-hide-skeleton',
+                '隐藏 视频载入 骨架 (实验性)',
+                false,
+                undefined,
+                false,
+                // anchor占位也隐藏
+                `.bili-video-card:has(.loading_animation), .load-more-anchor {
+                    visibility: hidden;
+                }
+                .floor-single-card:has(.skeleton, .skeleton-item) {
+                    visibility: hidden;
+                }`,
+            ),
+        )
     }
 
     // 右下角part

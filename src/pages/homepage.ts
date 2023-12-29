@@ -39,7 +39,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
                 }
                 /* header滚动后渐变出现, 否则闪动 */
                 #i_cecream .bili-header__bar.slide-down {
-                    transition: background-color 0.3s ease-out !important;
+                    transition: background-color 0.3s ease-out, box-shadow 0.3s ease-out !important;
                 }
                 #i_cecream .bili-header__bar:not(.slide-down) {
                     transition: background-color 0.3s ease-out !important;
@@ -204,10 +204,10 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
                 `#i_cecream .header-channel {display: none !important;}
                 /* 吸附分区栏的动效转移给吸附header, 滚动后渐变出现 */
                 #i_cecream .bili-header__bar.slide-down {
-                    transition: background-color 0.3s ease-out !important;
+                    transition: background-color 0.3s ease-out, box-shadow 0.3s ease-out !important;
                 }
                 #i_cecream .bili-header__bar:not(.slide-down) {
-                    transition: background-color 0.3s ease-out !important;
+                    transition: background-color 0.3s ease-out;
                 }`,
             ),
         )

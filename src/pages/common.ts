@@ -120,7 +120,9 @@ commonItems.push(
 
 // 通用 页面直角化，去除圆角，根据URL选取CSS
 let borderRadiusCSS: myCSS = ''
-if (location.host === 't.bilibili.com') {
+const host = location.host
+const href = location.href
+if (host === 't.bilibili.com') {
     borderRadiusCSS = `
         #nav-searchform,
         .nav-search-content,
@@ -157,46 +159,7 @@ if (location.host === 't.bilibili.com') {
             border-radius: 0 3px 3px 0 !important;
         }`
 }
-if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'].includes(location.pathname)) {
-    borderRadiusCSS = `
-        #nav-searchform,
-        .nav-search-content,
-        .history-item,
-        .header-upload-entry,
-        .bili-header .search-panel,
-        .bili-header .header-upload-entry,
-        .bili-header__channel .channel-link,
-        .channel-entry-more__link,
-        .header-channel-fixed-right-item,
-        .recommended-swipe-body,
-        .bili-video-card .bili-video-card__cover,
-        .bili-video-card .bili-video-card__image,
-        .bili-video-card .bili-video-card__info--icon-text,
-        .bili-live-card,
-        .floor-card,
-        .floor-card .badge,
-        .single-card.floor-card .floor-card-inner,
-        .single-card.floor-card .cover-container,
-        .primary-btn,
-        .flexible-roll-btn,
-        .palette-button-wrap .flexible-roll-btn-inner,
-        .palette-button-wrap .storage-box,
-        .palette-button-wrap,
-        .v-popover-content {
-            border-radius: 3px !important;
-        }
-        .bili-video-card__stats {
-            border-bottom-left-radius: 3px !important;
-            border-bottom-right-radius: 3px !important;
-        }
-        .floor-card .layer {
-            display: none !important;
-        }
-        .single-card.floor-card {
-            border: none !important;
-        }`
-}
-if (location.host === 'live.bilibili.com') {
+if (host === 'live.bilibili.com') {
     borderRadiusCSS = `
         #nav-searchform,
         #player-ctnr,
@@ -235,7 +198,7 @@ if (location.host === 'live.bilibili.com') {
             border-radius: 3px 0 0 3px !important;
         }`
 }
-if (location.host === 'search.bilibili.com') {
+if (host === 'search.bilibili.com') {
     borderRadiusCSS = `
         #nav-searchform,
         .nav-search-content,
@@ -252,8 +215,8 @@ if (location.host === 'search.bilibili.com') {
             border-radius: 3px !important;
         }`
 }
-if (location.href.startsWith('https://www.bilibili.com/video/')) {
-    borderRadiusCSS = `                #nav-searchform,
+if (href.startsWith('https://www.bilibili.com/video/')) {
+    borderRadiusCSS = `#nav-searchform,
         .nav-search-content,
         .v-popover-content,
         .van-popover,
@@ -282,6 +245,87 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
         }
         .bpx-player-dm-btn-send .bui-button {
             border-radius: 3px 0 0 3px !important;
+        }`
+}
+if (href.startsWith('https://www.bilibili.com/bangumi/play/')) {
+    borderRadiusCSS = `
+        a[class^="mediainfo_mediaCover"],
+        a[class^="mediainfo_btnHome"],
+        [class^="follow_btnFollow"],
+        [class^="vipPaybar_textWrap__QARKv"],
+        [class^="eplist_ep_list_wrapper"],
+        [class^="RecommendItem_cover"],
+        [class^="imageListItem_wrap"] [class^="imageListItem_coverWrap"],
+        [class^="navTools_navMenu"] > *,
+        [class^="navTools_item"],
+        #nav-searchform,
+        .nav-search-content,
+        .v-popover-content,
+        .van-popover,
+        .v-popover,
+        .pic-box,
+        .card-box .pic-box .pic,
+        .bui-collapse-header,
+        .base-video-sections-v1,
+        .bili-header .search-panel,
+        .bili-header .header-upload-entry,
+        .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar,
+        .video-tag-container .tag-panel .tag-link,
+        .video-tag-container .tag-panel .show-more-btn,
+        .vcd .cover img,
+        .vcd *,
+        .upinfo-btn-panel *,
+        .fixed-sidenav-storage div,
+        .reply-box-textarea,
+        .reply-box-send,
+        .reply-box-send:after {
+            border-radius: 3px !important;
+        }
+        .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar .bpx-player-dm-btn-send,
+        .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar-wrap {
+            border-radius: 0 3px 3px 0 !important;
+        }
+        .bpx-player-dm-btn-send .bui-button {
+            border-radius: 3px 0 0 3px !important;
+        }`
+}
+if (href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'].includes(location.pathname)) {
+    borderRadiusCSS = `
+        #nav-searchform,
+        .nav-search-content,
+        .history-item,
+        .header-upload-entry,
+        .bili-header .search-panel,
+        .bili-header .header-upload-entry,
+        .bili-header__channel .channel-link,
+        .channel-entry-more__link,
+        .header-channel-fixed-right-item,
+        .recommended-swipe-body,
+        .bili-video-card .bili-video-card__cover,
+        .bili-video-card .bili-video-card__image,
+        .bili-video-card .bili-video-card__info--icon-text,
+        .bili-live-card,
+        .floor-card,
+        .floor-card .badge,
+        .single-card.floor-card .floor-card-inner,
+        .single-card.floor-card .cover-container,
+        .primary-btn,
+        .flexible-roll-btn,
+        .palette-button-wrap .flexible-roll-btn-inner,
+        .palette-button-wrap .storage-box,
+        .palette-button-wrap,
+        .v-popover-content {
+            border-radius: 3px !important;
+        }
+        .bili-video-card__stats {
+            border-bottom-left-radius: 3px !important;
+            border-bottom-right-radius: 3px !important;
+        }
+        .floor-card .layer {
+            display: none !important;
+        }
+        .single-card.floor-card {
+            border: none !important;
         }`
 }
 commonItems.push(new NormalItem('border-radius', '页面直角化，去除圆角', true, undefined, false, borderRadiusCSS))

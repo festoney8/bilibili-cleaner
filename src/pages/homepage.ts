@@ -345,7 +345,8 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
                 undefined,
                 false,
                 `.floor-single-card .layer {display: none !important;}
-                .floor-single-card .floor-card {box-shadow: unset !important; border: none !important;}`,
+                .floor-single-card .floor-card {box-shadow: unset !important; border: none !important;}
+                .single-card.floor-card .floor-card-inner:hover {background: none !important;}`,
             ),
         )
         // 隐藏 视频列表-分区推荐视频

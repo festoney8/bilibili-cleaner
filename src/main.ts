@@ -60,10 +60,18 @@ const main = async () => {
         })
     }
 
-    // 启动/关闭快捷键：Alt+B
+    // 全局启动/关闭快捷键 chrome: Alt+B，firefox: Ctrl+Alt+B
     let isGroupEnable = true
     document.addEventListener('keydown', (event) => {
-        if (event.altKey && event.key === 'b') {
+        let flag = false
+        if (event.altKey && event.ctrlKey && (event.key === 'b' || event.key === 'B')) {
+            flag = true
+        } else if (event.altKey && (event.key === 'b' || event.key === 'B')) {
+            if (navigator.userAgent.toLocaleLowerCase().includes('chrome')) {
+                flag = true
+            }
+        }
+        if (flag) {
             debug('keydown Alt+B detected')
             if (isGroupEnable) {
                 GROUPS.forEach((e) => e.disableGroup())

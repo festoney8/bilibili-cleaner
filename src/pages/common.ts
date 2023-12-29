@@ -626,7 +626,7 @@ if (location.host != 'live.bilibili.com') {
                 true,
                 undefined,
                 false,
-                `.right-entry .vip-wrap:has([href="//account.bilibili.com/big"]) {
+                `.right-entry .vip-wrap:has([href*="//account.bilibili.com/big"]) {
                     display: none !important;
                 }
                 /* 旧版header */
@@ -643,7 +643,7 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `.right-entry .v-popover-wrap:has([href^="//message.bilibili.com"], [data-idx="message"]) {
+                `.right-entry .v-popover-wrap:has([href*="//message.bilibili.com"], [data-idx="message"]) {
                     display: none !important;
                 }
                 /* 旧版header */
@@ -660,7 +660,7 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `.right-entry .v-popover-wrap:has([href^="//t.bilibili.com"], [data-idx="dynamic"]) {
+                `.right-entry .v-popover-wrap:has([href*="//t.bilibili.com"], [data-idx="dynamic"]) {
                     display: none !important;
                 }
                 /* 旧版header */
@@ -694,7 +694,7 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `.right-entry .v-popover-wrap:has([href="//www.bilibili.com/account/history"], [data-idx="history"]) {
+                `.right-entry .v-popover-wrap:has([href*="www.bilibili.com/account/history"], [data-idx="history"]) {
                     display: none !important;
                 }
                 /* 旧版header */
@@ -711,7 +711,7 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `.right-entry .right-entry-item:has(a[href="//member.bilibili.com/platform/home"], [data-idx="creation"]) {
+                `.right-entry .right-entry-item:has(a[href*="//member.bilibili.com/platform/home"], [data-idx="creation"]) {
                     display: none !important;
                 }
                 /* 旧版header */

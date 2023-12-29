@@ -472,15 +472,18 @@ if (location.host === 'live.bilibili.com') {
                 .chat-history-panel .danmaku-at-prompt {bottom: 50px !important;}`,
             ),
         )
-        // 隐藏 右侧-关闭全部互动框/控制栏
+        // 隐藏 右侧-关闭全部互动框和控制栏
         liveItems.push(
             new NormalItem(
                 'live-page-chat-control-panel',
-                '隐藏 右侧-关闭全部互动框/控制栏',
+                '隐藏 右侧-关闭全部互动框和控制栏',
                 false,
                 undefined,
                 false,
                 `#chat-control-panel-vm {display: none !important;}
+                .chat-history-panel {
+                    border-radius: 0 0 12px 12px;
+                }
                 /* 高权限调高度 */
                 #aside-area-vm .chat-history-panel {
                     height: calc(100% - 15px) !important;

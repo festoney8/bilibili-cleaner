@@ -118,48 +118,6 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 `.fixed-header .bili-header__bar {position: relative !important;}`,
             ),
         )
-        // 页面直角化 去除圆角
-        videoItems.push(
-            new NormalItem(
-                'video-page-border-radius',
-                '页面直角化 去除圆角',
-                false,
-                undefined,
-                false,
-                `
-                #nav-searchform,
-                .nav-search-content,
-                .v-popover-content,
-                .van-popover,
-                .v-popover,
-                .pic-box,
-                .card-box .pic-box .pic,
-                .bui-collapse-header,
-                .base-video-sections-v1,
-                .bili-header .search-panel,
-                .bili-header .header-upload-entry,
-                .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar,
-                .video-tag-container .tag-panel .tag-link,
-                .video-tag-container .tag-panel .show-more-btn,
-                .vcd .cover img,
-                .vcd *,
-                .upinfo-btn-panel *,
-                .fixed-sidenav-storage div,
-                .reply-box-textarea,
-                .reply-box-send,
-                .reply-box-send:after {
-                    border-radius: 3px !important;
-                }
-                .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar .bpx-player-dm-btn-send,
-                .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar-wrap {
-                    border-radius: 0 3px 3px 0 !important;
-                }
-                .bpx-player-dm-btn-send .bui-button {
-                    border-radius: 3px 0 0 3px !important;
-                }
-                `,
-            ),
-        )
     }
 
     // 视频信息part

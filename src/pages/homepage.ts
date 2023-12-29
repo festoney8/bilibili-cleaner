@@ -211,52 +211,6 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
                 }`,
             ),
         )
-        // 页面直角化 去除圆角
-        homepageItems.push(
-            new NormalItem(
-                'homepage-border-radius',
-                '页面直角化 去除圆角',
-                false,
-                undefined,
-                false,
-                `#nav-searchform,
-                .nav-search-content,
-                .history-item,
-                .header-upload-entry,
-                .bili-header .search-panel,
-                .bili-header .header-upload-entry,
-                .bili-header__channel .channel-link,
-                .channel-entry-more__link,
-                .header-channel-fixed-right-item,
-                .recommended-swipe-body,
-                .bili-video-card .bili-video-card__cover,
-                .bili-video-card .bili-video-card__image,
-                .bili-video-card .bili-video-card__info--icon-text,
-                .bili-live-card,
-                .floor-card,
-                .floor-card .badge,
-                .single-card.floor-card .floor-card-inner,
-                .single-card.floor-card .cover-container,
-                .primary-btn,
-                .flexible-roll-btn,
-                .palette-button-wrap .flexible-roll-btn-inner,
-                .palette-button-wrap .storage-box,
-                .palette-button-wrap,
-                .v-popover-content {
-                    border-radius: 3px !important;
-                }
-                .bili-video-card__stats {
-                    border-bottom-left-radius: 3px !important;
-                    border-bottom-right-radius: 3px !important;
-                }
-                .floor-card .layer {
-                    display: none !important;
-                }
-                .single-card.floor-card {
-                    border: none !important;
-                }`,
-            ),
-        )
     }
 
     // 视频分区part

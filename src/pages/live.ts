@@ -4,7 +4,7 @@ import { NormalItem, SeparatorItem } from '../core/item'
 const liveItems: (NormalItem | SeparatorItem)[] = []
 
 /** 直播页面规则, 只适用于直播间内, 不适用于直播首页 */
-if (location.host == 'live.bilibili.com') {
+if (location.host === 'live.bilibili.com') {
     // 杂项part
     {
         // 隐藏 右侧浮动按钮-实验室/关注, 默认开启
@@ -16,52 +16,6 @@ if (location.host == 'live.bilibili.com') {
                 undefined,
                 false,
                 `#sidebar-vm {display: none !important;}`,
-            ),
-        )
-        // 页面直角化 去除圆角
-        liveItems.push(
-            new NormalItem(
-                'live-page-border-radius',
-                '页面直角化 去除圆角',
-                false,
-                undefined,
-                false,
-                `#nav-searchform,
-                #player-ctnr,
-                .nav-search-content,
-                .header-upload-entry,
-                .v-popover-content,
-                .van-popover,
-                .v-popover-wrap,
-                .v-popover,
-                .aside-area,
-                .lower-row .right-ctnr *,
-                .panel-main-ctnr,
-                .startlive-btn,
-                .flip-view,
-                .content-wrapper,
-                .chat-input-ctnr,
-                .announcement-cntr,
-                .bl-button--primary {
-                    border-radius: 3px !important;
-                }
-                #rank-list-vm,
-                .head-info-section {
-                    border-radius: 3px 3px 0 0 !important;
-                }
-                .gift-control-section {
-                    border-radius: 0 0 3px 3px !important;
-                }
-                .follow-ctnr .right-part {
-                    border-radius: 0 3px 3px 0 !important;
-                }
-                .chat-control-panel {
-                    border-radius: 0 0 3px 3px !important;
-                }
-                .follow-ctnr .left-part,
-                #rank-list-ctnr-box.bgStyle {
-                    border-radius: 3px 0 0 3px !important;
-                }`,
             ),
         )
         // 播放器皮肤 恢复默认配色

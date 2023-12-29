@@ -3,7 +3,7 @@ import { NormalItem, SeparatorItem } from '../core/item'
 
 const searchItems: (NormalItem | SeparatorItem)[] = []
 
-if (location.host == 'search.bilibili.com') {
+if (location.host === 'search.bilibili.com') {
     // 基本功能part
     {
         // 顶栏 滚动页面后不再吸附顶部
@@ -86,32 +86,6 @@ if (location.host == 'search.bilibili.com') {
                 undefined,
                 false,
                 `.side-buttons .btn-to-top-wrap {display: none !important;}`,
-            ),
-        )
-        // 页面直角化 去除圆角
-        searchItems.push(
-            new NormalItem(
-                'search-page-border-radius',
-                '页面直角化 去除圆角',
-                false,
-                undefined,
-                false,
-                `
-                #nav-searchform,
-                .nav-search-content,
-                .v-popover-content,
-                .van-popover,
-                .v-popover-wrap,
-                .v-popover,
-                .search-sticky-header *,
-                .vui_button,
-                .header-upload-entry,
-                .search-input-wrap *,
-                .search-input-container .search-input-wrap,
-                .bili-video-card__cover {
-                    border-radius: 3px !important;
-                }
-                `,
             ),
         )
     }

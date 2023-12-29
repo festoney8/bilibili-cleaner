@@ -23,50 +23,6 @@ if (location.host === 't.bilibili.com') {
                 aside.right section.sticky {top: 15px !important;}`,
             ),
         )
-        // 页面直角化 去除圆角
-        dynamicItems.push(
-            new NormalItem(
-                'dynamic-page-border-radius',
-                '页面直角化 去除圆角',
-                false,
-                undefined,
-                false,
-                `#nav-searchform,
-                .nav-search-content,
-                .header-upload-entry,
-                .v-popover-content,
-                .van-popover,
-                .v-popover-wrap,
-                .v-popover,
-                .topic-panel,
-                .bili-header .header-upload-entry,
-                .bili-dyn-up-list,
-                .bili-dyn-publishing,
-                .bili-dyn-publishing__action,
-                .bili-dyn-sidebar *,
-                .bili-dyn-up-list__window,
-                .bili-dyn-live-users,
-                .bili-dyn-topic-box,
-                .bili-dyn-list-notification,
-                .bili-dyn-item,
-                .bili-dyn-banner,
-                .bili-dyn-banner__img,
-                .bili-dyn-my-info,
-                .bili-dyn-card-video,
-                .bili-dyn-list-tabs,
-                .bili-album__preview__picture__gif,
-                .bili-album__preview__picture__img {
-                    border-radius: 3px !important;
-                }
-                .bili-dyn-card-video__cover__mask,
-                .bili-dyn-card-video__cover {
-                    border-radius: 3px 0 0 3px !important;
-                }
-                .bili-dyn-card-video__body {
-                    border-radius: 0 3px 3px 0 !important;
-                }`,
-            ),
-        )
     }
 
     // 左栏part

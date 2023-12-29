@@ -368,16 +368,16 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
                 `.bili-live-card.is-rcmd {display: none !important;}`,
             ),
         )
-        // 精简 视频列表-分区推荐视频
+        // 精简 视频列表-分区推荐视频, 默认开启
         homepageItems.push(
             new NormalItem(
                 'homepage-simple-sub-area-card-recommend',
                 '简化 视频列表-分区推荐视频',
-                false,
+                true,
                 undefined,
                 false,
-                `.floor-single-card >.layer {display: none !important;}
-                .floor-single-card .floor-card {box-shadow: unset !important;}`,
+                `.floor-single-card .layer {display: none !important;}
+                .floor-single-card .floor-card {box-shadow: unset !important; border: none !important;}`,
             ),
         )
         // 隐藏 视频列表-分区推荐视频

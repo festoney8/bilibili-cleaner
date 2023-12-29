@@ -465,18 +465,6 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 `.bpx-player-ctrl-viewpoint {display: none !important;}`,
             ),
         )
-        // 隐藏 播放控制-画中画(Chrome)
-        // Firefox的画中画按钮为浏览器自带，无法通过CSS隐藏，只可通过浏览器设置关闭
-        videoItems.push(
-            new NormalItem(
-                'video-page-hide-bpx-player-ctrl-pip',
-                '隐藏 播放控制-画中画(Chrome)',
-                false,
-                undefined,
-                false,
-                `.bpx-player-ctrl-pip {display: none !important;}`,
-            ),
-        )
         // 隐藏 播放控制-选集
         videoItems.push(
             new NormalItem(
@@ -486,39 +474,6 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 undefined,
                 false,
                 `.bpx-player-ctrl-eplist {display: none !important;}`,
-            ),
-        )
-        // 隐藏 播放控制-宽屏
-        videoItems.push(
-            new NormalItem(
-                'video-page-hide-bpx-player-ctrl-wide',
-                '隐藏 播放控制-宽屏',
-                false,
-                undefined,
-                false,
-                `.bpx-player-ctrl-wide {display: none !important;}`,
-            ),
-        )
-        // 隐藏 播放控制-音量
-        videoItems.push(
-            new NormalItem(
-                'video-page-hide-bpx-player-ctrl-volume',
-                '隐藏 播放控制-音量',
-                false,
-                undefined,
-                false,
-                `.bpx-player-ctrl-volume {display: none !important;}`,
-            ),
-        )
-        // 隐藏 播放控制-字幕
-        videoItems.push(
-            new NormalItem(
-                'video-page-hide-bpx-player-ctrl-subtitle',
-                '隐藏 播放控制-字幕',
-                false,
-                undefined,
-                false,
-                `.bpx-player-ctrl-subtitle {display: none !important;}`,
             ),
         )
         // 隐藏 播放控制-倍速
@@ -532,6 +487,28 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 `.bpx-player-ctrl-playbackrate {display: none !important;}`,
             ),
         )
+        // 隐藏 播放控制-字幕
+        videoItems.push(
+            new NormalItem(
+                'video-page-hide-bpx-player-ctrl-subtitle',
+                '隐藏 播放控制-字幕',
+                false,
+                undefined,
+                false,
+                `.bpx-player-ctrl-subtitle {display: none !important;}`,
+            ),
+        )
+        // 隐藏 播放控制-音量
+        videoItems.push(
+            new NormalItem(
+                'video-page-hide-bpx-player-ctrl-volume',
+                '隐藏 播放控制-音量',
+                false,
+                undefined,
+                false,
+                `.bpx-player-ctrl-volume {display: none !important;}`,
+            ),
+        )
         // 隐藏 播放控制-视频设置
         videoItems.push(
             new NormalItem(
@@ -541,6 +518,51 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 undefined,
                 false,
                 `.bpx-player-ctrl-setting {display: none !important;}`,
+            ),
+        )
+        // 隐藏 播放控制-画中画(Chrome)
+        // Firefox的画中画按钮为浏览器自带，无法通过CSS隐藏，只可通过浏览器设置关闭
+        videoItems.push(
+            new NormalItem(
+                'video-page-hide-bpx-player-ctrl-pip',
+                '隐藏 播放控制-画中画(Chrome)',
+                false,
+                undefined,
+                false,
+                `.bpx-player-ctrl-pip {display: none !important;}`,
+            ),
+        )
+        // 隐藏 播放控制-宽屏
+        videoItems.push(
+            new NormalItem(
+                'video-page-hide-bpx-player-ctrl-wide',
+                '隐藏 播放控制-宽屏',
+                false,
+                undefined,
+                false,
+                `.bpx-player-ctrl-wide {display: none !important;}`,
+            ),
+        )
+        // 隐藏 播放控制-网页全屏
+        videoItems.push(
+            new NormalItem(
+                'video-page-hide-bpx-player-ctrl-web',
+                '隐藏 播放控制-网页全屏',
+                false,
+                undefined,
+                false,
+                `.bpx-player-ctrl-web {display: none !important;}`,
+            ),
+        )
+        // 隐藏 播放控制-全屏
+        videoItems.push(
+            new NormalItem(
+                'video-page-hide-bpx-player-ctrl-full',
+                '隐藏 播放控制-全屏',
+                false,
+                undefined,
+                false,
+                `.bpx-player-ctrl-full {display: none !important;}`,
             ),
         )
         // 隐藏 播放控制-底边mini视频进度, 默认开启

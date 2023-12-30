@@ -108,8 +108,8 @@ export class Group implements IGroup {
 
 export class TitleGroup implements IGroup {
     groupHTML = `
-    <div class="bili-cleaner-group">
-        <div class="bili-cleaner-group-title">
+    <div class="bili-cleaner-page-title-wrap">
+        <div class="bili-cleaner-page-title">
         </div>
     </div>`
 
@@ -119,7 +119,7 @@ export class TitleGroup implements IGroup {
         try {
             const e = document.createElement('div')
             e.innerHTML = this.groupHTML.trim()
-            e.querySelector('.bili-cleaner-group-title')!.textContent = this.title
+            e.querySelector('.bili-cleaner-page-title')!.textContent = this.title
             const groupList = document.getElementById('bili-cleaner-group-list') as HTMLFormElement
             groupList.appendChild(e)
             debug(`insertGroup TitleGroup ${this.title} OK`)
@@ -131,7 +131,7 @@ export class TitleGroup implements IGroup {
     insertGroupItems() {
         return
     }
-    enableGroup(enableFunc = true): void {
+    enableGroup(): void {
         return
     }
     reloadGroup(): void {

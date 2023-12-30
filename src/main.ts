@@ -47,17 +47,18 @@ const main = async () => {
         }
     }, 500)
 
-    // bangumi page规则丢失补丁, 在打开bangumipage新标签页时, 可能丢失规则, firefox和chrome均复现
+    // 版权视频页 规则丢失补丁
+    // 在打开新标签页版权视频页时, 可能丢失规则, firefox和chrome均复现
     // 测试可知, head内插入style均成功, 在DOMContentLoaded时, style数量正确
-    // 在readyState=complete后, style数量有概率会减少, 规则丢失, 原因不明
-    // 故在bangumi page监听load, 二次检查解决规则载入不全问题
+    // 在readyState=complete后, style数量有概率会减少, 导致规则丢失, 原因不明
+    // 故在版权视频页监听load, 二次检查解决规则载入不全问题
     if (location.pathname.startsWith('/bangumi/play')) {
         window.addEventListener('load', () => {
-            debug('chrome patch, recheck start')
+            debug('bangumi page patch, recheck start')
             for (let i = GROUPS.length - 1; i >= 0; i--) {
                 GROUPS[i].enableGroup()
             }
-            debug('chrome patch, recheck complete')
+            debug('bangumi page patch, recheck complete')
         })
     }
 

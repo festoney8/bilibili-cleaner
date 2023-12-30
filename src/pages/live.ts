@@ -472,15 +472,18 @@ if (location.host === 'live.bilibili.com') {
                 .chat-history-panel .danmaku-at-prompt {bottom: 50px !important;}`,
             ),
         )
-        // 隐藏 右侧-关闭全部互动框/控制栏
+        // 隐藏 右侧-关闭全部互动框和控制栏
         liveItems.push(
             new NormalItem(
                 'live-page-chat-control-panel',
-                '隐藏 右侧-关闭全部互动框/控制栏',
+                '隐藏 右侧-关闭全部互动框和控制栏',
                 false,
                 undefined,
                 false,
                 `#chat-control-panel-vm {display: none !important;}
+                .chat-history-panel {
+                    border-radius: 0 0 12px 12px;
+                }
                 /* 高权限调高度 */
                 #aside-area-vm .chat-history-panel {
                     height: calc(100% - 15px) !important;
@@ -755,22 +758,44 @@ if (location.host === 'live.bilibili.com') {
     // 顶栏中间part
     liveItems.push(new SeparatorItem())
     {
-        // 隐藏 顶栏-搜索框内推荐搜索
+        // 隐藏 顶栏-搜索框 推荐搜索
         liveItems.push(
             new NormalItem(
                 'live-page-header-search-block-placeholder',
-                '隐藏 顶栏-搜索框内推荐搜索',
+                '隐藏 顶栏-搜索框 推荐搜索',
                 false,
                 undefined,
                 false,
                 `#nav-searchform input::placeholder {visibility: hidden;}`,
             ),
         )
-        // 隐藏 顶栏-搜索框
+        // 隐藏 顶栏-搜索框 搜索历史
+        liveItems.push(
+            new NormalItem(
+                'live-page-header-search-history',
+                '隐藏 顶栏-搜索框 搜索历史',
+                false,
+                undefined,
+                false,
+                `#nav-searchform .history {display: none !important;}`,
+            ),
+        )
+        // 隐藏 顶栏-搜索框 bilibili热搜
+        liveItems.push(
+            new NormalItem(
+                'live-page-header-search-trending',
+                '隐藏 顶栏-搜索框 bilibili热搜',
+                false,
+                undefined,
+                false,
+                `#nav-searchform .trending {display: none !important;}`,
+            ),
+        )
+        // 隐藏 顶栏-关闭搜索框
         liveItems.push(
             new NormalItem(
                 'live-page-header-search-block',
-                '隐藏 顶栏-搜索框',
+                '隐藏 顶栏-关闭搜索框',
                 false,
                 undefined,
                 false,

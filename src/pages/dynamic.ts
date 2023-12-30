@@ -53,45 +53,6 @@ if (location.host === 't.bilibili.com') {
         )
     }
 
-    // 中栏part
-    dynamicItems.push(new SeparatorItem())
-    {
-        // 隐藏 中栏 动态发布框
-        dynamicItems.push(
-            new NormalItem(
-                'hide-dynamic-page-bili-dyn-publishing',
-                '隐藏 中栏 动态发布框',
-                false,
-                undefined,
-                false,
-                `.bili-dyn-publishing {display: none !important;}
-                main section:nth-child(1) {margin-bottom: 0 !important;}`,
-            ),
-        )
-        // 隐藏 中栏 动态分类Tab
-        dynamicItems.push(
-            new NormalItem(
-                'hide-dynamic-page-bili-dyn-list-tabs',
-                '隐藏 中栏 动态分类Tab',
-                false,
-                undefined,
-                false,
-                `.bili-dyn-list-tabs {display: none !important;}`,
-            ),
-        )
-        // 隐藏 中栏 动态右侧饰品
-        dynamicItems.push(
-            new NormalItem(
-                'hide-dynamic-page-bili-dyn-ornament',
-                '隐藏 中栏 动态右侧饰品',
-                false,
-                undefined,
-                false,
-                `.bili-dyn-ornament {display: none !important;}`,
-            ),
-        )
-    }
-
     // 右栏part
     dynamicItems.push(new SeparatorItem())
     {
@@ -140,6 +101,56 @@ if (location.host === 't.bilibili.com') {
                 undefined,
                 false,
                 `aside.right {display: none !important;}`,
+            ),
+        )
+    }
+
+    // 中栏part
+    dynamicItems.push(new SeparatorItem())
+    {
+        // 隐藏 中栏 动态发布框
+        dynamicItems.push(
+            new NormalItem(
+                'hide-dynamic-page-bili-dyn-publishing',
+                '隐藏 中栏 动态发布框',
+                false,
+                undefined,
+                false,
+                `.bili-dyn-publishing {display: none !important;}
+                main section:nth-child(1) {margin-bottom: 0 !important;}`,
+            ),
+        )
+        // 隐藏 中栏 动态分类Tab
+        dynamicItems.push(
+            new NormalItem(
+                'hide-dynamic-page-bili-dyn-list-tabs',
+                '隐藏 中栏 动态分类Tab',
+                false,
+                undefined,
+                false,
+                `.bili-dyn-list-tabs {display: none !important;}`,
+            ),
+        )
+        // 隐藏 中栏 动态右侧饰品
+        dynamicItems.push(
+            new NormalItem(
+                'hide-dynamic-page-bili-dyn-ornament',
+                '隐藏 中栏 动态右侧饰品',
+                false,
+                undefined,
+                false,
+                `.bili-dyn-ornament {display: none !important;}`,
+            ),
+        )
+        // 隐藏 中栏 视频警告notice, 默认开启
+        dynamicItems.push(
+            new NormalItem(
+                'hide-dynamic-page-bili-dyn-dispute',
+                '隐藏 中栏 视频警告notice',
+                true,
+                undefined,
+                false,
+                `.bili-dyn-content__dispute {display: none !important;}`,
             ),
         )
     }

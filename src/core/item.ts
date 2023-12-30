@@ -129,13 +129,16 @@ export class NormalItem implements IItem {
             error(err)
         }
     }
-    /** 执行item功能, 在页面head添加CSS并执行func */
-    enableItem() {
+    /**
+     * 执行item功能, 在页面head添加CSS, 执行func
+     * @param enableFunc 是否执行func, 默认true
+     */
+    enableItem(enableFunc = true) {
         this.getStatus()
         if (this.isEnable) {
             try {
                 this.insertItemCSS()
-                if (this.itemFunc instanceof Function) {
+                if (enableFunc && this.itemFunc instanceof Function) {
                     this.itemFunc()
                     debug(`enableItem ${this.itemID} OK`)
                 }

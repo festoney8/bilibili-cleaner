@@ -60,6 +60,29 @@ const main = async () => {
         })
     }
 
+    // 全局启动/关闭快捷键 chrome: Alt+B，firefox: Ctrl+Alt+B
+    let isGroupEnable = true
+    document.addEventListener('keydown', (event) => {
+        let flag = false
+        if (event.altKey && event.ctrlKey && (event.key === 'b' || event.key === 'B')) {
+            flag = true
+        } else if (event.altKey && (event.key === 'b' || event.key === 'B')) {
+            if (navigator.userAgent.toLocaleLowerCase().includes('chrome')) {
+                flag = true
+            }
+        }
+        if (flag) {
+            debug('keydown Alt+B detected')
+            if (isGroupEnable) {
+                GROUPS.forEach((e) => e.disableGroup())
+                isGroupEnable = false
+            } else {
+                GROUPS.forEach((e) => e.enableGroup(true))
+                isGroupEnable = true
+            }
+        }
+    })
+
     // 注册油猴插件菜单
     const openSettings = () => {
         if (document.getElementById('bili-cleaner')) {

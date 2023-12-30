@@ -3,7 +3,7 @@ import { GM_registerMenuCommand } from '$'
 import { log, error, debug } from './utils/logger'
 import { init } from './init'
 import { Panel } from './core/panel'
-import { Group, TitleGroup } from './core/group'
+import { Group } from './core/group'
 import { homepageGroupList } from './pages/homepage'
 import { commonGroupList } from './pages/common'
 import { videoGroupList } from './pages/video'
@@ -24,7 +24,7 @@ const main = async () => {
     }
 
     // 载入规则
-    const GROUPS: (Group | TitleGroup)[] = [
+    const GROUPS: Group[] = [
         ...homepageGroupList,
         ...videoGroupList,
         ...bangumiGroupList,

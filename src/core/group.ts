@@ -105,39 +105,3 @@ export class Group implements IGroup {
         }
     }
 }
-
-export class TitleGroup implements IGroup {
-    groupHTML = `
-    <div class="bili-cleaner-page-title-wrap">
-        <div class="bili-cleaner-page-title">
-        </div>
-    </div>`
-
-    constructor(private title: string) {}
-    /** 插入Group标题 */
-    insertGroup() {
-        try {
-            const e = document.createElement('div')
-            e.innerHTML = this.groupHTML.trim()
-            e.querySelector('.bili-cleaner-page-title')!.textContent = this.title
-            const groupList = document.getElementById('bili-cleaner-group-list') as HTMLFormElement
-            groupList.appendChild(e)
-            debug(`insertGroup TitleGroup ${this.title} OK`)
-        } catch (err) {
-            debug(`insertGroup TitleGroup ${this.title} err`)
-        }
-    }
-    /** TitleGroup无功能 */
-    insertGroupItems() {
-        return
-    }
-    enableGroup(): void {
-        return
-    }
-    reloadGroup(): void {
-        return
-    }
-    disableGroup(): void {
-        return
-    }
-}

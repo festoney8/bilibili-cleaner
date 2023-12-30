@@ -92,7 +92,7 @@ export class Panel implements IPanel {
     }
     /* panel内的group */
     .bili-cleaner-group {
-        margin: 0 12px 12px 12px;
+        margin: 14px;
         background: white;
         border-radius: 6px;
         padding: 8px 16px;
@@ -101,7 +101,7 @@ export class Panel implements IPanel {
     }
     .bili-cleaner-group hr {
         border: 1px solid #eee;
-        margin: 2px 0 10px 0;
+        margin: 8px 0 10px 0;
     }
     .bili-cleaner-group-title {
         font-size: 20px;

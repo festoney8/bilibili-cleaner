@@ -86,15 +86,29 @@ function simpleShare() {
     }, 200)
 }
 
-const videoItems: (NormalItem | SeparatorItem)[] = []
+const basicItems: NormalItem[] = []
+const infoItems: NormalItem[] = []
+const playerItems: NormalItem[] = []
+const playerControlItems: NormalItem[] = []
+const danmakuItems: NormalItem[] = []
+const toolbarItems: NormalItem[] = []
+const upInfoItems: NormalItem[] = []
+const rightItems: NormalItem[] = []
+const commentItems: NormalItem[] = []
+const sidebarItems: NormalItem[] = []
+// GroupList
+const videoGroupList: Group[] = []
 
 if (location.href.startsWith('https://www.bilibili.com/video/')) {
-    // 主要功能part
+    // 标题
+    videoGroupList.push(new Group('video', '当前是：播放页', basicItems))
+
+    // 基本功能part, basicItems
     {
         // BV号转AV号, 在url变化时需重载
-        videoItems.push(new NormalItem('video-page-bv2av', 'BV号转AV号 (需刷新)', false, bv2av, true, null))
+        basicItems.push(new NormalItem('video-page-bv2av', 'BV号转AV号 (需刷新)', false, bv2av, true, null))
         // 净化分享, 默认开启
-        videoItems.push(
+        basicItems.push(
             new NormalItem(
                 'video-page-simple-share',
                 '净化分享功能 (需刷新)',
@@ -108,7 +122,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 顶栏 滚动页面后不再吸附顶部
-        videoItems.push(
+        basicItems.push(
             new NormalItem(
                 'video-page-hide-fixed-header',
                 '顶栏 滚动页面后不再吸附顶部',
@@ -119,12 +133,12 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
     }
+    videoGroupList.push(new Group('video-basic', '基本功能', basicItems))
 
-    // 视频信息part
-    videoItems.push(new SeparatorItem())
+    // 视频信息part, infoItems
     {
         // 隐藏 视频信息-弹幕数
-        videoItems.push(
+        infoItems.push(
             new NormalItem(
                 'video-page-hide-video-info-danmaku-count',
                 '隐藏 视频信息-弹幕数',
@@ -135,7 +149,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 视频信息-发布日期
-        videoItems.push(
+        infoItems.push(
             new NormalItem(
                 'video-page-hide-video-info-pubdate',
                 '隐藏 视频信息-发布日期',
@@ -146,7 +160,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 视频信息-版权声明
-        videoItems.push(
+        infoItems.push(
             new NormalItem(
                 'video-page-hide-video-info-copyright',
                 '隐藏 视频信息-版权声明',
@@ -157,7 +171,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 视频信息-视频荣誉(排行榜/每周必看)
-        videoItems.push(
+        infoItems.push(
             new NormalItem(
                 'video-page-hide-video-info-honor',
                 '隐藏 视频信息-视频荣誉(排行榜/每周必看)',
@@ -168,7 +182,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 视频信息-温馨提示(饮酒/危险/AI生成), 默认开启
-        videoItems.push(
+        infoItems.push(
             new NormalItem(
                 'video-page-hide-video-info-argue',
                 '隐藏 视频信息-温馨提示(饮酒/危险/AI生成)',
@@ -179,12 +193,12 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
     }
+    videoGroupList.push(new Group('video-info', '视频信息', infoItems))
 
-    // 播放器part
-    videoItems.push(new SeparatorItem())
+    // 播放器part, playerItems
     {
         // 隐藏 播放器-视频内 一键三连窗口
-        videoItems.push(
+        playerItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-bili-guide-all',
                 '隐藏 播放器-视频内 一键三连窗口',
@@ -195,7 +209,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放器-视频内 投票
-        videoItems.push(
+        playerItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-bili-vote',
                 '隐藏 播放器-视频内 投票',
@@ -206,7 +220,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放器-视频内 评分
-        videoItems.push(
+        playerItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-bili-score',
                 '隐藏 播放器-视频内 评分',
@@ -217,7 +231,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放器-视频内 视频预告
-        videoItems.push(
+        playerItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-bili-reserve',
                 '隐藏 播放器-视频内 视频预告',
@@ -228,7 +242,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放器-视频内 视频链接
-        videoItems.push(
+        playerItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-bili-link',
                 '隐藏 播放器-视频内 视频链接',
@@ -239,7 +253,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放器-右上角 反馈按钮, 默认开启
-        videoItems.push(
+        playerItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-top-issue',
                 '隐藏 播放器-右上角 反馈按钮',
@@ -250,7 +264,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放器-左上角 播放器内标题
-        videoItems.push(
+        playerItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-top-left-title',
                 '隐藏 播放器-左上角 播放器内标题',
@@ -264,7 +278,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放器-左上角 视频音乐链接
-        videoItems.push(
+        playerItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-top-left-music',
                 '隐藏 播放器-左上角 视频音乐链接',
@@ -275,7 +289,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放器-左上角 关注UP主, 默认开启
-        videoItems.push(
+        playerItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-top-left-follow',
                 '隐藏 播放器-左上角 关注UP主',
@@ -286,7 +300,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放器-视频暂停时大Logo
-        videoItems.push(
+        playerItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-state-wrap',
                 '隐藏 播放器-视频暂停时大Logo',
@@ -297,7 +311,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放器-弹幕悬停点赞/复制/举报
-        videoItems.push(
+        playerItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-dialog-wrap',
                 '隐藏 播放器-弹幕悬停点赞/复制/举报',
@@ -308,7 +322,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放器-高赞弹幕前点赞按钮
-        videoItems.push(
+        playerItems.push(
             new NormalItem(
                 'video-page-bpx-player-bili-high-icon',
                 '隐藏 播放器-高赞弹幕前点赞按钮',
@@ -319,7 +333,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 播放器-彩色渐变弹幕 变成白色
-        videoItems.push(
+        playerItems.push(
             new NormalItem(
                 'video-page-bpx-player-bili-dm-vip-white',
                 '播放器-彩色渐变弹幕 变成白色',
@@ -339,7 +353,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 播放器-CC字幕 字体优化
-        videoItems.push(
+        playerItems.push(
             new NormalItem(
                 'video-page-bpx-player-subtitle-font-family',
                 '播放器-CC字幕 字体优化 (实验性)',
@@ -352,7 +366,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 播放器-CC字幕 字体优化
-        videoItems.push(
+        playerItems.push(
             new NormalItem(
                 'video-page-bpx-player-subtitle-text-stroke',
                 '播放器-CC字幕 字体描边 (实验性)',
@@ -375,12 +389,12 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
     }
+    videoGroupList.push(new Group('video-player', '播放器', playerItems))
 
-    // 播放控制part
-    videoItems.push(new SeparatorItem())
+    // 播放控制part, playerControlItems
     {
         // 隐藏 播放控制-上一个视频
-        videoItems.push(
+        playerControlItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-ctrl-prev',
                 '隐藏 播放控制-上一个视频',
@@ -391,7 +405,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放控制-播放/暂停
-        videoItems.push(
+        playerControlItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-ctrl-play',
                 '隐藏 播放控制-播放/暂停',
@@ -402,7 +416,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放控制-下一个视频
-        videoItems.push(
+        playerControlItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-ctrl-next',
                 '隐藏 播放控制-下一个视频',
@@ -413,7 +427,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放控制-章节列表
-        videoItems.push(
+        playerControlItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-ctrl-viewpoint',
                 '隐藏 播放控制-章节列表',
@@ -424,7 +438,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放控制-选集
-        videoItems.push(
+        playerControlItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-ctrl-eplist',
                 '隐藏 播放控制-选集',
@@ -435,7 +449,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放控制-倍速
-        videoItems.push(
+        playerControlItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-ctrl-playbackrate',
                 '隐藏 播放控制-倍速',
@@ -446,7 +460,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放控制-字幕
-        videoItems.push(
+        playerControlItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-ctrl-subtitle',
                 '隐藏 播放控制-字幕',
@@ -457,7 +471,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放控制-音量
-        videoItems.push(
+        playerControlItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-ctrl-volume',
                 '隐藏 播放控制-音量',
@@ -468,7 +482,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放控制-视频设置
-        videoItems.push(
+        playerControlItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-ctrl-setting',
                 '隐藏 播放控制-视频设置',
@@ -480,7 +494,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
         )
         // 隐藏 播放控制-画中画(Chrome)
         // Firefox的画中画按钮为浏览器自带，无法通过CSS隐藏，只可通过浏览器设置关闭
-        videoItems.push(
+        playerControlItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-ctrl-pip',
                 '隐藏 播放控制-画中画(Chrome)',
@@ -491,7 +505,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放控制-宽屏
-        videoItems.push(
+        playerControlItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-ctrl-wide',
                 '隐藏 播放控制-宽屏',
@@ -502,7 +516,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放控制-网页全屏
-        videoItems.push(
+        playerControlItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-ctrl-web',
                 '隐藏 播放控制-网页全屏',
@@ -513,7 +527,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放控制-全屏
-        videoItems.push(
+        playerControlItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-ctrl-full',
                 '隐藏 播放控制-全屏',
@@ -524,7 +538,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 播放控制-底边mini视频进度, 默认开启
-        videoItems.push(
+        playerControlItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-shadow-progress-area',
                 '隐藏 播放控制-底边mini视频进度',
@@ -535,12 +549,12 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
     }
+    videoGroupList.push(new Group('video-player-control', '播放控制', playerControlItems))
 
-    // 弹幕栏part
-    videoItems.push(new SeparatorItem())
+    // 弹幕栏part, danmakuItems
     {
         // 隐藏 弹幕栏-同时在看人数
-        videoItems.push(
+        danmakuItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-video-info-online',
                 '隐藏 弹幕栏-同时在看人数',
@@ -551,7 +565,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 弹幕栏-载入弹幕数量
-        videoItems.push(
+        danmakuItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-video-info-dm',
                 '隐藏 弹幕栏-载入弹幕数量',
@@ -562,7 +576,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 弹幕栏-弹幕启用
-        videoItems.push(
+        danmakuItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-dm-switch',
                 '隐藏 弹幕栏-弹幕启用',
@@ -573,7 +587,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 弹幕栏-弹幕显示设置
-        videoItems.push(
+        danmakuItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-dm-setting',
                 '隐藏 弹幕栏-弹幕显示设置',
@@ -584,7 +598,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 弹幕栏-弹幕样式
-        videoItems.push(
+        danmakuItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-video-btn-dm',
                 '隐藏 弹幕栏-弹幕样式',
@@ -595,7 +609,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 弹幕栏-占位文字, 默认开启
-        videoItems.push(
+        danmakuItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-dm-input',
                 '隐藏 弹幕栏-占位文字',
@@ -606,7 +620,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 弹幕栏-弹幕礼仪, 默认开启
-        videoItems.push(
+        danmakuItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-dm-hint',
                 '隐藏 弹幕栏-弹幕礼仪',
@@ -617,7 +631,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 弹幕栏-发送按钮
-        videoItems.push(
+        danmakuItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-dm-btn-send',
                 '隐藏 弹幕栏-发送按钮',
@@ -628,7 +642,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 弹幕栏-智能弹幕/广告弹幕
-        videoItems.push(
+        danmakuItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-postpanel',
                 '隐藏 弹幕栏-智能弹幕/广告弹幕',
@@ -643,7 +657,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 弹幕栏-关闭整个弹幕栏
-        videoItems.push(
+        danmakuItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-sending-area',
                 '隐藏 弹幕栏-关闭整个弹幕栏',
@@ -656,12 +670,12 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
     }
+    videoGroupList.push(new Group('video-danmaku', '弹幕栏', danmakuItems))
 
-    // 视频下方part
-    videoItems.push(new SeparatorItem())
+    // 视频下方part, toolbarItems
     {
         // 隐藏 视频下方-分享按钮弹出菜单, 默认开启
-        videoItems.push(
+        toolbarItems.push(
             new NormalItem(
                 'video-page-hide-video-share-popover',
                 '隐藏 视频下方-分享按钮弹出菜单',
@@ -672,7 +686,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 视频下方-官方AI总结
-        videoItems.push(
+        toolbarItems.push(
             new NormalItem(
                 'video-page-hide-below-info-video-ai-assistant',
                 '隐藏 视频下方-官方AI总结',
@@ -683,7 +697,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 视频下方-记笔记
-        videoItems.push(
+        toolbarItems.push(
             new NormalItem(
                 'video-page-hide-below-info-video-note',
                 '隐藏 视频下方-记笔记',
@@ -694,7 +708,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 视频下方-举报/笔记/稍后再看
-        videoItems.push(
+        toolbarItems.push(
             new NormalItem(
                 'video-page-hide-below-info-video-report-menu',
                 '隐藏 视频下方-举报/笔记/稍后再看',
@@ -705,7 +719,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 视频下方-视频简介
-        videoItems.push(
+        toolbarItems.push(
             new NormalItem(
                 'video-page-hide-below-info-desc',
                 '隐藏 视频下方-视频简介',
@@ -716,7 +730,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 视频下方-tag列表
-        videoItems.push(
+        toolbarItems.push(
             new NormalItem(
                 'video-page-hide-below-info-tag',
                 '隐藏 视频下方-tag列表',
@@ -727,7 +741,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 视频下方-活动宣传, 默认开启
-        videoItems.push(
+        toolbarItems.push(
             new NormalItem(
                 'video-page-hide-below-activity-vote',
                 '隐藏 视频下方-活动宣传',
@@ -738,7 +752,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 视频下方-广告banner, 默认开启
-        videoItems.push(
+        toolbarItems.push(
             new NormalItem(
                 'video-page-hide-below-bannerAd',
                 '隐藏 视频下方-广告banner',
@@ -749,12 +763,12 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
     }
+    videoGroupList.push(new Group('video-toolbar', '视频下方', toolbarItems))
 
-    // up主信息part
-    videoItems.push(new SeparatorItem())
+    // up主信息part, upInfoItems
     {
         // 隐藏 UP主信息-给UP发消息, 默认开启
-        videoItems.push(
+        upInfoItems.push(
             new NormalItem(
                 'video-page-hide-up-sendmsg',
                 '隐藏 UP主信息-给UP发消息',
@@ -765,7 +779,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 UP主信息-UP简介
-        videoItems.push(
+        upInfoItems.push(
             new NormalItem(
                 'video-page-hide-up-description',
                 '隐藏 UP主信息-UP简介',
@@ -776,7 +790,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 UP主信息-充电
-        videoItems.push(
+        upInfoItems.push(
             new NormalItem(
                 'video-page-hide-up-charge',
                 '隐藏 UP主信息-充电',
@@ -787,7 +801,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 UP主信息-UP主头像外饰品
-        videoItems.push(
+        upInfoItems.push(
             new NormalItem(
                 'video-page-hide-up-bili-avatar-pendent-dom',
                 '隐藏 UP主信息-UP主头像外饰品',
@@ -799,7 +813,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 UP主信息-创作团队header, 默认开启
-        videoItems.push(
+        upInfoItems.push(
             new NormalItem(
                 'video-page-hide-up-membersinfo-normal-header',
                 '隐藏 UP主信息-创作团队header',
@@ -810,12 +824,12 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
     }
+    videoGroupList.push(new Group('video-up-info', 'UP主信息', upInfoItems))
 
-    // 右侧视频栏part
-    videoItems.push(new SeparatorItem())
+    // 右侧视频栏part, rightItems
     {
         // 隐藏 右栏-广告, 默认开启
-        videoItems.push(
+        rightItems.push(
             new NormalItem(
                 'video-page-hide-right-container-ad',
                 '隐藏 右栏-广告',
@@ -829,7 +843,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 右栏-游戏推荐
-        videoItems.push(
+        rightItems.push(
             new NormalItem(
                 'video-page-hide-right-container-video-page-game-card-small',
                 '隐藏 右栏-游戏推荐',
@@ -840,7 +854,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 右栏-弹幕列表, 默认开启
-        videoItems.push(
+        rightItems.push(
             new NormalItem(
                 'video-page-hide-right-container-danmaku',
                 '隐藏 右栏-弹幕列表',
@@ -857,7 +871,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 右栏-自动连播按钮
-        videoItems.push(
+        rightItems.push(
             new NormalItem(
                 'video-page-hide-right-container-reco-list-next-play-next-button',
                 '隐藏 右栏-自动连播按钮',
@@ -868,7 +882,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 右栏 视频合集 增加合集列表高度, 默认开启
-        videoItems.push(
+        rightItems.push(
             new NormalItem(
                 'video-page-hide-right-container-section-height',
                 '右栏 视频合集 增加合集列表高度',
@@ -880,7 +894,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 右栏-视频合集 自动连播
-        videoItems.push(
+        rightItems.push(
             new NormalItem(
                 'video-page-hide-right-container-section-next-btn',
                 '隐藏 右栏-视频合集 自动连播',
@@ -892,7 +906,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 右栏-视频合集 播放量
-        videoItems.push(
+        rightItems.push(
             new NormalItem(
                 'video-page-hide-right-container-section-play-num',
                 '隐藏 右栏-视频合集 播放量',
@@ -904,7 +918,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 右栏-视频合集 简介, 默认开启
-        videoItems.push(
+        rightItems.push(
             new NormalItem(
                 'video-page-hide-right-container-section-abstract',
                 '隐藏 右栏-视频合集 简介',
@@ -918,7 +932,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 右栏-视频合集 订阅合集
-        videoItems.push(
+        rightItems.push(
             new NormalItem(
                 'video-page-hide-right-container-section-subscribe',
                 '隐藏 右栏-视频合集 订阅合集',
@@ -930,7 +944,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 右栏-分P视频 自动连播
-        videoItems.push(
+        rightItems.push(
             new NormalItem(
                 'video-page-hide-right-container-multi-page-next-btn',
                 '隐藏 右栏-分P视频 自动连播',
@@ -941,7 +955,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 右栏-相关视频 稍后再看按钮
-        videoItems.push(
+        rightItems.push(
             new NormalItem(
                 'video-page-hide-right-container-reco-list-watch-later-video',
                 '隐藏 右栏-相关视频 稍后再看按钮',
@@ -952,7 +966,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 右栏-相关视频 UP主
-        videoItems.push(
+        rightItems.push(
             new NormalItem(
                 'video-page-hide-right-container-reco-list-rec-list-info-up',
                 '隐藏 右栏-相关视频 UP主',
@@ -970,7 +984,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 右栏-相关视频 播放和弹幕
-        videoItems.push(
+        rightItems.push(
             new NormalItem(
                 'video-page-hide-right-container-reco-list-rec-list-info-plays',
                 '隐藏 右栏-相关视频 播放和弹幕',
@@ -988,7 +1002,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 右栏-视频时长
-        videoItems.push(
+        rightItems.push(
             new NormalItem(
                 'video-page-hide-right-container-duration',
                 '隐藏 右栏-相关视频 视频时长',
@@ -999,7 +1013,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 右栏-全部相关视频
-        videoItems.push(
+        rightItems.push(
             new NormalItem(
                 'video-page-hide-right-container-reco-list-rec-list',
                 '隐藏 右栏-全部相关视频',
@@ -1010,7 +1024,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 右栏-活动banner, 默认开启
-        videoItems.push(
+        rightItems.push(
             new NormalItem(
                 'video-page-hide-right-container-right-bottom-banner',
                 '隐藏 右栏-活动banner',
@@ -1021,7 +1035,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 右栏-直播间推荐, 默认开启
-        videoItems.push(
+        rightItems.push(
             new NormalItem(
                 'video-page-hide-right-container-live',
                 '隐藏 右栏-直播间推荐',
@@ -1032,12 +1046,12 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
     }
+    videoGroupList.push(new Group('video-right', '右侧视频栏', rightItems))
 
-    // 评论区part
-    videoItems.push(new SeparatorItem())
+    // 评论区part, commentItems
     {
         // 隐藏 评论区-活动/notice, 默认开启
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-reply-notice',
                 '隐藏 评论区-活动/notice',
@@ -1048,7 +1062,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 评论区-整个评论框
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-main-reply-box',
                 '隐藏 评论区-整个评论框',
@@ -1061,7 +1075,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 评论区-页面底部 吸附评论框, 默认开启
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-fixed-reply-box',
                 '隐藏 评论区-页面底部 吸附评论框',
@@ -1072,7 +1086,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 评论区-评论编辑器内占位文字, 默认开启
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-reply-box-textarea-placeholder',
                 '隐藏 评论区-评论编辑器内占位文字',
@@ -1084,7 +1098,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 评论区-评论内容右侧装饰
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-reply-decorate',
                 '隐藏 评论区-评论内容右侧装饰',
@@ -1095,7 +1109,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 评论区-ID后粉丝牌
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-fan-badge',
                 '隐藏 评论区-ID后粉丝牌',
@@ -1106,7 +1120,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 评论区-一级评论用户等级
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-user-level',
                 '隐藏 评论区-一级评论用户等级',
@@ -1117,7 +1131,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 评论区-二级评论用户等级
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-sub-user-level',
                 '隐藏 评论区-二级评论用户等级',
@@ -1128,7 +1142,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 评论区-用户头像外圈饰品
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-bili-avatar-pendent-dom',
                 '隐藏 评论区-用户头像外圈饰品',
@@ -1140,7 +1154,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 评论区-用户头像右下小icon
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-bili-avatar-nft-icon',
                 '隐藏 评论区-用户头像右下小icon',
@@ -1152,7 +1166,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 评论区-评论内容下tag(UP觉得很赞)
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-reply-tag-list',
                 '隐藏 评论区-评论内容下tag(UP觉得很赞)',
@@ -1163,7 +1177,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 评论区-笔记评论前的小Logo, 默认开启
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-note-prefix',
                 '隐藏 评论区-笔记评论前的小Logo',
@@ -1174,7 +1188,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 评论区-评论内容搜索关键词高亮, 默认开启
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-jump-link-search-word',
                 '隐藏 评论区-评论内容搜索关键词高亮',
@@ -1187,7 +1201,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 评论区-二级评论中的@高亮
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-reply-content-user-highlight',
                 '隐藏 评论区-二级评论中的@高亮',
@@ -1199,7 +1213,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 评论区-召唤AI机器人的评论, 默认开启
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-at-reply-at-bots',
                 '隐藏 评论区-召唤AI机器人的评论',
@@ -1237,7 +1251,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 评论区-包含@的 无人点赞评论
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-zero-like-at-reply',
                 '隐藏 评论区-包含@的 无人点赞评论',
@@ -1248,7 +1262,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 评论区-包含@的 全部评论
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-at-reply-all',
                 '隐藏 评论区-包含@的 全部评论',
@@ -1259,7 +1273,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 评论区-LV1 无人点赞评论
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-zero-like-lv1-reply',
                 '隐藏 评论区-LV1 无人点赞评论',
@@ -1270,7 +1284,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 评论区-LV2 无人点赞评论
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-zero-like-lv2-reply',
                 '隐藏 评论区-LV2 无人点赞评论',
@@ -1281,7 +1295,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 评论区-LV3 无人点赞评论
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-zero-like-lv3-reply',
                 '隐藏 评论区-LV3 无人点赞评论',
@@ -1292,7 +1306,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 一级评论 踩/回复/举报 hover时显示, 默认开启
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-root-reply-dislike-reply-btn',
                 '隐藏 一级评论 踩/回复/举报 hover时显示',
@@ -1310,7 +1324,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 二级评论 踩/回复/举报 hover时显示, 默认开启
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-sub-reply-dislike-reply-btn',
                 '隐藏 二级评论 踩/回复/举报 hover时显示',
@@ -1328,7 +1342,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 评论区-大表情
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-emoji-large',
                 '隐藏 评论区-大表情',
@@ -1339,7 +1353,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 评论区-大表情变成小表情
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-emoji-large-zoom',
                 '评论区-大表情变成小表情',
@@ -1350,7 +1364,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 评论区-用户名 全部大会员色
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-reply-user-name-color-pink',
                 '评论区-用户名 全部大会员色',
@@ -1361,7 +1375,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 评论区-用户名 全部恢复默认色
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-reply-user-name-color-default',
                 '评论区-用户名 全部恢复默认色',
@@ -1372,7 +1386,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 评论区-笔记图片 查看大图优化, 默认开启
-        videoItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-reply-view-image-optimize',
                 '评论区-笔记图片 查看大图优化',
@@ -1389,12 +1403,12 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
     }
+    videoGroupList.push(new Group('video-comment', '评论区', commentItems))
 
-    // 右下角part
-    videoItems.push(new SeparatorItem())
+    // 右下角part, sidebarItems
     {
         // 隐藏 右下角-小窗播放器
-        videoItems.push(
+        sidebarItems.push(
             new NormalItem(
                 'video-page-hide-sidenav-right-container-live',
                 '隐藏 右下角-小窗播放器',
@@ -1405,7 +1419,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 右下角-客服, 默认开启
-        videoItems.push(
+        sidebarItems.push(
             new NormalItem(
                 'video-page-hide-sidenav-customer-service',
                 '隐藏 右下角-客服',
@@ -1416,7 +1430,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
         // 隐藏 右下角-回顶部
-        videoItems.push(
+        sidebarItems.push(
             new NormalItem(
                 'video-page-hide-sidenav-back-to-top',
                 '隐藏 右下角-回顶部',
@@ -1427,6 +1441,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
             ),
         )
     }
+    videoGroupList.push(new Group('video-sidebar', '页面右下角', sidebarItems))
 }
 
-export const videoGroup = new Group('video', '当前是：播放页', videoItems)
+export { videoGroupList }

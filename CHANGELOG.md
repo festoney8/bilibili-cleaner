@@ -2,7 +2,7 @@
 
 ## 2.2.0
 
--   新增：全局快捷键开关 Alt+B 和 Ctrl+Alt+B
+-   新增：全局功能开关快捷键 `Alt+B` 和 `Ctrl+Alt+B`，Firefox 浏览器只支持 `Ctrl+Alt+B`
 -   优化：直播页 页面直角化
 -   优化：部分CSS细节
 

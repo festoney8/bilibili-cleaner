@@ -1,17 +1,27 @@
 import { Group } from '../core/group'
 import { NormalItem, SeparatorItem } from '../core/item'
 
-const dynamicItems: (NormalItem | SeparatorItem)[] = []
+const basicItems: NormalItem[] = []
+const leftItems: NormalItem[] = []
+const rightItems: NormalItem[] = []
+const centerItems: NormalItem[] = []
+const commentItems: NormalItem[] = []
+const sidebarItems: NormalItem[] = []
+// GroupList
+const dynamicGroupList: Group[] = []
 
 /**
  * 动态页面规则
  * 动态评论区的规则尽可能使用与video page相同的itemID, 同步开关状态
  */
 if (location.host === 't.bilibili.com') {
-    // 基本功能part
+    // 动态页标题
+    dynamicGroupList.push(new Group('dynamic', '当前是：动态页', []))
+
+    // 基本功能part, basicItems
     {
         // 顶栏 不再吸附顶部
-        dynamicItems.push(
+        basicItems.push(
             new NormalItem(
                 'hide-dynamic-page-fixed-header',
                 '顶栏 不再吸附顶部',
@@ -24,12 +34,12 @@ if (location.host === 't.bilibili.com') {
             ),
         )
     }
+    dynamicGroupList.push(new Group('dynamic-basic', '基本功能', basicItems))
 
-    // 左栏part
-    dynamicItems.push(new SeparatorItem())
+    // 左栏part, leftItems
     {
         // 隐藏 左栏 个人信息框
-        dynamicItems.push(
+        leftItems.push(
             new NormalItem(
                 'hide-dynamic-page-bili-dyn-my-info',
                 '隐藏 左栏 个人信息框',
@@ -41,7 +51,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 左栏 直播中Logo
-        dynamicItems.push(
+        leftItems.push(
             new NormalItem(
                 'hide-dynamic-page-bili-dyn-live-users__item__living',
                 '隐藏 左栏 直播中Logo',
@@ -52,12 +62,12 @@ if (location.host === 't.bilibili.com') {
             ),
         )
     }
+    dynamicGroupList.push(new Group('dynamic-left', '左栏', leftItems))
 
-    // 右栏part
-    dynamicItems.push(new SeparatorItem())
+    // 右栏part, rightItems
     {
         // 隐藏 右栏 社区中心, 默认开启
-        dynamicItems.push(
+        rightItems.push(
             new NormalItem(
                 'hide-dynamic-page-bili-dyn-banner',
                 '隐藏 右栏 社区中心',
@@ -68,7 +78,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 右栏 广告, 默认开启
-        dynamicItems.push(
+        rightItems.push(
             new NormalItem(
                 'hide-dynamic-page-bili-dyn-ads',
                 '隐藏 右栏 广告',
@@ -82,7 +92,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 右栏 话题列表
-        dynamicItems.push(
+        rightItems.push(
             new NormalItem(
                 'hide-dynamic-page-bili-dyn-topic-box',
                 '隐藏 右栏 话题列表',
@@ -93,7 +103,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 整个右栏
-        dynamicItems.push(
+        rightItems.push(
             new NormalItem(
                 'hide-dynamic-page-aside-right',
                 '隐藏 整个右栏',
@@ -104,12 +114,12 @@ if (location.host === 't.bilibili.com') {
             ),
         )
     }
+    dynamicGroupList.push(new Group('dynamic-right', '右栏', rightItems))
 
-    // 中栏part
-    dynamicItems.push(new SeparatorItem())
+    // 中栏part, centerItems
     {
         // 隐藏 中栏 动态发布框
-        dynamicItems.push(
+        centerItems.push(
             new NormalItem(
                 'hide-dynamic-page-bili-dyn-publishing',
                 '隐藏 中栏 动态发布框',
@@ -121,7 +131,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 中栏 动态分类Tab
-        dynamicItems.push(
+        centerItems.push(
             new NormalItem(
                 'hide-dynamic-page-bili-dyn-list-tabs',
                 '隐藏 中栏 动态分类Tab',
@@ -132,7 +142,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 中栏 动态右侧饰品
-        dynamicItems.push(
+        centerItems.push(
             new NormalItem(
                 'hide-dynamic-page-bili-dyn-ornament',
                 '隐藏 中栏 动态右侧饰品',
@@ -143,7 +153,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 中栏 视频警告notice, 默认开启
-        dynamicItems.push(
+        centerItems.push(
             new NormalItem(
                 'hide-dynamic-page-bili-dyn-dispute',
                 '隐藏 中栏 视频警告notice',
@@ -154,12 +164,12 @@ if (location.host === 't.bilibili.com') {
             ),
         )
     }
+    dynamicGroupList.push(new Group('dynamic-center', '中栏 动态列表', centerItems))
 
-    // 动态评论区part, 尽可能同步video page
-    dynamicItems.push(new SeparatorItem())
+    // 动态评论区part, commentItems, 尽可能同步video page
     {
         // 隐藏 评论区-活动/notice, 默认开启
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-reply-notice',
                 '隐藏 评论区-活动/notice',
@@ -170,7 +180,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 评论区-整个评论框
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-main-reply-box',
                 '隐藏 评论区-整个评论框',
@@ -181,7 +191,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 评论区-评论编辑器内占位文字, 默认开启
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-reply-box-textarea-placeholder',
                 '隐藏 评论区-评论编辑器内占位文字',
@@ -192,7 +202,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 评论区-评论右侧装饰
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-reply-decorate',
                 '隐藏 评论区-评论右侧装饰',
@@ -203,7 +213,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 评论区-ID后粉丝牌
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-fan-badge',
                 '隐藏 评论区-ID后粉丝牌',
@@ -214,7 +224,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 评论区-一级评论用户等级
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-user-level',
                 '隐藏 评论区-一级评论用户等级',
@@ -225,7 +235,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 评论区-二级评论用户等级
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-sub-user-level',
                 '隐藏 评论区-二级评论用户等级',
@@ -236,7 +246,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 评论区-用户头像外圈饰品
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-bili-avatar-pendent-dom',
                 '隐藏 评论区-用户头像外圈饰品',
@@ -247,7 +257,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 评论区-用户头像右下小icon
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-bili-avatar-nft-icon',
                 '隐藏 评论区-用户头像右下小icon',
@@ -259,7 +269,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 评论区-评论内容下tag(UP觉得很赞)
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-reply-tag-list',
                 '隐藏 评论区-评论内容下tag(UP觉得很赞)',
@@ -270,7 +280,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 评论区-笔记评论前的小Logo, 默认开启
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-note-prefix',
                 '隐藏 评论区-笔记评论前的小Logo',
@@ -281,7 +291,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 评论区-评论内容搜索关键词高亮, 默认开启
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-jump-link-search-word',
                 '隐藏 评论区-评论内容搜索关键词高亮',
@@ -293,7 +303,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 评论区-二级评论中的@高亮
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-reply-content-user-highlight',
                 '隐藏 评论区-二级评论中的@高亮',
@@ -305,7 +315,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 评论区-召唤AI机器人的评论, 默认开启
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-at-reply-at-bots',
                 '隐藏 评论区-召唤AI机器人的评论',
@@ -343,7 +353,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 评论区-包含@的 无人点赞评论
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-zero-like-at-reply',
                 '隐藏 评论区-包含@的 无人点赞评论',
@@ -354,7 +364,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 评论区-包含@的 全部评论
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-at-reply-all',
                 '隐藏 评论区-包含@的 全部评论',
@@ -365,7 +375,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 评论区-LV1 无人点赞评论
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-zero-like-lv1-reply',
                 '隐藏 评论区-LV1 无人点赞评论',
@@ -376,7 +386,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 评论区-LV2 无人点赞评论
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-zero-like-lv2-reply',
                 '隐藏 评论区-LV2 无人点赞评论',
@@ -387,7 +397,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 评论区-LV3 无人点赞评论
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-zero-like-lv3-reply',
                 '隐藏 评论区-LV3 无人点赞评论',
@@ -398,7 +408,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 一级评论 踩/回复/举报 hover时显示, 默认开启
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-root-reply-dislike-reply-btn',
                 '隐藏 一级评论 踩/回复/举报 hover时显示',
@@ -416,7 +426,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 二级评论 踩/回复/举报 hover时显示, 默认开启
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-sub-reply-dislike-reply-btn',
                 '隐藏 二级评论 踩/回复/举报 hover时显示',
@@ -434,7 +444,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 评论区-大表情
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-emoji-large',
                 '隐藏 评论区-大表情',
@@ -445,7 +455,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 评论区-大表情变成小表情
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-hide-emoji-large-zoom',
                 '评论区-大表情变成小表情',
@@ -456,7 +466,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 评论区-用户名 全部大会员色
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-reply-user-name-color-pink',
                 '评论区-用户名 全部大会员色',
@@ -467,7 +477,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 评论区-用户名 全部恢复默认色
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-reply-user-name-color-default',
                 '评论区-用户名 全部恢复默认色',
@@ -478,7 +488,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 评论区-笔记图片 查看大图优化, 默认开启
-        dynamicItems.push(
+        commentItems.push(
             new NormalItem(
                 'video-page-reply-view-image-optimize',
                 '评论区-笔记图片 查看大图优化',
@@ -495,12 +505,12 @@ if (location.host === 't.bilibili.com') {
             ),
         )
     }
+    dynamicGroupList.push(new Group('dynamic-comment', '评论区', commentItems))
 
-    // 右下角part
-    dynamicItems.push(new SeparatorItem())
+    // 右下角part, sidebarItems
     {
         // 隐藏 右下角-新版反馈, 默认开启
-        dynamicItems.push(
+        sidebarItems.push(
             new NormalItem(
                 'hide-dynamic-page-sidebar-feedback',
                 '隐藏 右下角-新版反馈',
@@ -511,7 +521,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 右下角-回到旧版, 默认开启
-        dynamicItems.push(
+        sidebarItems.push(
             new NormalItem(
                 'hide-dynamic-page-sidebar-old-version',
                 '隐藏 右下角-回到旧版',
@@ -522,7 +532,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
         // 隐藏 右下角-回顶部
-        dynamicItems.push(
+        sidebarItems.push(
             new NormalItem(
                 'hide-dynamic-page-sidebar-back-to-top',
                 '隐藏 右下角-回顶部',
@@ -533,6 +543,7 @@ if (location.host === 't.bilibili.com') {
             ),
         )
     }
+    dynamicGroupList.push(new Group('dynamic-sidebar', '页面右下角', sidebarItems))
 }
 
-export const dynamicGroup = new Group('dynamic', '当前是：动态页', dynamicItems)
+export { dynamicGroupList }

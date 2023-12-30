@@ -74,9 +74,217 @@ const cleanURL = () => {
 
 const commonItems: (NormalItem | SeparatorItem)[] = []
 
-// URL参数净化, 在urlchange时需重载, 默认开启
-// 以前会出现URL缺少参数导致充电窗口载入失败报错NaN的bug, 现无法复现, 猜测已修复
-commonItems.push(new NormalItem('url-cleaner', 'URL参数净化 (需刷新)', true, cleanURL, true, null))
+// 通用 页面直角化，去除圆角，根据URL选取CSS
+let borderRadiusCSS: myCSS = ''
+const host = location.host
+const href = location.href
+if (host === 't.bilibili.com') {
+    borderRadiusCSS = `
+        #nav-searchform,
+        .nav-search-content,
+        .header-upload-entry,
+        .v-popover-content,
+        .van-popover,
+        .v-popover-wrap,
+        .v-popover,
+        .topic-panel,
+        .bili-header .header-upload-entry,
+        .bili-dyn-up-list,
+        .bili-dyn-publishing,
+        .bili-dyn-publishing__action,
+        .bili-dyn-sidebar *,
+        .bili-dyn-up-list__window,
+        .bili-dyn-live-users,
+        .bili-dyn-topic-box,
+        .bili-dyn-list-notification,
+        .bili-dyn-item,
+        .bili-dyn-banner,
+        .bili-dyn-banner__img,
+        .bili-dyn-my-info,
+        .bili-dyn-card-video,
+        .bili-dyn-list-tabs,
+        .bili-album__preview__picture__gif,
+        .bili-album__preview__picture__img {
+            border-radius: 3px !important;
+        }
+        .bili-dyn-card-video__cover__mask,
+        .bili-dyn-card-video__cover {
+            border-radius: 3px 0 0 3px !important;
+        }
+        .bili-dyn-card-video__body {
+            border-radius: 0 3px 3px 0 !important;
+        }`
+} else if (host === 'live.bilibili.com') {
+    borderRadiusCSS = `
+        #nav-searchform,
+        #player-ctnr,
+        .nav-search-content,
+        .header-upload-entry,
+        .v-popover-content,
+        .van-popover,
+        .v-popover-wrap,
+        .v-popover,
+        .aside-area,
+        .lower-row .right-ctnr *,
+        .panel-main-ctnr,
+        .startlive-btn,
+        .flip-view,
+        .content-wrapper,
+        .chat-input-ctnr,
+        .announcement-cntr,
+        .bl-button--primary {
+            border-radius: 3px !important;
+        }
+        #rank-list-vm,
+        .head-info-section {
+            border-radius: 3px 3px 0 0 !important;
+        }
+        .gift-control-section {
+            border-radius: 0 0 3px 3px !important;
+        }
+        .follow-ctnr .right-part {
+            border-radius: 0 3px 3px 0 !important;
+        }
+        .chat-control-panel {
+            border-radius: 0 0 3px 3px !important;
+        }
+        .follow-ctnr .left-part,
+        #rank-list-ctnr-box.bgStyle {
+            border-radius: 3px 0 0 3px !important;
+        }`
+} else if (host === 'search.bilibili.com') {
+    borderRadiusCSS = `
+        #nav-searchform,
+        .nav-search-content,
+        .v-popover-content,
+        .van-popover,
+        .v-popover-wrap,
+        .v-popover,
+        .search-sticky-header *,
+        .vui_button,
+        .header-upload-entry,
+        .search-input-wrap *,
+        .search-input-container .search-input-wrap,
+        .bili-video-card__cover {
+            border-radius: 3px !important;
+        }`
+} else {
+    if (href.startsWith('https://www.bilibili.com/video/')) {
+        borderRadiusCSS = `
+            #nav-searchform,
+            .nav-search-content,
+            .v-popover-content,
+            .van-popover,
+            .v-popover,
+            .pic-box,
+            .card-box .pic-box .pic,
+            .bui-collapse-header,
+            .base-video-sections-v1,
+            .bili-header .search-panel,
+            .bili-header .header-upload-entry,
+            .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar,
+            .video-tag-container .tag-panel .tag-link,
+            .video-tag-container .tag-panel .show-more-btn,
+            .vcd .cover img,
+            .vcd *,
+            .upinfo-btn-panel *,
+            .fixed-sidenav-storage div,
+            .fixed-sidenav-storage a,
+            .reply-box-textarea,
+            .reply-box-send,
+            .reply-box-send:after {
+                border-radius: 3px !important;
+            }
+            .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar .bpx-player-dm-btn-send,
+            .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar-wrap {
+                border-radius: 0 3px 3px 0 !important;
+            }
+            .bpx-player-dm-btn-send .bui-button {
+                border-radius: 3px 0 0 3px !important;
+            }`
+    } else if (href.startsWith('https://www.bilibili.com/bangumi/play/')) {
+        borderRadiusCSS = `
+            a[class^="mediainfo_mediaCover"],
+            a[class^="mediainfo_btnHome"],
+            [class^="follow_btnFollow"],
+            [class^="vipPaybar_textWrap__QARKv"],
+            [class^="eplist_ep_list_wrapper"],
+            [class^="RecommendItem_cover"],
+            [class^="imageListItem_wrap"] [class^="imageListItem_coverWrap"],
+            [class^="navTools_navMenu"] > *,
+            [class^="navTools_item"],
+            #nav-searchform,
+            .nav-search-content,
+            .v-popover-content,
+            .van-popover,
+            .v-popover,
+            .pic-box,
+            .card-box .pic-box .pic,
+            .bui-collapse-header,
+            .base-video-sections-v1,
+            .bili-header .search-panel,
+            .bili-header .header-upload-entry,
+            .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar,
+            .video-tag-container .tag-panel .tag-link,
+            .video-tag-container .tag-panel .show-more-btn,
+            .vcd .cover img,
+            .vcd *,
+            .upinfo-btn-panel *,
+            .fixed-sidenav-storage div,
+            .reply-box-textarea,
+            .reply-box-send,
+            .reply-box-send:after {
+                border-radius: 3px !important;
+            }
+            .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar .bpx-player-dm-btn-send,
+            .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar-wrap {
+                border-radius: 0 3px 3px 0 !important;
+            }
+            .bpx-player-dm-btn-send .bui-button {
+                border-radius: 3px 0 0 3px !important;
+            }`
+    } else if (href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'].includes(location.pathname)) {
+        borderRadiusCSS = `
+            #nav-searchform,
+            .nav-search-content,
+            .history-item,
+            .header-upload-entry,
+            .bili-header .search-panel,
+            .bili-header .header-upload-entry,
+            .bili-header__channel .channel-link,
+            .channel-entry-more__link,
+            .header-channel-fixed-right-item,
+            .recommended-swipe-body,
+            .bili-video-card .bili-video-card__cover,
+            .bili-video-card .bili-video-card__image,
+            .bili-video-card .bili-video-card__info--icon-text,
+            .bili-live-card,
+            .floor-card,
+            .floor-card .badge,
+            .single-card.floor-card .floor-card-inner,
+            .single-card.floor-card .cover-container,
+            .primary-btn,
+            .flexible-roll-btn,
+            .palette-button-wrap .flexible-roll-btn-inner,
+            .palette-button-wrap .storage-box,
+            .palette-button-wrap,
+            .v-popover-content {
+                border-radius: 3px !important;
+            }
+            .bili-video-card__stats {
+                border-bottom-left-radius: 3px !important;
+                border-bottom-right-radius: 3px !important;
+            }
+            .floor-card .layer {
+                display: none !important;
+            }
+            .single-card.floor-card {
+                border: none !important;
+            }`
+    }
+}
+
+commonItems.push(new NormalItem('border-radius', '页面直角化，去除圆角', true, undefined, false, borderRadiusCSS))
 
 // 滚动条美化, 默认开启
 commonItems.push(
@@ -119,219 +327,9 @@ commonItems.push(
     ),
 )
 
-// 通用 页面直角化，去除圆角，根据URL选取CSS
-let borderRadiusCSS: myCSS = ''
-const host = location.host
-const href = location.href
-if (host === 't.bilibili.com') {
-    borderRadiusCSS = `
-        #nav-searchform,
-        .nav-search-content,
-        .header-upload-entry,
-        .v-popover-content,
-        .van-popover,
-        .v-popover-wrap,
-        .v-popover,
-        .topic-panel,
-        .bili-header .header-upload-entry,
-        .bili-dyn-up-list,
-        .bili-dyn-publishing,
-        .bili-dyn-publishing__action,
-        .bili-dyn-sidebar *,
-        .bili-dyn-up-list__window,
-        .bili-dyn-live-users,
-        .bili-dyn-topic-box,
-        .bili-dyn-list-notification,
-        .bili-dyn-item,
-        .bili-dyn-banner,
-        .bili-dyn-banner__img,
-        .bili-dyn-my-info,
-        .bili-dyn-card-video,
-        .bili-dyn-list-tabs,
-        .bili-album__preview__picture__gif,
-        .bili-album__preview__picture__img {
-            border-radius: 3px !important;
-        }
-        .bili-dyn-card-video__cover__mask,
-        .bili-dyn-card-video__cover {
-            border-radius: 3px 0 0 3px !important;
-        }
-        .bili-dyn-card-video__body {
-            border-radius: 0 3px 3px 0 !important;
-        }`
-}
-if (host === 'live.bilibili.com') {
-    borderRadiusCSS = `
-        #nav-searchform,
-        #player-ctnr,
-        .nav-search-content,
-        .header-upload-entry,
-        .v-popover-content,
-        .van-popover,
-        .v-popover-wrap,
-        .v-popover,
-        .aside-area,
-        .lower-row .right-ctnr *,
-        .panel-main-ctnr,
-        .startlive-btn,
-        .flip-view,
-        .content-wrapper,
-        .chat-input-ctnr,
-        .announcement-cntr,
-        .bl-button--primary {
-            border-radius: 3px !important;
-        }
-        #rank-list-vm,
-        .head-info-section {
-            border-radius: 3px 3px 0 0 !important;
-        }
-        .gift-control-section {
-            border-radius: 0 0 3px 3px !important;
-        }
-        .follow-ctnr .right-part {
-            border-radius: 0 3px 3px 0 !important;
-        }
-        .chat-control-panel {
-            border-radius: 0 0 3px 3px !important;
-        }
-        .follow-ctnr .left-part,
-        #rank-list-ctnr-box.bgStyle {
-            border-radius: 3px 0 0 3px !important;
-        }`
-}
-if (host === 'search.bilibili.com') {
-    borderRadiusCSS = `
-        #nav-searchform,
-        .nav-search-content,
-        .v-popover-content,
-        .van-popover,
-        .v-popover-wrap,
-        .v-popover,
-        .search-sticky-header *,
-        .vui_button,
-        .header-upload-entry,
-        .search-input-wrap *,
-        .search-input-container .search-input-wrap,
-        .bili-video-card__cover {
-            border-radius: 3px !important;
-        }`
-}
-if (href.startsWith('https://www.bilibili.com/video/')) {
-    borderRadiusCSS = `
-        #nav-searchform,
-        .nav-search-content,
-        .v-popover-content,
-        .van-popover,
-        .v-popover,
-        .pic-box,
-        .card-box .pic-box .pic,
-        .bui-collapse-header,
-        .base-video-sections-v1,
-        .bili-header .search-panel,
-        .bili-header .header-upload-entry,
-        .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar,
-        .video-tag-container .tag-panel .tag-link,
-        .video-tag-container .tag-panel .show-more-btn,
-        .vcd .cover img,
-        .vcd *,
-        .upinfo-btn-panel *,
-        .fixed-sidenav-storage div,
-        .fixed-sidenav-storage a,
-        .reply-box-textarea,
-        .reply-box-send,
-        .reply-box-send:after {
-            border-radius: 3px !important;
-        }
-        .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar .bpx-player-dm-btn-send,
-        .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar-wrap {
-            border-radius: 0 3px 3px 0 !important;
-        }
-        .bpx-player-dm-btn-send .bui-button {
-            border-radius: 3px 0 0 3px !important;
-        }`
-}
-if (href.startsWith('https://www.bilibili.com/bangumi/play/')) {
-    borderRadiusCSS = `
-        a[class^="mediainfo_mediaCover"],
-        a[class^="mediainfo_btnHome"],
-        [class^="follow_btnFollow"],
-        [class^="vipPaybar_textWrap__QARKv"],
-        [class^="eplist_ep_list_wrapper"],
-        [class^="RecommendItem_cover"],
-        [class^="imageListItem_wrap"] [class^="imageListItem_coverWrap"],
-        [class^="navTools_navMenu"] > *,
-        [class^="navTools_item"],
-        #nav-searchform,
-        .nav-search-content,
-        .v-popover-content,
-        .van-popover,
-        .v-popover,
-        .pic-box,
-        .card-box .pic-box .pic,
-        .bui-collapse-header,
-        .base-video-sections-v1,
-        .bili-header .search-panel,
-        .bili-header .header-upload-entry,
-        .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar,
-        .video-tag-container .tag-panel .tag-link,
-        .video-tag-container .tag-panel .show-more-btn,
-        .vcd .cover img,
-        .vcd *,
-        .upinfo-btn-panel *,
-        .fixed-sidenav-storage div,
-        .reply-box-textarea,
-        .reply-box-send,
-        .reply-box-send:after {
-            border-radius: 3px !important;
-        }
-        .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar .bpx-player-dm-btn-send,
-        .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar-wrap {
-            border-radius: 0 3px 3px 0 !important;
-        }
-        .bpx-player-dm-btn-send .bui-button {
-            border-radius: 3px 0 0 3px !important;
-        }`
-}
-if (href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'].includes(location.pathname)) {
-    borderRadiusCSS = `
-        #nav-searchform,
-        .nav-search-content,
-        .history-item,
-        .header-upload-entry,
-        .bili-header .search-panel,
-        .bili-header .header-upload-entry,
-        .bili-header__channel .channel-link,
-        .channel-entry-more__link,
-        .header-channel-fixed-right-item,
-        .recommended-swipe-body,
-        .bili-video-card .bili-video-card__cover,
-        .bili-video-card .bili-video-card__image,
-        .bili-video-card .bili-video-card__info--icon-text,
-        .bili-live-card,
-        .floor-card,
-        .floor-card .badge,
-        .single-card.floor-card .floor-card-inner,
-        .single-card.floor-card .cover-container,
-        .primary-btn,
-        .flexible-roll-btn,
-        .palette-button-wrap .flexible-roll-btn-inner,
-        .palette-button-wrap .storage-box,
-        .palette-button-wrap,
-        .v-popover-content {
-            border-radius: 3px !important;
-        }
-        .bili-video-card__stats {
-            border-bottom-left-radius: 3px !important;
-            border-bottom-right-radius: 3px !important;
-        }
-        .floor-card .layer {
-            display: none !important;
-        }
-        .single-card.floor-card {
-            border: none !important;
-        }`
-}
-commonItems.push(new NormalItem('border-radius', '页面直角化，去除圆角', true, undefined, false, borderRadiusCSS))
+// URL参数净化, 在urlchange时需重载, 默认开启
+// 以前会出现URL缺少参数导致充电窗口载入失败报错NaN的bug, 现无法复现, 猜测已修复
+commonItems.push(new NormalItem('url-cleaner', 'URL参数净化 (需刷新)', true, cleanURL, true, null))
 
 // 通用header净化，直播页除外
 if (location.host != 'live.bilibili.com') {

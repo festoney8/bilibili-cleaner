@@ -758,22 +758,44 @@ if (location.host === 'live.bilibili.com') {
     // 顶栏中间part
     liveItems.push(new SeparatorItem())
     {
-        // 隐藏 顶栏-搜索框内推荐搜索
+        // 隐藏 顶栏-搜索框 推荐搜索
         liveItems.push(
             new NormalItem(
                 'live-page-header-search-block-placeholder',
-                '隐藏 顶栏-搜索框内推荐搜索',
+                '隐藏 顶栏-搜索框 推荐搜索',
                 false,
                 undefined,
                 false,
                 `#nav-searchform input::placeholder {visibility: hidden;}`,
             ),
         )
-        // 隐藏 顶栏-搜索框
+        // 隐藏 顶栏-搜索框 搜索历史
+        liveItems.push(
+            new NormalItem(
+                'live-page-header-search-history',
+                '隐藏 顶栏-搜索框 搜索历史',
+                false,
+                undefined,
+                false,
+                `#nav-searchform .history {display: none !important;}`,
+            ),
+        )
+        // 隐藏 顶栏-搜索框 bilibili热搜
+        liveItems.push(
+            new NormalItem(
+                'live-page-header-search-trending',
+                '隐藏 顶栏-搜索框 bilibili热搜',
+                false,
+                undefined,
+                false,
+                `#nav-searchform .trending {display: none !important;}`,
+            ),
+        )
+        // 隐藏 顶栏-关闭搜索框
         liveItems.push(
             new NormalItem(
                 'live-page-header-search-block',
-                '隐藏 顶栏-搜索框',
+                '隐藏 顶栏-关闭搜索框',
                 false,
                 undefined,
                 false,

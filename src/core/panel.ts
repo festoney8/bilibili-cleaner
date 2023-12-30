@@ -88,7 +88,7 @@ export class Panel implements IPanel {
     }
     .bili-cleaner-group hr {
         border: 1px solid #eee;
-        margin: 8px 0 10px 0;
+        margin: 5px 0 10px 0;
     }
     .bili-cleaner-group-title {
         font-size: 20px;

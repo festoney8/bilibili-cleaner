@@ -362,7 +362,8 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
                 false,
                 undefined,
                 false,
-                `.floor-single-card {display: none !important;}`,
+                // 含skeleton时不隐藏否则出现空档
+                `.floor-single-card:not(:has(.skeleton, .skeleton-item)) {display: none !important;}`,
             ),
         )
         // 关闭 视频载入 骨架动效(skeleton animation) 实验性

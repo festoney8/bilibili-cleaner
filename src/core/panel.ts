@@ -77,19 +77,6 @@ export class Panel implements IPanel {
     #bili-cleaner-group-list {
         scrollbar-width: none !important;
     }
-    /* 页面标题 */
-    .bili-cleaner-page-title-wrap {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 3px auto;
-        user-select: none;
-    }
-    .bili-cleaner-page-title {
-        color: black;
-        font-size: 22px;
-        font-weight: bold;
-    }
     /* panel内的group */
     .bili-cleaner-group {
         margin: 14px;

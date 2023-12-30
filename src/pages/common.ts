@@ -655,6 +655,19 @@ if (location.host != 'live.bilibili.com') {
                 }`,
             ),
         )
+        // 隐藏 消息小红点
+        headerRightItems.push(
+            new NormalItem(
+                'common-hide-nav-message-red-num',
+                '隐藏 消息小红点',
+                false,
+                undefined,
+                false,
+                `.right-entry .v-popover-wrap:has([href*="//message.bilibili.com"], [data-idx="message"]) .red-num--message {
+                    display: none !important;
+                }`,
+            ),
+        )
         // 隐藏 动态
         headerRightItems.push(
             new NormalItem(
@@ -672,11 +685,24 @@ if (location.host != 'live.bilibili.com') {
                 }`,
             ),
         )
+        // 隐藏 动态小红点
+        headerRightItems.push(
+            new NormalItem(
+                'common-hide-nav-dynamic-red-num',
+                '隐藏 动态小红点',
+                false,
+                undefined,
+                false,
+                `.right-entry .v-popover-wrap:has([href*="//t.bilibili.com"], [data-idx="dynamic"]) .red-num--dynamic {
+                    display: none !important;
+                }`,
+            ),
+        )
         // 隐藏 收藏
         headerRightItems.push(
             new NormalItem(
                 'common-hide-nav-favorite',
-                '隐藏 收藏',
+                '隐藏 收藏/稍后再看',
                 false,
                 undefined,
                 false,

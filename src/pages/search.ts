@@ -1,13 +1,16 @@
 import { Group } from '../core/group'
-import { NormalItem, SeparatorItem } from '../core/item'
+import { NormalItem } from '../core/item'
 
-const searchItems: (NormalItem | SeparatorItem)[] = []
+const basicItems: NormalItem[] = []
+const sidebarItems: NormalItem[] = []
+// GroupList
+const searchGroupList: Group[] = []
 
 if (location.host === 'search.bilibili.com') {
-    // 基本功能part
+    // 基本功能part, basicItems
     {
         // 顶栏 滚动页面后不再吸附顶部
-        searchItems.push(
+        basicItems.push(
             new NormalItem(
                 'hide-search-page-search-sticky-header',
                 '顶栏 滚动页面后不再吸附顶部',
@@ -18,7 +21,7 @@ if (location.host === 'search.bilibili.com') {
             ),
         )
         // 隐藏 搜索结果中的广告, 默认开启
-        searchItems.push(
+        basicItems.push(
             new NormalItem(
                 'hide-search-page-ad',
                 '隐藏 搜索结果中的广告',
@@ -29,7 +32,7 @@ if (location.host === 'search.bilibili.com') {
             ),
         )
         // 隐藏 弹幕数量, 默认开启
-        searchItems.push(
+        basicItems.push(
             new NormalItem(
                 'hide-search-page-danmaku-count',
                 '隐藏 弹幕数量',
@@ -40,7 +43,7 @@ if (location.host === 'search.bilibili.com') {
             ),
         )
         // 隐藏 视频日期
-        searchItems.push(
+        basicItems.push(
             new NormalItem(
                 'hide-search-page-date',
                 '隐藏 视频日期',
@@ -51,7 +54,7 @@ if (location.host === 'search.bilibili.com') {
             ),
         )
         // 隐藏 稍后再看按钮
-        searchItems.push(
+        basicItems.push(
             new NormalItem(
                 'hide-search-page-bili-watch-later',
                 '隐藏 稍后再看按钮',
@@ -62,12 +65,12 @@ if (location.host === 'search.bilibili.com') {
             ),
         )
     }
+    searchGroupList.push(new Group('search-basic', '基本功能', basicItems))
 
-    // 杂项、右下角part
-    searchItems.push(new SeparatorItem())
+    // 右下角part, sidebarItems
     {
         // 隐藏 右下角 客服, 默认开启
-        searchItems.push(
+        sidebarItems.push(
             new NormalItem(
                 'hide-search-page-customer-service',
                 '隐藏 右下角 客服',
@@ -78,7 +81,7 @@ if (location.host === 'search.bilibili.com') {
             ),
         )
         // 隐藏 右下角 回顶部
-        searchItems.push(
+        sidebarItems.push(
             new NormalItem(
                 'hide-search-page-btn-to-top',
                 '隐藏 右下角 回顶部',
@@ -89,6 +92,7 @@ if (location.host === 'search.bilibili.com') {
             ),
         )
     }
+    searchGroupList.push(new Group('search-sidebar', '页面右下角', sidebarItems))
 }
 
-export const searchGroup = new Group('search', '当前是：搜索页', searchItems)
+export { searchGroupList }

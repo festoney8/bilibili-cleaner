@@ -1,5 +1,5 @@
 import { Group } from '../core/group'
-import { NormalItem, SeparatorItem } from '../core/item'
+import { NormalItem } from '../core/item'
 
 const basicItems: NormalItem[] = []
 const infoItems: NormalItem[] = []
@@ -14,6 +14,9 @@ const liveGroupList: Group[] = []
 
 /** 直播页面规则, 只适用于直播间内, 不适用于直播首页 */
 if (location.host === 'live.bilibili.com') {
+    // 直播页标题
+    liveGroupList.push(new Group('live', '当前是：直播页', []))
+
     // 基本功能part, basicItems
     {
         // 隐藏 右侧浮动按钮-实验室/关注, 默认开启

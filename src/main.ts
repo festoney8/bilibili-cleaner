@@ -4,13 +4,13 @@ import { log, error, debug } from './utils/logger'
 import { init } from './init'
 import { Panel } from './core/panel'
 import { Group } from './core/group'
-import { homepageGroup } from './pages/homepage'
-import { commonGroup } from './pages/common'
-import { videoGroup } from './pages/video'
-import { bangumiGroup } from './pages/bangumi'
-import { searchGroup } from './pages/search'
-import { liveGroup } from './pages/live'
-import { dynamicGroup } from './pages/dynamic'
+import { homepageGroupList } from './pages/homepage'
+import { commonGroupList } from './pages/common'
+import { videoGroupList } from './pages/video'
+import { bangumiGroupList } from './pages/bangumi'
+import { searchGroupList } from './pages/search'
+import { liveGroupList } from './pages/live'
+import { dynamicGroupList } from './pages/dynamic'
 
 log('script start')
 
@@ -25,13 +25,14 @@ const main = async () => {
 
     // 载入规则
     const GROUPS: Group[] = []
-    homepageGroup.isEmpty() || GROUPS.push(homepageGroup)
-    videoGroup.isEmpty() || GROUPS.push(videoGroup)
-    bangumiGroup.isEmpty() || GROUPS.push(bangumiGroup)
-    searchGroup.isEmpty() || GROUPS.push(searchGroup)
-    dynamicGroup.isEmpty() || GROUPS.push(dynamicGroup)
-    liveGroup.isEmpty() || GROUPS.push(liveGroup)
-    commonGroup.isEmpty() || GROUPS.push(commonGroup)
+    homepageGroupList.length && GROUPS.concat(homepageGroupList)
+    videoGroupList.length && GROUPS.concat(videoGroupList)
+    bangumiGroupList.length && GROUPS.concat(bangumiGroupList)
+    searchGroupList.length && GROUPS.concat(searchGroupList)
+    dynamicGroupList.length && GROUPS.concat(dynamicGroupList)
+    liveGroupList.length && GROUPS.concat(liveGroupList)
+    commonGroupList.length && GROUPS.concat(commonGroupList)
+    console.log(GROUPS)
     GROUPS.forEach((e) => e.enableGroup())
 
     // 监听各种形式的URL变化 (普通监听无法检测到切换视频)

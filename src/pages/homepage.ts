@@ -1,5 +1,5 @@
 import { Group } from '../core/group'
-import { NormalItem, SeparatorItem } from '../core/item'
+import { NormalItem } from '../core/item'
 
 const basicItems: NormalItem[] = []
 const rcmdListItems: NormalItem[] = []
@@ -9,6 +9,9 @@ const biliAppRcmdItems: NormalItem[] = []
 const homepageGroupList: Group[] = []
 
 if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'].includes(location.pathname)) {
+    // 首页标题
+    homepageGroupList.push(new Group('homepage', '当前是：首页', []))
+
     // 基础项part, basicItems
     {
         // 隐藏 横幅banner

@@ -7,6 +7,9 @@ const sidebarItems: NormalItem[] = []
 const searchGroupList: Group[] = []
 
 if (location.host === 'search.bilibili.com') {
+    // 搜索页标题
+    searchGroupList.push(new Group('search', '当前是：搜索页', []))
+
     // 基本功能part, basicItems
     {
         // 顶栏 滚动页面后不再吸附顶部

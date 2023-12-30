@@ -1,5 +1,5 @@
 import { Group } from '../core/group'
-import { NormalItem, SeparatorItem } from '../core/item'
+import { NormalItem } from '../core/item'
 import { debug } from '../utils/logger'
 
 const basicItems: NormalItem[] = []
@@ -49,7 +49,7 @@ const bangumiSimpleShare = () => {
  * 与普通播放页不同的项目使用独立ID, 并在功能介绍最后用"★"重点标注
  */
 if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
-    // 页面组 标题
+    // 标题
     bangumiGroupList.push(new Group('bangumi', '当前是：版权视频播放页 ★是独有项', []))
 
     // 基本功能part, basicItems

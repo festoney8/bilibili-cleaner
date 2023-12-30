@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.2.0
+
+-   新增：功能列表布局优化
+
 ## 2.1.1
 
 -   新增：全局功能开关快捷键 `Alt+B` 和 `Ctrl+Alt+B`，Firefox 浏览器只支持 `Ctrl+Alt+B`

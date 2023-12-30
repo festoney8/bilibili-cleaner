@@ -1,5 +1,5 @@
 import { Group } from '../core/group'
-import { NormalItem, SeparatorItem } from '../core/item'
+import { NormalItem } from '../core/item'
 import { debug } from '../utils/logger'
 
 /** BV号转AV号 */
@@ -100,8 +100,8 @@ const sidebarItems: NormalItem[] = []
 const videoGroupList: Group[] = []
 
 if (location.href.startsWith('https://www.bilibili.com/video/')) {
-    // 标题
-    videoGroupList.push(new Group('video', '当前是：播放页', basicItems))
+    // 播放页标题
+    videoGroupList.push(new Group('video', '当前是：播放页', []))
 
     // 基本功能part, basicItems
     {

@@ -1,5 +1,5 @@
 import { Group } from '../core/group'
-import { NormalItem, SeparatorItem } from '../core/item'
+import { NormalItem } from '../core/item'
 
 const basicItems: NormalItem[] = []
 const leftItems: NormalItem[] = []

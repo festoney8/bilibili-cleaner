@@ -22,7 +22,7 @@ export class Group implements IGroup {
     </div>`
 
     /**
-     * Group是每个页面的规则集合
+     * Group是每个页面的规则组，每个页面有多个组
      * @param groupID group的唯一ID
      * @param title group标题, 显示在group顶部
      * @param items group内功能列表

@@ -1,9 +1,8 @@
 import { debug, error } from '../utils/logger'
-import { NormalItem, SeparatorItem } from './item'
+import { NormalItem } from './item'
 
 interface IGroup {
     readonly groupHTML: myHTML
-    isEmpty(): boolean
     insertGroup(): void
     insertGroupItems(): void
     enableGroup(): void
@@ -30,17 +29,11 @@ export class Group implements IGroup {
     constructor(
         private groupID: string,
         private title: string,
-        private items: (NormalItem | SeparatorItem)[],
+        private items: NormalItem[],
     ) {
         this.groupID = 'bili-cleaner-group-' + groupID
     }
 
-    /**
-     * @returns group内规则是否为空
-     */
-    isEmpty(): boolean {
-        return this.items.length === 0
-    }
     /** 在panel内添加一个group */
     insertGroup() {
         const e = document.createElement('div')
@@ -110,5 +103,41 @@ export class Group implements IGroup {
             error(`disableGroup ${this.groupID} err`)
             error(err)
         }
+    }
+}
+
+export class TitleGroup implements IGroup {
+    groupHTML = `
+    <div class="bili-cleaner-group">
+        <div class="bili-cleaner-group-title">
+        </div>
+    </div>`
+
+    constructor(private title: string) {}
+    /** 插入Group标题 */
+    insertGroup() {
+        try {
+            const e = document.createElement('div')
+            e.innerHTML = this.groupHTML.trim()
+            e.querySelector('.bili-cleaner-group-title')!.textContent = this.title
+            const groupList = document.getElementById('bili-cleaner-group-list') as HTMLFormElement
+            groupList.appendChild(e)
+            debug(`insertGroup TitleGroup ${this.title} OK`)
+        } catch (err) {
+            debug(`insertGroup TitleGroup ${this.title} err`)
+        }
+    }
+    /** TitleGroup无功能 */
+    insertGroupItems() {
+        return
+    }
+    enableGroup(enableFunc = true): void {
+        return
+    }
+    reloadGroup(): void {
+        return
+    }
+    disableGroup(): void {
+        return
     }
 }

@@ -3,7 +3,7 @@ import { GM_registerMenuCommand } from '$'
 import { log, error, debug } from './utils/logger'
 import { init } from './init'
 import { Panel } from './core/panel'
-import { Group } from './core/group'
+import { Group, TitleGroup } from './core/group'
 import { homepageGroupList } from './pages/homepage'
 import { commonGroupList } from './pages/common'
 import { videoGroupList } from './pages/video'
@@ -24,15 +24,15 @@ const main = async () => {
     }
 
     // 载入规则
-    const GROUPS: Group[] = []
-    homepageGroupList.length && GROUPS.concat(homepageGroupList)
-    videoGroupList.length && GROUPS.concat(videoGroupList)
-    bangumiGroupList.length && GROUPS.concat(bangumiGroupList)
-    searchGroupList.length && GROUPS.concat(searchGroupList)
-    dynamicGroupList.length && GROUPS.concat(dynamicGroupList)
-    liveGroupList.length && GROUPS.concat(liveGroupList)
-    commonGroupList.length && GROUPS.concat(commonGroupList)
-    console.log(GROUPS)
+    const GROUPS: (Group | TitleGroup)[] = [
+        ...homepageGroupList,
+        ...videoGroupList,
+        ...bangumiGroupList,
+        ...searchGroupList,
+        ...dynamicGroupList,
+        ...liveGroupList,
+        ...commonGroupList,
+    ]
     GROUPS.forEach((e) => e.enableGroup())
 
     // 监听各种形式的URL变化 (普通监听无法检测到切换视频)

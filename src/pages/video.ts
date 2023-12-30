@@ -1,4 +1,4 @@
-import { Group } from '../core/group'
+import { Group, TitleGroup } from '../core/group'
 import { NormalItem } from '../core/item'
 import { debug } from '../utils/logger'
 
@@ -97,11 +97,11 @@ const rightItems: NormalItem[] = []
 const commentItems: NormalItem[] = []
 const sidebarItems: NormalItem[] = []
 // GroupList
-const videoGroupList: Group[] = []
+const videoGroupList: (Group | TitleGroup)[] = []
 
 if (location.href.startsWith('https://www.bilibili.com/video/')) {
     // 播放页标题
-    videoGroupList.push(new Group('video', '当前是：播放页', []))
+    videoGroupList.push(new TitleGroup('当前是：播放页'))
 
     // 基本功能part, basicItems
     {

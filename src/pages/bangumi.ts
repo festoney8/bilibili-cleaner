@@ -1,4 +1,4 @@
-import { Group } from '../core/group'
+import { Group, TitleGroup } from '../core/group'
 import { NormalItem } from '../core/item'
 import { debug } from '../utils/logger'
 
@@ -11,7 +11,7 @@ const rightItems: NormalItem[] = []
 const commentItems: NormalItem[] = []
 const sidebarItems: NormalItem[] = []
 // GroupList
-const bangumiGroupList: Group[] = []
+const bangumiGroupList: (Group | TitleGroup)[] = []
 
 /** 覆盖版权视频页分享按钮功能 (疑似firefox在bangumi page覆盖失败) */
 let isBangumiSimpleShareBtn = false
@@ -50,7 +50,7 @@ const bangumiSimpleShare = () => {
  */
 if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
     // 标题
-    bangumiGroupList.push(new Group('bangumi', '当前是：版权视频播放页 ★是独有项', []))
+    bangumiGroupList.push(new TitleGroup('当前是：版权视频播放页 ★是独有项'))
 
     // 基本功能part, basicItems
     {

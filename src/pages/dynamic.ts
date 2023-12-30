@@ -1,4 +1,4 @@
-import { Group } from '../core/group'
+import { Group, TitleGroup } from '../core/group'
 import { NormalItem } from '../core/item'
 
 const basicItems: NormalItem[] = []
@@ -8,7 +8,7 @@ const centerItems: NormalItem[] = []
 const commentItems: NormalItem[] = []
 const sidebarItems: NormalItem[] = []
 // GroupList
-const dynamicGroupList: Group[] = []
+const dynamicGroupList: (Group | TitleGroup)[] = []
 
 /**
  * 动态页面规则
@@ -16,7 +16,7 @@ const dynamicGroupList: Group[] = []
  */
 if (location.host === 't.bilibili.com') {
     // 动态页标题
-    dynamicGroupList.push(new Group('dynamic', '当前是：动态页', []))
+    dynamicGroupList.push(new TitleGroup('当前是：动态页'))
 
     // 基本功能part, basicItems
     {

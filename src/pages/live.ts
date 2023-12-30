@@ -1,4 +1,4 @@
-import { Group } from '../core/group'
+import { Group, TitleGroup } from '../core/group'
 import { NormalItem } from '../core/item'
 
 const basicItems: NormalItem[] = []
@@ -10,12 +10,12 @@ const headerLeftItems: NormalItem[] = []
 const headerCenterItems: NormalItem[] = []
 const headerRightItems: NormalItem[] = []
 // GroupList
-const liveGroupList: Group[] = []
+const liveGroupList: (Group | TitleGroup)[] = []
 
 /** 直播页面规则, 只适用于直播间内, 不适用于直播首页 */
 if (location.host === 'live.bilibili.com') {
     // 直播页标题
-    liveGroupList.push(new Group('live', '当前是：直播页', []))
+    liveGroupList.push(new TitleGroup('当前是：直播页'))
 
     // 基本功能part, basicItems
     {

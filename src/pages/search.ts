@@ -1,14 +1,14 @@
-import { Group } from '../core/group'
+import { Group, TitleGroup } from '../core/group'
 import { NormalItem } from '../core/item'
 
 const basicItems: NormalItem[] = []
 const sidebarItems: NormalItem[] = []
 // GroupList
-const searchGroupList: Group[] = []
+const searchGroupList: (Group | TitleGroup)[] = []
 
 if (location.host === 'search.bilibili.com') {
     // 搜索页标题
-    searchGroupList.push(new Group('search', '当前是：搜索页', []))
+    searchGroupList.push(new TitleGroup('当前是：搜索页'))
 
     // 基本功能part, basicItems
     {

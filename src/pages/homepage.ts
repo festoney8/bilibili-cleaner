@@ -1,4 +1,4 @@
-import { Group } from '../core/group'
+import { Group, TitleGroup } from '../core/group'
 import { NormalItem } from '../core/item'
 
 const basicItems: NormalItem[] = []
@@ -6,11 +6,11 @@ const rcmdListItems: NormalItem[] = []
 const sidebarItems: NormalItem[] = []
 const biliAppRcmdItems: NormalItem[] = []
 // GroupList
-const homepageGroupList: Group[] = []
+const homepageGroupList: (Group | TitleGroup)[] = []
 
 if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'].includes(location.pathname)) {
     // 首页标题
-    homepageGroupList.push(new Group('homepage', '当前是：首页', []))
+    homepageGroupList.push(new TitleGroup('当前是：首页'))
 
     // 基础项part, basicItems
     {

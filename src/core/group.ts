@@ -1,9 +1,8 @@
 import { debug, error } from '../utils/logger'
-import { NormalItem, SeparatorItem } from './item'
+import { NormalItem } from './item'
 
 interface IGroup {
     readonly groupHTML: myHTML
-    isEmpty(): boolean
     insertGroup(): void
     insertGroupItems(): void
     enableGroup(): void
@@ -22,7 +21,7 @@ export class Group implements IGroup {
     </div>`
 
     /**
-     * Group是每个页面的规则集合
+     * Group是每个页面的规则组，每个页面有多个组
      * @param groupID group的唯一ID
      * @param title group标题, 显示在group顶部
      * @param items group内功能列表
@@ -30,17 +29,11 @@ export class Group implements IGroup {
     constructor(
         private groupID: string,
         private title: string,
-        private items: (NormalItem | SeparatorItem)[],
+        private items: NormalItem[],
     ) {
         this.groupID = 'bili-cleaner-group-' + groupID
     }
 
-    /**
-     * @returns group内规则是否为空
-     */
-    isEmpty(): boolean {
-        return this.items.length === 0
-    }
     /** 在panel内添加一个group */
     insertGroup() {
         const e = document.createElement('div')

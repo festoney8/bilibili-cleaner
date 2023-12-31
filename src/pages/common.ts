@@ -1,5 +1,5 @@
 import { Group } from '../core/group'
-import { NormalItem, SeparatorItem } from '../core/item'
+import { NormalItem } from '../core/item'
 import { debug } from '../utils/logger'
 
 /**
@@ -72,7 +72,12 @@ const cleanURL = () => {
     debug('cleanURL complete')
 }
 
-const commonItems: (NormalItem | SeparatorItem)[] = []
+const basicItems: NormalItem[] = []
+const headerLeftItems: NormalItem[] = []
+const headerCenterItems: NormalItem[] = []
+const headerRightItems: NormalItem[] = []
+// Grouplist
+const commonGroupList: Group[] = []
 
 // 通用 页面直角化，去除圆角，根据URL选取CSS
 let borderRadiusCSS: myCSS = ''
@@ -284,17 +289,19 @@ if (host === 't.bilibili.com') {
     }
 }
 
-commonItems.push(new NormalItem('border-radius', '页面直角化，去除圆角', true, undefined, false, borderRadiusCSS))
+// 基本功能part, basicItems
+{
+    basicItems.push(new NormalItem('border-radius', '页面直角化，去除圆角', true, undefined, false, borderRadiusCSS))
 
-// 滚动条美化, 默认开启
-commonItems.push(
-    new NormalItem(
-        'beauty-scrollbar',
-        '美化页面滚动条',
-        true,
-        undefined,
-        false,
-        `
+    // 滚动条美化, 默认开启
+    basicItems.push(
+        new NormalItem(
+            'beauty-scrollbar',
+            '美化页面滚动条',
+            true,
+            undefined,
+            false,
+            `
         /* WebKit */
         ::-webkit-scrollbar {
             width: 8px !important;
@@ -324,23 +331,23 @@ commonItems.push(
             scrollbar-width: thin !important;
         }
         `,
-    ),
-)
+        ),
+    )
 
-// URL参数净化, 在urlchange时需重载, 默认开启
-// 以前会出现URL缺少参数导致充电窗口载入失败报错NaN的bug, 现无法复现, 猜测已修复
-commonItems.push(new NormalItem('url-cleaner', 'URL参数净化 (需刷新)', true, cleanURL, true, null))
-
+    // URL参数净化, 在urlchange时需重载, 默认开启
+    // 以前会出现URL缺少参数导致充电窗口载入失败报错NaN的bug, 现无法复现, 猜测已修复
+    basicItems.push(new NormalItem('url-cleaner', 'URL参数净化 (需刷新)', true, cleanURL, true, null))
+}
+commonGroupList.push(new Group('common-basic', '全站通用项 基本功能', basicItems))
 // 通用header净化，直播页除外
 if (location.host != 'live.bilibili.com') {
-    // 顶栏左侧part
-    commonItems.push(new SeparatorItem())
+    // 顶栏左侧part, headerLeftItems
     {
-        // 隐藏 顶栏-主站Logo
-        commonItems.push(
+        // 隐藏 主站Logo
+        headerLeftItems.push(
             new NormalItem(
                 'common-hide-nav-homepage-logo',
-                '隐藏 顶栏-主站Logo',
+                '隐藏 主站Logo',
                 false,
                 undefined,
                 false,
@@ -353,11 +360,11 @@ if (location.host != 'live.bilibili.com') {
                 }`,
             ),
         )
-        // 隐藏 顶栏-首页
-        commonItems.push(
+        // 隐藏 首页
+        headerLeftItems.push(
             new NormalItem(
                 'common-hide-nav-homepage',
-                '隐藏 顶栏-首页',
+                '隐藏 首页',
                 false,
                 undefined,
                 false,
@@ -377,11 +384,11 @@ if (location.host != 'live.bilibili.com') {
                 }`,
             ),
         )
-        // 隐藏 顶栏-番剧
-        commonItems.push(
+        // 隐藏 番剧
+        headerLeftItems.push(
             new NormalItem(
                 'common-hide-nav-anime',
-                '隐藏 顶栏-番剧',
+                '隐藏 番剧',
                 false,
                 undefined,
                 false,
@@ -394,11 +401,11 @@ if (location.host != 'live.bilibili.com') {
                 }`,
             ),
         )
-        // 隐藏 顶栏-直播
-        commonItems.push(
+        // 隐藏 直播
+        headerLeftItems.push(
             new NormalItem(
                 'common-hide-nav-live',
-                '隐藏 顶栏-直播',
+                '隐藏 直播',
                 false,
                 undefined,
                 false,
@@ -411,11 +418,11 @@ if (location.host != 'live.bilibili.com') {
                 }`,
             ),
         )
-        // 隐藏 顶栏-游戏中心
-        commonItems.push(
+        // 隐藏 游戏中心
+        headerLeftItems.push(
             new NormalItem(
                 'common-hide-nav-game',
-                '隐藏 顶栏-游戏中心',
+                '隐藏 游戏中心',
                 false,
                 undefined,
                 false,
@@ -428,11 +435,11 @@ if (location.host != 'live.bilibili.com') {
                 }`,
             ),
         )
-        // 隐藏 顶栏-会员购
-        commonItems.push(
+        // 隐藏 会员购
+        headerLeftItems.push(
             new NormalItem(
                 'common-hide-nav-vipshop',
-                '隐藏 顶栏-会员购',
+                '隐藏 会员购',
                 false,
                 undefined,
                 false,
@@ -445,11 +452,11 @@ if (location.host != 'live.bilibili.com') {
                 }`,
             ),
         )
-        // 隐藏 顶栏-漫画
-        commonItems.push(
+        // 隐藏 漫画
+        headerLeftItems.push(
             new NormalItem(
                 'common-hide-nav-manga',
-                '隐藏 顶栏-漫画',
+                '隐藏 漫画',
                 false,
                 undefined,
                 false,
@@ -462,11 +469,11 @@ if (location.host != 'live.bilibili.com') {
                 }`,
             ),
         )
-        // 隐藏 顶栏-赛事
-        commonItems.push(
+        // 隐藏 赛事
+        headerLeftItems.push(
             new NormalItem(
                 'common-hide-nav-match',
-                '隐藏 顶栏-赛事',
+                '隐藏 赛事',
                 false,
                 undefined,
                 false,
@@ -479,11 +486,11 @@ if (location.host != 'live.bilibili.com') {
                 }`,
             ),
         )
-        // 隐藏 顶栏-活动/活动直播
-        commonItems.push(
+        // 隐藏 活动/活动直播
+        headerLeftItems.push(
             new NormalItem(
                 'common-hide-nav-moveclip',
-                '隐藏 顶栏-活动/活动直播',
+                '隐藏 活动/活动直播',
                 false,
                 undefined,
                 false,
@@ -502,22 +509,22 @@ if (location.host != 'live.bilibili.com') {
                 }`,
             ),
         )
-        // 隐藏 顶栏-百大评选
-        commonItems.push(
+        // 隐藏 百大评选
+        headerLeftItems.push(
             new NormalItem(
                 'common-hide-nav-bdu',
-                '隐藏 顶栏-百大评选',
+                '隐藏 百大评选',
                 false,
                 undefined,
                 false,
                 `div.bili-header__bar .left-entry li:has(a[href*="bilibili.com/BPU20"]) {display: none !important;}`,
             ),
         )
-        // 隐藏 顶栏-下载客户端, 默认开启
-        commonItems.push(
+        // 隐藏 下载客户端, 默认开启
+        headerLeftItems.push(
             new NormalItem(
                 'common-hide-nav-download-app',
-                '隐藏 顶栏-下载客户端',
+                '隐藏 下载客户端',
                 true,
                 undefined,
                 false,
@@ -530,11 +537,11 @@ if (location.host != 'live.bilibili.com') {
                 }`,
             ),
         )
-        // 隐藏 顶栏-所有官方活动(blackboard)
-        commonItems.push(
+        // 隐藏 所有官方活动(blackboard)
+        headerLeftItems.push(
             new NormalItem(
                 'common-hide-nav-blackboard',
-                '隐藏 顶栏-所有官方活动(blackboard)',
+                '隐藏 所有官方活动(blackboard)',
                 false,
                 undefined,
                 false,
@@ -551,15 +558,14 @@ if (location.host != 'live.bilibili.com') {
             ),
         )
     }
-
-    // 顶栏中间part
-    commonItems.push(new SeparatorItem())
+    commonGroupList.push(new Group('common-header-left', '全站通用项 顶栏 左侧', headerLeftItems))
+    // 顶栏中间part, headerCenterItems
     {
-        // 隐藏 顶栏-搜索框 推荐搜索
-        commonItems.push(
+        // 隐藏 推荐搜索
+        headerCenterItems.push(
             new NormalItem(
                 'common-hide-nav-search-rcmd',
-                '隐藏 顶栏-搜索框 推荐搜索',
+                '隐藏 推荐搜索',
                 false,
                 undefined,
                 false,
@@ -568,11 +574,11 @@ if (location.host != 'live.bilibili.com') {
                 #internationalHeader #nav_searchform input::placeholder {color: transparent;}`,
             ),
         )
-        // 隐藏 顶栏-搜索框 搜索历史
-        commonItems.push(
+        // 隐藏 搜索历史
+        headerCenterItems.push(
             new NormalItem(
                 'common-hide-nav-search-history',
-                '隐藏 顶栏-搜索框 搜索历史',
+                '隐藏 搜索历史',
                 false,
                 undefined,
                 false,
@@ -581,11 +587,11 @@ if (location.host != 'live.bilibili.com') {
                 #internationalHeader .nav-search-box .history {display: none !important;}`,
             ),
         )
-        // 隐藏 顶栏-搜索框 bilibili热搜
-        commonItems.push(
+        // 隐藏 bilibili热搜
+        headerCenterItems.push(
             new NormalItem(
                 'common-hide-nav-search-trending',
-                '隐藏 顶栏-搜索框 bilibili热搜',
+                '隐藏 bilibili热搜',
                 false,
                 undefined,
                 false,
@@ -595,15 +601,14 @@ if (location.host != 'live.bilibili.com') {
             ),
         )
     }
-
-    // 顶栏右侧part
-    commonItems.push(new SeparatorItem())
+    commonGroupList.push(new Group('common-header-center', '全站通用项 顶栏 搜索框', headerCenterItems))
+    // 顶栏右侧part, headerRightItems
     {
-        // 隐藏 顶栏-头像
-        commonItems.push(
+        // 隐藏 头像
+        headerRightItems.push(
             new NormalItem(
                 'common-hide-nav-avatar',
-                '隐藏 顶栏-头像',
+                '隐藏 头像',
                 false,
                 undefined,
                 false,
@@ -616,11 +621,11 @@ if (location.host != 'live.bilibili.com') {
                 }`,
             ),
         )
-        // 隐藏 顶栏-大会员, 默认开启
-        commonItems.push(
+        // 隐藏 大会员, 默认开启
+        headerRightItems.push(
             new NormalItem(
                 'common-hide-nav-vip',
-                '隐藏 顶栏-大会员',
+                '隐藏 大会员',
                 true,
                 undefined,
                 false,
@@ -633,11 +638,11 @@ if (location.host != 'live.bilibili.com') {
                 }`,
             ),
         )
-        // 隐藏 顶栏-消息
-        commonItems.push(
+        // 隐藏 消息
+        headerRightItems.push(
             new NormalItem(
                 'common-hide-nav-message',
-                '隐藏 顶栏-消息',
+                '隐藏 消息',
                 false,
                 undefined,
                 false,
@@ -650,11 +655,24 @@ if (location.host != 'live.bilibili.com') {
                 }`,
             ),
         )
-        // 隐藏 顶栏-动态
-        commonItems.push(
+        // 隐藏 消息小红点
+        headerRightItems.push(
+            new NormalItem(
+                'common-hide-nav-message-red-num',
+                '隐藏 消息小红点',
+                false,
+                undefined,
+                false,
+                `.right-entry .v-popover-wrap:has([href*="//message.bilibili.com"], [data-idx="message"]) .red-num--message {
+                    display: none !important;
+                }`,
+            ),
+        )
+        // 隐藏 动态
+        headerRightItems.push(
             new NormalItem(
                 'common-hide-nav-dynamic',
-                '隐藏 顶栏-动态',
+                '隐藏 动态',
                 false,
                 undefined,
                 false,
@@ -667,11 +685,24 @@ if (location.host != 'live.bilibili.com') {
                 }`,
             ),
         )
-        // 隐藏 顶栏-收藏
-        commonItems.push(
+        // 隐藏 动态小红点
+        headerRightItems.push(
+            new NormalItem(
+                'common-hide-nav-dynamic-red-num',
+                '隐藏 动态小红点',
+                false,
+                undefined,
+                false,
+                `.right-entry .v-popover-wrap:has([href*="//t.bilibili.com"], [data-idx="dynamic"]) .red-num--dynamic {
+                    display: none !important;
+                }`,
+            ),
+        )
+        // 隐藏 收藏
+        headerRightItems.push(
             new NormalItem(
                 'common-hide-nav-favorite',
-                '隐藏 顶栏-收藏',
+                '隐藏 收藏/稍后再看',
                 false,
                 undefined,
                 false,
@@ -684,11 +715,11 @@ if (location.host != 'live.bilibili.com') {
                 }`,
             ),
         )
-        // 隐藏 顶栏-历史
-        commonItems.push(
+        // 隐藏 历史
+        headerRightItems.push(
             new NormalItem(
                 'common-hide-nav-history',
-                '隐藏 顶栏-历史',
+                '隐藏 历史',
                 false,
                 undefined,
                 false,
@@ -701,11 +732,11 @@ if (location.host != 'live.bilibili.com') {
                 }`,
             ),
         )
-        // 隐藏 顶栏-创作中心
-        commonItems.push(
+        // 隐藏 创作中心
+        headerRightItems.push(
             new NormalItem(
                 'common-hide-nav-member',
-                '隐藏 顶栏-创作中心',
+                '隐藏 创作中心',
                 false,
                 undefined,
                 false,
@@ -718,11 +749,11 @@ if (location.host != 'live.bilibili.com') {
                 }`,
             ),
         )
-        // 隐藏 顶栏-投稿
-        commonItems.push(
+        // 隐藏 投稿
+        headerRightItems.push(
             new NormalItem(
                 'common-hide-nav-upload',
-                '隐藏 顶栏-投稿',
+                '隐藏 投稿',
                 false,
                 undefined,
                 false,
@@ -737,6 +768,7 @@ if (location.host != 'live.bilibili.com') {
             ),
         )
     }
+    commonGroupList.push(new Group('common-header-right', '全站通用项 顶栏 右侧', headerRightItems))
 }
 
-export const commonGroup = new Group('common', '通用', commonItems)
+export { commonGroupList }

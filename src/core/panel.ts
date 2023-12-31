@@ -19,16 +19,16 @@ export class Panel implements IPanel {
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
-        width: 33vw;
+        width: 32vw;
         height: 90vh;
         border-radius: 10px;
-        background: rgba(250, 250, 250, 1);
-        box-shadow: 0 2px 5px ${settings.themeColor};
+        background: #f4f5f7;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
         overflow: auto;
         z-index: 2147483647;
     }
     #bili-cleaner-bar {
-        width: 33vw;
+        width: 32vw;
         height: 6vh;
         background: ${settings.themeColor};
         border-top-left-radius: 10px;
@@ -37,7 +37,7 @@ export class Panel implements IPanel {
         user-select: none;
     }
     #bili-cleaner-title {
-        width: 33vw;
+        width: 32vw;
         height: 6vh;
         display: flex;
         justify-content: center;
@@ -79,32 +79,29 @@ export class Panel implements IPanel {
     }
     /* panel内的group */
     .bili-cleaner-group {
-        margin: 10px;
+        margin: 14px;
         background: white;
-        border-radius: 5px;
-        padding: 5px 15px;
-        box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+        border-radius: 6px;
+        padding: 8px 16px;
+        border: 1px solid #ddd;
         user-select: none;
     }
     .bili-cleaner-group hr {
         border: 1px solid #eee;
-        margin-top: 3px;
-        margin-bottom: 3px;
+        margin: 5px 0 10px 0;
     }
     .bili-cleaner-group-title {
-        font-size: 22px;
+        font-size: 20px;
         font-weight: bold;
         padding: 2px;
         color: black;
-    }
-    .bili-cleaner-item-list {
-        padding: 2px;
+        letter-spacing: 1px;
     }
     /* 每行Item选项的样式, 按钮和文字 */
     .bili-cleaner-item-list label {
         display: block;
         vertical-align: middle;
-        margin: 8px 0;
+        margin: 6px 0 6px 10px;
         font-size: 16px;
         color: black;
     }

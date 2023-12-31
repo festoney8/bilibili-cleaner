@@ -64,8 +64,8 @@ function simpleShare() {
             shareBtn.addEventListener('click', () => {
                 let title = document.querySelector('#viewbox_report > h1')?.textContent as string
                 if (
-                    !'（({【[［《「＜｛〔〖<〈『'.includes(title[0]) ||
-                    '）)}】]］》」＞｝〕〗>〉』'.includes(title.slice(-1))
+                    !'（({【[［《「＜｛〔〖<〈『'.includes(title[0]) &&
+                    !'）)}】]］》」＞｝〕〗>〉』'.includes(title.slice(-1))
                 ) {
                     title = `【${title}】`
                 }

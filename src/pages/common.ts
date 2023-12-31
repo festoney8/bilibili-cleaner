@@ -291,7 +291,7 @@ if (host === 't.bilibili.com') {
 
 // 基本功能part, basicItems
 {
-    basicItems.push(new NormalItem('border-radius', '页面直角化，去除圆角', true, undefined, false, borderRadiusCSS))
+    basicItems.push(new NormalItem('border-radius', '页面直角化，去除圆角', false, undefined, false, borderRadiusCSS))
 
     // 滚动条美化, 默认开启
     basicItems.push(

@@ -421,11 +421,11 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
                 `.bpx-player-dm-btn-send {display: none !important;}`,
             ),
         )
-        // 隐藏 关闭整个弹幕栏
+        // 非全屏下 关闭弹幕栏
         danmakuItems.push(
             new NormalItem(
                 'video-page-hide-bpx-player-sending-area',
-                '隐藏 关闭整个弹幕栏',
+                '非全屏下 关闭弹幕栏',
                 false,
                 undefined,
                 false,
@@ -434,6 +434,24 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
                 #bilibili-player-wrap[class^='video_playerNormal'] {height: calc(var(--video-width)*.5625)}
                 #bilibili-player-wrap[class^='video_playerWide'] {height: calc(var(--containerWidth)*.5625)}
                 `,
+            ),
+        )
+        // 全屏下 关闭弹幕输入框
+        danmakuItems.push(
+            new NormalItem(
+                'video-page-hide-bpx-player-video-inputbar',
+                '全屏下 关闭弹幕输入框',
+                false,
+                undefined,
+                false,
+                `.bpx-player-container[data-screen=full] .bpx-player-control-bottom-center .bpx-player-video-inputbar,
+                .bpx-player-container[data-screen=web] .bpx-player-control-bottom-center .bpx-player-video-inputbar {
+                    display: none !important;
+                }
+                .bpx-player-container[data-screen=full] .bpx-player-control-bottom-center,
+                .bpx-player-container[data-screen=web] .bpx-player-control-bottom-center {
+                    padding: 0 0 !important;
+                }`,
             ),
         )
     }

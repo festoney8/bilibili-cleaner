@@ -63,7 +63,10 @@ function simpleShare() {
             // 若replace element, 会在切换视频后无法更新视频分享数量, 故直接新增click事件覆盖剪贴板
             shareBtn.addEventListener('click', () => {
                 let title = document.querySelector('#viewbox_report > h1')?.textContent as string
-                if (!'（({【[［《「＜｛〔〖<〈『'.includes(title[0])) {
+                if (
+                    !'（({【[［《「＜｛〔〖<〈『'.includes(title[0]) ||
+                    '）)}】]］》」＞｝〕〗>〉』'.includes(title.slice(-1))
+                ) {
                     title = `【${title}】`
                 }
                 let urlPath = location.pathname

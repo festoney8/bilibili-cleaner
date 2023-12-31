@@ -765,12 +765,12 @@ if (location.host === 'live.bilibili.com') {
     }
     liveGroupList.push(new Group('live-header-left', '顶栏 左侧', headerLeftItems))
 
-    // 顶栏中间part, headerCenterItems
+    // 顶栏中间part, 同步通用设定的顶栏搜索框状态, headerCenterItems
     {
         // 隐藏 搜索框 推荐搜索
         headerCenterItems.push(
             new NormalItem(
-                'live-page-header-search-block-placeholder',
+                'common-hide-nav-search-rcmd',
                 '隐藏 搜索框 推荐搜索',
                 false,
                 undefined,
@@ -781,7 +781,7 @@ if (location.host === 'live.bilibili.com') {
         // 隐藏 搜索框 搜索历史
         headerCenterItems.push(
             new NormalItem(
-                'live-page-header-search-history',
+                'common-hide-nav-search-history',
                 '隐藏 搜索框 搜索历史',
                 false,
                 undefined,
@@ -792,7 +792,7 @@ if (location.host === 'live.bilibili.com') {
         // 隐藏 搜索框 bilibili热搜
         headerCenterItems.push(
             new NormalItem(
-                'live-page-header-search-trending',
+                'common-hide-nav-search-trending',
                 '隐藏 搜索框 bilibili热搜',
                 false,
                 undefined,

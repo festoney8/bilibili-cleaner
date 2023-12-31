@@ -164,24 +164,3 @@ export class NormalItem implements IItem {
         }
     }
 }
-
-// export class SeparatorItem implements IItem {
-//     constructor() {}
-//     /**
-//      * 向item list中添加分隔符<hr>, 用于划分功能组别
-//      * @param groupID 由调用SeparatorItem的上级Group提供
-//      */
-//     insertItem(groupID: string) {
-//         try {
-//             const e = document.createElement('hr')
-//             const itemGroupList = document.querySelector(`#${groupID} .bili-cleaner-item-list`) as HTMLFormElement
-//             if (itemGroupList) {
-//                 itemGroupList.appendChild(e)
-//                 debug(`insertItem separator OK`)
-//             }
-//         } catch (err) {
-//             error(`insertItem separator err`)
-//             error(err)
-//         }
-//     }
-// }

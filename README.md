@@ -15,8 +15,7 @@
 
 ## 功能一览
 
-![](images/preview1.png)
-![](images/preview2.png)
+![](images/preview.png)
 
 <details>
 <summary><b>查看 全部功能长图</b></summary>
@@ -34,11 +33,15 @@
 
 ### 测试版：[Release安装](https://github.com/festoney8/bilibili-cleaner/releases/)
 
+-   开发版：[CI Build](https://github.com/festoney8/bilibili-cleaner/actions/workflows/dev-ci.yml?query=is%3Asuccess)
+
 ## 使用
 
 -   **注意「首页、播放页、版权作品播放页、直播间、搜索页、动态页」这 6 个页面，菜单各不相同**
 
--   **按下图打开菜单，在每个页面进行自定义净化，支持实时预览**
+-   「通用」项目对所有页面生效
+
+-   按下图打开菜单，在每个页面进行自定义净化，支持实时预览
 
 ![](images/usage.png)
 
@@ -59,9 +62,9 @@
 
 ### 注意事项
 
--   给 UP 主充电时，若出现 **充电窗口载入失败 (报错NaN)**，请关闭 **通用项「URL参数净化」**功能，刷新页面再充电
+-   给 UP 主充电时，若出现 **充电窗口载入失败 (报错NaN)**，请关闭 **通用项「URL参数净化」** 功能，刷新页面再充电
 -   **「版权视频播放页」大部分功能与「普通播放页」一致且互相同步，小部分功能为该页面独有，已用 "★" 重点标出**
--   **已知Bug：** Chrome 内核浏览器在打开「版权作品播放页」时，小概率出现顶栏未净化的情况。已通过打补丁的方式暂时补救，副作用为打开页面数秒后顶栏净化规则才生效
+-   **已知Bug：** 在打开「版权作品播放页」时，小概率出现顶栏未净化的情况。已通过打补丁的方式暂时补救，副作用为打开页面数秒后顶栏净化规则才生效
 
 ## 浏览器适配
 
@@ -83,7 +86,7 @@
 | Chrome  | [链接](https://chrome.google.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo)                      | [链接](https://chrome.google.com/webstore/detail/violentmonkey/jinjaccalgkegednnccohejagnlnfdag) |
 | Edge    | [链接](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd) | [链接](https://microsoftedge.microsoft.com/addons/detail/eeagobfjdenkkddmbclomhiblgggliao)       |
 | Firefox | [链接](https://addons.mozilla.org/firefox/addon/tampermonkey/)                                          | [链接](https://addons.mozilla.org/firefox/addon/violentmonkey/)                                  |
-| 测试    | **已测试，推荐**                                                                                        | 支持，未完全测试                                                                                 |
+| 测试    | **已测试，推荐**                                                                                        | 支持，部分测试                                                                                   |
 
 -   [Greasemonkey](https://www.greasespot.net/) 和 [ScriptCat](https://docs.scriptcat.org/) 未进行测试
 

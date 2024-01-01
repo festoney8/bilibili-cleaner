@@ -685,10 +685,14 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 .bpx-player-container[data-screen=web] .bpx-player-control-bottom-center {
                     padding: 0 0 !important;
                 }
-                /* 弹幕开关按钮贴紧左侧 */
+                /* 弹幕开关按钮贴紧左侧, 有章节列表时增大列表宽度 */
                 .bpx-player-container[data-screen=full] .bpx-player-control-bottom-left,
                 .bpx-player-container[data-screen=web] .bpx-player-control-bottom-left {
                     min-width: unset !important;
+                }
+                .bpx-player-container[data-screen=full] .bpx-player-ctrl-viewpoint,
+                .bpx-player-container[data-screen=web] .bpx-player-ctrl-viewpoint {
+                    width: fit-content !important;
                 }`,
             ),
         )

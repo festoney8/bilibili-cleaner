@@ -252,17 +252,6 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 `.bpx-player-video-area .bili-link {display: none !important;}`,
             ),
         )
-        // 隐藏 右上角 反馈按钮, 默认开启
-        playerItems.push(
-            new NormalItem(
-                'video-page-hide-bpx-player-top-issue',
-                '隐藏 右上角 反馈按钮',
-                true,
-                undefined,
-                false,
-                `.bpx-player-top-issue {display: none !important;}`,
-            ),
-        )
         // 隐藏 左上角 播放器内标题
         playerItems.push(
             new NormalItem(
@@ -297,6 +286,17 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 undefined,
                 false,
                 `.bpx-player-top-left-follow {display: none !important;}`,
+            ),
+        )
+        // 隐藏 右上角 反馈按钮, 默认开启
+        playerItems.push(
+            new NormalItem(
+                'video-page-hide-bpx-player-top-issue',
+                '隐藏 右上角 反馈按钮',
+                true,
+                undefined,
+                false,
+                `.bpx-player-top-issue {display: none !important;}`,
             ),
         )
         // 隐藏 视频暂停时大Logo

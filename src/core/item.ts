@@ -118,6 +118,9 @@ export class NormalItem implements IItem {
                 if ((<HTMLInputElement>event.target).checked) {
                     this.setStatus(true)
                     this.insertItemCSS()
+                    if (this.itemFunc !== undefined) {
+                        this.itemFunc()
+                    }
                 } else {
                     this.setStatus(false)
                     this.removeItemCSS()

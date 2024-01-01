@@ -181,7 +181,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
             ),
         )
     }
-    bangumiGroupList.push(new Group('bangumi-player', '播放器', playerItems))
+    bangumiGroupList.push(new Group('bangumi-player', '播放器 (★为独有项)', playerItems))
 
     // 播放控制part, playerControlItems
     {

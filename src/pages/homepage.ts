@@ -407,12 +407,12 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
 
     // 右下角part, sidebarItems
     {
-        // 隐藏 下载桌面端弹窗
+        // 隐藏 下载桌面端弹窗, 默认开启
         sidebarItems.push(
             new NormalItem(
                 'homepage-hide-desktop-download-tip',
                 '隐藏 下载桌面端弹窗',
-                false,
+                true,
                 undefined,
                 false,
                 `.desktop-download-tip {display: none !important;}`,

@@ -977,6 +977,17 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 `#multi_page .next-button {display: none !important;}`,
             ),
         )
+        // 隐藏 视频时长
+        rightItems.push(
+            new NormalItem(
+                'video-page-hide-right-container-duration',
+                '隐藏 相关视频 视频时长',
+                false,
+                undefined,
+                false,
+                `#reco_list .duration {display: none !important;}`,
+            ),
+        )
         // 隐藏 相关视频 稍后再看按钮
         rightItems.push(
             new NormalItem(
@@ -1022,17 +1033,6 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                     flex-direction: column;
                     justify-content: space-between;
                 }`,
-            ),
-        )
-        // 隐藏 视频时长
-        rightItems.push(
-            new NormalItem(
-                'video-page-hide-right-container-duration',
-                '隐藏 相关视频 视频时长',
-                false,
-                undefined,
-                false,
-                `#reco_list .duration {display: none !important;}`,
             ),
         )
         // 隐藏 全部相关视频

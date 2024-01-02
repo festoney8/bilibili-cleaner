@@ -174,7 +174,12 @@ if (host === 't.bilibili.com') {
             border-radius: 3px !important;
         }`
 } else {
-    if (href.startsWith('https://www.bilibili.com/video/')) {
+    // 普通播放页, 稍后再看播放页, 收藏夹播放页
+    if (
+        href.includes('bilibili.com/video/') ||
+        href.includes('bilibili.com/list/watchlater') ||
+        href.includes('bilibili.com/list/ml')
+    ) {
         borderRadiusCSS = `
             #nav-searchform,
             .nav-search-content,
@@ -207,7 +212,7 @@ if (host === 't.bilibili.com') {
             .bpx-player-dm-btn-send .bui-button {
                 border-radius: 3px 0 0 3px !important;
             }`
-    } else if (href.startsWith('https://www.bilibili.com/bangumi/play/')) {
+    } else if (href.includes('bilibili.com/bangumi/play/')) {
         borderRadiusCSS = `
             a[class^="mediainfo_mediaCover"],
             a[class^="mediainfo_btnHome"],
@@ -698,11 +703,11 @@ if (location.host != 'live.bilibili.com') {
                 }`,
             ),
         )
-        // 隐藏 收藏
+        // 隐藏 收藏, 隐藏 稍后再看
         headerRightItems.push(
             new NormalItem(
                 'common-hide-nav-favorite',
-                '隐藏 收藏/稍后再看',
+                '隐藏 收藏, 隐藏 稍后再看',
                 false,
                 undefined,
                 false,
@@ -712,6 +717,56 @@ if (location.host != 'live.bilibili.com') {
                 /* 旧版header */
                 #internationalHeader .nav-user-center .item:has(.mini-favorite) {
                     display: none !important;
+                }`,
+            ),
+        )
+        // 隐藏 收藏, 显示 稍后再看(实验性)
+        headerRightItems.push(
+            new NormalItem(
+                'common-hide-nav-favorite-keep-watchlater',
+                '隐藏 收藏, 保留 稍后再看(实验性)',
+                false,
+                undefined,
+                false,
+                `
+                /* 移除加入稍后再看时的上翻动画 */
+                .right-entry .v-popover-wrap .header-favorite-container-box {
+                    animation: unset !important;
+                }
+                .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__up {
+                    display: none !important;
+                }
+                .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__down {
+                    margin-top: 4px !important;
+                }
+                @media (max-width: 1279.9px) {
+                    .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__down {
+                        top: 10px;
+                    }
+                }`,
+            ),
+        )
+        // 显示 收藏, 显示 稍后再看(实验性)
+        headerRightItems.push(
+            new NormalItem(
+                'common-nav-keep-watchlater',
+                '显示 收藏, 显示 稍后再看(实验性)',
+                false,
+                undefined,
+                false,
+                `
+                /* 移除加入稍后再看时的上翻动画 */
+                .right-entry .v-popover-wrap .header-favorite-container-box {
+                    display: flex !important;
+                    animation: unset !important;
+                }
+                .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__down {
+                    margin-top: 0 !important;
+                }
+                @media (max-width: 1279.9px) {
+                    .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__down {
+                        top: 15px;
+                    }
                 }`,
             ),
         )

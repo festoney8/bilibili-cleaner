@@ -44,7 +44,7 @@ function bv2av() {
     }
 }
 
-/** 净化分享按钮功能 */
+/** 净化分享按钮功能, 暂不支持从稍后再看列表、收藏夹列表分享 */
 let isSimpleShareBtn = false
 function simpleShare() {
     if (isSimpleShareBtn) {
@@ -102,7 +102,13 @@ const sidebarItems: NormalItem[] = []
 // GroupList
 const videoGroupList: Group[] = []
 
-if (location.href.startsWith('https://www.bilibili.com/video/')) {
+// 普通播放页，稍后再看播放页，收藏夹播放页
+const href = location.href
+if (
+    href.includes('bilibili.com/video/') ||
+    href.includes('bilibili.com/list/watchlater') ||
+    href.includes('bilibili.com/list/ml')
+) {
     // 基本功能part, basicItems
     {
         // BV号转AV号, 在url变化时需重载
@@ -1085,7 +1091,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 true,
                 undefined,
                 false,
-                `#comment .reply-header .reply-notice {display: none !important;}`,
+                `.comment-container .reply-header .reply-notice {display: none !important;}`,
             ),
         )
         // 隐藏 整个评论框
@@ -1097,8 +1103,8 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 undefined,
                 false,
                 // 不可使用display: none, 会使底部吸附评论框宽度变化
-                `#comment .main-reply-box {height: 0 !important; visibility: hidden !important;}
-                #comment .reply-list {margin-top: -20px !important;}`,
+                `.comment-container .main-reply-box {height: 0 !important; visibility: hidden !important;}
+                .comment-container .reply-list {margin-top: -20px !important;}`,
             ),
         )
         // 隐藏 页面底部 吸附评论框, 默认开启
@@ -1109,7 +1115,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 true,
                 undefined,
                 false,
-                `#comment .fixed-reply-box {display: none !important;}`,
+                `.comment-container .fixed-reply-box {display: none !important;}`,
             ),
         )
         // 隐藏 评论编辑器内占位文字, 默认开启
@@ -1132,7 +1138,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 false,
                 undefined,
                 false,
-                `#comment .reply-decorate {display: none !important;}`,
+                `.comment-container .reply-decorate {display: none !important;}`,
             ),
         )
         // 隐藏 ID后粉丝牌
@@ -1143,7 +1149,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 false,
                 undefined,
                 false,
-                `#comment .fan-badge {display: none !important;}`,
+                `.comment-container .fan-badge {display: none !important;}`,
             ),
         )
         // 隐藏 一级评论用户等级
@@ -1154,7 +1160,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 false,
                 undefined,
                 false,
-                `#comment .user-level {display: none !important;}`,
+                `.comment-container .user-level {display: none !important;}`,
             ),
         )
         // 隐藏 二级评论用户等级
@@ -1165,7 +1171,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 false,
                 undefined,
                 false,
-                `#comment .sub-user-level {display: none !important;}`,
+                `.comment-container .sub-user-level {display: none !important;}`,
             ),
         )
         // 隐藏 用户头像外圈饰品
@@ -1176,8 +1182,8 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 false,
                 undefined,
                 false,
-                `#comment .root-reply-avatar .bili-avatar-pendent-dom {display: none !important;}
-            #comment .root-reply-avatar .bili-avatar {width: 48px !important; height:48px !important;}`,
+                `.comment-container .root-reply-avatar .bili-avatar-pendent-dom {display: none !important;}
+            .comment-container .root-reply-avatar .bili-avatar {width: 48px !important; height:48px !important;}`,
             ),
         )
         // 隐藏 用户头像右下小icon
@@ -1188,8 +1194,8 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 false,
                 undefined,
                 false,
-                `#comment .bili-avatar-nft-icon {display: none !important;}
-                #comment .bili-avatar-icon {display: none !important;}`,
+                `.comment-container .bili-avatar-nft-icon {display: none !important;}
+                .comment-container .bili-avatar-icon {display: none !important;}`,
             ),
         )
         // 隐藏 评论内容下tag(UP觉得很赞)
@@ -1200,7 +1206,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 false,
                 undefined,
                 false,
-                `#comment .reply-tag-list {display: none !important;}`,
+                `.comment-container .reply-tag-list {display: none !important;}`,
             ),
         )
         // 隐藏 笔记评论前的小Logo, 默认开启
@@ -1211,7 +1217,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 true,
                 undefined,
                 false,
-                `#comment .note-prefix {display: none !important;}`,
+                `.comment-container .note-prefix {display: none !important;}`,
             ),
         )
         // 隐藏 评论内容搜索关键词高亮, 默认开启
@@ -1222,9 +1228,9 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 true,
                 undefined,
                 false,
-                `#comment .reply-content .jump-link.search-word {color: inherit !important;}
-                #comment .reply-content .jump-link.search-word:hover {color: #008AC5 !important;}
-                #comment .reply-content .icon.search-word {display: none !important;}`,
+                `.comment-container .reply-content .jump-link.search-word {color: inherit !important;}
+                .comment-container .reply-content .jump-link.search-word:hover {color: #008AC5 !important;}
+                .comment-container .reply-content .icon.search-word {display: none !important;}`,
             ),
         )
         // 隐藏 二级评论中的@高亮
@@ -1235,8 +1241,8 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 false,
                 undefined,
                 false,
-                `#comment .sub-reply-container .reply-content .jump-link.user {color: inherit !important;}
-                #comment .sub-reply-container .reply-content .jump-link.user:hover {color: #40C5F1 !important;}`,
+                `.comment-container .sub-reply-container .reply-content .jump-link.user {color: inherit !important;}
+                .comment-container .sub-reply-container .reply-content .jump-link.user:hover {color: #40C5F1 !important;}`,
             ),
         )
         // 隐藏 召唤AI机器人的评论, 默认开启
@@ -1285,7 +1291,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 false,
                 undefined,
                 false,
-                `#comment .reply-item:has(.root-reply .jump-link.user):not(:has(.sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
+                `.comment-container .reply-item:has(.root-reply .jump-link.user):not(:has(.sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
             ),
         )
         // 隐藏 包含@的 全部评论
@@ -1296,7 +1302,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 false,
                 undefined,
                 false,
-                `#comment .reply-item:has(.root-reply .jump-link.user):not(:has(.sub-up-icon)) {display: none !important;}`,
+                `.comment-container .reply-item:has(.root-reply .jump-link.user):not(:has(.sub-up-icon)) {display: none !important;}`,
             ),
         )
         // 隐藏 LV1 无人点赞评论
@@ -1307,7 +1313,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 false,
                 undefined,
                 false,
-                `#comment .reply-item:has(.st1.lv1):not(:has(.sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
+                `.comment-container .reply-item:has(.st1.lv1):not(:has(.sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
             ),
         )
         // 隐藏 LV2 无人点赞评论
@@ -1318,7 +1324,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 false,
                 undefined,
                 false,
-                `#comment .reply-item:has(.st1.lv2):not(:has(.sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
+                `.comment-container .reply-item:has(.st1.lv2):not(:has(.sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
             ),
         )
         // 隐藏 LV3 无人点赞评论
@@ -1329,7 +1335,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 false,
                 undefined,
                 false,
-                `#comment .reply-item:has(.st1.lv3):not(:has(.sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
+                `.comment-container .reply-item:has(.st1.lv3):not(:has(.sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
             ),
         )
         // 隐藏 一级评论 踩/回复/举报 hover时显示, 默认开启
@@ -1340,12 +1346,12 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 true,
                 undefined,
                 false,
-                `#comment .reply-info:not(:has(i.disliked)) .reply-btn,
-                #comment .reply-info:not(:has(i.disliked)) .reply-dislike {
+                `.comment-container .reply-info:not(:has(i.disliked)) .reply-btn,
+                .comment-container .reply-info:not(:has(i.disliked)) .reply-dislike {
                     visibility: hidden;
                 }
-                #comment .reply-item:hover .reply-btn,
-                #comment .reply-item:hover .reply-dislike {
+                .comment-container .reply-item:hover .reply-btn,
+                .comment-container .reply-item:hover .reply-dislike {
                     visibility: visible !important;
                 }`,
             ),
@@ -1358,12 +1364,12 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 true,
                 undefined,
                 false,
-                `#comment .sub-reply-item:not(:has(i.disliked)) .sub-reply-btn,
-                #comment .sub-reply-item:not(:has(i.disliked)) .sub-reply-dislike {
+                `.comment-container .sub-reply-item:not(:has(i.disliked)) .sub-reply-btn,
+                .comment-container .sub-reply-item:not(:has(i.disliked)) .sub-reply-dislike {
                     visibility: hidden;
                 }
-                #comment .sub-reply-item:hover .sub-reply-btn,
-                #comment .sub-reply-item:hover .sub-reply-dislike {
+                .comment-container .sub-reply-item:hover .sub-reply-btn,
+                .comment-container .sub-reply-item:hover .sub-reply-dislike {
                     visibility: visible !important;
                 }`,
             ),
@@ -1376,7 +1382,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 false,
                 undefined,
                 false,
-                `#comment .emoji-large {display: none !important;}`,
+                `.comment-container .emoji-large {display: none !important;}`,
             ),
         )
         // 大表情变成小表情
@@ -1387,7 +1393,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 false,
                 undefined,
                 false,
-                `#comment .emoji-large {zoom: .5;}`,
+                `.comment-container .emoji-large {zoom: .5;}`,
             ),
         )
         // 用户名 全部大会员色
@@ -1398,7 +1404,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 false,
                 undefined,
                 false,
-                `#comment .reply-item .user-name, #comment .reply-item .sub-user-name {color: #FB7299 !important;}}`,
+                `.comment-container .reply-item .user-name, .comment-container .reply-item .sub-user-name {color: #FB7299 !important;}}`,
             ),
         )
         // 用户名 全部恢复默认色
@@ -1409,7 +1415,7 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 false,
                 undefined,
                 false,
-                `#comment .reply-item .user-name, #comment .reply-item .sub-user-name {color: #61666d !important;}}`,
+                `.comment-container .reply-item .user-name, .comment-container .reply-item .sub-user-name {color: #61666d !important;}}`,
             ),
         )
         // 笔记图片 查看大图优化, 默认开启

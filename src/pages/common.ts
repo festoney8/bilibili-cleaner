@@ -517,7 +517,7 @@ if (location.host != 'live.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `div.bili-header__bar .left-entry li:has(a[href*="bilibili.com/BPU20"]) {display: none !important;}`,
+                `div.bili-header__bar .left-entry li:has(>div>a[href*="bilibili.com/BPU20"]) {display: none !important;}`,
             ),
         )
         // 隐藏 下载客户端, 默认开启

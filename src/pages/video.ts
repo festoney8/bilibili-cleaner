@@ -916,8 +916,8 @@ if (location.href.startsWith('https://www.bilibili.com/video/')) {
                 true,
                 undefined,
                 false,
-                `.base-video-sections-v1 .video-sections-content-list {height: fit-content !important; max-height: 350px !important};
-                .video-sections-v1 .video-sections-content-list {height: fit-content !important; max-height: 350px !important};`,
+                `.base-video-sections-v1 .video-sections-content-list {height: fit-content !important; max-height: 350px !important;}
+                .video-sections-v1 .video-sections-content-list {height: fit-content !important; max-height: 350px !important;}`,
             ),
         )
         // 隐藏 视频合集 自动连播

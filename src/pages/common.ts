@@ -707,7 +707,7 @@ if (location.host != 'live.bilibili.com') {
         headerRightItems.push(
             new NormalItem(
                 'common-hide-nav-favorite',
-                '隐藏 收藏, 隐藏 稍后再看',
+                '隐藏 收藏，隐藏 稍后再看',
                 false,
                 undefined,
                 false,
@@ -724,7 +724,7 @@ if (location.host != 'live.bilibili.com') {
         headerRightItems.push(
             new NormalItem(
                 'common-hide-nav-favorite-keep-watchlater',
-                '隐藏 收藏, 保留 稍后再看(实验性)',
+                '隐藏 收藏，显示 稍后再看(实验性)',
                 false,
                 undefined,
                 false,
@@ -750,7 +750,7 @@ if (location.host != 'live.bilibili.com') {
         headerRightItems.push(
             new NormalItem(
                 'common-nav-keep-watchlater',
-                '显示 收藏, 显示 稍后再看(实验性)',
+                '显示 收藏，显示 稍后再看(实验性)',
                 false,
                 undefined,
                 false,

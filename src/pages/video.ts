@@ -62,20 +62,26 @@ function simpleShare() {
             // 新增click事件
             // 若replace element, 会在切换视频后无法更新视频分享数量, 故直接新增click事件覆盖剪贴板
             shareBtn.addEventListener('click', () => {
-                let title = document.querySelector('#viewbox_report > h1')?.textContent as string
+                let title = document.querySelector('#viewbox_report > h1')?.textContent
+                if (!title) {
+                    // 尝试稍后再看or收藏夹列表
+                    title = document.querySelector('.video-title-href')?.textContent
+                    if (!title) {
+                        return
+                    }
+                }
                 if (
                     !'（({【[［《「＜｛〔〖<〈『'.includes(title[0]) &&
                     !'）)}】]］》」＞｝〕〗>〉』'.includes(title.slice(-1))
                 ) {
                     title = `【${title}】`
                 }
-                let urlPath = location.pathname
-                if (urlPath.endsWith('/')) {
-                    urlPath = urlPath.slice(0, -1)
-                }
+                // 匹配av号, BV号, 分P号
+                const pattern = /av\d+|BV[1-9A-HJ-NP-Za-km-z]+/g
+                const avbv = pattern.exec(location.href)
+                let shareText = `${title} \nhttps://www.bilibili.com/video/${avbv}`
                 const urlObj = new URL(location.href)
                 const params = new URLSearchParams(urlObj.search)
-                let shareText = `${title} \nhttps://www.bilibili.com${urlPath}`
                 if (params.has('p')) {
                     shareText += `?p=${params.get('p')}`
                 }
@@ -759,7 +765,9 @@ if (
                 false,
                 undefined,
                 false,
-                `#v_desc {display: none !important;}`,
+                `#v_desc {display: none !important;}
+                /* 收藏夹和稍后再看 */
+                .video-desc-container {display: none !important;}`,
             ),
         )
         // 隐藏 tag列表
@@ -770,7 +778,9 @@ if (
                 false,
                 undefined,
                 false,
-                `#v_tag {display: none !important;}`,
+                `#v_tag {display: none !important;}
+                /* 收藏夹和稍后再看 */
+                .video-tag-container {display: none !important;}`,
             ),
         )
         // 隐藏 活动宣传, 默认开启

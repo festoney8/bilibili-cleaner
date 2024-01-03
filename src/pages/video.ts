@@ -997,7 +997,7 @@ if (
                 `#multi_page .next-button {display: none !important;}`,
             ),
         )
-        // 隐藏 视频时长
+        // 隐藏 相关视频 视频时长
         rightItems.push(
             new NormalItem(
                 'video-page-hide-right-container-duration',
@@ -1005,7 +1005,9 @@ if (
                 false,
                 undefined,
                 false,
-                `#reco_list .duration {display: none !important;}`,
+                `#reco_list .duration {display: none !important;}
+                /* 适配watchlater, favlist */
+                .recommend-list-container .duration {display: none !important;}`,
             ),
         )
         // 隐藏 相关视频 稍后再看按钮
@@ -1016,7 +1018,9 @@ if (
                 false,
                 undefined,
                 false,
-                `#reco_list .watch-later-video {display: none !important;}`,
+                `#reco_list .watch-later-video {display: none !important;}
+                /* 适配watchlater, favlist */
+                .recommend-list-container .watch-later-video {display: none !important;}`,
             ),
         )
         // 隐藏 相关视频 UP主
@@ -1031,6 +1035,15 @@ if (
                     display: none !important;
                 }
                 #reco_list .info {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                }
+                /* 适配watchlater, favlist */
+                .recommend-list-container .info .upname {
+                    display: none !important;
+                }
+                .recommend-list-container .info {
                     display: flex;
                     flex-direction: column;
                     justify-content: space-between;
@@ -1052,18 +1065,29 @@ if (
                     display: flex;
                     flex-direction: column;
                     justify-content: space-between;
+                }
+                /* 适配watchlater, favlist */
+                .recommend-list-container .info .playinfo {
+                    display: none !important;
+                }
+                .recommend-list-container .info {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
                 }`,
             ),
         )
-        // 隐藏 全部相关视频
+        // 隐藏 相关视频 全部列表
         rightItems.push(
             new NormalItem(
                 'video-page-hide-right-container-reco-list-rec-list',
-                '隐藏 全部相关视频',
+                '隐藏 相关视频 全部列表',
                 false,
                 undefined,
                 false,
-                `#reco_list .rec-list {display: none !important;}`,
+                `#reco_list .rec-list {display: none !important;}
+                /* 适配watchlater, favlist */
+                .recommend-list-container {display: none !important;}`,
             ),
         )
         // 隐藏 活动banner, 默认开启
@@ -1458,7 +1482,9 @@ if (
                 false,
                 undefined,
                 false,
-                `.fixed-sidenav-storage .mini-player-window {display: none !important;}`,
+                `.fixed-sidenav-storage .mini-player-window {display: none !important;}
+                /* 适配watchlater, favlist */
+                .float-nav-exp .nav-menu .item.mini {display: none !important;}`,
             ),
         )
         // 隐藏 客服, 默认开启
@@ -1469,7 +1495,9 @@ if (
                 true,
                 undefined,
                 false,
-                `.fixed-sidenav-storage .customer-service {display: none !important;}`,
+                `.fixed-sidenav-storage .customer-service {display: none !important;}
+                /* 适配watchlater, favlist */
+                .float-nav-exp .nav-menu a:has(>.item.help) {display: none !important;}`,
             ),
         )
         // 隐藏 回顶部
@@ -1480,7 +1508,9 @@ if (
                 false,
                 undefined,
                 false,
-                `.fixed-sidenav-storage .back-to-top {display: none !important;}`,
+                `.fixed-sidenav-storage .back-to-top {display: none !important;}
+                /* 适配watchlater, favlist */
+                .float-nav-exp .nav-menu .item.backup {display: none !important;}`,
             ),
         )
     }

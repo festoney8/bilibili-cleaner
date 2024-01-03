@@ -51,11 +51,11 @@ const bangumiSimpleShare = () => {
 if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
     // 基本功能part, basicItems
     {
-        // 净化分享功能, 默认开启
+        // 净化分享功能, 默认开启, 关闭功能需刷新
         basicItems.push(
             new NormalItem(
                 'video-page-simple-share',
-                '净化分享功能 (需刷新)',
+                '净化分享功能',
                 true,
                 bangumiSimpleShare,
                 false,
@@ -450,7 +450,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
                 }
                 .bpx-player-container[data-screen=full] .bpx-player-control-bottom-center,
                 .bpx-player-container[data-screen=web] .bpx-player-control-bottom-center {
-                    padding: 0 0 !important;
+                    padding: 0 15px !important;
                 }
                 /* 弹幕开关按钮贴紧左侧, 有章节列表时增大列表宽度 */
                 .bpx-player-container[data-screen=full] .bpx-player-control-bottom-left,

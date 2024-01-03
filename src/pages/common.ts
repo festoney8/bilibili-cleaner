@@ -187,6 +187,11 @@ if (host === 't.bilibili.com') {
             .van-popover,
             .v-popover,
             .pic-box,
+            .action-list-container,
+            .actionlist-item-inner .main .cover,
+            .recommend-video-card .card-box .pic-box,
+            .recommend-video-card .card-box .pic-box .rcmd-cover .rcmd-cover-img .b-img__inner img,
+            .actionlist-item-inner .main .cover .cover-img .b-img__inner img,
             .card-box .pic-box .pic,
             .bui-collapse-header,
             .base-video-sections-v1,
@@ -339,9 +344,9 @@ if (host === 't.bilibili.com') {
         ),
     )
 
-    // URL参数净化, 在urlchange时需重载, 默认开启
+    // URL参数净化, 在urlchange时需重载, 默认开启, 关闭功能需刷新
     // 以前会出现URL缺少参数导致充电窗口载入失败报错NaN的bug, 现无法复现, 猜测已修复
-    basicItems.push(new NormalItem('url-cleaner', 'URL参数净化 (需刷新)', true, cleanURL, true, null))
+    basicItems.push(new NormalItem('url-cleaner', 'URL参数净化', true, cleanURL, true, null))
 }
 commonGroupList.push(new Group('common-basic', '全站通用项 基本功能', basicItems))
 // 通用header净化，直播页除外

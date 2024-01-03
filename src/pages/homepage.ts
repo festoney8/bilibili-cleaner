@@ -452,7 +452,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
             ),
         )
     }
-    homepageGroupList.push(new Group('homepage-sidebar', '页面右下角', sidebarItems))
+    homepageGroupList.push(new Group('homepage-sidebar', '页面右下角 小按钮', sidebarItems))
 
     // bilibili-app-recommend插件part, biliAppRcmdItems
     {

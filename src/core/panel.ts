@@ -185,7 +185,6 @@ export class Panel implements IPanel {
                 return
             }
             const html = document.createElement('div')
-            html.setAttribute('id', 'bili-cleaner')
             html.innerHTML = this.panelHTML
             document.body.appendChild(html)
             debug('insertPanelHTML OK')

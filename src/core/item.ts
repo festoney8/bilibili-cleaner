@@ -80,19 +80,18 @@ export class NormalItem implements IItem {
             return
         }
         try {
-            if (document.querySelector(`head style[bili-cleaner-css=${this.itemID}]`)) {
+            if (document.querySelector(`html>style[bili-cleaner-css=${this.itemID}]`)) {
                 debug(`insertItemCSS ${this.itemID} CSS exist, ignore`)
                 return
             }
             const style = document.createElement('style')
-            // 若使用innerText, 多行CSS插入head后会产生<br>标签
-            // 简单压缩
+            // 简单压缩, 若使用innerText, 多行CSS插入head后会产生<br>标签
             style.innerHTML = this.itemCSS.replace(/\n\s*/g, '').trim()
             // 指定CSS片段ID，用于实时启用停用
             style.setAttribute('bili-cleaner-css', this.itemID)
-
-            // chrome系浏览器上可能出现style插入成功, 但DOMContentLoaded后规则丢失, 通过后续监听load事件打补丁解决
-            document.head.appendChild(style)
+            // 放弃在head内插入style
+            // 改为在html内插入style标签(与head/body同级), 避免版权视频播放页head内规则丢失bug
+            document.documentElement.appendChild(style)
             debug(`insertItemCSS ${this.itemID} OK`)
         } catch (err) {
             error(`insertItemCSS ${this.itemID} failed`)
@@ -102,7 +101,7 @@ export class NormalItem implements IItem {
     /** 停用CSS片段, 从document.head移除style */
     removeItemCSS() {
         if (this.itemCSS) {
-            const style = document.querySelector(`head style[bili-cleaner-css=${this.itemID}]`) as HTMLStyleElement
+            const style = document.querySelector(`html>style[bili-cleaner-css=${this.itemID}]`) as HTMLStyleElement
             if (style) {
                 style.parentNode?.removeChild(style)
                 debug(`removeItemCSS ${this.itemID} OK`)

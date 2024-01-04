@@ -87,12 +87,15 @@ const main = async () => {
 
     // 注册油猴插件菜单
     const openSettings = () => {
-        if (document.getElementById('bili-cleaner')) {
+        const panel = document.getElementById('bili-cleaner') as HTMLFormElement
+        if (panel) {
+            // 再次打开panel, 显示上次位置
+            panel.style.removeProperty('display')
             return
         }
         debug('panel create start')
-        const panel = new Panel()
-        panel.createPanel()
+        const newPanel = new Panel()
+        newPanel.createPanel()
         GROUPS.forEach((e) => {
             e.insertGroup()
             e.insertGroupItems()

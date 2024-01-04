@@ -202,7 +202,8 @@ export class Panel implements IPanel {
             const panel = document.getElementById('bili-cleaner') as HTMLFormElement
             const closeBtn = document.getElementById('bili-cleaner-close') as HTMLFormElement
             closeBtn.addEventListener('click', () => {
-                panel.remove()
+                // 使用 display:none 代替 remove(), 同一页面内再次打开panel记录上次位置
+                panel.style.display = 'none'
             })
             debug('watchCloseBtn OK')
         } catch (err) {

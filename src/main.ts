@@ -47,21 +47,6 @@ const main = async () => {
         }
     }, 500)
 
-    // 版权视频页 规则丢失补丁
-    // 在打开新标签页版权视频页时, 可能丢失规则, firefox和chrome均复现
-    // 测试可知, head内插入style均成功, 在DOMContentLoaded时, style数量正确
-    // 在readyState=complete后, style数量有概率会减少, 导致规则丢失, 原因不明
-    // 故在版权视频页监听load, 二次检查解决规则载入不全问题
-    if (location.pathname.startsWith('/bangumi/play')) {
-        window.addEventListener('load', () => {
-            debug('bangumi page patch, recheck start')
-            for (let i = GROUPS.length - 1; i >= 0; i--) {
-                GROUPS[i].enableGroup()
-            }
-            debug('bangumi page patch, recheck complete')
-        })
-    }
-
     // 全局启动/关闭快捷键 chrome: Alt+B，firefox: Ctrl+Alt+B
     let isGroupEnable = true
     document.addEventListener('keydown', (event) => {
@@ -87,12 +72,15 @@ const main = async () => {
 
     // 注册油猴插件菜单
     const openSettings = () => {
-        if (document.getElementById('bili-cleaner')) {
+        const panel = document.getElementById('bili-cleaner') as HTMLFormElement
+        if (panel) {
+            // 再次打开panel, 显示上次位置
+            panel.style.removeProperty('display')
             return
         }
         debug('panel create start')
-        const panel = new Panel()
-        panel.createPanel()
+        const newPanel = new Panel()
+        newPanel.createPanel()
         GROUPS.forEach((e) => {
             e.insertGroup()
             e.insertGroupItems()

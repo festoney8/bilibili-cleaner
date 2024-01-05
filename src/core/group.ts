@@ -84,7 +84,7 @@ export class Group implements IGroup {
                     e.reloadItem()
                 }
             })
-            debug(`reloadGroup ${this.groupID} OK`)
+            // debug(`reloadGroup ${this.groupID} OK`)
         } catch (err) {
             error(`reloadGroup ${this.groupID} err`)
             error(err)

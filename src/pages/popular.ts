@@ -5,8 +5,6 @@ const basicItems: NormalItem[] = []
 const hotItems: NormalItem[] = []
 const weeklyItems: NormalItem[] = []
 const historyItems: NormalItem[] = []
-const rankItems: NormalItem[] = []
-
 // GroupList
 const popularGroupList: Group[] = []
 
@@ -223,7 +221,7 @@ if (location.href.includes('bilibili.com/v/popular/')) {
                   width: unset !important;
                   height: unset !important;
                   margin: 4px !important;
-                  border-radius: 6px !important;
+                  border-radius: 6px;
                   overflow: hidden !important;
                 }
                 .card-list .video-card .video-card__info, .video-list .video-card .video-card__info {
@@ -283,7 +281,7 @@ if (location.href.includes('bilibili.com/v/popular/')) {
                 }
                 .rank-list .rank-item > .content > .img .num {
                   font-size: 18px;
-                  zoom: 1.2;
+                  zoom: 1.25;
                 }
                 .rank-list .rank-item > .content > .info {
                   margin-top: 8px !important;
@@ -359,35 +357,35 @@ if (location.href.includes('bilibili.com/v/popular/')) {
 
     // 入站必刷part, historyItems
     {
-        // 隐藏 视频tag (已关注/1万点赞)
+        // 隐藏 一句话简介
         historyItems.push(
             new NormalItem(
-                'popular-hot-hide-tag',
-                '隐藏 视频tag (已关注/1万点赞)',
+                'popular-history-hide-hint',
+                '隐藏 一句话简介',
                 false,
                 undefined,
                 false,
-                `.popular-list .rcmd-tag {display: none !important;}`,
+                `.history-list .history-hint {display: none !important;}`,
             ),
         )
     }
     popularGroupList.push(new Group('popular-history', '入站必刷', historyItems))
 
-    // 排行榜part, rankItems
-    {
-        // 隐藏 视频tag (已关注/1万点赞)
-        rankItems.push(
-            new NormalItem(
-                'popular-hot-hide-tag',
-                '隐藏 视频tag (已关注/1万点赞)',
-                false,
-                undefined,
-                false,
-                `.popular-list .rcmd-tag {display: none !important;}`,
-            ),
-        )
-    }
-    popularGroupList.push(new Group('popular-rank', '排行榜', rankItems))
+    // // 排行榜part, rankItems
+    // {
+    //     // 隐藏 视频tag (已关注/1万点赞)
+    //     rankItems.push(
+    //         new NormalItem(
+    //             'popular-rank-hide-tag',
+    //             '隐藏 视频tag (已关注/1万点赞)',
+    //             false,
+    //             undefined,
+    //             false,
+    //             `.popular-list .rcmd-tag {display: none !important;}`,
+    //         ),
+    //     )
+    // }
+    // popularGroupList.push(new Group('popular-rank', '排行榜', rankItems))
 }
 
 export { popularGroupList }

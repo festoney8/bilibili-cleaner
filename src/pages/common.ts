@@ -296,6 +296,22 @@ if (host === 't.bilibili.com') {
             .single-card.floor-card {
                 border: none !important;
             }`
+    } else if (href.includes('bilibili.com/v/popular/')) {
+        borderRadiusCSS = `
+            #nav-searchform,
+            .nav-search-content,
+            .v-popover-content,
+            .van-popover,
+            .v-popover,
+            .bili-header .search-panel,
+            .bili-header .header-upload-entry,
+            .upinfo-btn-panel *,
+            .rank-list .rank-item > .content > .img,
+            .card-list .video-card .video-card__content, .video-list .video-card .video-card__content,
+            .fixed-sidenav-storage div,
+            .fixed-sidenav-storage a {
+                border-radius: 3px !important;
+            }`
     }
 }
 

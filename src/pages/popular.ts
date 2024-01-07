@@ -276,7 +276,7 @@ if (location.href.includes('bilibili.com/v/popular/')) {
                   width: unset !important;
                   height: unset !important;
                   margin: 4px !important;
-                  border-radius: 6px !important;
+                  border-radius: 6px;
                   overflow: hidden !important;
                 }
                 .rank-list .rank-item > .content > .img .num {

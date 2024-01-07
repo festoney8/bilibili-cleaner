@@ -242,6 +242,17 @@ if (
                 `.bpx-player-video-area .bili-score {display: none !important;}`,
             ),
         )
+        // 隐藏 打卡弹窗
+        playerItems.push(
+            new NormalItem(
+                'video-page-hide-bpx-player-bili-clock',
+                '隐藏 打卡弹窗',
+                false,
+                undefined,
+                false,
+                `.bpx-player-video-area .bili-clock {display: none !important;}`,
+            ),
+        )
         // 隐藏 视频预告
         playerItems.push(
             new NormalItem(

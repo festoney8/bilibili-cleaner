@@ -370,22 +370,6 @@ if (location.href.includes('bilibili.com/v/popular/')) {
         )
     }
     popularGroupList.push(new Group('popular-history', '入站必刷', historyItems))
-
-    // // 排行榜part, rankItems
-    // {
-    //     // 隐藏 视频tag (已关注/1万点赞)
-    //     rankItems.push(
-    //         new NormalItem(
-    //             'popular-rank-hide-tag',
-    //             '隐藏 视频tag (已关注/1万点赞)',
-    //             false,
-    //             undefined,
-    //             false,
-    //             `.popular-list .rcmd-tag {display: none !important;}`,
-    //         ),
-    //     )
-    // }
-    // popularGroupList.push(new Group('popular-rank', '排行榜', rankItems))
 }
 
 export { popularGroupList }

@@ -567,7 +567,7 @@ if (location.host != 'live.bilibili.com') {
         headerLeftItems.push(
             new NormalItem(
                 'common-hide-nav-blackboard',
-                '隐藏 所有官方活动(blackboard)',
+                '隐藏 所有官方活动(强制)',
                 false,
                 undefined,
                 false,
@@ -575,6 +575,12 @@ if (location.host != 'live.bilibili.com') {
                     display: none !important;
                 }
                 div.bili-header__bar .left-entry li:has(>div>a[href*="bilibili.com/blackboard"]) {
+                    display: none !important;
+                }
+                div.bili-header__bar .left-entry li:has(>a[href*="bilibili.com/video/"]) {
+                    display: none !important;
+                }
+                div.bili-header__bar .left-entry li:has(>div>a[href*="bilibili.com/video/"]) {
                     display: none !important;
                 }
                 /* 旧版header */

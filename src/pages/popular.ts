@@ -159,11 +159,11 @@ if (location.href.includes('bilibili.com/v/popular/')) {
                 }`,
             ),
         )
-        // 采用全新四列布局 (实验性, 其余功能失效)
+        // 强制使用四列布局 (实验性 会覆盖其余功能)
         basicItems.push(
             new NormalItem(
                 'popular-four-column-layout',
-                '采用四列布局 (实验性)',
+                '强制使用四列布局 (实验性 会覆盖其余功能)',
                 false,
                 undefined,
                 false,
@@ -235,7 +235,7 @@ if (location.href.includes('bilibili.com/v/popular/')) {
                 .card-list .video-card .video-card__info .video-name, .video-list .video-card .video-card__info .video-name {
                   font-weight: normal !important;
                   margin-bottom: 8px !important;
-                  font-size: 16px !important;
+                  font-size: 15px !important;
                   line-height: 22px !important;
                   height: 44px !important;
                   overflow: hidden !important;
@@ -295,7 +295,7 @@ if (location.href.includes('bilibili.com/v/popular/')) {
                   height: 44px !important;
                   line-height: 22px !important;
                   font-weight: 500 !important;
-                  font-size: 16px !important;
+                  font-size: 15px !important;
                   overflow: hidden !important;
                 }
                 .rank-list .rank-item > .content > .info .detail {

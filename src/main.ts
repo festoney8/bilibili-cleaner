@@ -11,6 +11,7 @@ import { bangumiGroupList } from './pages/bangumi'
 import { searchGroupList } from './pages/search'
 import { liveGroupList } from './pages/live'
 import { dynamicGroupList } from './pages/dynamic'
+import { popularGroupList } from './pages/popular'
 
 log('script start')
 
@@ -26,6 +27,7 @@ const main = async () => {
     // 载入规则
     const GROUPS: Group[] = [
         ...homepageGroupList,
+        ...popularGroupList,
         ...videoGroupList,
         ...bangumiGroupList,
         ...searchGroupList,

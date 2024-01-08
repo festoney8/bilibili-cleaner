@@ -13,8 +13,9 @@ const dynamicGroupList: Group[] = []
 /**
  * 动态页面规则
  * 动态评论区的规则尽可能使用与video page相同的itemID, 同步开关状态
+ * 评论区规则适配2种动态详情页(t.bilibili.com/12121212和bilibili.com/opus/12121212)
  */
-if (location.host === 't.bilibili.com') {
+if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/opus/')) {
     // 基本功能part, basicItems
     {
         // 顶栏 不再吸附顶部
@@ -184,7 +185,18 @@ if (location.host === 't.bilibili.com') {
                 false,
                 undefined,
                 false,
-                `.comment-container .main-reply-box, .fixed-reply-box {display: none !important;}`,
+                `.comment-container .main-reply-box, .comment-container .fixed-reply-box {display: none !important;}`,
+            ),
+        )
+        // 隐藏 页面底部 吸附评论框, 默认开启
+        commentItems.push(
+            new NormalItem(
+                'video-page-hide-fixed-reply-box',
+                '隐藏 页面底部 吸附评论框',
+                true,
+                undefined,
+                false,
+                `.comment-container .fixed-reply-box {display: none !important;}`,
             ),
         )
         // 隐藏 评论编辑器内占位文字, 默认开启

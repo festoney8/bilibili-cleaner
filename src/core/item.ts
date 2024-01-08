@@ -74,7 +74,7 @@ export class NormalItem implements IItem {
             error(err)
         }
     }
-    /** 启用CSS片段, 向document.head插入style */
+    /** 启用CSS片段, 向<html>插入style */
     insertItemCSS() {
         if (!this.itemCSS) {
             return
@@ -85,7 +85,7 @@ export class NormalItem implements IItem {
                 return
             }
             const style = document.createElement('style')
-            // 简单压缩, 若使用innerText, 多行CSS插入head后会产生<br>标签
+            // 简单压缩, 若使用innerText, 多行CSS插入后会产生<br>标签
             style.innerHTML = this.itemCSS.replace(/\n\s*/g, '').trim()
             // 指定CSS片段ID，用于实时启用停用
             style.setAttribute('bili-cleaner-css', this.itemID)
@@ -98,7 +98,7 @@ export class NormalItem implements IItem {
             error(err)
         }
     }
-    /** 停用CSS片段, 从document.head移除style */
+    /** 停用CSS片段, 从<html>移除style */
     removeItemCSS() {
         if (this.itemCSS) {
             const style = document.querySelector(`html>style[bili-cleaner-css=${this.itemID}]`) as HTMLStyleElement
@@ -132,7 +132,7 @@ export class NormalItem implements IItem {
         }
     }
     /**
-     * 执行item功能, 在页面head添加CSS, 执行func
+     * 执行item功能, 添加CSS, 执行func
      * @param enableFunc 是否执行func, 默认true
      */
     enableItem(enableFunc = true) {

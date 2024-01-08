@@ -296,6 +296,22 @@ if (host === 't.bilibili.com') {
             .single-card.floor-card {
                 border: none !important;
             }`
+    } else if (href.includes('bilibili.com/v/popular/')) {
+        borderRadiusCSS = `
+            #nav-searchform,
+            .nav-search-content,
+            .v-popover-content,
+            .van-popover,
+            .v-popover,
+            .bili-header .search-panel,
+            .bili-header .header-upload-entry,
+            .upinfo-btn-panel *,
+            .rank-list .rank-item > .content > .img,
+            .card-list .video-card .video-card__content, .video-list .video-card .video-card__content,
+            .fixed-sidenav-storage div,
+            .fixed-sidenav-storage a {
+                border-radius: 3px !important;
+            }`
     }
 }
 
@@ -551,7 +567,7 @@ if (location.host != 'live.bilibili.com') {
         headerLeftItems.push(
             new NormalItem(
                 'common-hide-nav-blackboard',
-                '隐藏 所有官方活动(blackboard)',
+                '隐藏 所有官方活动(强制)',
                 false,
                 undefined,
                 false,
@@ -559,6 +575,12 @@ if (location.host != 'live.bilibili.com') {
                     display: none !important;
                 }
                 div.bili-header__bar .left-entry li:has(>div>a[href*="bilibili.com/blackboard"]) {
+                    display: none !important;
+                }
+                div.bili-header__bar .left-entry li:has(>a[href*="bilibili.com/video/"]) {
+                    display: none !important;
+                }
+                div.bili-header__bar .left-entry li:has(>div>a[href*="bilibili.com/video/"]) {
                     display: none !important;
                 }
                 /* 旧版header */

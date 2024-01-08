@@ -33,7 +33,7 @@ jobs:
       - name: mkdir
         run: mkdir output
       - name: move and rename file
-        run: mv dist/bilibili-cleaner.user.js output/bilibili-cleaner.user.min.js
+        run: mv dist/bilibili-cleaner.user.js output/bilibili-cleaner.min.user.js
       - name: build default
         run: pnpm run build
       - name: copy file

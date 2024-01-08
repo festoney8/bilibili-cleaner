@@ -252,6 +252,9 @@ if (location.href.includes('bilibili.com/v/popular/')) {
                 .card-list .video-card .video-card__info .video-stat .play-text, .video-list .video-card .video-card__info .video-stat .play-text {
                   text-wrap: nowrap !important;
                 }
+                .card-list .video-card .video-card__info .video-stat .like-text, .video-list .video-card .video-card__info .video-stat .like-text {
+                  text-wrap: nowrap !important;
+                }
                 /* 排行榜, grid布局 */
                 .rank-list {
                   width: 100% !important;

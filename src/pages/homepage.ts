@@ -216,6 +216,30 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
                 }`,
             ),
         )
+        // 增大 视频信息字号
+        basicItems.push(
+            new NormalItem(
+                'homepage-increase-rcmd-list-font-size',
+                '增大 视频信息字号',
+                false,
+                undefined,
+                false,
+                `.bili-video-card .bili-video-card__info--tit,
+                .bili-live-card .bili-live-card__info--tit,
+                .single-card.floor-card .title {
+                    font-size: 16px !important;
+                }
+                .bili-video-card .bili-video-card__info--bottom,
+                .floor-card .sub-title.sub-title {
+                    font-size: 14px !important;
+                }
+                .bili-video-card__stats,
+                .bili-video-card__stats .bili-video-card__stats--left,
+                .bili-video-card__stats .bili-video-card__stats--right {
+                    font-size: 14px !important;
+                }`,
+            ),
+        )
     }
     homepageGroupList.push(new Group('homepage-basic', '首页 基本功能', basicItems))
 

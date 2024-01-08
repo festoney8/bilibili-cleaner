@@ -325,7 +325,7 @@ if (location.href.includes('bilibili.com/v/popular/')) {
 
     // 综合热门part, hotItems
     {
-        // 隐藏 视频tag (已关注/1万点赞)
+        // 隐藏 视频tag (人气飙升/1万点赞)
         hotItems.push(
             new NormalItem(
                 'popular-hot-hide-tag',

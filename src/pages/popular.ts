@@ -262,7 +262,7 @@ if (location.href.includes('bilibili.com/v/popular/')) {
                 .card-list .video-card .video-card__info .video-name, .video-list .video-card .video-card__info .video-name {
                   font-weight: normal !important;
                   margin-bottom: 8px !important;
-                  font-size: 16px !important;
+                  font-size: 15px !important;
                   line-height: 22px !important;
                   height: 44px !important;
                   overflow: hidden !important;
@@ -321,7 +321,7 @@ if (location.href.includes('bilibili.com/v/popular/')) {
                   height: 44px !important;
                   line-height: 22px !important;
                   font-weight: 500 !important;
-                  font-size: 16px !important;
+                  font-size: 15px !important;
                   overflow: hidden !important;
                 }
                 .rank-list .rank-item > .content > .info .detail {
@@ -423,7 +423,7 @@ if (location.href.includes('bilibili.com/v/popular/')) {
                 .card-list .video-card .video-card__info .video-name, .video-list .video-card .video-card__info .video-name {
                   font-weight: normal !important;
                   margin-bottom: 8px !important;
-                  font-size: 16px !important;
+                  font-size: 15px !important;
                   line-height: 22px !important;
                   height: 44px !important;
                   overflow: hidden !important;
@@ -482,7 +482,7 @@ if (location.href.includes('bilibili.com/v/popular/')) {
                   height: 44px !important;
                   line-height: 22px !important;
                   font-weight: 500 !important;
-                  font-size: 16px !important;
+                  font-size: 15px !important;
                   overflow: hidden !important;
                 }
                 .rank-list .rank-item > .content > .info .detail {
@@ -584,7 +584,7 @@ if (location.href.includes('bilibili.com/v/popular/')) {
                 .card-list .video-card .video-card__info .video-name, .video-list .video-card .video-card__info .video-name {
                   font-weight: normal !important;
                   margin-bottom: 8px !important;
-                  font-size: 16px !important;
+                  font-size: 15px !important;
                   line-height: 22px !important;
                   height: 44px !important;
                   overflow: hidden !important;
@@ -643,7 +643,7 @@ if (location.href.includes('bilibili.com/v/popular/')) {
                   height: 44px !important;
                   line-height: 22px !important;
                   font-weight: 500 !important;
-                  font-size: 16px !important;
+                  font-size: 15px !important;
                   overflow: hidden !important;
                 }
                 .rank-list .rank-item > .content > .info .detail {

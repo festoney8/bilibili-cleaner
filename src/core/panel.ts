@@ -99,21 +99,24 @@ export class Panel implements IPanel {
     }
     /* 每行Item选项的样式, 按钮和文字 */
     .bili-cleaner-item-list label {
-        display: block;
-        vertical-align: middle;
+        display: flex;
+        align-items: center;
         margin: 6px 0 6px 10px;
         font-size: 16px;
         color: black;
+    }
+    .bili-cleaner-item-list label span {
+        margin-left: 1em;
     }
     .bili-cleaner-item-list hr {
         border: 1px solid #eee;
         margin: 15px 20px;
     }
     .bili-cleaner-item-switch {
-        vertical-align: middle;
         width: 50px;
+        min-width: 50px;
         height: 27px;
-        margin: 0 1em 0 0;
+        margin: 0;
         position: relative;
         border: 1px solid #dfdfdf;
         background-color: #fdfdfd;

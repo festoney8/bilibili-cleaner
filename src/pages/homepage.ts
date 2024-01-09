@@ -2,6 +2,7 @@ import { Group } from '../core/group'
 import { NormalItem } from '../core/item'
 
 const basicItems: NormalItem[] = []
+const layoutItems: NormalItem[] = []
 const rcmdListItems: NormalItem[] = []
 const sidebarItems: NormalItem[] = []
 const biliAppRcmdItems: NormalItem[] = []
@@ -242,6 +243,50 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         )
     }
     homepageGroupList.push(new Group('homepage-basic', '首页 基本功能', basicItems))
+
+    // 页面布局part, layoutItems
+    {
+        // 强制使用 4 列布局
+        layoutItems.push(
+            new NormalItem(
+                'homepage-layout-4-column',
+                '强制使用 4 列布局\n建议开启 增大视频信息字号',
+                false,
+                undefined,
+                false,
+                `#i_cecream .recommended-container_floor-aside .container {
+                    grid-template-columns: repeat(4,1fr) !important;
+                }`,
+            ),
+        )
+        // 强制使用 5 列布局
+        layoutItems.push(
+            new NormalItem(
+                'homepage-layout-5-column',
+                '强制使用 5 列布局\n建议开启 增大视频信息字号',
+                false,
+                undefined,
+                false,
+                `#i_cecream .recommended-container_floor-aside .container {
+                    grid-template-columns: repeat(5,1fr) !important;
+                }`,
+            ),
+        )
+        // 强制使用 6 列布局
+        layoutItems.push(
+            new NormalItem(
+                'homepage-layout-6-column',
+                '强制使用 6 列布局\n建议 隐藏发布时间、隐藏视频tag，开启增大字号',
+                false,
+                undefined,
+                false,
+                `#i_cecream .recommended-container_floor-aside .container {
+                    grid-template-columns: repeat(6,1fr) !important;
+                }`,
+            ),
+        )
+    }
+    homepageGroupList.push(new Group('homepage-layout', '页面强制布局 (三选一, 默认关闭)', layoutItems))
 
     // 视频列表part, rcmdListItems
     {

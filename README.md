@@ -81,6 +81,10 @@
     -   搜索 `layout.css.has-selector.enabled` ，将这一项的开关改为 `true`，并刷新标签页
 -   **Firefox版本 > 121，无需修改设定**
 
+### Safari
+
+-   未测试
+
 ### 脚本管理插件
 
 |         | [Tampermonkey](https://www.tampermonkey.net/) (油猴插件)                                                | [Violentmonkey](https://violentmonkey.github.io/) (暴力猴)                                       |
@@ -90,6 +94,7 @@
 | Firefox | [链接](https://addons.mozilla.org/firefox/addon/tampermonkey/)                                          | [链接](https://addons.mozilla.org/firefox/addon/violentmonkey/)                                  |
 | 测试    | **已测试，推荐**                                                                                        | 支持，部分测试                                                                                   |
 
+-   Safari 浏览器的脚本管理插件未进行测试
 -   [Greasemonkey](https://www.greasespot.net/) 和 [ScriptCat](https://docs.scriptcat.org/) 未进行测试
 
 ## 净化效果对比
@@ -155,6 +160,21 @@
 </details>
 
 <details>
+
+<summary><b>查看 热门视频/排行榜页 对比图</b></summary>
+
+### before
+
+![](images/screenshot-popular-before.png)
+
+### after
+
+![](images/screenshot-popular-after.png)
+
+</details>
+
+<details>
+
 <summary><b>查看 插件混用首页 (cleaner + Evolved + app-recommend)</b></summary>
 
 ![](images/screenshot-homepage-multi-plugins.png)
@@ -181,6 +201,10 @@
 ### 与 [bilibili-app-recommend](https://greasyfork.org/zh-CN/scripts/443530) 的兼容性
 
 -   **兼容**，提供 **隐藏 视频tag / 隐藏 弹幕数 / 隐藏 点赞数** 功能，在首页功能菜单末尾
+
+### 与 [Bilibili 旧播放页](https://github.com/MotooriKashin/Bilibili-Old) 的兼容性
+
+-   **不兼容**，旧播放页脚本完全接管页面，使用该脚本时请在脚本管理器中关闭本净化脚本，以免造成干扰
 
 ## 数据导入与导出
 

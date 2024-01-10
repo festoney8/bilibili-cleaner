@@ -17,7 +17,7 @@ export class NormalItem implements IItem {
 
     /**
      * @param itemID item的唯一ID, 与GM database中的Key对应, 使用相同ID可共享item状态
-     * @param description item的功能介绍, 显示在panel内
+     * @param description item的功能介绍, 显示在panel内, \n可用来换行
      * @param defaultStatus item默认开启状态, 第一次安装时使用, 对于所有用户均开启的项目默认给true
      * @param itemFunc 功能函数
      * @param isItemFuncReload 功能函数是否在URL变动时重新运行
@@ -60,9 +60,9 @@ export class NormalItem implements IItem {
             const e = document.createElement('label')
             e.id = this.itemID
             if (this.isEnable) {
-                e.innerHTML = `${this.checkedHTML}<span>${this.description}</span>`
+                e.innerHTML = `${this.checkedHTML}<span>${this.description.replaceAll('\n', '<br>')}</span>`
             } else {
-                e.innerHTML = `${this.uncheckedHTML}<span>${this.description}</span>`
+                e.innerHTML = `${this.uncheckedHTML}<span>${this.description.replaceAll('\n', '<br>')}</span>`
             }
             const itemGroupList = document.querySelector(`#${groupID} .bili-cleaner-item-list`) as HTMLFormElement
             if (itemGroupList) {

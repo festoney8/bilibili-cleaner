@@ -2,6 +2,7 @@ import { Group } from '../core/group'
 import { NormalItem } from '../core/item'
 
 const basicItems: NormalItem[] = []
+const layoutItems: NormalItem[] = []
 const hotItems: NormalItem[] = []
 const weeklyItems: NormalItem[] = []
 const historyItems: NormalItem[] = []
@@ -159,33 +160,59 @@ if (location.href.includes('bilibili.com/v/popular/')) {
                 }`,
             ),
         )
-        // 强制使用四列布局 (实验性 会覆盖其余功能)
+        // 隐藏 弹幕数
         basicItems.push(
             new NormalItem(
-                'popular-four-column-layout',
-                '强制使用四列布局 (实验性 会覆盖其余功能)',
+                'popular-hide-danmaku-count',
+                '隐藏 弹幕数',
                 false,
                 undefined,
                 false,
-                `
-                /* 页面宽度 */
+                `.popular-list .video-stat .like-text,
+                .weekly-list .video-stat .like-text,
+                .history-list .video-stat .like-text,
+                .rank-list .rank-item .detail-state .data-box:nth-child(2) {
+                    display: none !important;
+                }
+                .rank-list .rank-item .detail-state .data-box:nth-child(1) {
+                    margin: 0 !important;
+                }
+                .video-card .video-stat .play-text {
+                    margin-right: 0 !important;
+                }`,
+            ),
+        )
+    }
+    popularGroupList.push(new Group('popular-basic', '热门/排行榜页 基本功能', basicItems))
+
+    // 页面布局part, layoutItems
+    {
+        // 强制使用 4 列布局
+        layoutItems.push(
+            new NormalItem(
+                'popular-layout-4-column',
+                '强制使用 4 列布局',
+                false,
+                undefined,
+                false,
+                `/* 页面宽度 */
                 @media (min-width: 1300px) and (max-width: 1399.9px) {
-                    .popular-container {
-                        max-width: 1180px !important;
-                    }
+                  .popular-container {
+                    max-width: 1180px !important;
+                  }
                 }
                 @media (max-width: 1139.9px) {
-                    .popular-container {
-                        max-width: 1020px !important;
-                    }
+                  .popular-container {
+                    max-width: 1020px !important;
+                  }
                 }
                 /* 布局高度 */
                 .rank-container .rank-tab-wrap {
                   margin-bottom: 0 !important;
-                  padding: 5px 0 !important;
+                  padding: 10px 0 !important;
                 }
                 .nav-tabs {
-                  height: 64px !important;
+                  height: 70px !important;
                 }
                 .popular-list {
                   padding: 10px 0 0 !important;
@@ -220,14 +247,14 @@ if (location.href.includes('bilibili.com/v/popular/')) {
                   background: none;
                   width: unset !important;
                   height: unset !important;
-                  margin: 4px !important;
-                  border-radius: 6px;
+                  margin: 0 !important;
+                  border-radius: 6px !important;
                   overflow: hidden !important;
                 }
                 .card-list .video-card .video-card__info, .video-list .video-card .video-card__info {
                   margin-top: 8px !important;
-                  padding: 0 4px !important;
                   font-size: 14px;
+                  padding: 0 !important;
                 }
                 .card-list .video-card .video-card__info .rcmd-tag, .video-list .video-card .video-card__info .rcmd-tag {
                   display: none !important;
@@ -249,7 +276,7 @@ if (location.href.includes('bilibili.com/v/popular/')) {
                   display: flex !important;
                   justify-content: space-between !important;
                 }
-                .card-list .video-card .video-card__info .video-stat .play-text, .video-list .video-card .video-card__info .video-stat .play-text {
+                .card-list .video-card .video-card__info .video-stat .play-text, .video-list .video-card .video-card__info .video-stat .play-text, .card-list .video-card .video-card__info .video-stat .like-text, .video-list .video-card .video-card__info .video-stat .like-text {
                   text-wrap: nowrap !important;
                 }
                 /* 排行榜, grid布局 */
@@ -275,19 +302,18 @@ if (location.href.includes('bilibili.com/v/popular/')) {
                   background: none;
                   width: unset !important;
                   height: unset !important;
-                  margin: 4px !important;
-                  border-radius: 6px;
+                  margin: 0 !important;
+                  border-radius: 6px !important;
                   overflow: hidden !important;
                 }
                 .rank-list .rank-item > .content > .img .num {
                   font-size: 18px;
-                  zoom: 1.25;
+                  zoom: 1.2;
                 }
                 .rank-list .rank-item > .content > .info {
                   margin-top: 8px !important;
                   margin-left: unset !important;
-                  padding-left: 4px !important;
-                  padding-right: 4px !important;
+                  padding: 0 !important;
                   font-size: 14px;
                   height: unset !important;
                 }
@@ -304,24 +330,348 @@ if (location.href.includes('bilibili.com/v/popular/')) {
                   align-items: center !important;
                   margin-top: 8px !important;
                 }
-                .rank-list .rank-item > .content > .info .detail .up-name {
+                .rank-list .rank-item > .content > .info .detail > a .up-name {
                   margin: unset !important;
                   font-size: 14px;
                   text-wrap: nowrap !important;
                 }
-                .rank-list .rank-item > .content > .info .detail .data-box {
+                .rank-list .rank-item > .content > .info .detail > .detail-state .data-box {
                   line-height: unset !important;
-                  margin: 0 12px 0 0 !important;
+                  margin: 0 12px 0 0;
                   text-wrap: nowrap !important;
+                }
+                .rank-list .rank-item > .content > .info .detail > .detail-state .data-box:nth-child(2) {
+                  margin: 0 !important;
                 }
                 .rank-list .rank-item > .content .more-data {
                   display: none !important;
+                }`,
+            ),
+        )
+        // 强制使用 5 列布局
+        layoutItems.push(
+            new NormalItem(
+                'popular-layout-5-column',
+                '强制使用 5 列布局',
+                false,
+                undefined,
+                false,
+                `/* 页面宽度 */
+                @media (min-width: 1300px) and (max-width: 1399.9px) {
+                  .popular-container {
+                    max-width: 1180px !important;
+                  }
                 }
-                `,
+                @media (max-width: 1139.9px) {
+                  .popular-container {
+                    max-width: 1020px !important;
+                  }
+                }
+                /* 布局高度 */
+                .rank-container .rank-tab-wrap {
+                  margin-bottom: 0 !important;
+                  padding: 10px 0 !important;
+                }
+                .nav-tabs {
+                  height: 70px !important;
+                }
+                .popular-list {
+                  padding: 10px 0 0 !important;
+                }
+                .video-list {
+                  margin-top: 15px !important;
+                }
+                /* 屏蔽 Tips */
+                .popular-list .popular-tips, .rank-container .rank-tips, .history-list .history-tips {
+                  display: none !important;
+                }
+                /* 屏蔽 Hint */
+                .popular-list .popular-tips, .weekly-list .weekly-hint, .history-list .history-hint {
+                  display: none !important;
+                }
+                /* 通用：综合热门, 每周必看, 入站必刷, grid布局 */
+                .card-list, .video-list {
+                  width: 100% !important;
+                  display: grid !important;
+                  grid-gap: 20px !important;
+                  grid-column: span 5 !important;
+                  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+                }
+                .card-list .video-card, .video-list .video-card {
+                  display: unset !important;
+                  width: unset !important;
+                  height: unset !important;
+                  margin-right: unset !important;
+                  margin-bottom: unset !important;
+                }
+                .card-list .video-card .video-card__content, .video-list .video-card .video-card__content {
+                  background: none;
+                  width: unset !important;
+                  height: unset !important;
+                  margin: 0 !important;
+                  border-radius: 6px !important;
+                  overflow: hidden !important;
+                }
+                .card-list .video-card .video-card__info, .video-list .video-card .video-card__info {
+                  margin-top: 8px !important;
+                  font-size: 14px;
+                  padding: 0 !important;
+                }
+                .card-list .video-card .video-card__info .rcmd-tag, .video-list .video-card .video-card__info .rcmd-tag {
+                  display: none !important;
+                }
+                .card-list .video-card .video-card__info .video-name, .video-list .video-card .video-card__info .video-name {
+                  font-weight: normal !important;
+                  margin-bottom: 8px !important;
+                  font-size: 15px !important;
+                  line-height: 22px !important;
+                  height: 44px !important;
+                  overflow: hidden !important;
+                }
+                .card-list .video-card .video-card__info .up-name, .video-list .video-card .video-card__info .up-name {
+                  margin: unset !important;
+                  font-size: 14px !important;
+                  text-wrap: nowrap !important;
+                }
+                .card-list .video-card .video-card__info > div, .video-list .video-card .video-card__info > div {
+                  display: flex !important;
+                  justify-content: space-between !important;
+                }
+                .card-list .video-card .video-card__info .video-stat .play-text, .video-list .video-card .video-card__info .video-stat .play-text, .card-list .video-card .video-card__info .video-stat .like-text, .video-list .video-card .video-card__info .video-stat .like-text {
+                  text-wrap: nowrap !important;
+                }
+                /* 排行榜, grid布局 */
+                .rank-list {
+                  width: 100% !important;
+                  display: grid !important;
+                  grid-gap: 20px !important;
+                  grid-column: span 5 !important;
+                  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+                }
+                .rank-list .rank-item {
+                  display: unset !important;
+                  width: unset !important;
+                  height: unset !important;
+                  margin-right: unset !important;
+                  margin-bottom: unset !important;
+                }
+                .rank-list .rank-item > .content {
+                  display: unset !important;
+                  padding: unset !important;
+                }
+                .rank-list .rank-item > .content > .img {
+                  background: none;
+                  width: unset !important;
+                  height: unset !important;
+                  margin: 0 !important;
+                  border-radius: 6px !important;
+                  overflow: hidden !important;
+                }
+                .rank-list .rank-item > .content > .img .num {
+                  font-size: 18px;
+                  zoom: 1.2;
+                }
+                .rank-list .rank-item > .content > .info {
+                  margin-top: 8px !important;
+                  margin-left: unset !important;
+                  padding: 0 !important;
+                  font-size: 14px;
+                  height: unset !important;
+                }
+                .rank-list .rank-item > .content > .info .title {
+                  height: 44px !important;
+                  line-height: 22px !important;
+                  font-weight: 500 !important;
+                  font-size: 15px !important;
+                  overflow: hidden !important;
+                }
+                .rank-list .rank-item > .content > .info .detail {
+                  display: flex !important;
+                  justify-content: space-between !important;
+                  align-items: center !important;
+                  margin-top: 8px !important;
+                }
+                .rank-list .rank-item > .content > .info .detail > a .up-name {
+                  margin: unset !important;
+                  font-size: 14px;
+                  text-wrap: nowrap !important;
+                }
+                .rank-list .rank-item > .content > .info .detail > .detail-state .data-box {
+                  line-height: unset !important;
+                  margin: 0 12px 0 0;
+                  text-wrap: nowrap !important;
+                }
+                .rank-list .rank-item > .content > .info .detail > .detail-state .data-box:nth-child(2) {
+                  margin: 0 !important;
+                }
+                .rank-list .rank-item > .content .more-data {
+                  display: none !important;
+                }`,
+            ),
+        )
+        // 强制使用 6 列布局
+        layoutItems.push(
+            new NormalItem(
+                'popular-layout-6-column',
+                '强制使用 6 列布局，建议开启 隐藏弹幕数',
+                false,
+                undefined,
+                false,
+                `/* 页面宽度 */
+                @media (min-width: 1300px) and (max-width: 1399.9px) {
+                  .popular-container {
+                    max-width: 1180px !important;
+                  }
+                }
+                @media (max-width: 1139.9px) {
+                  .popular-container {
+                    max-width: 1020px !important;
+                  }
+                }
+                /* 布局高度 */
+                .rank-container .rank-tab-wrap {
+                  margin-bottom: 0 !important;
+                  padding: 10px 0 !important;
+                }
+                .nav-tabs {
+                  height: 70px !important;
+                }
+                .popular-list {
+                  padding: 10px 0 0 !important;
+                }
+                .video-list {
+                  margin-top: 15px !important;
+                }
+                /* 屏蔽 Tips */
+                .popular-list .popular-tips, .rank-container .rank-tips, .history-list .history-tips {
+                  display: none !important;
+                }
+                /* 屏蔽 Hint */
+                .popular-list .popular-tips, .weekly-list .weekly-hint, .history-list .history-hint {
+                  display: none !important;
+                }
+                /* 通用：综合热门, 每周必看, 入站必刷, grid布局 */
+                .card-list, .video-list {
+                  width: 100% !important;
+                  display: grid !important;
+                  grid-gap: 20px !important;
+                  grid-column: span 6 !important;
+                  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+                }
+                .card-list .video-card, .video-list .video-card {
+                  display: unset !important;
+                  width: unset !important;
+                  height: unset !important;
+                  margin-right: unset !important;
+                  margin-bottom: unset !important;
+                }
+                .card-list .video-card .video-card__content, .video-list .video-card .video-card__content {
+                  background: none;
+                  width: unset !important;
+                  height: unset !important;
+                  margin: 0 !important;
+                  border-radius: 6px !important;
+                  overflow: hidden !important;
+                }
+                .card-list .video-card .video-card__info, .video-list .video-card .video-card__info {
+                  margin-top: 8px !important;
+                  font-size: 14px;
+                  padding: 0 !important;
+                }
+                .card-list .video-card .video-card__info .rcmd-tag, .video-list .video-card .video-card__info .rcmd-tag {
+                  display: none !important;
+                }
+                .card-list .video-card .video-card__info .video-name, .video-list .video-card .video-card__info .video-name {
+                  font-weight: normal !important;
+                  margin-bottom: 8px !important;
+                  font-size: 15px !important;
+                  line-height: 22px !important;
+                  height: 44px !important;
+                  overflow: hidden !important;
+                }
+                .card-list .video-card .video-card__info .up-name, .video-list .video-card .video-card__info .up-name {
+                  margin: unset !important;
+                  font-size: 14px !important;
+                  text-wrap: nowrap !important;
+                }
+                .card-list .video-card .video-card__info > div, .video-list .video-card .video-card__info > div {
+                  display: flex !important;
+                  justify-content: space-between !important;
+                }
+                .card-list .video-card .video-card__info .video-stat .play-text, .video-list .video-card .video-card__info .video-stat .play-text, .card-list .video-card .video-card__info .video-stat .like-text, .video-list .video-card .video-card__info .video-stat .like-text {
+                  text-wrap: nowrap !important;
+                }
+                /* 排行榜, grid布局 */
+                .rank-list {
+                  width: 100% !important;
+                  display: grid !important;
+                  grid-gap: 20px !important;
+                  grid-column: span 6 !important;
+                  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+                }
+                .rank-list .rank-item {
+                  display: unset !important;
+                  width: unset !important;
+                  height: unset !important;
+                  margin-right: unset !important;
+                  margin-bottom: unset !important;
+                }
+                .rank-list .rank-item > .content {
+                  display: unset !important;
+                  padding: unset !important;
+                }
+                .rank-list .rank-item > .content > .img {
+                  background: none;
+                  width: unset !important;
+                  height: unset !important;
+                  margin: 0 !important;
+                  border-radius: 6px !important;
+                  overflow: hidden !important;
+                }
+                .rank-list .rank-item > .content > .img .num {
+                  font-size: 18px;
+                  zoom: 1.1;
+                }
+                .rank-list .rank-item > .content > .info {
+                  margin-top: 8px !important;
+                  margin-left: unset !important;
+                  padding: 0 !important;
+                  font-size: 14px;
+                  height: unset !important;
+                }
+                .rank-list .rank-item > .content > .info .title {
+                  height: 44px !important;
+                  line-height: 22px !important;
+                  font-weight: 500 !important;
+                  font-size: 15px !important;
+                  overflow: hidden !important;
+                }
+                .rank-list .rank-item > .content > .info .detail {
+                  display: flex !important;
+                  justify-content: space-between !important;
+                  align-items: center !important;
+                  margin-top: 8px !important;
+                }
+                .rank-list .rank-item > .content > .info .detail > a .up-name {
+                  margin: unset !important;
+                  font-size: 14px;
+                  text-wrap: nowrap !important;
+                }
+                .rank-list .rank-item > .content > .info .detail > .detail-state .data-box {
+                  line-height: unset !important;
+                  margin: 0 12px 0 0;
+                  text-wrap: nowrap !important;
+                }
+                .rank-list .rank-item > .content > .info .detail > .detail-state .data-box:nth-child(2) {
+                  margin: 0 !important;
+                }
+                .rank-list .rank-item > .content .more-data {
+                  display: none !important;
+                }`,
             ),
         )
     }
-    popularGroupList.push(new Group('popular-basic', '热门/排行榜页 基本功能', basicItems))
+    popularGroupList.push(new Group('popular-layout', '页面强制布局 (三选一, 实验性)', layoutItems))
 
     // 综合热门part, hotItems
     {

@@ -1,15 +1,15 @@
 import { Group } from '../core/group'
-import { NormalItem } from '../core/item'
+import { CheckboxItem } from '../core/item'
 import { debug } from '../utils/logger'
 
-const basicItems: NormalItem[] = []
-const playerItems: NormalItem[] = []
-const playerControlItems: NormalItem[] = []
-const danmakuItems: NormalItem[] = []
-const toolbarItems: NormalItem[] = []
-const rightItems: NormalItem[] = []
-const commentItems: NormalItem[] = []
-const sidebarItems: NormalItem[] = []
+const basicItems: CheckboxItem[] = []
+const playerItems: CheckboxItem[] = []
+const playerControlItems: CheckboxItem[] = []
+const danmakuItems: CheckboxItem[] = []
+const toolbarItems: CheckboxItem[] = []
+const rightItems: CheckboxItem[] = []
+const commentItems: CheckboxItem[] = []
+const sidebarItems: CheckboxItem[] = []
 // GroupList
 const bangumiGroupList: Group[] = []
 
@@ -53,7 +53,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
     {
         // 净化分享功能, 默认开启, 关闭功能需刷新
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-simple-share',
                 '净化分享功能',
                 true,
@@ -67,7 +67,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 顶栏 滚动页面后不再吸附顶部
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-fixed-header',
                 '顶栏 滚动页面后不再吸附顶部',
                 false,
@@ -83,7 +83,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
     {
         // 隐藏 播放器内标题
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-top-left-title',
                 '隐藏 播放器内标题',
                 false,
@@ -96,7 +96,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // bangumi独有项：隐藏 追番/追剧按钮, 默认开启
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'bangumi-page-hide-bpx-player-top-follow',
                 '隐藏 追番/追剧按钮 ★',
                 true,
@@ -107,7 +107,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 反馈按钮, 默认开启
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-top-issue',
                 '隐藏 反馈按钮',
                 true,
@@ -118,7 +118,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 视频暂停时大Logo
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-state-wrap',
                 '隐藏 视频暂停时大Logo',
                 false,
@@ -129,7 +129,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // bangumi独有项：隐藏 视频内封审核号(非内嵌), 默认开启
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'bangumi-page-hide-bpx-player-record-item-wrap',
                 '隐藏 视频内封审核号(非内嵌) ★',
                 true,
@@ -140,7 +140,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 弹幕悬停 点赞/复制/举报
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-dialog-wrap',
                 '隐藏 弹幕悬停 点赞/复制/举报',
                 false,
@@ -151,7 +151,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 高赞弹幕前点赞按钮
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-bpx-player-bili-high-icon',
                 '隐藏 高赞弹幕前点赞按钮',
                 false,
@@ -162,7 +162,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 彩色渐变弹幕 变成白色
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-bpx-player-bili-dm-vip-white',
                 '彩色渐变弹幕 变成白色',
                 false,
@@ -187,7 +187,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
     {
         // 隐藏 上一个视频
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-prev',
                 '隐藏 上一个视频',
                 false,
@@ -198,7 +198,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 播放/暂停
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-play',
                 '隐藏 播放/暂停',
                 false,
@@ -209,7 +209,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 下一个视频
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-next',
                 '隐藏 下一个视频',
                 false,
@@ -220,7 +220,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 选集
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-eplist',
                 '隐藏 选集',
                 false,
@@ -231,7 +231,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 倍速
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-playbackrate',
                 '隐藏 倍速',
                 false,
@@ -242,7 +242,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 字幕
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-subtitle',
                 '隐藏 字幕',
                 false,
@@ -253,7 +253,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 音量
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-volume',
                 '隐藏 音量',
                 false,
@@ -264,7 +264,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 视频设置
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-setting',
                 '隐藏 视频设置',
                 false,
@@ -275,7 +275,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 画中画(Chrome)
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-pip',
                 '隐藏 画中画(Chrome)',
                 false,
@@ -286,7 +286,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 宽屏
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-wide',
                 '隐藏 宽屏',
                 false,
@@ -297,7 +297,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 网页全屏
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-web',
                 '隐藏 网页全屏',
                 false,
@@ -308,7 +308,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 全屏
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-full',
                 '隐藏 全屏',
                 false,
@@ -319,7 +319,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 底边mini视频进度, 默认开启
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-shadow-progress-area',
                 '隐藏 底边mini视频进度',
                 true,
@@ -335,7 +335,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
     {
         // 隐藏 同时在看人数
         danmakuItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-video-info-online',
                 '隐藏 同时在看人数',
                 false,
@@ -346,7 +346,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 载入弹幕数量
         danmakuItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-video-info-dm',
                 '隐藏 载入弹幕数量',
                 false,
@@ -357,7 +357,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 弹幕启用
         danmakuItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-dm-switch',
                 '隐藏 弹幕启用',
                 false,
@@ -368,7 +368,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 弹幕显示设置
         danmakuItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-dm-setting',
                 '隐藏 弹幕显示设置',
                 false,
@@ -379,7 +379,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 弹幕样式
         danmakuItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-video-btn-dm',
                 '隐藏 弹幕样式',
                 false,
@@ -390,7 +390,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 占位文字, 默认开启
         danmakuItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-dm-input',
                 '隐藏 占位文字',
                 true,
@@ -401,7 +401,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 弹幕礼仪, 默认开启
         danmakuItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-dm-hint',
                 '隐藏 弹幕礼仪',
                 true,
@@ -412,7 +412,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 发送按钮
         danmakuItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-dm-btn-send',
                 '隐藏 发送按钮',
                 false,
@@ -423,7 +423,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 非全屏下 关闭弹幕栏
         danmakuItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-sending-area',
                 '非全屏下 关闭弹幕栏',
                 false,
@@ -438,7 +438,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 全屏下 关闭弹幕输入框
         danmakuItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-video-inputbar',
                 '全屏下 关闭弹幕输入框',
                 false,
@@ -470,7 +470,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
     {
         // 隐藏 分享按钮弹出菜单, 默认开启
         toolbarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-video-share-popover',
                 '隐藏 分享按钮弹出菜单',
                 true,
@@ -481,7 +481,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // bangumi独有项：隐藏 用手机观看, 默认开启
         toolbarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'bangumi-page-hide-watch-on-phone',
                 '隐藏 用手机观看 ★',
                 true,
@@ -492,7 +492,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // bangumi独有项：隐藏 一起看, 默认开启
         toolbarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'bangumi-page-hide-watch-together',
                 '隐藏 一起看 ★',
                 true,
@@ -503,7 +503,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // bangumi独有项：隐藏 整个工具栏(赞币转)
         toolbarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'bangumi-page-hide-toolbar',
                 '隐藏 整个工具栏(赞币转) ★',
                 false,
@@ -514,7 +514,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // bangumi独有项：隐藏 作品介绍
         toolbarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'bangumi-page-hide-media-info',
                 '隐藏 作品介绍 ★',
                 false,
@@ -525,7 +525,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // bangumi独有项：精简 作品介绍, 默认开启
         toolbarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'bangumi-page-simple-media-info',
                 '精简 作品介绍 ★',
                 true,
@@ -543,7 +543,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // bangumi独有项：隐藏 承包榜
         toolbarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'bangumi-page-hide-sponsor-module',
                 '隐藏 承包榜 ★',
                 false,
@@ -559,7 +559,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
     {
         // bangumi独有项：隐藏 大会员按钮, 默认开启
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'bangumi-page-hide-right-container-section-height',
                 '隐藏 大会员按钮 ★',
                 true,
@@ -570,7 +570,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 弹幕列表, 默认开启
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-right-container-danmaku',
                 '隐藏 弹幕列表',
                 true,
@@ -581,7 +581,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // bangumi独有项：隐藏 视频列表 会员/限免标记
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'bangumi-page-hide-eplist-badge',
                 '隐藏 视频列表 会员/限免标记 ★',
                 false,
@@ -594,7 +594,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // bangumi独有项：隐藏 相关作品推荐 ★
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'bangumi-page-hide-recommend',
                 '隐藏 相关作品推荐 ★',
                 false,
@@ -610,7 +610,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
     {
         // 隐藏 活动/notice, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-reply-notice',
                 '隐藏 活动/notice',
                 true,
@@ -621,7 +621,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 整个评论框
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-main-reply-box',
                 '隐藏 整个评论框',
                 false,
@@ -633,7 +633,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 页面底部 吸附评论框, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-fixed-reply-box',
                 '隐藏 页面底部 吸附评论框',
                 true,
@@ -644,7 +644,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 评论编辑器内占位文字, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-reply-box-textarea-placeholder',
                 '隐藏 评论编辑器内占位文字',
                 true,
@@ -656,7 +656,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 评论内容右侧装饰
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-reply-decorate',
                 '隐藏 评论内容右侧装饰',
                 false,
@@ -667,7 +667,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 ID后粉丝牌
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-fan-badge',
                 '隐藏 ID后粉丝牌',
                 false,
@@ -678,7 +678,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 一级评论用户等级
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-user-level',
                 '隐藏 一级评论用户等级',
                 false,
@@ -689,7 +689,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 二级评论用户等级
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-sub-user-level',
                 '隐藏 二级评论用户等级',
                 false,
@@ -700,7 +700,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 用户头像外圈饰品
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bili-avatar-pendent-dom',
                 '隐藏 用户头像外圈饰品',
                 false,
@@ -712,7 +712,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 用户头像右下小icon
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bili-avatar-nft-icon',
                 '隐藏 用户头像右下小icon',
                 false,
@@ -724,7 +724,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 评论内容下tag(热评)
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-reply-tag-list',
                 '隐藏 评论内容下tag(热评)',
                 false,
@@ -735,7 +735,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 笔记评论前的小Logo, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-note-prefix',
                 '隐藏 笔记评论前的小Logo',
                 true,
@@ -746,7 +746,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 评论内容搜索关键词高亮, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-jump-link-search-word',
                 '隐藏 评论内容搜索关键词高亮',
                 true,
@@ -759,7 +759,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 二级评论中的@高亮
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-reply-content-user-highlight',
                 '隐藏 二级评论中的@高亮',
                 false,
@@ -771,7 +771,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 召唤AI机器人的评论, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-at-reply-at-bots',
                 '隐藏 召唤AI机器人的评论',
                 true,
@@ -809,7 +809,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 包含@的 无人点赞评论
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-zero-like-at-reply',
                 '隐藏 包含@的 无人点赞评论',
                 false,
@@ -820,7 +820,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 包含@的 全部评论
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-at-reply-all',
                 '隐藏 包含@的 全部评论',
                 false,
@@ -831,7 +831,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 LV1 无人点赞评论
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-zero-like-lv1-reply',
                 '隐藏 LV1 无人点赞评论',
                 false,
@@ -842,7 +842,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 LV2 无人点赞评论
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-zero-like-lv2-reply',
                 '隐藏 LV2 无人点赞评论',
                 false,
@@ -853,7 +853,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 LV3 无人点赞评论
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-zero-like-lv3-reply',
                 '隐藏 LV3 无人点赞评论',
                 false,
@@ -864,7 +864,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 一级评论 踩/回复/举报 hover时显示, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-root-reply-dislike-reply-btn',
                 '隐藏 一级评论 踩/回复/举报 hover时显示',
                 true,
@@ -882,7 +882,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 二级评论 踩/回复/举报 hover时显示, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-sub-reply-dislike-reply-btn',
                 '隐藏 二级评论 踩/回复/举报 hover时显示',
                 true,
@@ -900,7 +900,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 大表情
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-emoji-large',
                 '隐藏 大表情',
                 false,
@@ -911,7 +911,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 大表情变成小表情
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-emoji-large-zoom',
                 '大表情变成小表情',
                 false,
@@ -922,7 +922,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 用户名 全部大会员色
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-reply-user-name-color-pink',
                 '用户名 全部大会员色',
                 false,
@@ -933,7 +933,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 用户名 全部恢复默认色
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-reply-user-name-color-default',
                 '用户名 全部恢复默认色',
                 false,
@@ -944,7 +944,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 笔记图片 查看大图优化, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-reply-view-image-optimize',
                 '笔记图片 查看大图优化',
                 true,
@@ -966,7 +966,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
     {
         // bangumi独有项：隐藏 新版反馈, 默认开启
         sidebarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'bangumi-page-hide-sidenav-issue',
                 '隐藏 新版反馈 ★',
                 true,
@@ -977,7 +977,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 小窗播放器
         sidebarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-sidenav-mini',
                 '隐藏 小窗播放器',
                 false,
@@ -988,7 +988,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 客服, 默认开启
         sidebarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-sidenav-customer-service',
                 '隐藏 客服',
                 true,
@@ -999,7 +999,7 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
         )
         // 隐藏 回顶部
         sidebarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-sidenav-back-to-top',
                 '隐藏 回顶部',
                 false,

@@ -1,5 +1,5 @@
 import { debug, error } from '../utils/logger'
-import { NormalItem } from './item'
+import { CheckboxItem, RadioItem } from './item'
 
 interface IGroup {
     readonly groupHTML: myHTML
@@ -29,7 +29,7 @@ export class Group implements IGroup {
     constructor(
         private groupID: string,
         private title: string,
-        private items: NormalItem[],
+        private items: (CheckboxItem | RadioItem)[],
     ) {
         this.groupID = 'bili-cleaner-group-' + groupID
     }
@@ -49,7 +49,7 @@ export class Group implements IGroup {
         try {
             this.items.forEach((e) => {
                 e.insertItem(this.groupID)
-                if (e instanceof NormalItem) {
+                if (e instanceof CheckboxItem || e instanceof RadioItem) {
                     e.watchItem()
                 }
             })
@@ -66,7 +66,7 @@ export class Group implements IGroup {
     enableGroup(enableFunc = true) {
         try {
             this.items.forEach((e) => {
-                if (e instanceof NormalItem) {
+                if (e instanceof CheckboxItem || e instanceof RadioItem) {
                     e.enableItem(enableFunc)
                 }
             })
@@ -80,7 +80,7 @@ export class Group implements IGroup {
     reloadGroup() {
         try {
             this.items.forEach((e) => {
-                if (e instanceof NormalItem) {
+                if (e instanceof CheckboxItem) {
                     e.reloadItem()
                 }
             })
@@ -94,7 +94,7 @@ export class Group implements IGroup {
     disableGroup() {
         try {
             this.items.forEach((e) => {
-                if (e instanceof NormalItem) {
+                if (e instanceof CheckboxItem) {
                     e.removeItemCSS()
                 }
             })

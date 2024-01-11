@@ -1,11 +1,11 @@
 import { Group } from '../core/group'
-import { NormalItem } from '../core/item'
+import { CheckboxItem, RadioItem } from '../core/item'
 
-const basicItems: NormalItem[] = []
-const layoutItems: NormalItem[] = []
-const hotItems: NormalItem[] = []
-const weeklyItems: NormalItem[] = []
-const historyItems: NormalItem[] = []
+const basicItems: CheckboxItem[] = []
+const layoutItems: (CheckboxItem | RadioItem)[] = []
+const hotItems: CheckboxItem[] = []
+const weeklyItems: CheckboxItem[] = []
+const historyItems: CheckboxItem[] = []
 // GroupList
 const popularGroupList: Group[] = []
 
@@ -14,7 +14,7 @@ if (location.href.includes('bilibili.com/v/popular/')) {
     {
         // 隐藏 横幅banner, 同步首页设定
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-hide-banner',
                 '隐藏 横幅banner',
                 false,
@@ -57,7 +57,7 @@ if (location.href.includes('bilibili.com/v/popular/')) {
         )
         // 隐藏 滚动页面时 顶部吸附顶栏, 同步首页设定
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-hide-sticky-header',
                 '隐藏 滚动页面时 顶部吸附顶栏',
                 false,
@@ -126,7 +126,7 @@ if (location.href.includes('bilibili.com/v/popular/')) {
         )
         // 隐藏 tips, 默认开启
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'popular-hide-tips',
                 '隐藏 tips',
                 true,
@@ -143,7 +143,7 @@ if (location.href.includes('bilibili.com/v/popular/')) {
         )
         // 隐藏 稍后再看按钮
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'popular-hide-watchlater',
                 '隐藏 稍后再看按钮',
                 false,
@@ -162,7 +162,7 @@ if (location.href.includes('bilibili.com/v/popular/')) {
         )
         // 隐藏 弹幕数
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'popular-hide-danmaku-count',
                 '隐藏 弹幕数',
                 false,
@@ -185,13 +185,35 @@ if (location.href.includes('bilibili.com/v/popular/')) {
     }
     popularGroupList.push(new Group('popular-basic', '热门/排行榜页 基本功能', basicItems))
 
-    // 页面布局part, layoutItems
+    // 页面布局part, layoutItems, 一组互斥选项
     {
+        const layoutRadioItemIDList: string[] = [
+            'popular-layout-default',
+            'popular-layout-4-column',
+            'popular-layout-5-column',
+            'popular-layout-6-column',
+        ]
+        // 官方默认 2 列布局, 默认启用
+        layoutItems.push(
+            new RadioItem(
+                'popular-layout-default',
+                '官方默认 2 列布局',
+                'popular-layout-option',
+                layoutRadioItemIDList,
+                true,
+                undefined,
+                false,
+                null,
+            ),
+        )
+
         // 强制使用 4 列布局
         layoutItems.push(
-            new NormalItem(
+            new RadioItem(
                 'popular-layout-4-column',
                 '强制使用 4 列布局',
+                'popular-layout-option',
+                layoutRadioItemIDList,
                 false,
                 undefined,
                 false,
@@ -350,9 +372,11 @@ if (location.href.includes('bilibili.com/v/popular/')) {
         )
         // 强制使用 5 列布局
         layoutItems.push(
-            new NormalItem(
+            new RadioItem(
                 'popular-layout-5-column',
                 '强制使用 5 列布局',
+                'popular-layout-option',
+                layoutRadioItemIDList,
                 false,
                 undefined,
                 false,
@@ -511,9 +535,11 @@ if (location.href.includes('bilibili.com/v/popular/')) {
         )
         // 强制使用 6 列布局
         layoutItems.push(
-            new NormalItem(
+            new RadioItem(
                 'popular-layout-6-column',
                 '强制使用 6 列布局，建议开启 隐藏弹幕数',
+                'popular-layout-option',
+                layoutRadioItemIDList,
                 false,
                 undefined,
                 false,
@@ -677,7 +703,7 @@ if (location.href.includes('bilibili.com/v/popular/')) {
     {
         // 隐藏 视频tag (人气飙升/1万点赞)
         hotItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'popular-hot-hide-tag',
                 '隐藏 视频tag (人气飙升/1万点赞)',
                 false,
@@ -693,7 +719,7 @@ if (location.href.includes('bilibili.com/v/popular/')) {
     {
         // 隐藏 一句话简介
         weeklyItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'popular-weekly-hide-hint',
                 '隐藏 一句话简介',
                 false,
@@ -709,7 +735,7 @@ if (location.href.includes('bilibili.com/v/popular/')) {
     {
         // 隐藏 一句话简介
         historyItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'popular-history-hide-hint',
                 '隐藏 一句话简介',
                 false,

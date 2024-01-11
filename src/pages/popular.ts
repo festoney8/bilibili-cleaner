@@ -206,12 +206,11 @@ if (location.href.includes('bilibili.com/v/popular/')) {
                 null,
             ),
         )
-
         // 强制使用 4 列布局
         layoutItems.push(
             new RadioItem(
                 'popular-layout-4-column',
-                '强制使用 4 列布局',
+                '强制使用 4 列布局\n默认屏蔽Tag和简介，下同',
                 'popular-layout-option',
                 layoutRadioItemIDList,
                 false,
@@ -697,7 +696,7 @@ if (location.href.includes('bilibili.com/v/popular/')) {
             ),
         )
     }
-    popularGroupList.push(new Group('popular-layout', '页面强制布局 (三选一, 实验性)', layoutItems))
+    popularGroupList.push(new Group('popular-layout', '页面强制布局 (单选，实验性)', layoutItems))
 
     // 综合热门part, hotItems
     {

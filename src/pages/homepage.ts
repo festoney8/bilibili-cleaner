@@ -256,7 +256,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         layoutItems.push(
             new RadioItem(
                 'homepage-layout-default',
-                '官方默认布局\n跟随页面缩放自动匹配 4列/5列',
+                '官方默认，自动匹配页面缩放',
                 'homepage-layout-option',
                 layoutRadioItemIDList,
                 true,
@@ -269,7 +269,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         layoutItems.push(
             new RadioItem(
                 'homepage-layout-4-column',
-                '强制使用 4 列布局\n建议开启 增大视频信息字号',
+                '强制使用 4 列布局',
                 'homepage-layout-option',
                 layoutRadioItemIDList,
                 false,
@@ -299,7 +299,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         layoutItems.push(
             new RadioItem(
                 'homepage-layout-6-column',
-                '强制使用 6 列布局\n建议 隐藏发布时间、隐藏视频tag，开启增大字号',
+                '强制使用 6 列布局 (刷新)\n建议 隐藏发布时间，可选 显示活动轮播',
                 'homepage-layout-option',
                 layoutRadioItemIDList,
                 false,
@@ -311,7 +311,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
             ),
         )
     }
-    homepageGroupList.push(new Group('homepage-layout', '页面强制布局 (默认关闭)', layoutItems))
+    homepageGroupList.push(new Group('homepage-layout', '页面强制布局 (单选)', layoutItems))
 
     // 视频列表part, rcmdListItems
     {

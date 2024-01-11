@@ -5,6 +5,11 @@ import { debug, error } from '../utils/logger'
 interface IItem {
     readonly nodeHTML: myHTML
     insertItem(groupID: string): void
+    insertItemCSS?(): void
+    removeItemCSS?(): void
+    watchItem?(): void
+    enableItem?(): void
+    reloadItem?(): void
 }
 
 /** 普通开关 */
@@ -280,25 +285,26 @@ export class RadioItem implements IItem {
             this.itemEle = document.querySelector(`#${this.itemID} input`) as HTMLInputElement
             this.itemEle.addEventListener('change', (event: Event) => {
                 if ((<HTMLInputElement>event.target).checked) {
-                    debug(`radioItem ${this.itemID} change, now checked`)
+                    debug(`radioItem ${this.itemID} checked`)
                     this.setStatus(true)
                     this.insertItemCSS()
                     if (this.itemFunc !== undefined) {
                         this.itemFunc()
                     }
                     // 相同name的其他option自动置为uncheck, 但这一行为无法被监听, 需传入itemID逐一修改
-                    this.radioItemIDList.forEach((t) => {
-                        if (t === this.itemID) {
-                            return
+                    this.radioItemIDList.forEach((targetID) => {
+                        if (targetID !== this.itemID) {
+                            // 移除CSS, 修改互斥item状态
+                            const style = document.querySelector(
+                                `html>style[bili-cleaner-css=${targetID}]`,
+                            ) as HTMLStyleElement
+                            if (style) {
+                                style.parentNode?.removeChild(style)
+                                debug(`removeItemCSS ${targetID} OK`)
+                            }
+                            this.setStatus(false, targetID)
+                            debug(`disable same name radioItem ${targetID}, OK`)
                         }
-                        // 移除CSS, 修改互斥item状态
-                        const style = document.querySelector(`html>style[bili-cleaner-css=${t}]`) as HTMLStyleElement
-                        if (style) {
-                            style.parentNode?.removeChild(style)
-                            debug(`removeItemCSS ${this.itemID} OK`)
-                        }
-                        this.setStatus(false, t)
-                        debug(`disable radioItem ${this.itemID}, OK`)
                     })
                 }
             })
@@ -331,7 +337,8 @@ export class RadioItem implements IItem {
      * 重载item, 用于非页面刷新但URL变动情况, 此时已注入CSS只重新运行func, 如: 非刷新式切换视频
      */
     reloadItem() {
-        // this.getStatus()
+        // 存在其他item修改当前item状态的情况
+        this.getStatus()
         if (this.isItemFuncReload && this.isEnable && this.itemFunc instanceof Function) {
             try {
                 this.itemFunc()

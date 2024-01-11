@@ -742,7 +742,7 @@ if (location.host != 'live.bilibili.com') {
             headerRightItems.push(
                 new RadioItem(
                     'common-nav-favorite-watchlater-default',
-                    '显示收藏 (官方默认)\n新增稍后再看时，自动切换为稍后再看',
+                    '显示 收藏 (官方默认)\n新增稍后再看视频时，自动切换为稍后再看',
                     'common-header-fav-option',
                     favoriteRadioItemIDList,
                     true,

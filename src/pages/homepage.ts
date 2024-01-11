@@ -323,17 +323,6 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
                 }`,
             ),
         )
-        // 隐藏 弹幕数, 默认开启
-        rcmdListItems.push(
-            new NormalItem(
-                'homepage-hide-danmaku-count',
-                '隐藏 弹幕数',
-                true,
-                undefined,
-                false,
-                `main:not(:has(.bilibili-app-recommend-root)) .bili-video-card__stats--item:nth-child(2) {visibility: hidden;}`,
-            ),
-        )
         // 隐藏 发布时间
         rcmdListItems.push(
             new NormalItem(
@@ -343,6 +332,17 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
                 undefined,
                 false,
                 `main:not(:has(.bilibili-app-recommend-root)) .bili-video-card__info--date {display: none !important;}`,
+            ),
+        )
+        // 隐藏 弹幕数, 默认开启
+        rcmdListItems.push(
+            new NormalItem(
+                'homepage-hide-danmaku-count',
+                '隐藏 弹幕数',
+                true,
+                undefined,
+                false,
+                `main:not(:has(.bilibili-app-recommend-root)) .bili-video-card__stats--item:nth-child(2) {visibility: hidden;}`,
             ),
         )
         // 隐藏 稍后再看按钮

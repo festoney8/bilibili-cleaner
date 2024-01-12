@@ -76,10 +76,13 @@
 
 -   **要求 Chrome 内核版本 >= 105**，浏览器内核版本过低会导致部分功能失效，如：无法净化顶栏
 
+    > 鉴于 Google 在推行 [Manifest V3](https://developer.chrome.com/docs/extensions/migrating/checklist)，未来会影响油猴插件，参考[Tampermonkey changelog](https://www.tampermonkey.net/changelog.php#v5.0.0)。
+    > 可考虑启用浏览器开发者模式，Chrome 和 Edge 均可在插件管理页找到开关。
+
 ### Firefox
 
 -   **Firefox版本 103~120，按如下步骤开启高级设定**
-    -   在浏览器内打开网址 [about:config](about:config)，若出现提示页面，点击「接受风险并继续」
+    -   在浏览器内打开网址 [about:config](about:config)，若出现风险提示，点击「接受风险并继续」
     -   搜索 `layout.css.has-selector.enabled` ，将这一项的开关改为 `true`，并刷新标签页
 -   **Firefox版本 > 121，无需修改设定**
 
@@ -221,6 +224,8 @@
 ## Ref
 
 -   [vite-plugin-monkey](https://github.com/lisonge/vite-plugin-monkey)
+-   [Manifest V3](https://developer.chrome.com/docs/extensions/migrating/checklist)
+-   [TamperMonkey 5.0](https://www.tampermonkey.net/changelog.php#v5.0.0)
 
 ## Contribution
 

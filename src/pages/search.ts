@@ -1,8 +1,8 @@
 import { Group } from '../core/group'
-import { NormalItem } from '../core/item'
+import { CheckboxItem } from '../core/item'
 
-const basicItems: NormalItem[] = []
-const sidebarItems: NormalItem[] = []
+const basicItems: CheckboxItem[] = []
+const sidebarItems: CheckboxItem[] = []
 // GroupList
 const searchGroupList: Group[] = []
 
@@ -11,7 +11,7 @@ if (location.host === 'search.bilibili.com') {
     {
         // 顶栏 滚动页面后不再吸附顶部
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'hide-search-page-search-sticky-header',
                 '顶栏 滚动页面后不再吸附顶部',
                 false,
@@ -22,7 +22,7 @@ if (location.host === 'search.bilibili.com') {
         )
         // 隐藏 搜索结果中的广告, 默认开启
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'hide-search-page-ad',
                 '隐藏 搜索结果中的广告',
                 true,
@@ -33,7 +33,7 @@ if (location.host === 'search.bilibili.com') {
         )
         // 隐藏 弹幕数量, 默认开启
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'hide-search-page-danmaku-count',
                 '隐藏 弹幕数量',
                 true,
@@ -44,7 +44,7 @@ if (location.host === 'search.bilibili.com') {
         )
         // 隐藏 视频日期
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'hide-search-page-date',
                 '隐藏 视频日期',
                 false,
@@ -55,7 +55,7 @@ if (location.host === 'search.bilibili.com') {
         )
         // 隐藏 稍后再看按钮
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'hide-search-page-bili-watch-later',
                 '隐藏 稍后再看按钮',
                 false,
@@ -71,7 +71,7 @@ if (location.host === 'search.bilibili.com') {
     {
         // 隐藏 客服, 默认开启
         sidebarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'hide-search-page-customer-service',
                 '隐藏 客服',
                 true,
@@ -82,7 +82,7 @@ if (location.host === 'search.bilibili.com') {
         )
         // 隐藏 回顶部
         sidebarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'hide-search-page-btn-to-top',
                 '隐藏 回顶部',
                 false,

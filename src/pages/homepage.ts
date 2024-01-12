@@ -1,11 +1,11 @@
 import { Group } from '../core/group'
-import { NormalItem } from '../core/item'
+import { CheckboxItem, RadioItem } from '../core/item'
 
-const basicItems: NormalItem[] = []
-const layoutItems: NormalItem[] = []
-const rcmdListItems: NormalItem[] = []
-const sidebarItems: NormalItem[] = []
-const biliAppRcmdItems: NormalItem[] = []
+const basicItems: CheckboxItem[] = []
+const layoutItems: (CheckboxItem | RadioItem)[] = []
+const rcmdListItems: CheckboxItem[] = []
+const sidebarItems: CheckboxItem[] = []
+const biliAppRcmdItems: CheckboxItem[] = []
 // GroupList
 const homepageGroupList: Group[] = []
 
@@ -14,7 +14,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
     {
         // 隐藏 横幅banner
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-hide-banner',
                 '隐藏 横幅banner',
                 false,
@@ -54,7 +54,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         )
         // 隐藏 大图活动轮播, 默认开启
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-hide-recommend-swipe',
                 '隐藏 大图活动轮播',
                 true,
@@ -100,7 +100,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         )
         // 隐藏 整个分区栏
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-hide-subarea',
                 '隐藏 整个分区栏',
                 false,
@@ -124,7 +124,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         )
         // 隐藏 滚动页面时 顶部吸附顶栏
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-hide-sticky-header',
                 '隐藏 滚动页面时 顶部吸附顶栏',
                 false,
@@ -201,7 +201,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         )
         // 隐藏 滚动页面时 顶部吸附分区栏
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-hide-sticky-subarea',
                 '隐藏 滚动页面时 顶部吸附分区栏',
                 true,
@@ -219,7 +219,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         )
         // 增大 视频信息字号
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-increase-rcmd-list-font-size',
                 '增大 视频信息字号',
                 false,
@@ -244,13 +244,34 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
     }
     homepageGroupList.push(new Group('homepage-basic', '首页 基本功能', basicItems))
 
-    // 页面布局part, layoutItems
+    // 页面布局part, layoutItems, 一组互斥选项
     {
+        const layoutRadioItemIDList: string[] = [
+            'homepage-layout-default',
+            'homepage-layout-4-column',
+            'homepage-layout-5-column',
+            'homepage-layout-6-column',
+        ]
+        // 官方默认布局, 默认开启
+        layoutItems.push(
+            new RadioItem(
+                'homepage-layout-default',
+                '官方默认，自动匹配页面缩放',
+                'homepage-layout-option',
+                layoutRadioItemIDList,
+                true,
+                undefined,
+                false,
+                null,
+            ),
+        )
         // 强制使用 4 列布局
         layoutItems.push(
-            new NormalItem(
+            new RadioItem(
                 'homepage-layout-4-column',
-                '强制使用 4 列布局\n建议开启 增大视频信息字号',
+                '强制使用 4 列布局',
+                'homepage-layout-option',
+                layoutRadioItemIDList,
                 false,
                 undefined,
                 false,
@@ -261,9 +282,11 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         )
         // 强制使用 5 列布局
         layoutItems.push(
-            new NormalItem(
+            new RadioItem(
                 'homepage-layout-5-column',
                 '强制使用 5 列布局\n建议开启 增大视频信息字号',
+                'homepage-layout-option',
+                layoutRadioItemIDList,
                 false,
                 undefined,
                 false,
@@ -274,9 +297,11 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         )
         // 强制使用 6 列布局
         layoutItems.push(
-            new NormalItem(
+            new RadioItem(
                 'homepage-layout-6-column',
-                '强制使用 6 列布局\n建议 隐藏发布时间、隐藏视频tag，开启增大字号',
+                '强制使用 6 列布局 (刷新)\n建议 隐藏发布时间，可选 显示活动轮播',
+                'homepage-layout-option',
+                layoutRadioItemIDList,
                 false,
                 undefined,
                 false,
@@ -286,13 +311,13 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
             ),
         )
     }
-    homepageGroupList.push(new Group('homepage-layout', '页面强制布局 (三选一, 默认关闭)', layoutItems))
+    homepageGroupList.push(new Group('homepage-layout', '页面强制布局 (单选)', layoutItems))
 
     // 视频列表part, rcmdListItems
     {
         // 隐藏 视频tag (已关注/1万点赞)
         rcmdListItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-hide-up-info-icon',
                 '隐藏 视频tag (已关注/1万点赞)',
                 false,
@@ -323,20 +348,9 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
                 }`,
             ),
         )
-        // 隐藏 弹幕数, 默认开启
-        rcmdListItems.push(
-            new NormalItem(
-                'homepage-hide-danmaku-count',
-                '隐藏 弹幕数',
-                true,
-                undefined,
-                false,
-                `main:not(:has(.bilibili-app-recommend-root)) .bili-video-card__stats--item:nth-child(2) {visibility: hidden;}`,
-            ),
-        )
         // 隐藏 发布时间
         rcmdListItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-hide-video-info-date',
                 '隐藏 发布时间',
                 false,
@@ -345,9 +359,20 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
                 `main:not(:has(.bilibili-app-recommend-root)) .bili-video-card__info--date {display: none !important;}`,
             ),
         )
+        // 隐藏 弹幕数, 默认开启
+        rcmdListItems.push(
+            new CheckboxItem(
+                'homepage-hide-danmaku-count',
+                '隐藏 弹幕数',
+                true,
+                undefined,
+                false,
+                `main:not(:has(.bilibili-app-recommend-root)) .bili-video-card__stats--item:nth-child(2) {visibility: hidden;}`,
+            ),
+        )
         // 隐藏 稍后再看按钮
         rcmdListItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-hide-bili-watch-later',
                 '隐藏 稍后再看按钮',
                 false,
@@ -358,7 +383,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         )
         // 隐藏 广告, 默认开启
         rcmdListItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-hide-ad-card',
                 '隐藏 广告',
                 true,
@@ -401,7 +426,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         )
         // 隐藏 直播间推荐
         rcmdListItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-hide-live-card-recommend',
                 '隐藏 直播间推荐',
                 false,
@@ -412,7 +437,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         )
         // 精简 分区视频推荐, 默认开启
         rcmdListItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-simple-sub-area-card-recommend',
                 '简化 分区视频推荐',
                 true,
@@ -425,7 +450,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         )
         // 隐藏 分区视频推荐
         rcmdListItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-hide-sub-area-card-recommend',
                 '隐藏 分区视频推荐',
                 false,
@@ -437,7 +462,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         )
         // 关闭 视频载入 骨架动效(skeleton animation) 实验性
         rcmdListItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-hide-skeleton-animation',
                 '关闭 视频载入 骨架动效 (实验性)',
                 false,
@@ -456,7 +481,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         )
         // 隐藏 视频载入 骨架(skeleton) 实验性
         rcmdListItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-hide-skeleton',
                 '隐藏 视频载入 骨架 (实验性)',
                 false,
@@ -478,7 +503,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
     {
         // 隐藏 下载桌面端弹窗, 默认开启
         sidebarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-hide-desktop-download-tip',
                 '隐藏 下载桌面端弹窗',
                 true,
@@ -489,7 +514,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         )
         // 隐藏 刷新
         sidebarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-hide-flexible-roll-btn',
                 '隐藏 刷新',
                 false,
@@ -500,7 +525,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         )
         // 隐藏 客服和反馈, 默认开启
         sidebarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-hide-feedback',
                 '隐藏 客服和反馈',
                 true,
@@ -511,7 +536,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         )
         // 隐藏 回顶部
         sidebarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-hide-top-btn',
                 '隐藏 回顶部',
                 false,
@@ -528,7 +553,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         // 适配bilibili-app-recommend插件
         // 隐藏 视频tag (bilibili-app-recommend)
         biliAppRcmdItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-hide-up-info-icon-bilibili-app-recommend',
                 '隐藏 视频tag',
                 false,
@@ -564,7 +589,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         )
         // 隐藏 弹幕数 (bilibili-app-recommend)
         biliAppRcmdItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-hide-danmaku-count-bilibili-app-recommend',
                 '隐藏 弹幕数',
                 false,
@@ -575,7 +600,7 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
         )
         // 隐藏 点赞数 (bilibili-app-recommend)
         biliAppRcmdItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'homepage-hide-agree-count-bilibili-app-recommend',
                 '隐藏 点赞数',
                 false,

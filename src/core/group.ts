@@ -1,5 +1,5 @@
 import { debug, error } from '../utils/logger'
-import { NormalItem } from './item'
+import { CheckboxItem, RadioItem } from './item'
 
 interface IGroup {
     readonly groupHTML: myHTML
@@ -23,13 +23,13 @@ export class Group implements IGroup {
     /**
      * Group是每个页面的规则组，每个页面有多个组
      * @param groupID group的唯一ID
-     * @param title group标题, 显示在group顶部
+     * @param title group标题, 显示在group顶部, 可使用换行符'\n', 可使用HTML
      * @param items group内功能列表
      */
     constructor(
         private groupID: string,
         private title: string,
-        private items: NormalItem[],
+        private items: (CheckboxItem | RadioItem)[],
     ) {
         this.groupID = 'bili-cleaner-group-' + groupID
     }
@@ -39,7 +39,7 @@ export class Group implements IGroup {
         const e = document.createElement('div')
         e.innerHTML = this.groupHTML.trim()
         e.querySelector('.bili-cleaner-group')!.id = this.groupID
-        e.querySelector('.bili-cleaner-group-title')!.textContent = this.title
+        e.querySelector('.bili-cleaner-group-title')!.innerHTML = this.title.replaceAll('\n', '<br>')
 
         const groupList = document.getElementById('bili-cleaner-group-list') as HTMLFormElement
         groupList.appendChild(e)
@@ -49,7 +49,7 @@ export class Group implements IGroup {
         try {
             this.items.forEach((e) => {
                 e.insertItem(this.groupID)
-                if (e instanceof NormalItem) {
+                if (typeof e.watchItem === 'function') {
                     e.watchItem()
                 }
             })
@@ -66,7 +66,7 @@ export class Group implements IGroup {
     enableGroup(enableFunc = true) {
         try {
             this.items.forEach((e) => {
-                if (e instanceof NormalItem) {
+                if (typeof e.enableItem === 'function') {
                     e.enableItem(enableFunc)
                 }
             })
@@ -80,7 +80,7 @@ export class Group implements IGroup {
     reloadGroup() {
         try {
             this.items.forEach((e) => {
-                if (e instanceof NormalItem) {
+                if (typeof e.reloadItem === 'function') {
                     e.reloadItem()
                 }
             })
@@ -94,7 +94,7 @@ export class Group implements IGroup {
     disableGroup() {
         try {
             this.items.forEach((e) => {
-                if (e instanceof NormalItem) {
+                if (typeof e.removeItemCSS === 'function') {
                     e.removeItemCSS()
                 }
             })

@@ -1,6 +1,8 @@
 name: dev-ci
 on:
   push:
+    paths-ignore:
+      - '**/*.md'
     branches:
       - dev
   pull_request:

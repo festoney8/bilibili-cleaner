@@ -1,5 +1,5 @@
 import { Group } from '../core/group'
-import { NormalItem } from '../core/item'
+import { CheckboxItem } from '../core/item'
 import { debug } from '../utils/logger'
 
 /** BV号转AV号 */
@@ -95,16 +95,16 @@ function simpleShare() {
     }, 200)
 }
 
-const basicItems: NormalItem[] = []
-const infoItems: NormalItem[] = []
-const playerItems: NormalItem[] = []
-const playerControlItems: NormalItem[] = []
-const danmakuItems: NormalItem[] = []
-const toolbarItems: NormalItem[] = []
-const upInfoItems: NormalItem[] = []
-const rightItems: NormalItem[] = []
-const commentItems: NormalItem[] = []
-const sidebarItems: NormalItem[] = []
+const basicItems: CheckboxItem[] = []
+const infoItems: CheckboxItem[] = []
+const playerItems: CheckboxItem[] = []
+const playerControlItems: CheckboxItem[] = []
+const danmakuItems: CheckboxItem[] = []
+const toolbarItems: CheckboxItem[] = []
+const upInfoItems: CheckboxItem[] = []
+const rightItems: CheckboxItem[] = []
+const commentItems: CheckboxItem[] = []
+const sidebarItems: CheckboxItem[] = []
 // GroupList
 const videoGroupList: Group[] = []
 
@@ -118,10 +118,10 @@ if (
     // 基本功能part, basicItems
     {
         // BV号转AV号, 在url变化时需重载, 关闭功能需刷新
-        basicItems.push(new NormalItem('video-page-bv2av', 'BV号转AV号', false, bv2av, true, null))
+        basicItems.push(new CheckboxItem('video-page-bv2av', 'BV号转AV号', false, bv2av, true, null))
         // 净化分享, 默认开启, 关闭功能需刷新
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-simple-share',
                 '净化分享功能',
                 true,
@@ -135,7 +135,7 @@ if (
         )
         // 顶栏 滚动页面后不再吸附顶部
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-fixed-header',
                 '顶栏 滚动页面后不再吸附顶部',
                 false,
@@ -151,7 +151,7 @@ if (
     {
         // 隐藏 弹幕数
         infoItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-video-info-danmaku-count',
                 '隐藏 弹幕数',
                 false,
@@ -162,7 +162,7 @@ if (
         )
         // 隐藏 发布日期
         infoItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-video-info-pubdate',
                 '隐藏 发布日期',
                 false,
@@ -173,7 +173,7 @@ if (
         )
         // 隐藏 版权声明
         infoItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-video-info-copyright',
                 '隐藏 版权声明',
                 false,
@@ -184,7 +184,7 @@ if (
         )
         // 隐藏 视频荣誉(排行榜/每周必看)
         infoItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-video-info-honor',
                 '隐藏 视频荣誉(排行榜/每周必看)',
                 false,
@@ -195,7 +195,7 @@ if (
         )
         // 隐藏 温馨提示(饮酒/危险/AI生成), 默认开启
         infoItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-video-info-argue',
                 '隐藏 温馨提示(饮酒/危险/AI生成)',
                 true,
@@ -211,7 +211,7 @@ if (
     {
         // 隐藏 一键三连弹窗
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-bili-guide-all',
                 '隐藏 一键三连弹窗',
                 false,
@@ -222,7 +222,7 @@ if (
         )
         // 隐藏 投票弹窗
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-bili-vote',
                 '隐藏 投票弹窗',
                 false,
@@ -233,7 +233,7 @@ if (
         )
         // 隐藏 评分弹窗
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-bili-score',
                 '隐藏 评分弹窗',
                 false,
@@ -244,7 +244,7 @@ if (
         )
         // 隐藏 打卡弹窗
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-bili-clock',
                 '隐藏 打卡弹窗',
                 false,
@@ -255,7 +255,7 @@ if (
         )
         // 隐藏 视频预告
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-bili-reserve',
                 '隐藏 视频预告',
                 false,
@@ -266,7 +266,7 @@ if (
         )
         // 隐藏 视频链接
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-bili-link',
                 '隐藏 视频链接',
                 false,
@@ -277,7 +277,7 @@ if (
         )
         // 隐藏 左上角 播放器内标题
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-top-left-title',
                 '隐藏 左上角 播放器内标题',
                 false,
@@ -291,7 +291,7 @@ if (
         )
         // 隐藏 左上角 视频音乐链接
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-top-left-music',
                 '隐藏 左上角 视频音乐链接',
                 false,
@@ -302,7 +302,7 @@ if (
         )
         // 隐藏 左上角 关注UP主, 默认开启
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-top-left-follow',
                 '隐藏 左上角 关注UP主',
                 true,
@@ -313,7 +313,7 @@ if (
         )
         // 隐藏 右上角 反馈按钮, 默认开启
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-top-issue',
                 '隐藏 右上角 反馈按钮',
                 true,
@@ -324,7 +324,7 @@ if (
         )
         // 隐藏 视频暂停时大Logo
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-state-wrap',
                 '隐藏 视频暂停时大Logo',
                 false,
@@ -335,7 +335,7 @@ if (
         )
         // 隐藏 弹幕悬停 点赞/复制/举报
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-dialog-wrap',
                 '隐藏 弹幕悬停点赞/复制/举报',
                 false,
@@ -346,7 +346,7 @@ if (
         )
         // 隐藏 高赞弹幕前点赞按钮
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-bpx-player-bili-high-icon',
                 '隐藏 高赞弹幕前点赞按钮',
                 false,
@@ -357,7 +357,7 @@ if (
         )
         // 彩色渐变弹幕 变成白色
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-bpx-player-bili-dm-vip-white',
                 '彩色渐变弹幕 变成白色',
                 false,
@@ -377,7 +377,7 @@ if (
         )
         // CC字幕 字体优化
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-bpx-player-subtitle-font-family',
                 'CC字幕 字体优化 (实验性)',
                 false,
@@ -390,7 +390,7 @@ if (
         )
         // CC字幕 字体优化
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-bpx-player-subtitle-text-stroke',
                 'CC字幕 字体描边 (实验性)',
                 false,
@@ -418,7 +418,7 @@ if (
     {
         // 隐藏 上一个视频
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-prev',
                 '隐藏 上一个视频',
                 false,
@@ -429,7 +429,7 @@ if (
         )
         // 隐藏 播放/暂停
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-play',
                 '隐藏 播放/暂停',
                 false,
@@ -440,7 +440,7 @@ if (
         )
         // 隐藏 下一个视频
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-next',
                 '隐藏 下一个视频',
                 false,
@@ -451,7 +451,7 @@ if (
         )
         // 隐藏 章节列表
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-viewpoint',
                 '隐藏 章节列表',
                 false,
@@ -462,7 +462,7 @@ if (
         )
         // 隐藏 选集
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-eplist',
                 '隐藏 选集',
                 false,
@@ -473,7 +473,7 @@ if (
         )
         // 隐藏 倍速
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-playbackrate',
                 '隐藏 倍速',
                 false,
@@ -484,7 +484,7 @@ if (
         )
         // 隐藏 字幕
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-subtitle',
                 '隐藏 字幕',
                 false,
@@ -495,7 +495,7 @@ if (
         )
         // 隐藏 音量
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-volume',
                 '隐藏 音量',
                 false,
@@ -506,7 +506,7 @@ if (
         )
         // 隐藏 视频设置
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-setting',
                 '隐藏 视频设置',
                 false,
@@ -518,7 +518,7 @@ if (
         // 隐藏 画中画(Chrome)
         // Firefox的画中画按钮为浏览器自带，无法通过CSS隐藏，只可通过浏览器设置关闭
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-pip',
                 '隐藏 画中画(Chrome)',
                 false,
@@ -529,7 +529,7 @@ if (
         )
         // 隐藏 宽屏
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-wide',
                 '隐藏 宽屏',
                 false,
@@ -540,7 +540,7 @@ if (
         )
         // 隐藏 网页全屏
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-web',
                 '隐藏 网页全屏',
                 false,
@@ -551,7 +551,7 @@ if (
         )
         // 隐藏 全屏
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-ctrl-full',
                 '隐藏 全屏',
                 false,
@@ -562,7 +562,7 @@ if (
         )
         // 隐藏 底边mini视频进度, 默认开启
         playerControlItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-shadow-progress-area',
                 '隐藏 底边mini视频进度',
                 true,
@@ -578,7 +578,7 @@ if (
     {
         // 隐藏 同时在看人数
         danmakuItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-video-info-online',
                 '隐藏 同时在看人数',
                 false,
@@ -589,7 +589,7 @@ if (
         )
         // 隐藏 载入弹幕数量
         danmakuItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-video-info-dm',
                 '隐藏 载入弹幕数量',
                 false,
@@ -600,7 +600,7 @@ if (
         )
         // 隐藏 弹幕启用
         danmakuItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-dm-switch',
                 '隐藏 弹幕启用',
                 false,
@@ -611,7 +611,7 @@ if (
         )
         // 隐藏 弹幕显示设置
         danmakuItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-dm-setting',
                 '隐藏 弹幕显示设置',
                 false,
@@ -622,7 +622,7 @@ if (
         )
         // 隐藏 弹幕样式
         danmakuItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-video-btn-dm',
                 '隐藏 弹幕样式',
                 false,
@@ -633,7 +633,7 @@ if (
         )
         // 隐藏 占位文字, 默认开启
         danmakuItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-dm-input',
                 '隐藏 占位文字',
                 true,
@@ -644,7 +644,7 @@ if (
         )
         // 隐藏 弹幕礼仪, 默认开启
         danmakuItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-dm-hint',
                 '隐藏 弹幕礼仪',
                 true,
@@ -655,7 +655,7 @@ if (
         )
         // 隐藏 发送按钮
         danmakuItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-dm-btn-send',
                 '隐藏 发送按钮',
                 false,
@@ -666,7 +666,7 @@ if (
         )
         // 隐藏 智能弹幕/广告弹幕
         danmakuItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-postpanel',
                 '隐藏 智能弹幕/广告弹幕',
                 false,
@@ -681,7 +681,7 @@ if (
         )
         // 非全屏下 关闭弹幕栏
         danmakuItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-sending-area',
                 '非全屏下 关闭弹幕栏',
                 false,
@@ -694,7 +694,7 @@ if (
         )
         // 全屏下 关闭弹幕输入框
         danmakuItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bpx-player-video-inputbar',
                 '全屏下 关闭弹幕输入框',
                 false,
@@ -726,7 +726,7 @@ if (
     {
         // 隐藏 分享按钮弹出菜单, 默认开启
         toolbarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-video-share-popover',
                 '隐藏 分享按钮弹出菜单',
                 true,
@@ -737,7 +737,7 @@ if (
         )
         // 隐藏 官方AI总结
         toolbarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-below-info-video-ai-assistant',
                 '隐藏 官方AI总结',
                 false,
@@ -748,7 +748,7 @@ if (
         )
         // 隐藏 记笔记
         toolbarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-below-info-video-note',
                 '隐藏 记笔记',
                 false,
@@ -759,7 +759,7 @@ if (
         )
         // 隐藏 举报/笔记/稍后再看
         toolbarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-below-info-video-report-menu',
                 '隐藏 举报/笔记/稍后再看',
                 false,
@@ -770,7 +770,7 @@ if (
         )
         // 隐藏 视频简介
         toolbarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-below-info-desc',
                 '隐藏 视频简介',
                 false,
@@ -783,7 +783,7 @@ if (
         )
         // 隐藏 tag列表
         toolbarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-below-info-tag',
                 '隐藏 tag列表',
                 false,
@@ -796,7 +796,7 @@ if (
         )
         // 隐藏 活动宣传, 默认开启
         toolbarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-below-activity-vote',
                 '隐藏 活动宣传',
                 true,
@@ -807,7 +807,7 @@ if (
         )
         // 隐藏 广告banner, 默认开启
         toolbarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-below-bannerAd',
                 '隐藏 广告banner',
                 true,
@@ -823,7 +823,7 @@ if (
     {
         // 隐藏 给UP发消息, 默认开启
         upInfoItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-up-sendmsg',
                 '隐藏 给UP发消息',
                 true,
@@ -834,7 +834,7 @@ if (
         )
         // 隐藏 UP简介
         upInfoItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-up-description',
                 '隐藏 UP简介',
                 false,
@@ -845,7 +845,7 @@ if (
         )
         // 隐藏 充电
         upInfoItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-up-charge',
                 '隐藏 充电',
                 false,
@@ -856,7 +856,7 @@ if (
         )
         // 隐藏 UP主头像外饰品
         upInfoItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-up-bili-avatar-pendent-dom',
                 '隐藏 UP主头像外饰品',
                 false,
@@ -868,7 +868,7 @@ if (
         )
         // 隐藏 创作团队header, 默认开启
         upInfoItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-up-membersinfo-normal-header',
                 '隐藏 创作团队header',
                 true,
@@ -884,7 +884,7 @@ if (
     {
         // 隐藏 广告, 默认开启
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-right-container-ad',
                 '隐藏 广告',
                 true,
@@ -898,7 +898,7 @@ if (
         )
         // 隐藏 游戏推荐
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-right-container-video-page-game-card-small',
                 '隐藏 游戏推荐',
                 false,
@@ -909,7 +909,7 @@ if (
         )
         // 隐藏 弹幕列表, 默认开启
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-right-container-danmaku',
                 '隐藏 弹幕列表',
                 true,
@@ -926,7 +926,7 @@ if (
         )
         // 隐藏 自动连播按钮
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-right-container-reco-list-next-play-next-button',
                 '隐藏 自动连播按钮',
                 false,
@@ -937,7 +937,7 @@ if (
         )
         // 视频合集 增加合集列表高度, 默认开启
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-right-container-section-height',
                 '视频合集 增加合集列表高度',
                 true,
@@ -949,7 +949,7 @@ if (
         )
         // 隐藏 视频合集 自动连播
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-right-container-section-next-btn',
                 '隐藏 视频合集 自动连播',
                 false,
@@ -961,7 +961,7 @@ if (
         )
         // 隐藏 视频合集 播放量
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-right-container-section-play-num',
                 '隐藏 视频合集 播放量',
                 false,
@@ -973,7 +973,7 @@ if (
         )
         // 隐藏 视频合集 简介, 默认开启
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-right-container-section-abstract',
                 '隐藏 视频合集 简介',
                 true,
@@ -987,7 +987,7 @@ if (
         )
         // 隐藏 视频合集 订阅合集
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-right-container-section-subscribe',
                 '隐藏 视频合集 订阅合集',
                 false,
@@ -999,7 +999,7 @@ if (
         )
         // 隐藏 分P视频 自动连播
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-right-container-multi-page-next-btn',
                 '隐藏 分P视频 自动连播',
                 false,
@@ -1010,7 +1010,7 @@ if (
         )
         // 隐藏 相关视频 视频时长
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-right-container-duration',
                 '隐藏 相关视频 视频时长',
                 false,
@@ -1023,7 +1023,7 @@ if (
         )
         // 隐藏 相关视频 稍后再看按钮
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-right-container-reco-list-watch-later-video',
                 '隐藏 相关视频 稍后再看按钮',
                 false,
@@ -1036,7 +1036,7 @@ if (
         )
         // 隐藏 相关视频 UP主
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-right-container-reco-list-rec-list-info-up',
                 '隐藏 相关视频 UP主',
                 false,
@@ -1063,7 +1063,7 @@ if (
         )
         // 隐藏 相关视频 播放和弹幕
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-right-container-reco-list-rec-list-info-plays',
                 '隐藏 相关视频 播放和弹幕',
                 false,
@@ -1090,7 +1090,7 @@ if (
         )
         // 隐藏 相关视频 全部列表
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-right-container-reco-list-rec-list',
                 '隐藏 相关视频 全部列表',
                 false,
@@ -1103,7 +1103,7 @@ if (
         )
         // 隐藏 活动banner, 默认开启
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-right-container-right-bottom-banner',
                 '隐藏 活动banner',
                 true,
@@ -1114,7 +1114,7 @@ if (
         )
         // 隐藏 直播间推荐, 默认开启
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-right-container-live',
                 '隐藏 直播间推荐',
                 true,
@@ -1130,7 +1130,7 @@ if (
     {
         // 隐藏 活动/notice, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-reply-notice',
                 '隐藏 活动/notice',
                 true,
@@ -1141,7 +1141,7 @@ if (
         )
         // 隐藏 整个评论框
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-main-reply-box',
                 '隐藏 整个评论框',
                 false,
@@ -1154,7 +1154,7 @@ if (
         )
         // 隐藏 页面底部 吸附评论框, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-fixed-reply-box',
                 '隐藏 页面底部 吸附评论框',
                 true,
@@ -1165,7 +1165,7 @@ if (
         )
         // 隐藏 评论编辑器内占位文字, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-reply-box-textarea-placeholder',
                 '隐藏 评论编辑器内占位文字',
                 true,
@@ -1177,7 +1177,7 @@ if (
         )
         // 隐藏 评论内容右侧装饰
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-reply-decorate',
                 '隐藏 评论内容右侧装饰',
                 false,
@@ -1188,7 +1188,7 @@ if (
         )
         // 隐藏 ID后粉丝牌
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-fan-badge',
                 '隐藏 ID后粉丝牌',
                 false,
@@ -1199,7 +1199,7 @@ if (
         )
         // 隐藏 一级评论用户等级
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-user-level',
                 '隐藏 一级评论用户等级',
                 false,
@@ -1210,7 +1210,7 @@ if (
         )
         // 隐藏 二级评论用户等级
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-sub-user-level',
                 '隐藏 二级评论用户等级',
                 false,
@@ -1221,7 +1221,7 @@ if (
         )
         // 隐藏 用户头像外圈饰品
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bili-avatar-pendent-dom',
                 '隐藏 用户头像外圈饰品',
                 false,
@@ -1233,7 +1233,7 @@ if (
         )
         // 隐藏 用户头像右下小icon
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bili-avatar-nft-icon',
                 '隐藏 用户头像右下小icon',
                 false,
@@ -1245,7 +1245,7 @@ if (
         )
         // 隐藏 评论内容下tag(UP觉得很赞)
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-reply-tag-list',
                 '隐藏 评论内容下tag(UP觉得很赞)',
                 false,
@@ -1256,7 +1256,7 @@ if (
         )
         // 隐藏 笔记评论前的小Logo, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-note-prefix',
                 '隐藏 笔记评论前的小Logo',
                 true,
@@ -1267,7 +1267,7 @@ if (
         )
         // 隐藏 评论内容搜索关键词高亮, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-jump-link-search-word',
                 '隐藏 评论内容搜索关键词高亮',
                 true,
@@ -1280,7 +1280,7 @@ if (
         )
         // 隐藏 二级评论中的@高亮
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-reply-content-user-highlight',
                 '隐藏 二级评论中的@高亮',
                 false,
@@ -1292,7 +1292,7 @@ if (
         )
         // 隐藏 召唤AI机器人的评论, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-at-reply-at-bots',
                 '隐藏 召唤AI机器人的评论',
                 true,
@@ -1330,7 +1330,7 @@ if (
         )
         // 隐藏 包含@的 无人点赞评论
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-zero-like-at-reply',
                 '隐藏 包含@的 无人点赞评论',
                 false,
@@ -1341,7 +1341,7 @@ if (
         )
         // 隐藏 包含@的 全部评论
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-at-reply-all',
                 '隐藏 包含@的 全部评论',
                 false,
@@ -1352,7 +1352,7 @@ if (
         )
         // 隐藏 LV1 无人点赞评论
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-zero-like-lv1-reply',
                 '隐藏 LV1 无人点赞评论',
                 false,
@@ -1363,7 +1363,7 @@ if (
         )
         // 隐藏 LV2 无人点赞评论
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-zero-like-lv2-reply',
                 '隐藏 LV2 无人点赞评论',
                 false,
@@ -1374,7 +1374,7 @@ if (
         )
         // 隐藏 LV3 无人点赞评论
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-zero-like-lv3-reply',
                 '隐藏 LV3 无人点赞评论',
                 false,
@@ -1385,7 +1385,7 @@ if (
         )
         // 隐藏 一级评论 踩/回复/举报 hover时显示, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-root-reply-dislike-reply-btn',
                 '隐藏 一级评论 踩/回复/举报 hover时显示',
                 true,
@@ -1403,7 +1403,7 @@ if (
         )
         // 隐藏 二级评论 踩/回复/举报 hover时显示, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-sub-reply-dislike-reply-btn',
                 '隐藏 二级评论 踩/回复/举报 hover时显示',
                 true,
@@ -1421,7 +1421,7 @@ if (
         )
         // 隐藏 大表情
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-emoji-large',
                 '隐藏 大表情',
                 false,
@@ -1432,7 +1432,7 @@ if (
         )
         // 大表情变成小表情
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-emoji-large-zoom',
                 '大表情变成小表情',
                 false,
@@ -1443,7 +1443,7 @@ if (
         )
         // 用户名 全部大会员色
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-reply-user-name-color-pink',
                 '用户名 全部大会员色',
                 false,
@@ -1454,7 +1454,7 @@ if (
         )
         // 用户名 全部恢复默认色
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-reply-user-name-color-default',
                 '用户名 全部恢复默认色',
                 false,
@@ -1465,7 +1465,7 @@ if (
         )
         // 笔记图片 查看大图优化, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-reply-view-image-optimize',
                 '笔记图片 查看大图优化',
                 true,
@@ -1487,7 +1487,7 @@ if (
     {
         // 隐藏 小窗播放器
         sidebarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-sidenav-right-container-live',
                 '隐藏 小窗播放器',
                 false,
@@ -1500,7 +1500,7 @@ if (
         )
         // 隐藏 客服, 默认开启
         sidebarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-sidenav-customer-service',
                 '隐藏 客服',
                 true,
@@ -1513,7 +1513,7 @@ if (
         )
         // 隐藏 回顶部
         sidebarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-sidenav-back-to-top',
                 '隐藏 回顶部',
                 false,

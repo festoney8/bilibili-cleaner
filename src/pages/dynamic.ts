@@ -1,12 +1,12 @@
 import { Group } from '../core/group'
-import { NormalItem } from '../core/item'
+import { CheckboxItem } from '../core/item'
 
-const basicItems: NormalItem[] = []
-const leftItems: NormalItem[] = []
-const rightItems: NormalItem[] = []
-const centerItems: NormalItem[] = []
-const commentItems: NormalItem[] = []
-const sidebarItems: NormalItem[] = []
+const basicItems: CheckboxItem[] = []
+const leftItems: CheckboxItem[] = []
+const rightItems: CheckboxItem[] = []
+const centerItems: CheckboxItem[] = []
+const commentItems: CheckboxItem[] = []
+const sidebarItems: CheckboxItem[] = []
 // GroupList
 const dynamicGroupList: Group[] = []
 
@@ -20,7 +20,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
     {
         // 顶栏 不再吸附顶部
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'hide-dynamic-page-fixed-header',
                 '顶栏 不再吸附顶部',
                 false,
@@ -38,7 +38,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
     {
         // 隐藏 个人信息框
         leftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'hide-dynamic-page-bili-dyn-my-info',
                 '隐藏 个人信息框',
                 false,
@@ -50,7 +50,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 直播中Logo
         leftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'hide-dynamic-page-bili-dyn-live-users__item__living',
                 '隐藏 直播中Logo',
                 false,
@@ -66,7 +66,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
     {
         // 隐藏 社区中心, 默认开启
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'hide-dynamic-page-bili-dyn-banner',
                 '隐藏 社区中心',
                 true,
@@ -77,7 +77,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 广告, 默认开启
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'hide-dynamic-page-bili-dyn-ads',
                 '隐藏 广告',
                 true,
@@ -91,7 +91,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 话题列表
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'hide-dynamic-page-bili-dyn-topic-box',
                 '隐藏 话题列表',
                 false,
@@ -102,7 +102,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 整个右栏
         rightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'hide-dynamic-page-aside-right',
                 '隐藏 整个右栏',
                 false,
@@ -118,7 +118,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
     {
         // 隐藏 动态发布框
         centerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'hide-dynamic-page-bili-dyn-publishing',
                 '隐藏 动态发布框',
                 false,
@@ -130,7 +130,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 动态分类Tab
         centerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'hide-dynamic-page-bili-dyn-list-tabs',
                 '隐藏 动态分类Tab',
                 false,
@@ -141,7 +141,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 动态右侧饰品
         centerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'hide-dynamic-page-bili-dyn-ornament',
                 '隐藏 动态右侧饰品',
                 false,
@@ -152,7 +152,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 视频警告notice, 默认开启
         centerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'hide-dynamic-page-bili-dyn-dispute',
                 '隐藏 视频警告notice',
                 true,
@@ -168,7 +168,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
     {
         // 隐藏 活动/notice, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-reply-notice',
                 '隐藏 活动/notice',
                 true,
@@ -179,7 +179,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 整个评论框
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-main-reply-box',
                 '隐藏 整个评论框',
                 false,
@@ -190,7 +190,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 页面底部 吸附评论框, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-fixed-reply-box',
                 '隐藏 页面底部 吸附评论框',
                 true,
@@ -201,7 +201,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 评论编辑器内占位文字, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-reply-box-textarea-placeholder',
                 '隐藏 评论编辑器内占位文字',
                 true,
@@ -212,7 +212,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 评论右侧装饰
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-reply-decorate',
                 '隐藏 评论右侧装饰',
                 false,
@@ -223,7 +223,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 ID后粉丝牌
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-fan-badge',
                 '隐藏 ID后粉丝牌',
                 false,
@@ -234,7 +234,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 一级评论用户等级
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-user-level',
                 '隐藏 一级评论用户等级',
                 false,
@@ -245,7 +245,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 二级评论用户等级
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-sub-user-level',
                 '隐藏 二级评论用户等级',
                 false,
@@ -256,7 +256,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 用户头像外圈饰品
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bili-avatar-pendent-dom',
                 '隐藏 用户头像外圈饰品',
                 false,
@@ -267,7 +267,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 用户头像右下小icon
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-bili-avatar-nft-icon',
                 '隐藏 用户头像右下小icon',
                 false,
@@ -279,7 +279,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 评论内容下tag(UP觉得很赞)
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-reply-tag-list',
                 '隐藏 评论内容下tag(UP觉得很赞)',
                 false,
@@ -290,7 +290,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 笔记评论前的小Logo, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-note-prefix',
                 '隐藏 笔记评论前的小Logo',
                 true,
@@ -301,7 +301,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 评论内容搜索关键词高亮, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-jump-link-search-word',
                 '隐藏 评论内容搜索关键词高亮',
                 true,
@@ -313,7 +313,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 二级评论中的@高亮
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-reply-content-user-highlight',
                 '隐藏 二级评论中的@高亮',
                 false,
@@ -325,7 +325,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 召唤AI机器人的评论, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-at-reply-at-bots',
                 '隐藏 召唤AI机器人的评论',
                 true,
@@ -363,7 +363,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 包含@的 无人点赞评论
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-zero-like-at-reply',
                 '隐藏 包含@的 无人点赞评论',
                 false,
@@ -374,7 +374,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 包含@的 全部评论
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-at-reply-all',
                 '隐藏 包含@的 全部评论',
                 false,
@@ -385,7 +385,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 LV1 无人点赞评论
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-zero-like-lv1-reply',
                 '隐藏 LV1 无人点赞评论',
                 false,
@@ -396,7 +396,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 LV2 无人点赞评论
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-zero-like-lv2-reply',
                 '隐藏 LV2 无人点赞评论',
                 false,
@@ -407,7 +407,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 LV3 无人点赞评论
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-zero-like-lv3-reply',
                 '隐藏 LV3 无人点赞评论',
                 false,
@@ -418,7 +418,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 一级评论 踩/回复/举报 hover时显示, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-root-reply-dislike-reply-btn',
                 '隐藏 一级评论 踩/回复/举报 hover时显示',
                 true,
@@ -436,7 +436,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 二级评论 踩/回复/举报 hover时显示, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-sub-reply-dislike-reply-btn',
                 '隐藏 二级评论 踩/回复/举报 hover时显示',
                 true,
@@ -454,7 +454,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 大表情
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-emoji-large',
                 '隐藏 大表情',
                 false,
@@ -465,7 +465,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 大表情变成小表情
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-hide-emoji-large-zoom',
                 '大表情变成小表情',
                 false,
@@ -476,7 +476,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 用户名 全部大会员色
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-reply-user-name-color-pink',
                 '用户名 全部大会员色',
                 false,
@@ -487,7 +487,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 用户名 全部恢复默认色
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-reply-user-name-color-default',
                 '用户名 全部恢复默认色',
                 false,
@@ -498,7 +498,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 笔记图片 查看大图优化, 默认开启
         commentItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'video-page-reply-view-image-optimize',
                 '笔记图片 查看大图优化',
                 true,
@@ -520,7 +520,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
     {
         // 隐藏 新版反馈, 默认开启
         sidebarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'hide-dynamic-page-sidebar-feedback',
                 '隐藏 新版反馈',
                 true,
@@ -531,7 +531,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 回到旧版, 默认开启
         sidebarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'hide-dynamic-page-sidebar-old-version',
                 '隐藏 回到旧版',
                 true,
@@ -542,7 +542,7 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
         )
         // 隐藏 回顶部
         sidebarItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'hide-dynamic-page-sidebar-back-to-top',
                 '隐藏 回顶部',
                 false,

@@ -1,14 +1,14 @@
 import { Group } from '../core/group'
-import { NormalItem } from '../core/item'
+import { CheckboxItem } from '../core/item'
 
-const basicItems: NormalItem[] = []
-const infoItems: NormalItem[] = []
-const playerItems: NormalItem[] = []
-const rightContainerItems: NormalItem[] = []
-const belowItems: NormalItem[] = []
-const headerLeftItems: NormalItem[] = []
-const headerCenterItems: NormalItem[] = []
-const headerRightItems: NormalItem[] = []
+const basicItems: CheckboxItem[] = []
+const infoItems: CheckboxItem[] = []
+const playerItems: CheckboxItem[] = []
+const rightContainerItems: CheckboxItem[] = []
+const belowItems: CheckboxItem[] = []
+const headerLeftItems: CheckboxItem[] = []
+const headerCenterItems: CheckboxItem[] = []
+const headerRightItems: CheckboxItem[] = []
 // GroupList
 const liveGroupList: Group[] = []
 
@@ -18,7 +18,7 @@ if (location.host === 'live.bilibili.com') {
     {
         // 隐藏 页面右侧按钮 实验室/关注, 默认开启
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-sidebar-vm',
                 '隐藏 页面右侧按钮 实验室/关注',
                 true,
@@ -29,7 +29,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 播放器皮肤 恢复默认配色
         basicItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-default-skin',
                 '播放器皮肤 恢复默认配色',
                 false,
@@ -76,7 +76,7 @@ if (location.host === 'live.bilibili.com') {
     {
         // 隐藏 粉丝团
         infoItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-head-info-vm-upper-row-follow-ctnr',
                 '隐藏 粉丝团',
                 false,
@@ -87,7 +87,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 xx人看过
         infoItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-head-info-vm-upper-row-visited',
                 '隐藏 xx人看过',
                 false,
@@ -98,7 +98,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 人气
         infoItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-head-info-vm-upper-row-popular',
                 '隐藏 人气',
                 false,
@@ -109,7 +109,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 点赞
         infoItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-head-info-vm-upper-row-like',
                 '隐藏 点赞',
                 false,
@@ -120,7 +120,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 举报, 默认开启
         infoItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-head-info-vm-upper-row-report',
                 '隐藏 举报',
                 true,
@@ -131,7 +131,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 分享, 默认开启
         infoItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-head-info-vm-upper-row-share',
                 '隐藏 分享',
                 true,
@@ -142,7 +142,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 人气榜, 默认开启
         infoItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-head-info-vm-lower-row-hot-rank',
                 '隐藏 人气榜',
                 true,
@@ -153,7 +153,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 礼物
         infoItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-head-info-vm-lower-row-gift-planet-entry',
                 '隐藏 礼物',
                 false,
@@ -164,7 +164,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 活动, 默认开启
         infoItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-head-info-vm-lower-row-activity-gather-entry',
                 '隐藏 活动',
                 true,
@@ -175,7 +175,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 全部直播信息栏
         infoItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-head-info-vm',
                 '隐藏 关闭整个信息栏',
                 false,
@@ -197,7 +197,7 @@ if (location.host === 'live.bilibili.com') {
     {
         // 隐藏 右上角反馈, 默认开启
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-head-web-player-icon-feedback',
                 '隐藏 右上角反馈',
                 true,
@@ -208,7 +208,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 购物小橙车提示, 默认开启
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-head-web-player-shop-popover-vm',
                 '隐藏 购物小橙车提示',
                 true,
@@ -219,7 +219,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 直播PK特效
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-head-web-player-awesome-pk-vm',
                 '隐藏 直播PK特效',
                 false,
@@ -230,7 +230,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 滚动礼物通告
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-head-web-player-announcement-wrapper',
                 '隐藏 滚动礼物通告',
                 false,
@@ -241,7 +241,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 幻星互动游戏, 默认开启
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-head-web-player-game-id',
                 '隐藏 幻星互动游戏',
                 true,
@@ -252,7 +252,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 复读计数弹幕
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-combo-danmaku',
                 '隐藏 复读计数弹幕',
                 false,
@@ -263,7 +263,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 礼物栏
         playerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-gift-control-vm',
                 '隐藏 礼物栏',
                 false,
@@ -285,7 +285,7 @@ if (location.host === 'live.bilibili.com') {
     {
         // 隐藏 高能榜/大航海 (需刷新)
         rightContainerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-rank-list-vm',
                 '隐藏 高能榜/大航海 (需刷新)',
                 false,
@@ -298,7 +298,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 系统提示, 默认开启
         rightContainerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-convention-msg',
                 '隐藏 系统提示',
                 true,
@@ -309,7 +309,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 用户排名
         rightContainerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-rank-icon',
                 '隐藏 用户排名',
                 false,
@@ -320,7 +320,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 头衔装扮
         rightContainerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-title-label',
                 '隐藏 头衔装扮',
                 false,
@@ -331,7 +331,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 用户等级, 默认开启
         rightContainerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-wealth-medal-ctnr',
                 '隐藏 用户等级',
                 true,
@@ -342,7 +342,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 团体勋章
         rightContainerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-group-medal-ctnr',
                 '隐藏 团体勋章',
                 false,
@@ -353,7 +353,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 粉丝牌
         rightContainerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-fans-medal-item-ctnr',
                 '隐藏 粉丝牌',
                 false,
@@ -364,7 +364,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 弹幕的高亮底色
         rightContainerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-chat-item-background-color',
                 '隐藏 弹幕的高亮底色',
                 false,
@@ -375,7 +375,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 礼物弹幕
         rightContainerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-gift-item',
                 '隐藏 礼物弹幕',
                 false,
@@ -386,7 +386,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 高能用户提示
         rightContainerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-chat-item-top3-notice',
                 '隐藏 高能用户提示',
                 false,
@@ -397,7 +397,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 底部滚动提示, 默认开启
         rightContainerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-brush-prompt',
                 '隐藏 底部滚动提示',
                 true,
@@ -410,7 +410,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 互动框(他们都在说)
         rightContainerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-combo-card',
                 '隐藏 互动框(他们都在说)',
                 false,
@@ -421,7 +421,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 互动框(找TA玩)
         rightContainerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-service-card-container',
                 '隐藏 互动框(找TA玩)',
                 false,
@@ -432,7 +432,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 弹幕栏 使弹幕列表紧凑, 默认开启
         rightContainerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-compact-danmaku',
                 '弹幕栏 使弹幕列表紧凑',
                 true,
@@ -447,7 +447,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 弹幕控制按钮 左侧
         rightContainerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-control-panel-icon-row-left',
                 '隐藏 弹幕控制按钮 左侧',
                 false,
@@ -458,7 +458,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 弹幕控制按钮 右侧
         rightContainerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-control-panel-icon-row-right',
                 '隐藏 弹幕控制按钮 右侧',
                 false,
@@ -469,7 +469,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 弹幕发送框
         rightContainerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-chat-input-ctnr',
                 '隐藏 弹幕发送框',
                 false,
@@ -483,7 +483,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 关闭全部互动框和控制栏
         rightContainerItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-chat-control-panel',
                 '隐藏 关闭全部互动框和控制栏',
                 false,
@@ -506,7 +506,7 @@ if (location.host === 'live.bilibili.com') {
     {
         // 隐藏 活动海报, 默认开启
         belowItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-flip-view',
                 '隐藏 活动海报',
                 true,
@@ -517,7 +517,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 直播间介绍
         belowItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-room-info-ctnr',
                 '隐藏 直播间介绍',
                 false,
@@ -528,7 +528,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 主播动态
         belowItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-room-feed',
                 '隐藏 主播动态',
                 false,
@@ -539,7 +539,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 主播公告
         belowItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-announcement-cntr',
                 '隐藏 主播公告',
                 false,
@@ -550,7 +550,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 全部内容
         belowItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-sections-vm',
                 '隐藏 直播下方全部内容',
                 false,
@@ -566,7 +566,7 @@ if (location.host === 'live.bilibili.com') {
     {
         // 隐藏 直播LOGO
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-entry-logo',
                 '隐藏 直播LOGO',
                 false,
@@ -577,7 +577,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 首页
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-entry-title',
                 '隐藏 首页',
                 false,
@@ -588,7 +588,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 直播
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-live',
                 '隐藏 直播',
                 false,
@@ -599,7 +599,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 全部
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-all',
                 '隐藏 全部',
                 false,
@@ -610,7 +610,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 网游
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-net-game',
                 '隐藏 网游',
                 false,
@@ -621,7 +621,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 手游
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-mobile-game',
                 '隐藏 手游',
                 false,
@@ -632,7 +632,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 单机游戏
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-standalone-game',
                 '隐藏 单机游戏',
                 false,
@@ -643,7 +643,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 娱乐
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-standalone-entertainment',
                 '隐藏 娱乐',
                 false,
@@ -654,7 +654,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 电台
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-standalone-radio',
                 '隐藏 电台',
                 false,
@@ -665,7 +665,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 虚拟主播
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-standalone-vtuber',
                 '隐藏 虚拟主播',
                 false,
@@ -676,7 +676,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 聊天室
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-standalone-chatroom',
                 '隐藏 聊天室',
                 false,
@@ -687,7 +687,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 生活
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-standalone-living',
                 '隐藏 生活',
                 false,
@@ -698,7 +698,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 知识
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-standalone-knowledge',
                 '隐藏 知识',
                 false,
@@ -709,7 +709,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 赛事
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-standalone-match',
                 '隐藏 赛事',
                 false,
@@ -720,7 +720,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 帮我玩
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-standalone-helpmeplay',
                 '隐藏 帮我玩',
                 false,
@@ -731,7 +731,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 互动玩法
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-standalone-interact',
                 '隐藏 互动玩法',
                 false,
@@ -742,7 +742,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 购物
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-standalone-shopping',
                 '隐藏 购物',
                 false,
@@ -753,7 +753,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 更多, 默认开启
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-showmore-link',
                 '隐藏 顶栏-更多',
                 true,
@@ -769,7 +769,7 @@ if (location.host === 'live.bilibili.com') {
     {
         // 隐藏 搜索框 推荐搜索
         headerCenterItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-search-rcmd',
                 '隐藏 搜索框 推荐搜索',
                 false,
@@ -780,7 +780,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 搜索框 搜索历史
         headerCenterItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-search-history',
                 '隐藏 搜索框 搜索历史',
                 false,
@@ -791,7 +791,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 搜索框 bilibili热搜
         headerCenterItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-search-trending',
                 '隐藏 搜索框 bilibili热搜',
                 false,
@@ -802,7 +802,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 关闭搜索框
         headerCenterItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-search-block',
                 '隐藏 关闭搜索框',
                 false,
@@ -818,7 +818,7 @@ if (location.host === 'live.bilibili.com') {
     {
         // 隐藏 头像
         headerRightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-avatar',
                 '隐藏 头像',
                 false,
@@ -829,7 +829,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 动态
         headerRightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-dynamic',
                 '隐藏 动态',
                 false,
@@ -840,7 +840,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 签到
         headerRightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-checkin',
                 '隐藏 签到',
                 false,
@@ -851,7 +851,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 幻星互动, 默认开启
         headerRightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-interact',
                 '隐藏 幻星互动',
                 true,
@@ -862,7 +862,7 @@ if (location.host === 'live.bilibili.com') {
         )
         // 隐藏 我要开播, 默认开启
         headerRightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'live-page-header-go-live',
                 '隐藏 我要开播',
                 true,

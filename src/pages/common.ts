@@ -1,5 +1,5 @@
 import { Group } from '../core/group'
-import { NormalItem } from '../core/item'
+import { CheckboxItem, RadioItem } from '../core/item'
 import { debug } from '../utils/logger'
 
 /**
@@ -72,10 +72,10 @@ const cleanURL = () => {
     debug('cleanURL complete')
 }
 
-const basicItems: NormalItem[] = []
-const headerLeftItems: NormalItem[] = []
-const headerCenterItems: NormalItem[] = []
-const headerRightItems: NormalItem[] = []
+const basicItems: CheckboxItem[] = []
+const headerLeftItems: CheckboxItem[] = []
+const headerCenterItems: CheckboxItem[] = []
+const headerRightItems: (CheckboxItem | RadioItem)[] = []
 // Grouplist
 const commonGroupList: Group[] = []
 
@@ -317,11 +317,11 @@ if (host === 't.bilibili.com') {
 
 // 基本功能part, basicItems
 {
-    basicItems.push(new NormalItem('border-radius', '页面直角化，去除圆角', false, undefined, false, borderRadiusCSS))
+    basicItems.push(new CheckboxItem('border-radius', '页面直角化，去除圆角', false, undefined, false, borderRadiusCSS))
 
     // 滚动条美化, 默认开启
     basicItems.push(
-        new NormalItem(
+        new CheckboxItem(
             'beauty-scrollbar',
             '美化页面滚动条',
             true,
@@ -362,7 +362,7 @@ if (host === 't.bilibili.com') {
 
     // URL参数净化, 在urlchange时需重载, 默认开启, 关闭功能需刷新
     // 以前会出现URL缺少参数导致充电窗口载入失败报错NaN的bug, 现无法复现, 猜测已修复
-    basicItems.push(new NormalItem('url-cleaner', 'URL参数净化', true, cleanURL, true, null))
+    basicItems.push(new CheckboxItem('url-cleaner', 'URL参数净化', true, cleanURL, true, null))
 }
 commonGroupList.push(new Group('common-basic', '全站通用项 基本功能', basicItems))
 // 通用header净化，直播页除外
@@ -371,7 +371,7 @@ if (location.host != 'live.bilibili.com') {
     {
         // 隐藏 主站Logo
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-homepage-logo',
                 '隐藏 主站Logo',
                 false,
@@ -388,7 +388,7 @@ if (location.host != 'live.bilibili.com') {
         )
         // 隐藏 首页
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-homepage',
                 '隐藏 首页',
                 false,
@@ -412,7 +412,7 @@ if (location.host != 'live.bilibili.com') {
         )
         // 隐藏 番剧
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-anime',
                 '隐藏 番剧',
                 false,
@@ -429,7 +429,7 @@ if (location.host != 'live.bilibili.com') {
         )
         // 隐藏 直播
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-live',
                 '隐藏 直播',
                 false,
@@ -446,7 +446,7 @@ if (location.host != 'live.bilibili.com') {
         )
         // 隐藏 游戏中心
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-game',
                 '隐藏 游戏中心',
                 false,
@@ -463,7 +463,7 @@ if (location.host != 'live.bilibili.com') {
         )
         // 隐藏 会员购
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-vipshop',
                 '隐藏 会员购',
                 false,
@@ -480,7 +480,7 @@ if (location.host != 'live.bilibili.com') {
         )
         // 隐藏 漫画
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-manga',
                 '隐藏 漫画',
                 false,
@@ -497,7 +497,7 @@ if (location.host != 'live.bilibili.com') {
         )
         // 隐藏 赛事
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-match',
                 '隐藏 赛事',
                 false,
@@ -514,7 +514,7 @@ if (location.host != 'live.bilibili.com') {
         )
         // 隐藏 活动/活动直播
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-moveclip',
                 '隐藏 活动/活动直播',
                 false,
@@ -537,7 +537,7 @@ if (location.host != 'live.bilibili.com') {
         )
         // 隐藏 百大评选
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-bdu',
                 '隐藏 百大评选',
                 false,
@@ -548,7 +548,7 @@ if (location.host != 'live.bilibili.com') {
         )
         // 隐藏 下载客户端, 默认开启
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-download-app',
                 '隐藏 下载客户端',
                 true,
@@ -565,7 +565,7 @@ if (location.host != 'live.bilibili.com') {
         )
         // 隐藏 所有官方活动(blackboard)
         headerLeftItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-blackboard',
                 '隐藏 所有官方活动(强制)',
                 false,
@@ -595,7 +595,7 @@ if (location.host != 'live.bilibili.com') {
     {
         // 隐藏 推荐搜索
         headerCenterItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-search-rcmd',
                 '隐藏 推荐搜索',
                 false,
@@ -608,7 +608,7 @@ if (location.host != 'live.bilibili.com') {
         )
         // 隐藏 搜索历史
         headerCenterItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-search-history',
                 '隐藏 搜索历史',
                 false,
@@ -621,7 +621,7 @@ if (location.host != 'live.bilibili.com') {
         )
         // 隐藏 bilibili热搜
         headerCenterItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-search-trending',
                 '隐藏 bilibili热搜',
                 false,
@@ -638,7 +638,7 @@ if (location.host != 'live.bilibili.com') {
     {
         // 隐藏 头像
         headerRightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-avatar',
                 '隐藏 头像',
                 false,
@@ -655,7 +655,7 @@ if (location.host != 'live.bilibili.com') {
         )
         // 隐藏 大会员, 默认开启
         headerRightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-vip',
                 '隐藏 大会员',
                 true,
@@ -672,7 +672,7 @@ if (location.host != 'live.bilibili.com') {
         )
         // 隐藏 消息
         headerRightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-message',
                 '隐藏 消息',
                 false,
@@ -689,7 +689,7 @@ if (location.host != 'live.bilibili.com') {
         )
         // 隐藏 消息小红点
         headerRightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-message-red-num',
                 '隐藏 消息小红点',
                 false,
@@ -702,7 +702,7 @@ if (location.host != 'live.bilibili.com') {
         )
         // 隐藏 动态
         headerRightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-dynamic',
                 '隐藏 动态',
                 false,
@@ -719,7 +719,7 @@ if (location.host != 'live.bilibili.com') {
         )
         // 隐藏 动态小红点
         headerRightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-dynamic-red-num',
                 '隐藏 动态小红点',
                 false,
@@ -730,76 +730,104 @@ if (location.host != 'live.bilibili.com') {
                 }`,
             ),
         )
-        // 隐藏 收藏, 隐藏 稍后再看
-        headerRightItems.push(
-            new NormalItem(
+        // 收藏、稍后再看 相关 一组互斥选项
+        {
+            const favoriteRadioItemIDList: string[] = [
+                'common-nav-favorite-watchlater-default',
                 'common-hide-nav-favorite',
-                '隐藏 收藏，隐藏 稍后再看',
-                false,
-                undefined,
-                false,
-                `.right-entry .v-popover-wrap:has(.header-favorite-container, [data-idx="fav"]) {
-                    display: none !important;
-                }
-                /* 旧版header */
-                #internationalHeader .nav-user-center .item:has(.mini-favorite) {
-                    display: none !important;
-                }`,
-            ),
-        )
-        // 隐藏 收藏, 显示 稍后再看(实验性)
-        headerRightItems.push(
-            new NormalItem(
                 'common-hide-nav-favorite-keep-watchlater',
-                '隐藏 收藏，显示 稍后再看(实验性)',
-                false,
-                undefined,
-                false,
-                `
-                /* 移除加入稍后再看时的上翻动画 */
-                .right-entry .v-popover-wrap .header-favorite-container-box {
-                    animation: unset !important;
-                }
-                .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__up {
-                    display: none !important;
-                }
-                .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__down {
-                    margin-top: 4px !important;
-                }
-                @media (max-width: 1279.9px) {
-                    .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__down {
-                        top: 10px;
-                    }
-                }`,
-            ),
-        )
-        // 显示 收藏, 显示 稍后再看(实验性)
-        headerRightItems.push(
-            new NormalItem(
                 'common-nav-keep-watchlater',
-                '显示 收藏，显示 稍后再看(实验性)',
-                false,
-                undefined,
-                false,
-                `
-                /* 移除加入稍后再看时的上翻动画 */
-                .right-entry .v-popover-wrap .header-favorite-container-box {
-                    display: flex !important;
-                    animation: unset !important;
-                }
-                .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__down {
-                    margin-top: 0 !important;
-                }
-                @media (max-width: 1279.9px) {
-                    .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__down {
-                        top: 15px;
+            ]
+            // 显示收藏 (官方默认), 默认开启
+            headerRightItems.push(
+                new RadioItem(
+                    'common-nav-favorite-watchlater-default',
+                    '显示 收藏 (官方默认)\n新增稍后再看视频时，自动切换为稍后再看',
+                    'common-header-fav-option',
+                    favoriteRadioItemIDList,
+                    true,
+                    undefined,
+                    false,
+                    null,
+                ),
+            )
+            // 隐藏 收藏, 隐藏 稍后再看
+            headerRightItems.push(
+                new RadioItem(
+                    'common-hide-nav-favorite',
+                    '隐藏 收藏，隐藏 稍后再看',
+                    'common-header-fav-option',
+                    favoriteRadioItemIDList,
+                    false,
+                    undefined,
+                    false,
+                    `.right-entry .v-popover-wrap:has(.header-favorite-container, [data-idx="fav"]) {
+                        display: none !important;
                     }
-                }`,
-            ),
-        )
+                    /* 旧版header */
+                    #internationalHeader .nav-user-center .item:has(.mini-favorite) {
+                        display: none !important;
+                    }`,
+                ),
+            )
+            // 隐藏 收藏, 显示 稍后再看(实验性)
+            headerRightItems.push(
+                new RadioItem(
+                    'common-hide-nav-favorite-keep-watchlater',
+                    '隐藏 收藏，显示 稍后再看(实验性)',
+                    'common-header-fav-option',
+                    favoriteRadioItemIDList,
+                    false,
+                    undefined,
+                    false,
+                    `
+                    /* 移除加入稍后再看时的上翻动画 */
+                    .right-entry .v-popover-wrap .header-favorite-container-box {
+                        animation: unset !important;
+                    }
+                    .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__up {
+                        display: none !important;
+                    }
+                    .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__down {
+                        margin-top: 4px !important;
+                    }
+                    @media (max-width: 1279.9px) {
+                        .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__down {
+                            top: 10px;
+                        }
+                    }`,
+                ),
+            )
+            // 显示 收藏, 显示 稍后再看(实验性)
+            headerRightItems.push(
+                new RadioItem(
+                    'common-nav-keep-watchlater',
+                    '显示 收藏，显示 稍后再看(实验性)',
+                    'common-header-fav-option',
+                    favoriteRadioItemIDList,
+                    false,
+                    undefined,
+                    false,
+                    `
+                    /* 移除加入稍后再看时的上翻动画 */
+                    .right-entry .v-popover-wrap .header-favorite-container-box {
+                        display: flex !important;
+                        animation: unset !important;
+                    }
+                    .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__down {
+                        margin-top: 0 !important;
+                    }
+                    @media (max-width: 1279.9px) {
+                        .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__down {
+                            top: 15px;
+                        }
+                    }`,
+                ),
+            )
+        }
         // 隐藏 历史
         headerRightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-history',
                 '隐藏 历史',
                 false,
@@ -816,7 +844,7 @@ if (location.host != 'live.bilibili.com') {
         )
         // 隐藏 创作中心
         headerRightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-member',
                 '隐藏 创作中心',
                 false,
@@ -833,7 +861,7 @@ if (location.host != 'live.bilibili.com') {
         )
         // 隐藏 投稿
         headerRightItems.push(
-            new NormalItem(
+            new CheckboxItem(
                 'common-hide-nav-upload',
                 '隐藏 投稿',
                 false,

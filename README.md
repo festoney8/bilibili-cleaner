@@ -66,7 +66,9 @@
 -   **「版权视频播放页」大部分功能与「播放页」一致且互相同步，小部分独有功能已用 "★" 重点标出**
 -   「动态页」评论区相关功能与「播放页」一致且互相同步
 -   「直播页」顶栏与普通顶栏不同，通用功能对其不生效（仅搜索栏少数功能与通用同步）
--   「首页」默认 10 个推荐位，在显示 5 列的情况下，若同时隐藏广告和分区视频，会产生一个待载入空位（骨架），可调节骨架相关选项改善观感
+-   「首页」默认 10 个推荐位，在显示 5 列的情况下，若同时隐藏广告和分区视频，会产生一个待载入空位（骨架），可调节骨架相关选项改善观感；在显示 6 列的情况下，会自动载入一轮推荐视频，有一段时间的载入延迟
+-   「强制页面布局」功能，适用于和 浏览器缩放比率（100%/110%/125%）、增大字号、隐藏元素 等功能混搭使用，调节出满意的页面效果
+-   已知 bug，Firefox 的「强制页面布局」可能出现过长文字换行问题
 
 ## 浏览器适配
 
@@ -74,10 +76,13 @@
 
 -   **要求 Chrome 内核版本 >= 105**，浏览器内核版本过低会导致部分功能失效，如：无法净化顶栏
 
+    > 鉴于 Google 在推行 [Manifest V3](https://developer.chrome.com/docs/extensions/migrating/checklist)，未来会影响油猴插件，参考[Tampermonkey changelog](https://www.tampermonkey.net/changelog.php#v5.0.0)。
+    > 可考虑启用浏览器开发者模式，Chrome 和 Edge 均可在插件管理页找到开关。
+
 ### Firefox
 
 -   **Firefox版本 103~120，按如下步骤开启高级设定**
-    -   在浏览器内打开网址 [about:config](about:config)，若出现提示页面，点击「接受风险并继续」
+    -   在浏览器内打开网址 [about:config](about:config)，若出现风险提示，点击「接受风险并继续」
     -   搜索 `layout.css.has-selector.enabled` ，将这一项的开关改为 `true`，并刷新标签页
 -   **Firefox版本 > 121，无需修改设定**
 
@@ -219,6 +224,8 @@
 ## Ref
 
 -   [vite-plugin-monkey](https://github.com/lisonge/vite-plugin-monkey)
+-   [Manifest V3](https://developer.chrome.com/docs/extensions/migrating/checklist)
+-   [TamperMonkey 5.0](https://www.tampermonkey.net/changelog.php#v5.0.0)
 
 ## Contribution
 

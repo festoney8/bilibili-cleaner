@@ -2,8 +2,9 @@ import { Group } from '../core/group'
 import { CheckboxItem } from '../core/item'
 import { debug } from '../utils/logger'
 
-// 折叠动态，自动展开
+// 自动展开 相同UP主被折叠的动态
 const dynamicUnfold = () => {
+    // 大量动态下，单次耗时10ms内
     const unfold = () => {
         const dynFoldNodes = document.querySelectorAll('main .bili-dyn-list__item .bili-dyn-item-fold')
         if (dynFoldNodes.length) {
@@ -202,11 +203,11 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
                 `.bili-rich-text-topic, .bili-dyn-content__orig__topic {display: none !important;}`,
             ),
         )
-        // 隐藏 视频预约动态
+        // 隐藏 视频预约/直播预约动态
         centerItems.push(
             new CheckboxItem(
                 'hide-dynamic-page-bili-dyn-card-reserve',
-                '隐藏 视频预约动态',
+                '隐藏 视频预约/直播预约动态',
                 false,
                 undefined,
                 false,
@@ -509,11 +510,11 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
                 `.comment-container .reply-item:has(.st1.lv3):not(:has(.sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
             ),
         )
-        // 隐藏 一级评论 踩/回复/举报 hover时显示, 默认开启
+        // 一级评论 踩/回复 只在hover时显示, 默认开启
         commentItems.push(
             new CheckboxItem(
                 'video-page-hide-root-reply-dislike-reply-btn',
-                '隐藏 一级评论 踩/回复/举报 hover时显示',
+                '一级评论 踩/回复 只在hover时显示',
                 true,
                 undefined,
                 false,
@@ -527,11 +528,11 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
                 }`,
             ),
         )
-        // 隐藏 二级评论 踩/回复/举报 hover时显示, 默认开启
+        // 二级评论 踩/回复 只在hover时显示, 默认开启
         commentItems.push(
             new CheckboxItem(
                 'video-page-hide-sub-reply-dislike-reply-btn',
-                '隐藏 二级评论 踩/回复/举报 hover时显示',
+                '二级评论 踩/回复 只在hover时显示',
                 true,
                 undefined,
                 false,

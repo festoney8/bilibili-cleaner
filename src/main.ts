@@ -66,7 +66,7 @@ const main = async () => {
                 GROUPS.forEach((e) => e.disableGroup())
                 isGroupEnable = false
             } else {
-                GROUPS.forEach((e) => e.enableGroup(true))
+                GROUPS.forEach((e) => e.enableGroup(false))
                 isGroupEnable = true
             }
         }

@@ -16,9 +16,7 @@ const dynamicUnfold = () => {
             debug(`unfold ${dynFoldNodes.length} fold`)
         }
     }
-    document.addEventListener('DOMContentLoaded', () => {
-        setInterval(unfold, 500)
-    })
+    setInterval(unfold, 500)
 }
 
 const basicItems: CheckboxItem[] = []
@@ -181,22 +179,33 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
                 `.bili-dyn-ornament {display: none !important;}`,
             ),
         )
-        // 隐藏 动态内容内 警告notice, 默认开启
+        // 隐藏 动态内容中 警告notice, 默认开启
         centerItems.push(
             new CheckboxItem(
                 'hide-dynamic-page-bili-dyn-dispute',
-                '隐藏 动态内容内 警告notice',
+                '隐藏 动态内容中 警告notice',
                 true,
                 undefined,
                 false,
                 `.bili-dyn-content__dispute {display: none !important;}`,
             ),
         )
-        // 隐藏 动态内容内 话题Tag
+        // 隐藏 动态内容中 稍后再看按钮
+        centerItems.push(
+            new CheckboxItem(
+                'hide-dynamic-page-bili-dyn-watchlater',
+                '隐藏 动态内容中 稍后再看按钮',
+                false,
+                undefined,
+                false,
+                `.bili-dyn-card-video__mark {display: none !important;}`,
+            ),
+        )
+        // 隐藏 动态内容中 话题Tag
         centerItems.push(
             new CheckboxItem(
                 'hide-dynamic-page-bili-dyn-topic',
-                '隐藏 动态内容内 话题Tag',
+                '隐藏 动态内容中 话题Tag',
                 false,
                 undefined,
                 false,

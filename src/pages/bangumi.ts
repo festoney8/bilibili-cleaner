@@ -862,11 +862,11 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
                 `#comment-module .reply-item:has(.st1.lv3):not(:has(.sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
             ),
         )
-        // 隐藏 一级评论 踩/回复/举报 hover时显示, 默认开启
+        // 一级评论 踩/回复 只在hover时显示, 默认开启
         commentItems.push(
             new CheckboxItem(
                 'video-page-hide-root-reply-dislike-reply-btn',
-                '隐藏 一级评论 踩/回复/举报 hover时显示',
+                '一级评论 踩/回复 只在hover时显示',
                 true,
                 undefined,
                 false,
@@ -880,11 +880,11 @@ if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
                 }`,
             ),
         )
-        // 隐藏 二级评论 踩/回复/举报 hover时显示, 默认开启
+        // 二级评论 踩/回复 只在hover时显示, 默认开启
         commentItems.push(
             new CheckboxItem(
                 'video-page-hide-sub-reply-dislike-reply-btn',
-                '隐藏 二级评论 踩/回复/举报 hover时显示',
+                '二级评论 踩/回复 只在hover时显示',
                 true,
                 undefined,
                 false,

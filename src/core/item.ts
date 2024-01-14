@@ -14,7 +14,7 @@ interface IItem {
 
 /** 普通开关 */
 export class CheckboxItem implements IItem {
-    nodeHTML = `<input class="bili-cleaner-item-switch" type="checkbox">`
+    nodeHTML = `<input class="bili-cleaner-item-checkbox" type="checkbox">`
     private isEnable: boolean | undefined
     // item对应的HTML input node
     private itemEle: HTMLInputElement | undefined
@@ -172,7 +172,7 @@ export class CheckboxItem implements IItem {
 
 /** 互斥开关 */
 export class RadioItem implements IItem {
-    nodeHTML = `<input class="bili-cleaner-item-switch" type="radio">`
+    nodeHTML = `<input class="bili-cleaner-item-checkbox" type="radio">`
     private isEnable: boolean | undefined
     private itemEle: HTMLInputElement | undefined
 

@@ -3,14 +3,14 @@ import { CheckboxItem } from '../core/item'
 import { debug } from '../utils/logger'
 
 /** BV号转AV号 */
-function bv2av() {
+const bv2av = () => {
     /**
      * bv2av algo by mcfx
      * @see https://www.zhihu.com/question/381784377/answer/1099438784
      * @param x 输入BV号
      * @returns 输出纯数字av号
      */
-    function dec(x: string): number {
+    const dec = (x: string): number => {
         const table = 'fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF'
         const tr: { [key: string]: number } = {}
         for (let i = 0; i < 58; i++) {
@@ -46,7 +46,7 @@ function bv2av() {
 
 /** 净化分享按钮功能, 暂不支持从稍后再看列表、收藏夹列表分享 */
 let isSimpleShareBtn = false
-function simpleShare() {
+const simpleShare = () => {
     if (isSimpleShareBtn) {
         return
     }
@@ -93,6 +93,92 @@ function simpleShare() {
             debug('simpleShare timeout')
         }
     }, 200)
+}
+
+/** 隐藏弹幕栏时，强行调节播放器高度 */
+const overridePlayerHeight = () => {
+    // 念咒
+    const genSizeCSS = (): string => {
+        const e = window.isWide
+        const i = window.innerHeight
+        const t = Math.max((document.body && document.body.clientWidth) || window.innerWidth, 1100)
+        const n = 1680 < innerWidth ? 411 : 350
+        const o = (16 * (i - (1690 < innerWidth ? 318 : 308))) / 9
+        const r = t - 112 - n
+        let d = r < o ? r : o
+        if (d < 668) {
+            d = 668
+        }
+        if (1694 < d) {
+            d = 1694
+        }
+        let a = d + n
+        if (window.isWide) {
+            a -= 125
+            d -= 100
+        }
+        let l
+        if (window.hasBlackSide && !window.isWide) {
+            l = Math.round((d - 14 + (e ? n : 0)) * 0.5625) + 96
+        } else {
+            l = Math.round((d + (e ? n : 0)) * 0.5625)
+        }
+        const s = `
+            .video-container-v1 {width: auto;padding: 0 10px;}
+            .left-container {width: ${a - n}px;}
+            #bilibili-player {width: ${a - (e ? -30 : n)}px;height: ${l}px;position: ${e ? 'relative' : 'static'};}
+            #oldfanfollowEntry {position: relative;top: ${e ? `${l + 10}px` : '0'};}
+            #danmukuBox {margin-top: ${e ? `${l + 28}px` : '0'};}
+            #playerWrap {height: ${l}px;}
+            .video-discover {margin-left: ${(a - n) / 2}px;}
+            `
+        return s.replace(/\n\s*/g, '').trim()
+    }
+
+    // override CSS
+    // 插入新style覆盖(必须在原style出现后，appendChild在head尾部，权限更高)
+    const overrideCSS = () => {
+        const overrideStyle = document.getElementById('overrideSetSizeStyle') as HTMLStyleElement
+        if (!overrideStyle) {
+            const newStyleNode = document.createElement('style')
+            newStyleNode.id = 'overrideSetSizeStyle'
+            newStyleNode.innerHTML = genSizeCSS()
+            document.head.appendChild(newStyleNode)
+            debug('override setSize OK')
+        } else {
+            overrideStyle.innerHTML = genSizeCSS()
+            debug('refresh setSize OK')
+        }
+    }
+
+    // 监听官方style #setSizeStyle 出现
+    const observeStyle = new MutationObserver(() => {
+        if (document.getElementById('setSizeStyle')) {
+            overrideCSS()
+            observeStyle.disconnect()
+        }
+    })
+    if (document.head) {
+        observeStyle.observe(document.head, { childList: true })
+    }
+
+    // 监听宽屏按钮click
+    let isWide = window.isWide
+    const observeBtn = new MutationObserver(() => {
+        const wideBtn = document.querySelector('#bilibili-player .bpx-player-ctrl-wide') as HTMLFormElement
+        if (wideBtn) {
+            wideBtn.addEventListener('click', () => {
+                debug('wideBtn click detected')
+                window.isWide = isWide ? false : true
+                isWide = isWide ? false : true
+                overrideCSS()
+            })
+            observeBtn.disconnect()
+        }
+    })
+    document.addEventListener('DOMContentLoaded', () => {
+        observeBtn.observe(document, { childList: true, subtree: true })
+    })
 }
 
 const basicItems: CheckboxItem[] = []
@@ -683,13 +769,12 @@ if (
         danmakuItems.push(
             new CheckboxItem(
                 'video-page-hide-bpx-player-sending-area',
-                '非全屏下 关闭弹幕栏',
+                '非全屏下 关闭弹幕栏 (刷新去黑边)',
                 false,
-                undefined,
+                overridePlayerHeight,
                 false,
-                `.bpx-player-sending-area {display: none !important;}
-                /* video page的player, height由JS动态设定, 无法去黑边 */
-                #bilibili-player-wrap {height: calc(var(--video-width)*.5625)}`,
+                // video page的player height由JS动态设定
+                `.bpx-player-sending-area {display: none !important;}`,
             ),
         )
         // 全屏下 关闭弹幕输入框
@@ -1383,11 +1468,11 @@ if (
                 `.comment-container .reply-item:has(.st1.lv3):not(:has(.sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
             ),
         )
-        // 隐藏 一级评论 踩/回复/举报 hover时显示, 默认开启
+        // 一级评论 踩/回复 只在hover时显示, 默认开启
         commentItems.push(
             new CheckboxItem(
                 'video-page-hide-root-reply-dislike-reply-btn',
-                '隐藏 一级评论 踩/回复/举报 hover时显示',
+                '一级评论 踩/回复 只在hover时显示',
                 true,
                 undefined,
                 false,
@@ -1401,11 +1486,11 @@ if (
                 }`,
             ),
         )
-        // 隐藏 二级评论 踩/回复/举报 hover时显示, 默认开启
+        // 二级评论 踩/回复 只在hover时显示, 默认开启
         commentItems.push(
             new CheckboxItem(
                 'video-page-hide-sub-reply-dislike-reply-btn',
-                '隐藏 二级评论 踩/回复/举报 hover时显示',
+                '二级评论 踩/回复 只在hover时显示',
                 true,
                 undefined,
                 false,

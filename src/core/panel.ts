@@ -112,7 +112,7 @@ export class Panel implements IPanel {
         border: 1px solid #eee;
         margin: 15px 20px;
     }
-    .bili-cleaner-item-switch {
+    .bili-cleaner-item-checkbox {
         width: 50px;
         min-width: 50px;
         height: 27px;
@@ -126,7 +126,7 @@ export class Panel implements IPanel {
         -webkit-appearance: none;
         user-select: none;
     }
-    .bili-cleaner-item-switch:before {
+    .bili-cleaner-item-checkbox:before {
         content: '';
         width: 25px;
         height: 25px;
@@ -137,12 +137,12 @@ export class Panel implements IPanel {
         background-color: white;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
     }
-    .bili-cleaner-item-switch:checked {
+    .bili-cleaner-item-checkbox:checked {
         border-color: ${settings.themeColor};
         box-shadow: ${settings.themeColor} 0 0 0 16px inset;
         background-color: ${settings.themeColor};
     }
-    .bili-cleaner-item-switch:checked:before {
+    .bili-cleaner-item-checkbox:checked:before {
         left: 25px;
     }`
     panelHTML = `

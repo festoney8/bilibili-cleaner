@@ -176,7 +176,9 @@ const overridePlayerHeight = () => {
             observeBtn.disconnect()
         }
     })
-    observeBtn.observe(document, { childList: true, subtree: true })
+    document.addEventListener('DOMContentLoaded', () => {
+        observeBtn.observe(document, { childList: true, subtree: true })
+    })
 }
 
 const basicItems: CheckboxItem[] = []

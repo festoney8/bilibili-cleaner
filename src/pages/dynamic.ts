@@ -1,5 +1,24 @@
 import { Group } from '../core/group'
 import { CheckboxItem } from '../core/item'
+import { debug } from '../utils/logger'
+
+// 折叠动态，自动展开
+const dynamicUnfold = () => {
+    const unfold = () => {
+        const dynFoldNodes = document.querySelectorAll('main .bili-dyn-list__item .bili-dyn-item-fold')
+        if (dynFoldNodes.length) {
+            dynFoldNodes.forEach((e) => {
+                if (e instanceof HTMLDivElement) {
+                    e.click()
+                }
+            })
+            debug(`unfold ${dynFoldNodes.length} fold`)
+        }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        setInterval(unfold, 500)
+    })
+}
 
 const basicItems: CheckboxItem[] = []
 const leftItems: CheckboxItem[] = []
@@ -57,6 +76,17 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
                 undefined,
                 false,
                 `.bili-dyn-live-users__item__living {display: none !important;}`,
+            ),
+        )
+        // 隐藏 整个左栏
+        leftItems.push(
+            new CheckboxItem(
+                'hide-dynamic-page-aside-left',
+                '隐藏 整个左栏',
+                false,
+                undefined,
+                false,
+                `aside.left {display: none !important;}`,
             ),
         )
     }
@@ -128,11 +158,11 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
                 main section:nth-child(1) {margin-bottom: 0 !important;}`,
             ),
         )
-        // 隐藏 动态分类Tab
+        // 隐藏 动态分类Tab bar
         centerItems.push(
             new CheckboxItem(
                 'hide-dynamic-page-bili-dyn-list-tabs',
-                '隐藏 动态分类Tab',
+                '隐藏 动态分类Tab bar',
                 false,
                 undefined,
                 false,
@@ -150,15 +180,78 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
                 `.bili-dyn-ornament {display: none !important;}`,
             ),
         )
-        // 隐藏 视频警告notice, 默认开启
+        // 隐藏 动态内容内 警告notice, 默认开启
         centerItems.push(
             new CheckboxItem(
                 'hide-dynamic-page-bili-dyn-dispute',
-                '隐藏 视频警告notice',
+                '隐藏 动态内容内 警告notice',
                 true,
                 undefined,
                 false,
                 `.bili-dyn-content__dispute {display: none !important;}`,
+            ),
+        )
+        // 隐藏 动态内容内 话题Tag
+        centerItems.push(
+            new CheckboxItem(
+                'hide-dynamic-page-bili-dyn-topic',
+                '隐藏 动态内容内 话题Tag',
+                false,
+                undefined,
+                false,
+                `.bili-rich-text-topic, .bili-dyn-content__orig__topic {display: none !important;}`,
+            ),
+        )
+        // 隐藏 视频预约动态
+        centerItems.push(
+            new CheckboxItem(
+                'hide-dynamic-page-bili-dyn-card-reserve',
+                '隐藏 视频预约动态',
+                false,
+                undefined,
+                false,
+                `.bili-dyn-list__item:has(.bili-dyn-card-reserve) {display: none !important;}`,
+            ),
+        )
+        // 隐藏 带货动态
+        centerItems.push(
+            new CheckboxItem(
+                'hide-dynamic-page-bili-dyn-card-goods',
+                '隐藏 带货动态',
+                false,
+                undefined,
+                false,
+                `.bili-dyn-list__item:has(.bili-dyn-card-goods) {
+                    visibility: hidden !important;
+                    height: 0 !important;
+                    margin: 0 !important;
+                }`,
+            ),
+        )
+        // 隐藏 转发的动态
+        centerItems.push(
+            new CheckboxItem(
+                'hide-dynamic-page-bili-dyn-forward',
+                '隐藏 转发的动态',
+                false,
+                undefined,
+                false,
+                `.bili-dyn-list__item:has(.bili-dyn-content__orig.reference) {
+                    visibility: hidden !important;
+                    height: 0 !important;
+                    margin: 0 !important;
+                }`,
+            ),
+        )
+        // 自动展开 相同UP主被折叠的动态
+        centerItems.push(
+            new CheckboxItem(
+                'dynamic-page-unfold-dynamic',
+                '自动展开 相同UP主被折叠的动态',
+                false,
+                dynamicUnfold,
+                false,
+                null,
             ),
         )
     }

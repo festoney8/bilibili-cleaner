@@ -201,15 +201,40 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
                 `.bili-dyn-card-video__mark {display: none !important;}`,
             ),
         )
-        // 隐藏 动态内容中 话题Tag
+        // 隐藏 动态内容中 官方话题Tag
         centerItems.push(
             new CheckboxItem(
-                'hide-dynamic-page-bili-dyn-topic',
-                '隐藏 动态内容中 话题Tag',
+                'hide-dynamic-page-bili-dyn-official-topic',
+                '隐藏 动态内容中 官方话题Tag',
                 false,
                 undefined,
                 false,
-                `.bili-rich-text-topic, .bili-dyn-content__orig__topic {display: none !important;}`,
+                // 不得隐藏普通tag .bili-rich-text-topic
+                // 会造成部分动态内容要点缺失影响阅读
+                `.bili-dyn-content__orig__topic {display: none !important;}`,
+            ),
+        )
+        // 动态内容中 普通Tag 去除高亮
+        centerItems.push(
+            new CheckboxItem(
+                'hide-dynamic-page-bili-dyn-text-topic',
+                '动态内容中 普通Tag 去除高亮',
+                false,
+                undefined,
+                false,
+                `.bili-rich-text-topic {color: inherit !important;}
+                .bili-rich-text-topic:hover {color: var(--brand_blue) !important;}`,
+            ),
+        )
+        // 隐藏 动态精选互动 XXX赞了/XXX回复
+        centerItems.push(
+            new CheckboxItem(
+                'hide-dynamic-page-bili-dyn-item-interaction',
+                '隐藏 动态精选互动 XXX赞了/XXX回复',
+                false,
+                undefined,
+                false,
+                `.bili-dyn-item__interaction {display: none !important;}`,
             ),
         )
         // 隐藏 视频预约/直播预约动态
@@ -231,7 +256,9 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
                 false,
                 undefined,
                 false,
-                `.bili-dyn-list__item:has(.bili-dyn-card-goods) {
+                `.bili-dyn-list__item:has(.bili-dyn-card-goods),
+                .bili-dyn-list__item:has(.bili-rich-text-module.goods),
+                .bili-dyn-list__item:has([data-type="goods"]) {
                     visibility: hidden !important;
                     height: 0 !important;
                     margin: 0 !important;
@@ -250,6 +277,19 @@ if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/o
                     visibility: hidden !important;
                     height: 0 !important;
                     margin: 0 !important;
+                }`,
+            ),
+        )
+        // 隐藏 投票动态
+        centerItems.push(
+            new CheckboxItem(
+                'hide-dynamic-page-bili-dyn-vote',
+                '隐藏 投票动态',
+                false,
+                undefined,
+                false,
+                `.bili-dyn-list__item:has(.bili-dyn-card-vote) {
+                    display: none !important;
                 }`,
             ),
         )

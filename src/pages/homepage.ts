@@ -217,6 +217,17 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
                 }`,
             ),
         )
+        // 隐藏 顶部adblock提示, 默认开启
+        basicItems.push(
+            new CheckboxItem(
+                'homepage-hide-adblock-tips',
+                '隐藏 顶部adblock提示',
+                true,
+                undefined,
+                false,
+                `.adblock-tips {display: none !important;}`,
+            ),
+        )
         // 增大 视频信息字号
         basicItems.push(
             new CheckboxItem(

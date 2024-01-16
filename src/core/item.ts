@@ -362,7 +362,6 @@ export class NumberItem implements IItem {
      * @param defaultValue 默认值
      * @param minValue 最小值
      * @param maxValue 最大值
-     * @param stepValue 增减按钮步幅
      * @param unit 数值单位
      */
     constructor(
@@ -371,15 +370,12 @@ export class NumberItem implements IItem {
         private defaultValue: number,
         private minValue: number,
         private maxValue: number,
-        private stepValue: number,
         private unit: string,
-    ) {
-        this.getValue()
-    }
+    ) {}
 
     /** 获取数值, 初次安装使用默认值 */
     getValue() {
-        GM_getValue(`BILICLEANER_VALUE_${this.itemID}`)
+        this.itemValue = GM_getValue(`BILICLEANER_VALUE_${this.itemID}`)
         if (this.itemValue === undefined) {
             this.itemValue = this.defaultValue
             this.setValue(this.itemValue)
@@ -388,7 +384,7 @@ export class NumberItem implements IItem {
     /** 设定并记录数值 */
     setValue(value: number) {
         this.itemValue = value
-        GM_setValue(`BILICLEANER_VALUE_${this.itemID}`, value)
+        GM_setValue(`BILICLEANER_VALUE_${this.itemID}`, this.itemValue)
     }
 
     /**
@@ -400,12 +396,11 @@ export class NumberItem implements IItem {
             this.getValue()
             const node = document.createElement('label')
             node.id = this.itemID
-            node.innerHTML = `${this.nodeHTML} ${this.unit}<span>${this.description.replaceAll('\n', '<br>')}</span>`
+            node.innerHTML = `${this.description.replaceAll('\n', '<br>')}<span>${this.nodeHTML}</span>${this.unit}`
             const inputNode = node.querySelector('input') as HTMLInputElement
-            inputNode.setAttribute('value', this.defaultValue.toString())
+            inputNode.setAttribute('value', this.itemValue!.toString())
             inputNode.setAttribute('min', this.minValue.toString())
             inputNode.setAttribute('max', this.maxValue.toString())
-            inputNode.setAttribute('step', this.stepValue.toString())
             const itemGroupList = document.querySelector(`#${groupID} .bili-cleaner-item-list`) as HTMLFormElement
             if (itemGroupList) {
                 itemGroupList.appendChild(node)

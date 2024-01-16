@@ -1,0 +1,155 @@
+// 未使用css-loader等工具
+// scss to css生成后, 把css手动贴进代码里:D
+#bili-cleaner {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 32vw;
+    height: 90vh;
+    border-radius: 10px;
+    background: #f4f5f7;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
+    overflow: auto;
+    z-index: 2147483647;
+
+    & #bili-cleaner-bar {
+        width: 32vw;
+        height: 6vh;
+        background: rgba(251, 114, 153, 1);
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        cursor: move;
+        user-select: none;
+
+        & #bili-cleaner-title {
+            width: 32vw;
+            height: 6vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 22px;
+            & span {
+                text-align: center;
+            }
+        }
+
+        & #bili-cleaner-close {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 6vh;
+            height: 6vh;
+            border-radius: 6vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: auto;
+            &:hover {
+                background: rgba(255, 255, 255, 0.2);
+            }
+            & svg {
+                text-align: center;
+            }
+        }
+    }
+    & #bili-cleaner-group-list {
+        height: 84vh;
+        overflow: auto;
+        scrollbar-width: none !important;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+        & .bili-cleaner-group {
+            margin: 14px;
+            background: white;
+            border-radius: 6px;
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            user-select: none;
+            & hr {
+                border: 1px solid #eee;
+                margin: 5px 0 10px 0;
+            }
+
+            & .bili-cleaner-group-title {
+                font-size: 20px;
+                font-weight: bold;
+                padding: 2px;
+                color: black;
+                letter-spacing: 1px;
+            }
+            & .bili-cleaner-item-list {
+                & label {
+                    display: flex;
+                    align-items: center;
+                    margin: 6px 0 6px 10px;
+                    font-size: 16px;
+                    color: black;
+                }
+                & hr {
+                    border: 1px solid #eee;
+                    margin: 15px 20px;
+                }
+            }
+            // 开关项样式
+            & .bili-cleaner-item-checkbox {
+                width: 50px;
+                min-width: 50px;
+                height: 27px;
+                margin: 0 1em 0 0;
+                position: relative;
+                border: 1px solid #dfdfdf;
+                background-color: #fdfdfd;
+                box-shadow: #dfdfdf 0 0 0 0 inset;
+                border-radius: 50px;
+                appearance: none;
+                -webkit-appearance: none;
+                user-select: none;
+                &:before {
+                    content: '';
+                    width: 25px;
+                    height: 25px;
+                    position: absolute;
+                    top: 0px;
+                    left: 0;
+                    border-radius: 50px;
+                    background-color: white;
+                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+                }
+                &:checked {
+                    border-color: rgba(251, 114, 153, 1);
+                    box-shadow: rgba(251, 114, 153, 1) 0 0 0 16px inset;
+                    background-color: rgba(251, 114, 153, 1);
+                }
+                &:checked:before {
+                    left: 25px;
+                }
+            }
+            // 数值设定项样式
+            & .bili-cleaner-item-number {
+                width: 50px;
+                min-width: 50px;
+                height: 27px;
+                margin: 0 0.5em 0 0.5em;
+                position: relative;
+                border: 1px solid #dfdfdf;
+                background-color: #fdfdfd;
+                box-shadow: #dfdfdf 0 0 0 0 inset;
+                border-radius: 5px;
+                appearance: none;
+                -webkit-appearance: none;
+                text-align: center;
+                color: blue;
+                font-size: 16px;
+                -moz-appearance: textfield;
+                &::-webkit-inner-spin-button,
+                &::-webkit-inner-spin-button {
+                    -webkit-appearance: none;
+                }
+            }
+        }
+    }
+}

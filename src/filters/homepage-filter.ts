@@ -11,18 +11,20 @@ const durationItems: (CheckboxItem | NumberItem)[] = []
 // const uploaderItems: (CheckboxItem | NumberItem)[] = []
 const homepageFilterGroupList: Group[] = []
 
+// 开关和数值itemID, 用于获取状态
 const homepageFilterDurationItemID = 'homepage-filter-duration'
 const homepageFilterDurationValueID = 'homepage-filter-duration-threshold'
 
 if (isPageHomepage()) {
     // 初始化过滤器
+    const durationEnable: boolean = GM_getValue(`BILICLEANER_${homepageFilterDurationItemID}`, false)
     const durationThreshold: number = GM_getValue(
-        `BILICLEANER_VALUE_homepage-filter-duration-threshold`,
+        `BILICLEANER_VALUE_${homepageFilterDurationValueID}`,
         settings.durationThreshold,
     )
     const config: filterConfig = {
         enable: {
-            duration: true,
+            duration: durationEnable,
             title: false,
             uploader: false,
         },
@@ -40,26 +42,28 @@ if (isPageHomepage()) {
 
     // 监听并过滤视频列表
     const videoListWatcher = () => {
+        // 调用过滤器, 检测视频列表内的视频, 单次检测duration在10ms内
+        const checkVideoList = (container: HTMLElement) => {
+            debug('before check')
+            // feed: 10个顶部推荐位, 不含已过滤视频
+            const feedVideos = container.querySelectorAll<HTMLElement>(
+                `:scope > .feed-card:not([${settings.filterSign}])`,
+            )
+            // rcmd: 瀑布推荐流, 不含feed, 不含已过滤视频, 不含未载入视频
+            const rcmdVideos = container.querySelectorAll<HTMLElement>(
+                `:scope > .bili-video-card.is-rcmd:not([${settings.filterSign}])`,
+            )
+            mainFilter.checkAll([...rcmdVideos])
+            mainFilter.checkAll([...feedVideos])
+            debug(`after check, ${feedVideos.length} new feed, ${rcmdVideos.length} new rcmd`)
+        }
         // 监听视频列表(container)出现，出现后监听视频数量变化
         const watchVideoList = (container: HTMLElement) => {
             if (container) {
-                const checkContainer = (container: HTMLElement) => {
-                    // feed: 10个顶部推荐位
-                    const feedVideos = container.querySelectorAll<HTMLElement>(':scope > .feed-card')
-                    // rcmd: 瀑布推荐流, 不含feed, 不含未载入视频
-                    // 对过滤后的项添加attribute, 避免再次选中
-                    const rcmdVideos = container.querySelectorAll<HTMLElement>(
-                        `:scope > .bili-video-card.is-rcmd:not(${settings.filterSign})`,
-                    )
-                    debug(`detect ${feedVideos.length} new feed videos`)
-                    debug(`detect ${rcmdVideos.length} new rcmd videos`)
-                    mainFilter.checkAll([...feedVideos])
-                    mainFilter.checkAll([...rcmdVideos])
-                }
-                checkContainer(container)
+                checkVideoList(container)
                 debug('homepage start obverse video list')
                 const videoObverser = new MutationObserver(() => {
-                    checkContainer(container)
+                    checkVideoList(container)
                 })
                 videoObverser.observe(container, { childList: true })
             }
@@ -111,7 +115,7 @@ if (isPageHomepage()) {
                 null,
             ),
         )
-        durationItems.push(new NumberItem(homepageFilterDurationValueID, '设定最低时长 (刷新生效)', 60, 0, 300, '秒'))
+        durationItems.push(new NumberItem(homepageFilterDurationValueID, '设定最低时长 (300秒以内)', 60, 0, 300, '秒'))
     }
     homepageFilterGroupList.push(new Group('homepage-filter-duration-group', '首页 视频时长过滤', durationItems))
 }

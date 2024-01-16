@@ -420,7 +420,7 @@ export class NumberItem implements IItem {
                 currValue = parseInt(itemEle.value)
                 debug(currValue)
                 if (isNaN(currValue)) {
-                    itemEle.value = this.defaultValue.toString()
+                    itemEle.value = this.minValue.toString()
                 } else {
                     if (currValue > this.maxValue) {
                         itemEle.value = this.maxValue.toString()
@@ -429,6 +429,7 @@ export class NumberItem implements IItem {
                     }
                 }
                 this.setValue(parseInt(itemEle.value))
+                itemEle.value = parseInt(itemEle.value).toString()
                 debug('currValue', itemEle.value)
             })
             debug(`watchItem ${this.itemID} OK`)

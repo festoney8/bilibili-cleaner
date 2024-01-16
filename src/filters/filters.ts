@@ -145,7 +145,7 @@ export class MainFilter {
     private titleSelector: undefined | string = undefined
     private uploaderSelector: undefined | string = undefined
     // 是否恢复display
-    private needDisplayRecover = false
+    private needDisplayRecover = true
 
     /**
      * 构建主过滤器
@@ -217,9 +217,10 @@ export class MainFilter {
                 .catch(() => {
                     // video.style.display = 'none'
                     video.style.visibility = 'hidden'
-                    if (!video.hasAttribute(settings.filterSign)) {
-                        video.setAttribute(settings.filterSign, '')
-                    }
+                })
+                .finally(() => {
+                    // 标记已过滤的视频
+                    video.setAttribute(settings.filterSign, '')
                 })
         })
     }

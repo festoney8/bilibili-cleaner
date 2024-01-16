@@ -1,6 +1,16 @@
 import { Group } from '../core/group'
 import { CheckboxItem, RadioItem } from '../core/item'
 import { debug } from '../utils/logger'
+import {
+    isPageBangumi,
+    isPageDynamic,
+    isPageHomepage,
+    isPageLive,
+    isPagePlaylist,
+    isPagePopular,
+    isPageSearch,
+    isPageVideo,
+} from '../utils/page-type'
 
 /**
  * URL净化，移除query string中的跟踪参数/无用参数
@@ -41,7 +51,7 @@ const cleanURL = () => {
         'extra_jump_from',
     ])
     // 搜索页参数, 意义不明所以做一下判断
-    if (location.host === 'search.bilibili.com') {
+    if (isPageSearch()) {
         keysToRemove.add('vt')
     }
     const url = location.href
@@ -81,9 +91,7 @@ const commonGroupList: Group[] = []
 
 // 通用 页面直角化，去除圆角，根据URL选取CSS
 let borderRadiusCSS: myCSS = ''
-const host = location.host
-const href = location.href
-if (host === 't.bilibili.com') {
+if (isPageDynamic()) {
     borderRadiusCSS = `
         #nav-searchform,
         .nav-search-content,
@@ -119,7 +127,7 @@ if (host === 't.bilibili.com') {
         .bili-dyn-card-video__body {
             border-radius: 0 3px 3px 0 !important;
         }`
-} else if (host === 'live.bilibili.com') {
+} else if (isPageLive()) {
     borderRadiusCSS = `
         #nav-searchform,
         #player-ctnr,
@@ -157,7 +165,7 @@ if (host === 't.bilibili.com') {
         #rank-list-ctnr-box.bgStyle {
             border-radius: 3px 0 0 3px !important;
         }`
-} else if (host === 'search.bilibili.com') {
+} else if (isPageSearch()) {
     borderRadiusCSS = `
         #nav-searchform,
         .nav-search-content,
@@ -174,12 +182,8 @@ if (host === 't.bilibili.com') {
             border-radius: 3px !important;
         }`
 } else {
-    // 普通播放页, 稍后再看播放页, 收藏夹播放页
-    if (
-        href.includes('bilibili.com/video/') ||
-        href.includes('bilibili.com/list/watchlater') ||
-        href.includes('bilibili.com/list/ml')
-    ) {
+    // 普通播放页, 播放列表页（稍后再看播放页, 收藏夹播放页）
+    if (isPageVideo() || isPagePlaylist()) {
         borderRadiusCSS = `
             #nav-searchform,
             .nav-search-content,
@@ -217,7 +221,7 @@ if (host === 't.bilibili.com') {
             .bpx-player-dm-btn-send .bui-button {
                 border-radius: 3px 0 0 3px !important;
             }`
-    } else if (href.includes('bilibili.com/bangumi/play/')) {
+    } else if (isPageBangumi()) {
         borderRadiusCSS = `
             a[class^="mediainfo_mediaCover"],
             a[class^="mediainfo_btnHome"],
@@ -258,7 +262,7 @@ if (host === 't.bilibili.com') {
             .bpx-player-dm-btn-send .bui-button {
                 border-radius: 3px 0 0 3px !important;
             }`
-    } else if (href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'].includes(location.pathname)) {
+    } else if (isPageHomepage()) {
         borderRadiusCSS = `
             #nav-searchform,
             .nav-search-content,
@@ -296,7 +300,7 @@ if (host === 't.bilibili.com') {
             .single-card.floor-card {
                 border: none !important;
             }`
-    } else if (href.includes('bilibili.com/v/popular/')) {
+    } else if (isPagePopular()) {
         borderRadiusCSS = `
             #nav-searchform,
             .nav-search-content,
@@ -366,7 +370,7 @@ if (host === 't.bilibili.com') {
 }
 commonGroupList.push(new Group('common-basic', '全站通用项 基本功能', basicItems))
 // 通用header净化，直播页除外
-if (location.host != 'live.bilibili.com') {
+if (!isPageLive()) {
     // 顶栏左侧part, headerLeftItems
     {
         // 隐藏 主站Logo

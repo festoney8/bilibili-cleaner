@@ -1,6 +1,7 @@
 import { Group } from '../core/group'
 import { CheckboxItem } from '../core/item'
 import { debug } from '../utils/logger'
+import { isPageDynamic } from '../utils/page-type'
 
 // 自动展开 相同UP主被折叠的动态
 const dynamicUnfold = () => {
@@ -33,7 +34,7 @@ const dynamicGroupList: Group[] = []
  * 动态评论区的规则尽可能使用与video page相同的itemID, 同步开关状态
  * 评论区规则适配2种动态详情页(t.bilibili.com/12121212和bilibili.com/opus/12121212)
  */
-if (location.host === 't.bilibili.com' || location.href.includes('bilibili.com/opus/')) {
+if (isPageDynamic()) {
     // 基本功能part, basicItems
     {
         // 顶栏 不再吸附顶部

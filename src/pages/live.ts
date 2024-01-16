@@ -1,5 +1,6 @@
 import { Group } from '../core/group'
 import { CheckboxItem } from '../core/item'
+import { isPageLive } from '../utils/page-type'
 
 const basicItems: CheckboxItem[] = []
 const infoItems: CheckboxItem[] = []
@@ -13,7 +14,7 @@ const headerRightItems: CheckboxItem[] = []
 const liveGroupList: Group[] = []
 
 /** 直播页面规则, 只适用于直播间内, 不适用于直播首页 */
-if (location.host === 'live.bilibili.com') {
+if (isPageLive()) {
     // 基本功能part, basicItems
     {
         // 隐藏 页面右侧按钮 实验室/关注, 默认开启

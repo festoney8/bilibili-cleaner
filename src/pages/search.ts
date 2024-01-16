@@ -1,12 +1,13 @@
 import { Group } from '../core/group'
 import { CheckboxItem } from '../core/item'
+import { isPageSearch } from '../utils/page-type'
 
 const basicItems: CheckboxItem[] = []
 const sidebarItems: CheckboxItem[] = []
 // GroupList
 const searchGroupList: Group[] = []
 
-if (location.host === 'search.bilibili.com') {
+if (isPageSearch()) {
     // 基本功能part, basicItems
     {
         // 顶栏 滚动页面后不再吸附顶部

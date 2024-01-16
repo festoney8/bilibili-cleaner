@@ -1,5 +1,6 @@
 import { Group } from '../core/group'
 import { CheckboxItem, RadioItem } from '../core/item'
+import { isPagePopular } from '../utils/page-type'
 
 const basicItems: CheckboxItem[] = []
 const layoutItems: (CheckboxItem | RadioItem)[] = []
@@ -9,7 +10,7 @@ const historyItems: CheckboxItem[] = []
 // GroupList
 const popularGroupList: Group[] = []
 
-if (location.href.includes('bilibili.com/v/popular/')) {
+if (isPagePopular()) {
     // 基础功能part, basicItems
     {
         // 隐藏 横幅banner, 同步首页设定

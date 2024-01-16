@@ -1,6 +1,7 @@
 import { Group } from '../core/group'
 import { CheckboxItem } from '../core/item'
 import { debug } from '../utils/logger'
+import { isPagePlaylist, isPageVideo } from '../utils/page-type'
 
 /** BV号转AV号 */
 const bv2av = () => {
@@ -195,12 +196,7 @@ const sidebarItems: CheckboxItem[] = []
 const videoGroupList: Group[] = []
 
 // 普通播放页，稍后再看播放页，收藏夹播放页
-const href = location.href
-if (
-    href.includes('bilibili.com/video/') ||
-    href.includes('bilibili.com/list/watchlater') ||
-    href.includes('bilibili.com/list/ml')
-) {
+if (isPageVideo() || isPagePlaylist()) {
     // 基本功能part, basicItems
     {
         // BV号转AV号, 在url变化时需重载, 关闭功能需刷新

@@ -1,5 +1,6 @@
 import { Group } from '../core/group'
 import { CheckboxItem, RadioItem } from '../core/item'
+import { isPageHomepage } from '../utils/page-type'
 
 const basicItems: CheckboxItem[] = []
 const layoutItems: (CheckboxItem | RadioItem)[] = []
@@ -9,7 +10,7 @@ const biliAppRcmdItems: CheckboxItem[] = []
 // GroupList
 const homepageGroupList: Group[] = []
 
-if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'].includes(location.pathname)) {
+if (isPageHomepage()) {
     // 基础项part, basicItems
     {
         // 隐藏 横幅banner

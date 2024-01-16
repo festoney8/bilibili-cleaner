@@ -356,6 +356,15 @@ export class NumberItem implements IItem {
     nodeHTML = `<input class="bili-cleaner-item-number" type="number">`
     private itemValue: number | undefined
 
+    /**
+     * @param itemID item的唯一ID, 用于在GM database中记录数值
+     * @param description 数值功能介绍
+     * @param defaultValue 默认值
+     * @param minValue 最小值
+     * @param maxValue 最大值
+     * @param stepValue 增减按钮步幅
+     * @param unit 数值单位
+     */
     constructor(
         private itemID: string,
         private description: string,

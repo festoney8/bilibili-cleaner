@@ -1,8 +1,7 @@
 import { Group } from '../core/group'
-import { CheckboxItem, NumberItem, RadioItem } from '../core/item'
+import { CheckboxItem, RadioItem } from '../core/item'
 import { isPageHomepage } from '../utils/page-type'
 
-const testItems: (CheckboxItem | NumberItem)[] = []
 const basicItems: CheckboxItem[] = []
 const layoutItems: (CheckboxItem | RadioItem)[] = []
 const rcmdListItems: CheckboxItem[] = []
@@ -12,10 +11,6 @@ const biliAppRcmdItems: CheckboxItem[] = []
 const homepageGroupList: Group[] = []
 
 if (isPageHomepage()) {
-    {
-        testItems.push(new NumberItem('homepage-test-second', '设定过滤时长 (刷新生效)', 90, 0, 300, 5, '秒'))
-    }
-    homepageGroupList.push(new Group('homepage-test', '测试组', testItems))
     // 基础项part, basicItems
     {
         // 隐藏 横幅banner

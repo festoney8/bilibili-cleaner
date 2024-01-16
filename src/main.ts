@@ -2,7 +2,6 @@
 import { GM_registerMenuCommand } from '$'
 import { log, error, debug } from './utils/logger'
 import { init } from './init'
-import { Panel } from './core/panel'
 import { Group } from './core/group'
 import { homepageGroupList } from './rules/homepage'
 import { commonGroupList } from './rules/common'
@@ -12,6 +11,9 @@ import { searchGroupList } from './rules/search'
 import { liveGroupList } from './rules/live'
 import { dynamicGroupList } from './rules/dynamic'
 import { popularGroupList } from './rules/popular'
+import { homepageFilterGroupList } from './filters/homepage'
+import { isPageHomepage, isPagePopular, isPageVideo } from './utils/page-type'
+import panelInstance from './core/panel'
 
 log('script start')
 
@@ -24,8 +26,8 @@ const main = async () => {
         error('init error, try continue')
     }
 
-    // 载入规则
-    const GROUPS: Group[] = [
+    // 载入元素屏蔽规则
+    const RULE_GROUPS: Group[] = [
         ...homepageGroupList,
         ...popularGroupList,
         ...videoGroupList,
@@ -35,7 +37,11 @@ const main = async () => {
         ...liveGroupList,
         ...commonGroupList,
     ]
-    GROUPS.forEach((e) => e.enableGroup())
+    RULE_GROUPS.forEach((e) => e.enableGroup())
+
+    // 载入视频过滤器
+    const FILTER_GROUPS: Group[] = [...homepageFilterGroupList]
+    FILTER_GROUPS.forEach((e) => e.enableGroup())
 
     // 监听各种形式的URL变化 (普通监听无法检测到切换视频)
     let lastURL = location.href
@@ -43,7 +49,7 @@ const main = async () => {
         const currURL = location.href
         if (currURL !== lastURL) {
             debug('url change detected')
-            GROUPS.forEach((e) => e.reloadGroup())
+            RULE_GROUPS.forEach((e) => e.reloadGroup())
             lastURL = currURL
             debug('url change reload groups complete')
         }
@@ -63,33 +69,53 @@ const main = async () => {
         if (flag) {
             debug('keydown Alt+B detected')
             if (isGroupEnable) {
-                GROUPS.forEach((e) => e.disableGroup())
+                RULE_GROUPS.forEach((e) => e.disableGroup())
                 isGroupEnable = false
             } else {
-                GROUPS.forEach((e) => e.enableGroup(false))
+                RULE_GROUPS.forEach((e) => e.enableGroup(false))
                 isGroupEnable = true
             }
         }
     })
 
-    // 注册油猴插件菜单
-    const openSettings = () => {
-        const panel = document.getElementById('bili-cleaner') as HTMLFormElement
-        if (panel) {
-            // 再次打开panel, 显示上次位置
-            panel.style.removeProperty('display')
-            return
+    // 注册油猴菜单, 根据功能模式显示不同panel
+    const createPanelWithMode = (mode: string, groups: Group[]) => {
+        switch (panelInstance.mode) {
+            case undefined:
+                debug(`${mode} panel create start`)
+                panelInstance.create()
+                panelInstance.mode = mode
+                groups.forEach((e) => {
+                    e.insertGroup()
+                    e.insertGroupItems()
+                })
+                panelInstance.show()
+                debug(`${mode} panel create complete`)
+                break
+            case mode:
+                debug(`${mode} panel exist, just show it`)
+                panelInstance.show()
+                break
+            default:
+                debug(`${mode} panel replace other panel`)
+                panelInstance.clearGroups()
+                panelInstance.mode = mode
+                groups.forEach((e) => {
+                    e.insertGroup()
+                    e.insertGroupItems()
+                })
+                panelInstance.show()
+                debug(`${mode} panel replace complete`)
         }
-        debug('panel create start')
-        const newPanel = new Panel()
-        newPanel.createPanel()
-        GROUPS.forEach((e) => {
-            e.insertGroup()
-            e.insertGroupItems()
-        })
-        debug('panel create complete')
     }
-    GM_registerMenuCommand('设置', openSettings)
+    GM_registerMenuCommand('页面净化设置', () => {
+        createPanelWithMode('rule', RULE_GROUPS)
+    })
+    if (isPageHomepage() || isPageVideo() || isPagePopular()) {
+        GM_registerMenuCommand('视频过滤器', () => {
+            createPanelWithMode('filter', FILTER_GROUPS)
+        })
+    }
     debug('register menu complete')
 }
 

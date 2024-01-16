@@ -1,17 +1,7 @@
 import { debug, error } from '../utils/logger'
 import settings from '../settings'
 
-interface IPanel {
-    readonly panelCSS: myCSS
-    readonly panelHTML: myHTML
-    insertPanelCSS(): void
-    insertPanelHTML(): void
-    watchCloseBtn(): void
-    draggableBar(): void
-    createPanel(): void
-}
-
-export class Panel implements IPanel {
+class Panel {
     panelCSS = `
     /* panel部分 */
     #bili-cleaner {
@@ -159,11 +149,12 @@ export class Panel implements IPanel {
         </div>
     </div>`
 
+    // mode用于记录panel中功能类型, 如 屏蔽元素/视频过滤器
+    mode: string | undefined = undefined
+
     constructor() {}
 
-    /**
-     * 向document.head中添加panel CSS
-     */
+    /** 向document.head中添加panel CSS */
     insertPanelCSS() {
         try {
             if (document.head.querySelector('#bili-cleaner-panel-css')) {
@@ -179,9 +170,7 @@ export class Panel implements IPanel {
             error(err)
         }
     }
-    /**
-     * 向document.body后添加panel html代码
-     */
+    /** 向document.body后添加panel html代码 */
     insertPanelHTML() {
         try {
             if (document.getElementById('bili-cleaner')) {
@@ -196,16 +185,12 @@ export class Panel implements IPanel {
             error(err)
         }
     }
-    /**
-     * 右上角关闭按钮
-     */
+    /** 右上角关闭按钮 */
     watchCloseBtn() {
         try {
-            const panel = document.getElementById('bili-cleaner') as HTMLFormElement
             const closeBtn = document.getElementById('bili-cleaner-close') as HTMLFormElement
             closeBtn.addEventListener('click', () => {
-                // 使用 display:none 代替 remove(), 同一页面内再次打开panel记录上次位置
-                panel.style.display = 'none'
+                this.hide()
             })
             debug('watchCloseBtn OK')
         } catch (err) {
@@ -213,9 +198,7 @@ export class Panel implements IPanel {
             error(err)
         }
     }
-    /**
-     * 可拖拽panel bar, 拖拽panel顶部的bar可移动panel, 其他区域不可拖拽
-     */
+    /** 可拖拽panel bar, 拖拽panel顶部的bar可移动panel, 其他区域不可拖拽 */
     draggableBar() {
         try {
             const panel = document.getElementById('bili-cleaner') as HTMLFormElement
@@ -248,13 +231,39 @@ export class Panel implements IPanel {
             error(err)
         }
     }
-    /**
-     * 创建Panel流程
-     */
-    createPanel() {
+
+    /** 创建Panel */
+    create() {
         this.insertPanelCSS()
         this.insertPanelHTML()
         this.watchCloseBtn()
         this.draggableBar()
     }
+    /** 隐藏panel */
+    hide() {
+        const panel = document.getElementById('bili-cleaner') as HTMLFormElement
+        if (panel) {
+            // 使用 display:none 代替 remove(), 同一页面内再次打开panel记录上次位置
+            panel.style.display = 'none'
+        }
+    }
+    /** 显示panel */
+    show() {
+        const panel = document.getElementById('bili-cleaner') as HTMLFormElement
+        if (panel) {
+            panel.style.removeProperty('display')
+        }
+    }
+    /** 清空panel内groups, 用于替换功能group */
+    clearGroups() {
+        const groupList = document.getElementById('bili-cleaner-group-list') as HTMLFormElement
+        if (groupList) {
+            groupList.innerHTML = ''
+        }
+        debug('panel clearGroups OK')
+    }
 }
+
+// panel全局单例
+const panelInstance = new Panel()
+export default panelInstance

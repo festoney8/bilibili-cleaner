@@ -11,7 +11,7 @@ import { searchGroupList } from './rules/search'
 import { liveGroupList } from './rules/live'
 import { dynamicGroupList } from './rules/dynamic'
 import { popularGroupList } from './rules/popular'
-import { homepageFilterGroupList } from './filters/homepage'
+import { homepageFilterGroupList } from './filters/homepage-filter'
 import { isPageHomepage, isPagePopular, isPageVideo } from './utils/page-type'
 import panelInstance from './core/panel'
 

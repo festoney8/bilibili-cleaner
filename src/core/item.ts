@@ -350,3 +350,87 @@ export class RadioItem implements IItem {
         }
     }
 }
+
+/** 数值设定 */
+export class NumberItem implements IItem {
+    nodeHTML = `<input class="bili-cleaner-item-number" type="number">`
+    private itemValue: number | undefined
+
+    constructor(
+        private itemID: string,
+        private description: string,
+        private defaultValue: number,
+        private minValue: number,
+        private maxValue: number,
+        private stepValue: number,
+        private unit: string,
+    ) {
+        this.getValue()
+    }
+
+    /** 获取数值, 初次安装使用默认值 */
+    getValue() {
+        GM_getValue(`BILICLEANER_VALUE_${this.itemID}`)
+        if (this.itemValue === undefined) {
+            this.itemValue = this.defaultValue
+            this.setValue(this.itemValue)
+        }
+    }
+    /** 设定并记录数值 */
+    setValue(value: number) {
+        this.itemValue = value
+        GM_setValue(`BILICLEANER_VALUE_${this.itemID}`, value)
+    }
+
+    /**
+     * 在相应group内添加item
+     * @param groupID item所属groupID, 由Group调用insertItem时传入
+     */
+    insertItem(groupID: string) {
+        try {
+            this.getValue()
+            const node = document.createElement('label')
+            node.id = this.itemID
+            node.innerHTML = `${this.nodeHTML} ${this.unit}<span>${this.description.replaceAll('\n', '<br>')}</span>`
+            const inputNode = node.querySelector('input') as HTMLInputElement
+            inputNode.setAttribute('value', this.defaultValue.toString())
+            inputNode.setAttribute('min', this.minValue.toString())
+            inputNode.setAttribute('max', this.maxValue.toString())
+            inputNode.setAttribute('step', this.stepValue.toString())
+            const itemGroupList = document.querySelector(`#${groupID} .bili-cleaner-item-list`) as HTMLFormElement
+            if (itemGroupList) {
+                itemGroupList.appendChild(node)
+                debug(`insertItem ${this.itemID} OK`)
+            }
+        } catch (err) {
+            error(`insertItem ${this.itemID} err`)
+            error(err)
+        }
+    }
+    /** 监听数值变化并保持, 重置不合理的值 */
+    watchItem() {
+        try {
+            const itemEle = document.querySelector(`#${this.itemID} input`) as HTMLInputElement
+            let currValue
+            itemEle.addEventListener('input', () => {
+                currValue = parseInt(itemEle.value)
+                debug(currValue)
+                if (isNaN(currValue)) {
+                    itemEle.value = this.defaultValue.toString()
+                } else {
+                    if (currValue > this.maxValue) {
+                        itemEle.value = this.maxValue.toString()
+                    } else if (currValue < this.minValue) {
+                        itemEle.value = this.minValue.toString()
+                    }
+                }
+                this.setValue(parseInt(itemEle.value))
+                debug('currValue', itemEle.value)
+            })
+            debug(`watchItem ${this.itemID} OK`)
+        } catch (err) {
+            error(`watchItem ${this.itemID} err`)
+            error(err)
+        }
+    }
+}

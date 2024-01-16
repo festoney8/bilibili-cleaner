@@ -1,5 +1,5 @@
 import { debug, error } from '../utils/logger'
-import { CheckboxItem, RadioItem } from './item'
+import { CheckboxItem, NumberItem, RadioItem } from './item'
 
 interface IGroup {
     readonly groupHTML: myHTML
@@ -29,7 +29,7 @@ export class Group implements IGroup {
     constructor(
         private groupID: string,
         private title: string,
-        private items: (CheckboxItem | RadioItem)[],
+        private items: (CheckboxItem | RadioItem | NumberItem)[],
     ) {
         this.groupID = 'bili-cleaner-group-' + groupID
     }
@@ -66,7 +66,7 @@ export class Group implements IGroup {
     enableGroup(enableFunc = true) {
         try {
             this.items.forEach((e) => {
-                if (typeof e.enableItem === 'function') {
+                if (e instanceof CheckboxItem || e instanceof RadioItem) {
                     e.enableItem(enableFunc)
                 }
             })
@@ -80,7 +80,7 @@ export class Group implements IGroup {
     reloadGroup() {
         try {
             this.items.forEach((e) => {
-                if (typeof e.reloadItem === 'function') {
+                if (e instanceof CheckboxItem || e instanceof RadioItem) {
                     e.reloadItem()
                 }
             })
@@ -94,8 +94,8 @@ export class Group implements IGroup {
     disableGroup() {
         try {
             this.items.forEach((e) => {
-                if (typeof e.removeItemCSS === 'function') {
-                    e.removeItemCSS()
+                if (e instanceof CheckboxItem || e instanceof RadioItem) {
+                    e.reloadItem()
                 }
             })
             debug(`disableGroup ${this.groupID} OK`)

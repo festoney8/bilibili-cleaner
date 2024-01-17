@@ -1178,6 +1178,7 @@ if (isPageVideo() || isPagePlaylist()) {
                 undefined,
                 false,
                 `#reco_list .rec-list {display: none !important;}
+                #reco_list .rec-footer {display: none !important;}
                 /* 适配watchlater, favlist */
                 .recommend-list-container {display: none !important;}`,
             ),

@@ -84,7 +84,7 @@ export class Group implements IGroup {
                     e.reloadItem()
                 }
             })
-            // debug(`reloadGroup ${this.groupID} OK`)
+            debug(`reloadGroup ${this.groupID} OK`)
         } catch (err) {
             error(`reloadGroup ${this.groupID} err`)
             error(err)
@@ -95,7 +95,7 @@ export class Group implements IGroup {
         try {
             this.items.forEach((e) => {
                 if (e instanceof CheckboxItem || e instanceof RadioItem) {
-                    e.reloadItem()
+                    e.removeItemCSS()
                 }
             })
             debug(`disableGroup ${this.groupID} OK`)

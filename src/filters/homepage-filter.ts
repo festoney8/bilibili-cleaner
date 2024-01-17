@@ -3,8 +3,8 @@ import { Group } from '../core/group'
 import { CheckboxItem, NumberItem } from '../core/item'
 import { isPageHomepage } from '../utils/page-type'
 import { debug, error } from '../utils/logger'
+import { DurationFilterConfig, MainFilter } from './filters'
 import settings from '../settings'
-import mainFilterInstanse, { DurationFilterConfig } from './filters'
 
 // 开关itemID、数值itemID, 获取过滤器状态和参数
 const homepageDurationFilterItemID = 'homepage-duration-filter'
@@ -14,13 +14,8 @@ const homepageDurationFilterValueID = 'homepage-duration-filter-threshold'
 // const homepageUploaderFilterItemID = 'homepage-uploader-filter'
 // const homepageUploaderFilterValueID = 'homepage-uploader-filter-blacklist'
 
-// 功能组
-const durationItems: (CheckboxItem | NumberItem)[] = []
-// const titleItems: (CheckboxItem | NumberItem)[] = []
-// const uploaderItems: (CheckboxItem | NumberItem)[] = []
-const homepageFilterGroupList: Group[] = []
-
 // 主过滤器配置
+const mainFilterInstanse = new MainFilter()
 // 设定selector
 mainFilterInstanse.setupSelectors({
     duration: 'span.bili-video-card__stats__duration',
@@ -42,37 +37,41 @@ const setupDurationFilter = () => {
     mainFilterInstanse.setupDurationFilter(durationEnable, durationFilterConfig)
     debug('setupDurationFilter')
 }
+// // 配置titleFilter
+// let titleEnable: boolean
+// let titleFilterConfig: TitleFilterConfig
+// const setupTitleFilter = () => {
+//     debug('setupTitleFilter')
+//     // const titleEnable: boolean = GM_getValue(`BILICLEANER_${homepageTitleFilterItemID}`, false)
+//     // const titleThreshold: number = GM_getValue(
+//     //     `BILICLEANER_VALUE_${homepageTitleFilterValueID}`,
+//     //     settings.titleThreshold,
+//     // )
+//     // const titleFilterConfig: TitleFilterConfig = {}
+//     // mainFilterInstanse.setupTitleFilter(titleEnable, titleFilterConfig)
+// }
+// // 配置uploaderFilter
+// let uploaderEnable: boolean
+// let uploaderFilterConfig: UploaderFilterConfig
+// const setupUploaderFilter = () => {
+//     debug('setupUploaderFilter')
+//     // const uploaderEnable: boolean = GM_getValue(`BILICLEANER_${homepageUploaderFilterItemID}`, false)
+//     // const uploaderThreshold: number = GM_getValue(
+//     //     `BILICLEANER_VALUE_${homepageUploaderFilterValueID}`,
+//     //     settings.uploaderThreshold,
+//     // )
+//     // const uploaderFilterConfig: UploaderFilterConfig = {
+//     // }
+//     // mainFilterInstanse.setupDurationFilter(uploaderEnable, uploaderFilterConfig)
+// }
 
-/*
-    // 配置titleFilter
-    let titleEnable: boolean
-    let titleFilterConfig: TitleFilterConfig
-    const setupTitleFilter = () => {
-        debug('setupTitleFilter')
-        // const titleEnable: boolean = GM_getValue(`BILICLEANER_${homepageTitleFilterItemID}`, false)
-        // const titleThreshold: number = GM_getValue(
-        //     `BILICLEANER_VALUE_${homepageTitleFilterValueID}`,
-        //     settings.titleThreshold,
-        // )
-        // const titleFilterConfig: TitleFilterConfig = {}
-        // mainFilterInstanse.setupTitleFilter(titleEnable, titleFilterConfig)
-    }
-    // 配置uploaderFilter
-    let uploaderEnable: boolean
-    let uploaderFilterConfig: UploaderFilterConfig
-    const setupUploaderFilter = () => {
-        debug('setupUploaderFilter')
-        // const uploaderEnable: boolean = GM_getValue(`BILICLEANER_${homepageUploaderFilterItemID}`, false)
-        // const uploaderThreshold: number = GM_getValue(
-        //     `BILICLEANER_VALUE_${homepageUploaderFilterValueID}`,
-        //     settings.uploaderThreshold,
-        // )
-        // const uploaderFilterConfig: UploaderFilterConfig = {
-        // }
-        // mainFilterInstanse.setupDurationFilter(uploaderEnable, uploaderFilterConfig)
-    }
-*/
+//////////////////////////////////////////////////////////////////////////////////
 
+// 功能组
+const durationItems: (CheckboxItem | NumberItem)[] = []
+// const titleItems: (CheckboxItem | NumberItem)[] = []
+// const uploaderItems: (CheckboxItem | NumberItem)[] = []
+const homepageFilterGroupList: Group[] = []
 if (isPageHomepage()) {
     // 视频列表(父节点)
     let videoListContainer: HTMLElement
@@ -112,12 +111,12 @@ if (isPageHomepage()) {
     // 2. 监听视频数量变化
     const watchVideoListContainer = () => {
         if (videoListContainer) {
-            checkVideoList() // 初次过滤
+            checkVideoList(true) // 初次全站过滤
             const videoObverser = new MutationObserver(() => {
                 checkVideoList()
             })
             videoObverser.observe(videoListContainer, { childList: true })
-            debug('homepage obverse video list start')
+            debug('watchVideoListContainer OK')
         }
     }
     /**
@@ -145,17 +144,18 @@ if (isPageHomepage()) {
             }
             rcmdVideos.length && mainFilterInstanse.checkAll([...rcmdVideos])
             feedVideos.length && mainFilterInstanse.checkAll([...feedVideos])
+            debug(`checkVideoList check ${rcmdVideos.length} rcmd, ${feedVideos.length} feed videos`)
         } catch (err) {
             error(err)
             error('checkVideoList error')
         }
     }
     ////////////////////////////////////////////////////////////////////////////
-    // 功能函数, 开关开启时触发, 页面载入时触发
+    // 功能函数, 开关开启时触发, 页面载入时触发, 全站过滤
     const durationFilterFunc = () => {
         setupDurationFilter()
         if (isMainFilterFuncRunning) {
-            checkVideoList()
+            checkVideoList(true)
         } else {
             mainFilterFunc()
         }
@@ -169,14 +169,24 @@ if (isPageHomepage()) {
     //     mainFilterFunc()
     // }
 
-    // 回调, 实时修改durationFilter的阈值, 触发一次全站过滤(包含已过滤项)
-    const durationCallback = (currValue: number) => {
-        debug('durationCallback')
+    // 开关关闭回调, 修改阈值为0, 触发一次全站恢复
+    const durationDisableCallback = () => {
+        debug('durationDisableCallback start')
+        durationFilterConfig.threshold = 0
+        mainFilterInstanse.setupDurationFilter(true, durationFilterConfig)
+        checkVideoList(true)
+        mainFilterInstanse.setupDurationFilter(false, durationFilterConfig)
+        debug('durationDisableCallback OK')
+    }
+    // 数值变化回调, 实时修改阈值, 触发一次全站过滤 (包含已过滤项)
+    const durationChangeCallback = (currValue: number) => {
+        debug('durationChangeCallback start')
         durationFilterConfig.threshold = currValue
         mainFilterInstanse.setupDurationFilter(durationEnable, durationFilterConfig)
         if (durationEnable) {
             checkVideoList(true)
         }
+        debug('durationChangeCallback OK')
     }
     // // 回调, 添加title关键词触发
     // const titleCallback = (currValue: number) => {
@@ -197,15 +207,24 @@ if (isPageHomepage()) {
         durationItems.push(
             new CheckboxItem(
                 homepageDurationFilterItemID,
-                '启用 视频时长过滤 (关闭需刷新)',
+                '启用 视频时长过滤',
                 false,
                 durationFilterFunc,
                 false,
                 null,
+                durationDisableCallback,
             ),
         )
         durationItems.push(
-            new NumberItem(homepageDurationFilterValueID, '设定最低时长 (0~300s)', 60, 0, 300, '秒', durationCallback),
+            new NumberItem(
+                homepageDurationFilterValueID,
+                '设定最低时长 (0~300s)',
+                60,
+                0,
+                300,
+                '秒',
+                durationChangeCallback,
+            ),
         )
     }
     homepageFilterGroupList.push(new Group('homepage-duration-filter-group', '首页 视频时长过滤', durationItems))

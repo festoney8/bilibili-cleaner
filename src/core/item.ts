@@ -26,6 +26,7 @@ export class CheckboxItem implements IItem {
      * @param itemFunc 功能函数
      * @param isItemFuncReload 功能函数是否在URL变动时重新运行
      * @param itemCSS item的CSS
+     * @param callback 可选, 回调函数, 用于在关掉开关时触发外部事务
      */
     constructor(
         private itemID: string,
@@ -34,6 +35,7 @@ export class CheckboxItem implements IItem {
         private itemFunc: (() => void) | undefined,
         private isItemFuncReload: boolean,
         private itemCSS: myCSS | null,
+        private callback?: (() => void) | undefined,
     ) {
         this.isEnable = undefined
         this.itemEle = undefined
@@ -126,6 +128,10 @@ export class CheckboxItem implements IItem {
                 } else {
                     this.setStatus(false)
                     this.removeItemCSS()
+                    // 回调
+                    if (typeof this.callback === 'function') {
+                        this.callback()
+                    }
                 }
             })
             debug(`watchItem ${this.itemID} OK`)

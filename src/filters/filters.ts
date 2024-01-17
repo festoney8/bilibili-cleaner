@@ -52,8 +52,10 @@ class DurationFilter implements IFilter {
             try {
                 if (duration && duration.match(this.pattern)) {
                     if (this.isLegal(duration)) {
+                        // debug(`resolve, duration ${duration}, threshold ${this.threshold}`)
                         resolve()
                     } else {
+                        // debug(`reject, duration ${duration}, threshold ${this.threshold}`)
                         reject()
                     }
                 } else {
@@ -124,7 +126,7 @@ class UploaderFilter implements IFilter {
  * 且快于从textContent中匹配regex
  * 故使用selector提取出时长、标题、UP主、链接信息，用各自的filter进行过滤
  */
-class MainFilter {
+export class MainFilter {
     // 子过滤器实例
     private durationFilterInstance: DurationFilter | undefined = undefined
     private titleFilterInstance: TitleFilter | undefined = undefined
@@ -207,8 +209,9 @@ class MainFilter {
      * 对视频列表进行筛选
      * 支持首页、播放页右栏、热门视频/每周必看/排行榜
      * @param videos 由调用函数传入的视频列表，包含一组视频HTML节点，每个节点内应包含 标题、时长、UP主、视频链接等
+     * @param sign 是否标记已过滤项
      */
-    checkAll(videos: HTMLElement[]) {
+    checkAll(videos: HTMLElement[], sign = true) {
         const checkDuration = this.durationEnable && this.durationFilterInstance && this.durationSelector
         const checkTitle = this.titleEnable && this.titleFilterInstance && this.titleSelector
         const checkUploader = this.uploaderEnable && this.uploaderFilterInstance && this.uploaderSelector
@@ -245,12 +248,10 @@ class MainFilter {
                 })
                 .finally(() => {
                     // 标记已过滤的视频
-                    video.setAttribute(settings.filterSign, '')
+                    if (sign) {
+                        video.setAttribute(settings.filterSign, '')
+                    }
                 })
         })
     }
 }
-
-// MainFilter单例
-const mainFilterInstanse = new MainFilter()
-export default mainFilterInstanse

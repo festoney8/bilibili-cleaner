@@ -363,6 +363,7 @@ export class NumberItem implements IItem {
      * @param minValue 最小值
      * @param maxValue 最大值
      * @param unit 数值单位
+     * @param callback 回调函数, 在数值修改时回调, 可用于效果实时生效
      */
     constructor(
         private itemID: string,
@@ -371,6 +372,7 @@ export class NumberItem implements IItem {
         private minValue: number,
         private maxValue: number,
         private unit: string,
+        private callback: (value: number) => void | undefined,
     ) {}
 
     /** 获取数值, 初次安装使用默认值 */
@@ -431,6 +433,10 @@ export class NumberItem implements IItem {
                 this.setValue(parseInt(itemEle.value))
                 itemEle.value = parseInt(itemEle.value).toString()
                 debug('currValue', itemEle.value)
+                // 调用回调函数
+                if (typeof this.callback === 'function') {
+                    this.callback(parseInt(itemEle.value))
+                }
             })
             debug(`watchItem ${this.itemID} OK`)
         } catch (err) {

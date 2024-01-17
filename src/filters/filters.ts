@@ -213,10 +213,13 @@ export class MainFilter {
                     if (this.needDisplayRecover && video.style.display.includes('none')) {
                         video.style.removeProperty('display')
                     }
+                    // if (this.needDisplayRecover && video.style.visibility.includes('hidden')) {
+                    //     video.style.removeProperty('visibility')
+                    // }
                 })
                 .catch(() => {
-                    // video.style.display = 'none'
-                    video.style.visibility = 'hidden'
+                    video.style.display = 'none'
+                    // video.style.visibility = 'hidden'
                 })
                 .finally(() => {
                     // 标记已过滤的视频

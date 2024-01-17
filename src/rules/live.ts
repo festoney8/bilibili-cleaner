@@ -279,6 +279,17 @@ if (isPageLive()) {
                 }`,
             ),
         )
+        // 全屏下 隐藏弹幕发送框
+        playerItems.push(
+            new CheckboxItem(
+                'live-page-fullscreen-danmaku-vm',
+                '全屏下 隐藏弹幕发送框',
+                false,
+                undefined,
+                false,
+                `#fullscreen-danmaku-vm {display: none !important;}`,
+            ),
+        )
     }
     liveGroupList.push(new Group('live-player', '播放器', playerItems))
 

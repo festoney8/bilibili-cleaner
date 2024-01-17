@@ -6,48 +6,30 @@ interface IFilter {
 }
 
 // 子分类filter设定
-export type durationFilterConfig = {
+export type DurationFilterConfig = {
     threshold: number
 }
-export type titleFilterConfig = {
+export type TitleFilterConfig = {
     blacklist: string[]
 }
-export type uploaderFilterConfig = {
+export type UploaderFilterConfig = {
     blacklist: string[]
 }
-// mainFilter设定
-export type filterConfig = {
-    // 是否启用子过滤器
-    enable: {
-        duration: boolean
-        title: boolean
-        uploader: boolean
-    }
-    // 时长、标题、发布人的selector
-    selectors: {
-        duration?: undefined | string
-        title?: undefined | string
-        uploader?: undefined | string
-    }
-    // 子过滤器配置
-    subConfig: {
-        duration?: undefined | durationFilterConfig
-        title?: undefined | titleFilterConfig
-        uploader?: undefined | uploaderFilterConfig
-    }
-    // 是否需要将display none恢复
-    needRecoverDisplay: boolean
+// 时长、标题、UP主 selector
+export type Selectors = {
+    duration?: undefined | string
+    title?: undefined | string
+    uploader?: undefined | string
 }
 
 // 子过滤器: 时长过滤
 class DurationFilter implements IFilter {
     private readonly pattern = /^(\d+:)?\d\d:\d\d$/g
-    // 开放threshold, 允许外界实时修改
-    public threshold: number = 0
+    private threshold: number = 0
 
     // Todo: UP主白名单，标题关键词白名单
-    constructor(private params: durationFilterConfig) {
-        this.threshold = this.params.threshold
+    constructor(private config: DurationFilterConfig) {
+        this.threshold = this.config.threshold
     }
 
     private isLegal(duration: string): boolean {
@@ -60,6 +42,10 @@ class DurationFilter implements IFilter {
         return true
     }
 
+    updateConfig(config: DurationFilterConfig) {
+        this.threshold = config.threshold
+    }
+
     check(duration: string): Promise<void> {
         duration = duration.trim()
         return new Promise<void>((resolve, reject) => {
@@ -68,7 +54,6 @@ class DurationFilter implements IFilter {
                     if (this.isLegal(duration)) {
                         resolve()
                     } else {
-                        debug('reject duration', duration, this.threshold)
                         reject()
                     }
                 } else {
@@ -85,8 +70,11 @@ class DurationFilter implements IFilter {
 // 子过滤器: 标题关键词过滤
 class TitleFilter implements IFilter {
     // private filteredTitleSet = new Set()
-    constructor(private params: titleFilterConfig) {
-        debug(this.params)
+    constructor(private config: TitleFilterConfig) {
+        debug(this.config)
+    }
+    updateConfig(config: TitleFilterConfig) {
+        debug(config)
     }
 
     check(title: string): Promise<void> {
@@ -100,8 +88,11 @@ class TitleFilter implements IFilter {
 // 子过滤器: UP主过滤
 class UploaderFilter implements IFilter {
     // private filteredTitleSet = new Set()
-    constructor(private params: uploaderFilterConfig) {
-        debug(this.params)
+    constructor(private config: UploaderFilterConfig) {
+        debug(this.config)
+    }
+    updateConfig(config: UploaderFilterConfig) {
+        debug(config)
     }
 
     check(uploader: string): Promise<void> {
@@ -115,8 +106,8 @@ class UploaderFilter implements IFilter {
 // // 子过滤器: 视频ID过滤
 // class vidFilter implements IFilter {
 //     // private filteredTitleSet = new Set()
-//     constructor(private params: uploaderFilterConfig) {
-//         debug(this.params)
+//     constructor(private config: uploaderFilterConfig) {
+//         debug(this.config)
 //     }
 
 //     check(uploader: string): Promise<void> {
@@ -129,47 +120,86 @@ class UploaderFilter implements IFilter {
 
 /**
  * 测速表明：
- * 使用querySelector寻找元素远快于使用regex匹配innerHTML, 且快于从textContent中匹配regex
+ * 使用querySelector寻找元素 远快于使用regex匹配innerHTML
+ * 且快于从textContent中匹配regex
+ * 故使用selector提取出时长、标题、UP主、链接信息，用各自的filter进行过滤
  */
-export class MainFilter {
-    // 过滤器实例, 开放外界访问, 可实时修改参数
-    public durationFilter: DurationFilter | undefined = undefined
-    public titleFilter: TitleFilter | undefined = undefined
-    public uploaderFilter: UploaderFilter | undefined = undefined
+class MainFilter {
+    // 子过滤器实例
+    private durationFilterInstance: DurationFilter | undefined = undefined
+    private titleFilterInstance: TitleFilter | undefined = undefined
+    private uploaderFilterInstance: UploaderFilter | undefined = undefined
     // 是否启用
-    private enableDuration = false
-    private enableTitle = false
-    private enableUploader = false
+    private durationEnable = false
+    private titleEnable = false
+    private uploaderEnable = false
     // 选择器
     private durationSelector: undefined | string = undefined
     private titleSelector: undefined | string = undefined
     private uploaderSelector: undefined | string = undefined
-    // 是否恢复display
-    private needDisplayRecover = true
 
     /**
-     * 构建主过滤器
-     * @param config mainFilter config
+     * 构建主过滤器, 各个子过滤器的值由启用过滤器的itemFunc设定
      */
-    constructor(private config: filterConfig) {
-        this.needDisplayRecover = this.config.needRecoverDisplay
+    constructor() {}
 
-        this.enableDuration = this.config.enable.duration
-        this.enableTitle = this.config.enable.title
-        this.enableUploader = this.config.enable.uploader
-
-        this.durationSelector = this.config.selectors.duration
-        this.titleSelector = this.config.selectors.title
-        this.uploaderSelector = this.config.selectors.uploader
-
-        if (this.enableDuration && this.config.subConfig.duration) {
-            this.durationFilter = new DurationFilter(this.config.subConfig.duration)
+    /**
+     * 设定selector
+     * @param selectors
+     */
+    setupSelectors(selectors: Selectors) {
+        this.durationSelector = selectors.duration ? selectors.duration : undefined
+        this.titleSelector = selectors.title ? selectors.title : undefined
+        this.uploaderSelector = selectors.uploader ? selectors.uploader : undefined
+    }
+    /**
+     * 设定或更新时长过滤器
+     * @param durationEnable 启用时长过滤
+     * @param durationFilterConfig 子过滤器配置
+     */
+    setupDurationFilter(durationEnable: boolean, durationFilterConfig: DurationFilterConfig) {
+        this.durationEnable = durationEnable
+        if (!this.durationFilterInstance) {
+            this.durationFilterInstance = new DurationFilter(durationFilterConfig)
+        } else {
+            this.durationFilterInstance.updateConfig(durationFilterConfig)
         }
-        if (this.enableTitle && this.config.subConfig.title) {
-            this.titleFilter = new TitleFilter(this.config.subConfig.title)
+    }
+    /**
+     * 设定或更新标题过滤器
+     * @param titleEnable 启用标题过滤
+     * @param titleFilterConfig 子过滤器配置
+     */
+    setupTitleFilter(titleEnable: boolean, titleFilterConfig: TitleFilterConfig) {
+        this.titleEnable = titleEnable
+        if (!this.titleFilterInstance) {
+            this.titleFilterInstance = new TitleFilter(titleFilterConfig)
+        } else {
+            this.titleFilterInstance.updateConfig(titleFilterConfig)
         }
-        if (this.enableUploader && this.config.subConfig.uploader) {
-            this.uploaderFilter = new UploaderFilter(this.config.subConfig.uploader)
+    }
+    /**
+     * 设定或更新UP主过滤器
+     * @param uploaderEnable 启用UP主过滤
+     * @param uploaderFilterConfig 子过滤器配置
+     */
+    setupUploaderFilter(uploaderEnable: boolean, uploaderFilterConfig: UploaderFilterConfig) {
+        this.uploaderEnable = uploaderEnable
+        if (!this.uploaderFilterInstance) {
+            this.uploaderFilterInstance = new UploaderFilter(uploaderFilterConfig)
+        } else {
+            this.uploaderFilterInstance.updateConfig(uploaderFilterConfig)
+        }
+    }
+
+    /** 隐藏视频 */
+    hideVideo(video: HTMLElement) {
+        video.style.display = 'none'
+    }
+    /** 恢复视频, 用于筛选条件变化时重置 */
+    showVideo(video: HTMLElement) {
+        if (video.style.display.includes('none')) {
+            video.style.removeProperty('display')
         }
     }
 
@@ -179,47 +209,39 @@ export class MainFilter {
      * @param videos 由调用函数传入的视频列表，包含一组视频HTML节点，每个节点内应包含 标题、时长、UP主、视频链接等
      */
     checkAll(videos: HTMLElement[]) {
-        if (this.enableDuration && this.enableTitle && this.enableUploader) {
+        const checkDuration = this.durationEnable && this.durationFilterInstance && this.durationSelector
+        const checkTitle = this.titleEnable && this.titleFilterInstance && this.titleSelector
+        const checkUploader = this.uploaderEnable && this.uploaderFilterInstance && this.uploaderSelector
+        if (!checkDuration && !checkTitle && !checkUploader) {
             return
         }
-        const checkDuration = this.enableDuration && this.durationFilter && this.durationSelector
-        const checkTitle = this.enableTitle && this.titleFilter && this.titleSelector
-        const checkUploader = this.enableUploader && this.uploaderFilter && this.uploaderSelector
         videos.forEach((video) => {
             // 构建任务，对标题、时长、UP主进行并行检查
             const tasks: Promise<void>[] = []
             if (checkDuration) {
                 const duration = video.querySelector(this.durationSelector!)?.textContent?.trim()
                 if (duration) {
-                    tasks.push(this.durationFilter!.check(duration))
+                    tasks.push(this.durationFilterInstance!.check(duration))
                 }
             }
             if (checkTitle) {
                 const title = video.querySelector(this.titleSelector!)?.textContent?.trim()
                 if (title) {
-                    tasks.push(this.titleFilter!.check(title))
+                    tasks.push(this.titleFilterInstance!.check(title))
                 }
             }
             if (checkUploader) {
                 const uploader = video.querySelector(this.uploaderSelector!)?.textContent?.trim()
                 if (uploader) {
-                    tasks.push(this.uploaderFilter!.check(uploader))
+                    tasks.push(this.uploaderFilterInstance!.check(uploader))
                 }
             }
-            // 隐藏视频, display:none或remove
             Promise.all(tasks)
                 .then(() => {
-                    // 首页feed会复用元素, 按需复原
-                    if (this.needDisplayRecover && video.style.display.includes('none')) {
-                        video.style.removeProperty('display')
-                    }
-                    // if (this.needDisplayRecover && video.style.visibility.includes('hidden')) {
-                    //     video.style.removeProperty('visibility')
-                    // }
+                    this.showVideo(video)
                 })
                 .catch(() => {
-                    video.style.display = 'none'
-                    // video.style.visibility = 'hidden'
+                    this.hideVideo(video)
                 })
                 .finally(() => {
                     // 标记已过滤的视频
@@ -228,3 +250,7 @@ export class MainFilter {
         })
     }
 }
+
+// MainFilter单例
+const mainFilterInstanse = new MainFilter()
+export default mainFilterInstanse

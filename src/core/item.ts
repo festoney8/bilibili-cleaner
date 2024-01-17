@@ -420,7 +420,6 @@ export class NumberItem implements IItem {
             let currValue
             itemEle.addEventListener('input', () => {
                 currValue = parseInt(itemEle.value)
-                debug(currValue)
                 if (isNaN(currValue)) {
                     itemEle.value = this.minValue.toString()
                 } else {
@@ -432,7 +431,7 @@ export class NumberItem implements IItem {
                 }
                 this.setValue(parseInt(itemEle.value))
                 itemEle.value = parseInt(itemEle.value).toString()
-                debug('currValue', itemEle.value)
+                debug(`${this.itemID} currValue ${itemEle.value}`)
                 // 调用回调函数
                 if (typeof this.callback === 'function') {
                     this.callback(parseInt(itemEle.value))

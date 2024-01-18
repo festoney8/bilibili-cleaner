@@ -1,5 +1,5 @@
-import { Group } from '../core/group'
-import { CheckboxItem } from '../core/item'
+import { Group } from '../components/group'
+import { CheckboxItem } from '../components/item'
 import { isPageSearch } from '../utils/page-type'
 
 const basicItems: CheckboxItem[] = []

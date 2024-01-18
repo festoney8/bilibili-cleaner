@@ -1,6 +1,6 @@
 import { GM_getValue } from '$'
-import { Group } from '../core/group'
-import { CheckboxItem, NumberItem } from '../core/item'
+import { Group } from '../components/group'
+import { CheckboxItem, NumberItem } from '../components/item'
 import { isPageVideo } from '../utils/page-type'
 import { debug, error } from '../utils/logger'
 import { DurationFilterConfig, MainFilter } from './filters'

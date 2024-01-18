@@ -2,7 +2,7 @@
 import { GM_registerMenuCommand } from '$'
 import { log, error, debug } from './utils/logger'
 import { init } from './init'
-import { Group } from './core/group'
+import { Group } from './components/group'
 import { homepageGroupList } from './rules/homepage'
 import { commonGroupList } from './rules/common'
 import { videoGroupList } from './rules/video'
@@ -14,7 +14,7 @@ import { popularGroupList } from './rules/popular'
 import { homepageFilterGroupList } from './filters/homepage-filter'
 import { isPageHomepage, isPagePopular, isPageVideo } from './utils/page-type'
 import { videoFilterGroupList } from './filters/video-filter'
-import panelInstance from './core/panel'
+import panelInstance from './components/panel'
 
 log('script start')
 

@@ -1,6 +1,6 @@
 import { GM_getValue } from '$'
-import { Group } from '../core/group'
-import { CheckboxItem, NumberItem } from '../core/item'
+import { Group } from '../components/group'
+import { CheckboxItem, NumberItem } from '../components/item'
 import { isPageHomepage } from '../utils/page-type'
 import { debug, error } from '../utils/logger'
 import { DurationFilterConfig, MainFilter } from './filters'
@@ -16,7 +16,7 @@ const homepageDurationFilterValueID = 'homepage-duration-filter-threshold'
 
 // 主过滤器配置
 const mainFilterInstanse = new MainFilter()
-// 设定selector
+// 设定默认selector
 mainFilterInstanse.setupSelectors({
     duration: 'span.bili-video-card__stats__duration',
     title: 'h3.bili-video-card__info--tit',

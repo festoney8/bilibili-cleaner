@@ -150,6 +150,7 @@ export class MainFilter {
      * @param selectors
      */
     setupSelectors(selectors: Selectors) {
+        // 设定默认selector
         this.durationSelector = selectors.duration ? selectors.duration : undefined
         this.titleSelector = selectors.title ? selectors.title : undefined
         this.uploaderSelector = selectors.uploader ? selectors.uploader : undefined
@@ -210,48 +211,94 @@ export class MainFilter {
      * 支持首页、播放页右栏、热门视频/每周必看/排行榜
      * @param videos 由调用函数传入的视频列表，包含一组视频HTML节点，每个节点内应包含 标题、时长、UP主、视频链接等
      * @param sign 是否标记已过滤项
+     * @param selectors 可选, 用于覆盖默认selector, 用于例外情况
      */
-    checkAll(videos: HTMLElement[], sign = true) {
-        const checkDuration = this.durationEnable && this.durationFilterInstance && this.durationSelector
-        const checkTitle = this.titleEnable && this.titleFilterInstance && this.titleSelector
-        const checkUploader = this.uploaderEnable && this.uploaderFilterInstance && this.uploaderSelector
-        if (!checkDuration && !checkTitle && !checkUploader) {
-            return
-        }
-        videos.forEach((video) => {
-            // 构建任务，对标题、时长、UP主进行并行检查
-            const tasks: Promise<void>[] = []
-            if (checkDuration) {
-                const duration = video.querySelector(this.durationSelector!)?.textContent?.trim()
-                if (duration) {
-                    tasks.push(this.durationFilterInstance!.check(duration))
-                }
+    checkAll(videos: HTMLElement[], sign = true, selectors?: Selectors) {
+        if (!selectors) {
+            // 使用默认selector
+            const checkDuration = this.durationEnable && this.durationFilterInstance && this.durationSelector
+            const checkTitle = this.titleEnable && this.titleFilterInstance && this.titleSelector
+            const checkUploader = this.uploaderEnable && this.uploaderFilterInstance && this.uploaderSelector
+            if (!checkDuration && !checkTitle && !checkUploader) {
+                return
             }
-            if (checkTitle) {
-                const title = video.querySelector(this.titleSelector!)?.textContent?.trim()
-                if (title) {
-                    tasks.push(this.titleFilterInstance!.check(title))
-                }
-            }
-            if (checkUploader) {
-                const uploader = video.querySelector(this.uploaderSelector!)?.textContent?.trim()
-                if (uploader) {
-                    tasks.push(this.uploaderFilterInstance!.check(uploader))
-                }
-            }
-            Promise.all(tasks)
-                .then(() => {
-                    this.showVideo(video)
-                })
-                .catch(() => {
-                    this.hideVideo(video)
-                })
-                .finally(() => {
-                    // 标记已过滤的视频
-                    if (sign) {
-                        video.setAttribute(settings.filterSign, '')
+            videos.forEach((video) => {
+                // 构建任务，对标题、时长、UP主进行并行检查
+                const tasks: Promise<void>[] = []
+                if (checkDuration) {
+                    const duration = video.querySelector(this.durationSelector!)?.textContent?.trim()
+                    if (duration) {
+                        tasks.push(this.durationFilterInstance!.check(duration))
                     }
-                })
-        })
+                }
+                if (checkTitle) {
+                    const title = video.querySelector(this.titleSelector!)?.textContent?.trim()
+                    if (title) {
+                        tasks.push(this.titleFilterInstance!.check(title))
+                    }
+                }
+                if (checkUploader) {
+                    const uploader = video.querySelector(this.uploaderSelector!)?.textContent?.trim()
+                    if (uploader) {
+                        tasks.push(this.uploaderFilterInstance!.check(uploader))
+                    }
+                }
+                Promise.all(tasks)
+                    .then(() => {
+                        this.showVideo(video)
+                    })
+                    .catch(() => {
+                        this.hideVideo(video)
+                    })
+                    .finally(() => {
+                        // 标记已过滤的视频
+                        if (sign) {
+                            video.setAttribute(settings.filterSign, '')
+                        }
+                    })
+            })
+        } else {
+            // 使用临时selector
+            const checkDuration = this.durationEnable && this.durationFilterInstance && selectors.duration
+            const checkTitle = this.titleEnable && this.titleFilterInstance && selectors.title
+            const checkUploader = this.uploaderEnable && this.uploaderFilterInstance && selectors.uploader
+            if (!checkDuration && !checkTitle && !checkUploader) {
+                return
+            }
+            videos.forEach((video) => {
+                // 构建任务，对标题、时长、UP主进行并行检查
+                const tasks: Promise<void>[] = []
+                if (checkDuration) {
+                    const duration = video.querySelector(selectors.duration!)?.textContent?.trim()
+                    if (duration) {
+                        tasks.push(this.durationFilterInstance!.check(duration))
+                    }
+                }
+                if (checkTitle) {
+                    const title = video.querySelector(selectors.title!)?.textContent?.trim()
+                    if (title) {
+                        tasks.push(this.titleFilterInstance!.check(title))
+                    }
+                }
+                if (checkUploader) {
+                    const uploader = video.querySelector(selectors.uploader!)?.textContent?.trim()
+                    if (uploader) {
+                        tasks.push(this.uploaderFilterInstance!.check(uploader))
+                    }
+                }
+                Promise.all(tasks)
+                    .then(() => {
+                        this.showVideo(video)
+                    })
+                    .catch(() => {
+                        this.hideVideo(video)
+                    })
+                    .finally(() => {
+                        if (sign) {
+                            video.setAttribute(settings.filterSign, '')
+                        }
+                    })
+            })
+        }
     }
 }

@@ -450,3 +450,56 @@ export class NumberItem implements IItem {
         }
     }
 }
+
+/** 普通按钮 */
+export class ButtonItem implements IItem {
+    nodeHTML = `<button class="bili-cleaner-item-button" role="button"></button>`
+
+    /**
+     * @param itemID item的唯一ID
+     * @param description 按钮功能介绍
+     * @param name 按钮名称
+     * @param itemFunc 功能函数
+     */
+    constructor(
+        private itemID: string,
+        private description: string,
+        private name: string,
+        private itemFunc: () => void,
+    ) {}
+
+    /**
+     * 在相应group内添加item
+     * @param groupID item所属groupID, 由Group调用insertItem时传入
+     */
+    insertItem(groupID: string) {
+        try {
+            const node = document.createElement('label')
+            node.id = this.itemID
+            node.innerHTML = `${this.nodeHTML}${this.description.replaceAll('\n', '<br>')}`
+            node.querySelector('button')!.innerHTML = this.name
+            const itemGroupList = document.querySelector(`#${groupID} .bili-cleaner-item-list`) as HTMLFormElement
+            if (itemGroupList) {
+                itemGroupList.appendChild(node)
+                debug(`insertItem ${this.itemID} OK`)
+            }
+        } catch (err) {
+            error(`insertItem ${this.itemID} err`)
+            error(err)
+        }
+    }
+    /** 监听按钮按下 */
+    watchItem() {
+        try {
+            const itemEle = document.querySelector(`#${this.itemID} button`) as HTMLButtonElement
+            itemEle.addEventListener('click', () => {
+                debug(`button ${this.itemID} click`)
+                this.itemFunc()
+            })
+            debug(`watchItem ${this.itemID} OK`)
+        } catch (err) {
+            error(`watchItem ${this.itemID} err`)
+            error(err)
+        }
+    }
+}

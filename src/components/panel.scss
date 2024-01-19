@@ -11,12 +11,12 @@
     background: #f4f5f7;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
     overflow: auto;
-    z-index: 2147483647;
+    z-index: 2147483640;
 
     & #bili-cleaner-bar {
         width: max(32vw, 300px);
         height: 6vh;
-        background: rgba(251, 114, 153, 1);
+        background: rgb(251, 114, 153);
         border-top-left-radius: 10px;
         border-top-right-radius: 10px;
         cursor: move;
@@ -120,9 +120,9 @@
                     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
                 }
                 &:checked {
-                    border-color: rgba(251, 114, 153, 1);
-                    box-shadow: rgba(251, 114, 153, 1) 0 0 0 16px inset;
-                    background-color: rgba(251, 114, 153, 1);
+                    border-color: rgb(251, 114, 153);
+                    box-shadow: rgb(251, 114, 153) 0 0 0 16px inset;
+                    background-color: rgb(251, 114, 153);
                 }
                 &:checked:before {
                     left: 25px;
@@ -149,6 +149,95 @@
                 &::-webkit-inner-spin-button {
                     -webkit-appearance: none;
                 }
+            }
+            // 按钮项样式
+            & .bili-cleaner-item-button {
+                width: 50px;
+                background-color: #ffffff;
+                border: 1px solid #666;
+                border-radius: 6px;
+                box-sizing: border-box;
+                cursor: pointer;
+                display: inline-block;
+                font-size: 16px;
+                margin: 0 1em 0 0;
+                outline: none;
+                padding: 6px 0;
+                position: relative;
+                text-align: center;
+                text-decoration: none;
+                touch-action: manipulation;
+                transition:
+                    box-shadow 0.2s,
+                    -ms-transform 0.1s,
+                    -webkit-transform 0.1s,
+                    transform 0.1s;
+                user-select: none;
+                -webkit-user-select: none;
+                &:active {
+                    background-color: #f7f7f7;
+                    border-color: #000000;
+                    transform: scale(0.96);
+                }
+            }
+        }
+    }
+}
+
+// 列表编辑器, 简单样式
+#bili-cleaner-wordlist {
+    background: white;
+    border-radius: 5px;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+    z-index: 2147483641;
+
+    & .wordlist-header {
+        font-size: 22px;
+        font-weight: bold;
+        margin: 8px auto;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+    }
+
+    & textarea {
+        width: 340px;
+        height: 400px;
+        margin: 10px;
+        border-radius: 5px;
+        overflow-y: scroll;
+        font-size: 18px;
+        line-height: 24px;
+        padding: 8px;
+        flex-grow: 1;
+        resize: none;
+        &:focus {
+            outline: none !important;
+        }
+    }
+
+    & .wordlist-footer {
+        height: 50px;
+        display: flex;
+        justify-content: space-evenly;
+        padding: 0 10px;
+        align-items: center;
+
+        & button {
+            width: 100px;
+            height: 30px;
+            border-radius: 5px;
+            border: 1px solid #666;
+            font-size: 18px;
+            &:hover {
+                background-color: #666;
+                color: white;
             }
         }
     }

@@ -1,5 +1,5 @@
 import { debug, error } from '../utils/logger'
-import { CheckboxItem, NumberItem, RadioItem } from './item'
+import { ButtonItem, CheckboxItem, NumberItem, RadioItem } from './item'
 
 export class Group {
     groupHTML = `
@@ -20,7 +20,7 @@ export class Group {
     constructor(
         private groupID: string,
         private title: string,
-        private items: (CheckboxItem | RadioItem | NumberItem)[],
+        private items: (CheckboxItem | RadioItem | NumberItem | ButtonItem)[],
     ) {
         this.groupID = 'bili-cleaner-group-' + groupID
     }

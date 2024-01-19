@@ -1,7 +1,7 @@
 import { GM_getValue } from '$'
 import { debug, error } from '../../utils/logger'
 import coreFilterInstance, { SelectorFunc } from '../filters/core'
-import { CheckboxItem, NumberItem } from '../../components/item'
+import { ButtonItem, CheckboxItem, NumberItem } from '../../components/item'
 import { Group } from '../../components/group'
 import settings from '../../settings'
 import bvidFilterInstance from '../filters/subfilters/bvid'
@@ -13,6 +13,8 @@ import durationAgencyInstance from '../agency/duration'
 import uploaderAgencyInstance from '../agency/uploader'
 import contextMenuInstance from '../../components/contextmenu'
 import bvidAgencyInstance from '../agency/bvid'
+import titleKeywordAgencyInstance from '../agency/titleKeyword'
+import { WordList } from '../../components/wordlist'
 
 const homepageFilterGroupList: Group[] = []
 
@@ -39,20 +41,19 @@ if (isPageHomepage()) {
     const homepageBvidFilterStatus: boolean = GM_getValue(`BILICLEANER_${homepageBvidFilterStatusKey}`, false)
     const homepageUploaderFilterStatus: boolean = GM_getValue(`BILICLEANER_${homepageUploaderFilterStatusKey}`, false)
 
-    const globalDurationFilterValue: number = GM_getValue(`BILICLEANER_VALUE_${globalDurationFilterValueKey}`, 90)
-    const globalTitleKeywordFilterValue: string[] = GM_getValue(
-        `BILICLEANER_VALUE_${globalTitleKeywordFilterValueKey}`,
-        [],
-    )
-    const globalBvidFilterValue: string[] = GM_getValue(`BILICLEANER_VALUE_${globalBvidFilterValueKey}`, [])
-    const globalUploaderFilterValue: string[] = GM_getValue(`BILICLEANER_VALUE_${globalUploaderFilterValueKey}`, [])
+    const globalDurationFilterValue: number = GM_getValue(`BILICLEANER_${globalDurationFilterValueKey}`, 90)
+    const globalTitleKeywordFilterValue: string[] = GM_getValue(`BILICLEANER_${globalTitleKeywordFilterValueKey}`, [])
+    const globalBvidFilterValue: string[] = GM_getValue(`BILICLEANER_${globalBvidFilterValueKey}`, [])
+    const globalUploaderFilterValue: string[] = GM_getValue(`BILICLEANER_${globalUploaderFilterValueKey}`, [])
 
+    //=======================================================================================
     // 配置子过滤器参数
     durationFilterInstance.setStatus(homepageDurationFilterStatus)
     durationFilterInstance.setParams(globalDurationFilterValue)
     debug('durationFilterInstance', homepageDurationFilterStatus, globalDurationFilterValue)
 
     titleKeywordFilterInstance.setStatus(homepageTitleKeywordFilterStatus)
+    // 直接读取列表传给子过滤器, 下同
     titleKeywordFilterInstance.setParams(globalTitleKeywordFilterValue)
     debug('titleKeywordFilterInstance', homepageTitleKeywordFilterStatus, globalTitleKeywordFilterValue.length)
 
@@ -65,6 +66,8 @@ if (isPageHomepage()) {
     debug('uploaderFilterInstance', homepageUploaderFilterStatus, globalUploaderFilterValue.length)
 
     //=======================================================================================
+    // 页面载入后监听流程
+
     // 0. 视频列表外层
     let videoListContainer: HTMLElement
 
@@ -178,6 +181,38 @@ if (isPageHomepage()) {
     waitForVideoListContainer()
 
     //=======================================================================================
+    // 初始化 UP主黑名单
+    const uploaderList = new WordList(
+        globalUploaderFilterValueKey,
+        '屏蔽UP主列表',
+        // 保存列表callback, 通知agency, 触发全站过滤
+        (values: string[]) => {
+            uploaderAgencyInstance.notify('setList', values)
+            checkVideoList(true)
+        },
+    )
+    // 初始化 bvid黑名单
+    const bvidList = new WordList(
+        globalBvidFilterValueKey,
+        'BV号 黑名单',
+        // 保存列表callback, 通知agency, 触发全站过滤
+        (values: string[]) => {
+            bvidAgencyInstance.notify('setList', values)
+            checkVideoList(true)
+        },
+    )
+    // 初始化 标题关键词黑名单
+    const titleKeywordList = new WordList(
+        globalTitleKeywordFilterValueKey,
+        '标题关键词 黑名单',
+        // 保存列表callback, 通知agency, 触发全站过滤
+        (values: string[]) => {
+            titleKeywordAgencyInstance.notify('setList', values)
+            checkVideoList(true)
+        },
+    )
+
+    //=======================================================================================
     // 右键监听函数, 首页右键单击指定元素时修改右键菜单, 用于屏蔽视频BVID, 屏蔽UP主
     let isContextMenuFuncRunning = false
     let isContextMenuUploaderEnable = false
@@ -237,6 +272,8 @@ if (isPageHomepage()) {
         })
         debug('contextMenuFunc listen contextmenu')
     }
+
+    //=======================================================================================
     // 时长过滤, 按钮开启, 功能函数
     const homepageDurationFilterEnableFunc = () => {
         // 告知agency
@@ -250,11 +287,10 @@ if (isPageHomepage()) {
         checkVideoList(true)
     }
     // 时长过滤, 数值变化, 回调
-    const globalDurationFilterChangeFunc = (value: number) => {
+    const homepageDurationFilterChangeFunc = (value: number) => {
         durationAgencyInstance.notify('change', value)
         checkVideoList(true)
     }
-
     // UP主过滤, 按钮开启, 功能函数
     const homepageUploaderFilterEnableFunc = () => {
         // 启用右键菜单功能
@@ -269,18 +305,25 @@ if (isPageHomepage()) {
         uploaderAgencyInstance.notify('disable')
         checkVideoList(true)
     }
-    // UP主过滤, 新增单项, 回调, 由右键菜单调用
+    // UP主过滤, 右键菜单新增, 回调
     const homepageUploaderFilterAddFunc = (value: string) => {
         debug('homepageUploaderFilterAddFunc', value)
+        uploaderList.addValue(value)
         uploaderAgencyInstance.notify('add', value)
         checkVideoList(true)
     }
-    // UP主过滤, 更新列表, 回调
-    const homepageUploaderFilterListChangeFunc = (value: string[]) => {
-        uploaderAgencyInstance.notify('setList', value)
+    // 标题关键词过滤, 按钮开启, 功能函数
+    const homepageTitleKeywordFilterEnableFunc = () => {
+        debug('homepageTitleKeywordFilterEnableFunc')
+        titleKeywordAgencyInstance.notify('enable')
         checkVideoList(true)
     }
-
+    // 标题关键词过滤, 按钮关闭, 回调
+    const homepageTitleKeywordFilterDisableFunc = () => {
+        debug('homepageTitleKeywordFilterDisableFunc')
+        titleKeywordAgencyInstance.notify('disable')
+        checkVideoList(true)
+    }
     // bvid过滤, 按钮开启, 功能函数
     const homepageBvidFilterEnableFunc = () => {
         // 启用右键菜单功能
@@ -298,23 +341,20 @@ if (isPageHomepage()) {
     // bvid过滤, 新增单项, 回调, 由右键菜单调用
     const homepageBvidFilterAddFunc = (value: string) => {
         debug('homepageBvidFilterAddFunc', value)
+        bvidList.addValue(value)
         bvidAgencyInstance.notify('add', value)
-        checkVideoList(true)
-    }
-    // bvid过滤, 更新列表, 回调
-    const homepageBvidFilterListChangeFunc = (value: string[]) => {
-        bvidAgencyInstance.notify('setList', value)
         checkVideoList(true)
     }
 
     //=======================================================================================
+
     // 构建UI菜单
     const durationItems: (CheckboxItem | NumberItem)[] = []
-    const titleKeywordItems: (CheckboxItem | NumberItem)[] = []
-    const bvidItems: (CheckboxItem | NumberItem)[] = []
-    const uploaderItems: (CheckboxItem | NumberItem)[] = []
+    const titleKeywordItems: (CheckboxItem | ButtonItem)[] = []
+    const bvidItems: (CheckboxItem | ButtonItem)[] = []
+    const uploaderItems: (CheckboxItem | ButtonItem)[] = []
 
-    // 时长过滤part, UI组件
+    // UI组件, 时长过滤part
     {
         durationItems.push(
             new CheckboxItem(
@@ -335,13 +375,13 @@ if (isPageHomepage()) {
                 0,
                 300,
                 '秒',
-                globalDurationFilterChangeFunc,
+                homepageDurationFilterChangeFunc,
             ),
         )
     }
     homepageFilterGroupList.push(new Group('homepage-duration-filter-group', '首页 视频时长过滤', durationItems))
 
-    // UP主过滤part, UI组件
+    // UI组件, UP主过滤part
     {
         uploaderItems.push(
             new CheckboxItem(
@@ -354,22 +394,46 @@ if (isPageHomepage()) {
                 homepageUploaderFilterDisableFunc,
             ),
         )
-        // 列表编辑器
+        uploaderItems.push(
+            new ButtonItem(
+                'homepage-uploader-filter-edit-button',
+                '编辑 UP主黑名单',
+                '编辑',
+                // 按钮功能：打开uploaderList编辑框
+                () => uploaderList.show(),
+            ),
+        )
     }
     homepageFilterGroupList.push(new Group('homepage-uploader-filter-group', '首页 UP主过滤', uploaderItems))
 
-    // 标题关键词过滤part, UI组件
+    // UI组件, 标题关键词过滤part
     {
         titleKeywordItems.push(
-            new CheckboxItem(homepageTitleKeywordFilterStatusKey, '启用 首页关键词过滤', false, undefined, false, null),
+            new CheckboxItem(
+                homepageTitleKeywordFilterStatusKey,
+                '启用 首页关键词过滤',
+                false,
+                homepageTitleKeywordFilterEnableFunc,
+                false,
+                null,
+                homepageTitleKeywordFilterDisableFunc,
+            ),
         )
-        // 列表编辑器
+        titleKeywordItems.push(
+            new ButtonItem(
+                'homepage-test-button',
+                '编辑 关键词黑名单',
+                '编辑',
+                // 按钮功能：打开titleKeywordList编辑框
+                () => titleKeywordList.show(),
+            ),
+        )
     }
     homepageFilterGroupList.push(
         new Group('homepage-title-keyword-filter-group', '首页 标题关键词过滤', titleKeywordItems),
     )
 
-    // Bvid过滤part, UI组件
+    // UI组件, bvid过滤part
     {
         bvidItems.push(
             new CheckboxItem(
@@ -382,8 +446,17 @@ if (isPageHomepage()) {
                 homepageBvidFilterDisableFunc,
             ),
         )
-        // 列表编辑器
+        bvidItems.push(
+            new ButtonItem(
+                'homepage-bvid-filter-edit-button',
+                '编辑 BV号黑名单',
+                '编辑',
+                // 按钮功能：打开bvidList编辑框
+                () => bvidList.show(),
+            ),
+        )
     }
     homepageFilterGroupList.push(new Group('homepage-bvid-filter-group', '首页 视频BV号过滤', bvidItems))
 }
+
 export { homepageFilterGroupList }

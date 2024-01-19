@@ -1,7 +1,7 @@
 import { GM_getValue, GM_setValue } from '$'
 import { debug, error } from '../utils/logger'
 
-class WordList {
+export class WordList {
     private wordArr: string[] = []
     private wordSet = new Set<string>()
 
@@ -11,22 +11,31 @@ class WordList {
         <textarea class="wordlist-body"></textarea>
         <div class="wordlist-footer">
             <button class="wordlist-save-button">保存</button>
-            <button class="wordlist-close-button">取消</button>
+            <button class="wordlist-close-button">关闭</button>
         </div>
-    </div>
-    `
+    </div>`
 
+    /**
+     * WordList用于维护各种string array（up主列表、BVID列表、关键词列表）
+     * @param listID 列表唯一ID, 对应数据存储
+     * @param description 列表说明, 会显示在编辑框头部作为标题
+     * @param callback 回调函数, 在保存列表时回调
+     */
     constructor(
         private listID: string,
         private description: string,
-        private callback: (() => void) | undefined,
-    ) {}
+        private callback: (values: string[]) => void,
+    ) {
+        this.getValue()
+    }
 
     private setValue() {
         GM_setValue(`BILICLEANER_${this.listID}`, this.wordArr)
     }
     private getValue() {
-        this.wordArr = GM_getValue(`BILICLEANER_VALUE_${this.listID}`, [])
+        debug(`key`, `BILICLEANER_${this.listID}`)
+        this.wordArr = GM_getValue(`BILICLEANER_${this.listID}`, [])
+        debug(`${this.listID} getValue this.wordArr ${this.wordArr} lines`)
         this.wordSet = new Set(this.wordArr)
     }
 
@@ -68,6 +77,8 @@ class WordList {
             this.wordArr = tempArr
             this.wordSet = tempSet
             this.setValue()
+            // 带参回调
+            this.callback(this.wordArr)
             debug(`list ${this.listID} saveList, OK`)
             return true
         } catch (err) {
@@ -80,10 +91,11 @@ class WordList {
     /** 获取列表值, 用于编辑列表 or 初始化过滤器 */
     fetchList(): string[] {
         this.getValue()
+        debug(`fetchList fetch ${this.wordArr.length} lines`)
         return this.wordArr
     }
 
-    /** 插入节点 */
+    /** 插入节点, 显示编辑框 */
     insertNode() {
         const node = document.getElementById('bili-cleaner-wordlist') as HTMLDivElement
         if (node) {
@@ -92,7 +104,8 @@ class WordList {
         const e = document.createElement('div')
         e.innerHTML = this.nodeHTML.trim()
         e.querySelector('.wordlist-header')!.innerHTML = this.description.replace('\n', '<br>')
-        e.querySelector('textarea')!.innerHTML = this.fetchList().join('\n')
+        debug(`insertNode, fetchList ${this.fetchList().length} lines`)
+        e.querySelector('textarea')!.value = this.fetchList().join('\n')
         document.body?.appendChild(e.firstChild!)
     }
 
@@ -107,6 +120,7 @@ class WordList {
         cancel?.addEventListener('click', () => {
             node.remove()
         })
+        debug(`list ${this.listID} listen cancel button`)
         // 监听保存
         const save = node.querySelector('.wordlist-save-button') as HTMLButtonElement
         save?.addEventListener('click', () => {
@@ -115,9 +129,13 @@ class WordList {
                 debug('textarea value', textarea.value)
                 const ok = this.saveList(textarea.value.split('\n'))
                 if (ok) {
-                    save.innerHTML = '已保存'
+                    textarea.value = this.fetchList().join('\n')
                     save.style.backgroundColor = '#99CC66'
                     save.style.color = 'white'
+                    setTimeout(() => {
+                        save.style.backgroundColor = 'white'
+                        save.style.color = 'black'
+                    }, 1000)
                 } else {
                     save.innerHTML = '保存失败'
                     save.style.backgroundColor = '#FF6666'
@@ -125,5 +143,12 @@ class WordList {
                 }
             }
         })
+        debug(`list ${this.listID} listen save button`)
+    }
+
+    /** 显示编辑框 */
+    show() {
+        this.insertNode()
+        this.watchNode()
     }
 }

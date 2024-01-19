@@ -16,7 +16,7 @@ class UploaderAgency {
                     this.addUploader(value)
                 }
                 break
-            case 'setList':
+            case 'edit':
                 if (Array.isArray(value)) {
                     this.setUploaderList(value)
                 }

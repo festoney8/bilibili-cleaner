@@ -16,7 +16,7 @@ class BvidAgency {
                     this.addBvid(value)
                 }
                 break
-            case 'setList':
+            case 'edit':
                 if (Array.isArray(value)) {
                     this.setBvidList(value)
                 }

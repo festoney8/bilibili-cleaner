@@ -16,7 +16,7 @@ class TitleKeywordAgency {
                     this.addTitleKeyword(value)
                 }
                 break
-            case 'setList':
+            case 'edit':
                 if (Array.isArray(value)) {
                     this.setTitleKeywordList(value)
                 }

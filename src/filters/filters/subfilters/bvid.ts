@@ -25,13 +25,13 @@ class BvidFilter {
                 if (!this.isEnable || bvid.length === 0 || this.bvidSet.size === 0) {
                     debug('resolve, BvidFilter disable, or bvid invalid, or bvid list is empty')
                     resolve()
-                }
-                if (this.bvidSet.has(bvid)) {
+                } else if (this.bvidSet.has(bvid)) {
                     debug(`reject, bvid ${bvid} in bvid list`)
                     reject()
+                } else {
+                    debug(`resolve, bvid ${bvid} not in bvid list`)
+                    resolve()
                 }
-                debug(`resolve, bvid ${bvid} not in bvid list`)
-                resolve()
             } catch (err) {
                 error(err)
                 error(`resolve, BvidFilter error, bvid`, bvid)

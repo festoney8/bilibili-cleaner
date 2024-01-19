@@ -34,8 +34,8 @@ class DurationFilter {
                 if (!this.isEnable || this.threshold === 0) {
                     debug(`resolve, duration filter is disable, or threshold is 0`)
                     resolve()
-                }
-                if (duration && duration.match(this.pattern)) {
+                    return
+                } else if (duration && duration.match(this.pattern)) {
                     if (this.isLegal(duration)) {
                         debug(`resolve, duration ${duration}, threshold ${this.threshold}`)
                         resolve()

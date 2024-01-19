@@ -28,20 +28,23 @@ class TitleKeywordFilter {
                 if (!this.isEnable || title.length === 0 || this.titleKeywordSet.size === 0) {
                     debug('resolve, TitleKeywordFilter disable, or title invalid, or wordlist empty')
                     resolve()
-                }
-                // 快速判断
-                if (this.titleKeywordSet.has(title)) {
+                } else if (this.titleKeywordSet.has(title)) {
+                    // 快速判断
                     debug(`reject, title ${title} in titleKeyword list`)
                     reject()
                 }
+                let flag = false
                 this.titleKeywordSet.forEach((word) => {
                     if (word && title.includes(word)) {
                         debug(`reject, title ${title} in titleKeyword list`)
+                        flag = true
                         reject()
                     }
                 })
-                debug(`resolve, title ${title} not in titleKeyword list`)
-                resolve()
+                if (!flag) {
+                    debug(`resolve, title ${title} not in titleKeyword list`)
+                    resolve()
+                }
             } catch (err) {
                 error(err)
                 error(`resolve, TitleKeywordFilter error, title`, title)

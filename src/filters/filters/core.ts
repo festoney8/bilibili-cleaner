@@ -22,9 +22,9 @@ class CoreFilter {
 
     constructor() {}
 
-    /** 隐藏视频, display:none */
+    /** 隐藏视频, display none important */
     private hideVideo(video: HTMLElement) {
-        video.style.display = 'none'
+        video.style.setProperty('display', 'none', 'important')
     }
 
     /** 恢复视频, 用于筛选条件变化时重置 */
@@ -57,21 +57,21 @@ class CoreFilter {
             if (checkDuration) {
                 const duration = selectorFunc.duration!(video)
                 if (duration) {
-                    debug('add task, duration', duration)
+                    // debug('add task, duration', duration)
                     tasks.push(durationFilterInstance.check(duration))
                 }
             }
             if (checkTitleKeyword) {
                 const titleKeyword = selectorFunc.titleKeyword!(video)
                 if (titleKeyword) {
-                    debug('add task, titleKeyword', titleKeyword)
+                    // debug('add task, titleKeyword', titleKeyword)
                     tasks.push(titleKeywordAgencyInstance.check(titleKeyword))
                 }
             }
             if (checkBvid) {
                 const bvid = selectorFunc.bvid!(video)
                 if (bvid) {
-                    debug('add task, bvid', bvid)
+                    // debug('add task, bvid', bvid)
                     tasks.push(bvidFilterInstance.check(bvid))
                 }
             }

@@ -67,7 +67,6 @@ class ContextMenu {
             name: name,
             onclick: onclick,
         })
-        debug('register new menu', name, onclick)
     }
     /**
      * 显示右键菜单
@@ -75,7 +74,6 @@ class ContextMenu {
      * @param y 坐标Y
      */
     show(x: number, y: number) {
-        debug(x, y)
         // 新建节点
         if (!this.node) {
             this.insertContextMenuCSS()
@@ -87,17 +85,15 @@ class ContextMenu {
         // 新建列表
         const menuList = this.node.querySelector('ul')! as HTMLUListElement
         menuList.innerHTML = ''
-        debug('this.menus.length', this.menus.length)
         this.menus.forEach((menu) => {
             const li = document.createElement('li')
             li.className = 'bili-cleaner-context-menu'
             li.innerHTML = `${menu.name}`
             li.onclick = menu.onclick
-            debug(li.innerHTML)
             menuList.appendChild(li)
         })
-        this.node.style.left = `${x + 15}px`
-        this.node.style.top = `${y + 15}px`
+        this.node.style.left = `${x + 3}px`
+        this.node.style.top = `${y + 3}px`
         this.node.style.display = 'block'
 
         this.isShowing = true

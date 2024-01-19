@@ -16,24 +16,26 @@ class UploaderFilter {
 
     addParam(uploader: string) {
         if (uploader.trim()) {
+            debug(`UploaderFilter add ${uploader}`)
             this.uploaderSet.add(uploader.trim())
         }
     }
 
     check(uploader: string): Promise<void> {
         uploader = uploader.trim()
+        debug(`UploaderFilter check ${uploader}`)
         return new Promise<void>((resolve, reject) => {
             try {
                 if (!this.isEnable || uploader.length === 0 || this.uploaderSet.size === 0) {
                     debug('resolve, UploaderFilter disable, or uploader invalid, or uploader list empty')
                     resolve()
-                }
-                if (this.uploaderSet.has(uploader)) {
+                } else if (this.uploaderSet.has(uploader)) {
                     debug(`reject, uploader ${uploader} in uploader list`)
                     reject()
+                } else {
+                    debug(`resolve, uploader ${uploader} not in uploader list`)
+                    resolve()
                 }
-                debug(`resolve, uploader ${uploader} not in uploader list`)
-                resolve()
             } catch (err) {
                 error(err)
                 error(`resolve, UploaderFilter error, uploader`, uploader)

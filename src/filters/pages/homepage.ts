@@ -16,6 +16,20 @@ import bvidAgencyInstance from '../agency/bvid'
 import titleKeywordAgencyInstance from '../agency/titleKeyword'
 import { WordList } from '../../components/wordlist'
 
+// 定义各种过滤功能的属性和行为
+export interface Action {
+    readonly statusKey: string
+    readonly valueKey: string
+    status: boolean
+    value: number | string | string[]
+    blacklist?: WordList
+    enable(): void
+    disable(): void
+    change?(value: number): void
+    add?(value: string): void
+    edit?(value: string[]): void
+}
+
 const homepageFilterGroupList: Group[] = []
 
 // 右键菜单功能, 全局控制
@@ -138,20 +152,17 @@ if (isPageHomepage()) {
 
     //=======================================================================================
     // 配置 行为实例
-    class HomepageDurationAction {
+    class HomepageDurationAction implements Action {
         readonly statusKey = 'homepage-duration-filter-status'
         readonly valueKey = 'global-duration-filter-value'
-        private status = false
-        private value = 60
+        status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
+        value = GM_getValue(`BILICLEANER_${this.valueKey}`, 60)
 
         constructor() {
-            this.status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
-            this.value = GM_getValue(`BILICLEANER_${this.valueKey}`, 60)
             // 配置子过滤器
             durationFilterInstance.setStatus(this.status)
             durationFilterInstance.setParams(this.value)
         }
-
         enable() {
             // 告知agency
             durationAgencyInstance.notify('enable')
@@ -167,11 +178,11 @@ if (isPageHomepage()) {
             checkVideoList(true)
         }
     }
-    class HomepageUploaderAction {
+    class HomepageUploaderAction implements Action {
         readonly statusKey = 'homepage-uploader-filter-status'
         readonly valueKey = 'global-uploader-filter-value'
-        private status = false
-        private value: string[] = []
+        status = false
+        value: string[] = []
         blacklist: WordList
 
         constructor() {
@@ -211,11 +222,11 @@ if (isPageHomepage()) {
             checkVideoList(true)
         }
     }
-    class HomepageBvidAction {
+    class HomepageBvidAction implements Action {
         readonly statusKey = 'homepage-bvid-filter-status'
         readonly valueKey = 'global-bvid-filter-value'
-        private status = false
-        private value: string[] = []
+        status = false
+        value: string[] = []
         blacklist: WordList
 
         constructor() {
@@ -255,11 +266,11 @@ if (isPageHomepage()) {
             checkVideoList(true)
         }
     }
-    class HomepageTitleKeywordAction {
+    class HomepageTitleKeywordAction implements Action {
         readonly statusKey = 'homepage-title-keyword-filter-status'
         readonly valueKey = 'global-title-keyword-filter-value'
-        private status = false
-        private value: string[] = []
+        status = false
+        value: string[] = []
         blacklist: WordList
 
         constructor() {
@@ -294,7 +305,8 @@ if (isPageHomepage()) {
             checkVideoList(true)
         }
     }
-    // Todo: HomepageWhiteListAction {}
+
+    // Todo: HomepageWhiteListAction implements Action {}
 
     const homepageDurationAction = new HomepageDurationAction()
     const homepageUploaderAction = new HomepageUploaderAction()
@@ -453,7 +465,7 @@ if (isPageHomepage()) {
         bvidItems.push(
             new CheckboxItem(
                 homepageBvidAction.statusKey,
-                '启用 首页BV号过滤 (右键单击视频标题)',
+                '启用 首页BV号过滤 (右键单击标题)',
                 false,
                 homepageBvidAction.enable,
                 false,

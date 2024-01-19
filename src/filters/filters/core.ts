@@ -2,7 +2,7 @@ import settings from '../../settings'
 import { debug } from '../../utils/logger'
 import bvidFilterInstance from './subfilters/bvid'
 import durationFilterInstance from './subfilters/duration'
-import keywordFilterInstance from './subfilters/keyword'
+import titleKeywordAgencyInstance from './subfilters/titleKeyword'
 import uploaderFilterInstance from './subfilters/uploader'
 
 export type SelectorFunc = {
@@ -12,7 +12,7 @@ export type SelectorFunc = {
     uploader?: (video: HTMLElement) => string | null
 }
 
-export class CoreFilter {
+class CoreFilter {
     // public, 允许外界实时启用禁用子过滤器
     public enableDuration = true
     public enableTitleKeyword = true
@@ -65,7 +65,7 @@ export class CoreFilter {
                 const titleKeyword = selectorFunc.titleKeyword!(video)
                 if (titleKeyword) {
                     debug('add task, titleKeyword', titleKeyword)
-                    tasks.push(keywordFilterInstance.check(titleKeyword))
+                    tasks.push(titleKeywordAgencyInstance.check(titleKeyword))
                 }
             }
             if (checkBvid) {
@@ -98,3 +98,7 @@ export class CoreFilter {
         })
     }
 }
+
+// CoreFilter全局单例
+const coreFilterInstance = new CoreFilter()
+export default coreFilterInstance

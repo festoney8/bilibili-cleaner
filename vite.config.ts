@@ -35,7 +35,8 @@ export default defineConfig({
             },
         }),
     ],
-    // server: {
-    //     hmr: false,
-    // },
+    // pnpm run dev时实时编译, 但需手动刷新页面
+    server: {
+        hmr: false,
+    },
 })

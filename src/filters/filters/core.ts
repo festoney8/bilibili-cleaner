@@ -4,14 +4,14 @@ import durationFilterInstance from './subfilters/duration'
 import keywordFilterInstance from './subfilters/keyword'
 import uploaderFilterInstance from './subfilters/uploader'
 
-type SelectorFunc = {
-    duration?: (video: HTMLElement) => string
-    keyword?: (video: HTMLElement) => string
-    bvid?: (video: HTMLElement) => string
-    uploader?: (video: HTMLElement) => string
+export type SelectorFunc = {
+    duration?: (video: HTMLElement) => string | null
+    title?: (video: HTMLElement) => string | null
+    bvid?: (video: HTMLElement) => string | null
+    uploader?: (video: HTMLElement) => string | null
 }
 
-class MainFilter {
+export class CoreFilter {
     // public, 允许外界实时启用禁用子过滤器
     public enableDuration = true
     public enableKeyword = true
@@ -42,7 +42,7 @@ class MainFilter {
      */
     checkAll(videos: HTMLElement[], sign = true, selectorFunc: SelectorFunc) {
         const checkDuration = this.enableDuration && selectorFunc.duration
-        const checkKeyword = this.enableKeyword && selectorFunc.keyword
+        const checkKeyword = this.enableKeyword && selectorFunc.title
         const checkUploader = this.enableUploader && selectorFunc.uploader
         const checkBvid = this.enableBvid && selectorFunc.bvid
 
@@ -59,7 +59,7 @@ class MainFilter {
                 }
             }
             if (checkKeyword) {
-                const title = selectorFunc.keyword!(video)
+                const title = selectorFunc.title!(video)
                 if (title) {
                     tasks.push(keywordFilterInstance.check(title))
                 }

@@ -1,16 +1,7 @@
 import { debug, error } from '../utils/logger'
 import { CheckboxItem, NumberItem, RadioItem } from './item'
 
-interface IGroup {
-    readonly groupHTML: myHTML
-    insertGroup(): void
-    insertGroupItems(): void
-    enableGroup(): void
-    reloadGroup(): void
-    disableGroup(): void
-}
-
-export class Group implements IGroup {
+export class Group {
     groupHTML = `
     <div class="bili-cleaner-group">
         <div class="bili-cleaner-group-title">

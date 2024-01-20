@@ -1,6 +1,8 @@
-import { Group } from '../core/group'
-import { CheckboxItem } from '../core/item'
+import { Group } from '../components/group'
+import { CheckboxItem } from '../components/item'
 import { debug } from '../utils/logger'
+import { matchAvidBvid, matchBvid } from '../utils/misc'
+import { isPagePlaylist, isPageVideo } from '../utils/page-type'
 
 /** BV号转AV号 */
 const bv2av = () => {
@@ -27,16 +29,15 @@ const bv2av = () => {
     }
 
     if (location.href.includes('bilibili.com/video/BV')) {
-        const regex = /bilibili.com\/video\/(BV[0-9a-zA-Z]+)/
-        const match = regex.exec(location.href)
-        if (match) {
+        const bvid = matchBvid(location.href)
+        if (bvid) {
             // 保留query string中分P参数, anchor中reply定位
             let partNum = ''
             const params = new URLSearchParams(location.search)
             if (params.has('p')) {
                 partNum += `?p=${params.get('p')}`
             }
-            const aid = dec(match[1])
+            const aid = dec(bvid)
             const newURL = `https://www.bilibili.com/video/av${aid}${partNum}${location.hash}`
             history.replaceState(null, '', newURL)
             debug('bv2av complete')
@@ -77,8 +78,7 @@ const simpleShare = () => {
                     title = `【${title}】`
                 }
                 // 匹配av号, BV号, 分P号
-                const pattern = /av\d+|BV[1-9A-HJ-NP-Za-km-z]+/g
-                const avbv = pattern.exec(location.href)
+                const avbv = matchAvidBvid(location.href)
                 let shareText = `${title} \nhttps://www.bilibili.com/video/${avbv}`
                 const urlObj = new URL(location.href)
                 const params = new URLSearchParams(urlObj.search)
@@ -169,8 +169,8 @@ const overridePlayerHeight = () => {
         if (wideBtn) {
             wideBtn.addEventListener('click', () => {
                 debug('wideBtn click detected')
-                window.isWide = isWide ? false : true
-                isWide = isWide ? false : true
+                window.isWide = !isWide
+                isWide = !isWide
                 overrideCSS()
             })
             observeBtn.disconnect()
@@ -195,12 +195,7 @@ const sidebarItems: CheckboxItem[] = []
 const videoGroupList: Group[] = []
 
 // 普通播放页，稍后再看播放页，收藏夹播放页
-const href = location.href
-if (
-    href.includes('bilibili.com/video/') ||
-    href.includes('bilibili.com/list/watchlater') ||
-    href.includes('bilibili.com/list/ml')
-) {
+if (isPageVideo() || isPagePlaylist()) {
     // 基本功能part, basicItems
     {
         // BV号转AV号, 在url变化时需重载, 关闭功能需刷新
@@ -1182,6 +1177,7 @@ if (
                 undefined,
                 false,
                 `#reco_list .rec-list {display: none !important;}
+                #reco_list .rec-footer {display: none !important;}
                 /* 适配watchlater, favlist */
                 .recommend-list-container {display: none !important;}`,
             ),

@@ -30,11 +30,11 @@ devDependencies:
     specifier: ^5.1.6
     version: 5.3.3
   vite:
-    specifier: ^4.4.8
-    version: 4.5.1
+    specifier: ^4.5.2
+    version: 4.5.2
   vite-plugin-monkey:
     specifier: ^3.4.0
-    version: 3.5.1(vite@4.5.1)
+    version: 3.5.1(vite@4.5.2)
 
 packages:
 
@@ -1557,7 +1557,7 @@ packages:
       punycode: 2.3.1
     dev: true
 
-  /vite-plugin-monkey@3.5.1(vite@4.5.1):
+  /vite-plugin-monkey@3.5.1(vite@4.5.2):
     resolution: {integrity: sha512-sLbWbhvhXbm1d4SFY9eVx3KFqDP1gbjqUJlbpf/KRKLAFcjO3VIMOJb0oqxH77zlmSZhITrqLcsB3AyH+92i/w==}
     engines: {node: ^14.18 || >= 16, pnpm: '>=6'}
     peerDependencies:
@@ -1574,11 +1574,11 @@ packages:
       open: 9.1.0
       picocolors: 1.0.0
       systemjs: 6.14.2
-      vite: 4.5.1
+      vite: 4.5.2
     dev: true
 
-  /vite@4.5.1:
-    resolution: {integrity: sha512-AXXFaAJ8yebyqzoNB9fu2pHoo/nWX+xZlaRwoeYUxEqBO+Zj4msE5G+BhGBll9lYEKv9Hfks52PAF2X7qDYXQA==}
+  /vite@4.5.2:
+    resolution: {integrity: sha512-tBCZBNSBbHQkaGyhGCDUGqeo2ph8Fstyp6FMSvTtsXeZSPpSMGlviAOav2hxVTqFcx8Hj/twtWKsMJXNY0xI8w==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:

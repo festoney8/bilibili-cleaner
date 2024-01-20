@@ -1,5 +1,6 @@
-import { Group } from '../core/group'
-import { CheckboxItem, RadioItem } from '../core/item'
+import { Group } from '../components/group'
+import { CheckboxItem, RadioItem } from '../components/item'
+import { isPageHomepage } from '../utils/page-type'
 
 const basicItems: CheckboxItem[] = []
 const layoutItems: (CheckboxItem | RadioItem)[] = []
@@ -9,7 +10,7 @@ const biliAppRcmdItems: CheckboxItem[] = []
 // GroupList
 const homepageGroupList: Group[] = []
 
-if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'].includes(location.pathname)) {
+if (isPageHomepage()) {
     // 基础项part, basicItems
     {
         // 隐藏 横幅banner
@@ -215,6 +216,17 @@ if (location.href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'
                 #i_cecream .bili-header__bar:not(.slide-down) {
                     transition: background-color 0.3s ease-out;
                 }`,
+            ),
+        )
+        // 隐藏 顶部adblock提示, 默认开启
+        basicItems.push(
+            new CheckboxItem(
+                'homepage-hide-adblock-tips',
+                '隐藏 顶部adblock提示',
+                true,
+                undefined,
+                false,
+                `.adblock-tips {display: none !important;}`,
             ),
         )
         // 增大 视频信息字号

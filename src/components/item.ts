@@ -26,6 +26,7 @@ export class CheckboxItem implements IItem {
      * @param itemFunc 功能函数
      * @param isItemFuncReload 功能函数是否在URL变动时重新运行
      * @param itemCSS item的CSS
+     * @param callback 可选, 回调函数, 用于在关掉开关时触发外部事务
      */
     constructor(
         private itemID: string,
@@ -34,6 +35,7 @@ export class CheckboxItem implements IItem {
         private itemFunc: (() => void) | undefined,
         private isItemFuncReload: boolean,
         private itemCSS: myCSS | null,
+        private callback?: (() => void) | undefined,
     ) {
         this.isEnable = undefined
         this.itemEle = undefined
@@ -126,6 +128,10 @@ export class CheckboxItem implements IItem {
                 } else {
                     this.setStatus(false)
                     this.removeItemCSS()
+                    // 回调
+                    if (typeof this.callback === 'function') {
+                        this.callback()
+                    }
                 }
             })
             debug(`watchItem ${this.itemID} OK`)
@@ -347,6 +353,153 @@ export class RadioItem implements IItem {
                 error(`reloadItem ${this.itemID} Error`)
                 error(err)
             }
+        }
+    }
+}
+
+/** 数值设定 */
+export class NumberItem implements IItem {
+    nodeHTML = `<input class="bili-cleaner-item-number" type="number">`
+    private itemValue: number | undefined
+
+    /**
+     * @param itemID item的唯一ID, 用于在GM database中记录数值
+     * @param description 数值功能介绍
+     * @param defaultValue 默认值
+     * @param minValue 最小值
+     * @param maxValue 最大值
+     * @param unit 数值单位
+     * @param callback 可选, 回调函数, 在数值修改时回调, 可用于效果实时生效
+     */
+    constructor(
+        private itemID: string,
+        private description: string,
+        private defaultValue: number,
+        private minValue: number,
+        private maxValue: number,
+        private unit: string,
+        private callback?: (value: number) => void | undefined,
+    ) {}
+
+    /** 获取数值, 初次安装使用默认值 */
+    getValue() {
+        this.itemValue = GM_getValue(`BILICLEANER_${this.itemID}`)
+        if (this.itemValue === undefined) {
+            this.itemValue = this.defaultValue
+            this.setValue(this.itemValue)
+        }
+    }
+    /** 设定并记录数值 */
+    setValue(value: number) {
+        this.itemValue = value
+        GM_setValue(`BILICLEANER_${this.itemID}`, this.itemValue)
+    }
+
+    /**
+     * 在相应group内添加item
+     * @param groupID item所属groupID, 由Group调用insertItem时传入
+     */
+    insertItem(groupID: string) {
+        try {
+            this.getValue()
+            const node = document.createElement('label')
+            node.id = this.itemID
+            node.innerHTML = `${this.description.replaceAll('\n', '<br>')}<span>${this.nodeHTML}</span>${this.unit}`
+            const inputNode = node.querySelector('input') as HTMLInputElement
+            inputNode.setAttribute('value', this.itemValue!.toString())
+            inputNode.setAttribute('min', this.minValue.toString())
+            inputNode.setAttribute('max', this.maxValue.toString())
+            const itemGroupList = document.querySelector(`#${groupID} .bili-cleaner-item-list`) as HTMLFormElement
+            if (itemGroupList) {
+                itemGroupList.appendChild(node)
+                debug(`insertItem ${this.itemID} OK`)
+            }
+        } catch (err) {
+            error(`insertItem ${this.itemID} err`)
+            error(err)
+        }
+    }
+    /** 监听数值变化并保持, 重置不合理的值 */
+    watchItem() {
+        try {
+            const itemEle = document.querySelector(`#${this.itemID} input`) as HTMLInputElement
+            let currValue
+            itemEle.addEventListener('input', () => {
+                currValue = parseInt(itemEle.value)
+                if (isNaN(currValue)) {
+                    itemEle.value = this.minValue.toString()
+                } else {
+                    if (currValue > this.maxValue) {
+                        itemEle.value = this.maxValue.toString()
+                    } else if (currValue < this.minValue) {
+                        itemEle.value = this.minValue.toString()
+                    }
+                }
+                this.setValue(parseInt(itemEle.value))
+                itemEle.value = parseInt(itemEle.value).toString()
+                debug(`${this.itemID} currValue ${itemEle.value}`)
+                // 调用回调函数
+                if (this.callback && typeof this.callback === 'function') {
+                    this.callback(parseInt(itemEle.value))
+                }
+            })
+            debug(`watchItem ${this.itemID} OK`)
+        } catch (err) {
+            error(`watchItem ${this.itemID} err`)
+            error(err)
+        }
+    }
+}
+
+/** 普通按钮 */
+export class ButtonItem implements IItem {
+    nodeHTML = `<button class="bili-cleaner-item-button" role="button"></button>`
+
+    /**
+     * @param itemID item的唯一ID
+     * @param description 按钮功能介绍
+     * @param name 按钮名称
+     * @param itemFunc 功能函数
+     */
+    constructor(
+        private itemID: string,
+        private description: string,
+        private name: string,
+        private itemFunc: () => void,
+    ) {}
+
+    /**
+     * 在相应group内添加item
+     * @param groupID item所属groupID, 由Group调用insertItem时传入
+     */
+    insertItem(groupID: string) {
+        try {
+            const node = document.createElement('label')
+            node.id = this.itemID
+            node.innerHTML = `${this.nodeHTML}${this.description.replaceAll('\n', '<br>')}`
+            node.querySelector('button')!.innerHTML = this.name
+            const itemGroupList = document.querySelector(`#${groupID} .bili-cleaner-item-list`) as HTMLFormElement
+            if (itemGroupList) {
+                itemGroupList.appendChild(node)
+                debug(`insertItem ${this.itemID} OK`)
+            }
+        } catch (err) {
+            error(`insertItem ${this.itemID} err`)
+            error(err)
+        }
+    }
+    /** 监听按钮按下 */
+    watchItem() {
+        try {
+            const itemEle = document.querySelector(`#${this.itemID} button`) as HTMLButtonElement
+            itemEle.addEventListener('click', () => {
+                debug(`button ${this.itemID} click`)
+                this.itemFunc()
+            })
+            debug(`watchItem ${this.itemID} OK`)
+        } catch (err) {
+            error(`watchItem ${this.itemID} err`)
+            error(err)
         }
     }
 }

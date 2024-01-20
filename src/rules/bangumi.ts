@@ -1,6 +1,7 @@
-import { Group } from '../core/group'
-import { CheckboxItem } from '../core/item'
+import { Group } from '../components/group'
+import { CheckboxItem } from '../components/item'
 import { debug } from '../utils/logger'
+import { isPageBangumi } from '../utils/page-type'
 
 const basicItems: CheckboxItem[] = []
 const playerItems: CheckboxItem[] = []
@@ -48,7 +49,7 @@ const bangumiSimpleShare = () => {
  * 尽可能与普通播放页video.ts共用itemID, 实现开关状态同步
  * 与普通播放页不同的项目使用独立ID, 并在功能介绍最后用"★"重点标注
  */
-if (location.href.startsWith('https://www.bilibili.com/bangumi/play/')) {
+if (isPageBangumi()) {
     // 基本功能part, basicItems
     {
         // 净化分享功能, 默认开启, 关闭功能需刷新

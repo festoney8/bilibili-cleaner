@@ -1,6 +1,5 @@
 import { Group } from '../components/group'
-import { ButtonItem, CheckboxItem, RadioItem } from '../components/item'
-import { debug } from '../utils/logger'
+import { CheckboxItem, RadioItem } from '../components/item'
 import { isPageHomepage } from '../utils/page-type'
 
 const basicItems: CheckboxItem[] = []

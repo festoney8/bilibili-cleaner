@@ -47,6 +47,11 @@ if (isPageHomepage()) {
     // 3. 检测视频列表
     const checkVideoList = (fullSite = false) => {
         debug('checkVideoList start')
+        if (!videoListContainer) {
+            // 在container未出现时, 各项屏蔽功能enable会调用checkVideoList, 需要判空
+            debug(`checkVideoList videoListContainer not exist`)
+            return
+        }
         try {
             let feedVideos: NodeListOf<HTMLElement>
             let rcmdVideos: NodeListOf<HTMLElement>
@@ -133,7 +138,7 @@ if (isPageHomepage()) {
                             if ((node as HTMLElement).className === 'container is-version8') {
                                 debug('videoListContainer appear')
                                 obverser.disconnect()
-                                videoListContainer = node as HTMLElement
+                                videoListContainer = document.querySelector('.container.is-version8') as HTMLElement
                                 watchVideoListContainer()
                             }
                         })

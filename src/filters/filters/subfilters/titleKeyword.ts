@@ -1,4 +1,4 @@
-import { debug, error } from '../../../utils/logger'
+import { error } from '../../../utils/logger'
 import { ISubFilter } from '../core'
 
 // Todo: 支持正则
@@ -25,23 +25,23 @@ class TitleKeywordFilter implements ISubFilter {
         return new Promise<void>((resolve, reject) => {
             try {
                 if (!this.isEnable || title.length === 0 || this.titleKeywordSet.size === 0) {
-                    // debug('resolve, TitleKeywordFilter disable, or title invalid, or wordlist empty')
+                    // debug('resolve, TitleKeywordFilter disable, or title invalid, or titleKeyword blacklist empty')
                     resolve()
                 } else if (this.titleKeywordSet.has(title)) {
                     // 快速判断
-                    debug(`reject, title ${title} in titleKeyword list`)
+                    // debug(`reject, title ${title} in titleKeyword blacklist`)
                     reject()
                 }
                 let flag = false
                 this.titleKeywordSet.forEach((word) => {
                     if (word && title.includes(word)) {
-                        debug(`reject, title ${title} in titleKeyword list`)
+                        // debug(`reject, title ${title} in titleKeyword blacklist`)
                         flag = true
                         reject()
                     }
                 })
                 if (!flag) {
-                    // debug(`resolve, title ${title} not in titleKeyword list`)
+                    // debug(`resolve, title ${title} not in titleKeyword blacklist`)
                     resolve()
                 }
             } catch (err) {

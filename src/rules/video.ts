@@ -169,8 +169,8 @@ const overridePlayerHeight = () => {
         if (wideBtn) {
             wideBtn.addEventListener('click', () => {
                 debug('wideBtn click detected')
-                window.isWide = isWide ? false : true
-                isWide = isWide ? false : true
+                window.isWide = !isWide
+                isWide = !isWide
                 overrideCSS()
             })
             observeBtn.disconnect()

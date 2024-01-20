@@ -35,7 +35,7 @@ export class WordList {
     private getValue() {
         debug(`key`, `BILICLEANER_${this.listID}`)
         this.wordArr = GM_getValue(`BILICLEANER_${this.listID}`, [])
-        debug(`${this.listID} getValue this.wordArr ${this.wordArr} lines`)
+        debug(`list ${this.listID} getValue ${this.wordArr.length} lines`)
         this.wordSet = new Set(this.wordArr)
     }
 

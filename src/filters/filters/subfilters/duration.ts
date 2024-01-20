@@ -1,4 +1,4 @@
-import { debug, error } from '../../../utils/logger'
+import { error } from '../../../utils/logger'
 import { ISubFilter } from '../core'
 
 class DurationFilter implements ISubFilter {
@@ -39,7 +39,7 @@ class DurationFilter implements ISubFilter {
                         // debug(`resolve, duration ${duration}, threshold ${this.threshold}`)
                         resolve()
                     } else {
-                        debug(`reject, duration ${duration}, threshold ${this.threshold}`)
+                        // debug(`reject, duration ${duration}, threshold ${this.threshold}`)
                         reject()
                     }
                 } else {

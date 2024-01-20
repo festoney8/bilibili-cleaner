@@ -1,4 +1,4 @@
-import { debug, error } from '../../../utils/logger'
+import { error } from '../../../utils/logger'
 import { ISubFilter } from '../core'
 
 class BvidFilter implements ISubFilter {
@@ -22,13 +22,13 @@ class BvidFilter implements ISubFilter {
         return new Promise<void>((resolve, reject) => {
             try {
                 if (!this.isEnable || bvid.length === 0 || this.bvidSet.size === 0) {
-                    // debug('resolve, BvidFilter disable, or bvid invalid, or bvid list is empty')
+                    // debug('resolve, BvidFilter disable, or bvid invalid, or bvid blacklist is empty')
                     resolve()
                 } else if (this.bvidSet.has(bvid)) {
-                    debug(`reject, bvid ${bvid} in bvid list`)
+                    // debug(`reject, bvid ${bvid} in bvid blacklist`)
                     reject()
                 } else {
-                    // debug(`resolve, bvid ${bvid} not in bvid list`)
+                    // debug(`resolve, bvid ${bvid} not in bvid blacklist`)
                     resolve()
                 }
             } catch (err) {

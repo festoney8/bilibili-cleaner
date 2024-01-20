@@ -29,10 +29,14 @@ if (isPageVideo()) {
     // 页面载入后监听流程
 
     // 视频列表外层
-    let videoListContainer: HTMLElement
+    let videoListContainer: HTMLElement | undefined = undefined
     // 3. 检测视频列表
     const checkVideoList = () => {
         debug('checkVideoList start')
+        if (!videoListContainer) {
+            debug(`checkVideoList videoListContainer not exist`)
+            return
+        }
         try {
             // 接下来播放
             const nextVideos = videoListContainer.querySelectorAll<HTMLElement>(
@@ -71,9 +75,9 @@ if (isPageVideo()) {
             const nextSelectorFunc = rcmdSelectorFunc
             // Todo: 改为按需启用nextVideos筛选
             nextVideos.length && coreFilterInstance.checkAll([...nextVideos], true, nextSelectorFunc)
-            debug(`checkVideoList check ${nextVideos.length} rcmd videos`)
+            debug(`checkVideoList check ${nextVideos.length} next videos`)
             rcmdVideos.length && coreFilterInstance.checkAll([...rcmdVideos], true, rcmdSelectorFunc)
-            debug(`checkVideoList check ${rcmdVideos.length} next videos`)
+            debug(`checkVideoList check ${rcmdVideos.length} rcmd videos`)
         } catch (err) {
             error(err)
             error('checkVideoList error')
@@ -96,6 +100,7 @@ if (isPageVideo()) {
     }
     // 1. 检测/监听 videoListContainer 出现, 出现后监听 videoListContainer 内部变化
     const waitForVideoListContainer = () => {
+        debug(`waitForVideoListContainer start`)
         // 检测/监听视频列表父节点出现
         videoListContainer = document.getElementById('reco_list') as HTMLFormElement
         if (videoListContainer) {
@@ -109,7 +114,7 @@ if (isPageVideo()) {
                             if ((node as HTMLElement).id === 'reco_list') {
                                 debug('videoListContainer appear')
                                 obverser.disconnect()
-                                videoListContainer = node as HTMLElement
+                                videoListContainer = document.getElementById('reco_list') as HTMLElement
                                 watchVideoListContainer()
                             }
                         })

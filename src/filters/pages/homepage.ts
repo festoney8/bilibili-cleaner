@@ -149,7 +149,12 @@ if (isPageHomepage()) {
             debug('videoListContainer obverser start')
         }
     }
-    waitForVideoListContainer()
+    try {
+        waitForVideoListContainer()
+    } catch (err) {
+        error(err)
+        error(`waitForVideoListContainer ERROR`)
+    }
 
     //=======================================================================================
     // 配置 行为实例

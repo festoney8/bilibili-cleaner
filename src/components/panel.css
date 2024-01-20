@@ -199,7 +199,7 @@
     line-height: 40px;
     text-align: center;
 }
-#bili-cleaner-wordlist textarea {
+#bili-cleaner-wordlist textarea.wordlist-body {
     width: 340px;
     height: 400px;
     margin: 10px;
@@ -211,7 +211,7 @@
     flex-grow: 1;
     resize: none;
 }
-#bili-cleaner-wordlist textarea:focus {
+#bili-cleaner-wordlist textarea.wordlist-body:focus {
     outline: none !important;
 }
 #bili-cleaner-wordlist .wordlist-footer {

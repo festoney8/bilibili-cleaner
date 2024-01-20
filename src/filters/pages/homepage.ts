@@ -15,6 +15,7 @@ import contextMenuInstance from '../../components/contextmenu'
 import bvidAgencyInstance from '../agency/bvid'
 import titleKeywordAgencyInstance from '../agency/titleKeyword'
 import { WordList } from '../../components/wordlist'
+import { matchBvid } from '../../utils/misc'
 
 // 定义各种过滤功能的属性和行为
 export interface Action {
@@ -46,7 +47,6 @@ if (isPageHomepage()) {
     // 3. 检测视频列表
     const checkVideoList = (fullSite = false) => {
         debug('checkVideoList start')
-        const bvidPattern = /video\/(BV[1-9A-HJ-NP-Za-km-z]+)/
         try {
             let feedVideos: NodeListOf<HTMLElement>
             let rcmdVideos: NodeListOf<HTMLElement>
@@ -84,11 +84,7 @@ if (isPageHomepage()) {
                         video.querySelector('a.bili-video-card__image--link')?.getAttribute('href') ||
                         video.querySelector('a.bili-video-card__image--link')?.getAttribute('data-target-url')
                     if (href) {
-                        const match = bvidPattern.exec(href)
-                        if (match && match.length >= 2) {
-                            console.log(match[1])
-                            return match[1]
-                        }
+                        return matchBvid(href)
                     }
                     return null
                 },
@@ -349,19 +345,14 @@ if (isPageHomepage()) {
                     const node = e.target.parentElement
                     const href = node.querySelector(':scope > a')?.getAttribute('href')
                     if (href) {
-                        let bvid: string
-                        const bvidPattern = /video\/(BV[1-9A-HJ-NP-Za-km-z]+)/
-                        const match = bvidPattern.exec(href)
-                        if (match && match.length >= 2) {
-                            bvid = match[1]
-                            if (bvid) {
-                                e.preventDefault()
-                                const onclick = () => {
-                                    homepageBvidAction.add(bvid)
-                                }
-                                contextMenuInstance.registerMenu(`屏蔽视频：${bvid}`, onclick)
-                                contextMenuInstance.show(e.clientX, e.clientY)
+                        const bvid = matchBvid(href)
+                        if (bvid) {
+                            e.preventDefault()
+                            const onclick = () => {
+                                homepageBvidAction.add(bvid)
                             }
+                            contextMenuInstance.registerMenu(`屏蔽视频：${bvid}`, onclick)
+                            contextMenuInstance.show(e.clientX, e.clientY)
                         }
                     }
                 } else {

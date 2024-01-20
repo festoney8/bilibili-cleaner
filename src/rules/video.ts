@@ -1,6 +1,7 @@
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
 import { debug } from '../utils/logger'
+import { matchAvidBvid, matchBvid } from '../utils/misc'
 import { isPagePlaylist, isPageVideo } from '../utils/page-type'
 
 /** BV号转AV号 */
@@ -28,16 +29,15 @@ const bv2av = () => {
     }
 
     if (location.href.includes('bilibili.com/video/BV')) {
-        const regex = /bilibili.com\/video\/(BV[0-9a-zA-Z]+)/
-        const match = regex.exec(location.href)
-        if (match) {
+        const bvid = matchBvid(location.href)
+        if (bvid) {
             // 保留query string中分P参数, anchor中reply定位
             let partNum = ''
             const params = new URLSearchParams(location.search)
             if (params.has('p')) {
                 partNum += `?p=${params.get('p')}`
             }
-            const aid = dec(match[1])
+            const aid = dec(bvid)
             const newURL = `https://www.bilibili.com/video/av${aid}${partNum}${location.hash}`
             history.replaceState(null, '', newURL)
             debug('bv2av complete')
@@ -78,8 +78,7 @@ const simpleShare = () => {
                     title = `【${title}】`
                 }
                 // 匹配av号, BV号, 分P号
-                const pattern = /av\d+|BV[1-9A-HJ-NP-Za-km-z]+/g
-                const avbv = pattern.exec(location.href)
+                const avbv = matchAvidBvid(location.href)
                 let shareText = `${title} \nhttps://www.bilibili.com/video/${avbv}`
                 const urlObj = new URL(location.href)
                 const params = new URLSearchParams(urlObj.search)

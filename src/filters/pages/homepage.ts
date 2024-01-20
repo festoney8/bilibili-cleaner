@@ -134,10 +134,10 @@ if (isPageHomepage()) {
                 mutationList.forEach((mutation) => {
                     if (mutation.addedNodes) {
                         mutation.addedNodes.forEach((node) => {
-                            if ((node as Element).className === 'container is-version8') {
+                            if ((node as HTMLElement).className === 'container is-version8') {
                                 debug('videoListContainer appear')
                                 obverser.disconnect()
-                                videoListContainer = document.querySelector('.container.is-version8') as HTMLFormElement
+                                videoListContainer = node as HTMLElement
                                 watchVideoListContainer()
                             }
                         })
@@ -325,10 +325,14 @@ if (isPageHomepage()) {
         document.addEventListener('contextmenu', (e) => {
             if (e.target instanceof HTMLElement) {
                 debug(e.target.classList)
-                if (isContextMenuUploaderEnable && e.target.classList.contains('bili-video-card__info--author')) {
-                    // 命中UP主
-                    const node = e.target
-                    const uploader = node.textContent
+                if (
+                    isContextMenuUploaderEnable &&
+                    (e.target.classList.contains('bili-video-card__info--author') ||
+                        e.target.classList.contains('bili-video-card__info--date'))
+                ) {
+                    // 命中UP主或日期
+                    const node = e.target.parentElement?.querySelector('.bili-video-card__info--author')
+                    const uploader = node?.textContent
                     if (uploader) {
                         e.preventDefault()
                         const onclick = () => {
@@ -411,7 +415,7 @@ if (isPageHomepage()) {
         uploaderItems.push(
             new CheckboxItem(
                 homepageUploaderAction.statusKey,
-                '启用 首页UP主过滤 (右键单击UP主)',
+                '启用 首页UP主过滤',
                 false,
                 homepageUploaderAction.enable,
                 false,
@@ -430,7 +434,9 @@ if (isPageHomepage()) {
             ),
         )
     }
-    homepageFilterGroupList.push(new Group('homepage-uploader-filter-group', '首页 UP主过滤', uploaderItems))
+    homepageFilterGroupList.push(
+        new Group('homepage-uploader-filter-group', '首页 UP主过滤 (右键单击UP主)', uploaderItems),
+    )
 
     // UI组件, 标题关键词过滤part
     {
@@ -465,7 +471,7 @@ if (isPageHomepage()) {
         bvidItems.push(
             new CheckboxItem(
                 homepageBvidAction.statusKey,
-                '启用 首页BV号过滤 (右键单击标题)',
+                '启用 首页BV号过滤',
                 false,
                 homepageBvidAction.enable,
                 false,
@@ -484,7 +490,7 @@ if (isPageHomepage()) {
             ),
         )
     }
-    homepageFilterGroupList.push(new Group('homepage-bvid-filter-group', '首页 视频BV号过滤', bvidItems))
+    homepageFilterGroupList.push(new Group('homepage-bvid-filter-group', '首页 视频BV号过滤 (右键单击标题)', bvidItems))
 }
 
 export { homepageFilterGroupList }

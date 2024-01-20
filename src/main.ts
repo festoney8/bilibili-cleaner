@@ -14,6 +14,7 @@ import { popularGroupList } from './rules/popular'
 import { isPageHomepage, isPagePopular, isPageVideo } from './utils/page-type'
 import { homepageFilterGroupList } from './filters/pages/homepage'
 import panelInstance from './components/panel'
+import { videoFilterGroupList } from './filters/pages/video'
 
 log('script start')
 
@@ -40,7 +41,7 @@ const main = async () => {
     RULE_GROUPS.forEach((e) => e.enableGroup())
 
     // 载入视频过滤器
-    const FILTER_GROUPS: Group[] = [...homepageFilterGroupList]
+    const FILTER_GROUPS: Group[] = [...homepageFilterGroupList, ...videoFilterGroupList]
     FILTER_GROUPS.forEach((e) => e.enableGroup())
 
     // 监听各种形式的URL变化 (普通监听无法检测到切换视频)

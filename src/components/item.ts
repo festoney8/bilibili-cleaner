@@ -383,7 +383,7 @@ export class NumberItem implements IItem {
 
     /** 获取数值, 初次安装使用默认值 */
     getValue() {
-        this.itemValue = GM_getValue(`BILICLEANER_VALUE_${this.itemID}`)
+        this.itemValue = GM_getValue(`BILICLEANER_${this.itemID}`)
         if (this.itemValue === undefined) {
             this.itemValue = this.defaultValue
             this.setValue(this.itemValue)
@@ -392,7 +392,7 @@ export class NumberItem implements IItem {
     /** 设定并记录数值 */
     setValue(value: number) {
         this.itemValue = value
-        GM_setValue(`BILICLEANER_VALUE_${this.itemID}`, this.itemValue)
+        GM_setValue(`BILICLEANER_${this.itemID}`, this.itemValue)
     }
 
     /**

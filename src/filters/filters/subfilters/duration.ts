@@ -1,13 +1,12 @@
 import { debug, error } from '../../../utils/logger'
+import { ISubFilter } from '../core'
 
-class DurationFilter {
+class DurationFilter implements ISubFilter {
     // 匹配时长的正则
     private readonly pattern = /^(\d+:)?\d\d:\d\d$/g
     // 时长阈值, 单位秒
     private threshold = 0
-    private isEnable = false
-
-    constructor() {}
+    isEnable = false
 
     setStatus(status: boolean) {
         this.isEnable = status
@@ -32,12 +31,12 @@ class DurationFilter {
         return new Promise<void>((resolve, reject) => {
             try {
                 if (!this.isEnable || this.threshold === 0) {
-                    debug(`resolve, duration filter is disable, or threshold is 0`)
+                    // debug(`resolve, duration filter is disable, or threshold is 0`)
                     resolve()
                     return
                 } else if (duration && duration.match(this.pattern)) {
                     if (this.isLegal(duration)) {
-                        debug(`resolve, duration ${duration}, threshold ${this.threshold}`)
+                        // debug(`resolve, duration ${duration}, threshold ${this.threshold}`)
                         resolve()
                     } else {
                         debug(`reject, duration ${duration}, threshold ${this.threshold}`)

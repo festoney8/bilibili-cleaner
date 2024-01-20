@@ -1,9 +1,17 @@
 import settings from '../../settings'
-import { debug } from '../../utils/logger'
+import { debug, error } from '../../utils/logger'
 import bvidFilterInstance from './subfilters/bvid'
 import durationFilterInstance from './subfilters/duration'
 import titleKeywordAgencyInstance from './subfilters/titleKeyword'
 import uploaderFilterInstance from './subfilters/uploader'
+
+export interface ISubFilter {
+    isEnable: boolean
+    setStatus(status: boolean): void
+    setParams(value: string[] | number): void
+    addParam?(value: string): void
+    check(value: string): Promise<void>
+}
 
 export type SelectorFunc = {
     duration?: (video: HTMLElement) => string | null
@@ -42,60 +50,66 @@ class CoreFilter {
      * @param selectorFunc 使用selector选取元素的函数
      */
     checkAll(videos: HTMLElement[], sign = true, selectorFunc: SelectorFunc) {
-        const checkDuration = this.enableDuration && selectorFunc.duration
-        const checkTitleKeyword = this.enableTitleKeyword && selectorFunc.titleKeyword
-        const checkUploader = this.enableUploader && selectorFunc.uploader
-        const checkBvid = this.enableBvid && selectorFunc.bvid
+        debug('coreFilter checkAll start')
+        try {
+            const checkDuration = this.enableDuration && selectorFunc.duration
+            const checkTitleKeyword = this.enableTitleKeyword && selectorFunc.titleKeyword
+            const checkUploader = this.enableUploader && selectorFunc.uploader
+            const checkBvid = this.enableBvid && selectorFunc.bvid
 
-        if (!checkDuration && !checkTitleKeyword && !checkUploader && !checkBvid) {
-            return
-        }
-        videos.forEach((video) => {
-            // 构建任务列表, 调用各个子过滤器的check()方法检测
-            debug('add task ---------------------------------------------------')
-            const tasks: Promise<void>[] = []
-            if (checkDuration) {
-                const duration = selectorFunc.duration!(video)
-                if (duration) {
-                    // debug('add task, duration', duration)
-                    tasks.push(durationFilterInstance.check(duration))
-                }
+            if (!checkDuration && !checkTitleKeyword && !checkUploader && !checkBvid) {
+                return
             }
-            if (checkTitleKeyword) {
-                const titleKeyword = selectorFunc.titleKeyword!(video)
-                if (titleKeyword) {
-                    // debug('add task, titleKeyword', titleKeyword)
-                    tasks.push(titleKeywordAgencyInstance.check(titleKeyword))
-                }
-            }
-            if (checkBvid) {
-                const bvid = selectorFunc.bvid!(video)
-                if (bvid) {
-                    // debug('add task, bvid', bvid)
-                    tasks.push(bvidFilterInstance.check(bvid))
-                }
-            }
-            if (checkUploader) {
-                const uploader = selectorFunc.uploader!(video)
-                if (uploader) {
-                    debug('add task, uploader', uploader)
-                    tasks.push(uploaderFilterInstance.check(uploader))
-                }
-            }
-            Promise.all(tasks)
-                .then(() => {
-                    this.showVideo(video)
-                })
-                .catch(() => {
-                    this.hideVideo(video)
-                })
-                .finally(() => {
-                    // 标记已过滤视频
-                    if (sign) {
-                        video.setAttribute(settings.filterSign, '')
+            videos.forEach((video) => {
+                // 构建任务列表, 调用各个子过滤器的check()方法检测
+                const tasks: Promise<void>[] = []
+                if (checkDuration) {
+                    const duration = selectorFunc.duration!(video)
+                    if (duration) {
+                        // debug('add task, duration', duration)
+                        tasks.push(durationFilterInstance.check(duration))
                     }
-                })
-        })
+                }
+                if (checkTitleKeyword) {
+                    const titleKeyword = selectorFunc.titleKeyword!(video)
+                    if (titleKeyword) {
+                        // debug('add task, titleKeyword', titleKeyword)
+                        tasks.push(titleKeywordAgencyInstance.check(titleKeyword))
+                    }
+                }
+                if (checkBvid) {
+                    const bvid = selectorFunc.bvid!(video)
+                    if (bvid) {
+                        // debug('add task, bvid', bvid)
+                        tasks.push(bvidFilterInstance.check(bvid))
+                    }
+                }
+                if (checkUploader) {
+                    const uploader = selectorFunc.uploader!(video)
+                    if (uploader) {
+                        // debug('add task, uploader', uploader)
+                        tasks.push(uploaderFilterInstance.check(uploader))
+                    }
+                }
+                Promise.all(tasks)
+                    .then(() => {
+                        this.showVideo(video)
+                    })
+                    .catch(() => {
+                        this.hideVideo(video)
+                    })
+                    .finally(() => {
+                        // 标记已过滤视频
+                        if (sign) {
+                            video.setAttribute(settings.filterSign, '')
+                        }
+                    })
+            })
+            debug('coreFilter checkAll OK')
+        } catch (err) {
+            error(err)
+            error('coreFilter checkAll error')
+        }
     }
 }
 

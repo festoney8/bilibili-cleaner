@@ -1,11 +1,10 @@
 import { debug, error } from '../../../utils/logger'
+import { ISubFilter } from '../core'
 
 // Todo: 支持正则
-class TitleKeywordFilter {
-    private isEnable = false
+class TitleKeywordFilter implements ISubFilter {
+    isEnable = false
     private titleKeywordSet = new Set<string>()
-
-    constructor() {}
 
     setStatus(status: boolean) {
         this.isEnable = status
@@ -26,7 +25,7 @@ class TitleKeywordFilter {
         return new Promise<void>((resolve, reject) => {
             try {
                 if (!this.isEnable || title.length === 0 || this.titleKeywordSet.size === 0) {
-                    debug('resolve, TitleKeywordFilter disable, or title invalid, or wordlist empty')
+                    // debug('resolve, TitleKeywordFilter disable, or title invalid, or wordlist empty')
                     resolve()
                 } else if (this.titleKeywordSet.has(title)) {
                     // 快速判断
@@ -42,7 +41,7 @@ class TitleKeywordFilter {
                     }
                 })
                 if (!flag) {
-                    debug(`resolve, title ${title} not in titleKeyword list`)
+                    // debug(`resolve, title ${title} not in titleKeyword list`)
                     resolve()
                 }
             } catch (err) {

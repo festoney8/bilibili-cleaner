@@ -1,12 +1,9 @@
 // import { debug, error } from '../../../utils/logger'
 
-// // Todo: 支持正则
-// class WhitelistFilter {
+// class WhitelistFilter implements ISubFilter {
 //     private isEnable = false
 //     private whitelistKeywordSet = new Set<string>()
 //     private whitelistUploaderSet = new Set<string>()
-
-//     constructor() {}
 
 //     setStatus(status: boolean) {
 //         this.isEnable = status
@@ -22,7 +19,7 @@
 //         }
 //     }
 
-//     checkKeyword(title: string): Promise<void> {
+//     check(title: string): Promise<void> {
 //         title = title.trim()
 //         return new Promise<void>((resolve, reject) => {
 //             try {

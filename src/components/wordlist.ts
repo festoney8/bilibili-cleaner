@@ -8,7 +8,7 @@ export class WordList {
     private readonly nodeHTML = `
     <div id="bili-cleaner-wordlist">
         <div class="wordlist-header"></div>
-        <textarea class="wordlist-body"></textarea>
+        <textarea class="wordlist-body" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
         <div class="wordlist-footer">
             <button class="wordlist-save-button">保存</button>
             <button class="wordlist-close-button">关闭</button>

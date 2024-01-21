@@ -29,5 +29,5 @@ const wrapper = (loggingFunc: (..._args: any[]) => void | undefined, isEnable: b
 
 export const log = wrapper(console.log, true)
 export const error = wrapper(console.error, true)
-// debugMode下, 使用log级别输出
-export const debug = wrapper(console.log, settings.debugMode)
+export const debug = wrapper(console.log, settings.debugRulesMode)
+export const debugFilter = wrapper(console.log, settings.debugFiltersMode)

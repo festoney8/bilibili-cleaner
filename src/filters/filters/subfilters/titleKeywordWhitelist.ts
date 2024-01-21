@@ -1,4 +1,4 @@
-import { debug, error } from '../../../utils/logger'
+import { debugFilter, error } from '../../../utils/logger'
 import { ISubFilter } from '../core'
 
 class TitleKeywordWhitelistFilter implements ISubFilter {
@@ -9,27 +9,35 @@ class TitleKeywordWhitelistFilter implements ISubFilter {
         this.isEnable = status
     }
 
-    setParams(titleKeywordList: string[]) {
-        this.titleKeywordSet = new Set(titleKeywordList)
+    setParams(values: string[]) {
+        this.titleKeywordSet = new Set(values.map((v) => v.trim()).filter((v) => v))
     }
 
-    check(titleKeyword: string): Promise<void> {
-        titleKeyword = titleKeyword.trim()
+    check(title: string): Promise<void> {
+        debugFilter(`TitleKeywordWhitelist`, Array.from(this.titleKeywordSet).join('|'))
+        title = title.trim()
         return new Promise<void>((resolve, reject) => {
             try {
-                if (!this.isEnable || titleKeyword.length === 0 || this.titleKeywordSet.size === 0) {
-                    debug('reject, TitleKeywordWhitelistFilter disable, or title invalid, or whitelist empty')
+                if (!this.isEnable || title.length === 0 || this.titleKeywordSet.size === 0) {
+                    // debugFilter('reject, TitleKeyword Whitelist disable or empty, or title invalid')
                     reject()
-                } else if (this.titleKeywordSet.has(titleKeyword)) {
-                    debug(`resolve, title ${titleKeyword} match titleKeyword whitelist`)
-                    resolve()
-                } else {
-                    debug(`reject, title ${titleKeyword} not match titleKeyword whitelist`)
+                }
+                let flag = false
+                this.titleKeywordSet.forEach((word) => {
+                    if (word && title.includes(word)) {
+                        // 命中白名单
+                        debugFilter(`resolve, title ${title} match keyword whitelist`)
+                        flag = true
+                        resolve()
+                    }
+                })
+                if (!flag) {
+                    // debugFilter(`reject, title ${title} not match keyword whitelist`)
                     reject()
                 }
             } catch (err) {
                 error(err)
-                error(`resolve, TitleKeywordWhitelistFilter error, title`, titleKeyword)
+                error(`reject, TitleKeywordWhitelistFilter ERROR, title`, title)
                 reject()
             }
         })

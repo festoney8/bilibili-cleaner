@@ -1,4 +1,4 @@
-import { error } from '../../../utils/logger'
+import { debugFilter, error } from '../../../utils/logger'
 import { ISubFilter } from '../core'
 
 class DurationFilter implements ISubFilter {
@@ -9,10 +9,12 @@ class DurationFilter implements ISubFilter {
     isEnable = false
 
     setStatus(status: boolean) {
+        debugFilter(`DurationFilter setStatus ${status}`)
         this.isEnable = status
     }
 
     setParams(threshold: number) {
+        debugFilter(`DurationFilter setParams ${threshold}`)
         this.threshold = threshold
     }
 
@@ -31,15 +33,15 @@ class DurationFilter implements ISubFilter {
         return new Promise<void>((resolve, reject) => {
             try {
                 if (!this.isEnable || this.threshold === 0) {
-                    // debug(`resolve, duration filter is disable, or threshold is 0`)
+                    // debugFilter(`resolve, duration filter is disable, or threshold is 0`)
                     resolve()
                     return
                 } else if (duration && duration.match(this.pattern)) {
                     if (this.isLegal(duration)) {
-                        // debug(`resolve, duration ${duration}, threshold ${this.threshold}`)
+                        // debugFilter(`resolve, duration ${duration}, threshold ${this.threshold}`)
                         resolve()
                     } else {
-                        // debug(`reject, duration ${duration}, threshold ${this.threshold}`)
+                        debugFilter(`reject, duration ${duration}, threshold ${this.threshold}`)
                         reject()
                     }
                 } else {

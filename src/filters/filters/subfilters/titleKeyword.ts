@@ -1,4 +1,4 @@
-import { error } from '../../../utils/logger'
+import { debugFilter, error } from '../../../utils/logger'
 import { ISubFilter } from '../core'
 
 // Todo: 支持正则
@@ -10,13 +10,13 @@ class TitleKeywordFilter implements ISubFilter {
         this.isEnable = status
     }
 
-    setParams(titleKeywordList: string[]) {
-        this.titleKeywordSet = new Set(titleKeywordList)
+    setParams(values: string[]) {
+        this.titleKeywordSet = new Set(values.map((v) => v.trim()).filter((v) => v))
     }
 
-    addParam(titleKeyword: string) {
-        if (titleKeyword.trim()) {
-            this.titleKeywordSet.add(titleKeyword.trim())
+    addParam(value: string) {
+        if (value.trim()) {
+            this.titleKeywordSet.add(value.trim())
         }
     }
 
@@ -25,23 +25,19 @@ class TitleKeywordFilter implements ISubFilter {
         return new Promise<void>((resolve, reject) => {
             try {
                 if (!this.isEnable || title.length === 0 || this.titleKeywordSet.size === 0) {
-                    // debug('resolve, TitleKeywordFilter disable, or title invalid, or titleKeyword blacklist empty')
+                    // debugFilter('resolve, TitleKeywordFilter disable or empty, or title invalid')
                     resolve()
-                } else if (this.titleKeywordSet.has(title)) {
-                    // 快速判断
-                    // debug(`reject, title ${title} in titleKeyword blacklist`)
-                    reject()
                 }
                 let flag = false
                 this.titleKeywordSet.forEach((word) => {
                     if (word && title.includes(word)) {
-                        // debug(`reject, title ${title} in titleKeyword blacklist`)
+                        debugFilter(`reject, title ${title} match keyword blacklist`)
                         flag = true
                         reject()
                     }
                 })
                 if (!flag) {
-                    // debug(`resolve, title ${title} not in titleKeyword blacklist`)
+                    // debugFilter(`resolve, title ${title} not match keyword blacklist`)
                     resolve()
                 }
             } catch (err) {

@@ -1,5 +1,6 @@
 import { GM_getValue } from '$'
 import { WordList } from '../../../components/wordlist'
+import { debugFilter } from '../../../utils/logger'
 import agencyInstance from '../../agency/agency'
 import bvidFilterInstance from '../../filters/subfilters/bvid'
 import durationFilterInstance from '../../filters/subfilters/duration'
@@ -26,6 +27,10 @@ interface Action {
     edit?(value: string[]): void
 }
 
+/**
+ * 将类的成员函数作为参数传递时，【必须】使用箭头函数包裹，避免出现this上下文丢失问题
+ */
+
 export class DurationAction implements Action {
     statusKey: string
     valueKey: string
@@ -50,16 +55,19 @@ export class DurationAction implements Action {
         durationFilterInstance.setParams(this.value)
     }
     enable() {
+        debugFilter(`DurationAction enable`)
         // 告知agency
         agencyInstance.notifyDuration('enable')
         // 触发全站过滤
         this.checkVideoList(true)
     }
     disable() {
+        debugFilter(`DurationAction disable`)
         agencyInstance.notifyDuration('disable')
         this.checkVideoList(true)
     }
     change(value: number) {
+        debugFilter(`DurationAction change ${value}`)
         agencyInstance.notifyDuration('change', value)
         this.checkVideoList(true)
     }
@@ -89,8 +97,10 @@ export class UploaderAction implements Action {
         // 配置子过滤器
         uploaderFilterInstance.setStatus(this.status)
         uploaderFilterInstance.setParams(this.value)
-        // 初始化黑名单, callback触发edit
-        this.blacklist = new WordList(this.valueKey, 'UP主 黑名单', this.edit)
+        // 初始化黑名单, callback触发edit, 必需用箭头函数
+        this.blacklist = new WordList(this.valueKey, 'UP主 黑名单', (values: string[]) => {
+            this.edit(values)
+        })
     }
 
     enable() {
@@ -140,7 +150,9 @@ export class BvidAction implements Action {
         bvidFilterInstance.setStatus(this.status)
         bvidFilterInstance.setParams(this.value)
         // 初始化黑名单, callback触发edit
-        this.blacklist = new WordList(this.valueKey, 'BV号 黑名单', this.edit)
+        this.blacklist = new WordList(this.valueKey, 'BV号 黑名单', (values: string[]) => {
+            this.edit(values)
+        })
     }
 
     enable() {
@@ -190,7 +202,9 @@ export class TitleKeywordAction implements Action {
         titleKeywordFilterInstance.setStatus(this.status)
         titleKeywordFilterInstance.setParams(this.value)
         // 初始化黑名单, callback触发edit
-        this.blacklist = new WordList(this.valueKey, '标题关键词 黑名单', this.edit)
+        this.blacklist = new WordList(this.valueKey, '标题关键词 黑名单', (values: string[]) => {
+            this.edit(values)
+        })
     }
 
     enable() {
@@ -240,7 +254,9 @@ export class UploaderWhitelistAction implements Action {
         uploaderWhitelistFilterInstance.setStatus(this.status)
         uploaderWhitelistFilterInstance.setParams(this.value)
         // 初始化白名单, callback触发edit
-        this.whitelist = new WordList(this.valueKey, 'UP主 白名单', this.edit)
+        this.whitelist = new WordList(this.valueKey, 'UP主 白名单', (values: string[]) => {
+            this.edit(values)
+        })
     }
 
     enable() {
@@ -285,7 +301,9 @@ export class TitleKeywordWhitelistAction implements Action {
         titleKeywordWhitelistFilterInstance.setStatus(this.status)
         titleKeywordWhitelistFilterInstance.setParams(this.value)
         // 初始化白名单, callback触发edit
-        this.whitelist = new WordList(this.valueKey, '标题关键词 白名单', this.edit)
+        this.whitelist = new WordList(this.valueKey, '标题关键词 白名单', (values: string[]) => {
+            this.edit(values)
+        })
     }
 
     enable() {

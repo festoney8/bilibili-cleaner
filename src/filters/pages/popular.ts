@@ -1,4 +1,4 @@
-import { debug, error } from '../../utils/logger'
+import { debugFilter, error } from '../../utils/logger'
 import coreFilterInstance, { SelectorFunc } from '../filters/core'
 import { ButtonItem, CheckboxItem } from '../../components/item'
 import { Group } from '../../components/group'
@@ -27,10 +27,10 @@ if (isPagePopular()) {
     // 视频列表外层
     let videoListContainer: HTMLElement
     // 3. 检测视频列表
-    const checkVideoList = (fullSite = false) => {
-        debug('checkVideoList start')
+    const checkVideoList = (fullSite: boolean) => {
+        debugFilter('checkVideoList start')
         if (!videoListContainer) {
-            debug(`checkVideoList videoListContainer not exist`)
+            debugFilter(`checkVideoList videoListContainer not exist`)
             return
         }
         try {
@@ -86,21 +86,21 @@ if (isPagePopular()) {
             }
             const feedSelectorFunc = rcmdSelectorFunc
             hotVideos.length && coreFilterInstance.checkAll([...hotVideos], true, feedSelectorFunc)
-            debug(`checkVideoList check ${hotVideos.length} hotVideos`)
+            debugFilter(`checkVideoList check ${hotVideos.length} hotVideos`)
             weeklyVideos.length && coreFilterInstance.checkAll([...weeklyVideos], true, feedSelectorFunc)
-            debug(`checkVideoList check ${weeklyVideos.length} weeklyVideos`)
+            debugFilter(`checkVideoList check ${weeklyVideos.length} weeklyVideos`)
             rankVideos.length && coreFilterInstance.checkAll([...rankVideos], true, feedSelectorFunc)
-            debug(`checkVideoList check ${rankVideos.length} rankVideos`)
+            debugFilter(`checkVideoList check ${rankVideos.length} rankVideos`)
         } catch (err) {
             error(err)
             error('checkVideoList error')
         }
-        debug('checkVideoList end')
+        debugFilter('checkVideoList end')
     }
     // 2. 监听 videoListContainer 内部变化, 有变化时检测视频列表
     const watchVideoListContainer = () => {
         if (videoListContainer) {
-            debug('watchVideoListContainer start')
+            debugFilter('watchVideoListContainer start')
             // 初次全站检测
             checkVideoList(true)
             const videoObverser = new MutationObserver(() => {
@@ -108,7 +108,7 @@ if (isPagePopular()) {
                 checkVideoList(false)
             })
             videoObverser.observe(videoListContainer, { childList: true, subtree: true })
-            debug('watchVideoListContainer OK')
+            debugFilter('watchVideoListContainer OK')
         }
     }
     // 1. 检测/监听 videoListContainer 出现, 出现后监听 videoListContainer 内部变化
@@ -116,7 +116,7 @@ if (isPagePopular()) {
         // 检测/监听视频列表父节点出现
         videoListContainer = document.querySelector('#app') as HTMLElement
         if (videoListContainer) {
-            debug('videoListContainer exist')
+            debugFilter('videoListContainer exist')
             watchVideoListContainer()
         } else {
             const obverser = new MutationObserver((mutationList) => {
@@ -124,7 +124,7 @@ if (isPagePopular()) {
                     if (mutation.addedNodes) {
                         mutation.addedNodes.forEach((node) => {
                             if ((node as HTMLElement).id === 'app') {
-                                debug('videoListContainer appear')
+                                debugFilter('videoListContainer appear')
                                 obverser.disconnect()
                                 videoListContainer = document.querySelector('#app') as HTMLElement
                                 watchVideoListContainer()
@@ -134,7 +134,7 @@ if (isPagePopular()) {
                 })
             })
             obverser.observe(document, { childList: true, subtree: true })
-            debug('videoListContainer obverser start')
+            debugFilter('videoListContainer obverser start')
         }
     }
     try {
@@ -228,7 +228,7 @@ if (isPagePopular()) {
         document.addEventListener('click', () => {
             contextMenuInstance.hide()
         })
-        debug('contextMenuFunc listen contextmenu')
+        debugFilter('contextMenuFunc listen contextmenu')
     }
 
     //=======================================================================================
@@ -267,7 +267,9 @@ if (isPagePopular()) {
                 '编辑 UP主黑名单',
                 '编辑',
                 // 按钮功能
-                () => popularUploaderAction.blacklist.show(),
+                () => {
+                    popularUploaderAction.blacklist.show()
+                },
             ),
         )
     }
@@ -282,10 +284,14 @@ if (isPagePopular()) {
                 popularTitleKeywordAction.statusKey,
                 '启用 热门页 关键词过滤',
                 false,
-                popularTitleKeywordAction.enable,
+                () => {
+                    popularTitleKeywordAction.enable()
+                },
                 false,
                 null,
-                popularTitleKeywordAction.disable,
+                () => {
+                    popularTitleKeywordAction.disable()
+                },
             ),
         )
         // 按钮功能：打开titleKeyword黑名单编辑框
@@ -295,7 +301,9 @@ if (isPagePopular()) {
                 '编辑 关键词黑名单',
                 '编辑',
                 // 按钮功能
-                () => popularTitleKeywordAction.blacklist.show(),
+                () => {
+                    popularTitleKeywordAction.blacklist.show()
+                },
             ),
         )
     }
@@ -332,7 +340,9 @@ if (isPagePopular()) {
                 '编辑 BV号黑名单',
                 '编辑',
                 // 按钮功能
-                () => popularBvidAction.blacklist.show(),
+                () => {
+                    popularBvidAction.blacklist.show()
+                },
             ),
         )
     }
@@ -345,10 +355,14 @@ if (isPagePopular()) {
                 popularUploaderWhitelistAction.statusKey,
                 '启用 热门页 UP主白名单',
                 false,
-                popularUploaderWhitelistAction.enable,
+                () => {
+                    popularUploaderWhitelistAction.enable()
+                },
                 false,
                 null,
-                popularUploaderWhitelistAction.disable,
+                () => {
+                    popularUploaderWhitelistAction.disable()
+                },
             ),
         )
         whitelistItems.push(
@@ -357,7 +371,9 @@ if (isPagePopular()) {
                 '编辑 UP主白名单',
                 '编辑',
                 // 按钮功能：显示白名单编辑器
-                () => popularUploaderWhitelistAction.whitelist.show(),
+                () => {
+                    popularUploaderWhitelistAction.whitelist.show()
+                },
             ),
         )
         whitelistItems.push(
@@ -365,10 +381,14 @@ if (isPagePopular()) {
                 popularTitleKeywordWhitelistAction.statusKey,
                 '启用 热门页 标题关键词白名单',
                 false,
-                popularTitleKeywordWhitelistAction.enable,
+                () => {
+                    popularTitleKeywordWhitelistAction.enable()
+                },
                 false,
                 null,
-                popularTitleKeywordWhitelistAction.disable,
+                () => {
+                    popularTitleKeywordWhitelistAction.disable()
+                },
             ),
         )
         whitelistItems.push(
@@ -377,7 +397,9 @@ if (isPagePopular()) {
                 '编辑 标题关键词白名单',
                 '编辑',
                 // 按钮功能：显示白名单编辑器
-                () => popularTitleKeywordWhitelistAction.whitelist.show(),
+                () => {
+                    popularTitleKeywordWhitelistAction.whitelist.show()
+                },
             ),
         )
     }

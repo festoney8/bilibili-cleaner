@@ -1,4 +1,4 @@
-import { error } from '../../../utils/logger'
+import { debugFilter, error } from '../../../utils/logger'
 import { ISubFilter } from '../core'
 
 class UploaderFilter implements ISubFilter {
@@ -9,13 +9,13 @@ class UploaderFilter implements ISubFilter {
         this.isEnable = status
     }
 
-    setParams(uploaderList: string[]) {
-        this.uploaderSet = new Set(uploaderList)
+    setParams(values: string[]) {
+        this.uploaderSet = new Set(values.map((v) => v.trim()).filter((v) => v))
     }
 
-    addParam(uploader: string) {
-        if (uploader.trim()) {
-            this.uploaderSet.add(uploader.trim())
+    addParam(value: string) {
+        if (value.trim()) {
+            this.uploaderSet.add(value.trim())
         }
     }
 
@@ -24,13 +24,13 @@ class UploaderFilter implements ISubFilter {
         return new Promise<void>((resolve, reject) => {
             try {
                 if (!this.isEnable || uploader.length === 0 || this.uploaderSet.size === 0) {
-                    // debug('resolve, UploaderFilter disable, or uploader invalid, or uploader blacklist empty')
+                    // debugFilter('resolve, UploaderFilter disable or empty, or uploader invalid')
                     resolve()
                 } else if (this.uploaderSet.has(uploader)) {
-                    // debug(`reject, uploader ${uploader} in uploader blacklist`)
+                    debugFilter(`reject, uploader ${uploader} in blacklist`)
                     reject()
                 } else {
-                    // debug(`resolve, uploader ${uploader} not in uploader blacklist`)
+                    // debugFilter(`resolve, uploader ${uploader} not in blacklist`)
                     resolve()
                 }
             } catch (err) {

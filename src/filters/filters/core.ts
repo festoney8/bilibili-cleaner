@@ -1,8 +1,8 @@
 import settings from '../../settings'
-import { debug, error } from '../../utils/logger'
+import { debugFilter, error } from '../../utils/logger'
 import bvidFilterInstance from './subfilters/bvid'
 import durationFilterInstance from './subfilters/duration'
-import titleKeywordAgencyInstance from './subfilters/titleKeyword'
+import titleKeywordFilterInstance from './subfilters/titleKeyword'
 import titleKeywordWhitelistFilterInstance from './subfilters/titleKeywordWhitelist'
 import uploaderFilterInstance from './subfilters/uploader'
 import uploaderWhitelistFilterInstance from './subfilters/uploaderWhitelist'
@@ -23,13 +23,6 @@ export type SelectorFunc = {
 }
 
 class CoreFilter {
-    // public, 允许外界实时启用禁用子过滤器
-    public enableDuration = true
-    public enableTitleKeyword = true
-    public enableBvid = true
-    public enableUploader = true
-    public enableWhitelist = false
-
     constructor() {}
 
     /** 隐藏视频, display none important */
@@ -52,76 +45,115 @@ class CoreFilter {
      * @param selectorFunc 使用selector选取元素的函数
      */
     checkAll(videos: HTMLElement[], sign = true, selectorFunc: SelectorFunc) {
-        debug('coreFilter checkAll start')
+        debugFilter('coreFilter checkAll start')
         try {
-            const checkDuration = this.enableDuration && selectorFunc.duration
-            const checkTitleKeyword = this.enableTitleKeyword && selectorFunc.titleKeyword
-            const checkUploader = this.enableUploader && selectorFunc.uploader
-            const checkBvid = this.enableBvid && selectorFunc.bvid
+            const checkDuration = durationFilterInstance.isEnable && selectorFunc.duration !== undefined
+            const checkTitleKeyword = titleKeywordFilterInstance.isEnable && selectorFunc.titleKeyword !== undefined
+            const checkUploader = uploaderFilterInstance.isEnable && selectorFunc.uploader !== undefined
+            const checkBvid = bvidFilterInstance.isEnable && selectorFunc.bvid !== undefined
+            const checkUploaderWhitelist =
+                uploaderWhitelistFilterInstance.isEnable && selectorFunc.uploader !== undefined
+            const checkTitleKeywordWhitelist =
+                titleKeywordWhitelistFilterInstance.isEnable && selectorFunc.uploader !== undefined
 
             if (!checkDuration && !checkTitleKeyword && !checkUploader && !checkBvid) {
+                // 黑名单全部关闭时 恢复全部视频
+                videos.forEach((video) => this.showVideo(video))
                 return
             }
+
             videos.forEach((video) => {
+                debugFilter('=======================================================')
+                const arr: any[] = []
                 // 构建黑白名单任务, 调用各个子过滤器的check()方法检测
                 const blackTasks: Promise<void>[] = []
                 const whiteTasks: Promise<void>[] = []
                 if (checkDuration) {
                     const duration = selectorFunc.duration!(video)
                     if (duration) {
-                        // debug('add task, duration', duration)
+                        debugFilter('add task, duration', duration)
                         blackTasks.push(durationFilterInstance.check(duration))
+                        arr.push(duration)
                     }
                 }
                 if (checkBvid) {
                     const bvid = selectorFunc.bvid!(video)
                     if (bvid) {
-                        // debug('add task, bvid', bvid)
+                        debugFilter('add task, bvid', bvid)
                         blackTasks.push(bvidFilterInstance.check(bvid))
+                        arr.push(bvid)
                     }
                 }
                 if (checkUploader) {
                     const uploader = selectorFunc.uploader!(video)
                     if (uploader) {
-                        // debug('add task, uploader', uploader)
+                        debugFilter('add task, uploader', uploader)
                         blackTasks.push(uploaderFilterInstance.check(uploader))
-                        whiteTasks.push(uploaderWhitelistFilterInstance.check(uploader))
+                        arr.push(uploader)
                     }
                 }
                 if (checkTitleKeyword) {
                     const titleKeyword = selectorFunc.titleKeyword!(video)
                     if (titleKeyword) {
-                        // debug('add task, titleKeyword', titleKeyword)
-                        blackTasks.push(titleKeywordAgencyInstance.check(titleKeyword))
+                        debugFilter('add task, titleKeyword', titleKeyword)
+                        blackTasks.push(titleKeywordFilterInstance.check(titleKeyword))
+                        arr.push(titleKeyword)
+                    }
+                }
+                if (checkUploaderWhitelist) {
+                    const uploader = selectorFunc.uploader!(video)
+                    if (uploader) {
+                        debugFilter('add task, uploader', uploader)
+                        whiteTasks.push(uploaderWhitelistFilterInstance.check(uploader))
+                    }
+                }
+                if (checkTitleKeywordWhitelist) {
+                    const titleKeyword = selectorFunc.titleKeyword!(video)
+                    if (titleKeyword) {
+                        debugFilter('add white task, titleKeyword', titleKeyword)
                         whiteTasks.push(titleKeywordWhitelistFilterInstance.check(titleKeyword))
                     }
                 }
-                Promise.all(blackTasks)
-                    .then(() => {
-                        this.showVideo(video)
-                    })
-                    .catch(() => {
-                        // 白名单检测
-                        try {
-                            Promise.all(whiteTasks)
-                                .then(() => {
-                                    this.showVideo(video)
-                                })
-                                .catch(() => {
-                                    this.hideVideo(video)
-                                })
-                        } catch (err) {
-                            this.hideVideo(video)
-                        }
-                    })
-                    .finally(() => {
-                        // 标记已过滤视频
-                        if (sign) {
-                            video.setAttribute(settings.filterSign, '')
-                        }
-                    })
+
+                // 执行检测
+                if (whiteTasks.length) {
+                    Promise.race(whiteTasks)
+                        .then(() => {
+                            // 命中白名单
+                            this.showVideo(video)
+                            if (blackTasks.length) {
+                                Promise.all(blackTasks).then().catch()
+                            }
+                        })
+                        .catch(() => {
+                            // 未命中白名单, 进行黑名单检测
+                            if (blackTasks.length) {
+                                Promise.all(blackTasks)
+                                    .then(() => {
+                                        this.showVideo(video)
+                                    })
+                                    .catch(() => {
+                                        // 命中黑名单
+                                        this.hideVideo(video)
+                                    })
+                            }
+                        })
+                } else {
+                    if (blackTasks.length) {
+                        Promise.all(blackTasks)
+                            .then(() => {
+                                this.showVideo(video)
+                            })
+                            .catch(() => {
+                                // 命中黑名单
+                                this.hideVideo(video)
+                            })
+                    }
+                }
+
+                // 标记已过滤视频
+                sign && video.setAttribute(settings.filterSign, '')
             })
-            debug('coreFilter checkAll OK')
         } catch (err) {
             error(err)
             error('coreFilter checkAll error')

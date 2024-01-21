@@ -1,4 +1,4 @@
-import { debug, error } from '../../utils/logger'
+import { debugFilter, error } from '../../utils/logger'
 import { ButtonItem, CheckboxItem, NumberItem } from '../../components/item'
 import { Group } from '../../components/group'
 import coreFilterInstance, { SelectorFunc } from '../filters/core'
@@ -28,11 +28,11 @@ if (isPageHomepage()) {
     // 视频列表外层
     let videoListContainer: HTMLElement
     // 3. 检测视频列表
-    const checkVideoList = (fullSite = false) => {
-        debug('checkVideoList start')
+    const checkVideoList = (fullSite: boolean) => {
+        debugFilter('checkVideoList start')
         if (!videoListContainer) {
             // 在container未出现时, 各项屏蔽功能enable会调用checkVideoList, 需要判空
-            debug(`checkVideoList videoListContainer not exist`)
+            debugFilter(`checkVideoList videoListContainer not exist`)
             return
         }
         try {
@@ -83,19 +83,19 @@ if (isPageHomepage()) {
             }
             const feedSelectorFunc = rcmdSelectorFunc
             feedVideos.length && coreFilterInstance.checkAll([...feedVideos], true, feedSelectorFunc)
-            debug(`checkVideoList check ${rcmdVideos.length} rcmd videos`)
+            debugFilter(`checkVideoList check ${rcmdVideos.length} rcmd videos`)
             rcmdVideos.length && coreFilterInstance.checkAll([...rcmdVideos], true, rcmdSelectorFunc)
-            debug(`checkVideoList check ${feedVideos.length} feed videos`)
+            debugFilter(`checkVideoList check ${feedVideos.length} feed videos`)
         } catch (err) {
             error(err)
             error('checkVideoList error')
         }
-        debug('checkVideoList end')
+        debugFilter('checkVideoList end')
     }
     // 2. 监听 videoListContainer 内部变化, 有变化时检测视频列表
     const watchVideoListContainer = () => {
         if (videoListContainer) {
-            debug('watchVideoListContainer start')
+            debugFilter('watchVideoListContainer start')
             // 初次全站检测
             checkVideoList(true)
             const videoObverser = new MutationObserver(() => {
@@ -103,7 +103,7 @@ if (isPageHomepage()) {
                 checkVideoList(false)
             })
             videoObverser.observe(videoListContainer, { childList: true })
-            debug('watchVideoListContainer OK')
+            debugFilter('watchVideoListContainer OK')
         }
     }
     // 1. 检测/监听 videoListContainer 出现, 出现后监听 videoListContainer 内部变化
@@ -111,7 +111,7 @@ if (isPageHomepage()) {
         // 检测/监听视频列表父节点出现
         videoListContainer = document.querySelector('.container.is-version8') as HTMLFormElement
         if (videoListContainer) {
-            debug('videoListContainer exist')
+            debugFilter('videoListContainer exist')
             watchVideoListContainer()
         } else {
             const obverser = new MutationObserver((mutationList) => {
@@ -119,7 +119,7 @@ if (isPageHomepage()) {
                     if (mutation.addedNodes) {
                         mutation.addedNodes.forEach((node) => {
                             if ((node as HTMLElement).className === 'container is-version8') {
-                                debug('videoListContainer appear')
+                                debugFilter('videoListContainer appear')
                                 obverser.disconnect()
                                 videoListContainer = document.querySelector('.container.is-version8') as HTMLElement
                                 watchVideoListContainer()
@@ -129,7 +129,7 @@ if (isPageHomepage()) {
                 })
             })
             obverser.observe(document, { childList: true, subtree: true })
-            debug('videoListContainer obverser start')
+            debugFilter('videoListContainer obverser start')
         }
     }
     try {
@@ -180,7 +180,7 @@ if (isPageHomepage()) {
         // 监听右键单击
         document.addEventListener('contextmenu', (e) => {
             if (e.target instanceof HTMLElement) {
-                debug(e.target.classList)
+                debugFilter(e.target.classList)
                 if (
                     isContextMenuUploaderEnable &&
                     (e.target.classList.contains('bili-video-card__info--author') ||
@@ -224,7 +224,7 @@ if (isPageHomepage()) {
         document.addEventListener('click', () => {
             contextMenuInstance.hide()
         })
-        debug('contextMenuFunc listen contextmenu')
+        debugFilter('contextMenuFunc listen contextmenu')
     }
 
     //=======================================================================================
@@ -242,10 +242,24 @@ if (isPageHomepage()) {
                 homepageDurationAction.statusKey,
                 '启用 首页时长过滤',
                 false,
-                homepageDurationAction.enable,
+                /**
+                 * 需使用匿名函数包装后传参, 否则报错, 下同
+                 *
+                 * GPT4(对错未知):
+                 * 当把一个类的方法作为回调函数直接传递给另一个函数时，
+                 * 那个方法会失去它的上下文（也就是它的 this 值），因为它被调用的方式改变了。
+                 * 在这种情况下，this 可能会变成 undefined（严格模式）或全局对象（非严格模式）
+                 *
+                 * 可以在传递方法时使用箭头函数来保持 this 的上下文
+                 */
+                () => {
+                    homepageDurationAction.enable()
+                },
                 false,
                 null,
-                homepageDurationAction.disable,
+                () => {
+                    homepageDurationAction.disable()
+                },
             ),
         )
         durationItems.push(
@@ -256,7 +270,9 @@ if (isPageHomepage()) {
                 0,
                 300,
                 '秒',
-                homepageDurationAction.change,
+                (value: number) => {
+                    homepageDurationAction.change(value)
+                },
             ),
         )
     }
@@ -291,7 +307,9 @@ if (isPageHomepage()) {
                 '编辑 UP主黑名单',
                 '编辑',
                 // 按钮功能
-                () => homepageUploaderAction.blacklist.show(),
+                () => {
+                    homepageUploaderAction.blacklist.show()
+                },
             ),
         )
     }
@@ -306,10 +324,14 @@ if (isPageHomepage()) {
                 homepageTitleKeywordAction.statusKey,
                 '启用 首页关键词过滤',
                 false,
-                homepageTitleKeywordAction.enable,
+                () => {
+                    homepageTitleKeywordAction.enable()
+                },
                 false,
                 null,
-                homepageTitleKeywordAction.disable,
+                () => {
+                    homepageTitleKeywordAction.disable()
+                },
             ),
         )
         // 按钮功能：打开titleKeyword黑名单编辑框
@@ -319,7 +341,9 @@ if (isPageHomepage()) {
                 '编辑 关键词黑名单',
                 '编辑',
                 // 按钮功能
-                () => homepageTitleKeywordAction.blacklist.show(),
+                () => {
+                    homepageTitleKeywordAction.blacklist.show()
+                },
             ),
         )
     }
@@ -356,7 +380,9 @@ if (isPageHomepage()) {
                 '编辑 BV号黑名单',
                 '编辑',
                 // 按钮功能
-                () => homepageBvidAction.blacklist.show(),
+                () => {
+                    homepageBvidAction.blacklist.show()
+                },
             ),
         )
     }
@@ -369,10 +395,14 @@ if (isPageHomepage()) {
                 homepageUploaderWhitelistAction.statusKey,
                 '启用 首页 UP主白名单',
                 false,
-                homepageUploaderWhitelistAction.enable,
+                () => {
+                    homepageUploaderWhitelistAction.enable()
+                },
                 false,
                 null,
-                homepageUploaderWhitelistAction.disable,
+                () => {
+                    homepageUploaderWhitelistAction.disable()
+                },
             ),
         )
         whitelistItems.push(
@@ -381,7 +411,9 @@ if (isPageHomepage()) {
                 '编辑 UP主白名单',
                 '编辑',
                 // 按钮功能：显示白名单编辑器
-                () => homepageUploaderWhitelistAction.whitelist.show(),
+                () => {
+                    homepageUploaderWhitelistAction.whitelist.show()
+                },
             ),
         )
         whitelistItems.push(
@@ -389,10 +421,14 @@ if (isPageHomepage()) {
                 homepageTitleKeyworldWhitelistAction.statusKey,
                 '启用 首页 标题关键词白名单',
                 false,
-                homepageTitleKeyworldWhitelistAction.enable,
+                () => {
+                    homepageTitleKeyworldWhitelistAction.enable()
+                },
                 false,
                 null,
-                homepageTitleKeyworldWhitelistAction.disable,
+                () => {
+                    homepageTitleKeyworldWhitelistAction.disable()
+                },
             ),
         )
         whitelistItems.push(
@@ -401,7 +437,9 @@ if (isPageHomepage()) {
                 '编辑 标题关键词白名单',
                 '编辑',
                 // 按钮功能：显示白名单编辑器
-                () => homepageTitleKeyworldWhitelistAction.whitelist.show(),
+                () => {
+                    homepageTitleKeyworldWhitelistAction.whitelist.show()
+                },
             ),
         )
     }

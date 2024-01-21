@@ -10,35 +10,31 @@ class TitleKeywordWhitelistFilter implements ISubFilter {
     }
 
     setParams(values: string[]) {
+        debugFilter(`TitleKeywordWhitelist`, Array.from(this.titleKeywordSet).join('|'))
         this.titleKeywordSet = new Set(values.map((v) => v.trim()).filter((v) => v))
     }
 
-    check(title: string): Promise<void> {
-        debugFilter(`TitleKeywordWhitelist`, Array.from(this.titleKeywordSet).join('|'))
+    check(title: string): Promise<string> {
         title = title.trim()
-        return new Promise<void>((resolve, reject) => {
+        return new Promise<string>((resolve, reject) => {
             try {
                 if (!this.isEnable || title.length === 0 || this.titleKeywordSet.size === 0) {
-                    // debugFilter('reject, TitleKeyword Whitelist disable or empty, or title invalid')
-                    reject()
+                    resolve(`Title Whitelist resolve, disable or empty`)
                 }
                 let flag = false
                 this.titleKeywordSet.forEach((word) => {
                     if (word && title.includes(word)) {
                         // 命中白名单
-                        debugFilter(`resolve, title ${title} match keyword whitelist`)
                         flag = true
-                        resolve()
+                        reject(`Title Whitelist reject, ${title} match keyword ${word}`)
                     }
                 })
                 if (!flag) {
-                    // debugFilter(`reject, title ${title} not match keyword whitelist`)
-                    reject()
+                    resolve(`Title Whitelist resolve, title not match whitelist`)
                 }
             } catch (err) {
                 error(err)
-                error(`reject, TitleKeywordWhitelistFilter ERROR, title`, title)
-                reject()
+                resolve(`Title Whitelist resolve, error`)
             }
         })
     }

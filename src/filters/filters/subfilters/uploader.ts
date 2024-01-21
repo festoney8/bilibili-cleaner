@@ -1,4 +1,4 @@
-import { debugFilter, error } from '../../../utils/logger'
+import { error } from '../../../utils/logger'
 import { ISubFilter } from '../core'
 
 class UploaderFilter implements ISubFilter {
@@ -19,24 +19,20 @@ class UploaderFilter implements ISubFilter {
         }
     }
 
-    check(uploader: string): Promise<void> {
+    check(uploader: string): Promise<string> {
         uploader = uploader.trim()
-        return new Promise<void>((resolve, reject) => {
+        return new Promise<string>((resolve, reject) => {
             try {
                 if (!this.isEnable || uploader.length === 0 || this.uploaderSet.size === 0) {
-                    // debugFilter('resolve, UploaderFilter disable or empty, or uploader invalid')
-                    resolve()
+                    resolve(`Uploader resolve, disable or empty`)
                 } else if (this.uploaderSet.has(uploader)) {
-                    debugFilter(`reject, uploader ${uploader} in blacklist`)
-                    reject()
+                    reject(`Uploader reject, uploader ${uploader} in blacklist`)
                 } else {
-                    // debugFilter(`resolve, uploader ${uploader} not in blacklist`)
-                    resolve()
+                    resolve(`Uploader resolve, uploader not in blacklist`)
                 }
             } catch (err) {
                 error(err)
-                error(`resolve, UploaderFilter error, uploader`, uploader)
-                resolve()
+                resolve(`Uploader resolve, error`)
             }
         })
     }

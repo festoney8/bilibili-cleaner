@@ -29,7 +29,7 @@ if (isPageHomepage()) {
     let videoListContainer: HTMLElement
     // 3. 检测视频列表
     const checkVideoList = (fullSite: boolean) => {
-        debugFilter('checkVideoList start')
+        // debugFilter('checkVideoList start')
         if (!videoListContainer) {
             // 在container未出现时, 各项屏蔽功能enable会调用checkVideoList, 需要判空
             debugFilter(`checkVideoList videoListContainer not exist`)
@@ -83,14 +83,13 @@ if (isPageHomepage()) {
             }
             const feedSelectorFunc = rcmdSelectorFunc
             feedVideos.length && coreFilterInstance.checkAll([...feedVideos], true, feedSelectorFunc)
-            debugFilter(`checkVideoList check ${rcmdVideos.length} rcmd videos`)
+            // debugFilter(`checkVideoList check ${rcmdVideos.length} rcmd videos`)
             rcmdVideos.length && coreFilterInstance.checkAll([...rcmdVideos], true, rcmdSelectorFunc)
-            debugFilter(`checkVideoList check ${feedVideos.length} feed videos`)
+            // debugFilter(`checkVideoList check ${feedVideos.length} feed videos`)
         } catch (err) {
             error(err)
             error('checkVideoList error')
         }
-        debugFilter('checkVideoList end')
     }
     // 2. 监听 videoListContainer 内部变化, 有变化时检测视频列表
     const watchVideoListContainer = () => {

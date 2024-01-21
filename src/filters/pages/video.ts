@@ -71,9 +71,9 @@ if (isPageVideo()) {
             const nextSelectorFunc = rcmdSelectorFunc
             // Todo: 改为按需启用nextVideos筛选
             nextVideos.length && coreFilterInstance.checkAll([...nextVideos], true, nextSelectorFunc)
-            debugFilter(`checkVideoList check ${nextVideos.length} next videos`)
+            // debugFilter(`checkVideoList check ${nextVideos.length} next videos`)
             rcmdVideos.length && coreFilterInstance.checkAll([...rcmdVideos], true, rcmdSelectorFunc)
-            debugFilter(`checkVideoList check ${rcmdVideos.length} rcmd videos`)
+            // debugFilter(`checkVideoList check ${rcmdVideos.length} rcmd videos`)
         } catch (err) {
             error(err)
             error('checkVideoList error')

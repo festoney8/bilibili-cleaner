@@ -10,28 +10,24 @@ class UploaderWhitelistFilter implements ISubFilter {
     }
 
     setParams(values: string[]) {
+        debugFilter(`UploaderWhitelist`, Array.from(this.uploaderSet).join('|'))
         this.uploaderSet = new Set(values.map((v) => v.trim()).filter((v) => v))
     }
 
-    check(uploader: string): Promise<void> {
-        debugFilter(`UploaderWhitelist`, Array.from(this.uploaderSet).join('|'))
+    check(uploader: string): Promise<string> {
         uploader = uploader.trim()
-        return new Promise<void>((resolve, reject) => {
+        return new Promise<string>((resolve, reject) => {
             try {
                 if (!this.isEnable || uploader.length === 0 || this.uploaderSet.size === 0) {
-                    // debugFilter('reject, UploaderWhitelist disable or empty, or uploader invalid')
-                    reject()
+                    resolve(`Uploader White resolve, disable or empty`)
                 } else if (this.uploaderSet.has(uploader)) {
-                    debugFilter(`resolve, uploader ${uploader} in whitelist`)
-                    resolve()
+                    reject(`Uploader White reject, ${uploader} in whitelist`)
                 } else {
-                    // debugFilter(`reject, uploader ${uploader} not in whitelist`)
-                    reject()
+                    resolve(`Uploader White resolve, uploader not in whitelist`)
                 }
             } catch (err) {
                 error(err)
-                error(`reject, UploaderWhitelistFilter error, uploader`, uploader)
-                reject()
+                resolve(`Uploader White resolve, error`)
             }
         })
     }

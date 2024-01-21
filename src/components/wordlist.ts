@@ -124,7 +124,7 @@ export class WordList {
         e.innerHTML = this.nodeHTML.trim()
         e.querySelector('.wordlist-header')!.innerHTML = this.description.replace('\n', '<br>')
         debug(`insertNode, fetchList ${this.fetchList().length} lines`)
-        e.querySelector('textarea')!.value = this.fetchList().join('\n')
+        e.querySelector('textarea')!.value = this.fetchList().join('\n') + '\n'
         document.body?.appendChild(e.firstChild!)
     }
 

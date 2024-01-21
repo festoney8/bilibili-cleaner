@@ -1,4 +1,4 @@
-import { debugFilter, error } from '../../../utils/logger'
+import { error } from '../../../utils/logger'
 import { ISubFilter } from '../core'
 
 class DurationFilter implements ISubFilter {
@@ -9,12 +9,10 @@ class DurationFilter implements ISubFilter {
     isEnable = false
 
     setStatus(status: boolean) {
-        debugFilter(`DurationFilter setStatus ${status}`)
         this.isEnable = status
     }
 
     setParams(threshold: number) {
-        debugFilter(`DurationFilter setParams ${threshold}`)
         this.threshold = threshold
     }
 
@@ -28,28 +26,25 @@ class DurationFilter implements ISubFilter {
         return true
     }
 
-    check(duration: string): Promise<void> {
+    check(duration: string): Promise<string> {
         duration = duration.trim()
-        return new Promise<void>((resolve, reject) => {
+        return new Promise<string>((resolve, reject) => {
             try {
                 if (!this.isEnable || this.threshold === 0) {
-                    // debugFilter(`resolve, duration filter is disable, or threshold is 0`)
-                    resolve()
+                    resolve(`Duration resolve, disable or 0`)
                     return
                 } else if (duration && duration.match(this.pattern)) {
                     if (this.isLegal(duration)) {
-                        // debugFilter(`resolve, duration ${duration}, threshold ${this.threshold}`)
-                        resolve()
+                        resolve(`Duration resolve, duration OK`)
                     } else {
-                        debugFilter(`reject, duration ${duration}, threshold ${this.threshold}`)
-                        reject()
+                        reject(`Duration reject, ${duration} < ${this.threshold}s`)
                     }
                 } else {
-                    resolve()
+                    resolve(`Duration resolve`)
                 }
             } catch (err) {
                 error(err)
-                resolve()
+                resolve(`Duration resolve, error`)
             }
         })
     }

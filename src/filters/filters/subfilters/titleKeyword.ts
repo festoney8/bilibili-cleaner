@@ -1,4 +1,4 @@
-import { debugFilter, error } from '../../../utils/logger'
+import { error } from '../../../utils/logger'
 import { ISubFilter } from '../core'
 
 // Todo: 支持正则
@@ -20,30 +20,26 @@ class TitleKeywordFilter implements ISubFilter {
         }
     }
 
-    check(title: string): Promise<void> {
+    check(title: string): Promise<string> {
         title = title.trim()
-        return new Promise<void>((resolve, reject) => {
+        return new Promise<string>((resolve, reject) => {
             try {
                 if (!this.isEnable || title.length === 0 || this.titleKeywordSet.size === 0) {
-                    // debugFilter('resolve, TitleKeywordFilter disable or empty, or title invalid')
-                    resolve()
+                    resolve(`TitleKeyword resolve, disable or empty`)
                 }
                 let flag = false
                 this.titleKeywordSet.forEach((word) => {
                     if (word && title.includes(word)) {
-                        debugFilter(`reject, title ${title} match keyword blacklist`)
                         flag = true
-                        reject()
+                        reject(`TitleKeyword reject, ${title} match ${word} in blacklist`)
                     }
                 })
                 if (!flag) {
-                    // debugFilter(`resolve, title ${title} not match keyword blacklist`)
-                    resolve()
+                    resolve(`TitleKeyword resolve, title not match blacklist`)
                 }
             } catch (err) {
                 error(err)
-                error(`resolve, TitleKeywordFilter error, title`, title)
-                resolve()
+                resolve(`TitleKeyword resolve, error`)
             }
         })
     }

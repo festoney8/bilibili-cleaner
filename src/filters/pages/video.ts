@@ -1,18 +1,18 @@
-import { GM_getValue } from '$'
 import { debug, error } from '../../utils/logger'
 import coreFilterInstance, { SelectorFunc } from '../filters/core'
 import { ButtonItem, CheckboxItem, NumberItem } from '../../components/item'
 import { Group } from '../../components/group'
-import bvidFilterInstance from '../filters/subfilters/bvid'
-import durationFilterInstance from '../filters/subfilters/duration'
-import titleKeywordFilterInstance from '../filters/subfilters/titleKeyword'
-import uploaderFilterInstance from '../filters/subfilters/uploader'
 import { isPageVideo } from '../../utils/page-type'
 import contextMenuInstance from '../../components/contextmenu'
-import { WordList } from '../../components/wordlist'
-import { Action } from './homepage'
 import { matchBvid } from '../../utils/misc'
-import agencyInstance from '../agency/agency'
+import {
+    BvidAction,
+    DurationAction,
+    TitleKeywordAction,
+    TitleKeywordWhitelistAction,
+    UploaderAction,
+    UploaderWhitelistAction,
+} from './actions/action'
 
 const videoFilterGroupList: Group[] = []
 
@@ -20,7 +20,6 @@ const videoFilterGroupList: Group[] = []
 let isContextMenuFuncRunning = false
 let isContextMenuUploaderEnable = false
 let isContextMenuBvidEnable = false
-let contextMenuFunc: () => void
 
 if (isPageVideo()) {
     // 页面载入后监听流程
@@ -130,172 +129,38 @@ if (isPageVideo()) {
     }
 
     //=======================================================================================
+
     // 配置 行为实例
-    class VideoDurationAction implements Action {
-        readonly statusKey = 'video-duration-filter-status'
-        readonly valueKey = 'global-duration-filter-value'
-        status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
-        value = GM_getValue(`BILICLEANER_${this.valueKey}`, 60)
-
-        constructor() {
-            // 配置子过滤器
-            durationFilterInstance.setStatus(this.status)
-            durationFilterInstance.setParams(this.value)
-        }
-        enable() {
-            // 告知agency
-            agencyInstance.notifyDuration('enable')
-            // 触发全站过滤
-            checkVideoList()
-        }
-        disable() {
-            agencyInstance.notifyDuration('disable')
-            checkVideoList()
-        }
-        change(value: number) {
-            agencyInstance.notifyDuration('change', value)
-            checkVideoList()
-        }
-    }
-    class VideoUploaderAction implements Action {
-        readonly statusKey = 'video-uploader-filter-status'
-        readonly valueKey = 'global-uploader-filter-value'
-        status = false
-        value: string[] = []
-        blacklist: WordList
-
-        constructor() {
-            this.status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
-            this.value = GM_getValue(`BILICLEANER_${this.valueKey}`, [])
-            // 配置子过滤器
-            uploaderFilterInstance.setStatus(this.status)
-            uploaderFilterInstance.setParams(this.value)
-            // 初始化黑名单, callback触发edit
-            this.blacklist = new WordList(this.valueKey, 'UP主 黑名单', this.edit)
-        }
-
-        enable() {
-            // 修改右键监听函数状态
-            isContextMenuUploaderEnable = true
-            contextMenuFunc()
-            // 告知agency
-            agencyInstance.notifyUploader('enable')
-            // 触发全站过滤
-            checkVideoList()
-        }
-        disable() {
-            // 修改右键监听函数状态
-            isContextMenuUploaderEnable = false
-            agencyInstance.notifyUploader('disable')
-            checkVideoList()
-        }
-        add(value: string) {
-            this.blacklist.addValue(value)
-            agencyInstance.notifyUploader('add', value)
-            checkVideoList()
-        }
-        // edit由编辑黑名单的保存动作回调
-        edit(values: string[]) {
-            // this.blacklist.saveList(values)
-            agencyInstance.notifyUploader('edit', values)
-            checkVideoList()
-        }
-    }
-    class VideoBvidAction implements Action {
-        readonly statusKey = 'video-bvid-filter-status'
-        readonly valueKey = 'global-bvid-filter-value'
-        status = false
-        value: string[] = []
-        blacklist: WordList
-
-        constructor() {
-            this.status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
-            this.value = GM_getValue(`BILICLEANER_${this.valueKey}`, [])
-            // 配置子过滤器
-            bvidFilterInstance.setStatus(this.status)
-            bvidFilterInstance.setParams(this.value)
-            // 初始化黑名单, callback触发edit
-            this.blacklist = new WordList(this.valueKey, 'BV号 黑名单', this.edit)
-        }
-
-        enable() {
-            // 启用右键菜单功能
-            isContextMenuBvidEnable = true
-            contextMenuFunc()
-            // 告知agency
-            agencyInstance.notifyBvid('enable')
-            // 触发全站过滤
-            checkVideoList()
-        }
-        disable() {
-            // 禁用右键菜单功能
-            isContextMenuBvidEnable = false
-            agencyInstance.notifyBvid('disable')
-            checkVideoList()
-        }
-        add(value: string) {
-            this.blacklist.addValue(value)
-            agencyInstance.notifyBvid('add', value)
-            checkVideoList()
-        }
-        // edit由编辑黑名单的保存动作回调
-        edit(values: string[]) {
-            // this.blacklist.saveList(values)
-            agencyInstance.notifyBvid('edit', values)
-            checkVideoList()
-        }
-    }
-    class VideoTitleKeywordAction implements Action {
-        readonly statusKey = 'video-title-keyword-filter-status'
-        readonly valueKey = 'global-title-keyword-filter-value'
-        status = false
-        value: string[] = []
-        blacklist: WordList
-
-        constructor() {
-            this.status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
-            this.value = GM_getValue(`BILICLEANER_${this.valueKey}`, [])
-            // 配置子过滤器
-            titleKeywordFilterInstance.setStatus(this.status)
-            titleKeywordFilterInstance.setParams(this.value)
-            // 初始化黑名单, callback触发edit
-            this.blacklist = new WordList(this.valueKey, '标题关键词 黑名单', this.edit)
-        }
-
-        enable() {
-            // 告知agency
-            agencyInstance.notifyTitleKeyword('enable')
-            // 触发全站过滤
-            checkVideoList()
-        }
-        disable() {
-            agencyInstance.notifyTitleKeyword('disable')
-            checkVideoList()
-        }
-        add(value: string) {
-            this.blacklist.addValue(value)
-            agencyInstance.notifyTitleKeyword('add', value)
-            checkVideoList()
-        }
-        // edit由编辑黑名单的保存动作回调
-        edit(values: string[]) {
-            // this.blacklist.saveList(values)
-            agencyInstance.notifyTitleKeyword('edit', values)
-            checkVideoList()
-        }
-    }
-
-    // Todo: VideoWhiteListAction implements Action {}
-
-    const videoDurationAction = new VideoDurationAction()
-    const videoUploaderAction = new VideoUploaderAction()
-    const videoBvidAction = new VideoBvidAction()
-    const videoTitleKeywordAction = new VideoTitleKeywordAction()
-
+    const videoDurationAction = new DurationAction(
+        'video-duration-filter-status',
+        'global-duration-filter-value',
+        checkVideoList,
+    )
+    const videoUploaderAction = new UploaderAction(
+        'video-uploader-filter-status',
+        'global-uploader-filter-value',
+        checkVideoList,
+    )
+    const videoBvidAction = new BvidAction('video-bvid-filter-status', 'global-bvid-filter-value', checkVideoList)
+    const videoTitleKeywordAction = new TitleKeywordAction(
+        'video-title-keyword-filter-status',
+        'global-title-keyword-filter-value',
+        checkVideoList,
+    )
+    const videoUploaderWhitelistAction = new UploaderWhitelistAction(
+        'video-uploader-whitelist-filter-status',
+        'global-uploader-whitelist-filter-value',
+        checkVideoList,
+    )
+    const videoTitleKeywordWhitelistAction = new TitleKeywordWhitelistAction(
+        'video-title-keyword-whitelist-filter-status',
+        'global-title-keyword-whitelist-filter-value',
+        checkVideoList,
+    )
     //=======================================================================================
 
     // 右键监听函数, 播放页右键单击指定元素时修改右键菜单, 用于屏蔽视频BVID, 屏蔽UP主
-    contextMenuFunc = () => {
+    const contextMenuFunc = () => {
         if (isContextMenuFuncRunning) {
             return
         }
@@ -356,6 +221,7 @@ if (isPageVideo()) {
     const titleKeywordItems: (CheckboxItem | ButtonItem)[] = []
     const bvidItems: (CheckboxItem | ButtonItem)[] = []
     const uploaderItems: (CheckboxItem | ButtonItem)[] = []
+    const whitelistItems: (CheckboxItem | ButtonItem)[] = []
 
     // UI组件, 时长过滤part
     {
@@ -391,19 +257,27 @@ if (isPageVideo()) {
                 videoUploaderAction.statusKey,
                 '启用 播放页 UP主过滤',
                 false,
-                videoUploaderAction.enable,
+                () => {
+                    // 启用右键菜单功能
+                    isContextMenuUploaderEnable = true
+                    contextMenuFunc()
+                    videoUploaderAction.enable()
+                },
                 false,
                 null,
-                videoUploaderAction.disable,
+                () => {
+                    // 禁用右键菜单功能
+                    isContextMenuUploaderEnable = false
+                    videoUploaderAction.disable()
+                },
             ),
         )
-        // 按钮功能：打开uploader黑名单编辑框
         uploaderItems.push(
             new ButtonItem(
-                'video-uploader-filter-edit-button',
+                'video-uploader-edit-button',
                 '编辑 UP主黑名单',
                 '编辑',
-                // 按钮功能
+                // 按钮功能：打开编辑器
                 () => videoUploaderAction.blacklist.show(),
             ),
         )
@@ -423,13 +297,12 @@ if (isPageVideo()) {
                 videoTitleKeywordAction.disable,
             ),
         )
-        // 按钮功能：打开titleKeyword黑名单编辑框
         titleKeywordItems.push(
             new ButtonItem(
-                'video-test-button',
+                'video-title-keyword-edit-button',
                 '编辑 关键词黑名单',
                 '编辑',
-                // 按钮功能
+                // 按钮功能：打开编辑器
                 () => videoTitleKeywordAction.blacklist.show(),
             ),
         )
@@ -443,24 +316,77 @@ if (isPageVideo()) {
                 videoBvidAction.statusKey,
                 '启用 播放页 BV号过滤',
                 false,
-                videoBvidAction.enable,
+                () => {
+                    // 启用 右键功能
+                    isContextMenuBvidEnable = true
+                    contextMenuFunc()
+                    videoBvidAction.enable()
+                },
                 false,
                 null,
-                videoBvidAction.disable,
+                () => {
+                    // 禁用 右键功能
+                    isContextMenuBvidEnable = false
+                    videoBvidAction.disable()
+                },
             ),
         )
-        // 按钮功能：打开bvid黑名单编辑框
         bvidItems.push(
             new ButtonItem(
-                'video-bvid-filter-edit-button',
+                'video-bvid-edit-button',
                 '编辑 BV号黑名单',
                 '编辑',
-                // 按钮功能
+                // 按钮功能：打开编辑器
                 () => videoBvidAction.blacklist.show(),
             ),
         )
     }
     videoFilterGroupList.push(new Group('video-bvid-filter-group', '播放页 BV号过滤 (右键单击标题)', bvidItems))
+
+    // UI组件, 例外和白名单part
+    {
+        whitelistItems.push(
+            new CheckboxItem(
+                videoUploaderWhitelistAction.statusKey,
+                '启用 播放页 UP主白名单',
+                false,
+                videoUploaderWhitelistAction.enable,
+                false,
+                null,
+                videoUploaderWhitelistAction.disable,
+            ),
+        )
+        whitelistItems.push(
+            new ButtonItem(
+                'video-uploader-whitelist-edit-button',
+                '编辑 UP主白名单',
+                '编辑',
+                // 按钮功能：打开编辑器
+                () => videoUploaderWhitelistAction.whitelist.show(),
+            ),
+        )
+        whitelistItems.push(
+            new CheckboxItem(
+                videoTitleKeywordWhitelistAction.statusKey,
+                '启用 播放页 关键词白名单',
+                false,
+                videoTitleKeywordWhitelistAction.enable,
+                false,
+                null,
+                videoTitleKeywordWhitelistAction.disable,
+            ),
+        )
+        whitelistItems.push(
+            new ButtonItem(
+                'video-title-keyword-whitelist-edit-button',
+                '编辑 标题关键词白名单',
+                '编辑',
+                // 按钮功能：打开编辑器
+                () => videoTitleKeywordWhitelistAction.whitelist.show(),
+            ),
+        )
+    }
+    videoFilterGroupList.push(new Group('video-whitelist-filter-group', '播放页 白名单', whitelistItems))
 }
 
 export { videoFilterGroupList }

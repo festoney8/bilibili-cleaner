@@ -1,31 +1,18 @@
-import { GM_getValue } from '$'
 import { debug, error } from '../../utils/logger'
 import coreFilterInstance, { SelectorFunc } from '../filters/core'
 import { ButtonItem, CheckboxItem } from '../../components/item'
 import { Group } from '../../components/group'
 import settings from '../../settings'
-import bvidFilterInstance from '../filters/subfilters/bvid'
-import titleKeywordFilterInstance from '../filters/subfilters/titleKeyword'
-import uploaderFilterInstance from '../filters/subfilters/uploader'
 import { isPagePopular } from '../../utils/page-type'
 import contextMenuInstance from '../../components/contextmenu'
-import { WordList } from '../../components/wordlist'
 import { matchBvid } from '../../utils/misc'
-import agencyInstance from '../agency/agency'
-
-// 定义各种过滤功能的属性和行为
-export interface Action {
-    readonly statusKey: string
-    readonly valueKey: string
-    status: boolean
-    value: number | string | string[]
-    blacklist?: WordList
-    enable(): void
-    disable(): void
-    change?(value: number): void
-    add?(value: string): void
-    edit?(value: string[]): void
-}
+import {
+    BvidAction,
+    TitleKeywordAction,
+    TitleKeywordWhitelistAction,
+    UploaderAction,
+    UploaderWhitelistAction,
+} from './actions/action'
 
 const popularFilterGroupList: Group[] = []
 
@@ -33,7 +20,6 @@ const popularFilterGroupList: Group[] = []
 let isContextMenuFuncRunning = false
 let isContextMenuUploaderEnable = false
 let isContextMenuBvidEnable = false
-let contextMenuFunc: () => void
 
 if (isPagePopular()) {
     // 页面载入后监听流程
@@ -159,145 +145,33 @@ if (isPagePopular()) {
     }
 
     //=======================================================================================
+
     // 配置 行为实例
-    class PopularUploaderAction implements Action {
-        readonly statusKey = 'popular-uploader-filter-status'
-        readonly valueKey = 'global-uploader-filter-value'
-        status = false
-        value: string[] = []
-        blacklist: WordList
-
-        constructor() {
-            this.status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
-            this.value = GM_getValue(`BILICLEANER_${this.valueKey}`, [])
-            // 配置子过滤器
-            uploaderFilterInstance.setStatus(this.status)
-            uploaderFilterInstance.setParams(this.value)
-            // 初始化黑名单, callback触发edit
-            this.blacklist = new WordList(this.valueKey, 'UP主 黑名单', this.edit)
-        }
-
-        enable() {
-            // 修改右键监听函数状态
-            isContextMenuUploaderEnable = true
-            contextMenuFunc()
-            // 告知agency
-            agencyInstance.notifyUploader('enable')
-            // 触发全站过滤
-            checkVideoList(true)
-        }
-        disable() {
-            // 修改右键监听函数状态
-            isContextMenuUploaderEnable = false
-            agencyInstance.notifyUploader('disable')
-            checkVideoList(true)
-        }
-        add(value: string) {
-            this.blacklist.addValue(value)
-            agencyInstance.notifyUploader('add', value)
-            checkVideoList(true)
-        }
-        // edit由编辑黑名单的保存动作回调
-        edit(values: string[]) {
-            // this.blacklist.saveList(values)
-            agencyInstance.notifyUploader('edit', values)
-            checkVideoList(true)
-        }
-    }
-    class PopularBvidAction implements Action {
-        readonly statusKey = 'popular-bvid-filter-status'
-        readonly valueKey = 'global-bvid-filter-value'
-        status = false
-        value: string[] = []
-        blacklist: WordList
-
-        constructor() {
-            this.status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
-            this.value = GM_getValue(`BILICLEANER_${this.valueKey}`, [])
-            // 配置子过滤器
-            bvidFilterInstance.setStatus(this.status)
-            bvidFilterInstance.setParams(this.value)
-            // 初始化黑名单, callback触发edit
-            this.blacklist = new WordList(this.valueKey, 'BV号 黑名单', this.edit)
-        }
-
-        enable() {
-            // 启用右键菜单功能
-            isContextMenuBvidEnable = true
-            contextMenuFunc()
-            // 告知agency
-            agencyInstance.notifyBvid('enable')
-            // 触发全站过滤
-            checkVideoList(true)
-        }
-        disable() {
-            // 禁用右键菜单功能
-            isContextMenuBvidEnable = false
-            agencyInstance.notifyBvid('disable')
-            checkVideoList(true)
-        }
-        add(value: string) {
-            this.blacklist.addValue(value)
-            agencyInstance.notifyBvid('add', value)
-            checkVideoList(true)
-        }
-        // edit由编辑黑名单的保存动作回调
-        edit(values: string[]) {
-            // this.blacklist.saveList(values)
-            agencyInstance.notifyBvid('edit', values)
-            checkVideoList(true)
-        }
-    }
-    class PopularTitleKeywordAction implements Action {
-        readonly statusKey = 'popular-title-keyword-filter-status'
-        readonly valueKey = 'global-title-keyword-filter-value'
-        status = false
-        value: string[] = []
-        blacklist: WordList
-
-        constructor() {
-            this.status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
-            this.value = GM_getValue(`BILICLEANER_${this.valueKey}`, [])
-            // 配置子过滤器
-            titleKeywordFilterInstance.setStatus(this.status)
-            titleKeywordFilterInstance.setParams(this.value)
-            // 初始化黑名单, callback触发edit
-            this.blacklist = new WordList(this.valueKey, '标题关键词 黑名单', this.edit)
-        }
-
-        enable() {
-            // 告知agency
-            agencyInstance.notifyTitleKeyword('enable')
-            // 触发全站过滤
-            checkVideoList(true)
-        }
-        disable() {
-            agencyInstance.notifyTitleKeyword('disable')
-            checkVideoList(true)
-        }
-        add(value: string) {
-            this.blacklist.addValue(value)
-            agencyInstance.notifyTitleKeyword('add', value)
-            checkVideoList(true)
-        }
-        // edit由编辑黑名单的保存动作回调
-        edit(values: string[]) {
-            // this.blacklist.saveList(values)
-            agencyInstance.notifyTitleKeyword('edit', values)
-            checkVideoList(true)
-        }
-    }
-
-    // Todo: PopularWhiteListAction implements Action {}
-
-    const popularUploaderAction = new PopularUploaderAction()
-    const popularBvidAction = new PopularBvidAction()
-    const popularTitleKeywordAction = new PopularTitleKeywordAction()
-
+    const popularUploaderAction = new UploaderAction(
+        'popular-uploader-filter-status',
+        'global-uploader-filter-value',
+        checkVideoList,
+    )
+    const popularBvidAction = new BvidAction('popular-bvid-filter-status', 'global-bvid-filter-value', checkVideoList)
+    const popularTitleKeywordAction = new TitleKeywordAction(
+        'popular-title-keyword-filter-status',
+        'global-title-keyword-filter-value',
+        checkVideoList,
+    )
+    const popularUploaderWhitelistAction = new UploaderWhitelistAction(
+        'popular-uploader-whitelist-filter-status',
+        'global-uploader-whitelist-filter-value',
+        checkVideoList,
+    )
+    const popularTitleKeywordWhitelistAction = new TitleKeywordWhitelistAction(
+        'popular-title-keyword-whitelist-filter-status',
+        'global-title-keyword-whitelist-filter-value',
+        checkVideoList,
+    )
     //=======================================================================================
 
     // 右键监听函数, 热门页右键单击指定元素时修改右键菜单, 用于屏蔽视频BVID, 屏蔽UP主
-    contextMenuFunc = () => {
+    const contextMenuFunc = () => {
         if (isContextMenuFuncRunning) {
             return
         }
@@ -362,24 +236,34 @@ if (isPagePopular()) {
     const titleKeywordItems: (CheckboxItem | ButtonItem)[] = []
     const bvidItems: (CheckboxItem | ButtonItem)[] = []
     const uploaderItems: (CheckboxItem | ButtonItem)[] = []
+    const whitelistItems: (CheckboxItem | ButtonItem)[] = []
 
     // UI组件, UP主过滤part
     {
         uploaderItems.push(
             new CheckboxItem(
                 popularUploaderAction.statusKey,
-                '启用 热门页UP主过滤',
+                '启用 热门页 UP主过滤',
                 false,
-                popularUploaderAction.enable,
+                () => {
+                    // 启用右键功能
+                    isContextMenuUploaderEnable = true
+                    contextMenuFunc()
+                    popularUploaderAction.enable()
+                },
                 false,
                 null,
-                popularUploaderAction.disable,
+                () => {
+                    // 禁用右键功能
+                    isContextMenuUploaderEnable = false
+                    popularUploaderAction.disable()
+                },
             ),
         )
         // 按钮功能：打开uploader黑名单编辑框
         uploaderItems.push(
             new ButtonItem(
-                'popular-uploader-filter-edit-button',
+                'popular-uploader-edit-button',
                 '编辑 UP主黑名单',
                 '编辑',
                 // 按钮功能
@@ -396,7 +280,7 @@ if (isPagePopular()) {
         titleKeywordItems.push(
             new CheckboxItem(
                 popularTitleKeywordAction.statusKey,
-                '启用 热门页关键词过滤',
+                '启用 热门页 关键词过滤',
                 false,
                 popularTitleKeywordAction.enable,
                 false,
@@ -407,7 +291,7 @@ if (isPagePopular()) {
         // 按钮功能：打开titleKeyword黑名单编辑框
         titleKeywordItems.push(
             new ButtonItem(
-                'popular-test-button',
+                'popular-title-keyword-edit-button',
                 '编辑 关键词黑名单',
                 '编辑',
                 // 按钮功能
@@ -424,18 +308,27 @@ if (isPagePopular()) {
         bvidItems.push(
             new CheckboxItem(
                 popularBvidAction.statusKey,
-                '启用 热门页BV号过滤',
+                '启用 热门页 BV号过滤',
                 false,
-                popularBvidAction.enable,
+                () => {
+                    // 启用右键功能
+                    isContextMenuBvidEnable = true
+                    contextMenuFunc()
+                    popularBvidAction.enable()
+                },
                 false,
                 null,
-                popularBvidAction.disable,
+                () => {
+                    // 禁用右键功能
+                    isContextMenuBvidEnable = false
+                    popularBvidAction.disable()
+                },
             ),
         )
         // 按钮功能：打开bvid黑名单编辑框
         bvidItems.push(
             new ButtonItem(
-                'popular-bvid-filter-edit-button',
+                'popular-bvid-edit-button',
                 '编辑 BV号黑名单',
                 '编辑',
                 // 按钮功能
@@ -443,7 +336,52 @@ if (isPagePopular()) {
             ),
         )
     }
-    popularFilterGroupList.push(new Group('popular-bvid-filter-group', '热门页 视频BV号过滤 (右键单击标题)', bvidItems))
+    popularFilterGroupList.push(new Group('popular-bvid-filter-group', '热门页 BV号过滤 (右键单击标题)', bvidItems))
+
+    // UI组件, 例外和白名单part
+    {
+        whitelistItems.push(
+            new CheckboxItem(
+                popularUploaderWhitelistAction.statusKey,
+                '启用 热门页 UP主白名单',
+                false,
+                popularUploaderWhitelistAction.enable,
+                false,
+                null,
+                popularUploaderWhitelistAction.disable,
+            ),
+        )
+        whitelistItems.push(
+            new ButtonItem(
+                'popular-uploader-whitelist-edit-button',
+                '编辑 UP主白名单',
+                '编辑',
+                // 按钮功能：显示白名单编辑器
+                () => popularUploaderWhitelistAction.whitelist.show(),
+            ),
+        )
+        whitelistItems.push(
+            new CheckboxItem(
+                popularTitleKeywordWhitelistAction.statusKey,
+                '启用 热门页 标题关键词白名单',
+                false,
+                popularTitleKeywordWhitelistAction.enable,
+                false,
+                null,
+                popularTitleKeywordWhitelistAction.disable,
+            ),
+        )
+        whitelistItems.push(
+            new ButtonItem(
+                'popular-title-keyword-whitelist-edit-button',
+                '编辑 标题关键词白名单',
+                '编辑',
+                // 按钮功能：显示白名单编辑器
+                () => popularTitleKeywordWhitelistAction.whitelist.show(),
+            ),
+        )
+    }
+    popularFilterGroupList.push(new Group('popular-whitelist-filter-group', '热门页 白名单', whitelistItems))
 }
 
 export { popularFilterGroupList }

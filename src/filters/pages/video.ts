@@ -8,14 +8,11 @@ import durationFilterInstance from '../filters/subfilters/duration'
 import titleKeywordFilterInstance from '../filters/subfilters/titleKeyword'
 import uploaderFilterInstance from '../filters/subfilters/uploader'
 import { isPageVideo } from '../../utils/page-type'
-import durationAgencyInstance from '../agency/duration'
-import uploaderAgencyInstance from '../agency/uploader'
 import contextMenuInstance from '../../components/contextmenu'
-import bvidAgencyInstance from '../agency/bvid'
-import titleKeywordAgencyInstance from '../agency/titleKeyword'
 import { WordList } from '../../components/wordlist'
 import { Action } from './homepage'
 import { matchBvid } from '../../utils/misc'
+import filterAgencyInstance from '../agency/agency'
 
 const videoFilterGroupList: Group[] = []
 
@@ -147,16 +144,16 @@ if (isPageVideo()) {
         }
         enable() {
             // 告知agency
-            durationAgencyInstance.notify('enable')
+            filterAgencyInstance.notifyDuration('enable')
             // 触发全站过滤
             checkVideoList()
         }
         disable() {
-            durationAgencyInstance.notify('disable')
+            filterAgencyInstance.notifyDuration('disable')
             checkVideoList()
         }
         change(value: number) {
-            durationAgencyInstance.notify('change', value)
+            filterAgencyInstance.notifyDuration('change', value)
             checkVideoList()
         }
     }
@@ -182,25 +179,25 @@ if (isPageVideo()) {
             isContextMenuUploaderEnable = true
             contextMenuFunc()
             // 告知agency
-            uploaderAgencyInstance.notify('enable')
+            filterAgencyInstance.notifyUploader('enable')
             // 触发全站过滤
             checkVideoList()
         }
         disable() {
             // 修改右键监听函数状态
             isContextMenuUploaderEnable = false
-            uploaderAgencyInstance.notify('disable')
+            filterAgencyInstance.notifyUploader('disable')
             checkVideoList()
         }
         add(value: string) {
             this.blacklist.addValue(value)
-            uploaderAgencyInstance.notify('add', value)
+            filterAgencyInstance.notifyUploader('add', value)
             checkVideoList()
         }
         // edit由编辑黑名单的保存动作回调
         edit(values: string[]) {
             // this.blacklist.saveList(values)
-            uploaderAgencyInstance.notify('edit', values)
+            filterAgencyInstance.notifyUploader('edit', values)
             checkVideoList()
         }
     }
@@ -226,25 +223,25 @@ if (isPageVideo()) {
             isContextMenuBvidEnable = true
             contextMenuFunc()
             // 告知agency
-            bvidAgencyInstance.notify('enable')
+            filterAgencyInstance.notifyBvid('enable')
             // 触发全站过滤
             checkVideoList()
         }
         disable() {
             // 禁用右键菜单功能
             isContextMenuBvidEnable = false
-            bvidAgencyInstance.notify('disable')
+            filterAgencyInstance.notifyBvid('disable')
             checkVideoList()
         }
         add(value: string) {
             this.blacklist.addValue(value)
-            bvidAgencyInstance.notify('add', value)
+            filterAgencyInstance.notifyBvid('add', value)
             checkVideoList()
         }
         // edit由编辑黑名单的保存动作回调
         edit(values: string[]) {
             // this.blacklist.saveList(values)
-            bvidAgencyInstance.notify('edit', values)
+            filterAgencyInstance.notifyBvid('edit', values)
             checkVideoList()
         }
     }
@@ -267,23 +264,23 @@ if (isPageVideo()) {
 
         enable() {
             // 告知agency
-            titleKeywordAgencyInstance.notify('enable')
+            filterAgencyInstance.notifyTitleKeyword('enable')
             // 触发全站过滤
             checkVideoList()
         }
         disable() {
-            titleKeywordAgencyInstance.notify('disable')
+            filterAgencyInstance.notifyTitleKeyword('disable')
             checkVideoList()
         }
         add(value: string) {
             this.blacklist.addValue(value)
-            titleKeywordAgencyInstance.notify('add', value)
+            filterAgencyInstance.notifyTitleKeyword('add', value)
             checkVideoList()
         }
         // edit由编辑黑名单的保存动作回调
         edit(values: string[]) {
             // this.blacklist.saveList(values)
-            titleKeywordAgencyInstance.notify('edit', values)
+            filterAgencyInstance.notifyTitleKeyword('edit', values)
             checkVideoList()
         }
     }

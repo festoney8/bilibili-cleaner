@@ -57,8 +57,27 @@ export class WordList {
         }
     }
 
+    /** 添加多个值到列表 */
+    addValues(values: string[]) {
+        try {
+            this.getValue()
+            values.forEach((value) => {
+                value = value.trim()
+                if (value && !this.wordSet.has(value)) {
+                    this.wordArr.push(value)
+                    this.wordSet.add(value)
+                }
+            })
+            this.setValue()
+            debug(`list ${this.listID} add ${values.length} lines, OK`)
+        } catch (err) {
+            error(err)
+            error(`list ${this.listID} add ${values.length} lines, ERROR`)
+        }
+    }
+
     /**
-     * 添加多个值到列表
+     * 编辑整个列表
      * @param values 编辑框内输入的列表
      * @returns 保存是否成功
      */

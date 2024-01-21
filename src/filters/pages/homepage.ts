@@ -1,28 +1,25 @@
 import { GM_getValue } from '$'
 import { debug, error } from '../../utils/logger'
-import coreFilterInstance, { SelectorFunc } from '../filters/core'
 import { ButtonItem, CheckboxItem, NumberItem } from '../../components/item'
 import { Group } from '../../components/group'
+import coreFilterInstance, { SelectorFunc } from '../filters/core'
 import settings from '../../settings'
 import bvidFilterInstance from '../filters/subfilters/bvid'
 import durationFilterInstance from '../filters/subfilters/duration'
 import titleKeywordFilterInstance from '../filters/subfilters/titleKeyword'
 import uploaderFilterInstance from '../filters/subfilters/uploader'
 import { isPageHomepage } from '../../utils/page-type'
-import durationAgencyInstance from '../agency/duration'
-import uploaderAgencyInstance from '../agency/uploader'
 import contextMenuInstance from '../../components/contextmenu'
-import bvidAgencyInstance from '../agency/bvid'
-import titleKeywordAgencyInstance from '../agency/titleKeyword'
 import { WordList } from '../../components/wordlist'
 import { matchBvid } from '../../utils/misc'
+import filterAgencyInstance from '../agency/agency'
 
 // 定义各种过滤功能的属性和行为
 export interface Action {
     readonly statusKey: string
-    readonly valueKey: string
+    readonly valueKey?: string
     status: boolean
-    value: number | string | string[]
+    value?: number | string | string[]
     blacklist?: WordList
     enable(): void
     disable(): void
@@ -171,16 +168,16 @@ if (isPageHomepage()) {
         }
         enable() {
             // 告知agency
-            durationAgencyInstance.notify('enable')
+            filterAgencyInstance.notifyDuration('enable')
             // 触发全站过滤
             checkVideoList(true)
         }
         disable() {
-            durationAgencyInstance.notify('disable')
+            filterAgencyInstance.notifyDuration('disable')
             checkVideoList(true)
         }
         change(value: number) {
-            durationAgencyInstance.notify('change', value)
+            filterAgencyInstance.notifyDuration('change', value)
             checkVideoList(true)
         }
     }
@@ -206,25 +203,25 @@ if (isPageHomepage()) {
             isContextMenuUploaderEnable = true
             contextMenuFunc()
             // 告知agency
-            uploaderAgencyInstance.notify('enable')
+            filterAgencyInstance.notifyUploader('enable')
             // 触发全站过滤
             checkVideoList(true)
         }
         disable() {
             // 修改右键监听函数状态
             isContextMenuUploaderEnable = false
-            uploaderAgencyInstance.notify('disable')
+            filterAgencyInstance.notifyUploader('disable')
             checkVideoList(true)
         }
         add(value: string) {
             this.blacklist.addValue(value)
-            uploaderAgencyInstance.notify('add', value)
+            filterAgencyInstance.notifyUploader('add', value)
             checkVideoList(true)
         }
         // edit由编辑黑名单的保存动作回调
         edit(values: string[]) {
             // this.blacklist.saveList(values)
-            uploaderAgencyInstance.notify('edit', values)
+            filterAgencyInstance.notifyUploader('edit', values)
             checkVideoList(true)
         }
     }
@@ -250,25 +247,25 @@ if (isPageHomepage()) {
             isContextMenuBvidEnable = true
             contextMenuFunc()
             // 告知agency
-            bvidAgencyInstance.notify('enable')
+            filterAgencyInstance.notifyBvid('enable')
             // 触发全站过滤
             checkVideoList(true)
         }
         disable() {
             // 禁用右键菜单功能
             isContextMenuBvidEnable = false
-            bvidAgencyInstance.notify('disable')
+            filterAgencyInstance.notifyBvid('disable')
             checkVideoList(true)
         }
         add(value: string) {
             this.blacklist.addValue(value)
-            bvidAgencyInstance.notify('add', value)
+            filterAgencyInstance.notifyBvid('add', value)
             checkVideoList(true)
         }
         // edit由编辑黑名单的保存动作回调
         edit(values: string[]) {
             // this.blacklist.saveList(values)
-            bvidAgencyInstance.notify('edit', values)
+            filterAgencyInstance.notifyBvid('edit', values)
             checkVideoList(true)
         }
     }
@@ -291,28 +288,26 @@ if (isPageHomepage()) {
 
         enable() {
             // 告知agency
-            titleKeywordAgencyInstance.notify('enable')
+            filterAgencyInstance.notifyTitleKeyword('enable')
             // 触发全站过滤
             checkVideoList(true)
         }
         disable() {
-            titleKeywordAgencyInstance.notify('disable')
+            filterAgencyInstance.notifyTitleKeyword('disable')
             checkVideoList(true)
         }
         add(value: string) {
             this.blacklist.addValue(value)
-            titleKeywordAgencyInstance.notify('add', value)
+            filterAgencyInstance.notifyTitleKeyword('add', value)
             checkVideoList(true)
         }
         // edit由编辑黑名单的保存动作回调
         edit(values: string[]) {
             // this.blacklist.saveList(values)
-            titleKeywordAgencyInstance.notify('edit', values)
+            filterAgencyInstance.notifyTitleKeyword('edit', values)
             checkVideoList(true)
         }
     }
-
-    // Todo: HomepageWhiteListAction implements Action {}
 
     const homepageDurationAction = new HomepageDurationAction()
     const homepageUploaderAction = new HomepageUploaderAction()

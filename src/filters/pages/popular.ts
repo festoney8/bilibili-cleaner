@@ -5,7 +5,7 @@ import { Group } from '../../components/group'
 import settings from '../../settings'
 import { isPagePopular } from '../../utils/page-type'
 import contextMenuInstance from '../../components/contextmenu'
-import { matchBvid } from '../../utils/misc'
+import { matchBvid } from '../../utils/tool'
 import {
     BvidAction,
     TitleKeywordAction,
@@ -85,11 +85,11 @@ if (isPagePopular()) {
                 },
             }
             const feedSelectorFunc = rcmdSelectorFunc
-            hotVideos.length && coreFilterInstance.checkAll([...hotVideos], true, feedSelectorFunc)
+            hotVideos.length && coreFilterInstance.checkAll([...hotVideos], false, feedSelectorFunc)
             // debugFilter(`checkVideoList check ${hotVideos.length} hotVideos`)
-            weeklyVideos.length && coreFilterInstance.checkAll([...weeklyVideos], true, feedSelectorFunc)
+            weeklyVideos.length && coreFilterInstance.checkAll([...weeklyVideos], false, feedSelectorFunc)
             // debugFilter(`checkVideoList check ${weeklyVideos.length} weeklyVideos`)
-            rankVideos.length && coreFilterInstance.checkAll([...rankVideos], true, feedSelectorFunc)
+            rankVideos.length && coreFilterInstance.checkAll([...rankVideos], false, feedSelectorFunc)
             // debugFilter(`checkVideoList check ${rankVideos.length} rankVideos`)
         } catch (err) {
             error(err)
@@ -403,7 +403,9 @@ if (isPagePopular()) {
             ),
         )
     }
-    popularFilterGroupList.push(new Group('popular-whitelist-filter-group', '热门页 白名单', whitelistItems))
+    popularFilterGroupList.push(
+        new Group('popular-whitelist-filter-group', '热门页 白名单设定 (免过滤)', whitelistItems),
+    )
 }
 
 export { popularFilterGroupList }

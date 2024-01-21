@@ -5,7 +5,7 @@ import coreFilterInstance, { SelectorFunc } from '../filters/core'
 import settings from '../../settings'
 import { isPageHomepage } from '../../utils/page-type'
 import contextMenuInstance from '../../components/contextmenu'
-import { matchBvid } from '../../utils/misc'
+import { matchBvid } from '../../utils/tool'
 import {
     BvidAction,
     DurationAction,
@@ -21,6 +21,8 @@ const homepageFilterGroupList: Group[] = []
 let isContextMenuFuncRunning = false
 let isContextMenuUploaderEnable = false
 let isContextMenuBvidEnable = false
+// 带已关注tag的视频不被过滤(实验性)
+let isFollowingWhitelistEnable = true
 
 if (isPageHomepage()) {
     // 页面载入后监听流程
@@ -36,22 +38,38 @@ if (isPageHomepage()) {
             return
         }
         try {
-            let feedVideos: NodeListOf<HTMLElement>
-            let rcmdVideos: NodeListOf<HTMLElement>
+            let feedVideos: HTMLElement[]
+            let rcmdVideos: HTMLElement[]
             if (!fullSite) {
                 // 选取增量视频
                 // feed: 10个顶部推荐位, 不含已过滤
-                feedVideos = videoListContainer.querySelectorAll<HTMLElement>(
-                    `:scope > .feed-card:not([${settings.filterSign}])`,
-                )
+                feedVideos = [
+                    ...videoListContainer.querySelectorAll<HTMLElement>(
+                        `:scope > .feed-card:not([${settings.filterSign}])`,
+                    ),
+                ]
                 // rcmd: 瀑布推荐流, 不含feed, 不含已过滤, 不含未载入
-                rcmdVideos = videoListContainer.querySelectorAll<HTMLElement>(
-                    `:scope > .bili-video-card.is-rcmd:not([${settings.filterSign}])`,
-                )
+                rcmdVideos = [
+                    ...videoListContainer.querySelectorAll<HTMLElement>(
+                        `:scope > .bili-video-card.is-rcmd:not([${settings.filterSign}])`,
+                    ),
+                ]
             } else {
                 // 选取全站, 含已过滤的
-                feedVideos = videoListContainer.querySelectorAll<HTMLElement>(`:scope > .feed-card`)
-                rcmdVideos = videoListContainer.querySelectorAll<HTMLElement>(`:scope > .bili-video-card.is-rcmd`)
+                feedVideos = [...videoListContainer.querySelectorAll<HTMLElement>(`:scope > .feed-card`)]
+                rcmdVideos = [...videoListContainer.querySelectorAll<HTMLElement>(`:scope > .bili-video-card.is-rcmd`)]
+            }
+
+            // 筛掉带有已关注标记的视频（反复开关需刷新）
+            if (isFollowingWhitelistEnable) {
+                feedVideos = feedVideos.filter((video) => {
+                    const icontext = video.querySelector('.bili-video-card__info--icon-text')?.textContent?.trim()
+                    return icontext !== '已关注'
+                })
+                rcmdVideos = rcmdVideos.filter((video) => {
+                    const icontext = video.querySelector('.bili-video-card__info--icon-text')?.textContent?.trim()
+                    return icontext !== '已关注'
+                })
             }
 
             // 构建SelectorFunc
@@ -82,9 +100,9 @@ if (isPageHomepage()) {
                 },
             }
             const feedSelectorFunc = rcmdSelectorFunc
-            feedVideos.length && coreFilterInstance.checkAll([...feedVideos], true, feedSelectorFunc)
+            feedVideos.length && coreFilterInstance.checkAll(feedVideos, true, feedSelectorFunc)
             // debugFilter(`checkVideoList check ${rcmdVideos.length} rcmd videos`)
-            rcmdVideos.length && coreFilterInstance.checkAll([...rcmdVideos], true, rcmdSelectorFunc)
+            rcmdVideos.length && coreFilterInstance.checkAll(rcmdVideos, true, rcmdSelectorFunc)
             // debugFilter(`checkVideoList check ${feedVideos.length} feed videos`)
         } catch (err) {
             error(err)
@@ -179,7 +197,7 @@ if (isPageHomepage()) {
         // 监听右键单击
         document.addEventListener('contextmenu', (e) => {
             if (e.target instanceof HTMLElement) {
-                debugFilter(e.target.classList)
+                // debugFilter(e.target.classList)
                 if (
                     isContextMenuUploaderEnable &&
                     (e.target.classList.contains('bili-video-card__info--author') ||
@@ -385,14 +403,33 @@ if (isPageHomepage()) {
             ),
         )
     }
-    homepageFilterGroupList.push(new Group('homepage-bvid-filter-group', '首页 视频BV号过滤 (右键单击标题)', bvidItems))
+    homepageFilterGroupList.push(new Group('homepage-bvid-filter-group', '首页 BV号过滤 (右键单击标题)', bvidItems))
 
     // UI组件, 例外和白名单part
     {
+        // 已关注UP主 免过滤, 默认开启, 反复开关需刷新
+        whitelistItems.push(
+            new CheckboxItem(
+                'homepage-following-whitelist-filter-status',
+                '标有 [已关注] 的视频免过滤 (实验性)',
+                true,
+                () => {
+                    isFollowingWhitelistEnable = true
+                    // 触发全站检测
+                    checkVideoList(true)
+                },
+                false,
+                null,
+                () => {
+                    isFollowingWhitelistEnable = false
+                    checkVideoList(true)
+                },
+            ),
+        )
         whitelistItems.push(
             new CheckboxItem(
                 homepageUploaderWhitelistAction.statusKey,
-                '启用 首页 UP主白名单',
+                '启用 首页UP主白名单',
                 false,
                 () => {
                     homepageUploaderWhitelistAction.enable()
@@ -418,7 +455,7 @@ if (isPageHomepage()) {
         whitelistItems.push(
             new CheckboxItem(
                 homepageTitleKeyworldWhitelistAction.statusKey,
-                '启用 首页 标题关键词白名单',
+                '启用 首页标题关键词白名单',
                 false,
                 () => {
                     homepageTitleKeyworldWhitelistAction.enable()
@@ -442,7 +479,9 @@ if (isPageHomepage()) {
             ),
         )
     }
-    homepageFilterGroupList.push(new Group('homepage-whitelist-filter-group', '首页 免过滤和白名单', whitelistItems))
+    homepageFilterGroupList.push(
+        new Group('homepage-whitelist-filter-group', '首页 白名单设定 (免过滤)', whitelistItems),
+    )
 }
 
 export { homepageFilterGroupList }

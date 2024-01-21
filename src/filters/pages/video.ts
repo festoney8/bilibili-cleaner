@@ -4,7 +4,7 @@ import { ButtonItem, CheckboxItem, NumberItem } from '../../components/item'
 import { Group } from '../../components/group'
 import { isPageVideo } from '../../utils/page-type'
 import contextMenuInstance from '../../components/contextmenu'
-import { matchBvid } from '../../utils/misc'
+import { matchBvid } from '../../utils/tool'
 import {
     BvidAction,
     DurationAction,
@@ -20,6 +20,8 @@ const videoFilterGroupList: Group[] = []
 let isContextMenuFuncRunning = false
 let isContextMenuUploaderEnable = false
 let isContextMenuBvidEnable = false
+// 接下来播放是否免过滤
+let isNextPlayWhitelistEnable = true
 
 if (isPageVideo()) {
     // 页面载入后监听流程
@@ -69,10 +71,13 @@ if (isPageVideo()) {
                 },
             }
             const nextSelectorFunc = rcmdSelectorFunc
-            // Todo: 改为按需启用nextVideos筛选
-            nextVideos.length && coreFilterInstance.checkAll([...nextVideos], true, nextSelectorFunc)
-            // debugFilter(`checkVideoList check ${nextVideos.length} next videos`)
-            rcmdVideos.length && coreFilterInstance.checkAll([...rcmdVideos], true, rcmdSelectorFunc)
+
+            // 判断是否筛选接下来播放
+            if (!isNextPlayWhitelistEnable && nextVideos.length) {
+                coreFilterInstance.checkAll([...nextVideos], false, nextSelectorFunc)
+                // debugFilter(`checkVideoList check ${nextVideos.length} next videos`)
+            }
+            rcmdVideos.length && coreFilterInstance.checkAll([...rcmdVideos], false, rcmdSelectorFunc)
             // debugFilter(`checkVideoList check ${rcmdVideos.length} rcmd videos`)
         } catch (err) {
             error(err)
@@ -351,8 +356,26 @@ if (isPageVideo()) {
     }
     videoFilterGroupList.push(new Group('video-bvid-filter-group', '播放页 BV号过滤 (右键单击标题)', bvidItems))
 
-    // UI组件, 例外和白名单part
+    // UI组件, 免过滤和白名单part
     {
+        // 不过滤接下来播放, 默认开启 (关闭需刷新)
+        whitelistItems.push(
+            new CheckboxItem(
+                'video-next-play-whitelist-filter-status',
+                '接下来播放 免过滤',
+                true,
+                () => {
+                    isNextPlayWhitelistEnable = true
+                    checkVideoList(true)
+                },
+                true,
+                null,
+                () => {
+                    isNextPlayWhitelistEnable = false
+                    checkVideoList(true)
+                },
+            ),
+        )
         whitelistItems.push(
             new CheckboxItem(
                 videoUploaderWhitelistAction.statusKey,
@@ -406,7 +429,7 @@ if (isPageVideo()) {
             ),
         )
     }
-    videoFilterGroupList.push(new Group('video-whitelist-filter-group', '播放页 白名单', whitelistItems))
+    videoFilterGroupList.push(new Group('video-whitelist-filter-group', '播放页 白名单设定 (免过滤)', whitelistItems))
 }
 
 export { videoFilterGroupList }

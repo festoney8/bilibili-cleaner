@@ -119,5 +119,5 @@ class FilterAgency {
 }
 
 // 单例
-const filterAgencyInstance = new FilterAgency()
-export default filterAgencyInstance
+const agencyInstance = new FilterAgency()
+export default agencyInstance

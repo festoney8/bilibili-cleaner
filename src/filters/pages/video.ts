@@ -12,7 +12,7 @@ import contextMenuInstance from '../../components/contextmenu'
 import { WordList } from '../../components/wordlist'
 import { Action } from './homepage'
 import { matchBvid } from '../../utils/misc'
-import filterAgencyInstance from '../agency/agency'
+import agencyInstance from '../agency/agency'
 
 const videoFilterGroupList: Group[] = []
 
@@ -144,16 +144,16 @@ if (isPageVideo()) {
         }
         enable() {
             // 告知agency
-            filterAgencyInstance.notifyDuration('enable')
+            agencyInstance.notifyDuration('enable')
             // 触发全站过滤
             checkVideoList()
         }
         disable() {
-            filterAgencyInstance.notifyDuration('disable')
+            agencyInstance.notifyDuration('disable')
             checkVideoList()
         }
         change(value: number) {
-            filterAgencyInstance.notifyDuration('change', value)
+            agencyInstance.notifyDuration('change', value)
             checkVideoList()
         }
     }
@@ -179,25 +179,25 @@ if (isPageVideo()) {
             isContextMenuUploaderEnable = true
             contextMenuFunc()
             // 告知agency
-            filterAgencyInstance.notifyUploader('enable')
+            agencyInstance.notifyUploader('enable')
             // 触发全站过滤
             checkVideoList()
         }
         disable() {
             // 修改右键监听函数状态
             isContextMenuUploaderEnable = false
-            filterAgencyInstance.notifyUploader('disable')
+            agencyInstance.notifyUploader('disable')
             checkVideoList()
         }
         add(value: string) {
             this.blacklist.addValue(value)
-            filterAgencyInstance.notifyUploader('add', value)
+            agencyInstance.notifyUploader('add', value)
             checkVideoList()
         }
         // edit由编辑黑名单的保存动作回调
         edit(values: string[]) {
             // this.blacklist.saveList(values)
-            filterAgencyInstance.notifyUploader('edit', values)
+            agencyInstance.notifyUploader('edit', values)
             checkVideoList()
         }
     }
@@ -223,25 +223,25 @@ if (isPageVideo()) {
             isContextMenuBvidEnable = true
             contextMenuFunc()
             // 告知agency
-            filterAgencyInstance.notifyBvid('enable')
+            agencyInstance.notifyBvid('enable')
             // 触发全站过滤
             checkVideoList()
         }
         disable() {
             // 禁用右键菜单功能
             isContextMenuBvidEnable = false
-            filterAgencyInstance.notifyBvid('disable')
+            agencyInstance.notifyBvid('disable')
             checkVideoList()
         }
         add(value: string) {
             this.blacklist.addValue(value)
-            filterAgencyInstance.notifyBvid('add', value)
+            agencyInstance.notifyBvid('add', value)
             checkVideoList()
         }
         // edit由编辑黑名单的保存动作回调
         edit(values: string[]) {
             // this.blacklist.saveList(values)
-            filterAgencyInstance.notifyBvid('edit', values)
+            agencyInstance.notifyBvid('edit', values)
             checkVideoList()
         }
     }
@@ -264,23 +264,23 @@ if (isPageVideo()) {
 
         enable() {
             // 告知agency
-            filterAgencyInstance.notifyTitleKeyword('enable')
+            agencyInstance.notifyTitleKeyword('enable')
             // 触发全站过滤
             checkVideoList()
         }
         disable() {
-            filterAgencyInstance.notifyTitleKeyword('disable')
+            agencyInstance.notifyTitleKeyword('disable')
             checkVideoList()
         }
         add(value: string) {
             this.blacklist.addValue(value)
-            filterAgencyInstance.notifyTitleKeyword('add', value)
+            agencyInstance.notifyTitleKeyword('add', value)
             checkVideoList()
         }
         // edit由编辑黑名单的保存动作回调
         edit(values: string[]) {
             // this.blacklist.saveList(values)
-            filterAgencyInstance.notifyTitleKeyword('edit', values)
+            agencyInstance.notifyTitleKeyword('edit', values)
             checkVideoList()
         }
     }

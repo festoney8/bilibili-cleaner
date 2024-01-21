@@ -1,5 +1,5 @@
 import settings from '../../settings'
-import { debugFilter, error } from '../../utils/logger'
+import { debugFilter, error, log } from '../../utils/logger'
 import bvidFilterInstance from './subfilters/bvid'
 import durationFilterInstance from './subfilters/duration'
 import titleKeywordFilterInstance from './subfilters/titleKeyword'
@@ -22,17 +22,26 @@ export type SelectorFunc = {
     uploader?: (video: HTMLElement) => string | null
 }
 
+interface VideoInfo {
+    duration?: string | undefined
+    title?: string | undefined
+    uploader?: string | undefined
+    bvid?: string | undefined
+}
+
 class CoreFilter {
     constructor() {}
 
     /** 隐藏视频, display none important */
-    private hideVideo(video: HTMLElement) {
+    private hideVideo(video: HTMLElement, info: VideoInfo) {
+        if (!video.style.display.includes('none')) {
+            log(`hide video\nbvid: ${info.bvid}\ntime: ${info.duration}\nup: ${info.uploader}\ntitle: ${info.title}`)
+        }
         video.style.setProperty('display', 'none', 'important')
     }
 
     /** 恢复视频, 用于筛选条件变化时重置 */
     private showVideo(video: HTMLElement) {
-        debugFilter('SHOW')
         if (video.style.display.includes('none')) {
             video.style.removeProperty('display')
         }
@@ -46,6 +55,7 @@ class CoreFilter {
      * @param selectorFunc 使用selector选取元素的函数
      */
     checkAll(videos: HTMLElement[], sign = true, selectorFunc: SelectorFunc) {
+        debugFilter(`checkAll start`)
         try {
             const checkDuration = durationFilterInstance.isEnable && selectorFunc.duration !== undefined
             const checkTitleKeyword = titleKeywordFilterInstance.isEnable && selectorFunc.titleKeyword !== undefined
@@ -63,18 +73,8 @@ class CoreFilter {
             }
 
             videos.forEach((video) => {
-                debugFilter('=======================================================')
-                debugFilter('视频参数：')
-                debugFilter(
-                    selectorFunc.duration!(video),
-                    '|',
-                    selectorFunc.bvid!(video),
-                    '|',
-                    selectorFunc.uploader!(video),
-                )
-                debugFilter(selectorFunc.titleKeyword!(video))
+                const info: VideoInfo = {}
 
-                const arr: any[] = []
                 // 构建黑白名单任务, 调用各个子过滤器的check()方法检测
                 const blackTasks: Promise<string>[] = []
                 const whiteTasks: Promise<string>[] = []
@@ -82,112 +82,72 @@ class CoreFilter {
                     const duration = selectorFunc.duration!(video)
                     if (duration) {
                         blackTasks.push(durationFilterInstance.check(duration))
-                        arr.push(duration)
+                        info.duration = duration
                     }
                 }
                 if (checkBvid) {
                     const bvid = selectorFunc.bvid!(video)
                     if (bvid) {
                         blackTasks.push(bvidFilterInstance.check(bvid))
-                        arr.push(bvid)
+                        info.bvid = bvid
                     }
                 }
                 if (checkUploader) {
                     const uploader = selectorFunc.uploader!(video)
                     if (uploader) {
                         blackTasks.push(uploaderFilterInstance.check(uploader))
-                        arr.push(uploader)
+                        info.uploader = uploader
                     }
                 }
                 if (checkTitleKeyword) {
-                    const titleKeyword = selectorFunc.titleKeyword!(video)
-                    if (titleKeyword) {
-                        blackTasks.push(titleKeywordFilterInstance.check(titleKeyword))
-                        arr.push(titleKeyword)
+                    const title = selectorFunc.titleKeyword!(video)
+                    if (title) {
+                        blackTasks.push(titleKeywordFilterInstance.check(title))
+                        info.title = title
                     }
                 }
                 if (checkUploaderWhitelist) {
                     const uploader = selectorFunc.uploader!(video)
                     if (uploader) {
                         whiteTasks.push(uploaderWhitelistFilterInstance.check(uploader))
+                        info.uploader = uploader
                     }
                 }
                 if (checkTitleKeywordWhitelist) {
-                    const titleKeyword = selectorFunc.titleKeyword!(video)
-                    if (titleKeyword) {
-                        whiteTasks.push(titleKeywordWhitelistFilterInstance.check(titleKeyword))
+                    const title = selectorFunc.titleKeyword!(video)
+                    if (title) {
+                        whiteTasks.push(titleKeywordWhitelistFilterInstance.check(title))
+                        info.title = title
                     }
                 }
 
-                // // 执行检测
-                // if (whiteTasks.length) {
-                //     Promise.race(whiteTasks)
-                //         .then((result) => {
-                //             debugFilter(result)
-                //             // 命中白名单
-                //             this.showVideo(video)
-                //             if (blackTasks.length) {
-                //                 Promise.all(blackTasks).then().catch()
-                //             }
-                //         })
-                //         .catch((result) => {
-                //             debugFilter(result)
-                //             // 未命中白名单, 进行黑名单检测
-                //             if (blackTasks.length) {
-                //                 Promise.all(blackTasks)
-                //                     .then((result) => {
-                //                         debugFilter(result)
-                //                         this.showVideo(video)
-                //                     })
-                //                     .catch((result) => {
-                //                         // 命中黑名单
-                //                         debugFilter(result)
-                //                         this.hideVideo(video)
-                //                     })
-                //             }
-                //         })
-                // } else {
-                //     if (blackTasks.length) {
-                //         Promise.all(blackTasks)
-                //             .then((result) => {
-                //                 debugFilter(result)
-                //                 this.showVideo(video)
-                //             })
-                //             .catch((result) => {
-                //                 // 命中黑名单
-                //                 debugFilter(result)
-                //                 this.hideVideo(video)
-                //             })
-                //     }
-                // }
-
-                // 此时黑名单非空
+                // 执行检测
                 Promise.all(blackTasks)
                     .then((_result) => {
                         // 未命中黑名单
+                        // debugFilter(_result)
                         this.showVideo(video)
                         Promise.all(whiteTasks)
                             .then((_result) => {})
                             .catch((_result) => {})
                     })
-                    .catch((result) => {
+                    .catch((_result) => {
                         // 命中黑名单
-                        debugFilter(result)
+                        // debugFilter(_result)
                         if (whiteTasks) {
-                            // 白名单检测
                             Promise.all(whiteTasks)
-                                .then((result) => {
+                                .then((_result) => {
                                     // 命中黑名单，未命中白名单
-                                    debugFilter(result)
-                                    this.hideVideo(video)
+                                    // debugFilter(_result)
+                                    this.hideVideo(video, info)
                                 })
-                                .catch((result) => {
+                                .catch((_result) => {
                                     // 命中白名单
-                                    debugFilter(result)
+                                    // debugFilter(_result)
                                     this.showVideo(video)
                                 })
                         } else {
-                            this.hideVideo(video)
+                            this.hideVideo(video, info)
                         }
                     })
 

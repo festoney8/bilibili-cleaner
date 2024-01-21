@@ -204,7 +204,7 @@ if (isPageVideo() || isPagePlaylist()) {
         basicItems.push(
             new CheckboxItem(
                 'video-page-simple-share',
-                '净化分享功能',
+                '净化分享功能 (充电时需关闭)',
                 true,
                 simpleShare,
                 false,

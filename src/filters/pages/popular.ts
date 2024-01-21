@@ -86,11 +86,11 @@ if (isPagePopular()) {
             }
             const feedSelectorFunc = rcmdSelectorFunc
             hotVideos.length && coreFilterInstance.checkAll([...hotVideos], true, feedSelectorFunc)
-            debugFilter(`checkVideoList check ${hotVideos.length} hotVideos`)
+            // debugFilter(`checkVideoList check ${hotVideos.length} hotVideos`)
             weeklyVideos.length && coreFilterInstance.checkAll([...weeklyVideos], true, feedSelectorFunc)
-            debugFilter(`checkVideoList check ${weeklyVideos.length} weeklyVideos`)
+            // debugFilter(`checkVideoList check ${weeklyVideos.length} weeklyVideos`)
             rankVideos.length && coreFilterInstance.checkAll([...rankVideos], true, feedSelectorFunc)
-            debugFilter(`checkVideoList check ${rankVideos.length} rankVideos`)
+            // debugFilter(`checkVideoList check ${rankVideos.length} rankVideos`)
         } catch (err) {
             error(err)
             error('checkVideoList error')
@@ -105,7 +105,7 @@ if (isPagePopular()) {
             checkVideoList(true)
             const videoObverser = new MutationObserver(() => {
                 // 增量检测
-                checkVideoList(false)
+                checkVideoList(true)
             })
             videoObverser.observe(videoListContainer, { childList: true, subtree: true })
             debugFilter('watchVideoListContainer OK')

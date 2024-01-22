@@ -30,7 +30,7 @@ if (isPageVideo()) {
     let videoListContainer: HTMLElement | undefined = undefined
     // 3. 检测视频列表
     const checkVideoList = (_fullSite: boolean) => {
-        debugFilter('checkVideoList start')
+        // debugFilter('checkVideoList start')
         if (!videoListContainer) {
             debugFilter(`checkVideoList videoListContainer not exist`)
             return
@@ -73,22 +73,20 @@ if (isPageVideo()) {
             const nextSelectorFunc = rcmdSelectorFunc
 
             // 判断是否筛选接下来播放
+            rcmdVideos.length && coreFilterInstance.checkAll([...rcmdVideos], false, rcmdSelectorFunc)
+            // debugFilter(`checkVideoList check ${rcmdVideos.length} rcmd videos`)
             if (!isNextPlayWhitelistEnable) {
                 nextVideos.length && coreFilterInstance.checkAll([...nextVideos], false, nextSelectorFunc)
                 // debugFilter(`checkVideoList check ${nextVideos.length} next videos`)
             } else {
                 // 清除隐藏状态
-                nextVideos.forEach((video) => {
-                    showVideo(video)
-                })
+                nextVideos.forEach((video) => showVideo(video))
             }
-            rcmdVideos.length && coreFilterInstance.checkAll([...rcmdVideos], false, rcmdSelectorFunc)
-            // debugFilter(`checkVideoList check ${rcmdVideos.length} rcmd videos`)
         } catch (err) {
             error(err)
             error('checkVideoList error')
         }
-        debugFilter('checkVideoList end')
+        // debugFilter('checkVideoList end')
     }
     // 2. 监听 videoListContainer 内部变化, 有变化时检测视频列表
     const watchVideoListContainer = () => {
@@ -178,7 +176,7 @@ if (isPageVideo()) {
         // 监听右键单击
         document.addEventListener('contextmenu', (e) => {
             if (e.target instanceof HTMLElement) {
-                debugFilter(e.target.classList)
+                // debugFilter(e.target.classList)
                 const target = e.target
                 if (
                     isContextMenuUploaderEnable &&

@@ -18,3 +18,18 @@ export const matchAvidBvid = (s: string): string | null => {
     }
     return null
 }
+
+// 隐藏视频
+export const hideVideo = (video: HTMLElement) => {
+    video.style.setProperty('display', 'none', 'important')
+}
+// 显示视频
+export const showVideo = (video: HTMLElement) => {
+    if (video.style.display === 'none') {
+        video.style.removeProperty('display')
+    }
+}
+// 判断是否隐藏中
+export const isVideoHide = (video: HTMLElement) => {
+    return video.style.display === 'none'
+}

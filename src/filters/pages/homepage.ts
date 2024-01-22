@@ -5,7 +5,7 @@ import coreFilterInstance, { SelectorFunc } from '../filters/core'
 import settings from '../../settings'
 import { isPageHomepage } from '../../utils/page-type'
 import contextMenuInstance from '../../components/contextmenu'
-import { matchBvid } from '../../utils/tool'
+import { matchBvid, showVideo } from '../../utils/tool'
 import {
     BvidAction,
     DurationAction,
@@ -60,14 +60,22 @@ if (isPageHomepage()) {
                 rcmdVideos = [...videoListContainer.querySelectorAll<HTMLElement>(`:scope > .bili-video-card.is-rcmd`)]
             }
 
-            // 筛掉带有已关注标记的视频（反复开关需刷新）
+            // 筛掉带有已关注标记的视频
             if (isFollowingWhitelistEnable) {
                 feedVideos = feedVideos.filter((video) => {
                     const icontext = video.querySelector('.bili-video-card__info--icon-text')?.textContent?.trim()
+                    if (icontext === '已关注') {
+                        // 清除隐藏状态
+                        showVideo(video)
+                    }
                     return icontext !== '已关注'
                 })
                 rcmdVideos = rcmdVideos.filter((video) => {
                     const icontext = video.querySelector('.bili-video-card__info--icon-text')?.textContent?.trim()
+                    if (icontext === '已关注') {
+                        // 清除隐藏状态
+                        showVideo(video)
+                    }
                     return icontext !== '已关注'
                 })
             }

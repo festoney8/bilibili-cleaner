@@ -1,5 +1,6 @@
 import settings from '../../settings'
 import { debugFilter, error, log } from '../../utils/logger'
+import { hideVideo, isVideoHide, showVideo } from '../../utils/tool'
 import bvidFilterInstance from './subfilters/bvid'
 import durationFilterInstance from './subfilters/duration'
 import titleKeywordFilterInstance from './subfilters/titleKeyword'
@@ -7,6 +8,7 @@ import titleKeywordWhitelistFilterInstance from './subfilters/titleKeywordWhitel
 import uploaderFilterInstance from './subfilters/uploader'
 import uploaderWhitelistFilterInstance from './subfilters/uploaderWhitelist'
 
+// 子过滤器实现ISubFilter，包括白名单
 export interface ISubFilter {
     isEnable: boolean
     setStatus(status: boolean): void
@@ -30,23 +32,6 @@ interface VideoInfo {
 }
 
 class CoreFilter {
-    constructor() {}
-
-    /** 隐藏视频, display none important */
-    private hideVideo(video: HTMLElement, info: VideoInfo) {
-        if (!video.style.display.includes('none')) {
-            log(`hide video\nbvid: ${info.bvid}\ntime: ${info.duration}\nup: ${info.uploader}\ntitle: ${info.title}`)
-        }
-        video.style.setProperty('display', 'none', 'important')
-    }
-
-    /** 恢复视频, 用于筛选条件变化时重置 */
-    private showVideo(video: HTMLElement) {
-        if (video.style.display.includes('none')) {
-            video.style.removeProperty('display')
-        }
-    }
-
     /**
      * 检测视频列表中每个视频是否合法, 并隐藏不合法的视频
      * 对选取出的 标题/UP主/时长/BVID 进行并发检测
@@ -68,7 +53,7 @@ class CoreFilter {
 
             if (!checkDuration && !checkTitleKeyword && !checkUploader && !checkBvid) {
                 // 黑名单全部关闭时 恢复全部视频
-                videos.forEach((video) => this.showVideo(video))
+                videos.forEach((video) => showVideo(video))
                 return
             }
 
@@ -126,7 +111,7 @@ class CoreFilter {
                     .then((_result) => {
                         // 未命中黑名单
                         // debugFilter(_result)
-                        this.showVideo(video)
+                        showVideo(video)
                         Promise.all(whiteTasks)
                             .then((_result) => {})
                             .catch((_result) => {})
@@ -139,15 +124,25 @@ class CoreFilter {
                                 .then((_result) => {
                                     // 命中黑名单，未命中白名单
                                     // debugFilter(_result)
-                                    this.hideVideo(video, info)
+                                    if (!isVideoHide(video)) {
+                                        log(
+                                            `hide video\nbvid: ${info.bvid}\ntime: ${info.duration}\nup: ${info.uploader}\ntitle: ${info.title}`,
+                                        )
+                                    }
+                                    hideVideo(video)
                                 })
                                 .catch((_result) => {
                                     // 命中白名单
                                     // debugFilter(_result)
-                                    this.showVideo(video)
+                                    showVideo(video)
                                 })
                         } else {
-                            this.hideVideo(video, info)
+                            if (!isVideoHide(video)) {
+                                log(
+                                    `hide video\nbvid: ${info.bvid}\ntime: ${info.duration}\nup: ${info.uploader}\ntitle: ${info.title}`,
+                                )
+                            }
+                            hideVideo(video)
                         }
                     })
 

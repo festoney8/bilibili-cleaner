@@ -13,6 +13,7 @@ import {
     UploaderAction,
     UploaderWhitelistAction,
 } from './actions/action'
+import { GM_getValue } from '$'
 
 const videoFilterGroupList: Group[] = []
 
@@ -21,7 +22,7 @@ let isContextMenuFuncRunning = false
 let isContextMenuUploaderEnable = false
 let isContextMenuBvidEnable = false
 // 接下来播放是否免过滤
-let isNextPlayWhitelistEnable = true
+let isNextPlayWhitelistEnable: boolean = GM_getValue('BILICLEANER_video-next-play-whitelist-filter-status', true)
 
 if (isPageVideo()) {
     // 页面载入后监听流程
@@ -75,12 +76,12 @@ if (isPageVideo()) {
             // 判断是否筛选接下来播放
             rcmdVideos.length && coreFilterInstance.checkAll([...rcmdVideos], false, rcmdSelectorFunc)
             // debugFilter(`checkVideoList check ${rcmdVideos.length} rcmd videos`)
-            if (!isNextPlayWhitelistEnable) {
-                nextVideos.length && coreFilterInstance.checkAll([...nextVideos], false, nextSelectorFunc)
-                // debugFilter(`checkVideoList check ${nextVideos.length} next videos`)
-            } else {
+            if (isNextPlayWhitelistEnable) {
                 // 清除隐藏状态
                 nextVideos.forEach((video) => showVideo(video))
+            } else {
+                nextVideos.length && coreFilterInstance.checkAll([...nextVideos], false, nextSelectorFunc)
+                // debugFilter(`checkVideoList check ${nextVideos.length} next videos`)
             }
         } catch (err) {
             error(err)
@@ -365,7 +366,7 @@ if (isPageVideo()) {
 
     // UI组件, 免过滤和白名单part
     {
-        // 不过滤接下来播放, 默认开启 (关闭需刷新)
+        // 不过滤接下来播放, 默认开启
         whitelistItems.push(
             new CheckboxItem(
                 'video-next-play-whitelist-filter-status',
@@ -375,7 +376,7 @@ if (isPageVideo()) {
                     isNextPlayWhitelistEnable = true
                     checkVideoList(true)
                 },
-                true,
+                false,
                 null,
                 () => {
                     isNextPlayWhitelistEnable = false

@@ -14,6 +14,7 @@ import {
     UploaderAction,
     UploaderWhitelistAction,
 } from './actions/action'
+import { GM_getValue } from '$'
 
 const homepageFilterGroupList: Group[] = []
 
@@ -22,7 +23,7 @@ let isContextMenuFuncRunning = false
 let isContextMenuUploaderEnable = false
 let isContextMenuBvidEnable = false
 // 带已关注tag的视频不被过滤(实验性)
-let isFollowingWhitelistEnable = true
+let isFollowingWhitelistEnable: boolean = GM_getValue('BILICLEANER_homepage-following-whitelist-filter-status', true)
 
 if (isPageHomepage()) {
     // 页面载入后监听流程
@@ -419,7 +420,7 @@ if (isPageHomepage()) {
 
     // UI组件, 例外和白名单part
     {
-        // 已关注UP主 免过滤, 默认开启, 反复开关需刷新
+        // 已关注UP主 免过滤, 默认开启
         whitelistItems.push(
             new CheckboxItem(
                 'homepage-following-whitelist-filter-status',

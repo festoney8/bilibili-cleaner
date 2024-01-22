@@ -269,6 +269,11 @@ export class UploaderWhitelistAction implements Action {
         agencyInstance.notifyUploaderWhitelist('disable')
         this.checkVideoList(true)
     }
+    add(value: string) {
+        this.whitelist.addValue(value)
+        agencyInstance.notifyUploaderWhitelist('add', value)
+        this.checkVideoList(true)
+    }
     // edit由编辑白名单的保存动作回调, 数据由编辑器实例存储
     edit(values: string[]) {
         agencyInstance.notifyUploaderWhitelist('edit', values)

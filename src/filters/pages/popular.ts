@@ -188,10 +188,14 @@ if (isPagePopular()) {
                     const uploader = target.textContent
                     if (uploader) {
                         e.preventDefault()
-                        const onclick = () => {
+                        const onclickBlack = () => {
                             popularUploaderAction.add(uploader)
                         }
-                        contextMenuInstance.registerMenu(`屏蔽UP主：${uploader}`, onclick)
+                        const onclickWhite = () => {
+                            popularUploaderWhitelistAction.add(uploader)
+                        }
+                        contextMenuInstance.registerMenu(`◎ 屏蔽UP主：${uploader}`, onclickBlack)
+                        contextMenuInstance.registerMenu(`◎ 将UP主加入白名单`, onclickWhite)
                         contextMenuInstance.show(e.clientX, e.clientY)
                     }
                 } else if (

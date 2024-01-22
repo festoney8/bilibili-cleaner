@@ -187,10 +187,14 @@ if (isPageVideo()) {
                     const uploader = target.textContent
                     if (uploader) {
                         e.preventDefault()
-                        const onclick = () => {
+                        const onclickBlack = () => {
                             videoUploaderAction.add(uploader)
                         }
-                        contextMenuInstance.registerMenu(`屏蔽UP主：${uploader}`, onclick)
+                        const onclickWhite = () => {
+                            videoUploaderWhitelistAction.add(uploader)
+                        }
+                        contextMenuInstance.registerMenu(`◎ 屏蔽UP主：${uploader}`, onclickBlack)
+                        contextMenuInstance.registerMenu(`◎ 将UP主加入白名单`, onclickWhite)
                         contextMenuInstance.show(e.clientX, e.clientY)
                     }
                 } else if (

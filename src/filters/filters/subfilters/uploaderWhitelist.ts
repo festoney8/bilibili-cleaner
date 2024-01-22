@@ -14,6 +14,13 @@ class UploaderWhitelistFilter implements ISubFilter {
         this.uploaderSet = new Set(values.map((v) => v.trim()).filter((v) => v))
     }
 
+    addParam(value: string) {
+        debugFilter(`UploaderWhitelist`, Array.from(this.uploaderSet).join('|'))
+        if (value.trim()) {
+            this.uploaderSet.add(value.trim())
+        }
+    }
+
     check(uploader: string): Promise<string> {
         uploader = uploader.trim()
         return new Promise<string>((resolve, reject) => {

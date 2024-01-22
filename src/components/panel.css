@@ -202,7 +202,8 @@
 #bili-cleaner-wordlist textarea.wordlist-body {
     width: 340px;
     height: 400px;
-    margin: 10px;
+    margin: 5px 15px;
+    border: 1px solid #000;
     border-radius: 5px;
     overflow-y: scroll;
     font-size: 18px;

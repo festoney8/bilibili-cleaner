@@ -1,7 +1,7 @@
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
 import { debug } from '../utils/logger'
-import { matchAvidBvid, matchBvid } from '../utils/misc'
+import { matchAvidBvid, matchBvid } from '../utils/tool'
 import { isPagePlaylist, isPageVideo } from '../utils/page-type'
 
 /** BV号转AV号 */
@@ -204,7 +204,7 @@ if (isPageVideo() || isPagePlaylist()) {
         basicItems.push(
             new CheckboxItem(
                 'video-page-simple-share',
-                '净化分享功能',
+                '净化分享功能 (充电时需关闭)',
                 true,
                 simpleShare,
                 false,

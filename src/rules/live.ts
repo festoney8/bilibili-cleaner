@@ -255,7 +255,7 @@ if (isPageLive()) {
         playerItems.push(
             new CheckboxItem(
                 'live-page-combo-danmaku',
-                '隐藏 复读计数弹幕',
+                '隐藏 播放器顶部复读计数弹幕',
                 false,
                 undefined,
                 false,

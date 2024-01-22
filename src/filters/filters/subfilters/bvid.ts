@@ -9,32 +9,28 @@ class BvidFilter implements ISubFilter {
         this.isEnable = status
     }
 
-    setParams(bvidList: string[]) {
-        this.bvidSet = new Set(bvidList)
+    setParams(values: string[]) {
+        this.bvidSet = new Set(values.map((v) => v.trim()).filter((v) => v))
     }
 
     addParam(bvid: string) {
         this.bvidSet.add(bvid.trim())
     }
 
-    check(bvid: string): Promise<void> {
+    check(bvid: string): Promise<string> {
         bvid = bvid.trim()
-        return new Promise<void>((resolve, reject) => {
+        return new Promise<string>((resolve, reject) => {
             try {
                 if (!this.isEnable || bvid.length === 0 || this.bvidSet.size === 0) {
-                    // debug('resolve, BvidFilter disable, or bvid invalid, or bvid blacklist is empty')
-                    resolve()
+                    resolve('Bvid resolve, disable or empty')
                 } else if (this.bvidSet.has(bvid)) {
-                    // debug(`reject, bvid ${bvid} in bvid blacklist`)
-                    reject()
+                    reject(`Bvid reject, ${bvid} in blacklist`)
                 } else {
-                    // debug(`resolve, bvid ${bvid} not in bvid blacklist`)
-                    resolve()
+                    resolve('Bvid resolve')
                 }
             } catch (err) {
                 error(err)
-                error(`resolve, BvidFilter error, bvid`, bvid)
-                resolve()
+                resolve(`Bvid resolve, error`)
             }
         })
     }

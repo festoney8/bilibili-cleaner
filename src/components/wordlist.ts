@@ -57,8 +57,27 @@ export class WordList {
         }
     }
 
+    /** 添加多个值到列表 */
+    addValues(values: string[]) {
+        try {
+            this.getValue()
+            values.forEach((value) => {
+                value = value.trim()
+                if (value && !this.wordSet.has(value)) {
+                    this.wordArr.push(value)
+                    this.wordSet.add(value)
+                }
+            })
+            this.setValue()
+            debug(`list ${this.listID} add ${values.length} lines, OK`)
+        } catch (err) {
+            error(err)
+            error(`list ${this.listID} add ${values.length} lines, ERROR`)
+        }
+    }
+
     /**
-     * 添加多个值到列表
+     * 编辑整个列表
      * @param values 编辑框内输入的列表
      * @returns 保存是否成功
      */
@@ -105,7 +124,11 @@ export class WordList {
         e.innerHTML = this.nodeHTML.trim()
         e.querySelector('.wordlist-header')!.innerHTML = this.description.replace('\n', '<br>')
         debug(`insertNode, fetchList ${this.fetchList().length} lines`)
-        e.querySelector('textarea')!.value = this.fetchList().join('\n')
+        let lines = this.fetchList().join('\n')
+        if (lines) {
+            lines += '\n'
+        }
+        e.querySelector('textarea')!.value = lines
         document.body?.appendChild(e.firstChild!)
     }
 

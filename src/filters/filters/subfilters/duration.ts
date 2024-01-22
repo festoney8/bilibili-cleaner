@@ -26,28 +26,25 @@ class DurationFilter implements ISubFilter {
         return true
     }
 
-    check(duration: string): Promise<void> {
+    check(duration: string): Promise<string> {
         duration = duration.trim()
-        return new Promise<void>((resolve, reject) => {
+        return new Promise<string>((resolve, reject) => {
             try {
                 if (!this.isEnable || this.threshold === 0) {
-                    // debug(`resolve, duration filter is disable, or threshold is 0`)
-                    resolve()
+                    resolve(`Duration resolve, disable or 0`)
                     return
                 } else if (duration && duration.match(this.pattern)) {
                     if (this.isLegal(duration)) {
-                        // debug(`resolve, duration ${duration}, threshold ${this.threshold}`)
-                        resolve()
+                        resolve(`Duration resolve, duration OK`)
                     } else {
-                        // debug(`reject, duration ${duration}, threshold ${this.threshold}`)
-                        reject()
+                        reject(`Duration reject, ${duration} < ${this.threshold}s`)
                     }
                 } else {
-                    resolve()
+                    resolve(`Duration resolve`)
                 }
             } catch (err) {
                 error(err)
-                resolve()
+                resolve(`Duration resolve, error`)
             }
         })
     }

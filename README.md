@@ -3,8 +3,7 @@
 <h1>bilibili 页面净化大师</h1>
 <div><b>高度定制化的 bilibili 网页净化插件，提供 300+ 个功能开关，深度净化页面元素</b></div>
 <br>
-<div>支持去广告、BV号转AV号、URL参数净化、播放器净化 等多种细节功能</div>
-<div>专注于净化/优化页面，轻量高效无浏览器负担，载入时不闪屏</div>
+<div>支持去广告、BV号转AV号、播放器净化、过滤视频 等多种细节功能</div>
 <br>
 
 [安装使用](#%E5%AE%89%E8%A3%85) / [功能介绍](#%E5%8A%9F%E8%83%BD%E4%BB%8B%E7%BB%8D) / [浏览器适配](#%E6%B5%8F%E8%A7%88%E5%99%A8%E9%80%82%E9%85%8D) / [净化效果](#%E5%87%80%E5%8C%96%E6%95%88%E6%9E%9C%E5%AF%B9%E6%AF%94) / [插件兼容](#%E4%B8%8E%E5%85%B6%E4%BB%96-bilibili-%E6%8F%92%E4%BB%B6%E7%9A%84%E5%85%BC%E5%AE%B9%E6%80%A7) / [数据导出](#%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%85%A5%E4%B8%8E%E5%AF%BC%E5%87%BA)
@@ -19,7 +18,7 @@
 
 ![](images/preview.png)
 
-### 筛选推荐视频（测试阶段）
+### 过滤视频推荐（测试阶段）
 
 ![](images/preview-filter.png)
 
@@ -36,7 +35,7 @@
 
 ## 使用
 
--   **注意「首页、播放页、版权作品播放页、直播间、搜索页、动态页、热门视频/排行榜页」这 7 个页面，菜单各不相同**，「通用」项目对所有页面生效
+-   **注意「首页、播放页、版权作品播放页、直播间、搜索页、动态页、热门视频页」这 7 个页面，菜单各不相同**，「通用」项目对所有页面生效
 
 -   按下图打开菜单，在每个页面进行自定义净化，支持实时预览
 
@@ -48,27 +47,25 @@
 
 -   适用于 **净化新版 bilibili 网页**，不做老版本页面适配
 -   目前支持「首页、播放页、版权作品播放页、直播间、搜索页、动态页、热门视频/排行榜页」这 7 个页面，可在每个页面下开启插件菜单，查看功能列表
--   「通用」功能主要用于净化顶栏，对全站所有页面生效
--   脚本默认用户已登录，大会员下(开发环境)体验最佳
--   脚本默认开启少数基础功能，其余功能由用户自行设定
--   大多数功能实时生效，方便用户进行页面定制
--   脚本在开启网页后立即注入，所有隐藏元素规则在开启页面后 1 秒内生效。其他需要等待元素出现的功能，如「净化分享」生效较慢
+-   默认用户已登录，大会员下(开发环境)体验最佳
+-   默认开启少数基础功能，其余功能由用户自行设定
+-   大多数功能实时生效。脚本在开启网页后立即注入，所有隐藏元素规则在开启页面后 1 秒内生效。其他需要等待元素出现的功能，如「净化分享」生效较慢
 
-### 过滤视频推荐
+### 过滤视频
 
 -   **注意：功能目前处于测试阶段，仅供体验，不保证功能生效、不保证屏蔽记录稳定性**
--   支持「首页、播放页、热门页（热门视频/每周必看/排行榜）」共 3 个页面
--   支持「UP主、BV号、标题关键词、视频时长」共 4 种推荐模式
--   视频推荐功能实时生效
+-   支持过滤页面「首页、播放页、热门页（热门视频/每周必看/排行榜）」
+-   支持「UP主、BV号、标题关键词、视频时长」共 4 种过滤模式，支持同时启用
+-   视频过滤功能实时生效
 -   每个页面的功能开关相互独立
--   黑名单、白名单全站通用，一次屏蔽，全站隐藏（只要开关开启就会隐藏）
+-   黑名单、白名单全站通用，**一次屏蔽，全站隐藏**（只要开关开启就会隐藏）
 -   白名单权限高于黑名单，命中白名单的视频不会被隐藏
 
 ### 快捷键
 
 -   支持使用快捷键 `Alt + B` 或 `Ctrl + Alt + B` 快速开启/关闭**页面净化**功能，迅速查看净化对比
 -   Firefox 浏览器仅支持 `Ctrl + Alt + B`
--   临时使用被隐藏的功能，只需快捷键快速关闭插件，不用打开菜单寻找选项
+-   临时使用被隐藏的按钮时，只需快捷键快速关闭插件，不用打开菜单寻找选项
 -   快速关闭只支持停用CSS规则，部分功能不支持，如：BV号转AV号
 
 ### 注意事项
@@ -116,36 +113,23 @@
 ## 净化效果对比
 
 <details>
-<summary><b>查看 播放页 对比图</b></summary>
+<summary><b>查看 播放页 对比图（webp动图）</b></summary>
 
-### before
-
-![](images/screenshot-video-before.png)
-
-### after
-
-![](images/screenshot-video-after.png)
+![](images/screenshot-video.webp)
 
 </details>
 
 <details>
-<summary><b>查看 首页 对比图</b></summary>
+<summary><b>查看 首页 对比图（webp动图）</b></summary>
 
-### before，4 列模式，浏览器缩放 110%~125%
+![](images/screenshot-homepage.webp)
 
-![](images/screenshot-homepage-before-4col.png)
+</details>
 
-### after
+<details>
+<summary><b>查看 动态页 对比图（webp动图）</b></summary>
 
-![](images/screenshot-homepage-after-4col.png)
-
-### before，5 列模式，浏览器缩放 90%~100%
-
-![](images/screenshot-homepage-before-5col.png)
-
-### after
-
-![](images/screenshot-homepage-after-5col.png)
+![](images/screenshot-dynamic.webp)
 
 </details>
 
@@ -163,19 +147,6 @@
 </details>
 
 <details>
-<summary><b>查看 动态页 对比图</b></summary>
-
-### before
-
-![](images/screenshot-dynamic-before.png)
-
-### after
-
-![](images/screenshot-dynamic-after.png)
-
-</details>
-
-<details>
 
 <summary><b>查看 热门视频/排行榜页 对比图</b></summary>
 
@@ -186,14 +157,6 @@
 ### after
 
 ![](images/screenshot-popular-after.png)
-
-</details>
-
-<details>
-
-<summary><b>查看 插件混用首页 (cleaner + Evolved + app-recommend)</b></summary>
-
-![](images/screenshot-homepage-multi-plugins.png)
 
 </details>
 

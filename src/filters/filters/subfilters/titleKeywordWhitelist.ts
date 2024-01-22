@@ -15,7 +15,8 @@ class TitleKeywordWhitelistFilter implements ISubFilter {
     }
 
     check(title: string): Promise<string> {
-        title = title.trim()
+        // 忽略大小写
+        title = title.trim().toLowerCase()
         return new Promise<string>((resolve, reject) => {
             try {
                 if (!this.isEnable || title.length === 0 || this.titleKeywordSet.size === 0) {
@@ -23,7 +24,7 @@ class TitleKeywordWhitelistFilter implements ISubFilter {
                 }
                 let flag = false
                 this.titleKeywordSet.forEach((word) => {
-                    if (word && title.includes(word)) {
+                    if (word && title.toLowerCase().includes(word.toLowerCase())) {
                         // 命中白名单
                         flag = true
                         reject(`Title Whitelist reject, ${title} match keyword ${word}`)

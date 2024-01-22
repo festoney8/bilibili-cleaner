@@ -21,7 +21,8 @@ class TitleKeywordFilter implements ISubFilter {
     }
 
     check(title: string): Promise<string> {
-        title = title.trim()
+        // 忽略大小写
+        title = title.trim().toLowerCase()
         return new Promise<string>((resolve, reject) => {
             try {
                 if (!this.isEnable || title.length === 0 || this.titleKeywordSet.size === 0) {
@@ -29,7 +30,7 @@ class TitleKeywordFilter implements ISubFilter {
                 }
                 let flag = false
                 this.titleKeywordSet.forEach((word) => {
-                    if (word && title.includes(word)) {
+                    if (word && title.includes(word.toLowerCase())) {
                         flag = true
                         reject(`TitleKeyword reject, ${title} match ${word} in blacklist`)
                     }

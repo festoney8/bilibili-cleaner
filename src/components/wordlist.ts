@@ -8,6 +8,7 @@ export class WordList {
     private readonly nodeHTML = `
     <div id="bili-cleaner-wordlist">
         <div class="wordlist-header"></div>
+        <div class="wordlist-description"></div>
         <textarea class="wordlist-body" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
         <div class="wordlist-footer">
             <button class="wordlist-save-button">保存</button>
@@ -18,11 +19,13 @@ export class WordList {
     /**
      * WordList用于维护各种string array（up主列表、BVID列表、关键词列表）
      * @param listID 列表唯一ID, 对应数据存储
-     * @param description 列表说明, 会显示在编辑框头部作为标题
+     * @param title 列表标题
+     * @param description 列表详情说明
      * @param callback 回调函数, 在保存列表时回调
      */
     constructor(
         private listID: string,
+        private title: string,
         private description: string,
         private callback: (values: string[]) => void,
     ) {
@@ -122,7 +125,8 @@ export class WordList {
         }
         const e = document.createElement('div')
         e.innerHTML = this.nodeHTML.trim()
-        e.querySelector('.wordlist-header')!.innerHTML = this.description.replace('\n', '<br>')
+        e.querySelector('.wordlist-header')!.innerHTML = this.title.replace('\n', '<br>')
+        e.querySelector('.wordlist-description')!.innerHTML = this.description.replace('\n', '<br>')
         debug(`insertNode, fetchList ${this.fetchList().length} lines`)
         let lines = this.fetchList().join('\n')
         if (lines) {
@@ -153,6 +157,9 @@ export class WordList {
                 const ok = this.saveList(textarea.value.split('\n'))
                 if (ok) {
                     textarea.value = this.fetchList().join('\n')
+                    if (textarea.value.trim()) {
+                        textarea.value += '\n'
+                    }
                     save.style.backgroundColor = '#99CC66'
                     save.style.color = 'white'
                     setTimeout(() => {
@@ -169,9 +176,44 @@ export class WordList {
         debug(`list ${this.listID} listen save button`)
     }
 
+    /** 可拖拽bar */
+    draggableBar() {
+        try {
+            const wordlist = document.getElementById('bili-cleaner-wordlist') as HTMLFormElement
+            const bar = document.querySelector('#bili-cleaner-wordlist .wordlist-header') as HTMLFormElement
+            let isDragging = false
+            let initX: number, initY: number, initLeft: number, initTop: number
+
+            bar.addEventListener('mousedown', (e) => {
+                isDragging = true
+                initX = e.clientX
+                initY = e.clientY
+                const c = window.getComputedStyle(wordlist)
+                initLeft = parseInt(c.getPropertyValue('left'), 10)
+                initTop = parseInt(c.getPropertyValue('top'), 10)
+            })
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    const diffX = e.clientX - initX
+                    const diffY = e.clientY - initY
+                    wordlist.style.left = `${initLeft + diffX}px`
+                    wordlist.style.top = `${initTop + diffY}px`
+                }
+            })
+            document.addEventListener('mouseup', () => {
+                isDragging = false
+            })
+            debug('draggableBar OK')
+        } catch (err) {
+            error(`draggableBar failed`)
+            error(err)
+        }
+    }
+
     /** 显示编辑框 */
     show() {
         this.insertNode()
         this.watchNode()
+        this.draggableBar()
     }
 }

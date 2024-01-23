@@ -94,6 +94,11 @@ class FilterAgency {
             case 'enable':
                 uploaderWhitelistFilterInstance.setStatus(true)
                 break
+            case 'add':
+                if (typeof value === 'string' && value.trim()) {
+                    uploaderWhitelistFilterInstance.addParam(value.trim())
+                }
+                break
             case 'edit':
                 if (Array.isArray(value)) {
                     uploaderWhitelistFilterInstance.setParams(value.map((v) => v.trim()).filter((v) => v))

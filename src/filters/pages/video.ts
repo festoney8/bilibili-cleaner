@@ -13,6 +13,7 @@ import {
     UploaderAction,
     UploaderWhitelistAction,
 } from './actions/action'
+import { GM_getValue } from '$'
 
 const videoFilterGroupList: Group[] = []
 
@@ -21,7 +22,7 @@ let isContextMenuFuncRunning = false
 let isContextMenuUploaderEnable = false
 let isContextMenuBvidEnable = false
 // 接下来播放是否免过滤
-let isNextPlayWhitelistEnable = true
+let isNextPlayWhitelistEnable: boolean = GM_getValue('BILICLEANER_video-next-play-whitelist-filter-status', true)
 
 if (isPageVideo()) {
     // 页面载入后监听流程
@@ -75,12 +76,12 @@ if (isPageVideo()) {
             // 判断是否筛选接下来播放
             rcmdVideos.length && coreFilterInstance.checkAll([...rcmdVideos], false, rcmdSelectorFunc)
             // debugFilter(`checkVideoList check ${rcmdVideos.length} rcmd videos`)
-            if (!isNextPlayWhitelistEnable) {
-                nextVideos.length && coreFilterInstance.checkAll([...nextVideos], false, nextSelectorFunc)
-                // debugFilter(`checkVideoList check ${nextVideos.length} next videos`)
-            } else {
+            if (isNextPlayWhitelistEnable) {
                 // 清除隐藏状态
                 nextVideos.forEach((video) => showVideo(video))
+            } else {
+                nextVideos.length && coreFilterInstance.checkAll([...nextVideos], false, nextSelectorFunc)
+                // debugFilter(`checkVideoList check ${nextVideos.length} next videos`)
             }
         } catch (err) {
             error(err)
@@ -187,10 +188,14 @@ if (isPageVideo()) {
                     const uploader = target.textContent
                     if (uploader) {
                         e.preventDefault()
-                        const onclick = () => {
+                        const onclickBlack = () => {
                             videoUploaderAction.add(uploader)
                         }
-                        contextMenuInstance.registerMenu(`屏蔽UP主：${uploader}`, onclick)
+                        const onclickWhite = () => {
+                            videoUploaderWhitelistAction.add(uploader)
+                        }
+                        contextMenuInstance.registerMenu(`◎ 屏蔽UP主：${uploader}`, onclickBlack)
+                        contextMenuInstance.registerMenu(`◎ 将UP主加入白名单`, onclickWhite)
                         contextMenuInstance.show(e.clientX, e.clientY)
                     }
                 } else if (
@@ -297,7 +302,7 @@ if (isPageVideo()) {
         titleKeywordItems.push(
             new CheckboxItem(
                 videoTitleKeywordAction.statusKey,
-                '启用 播放页 关键词过滤',
+                '启用 播放页关键词过滤',
                 false,
                 () => {
                     videoTitleKeywordAction.enable()
@@ -312,7 +317,7 @@ if (isPageVideo()) {
         titleKeywordItems.push(
             new ButtonItem(
                 'video-title-keyword-edit-button',
-                '编辑 关键词黑名单',
+                '编辑 关键词黑名单（支持正则）',
                 '编辑',
                 // 按钮功能：打开编辑器
                 () => {
@@ -361,7 +366,7 @@ if (isPageVideo()) {
 
     // UI组件, 免过滤和白名单part
     {
-        // 不过滤接下来播放, 默认开启 (关闭需刷新)
+        // 不过滤接下来播放, 默认开启
         whitelistItems.push(
             new CheckboxItem(
                 'video-next-play-whitelist-filter-status',
@@ -371,7 +376,7 @@ if (isPageVideo()) {
                     isNextPlayWhitelistEnable = true
                     checkVideoList(true)
                 },
-                true,
+                false,
                 null,
                 () => {
                     isNextPlayWhitelistEnable = false
@@ -382,7 +387,7 @@ if (isPageVideo()) {
         whitelistItems.push(
             new CheckboxItem(
                 videoUploaderWhitelistAction.statusKey,
-                '启用 播放页 UP主白名单',
+                '启用 播放页UP主白名单',
                 false,
                 () => {
                     videoUploaderWhitelistAction.enable()
@@ -408,7 +413,7 @@ if (isPageVideo()) {
         whitelistItems.push(
             new CheckboxItem(
                 videoTitleKeywordWhitelistAction.statusKey,
-                '启用 播放页 关键词白名单',
+                '启用 播放页关键词白名单',
                 false,
                 () => {
                     videoTitleKeywordWhitelistAction.enable()
@@ -423,7 +428,7 @@ if (isPageVideo()) {
         whitelistItems.push(
             new ButtonItem(
                 'video-title-keyword-whitelist-edit-button',
-                '编辑 标题关键词白名单',
+                '编辑 关键词白名单（支持正则）',
                 '编辑',
                 // 按钮功能：打开编辑器
                 () => {

@@ -1,7 +1,6 @@
 import { error } from '../../../utils/logger'
 import { ISubFilter } from '../core'
 
-// Todo: 支持正则
 class TitleKeywordFilter implements ISubFilter {
     isEnable = false
     private titleKeywordSet = new Set<string>()
@@ -21,7 +20,8 @@ class TitleKeywordFilter implements ISubFilter {
     }
 
     check(title: string): Promise<string> {
-        title = title.trim()
+        // 忽略大小写
+        title = title.trim().toLowerCase()
         return new Promise<string>((resolve, reject) => {
             try {
                 if (!this.isEnable || title.length === 0 || this.titleKeywordSet.size === 0) {
@@ -29,9 +29,19 @@ class TitleKeywordFilter implements ISubFilter {
                 }
                 let flag = false
                 this.titleKeywordSet.forEach((word) => {
-                    if (word && title.includes(word)) {
-                        flag = true
-                        reject(`TitleKeyword reject, ${title} match ${word} in blacklist`)
+                    if (word.startsWith('/') && word.endsWith('/')) {
+                        // 关键词为正则表达式（反斜杠使用单斜杠），大小写不敏感，支持unicodeSets
+                        const pattern = new RegExp(word.slice(1, -1), 'iv')
+                        if (title.match(pattern)) {
+                            // 命中白名单正则
+                            flag = true
+                            reject(`TitleKeyword reject, ${title} match ${word} in blacklist`)
+                        }
+                    } else {
+                        if (word && title.includes(word.toLowerCase())) {
+                            flag = true
+                            reject(`TitleKeyword reject, ${title} match ${word} in blacklist`)
+                        }
                     }
                 })
                 if (!flag) {

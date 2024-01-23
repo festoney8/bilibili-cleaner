@@ -14,6 +14,7 @@ import {
     UploaderAction,
     UploaderWhitelistAction,
 } from './actions/action'
+import { GM_getValue } from '$'
 
 const homepageFilterGroupList: Group[] = []
 
@@ -22,7 +23,7 @@ let isContextMenuFuncRunning = false
 let isContextMenuUploaderEnable = false
 let isContextMenuBvidEnable = false
 // 带已关注tag的视频不被过滤(实验性)
-let isFollowingWhitelistEnable = true
+let isFollowingWhitelistEnable: boolean = GM_getValue('BILICLEANER_homepage-following-whitelist-filter-status', true)
 
 if (isPageHomepage()) {
     // 页面载入后监听流程
@@ -216,10 +217,14 @@ if (isPageHomepage()) {
                     const uploader = node?.textContent
                     if (uploader) {
                         e.preventDefault()
-                        const onclick = () => {
+                        const onclickBlack = () => {
                             homepageUploaderAction.add(uploader)
                         }
-                        contextMenuInstance.registerMenu(`屏蔽UP主：${uploader}`, onclick)
+                        const onclickWhite = () => {
+                            homepageUploaderWhitelistAction.add(uploader)
+                        }
+                        contextMenuInstance.registerMenu(`◎ 屏蔽UP主：${uploader}`, onclickBlack)
+                        contextMenuInstance.registerMenu(`◎ 将UP主加入白名单`, onclickWhite)
                         contextMenuInstance.show(e.clientX, e.clientY)
                     }
                 } else if (
@@ -363,7 +368,7 @@ if (isPageHomepage()) {
         titleKeywordItems.push(
             new ButtonItem(
                 'homepage-title-keyword-edit-button',
-                '编辑 关键词黑名单',
+                '编辑 关键词黑名单（支持正则）',
                 '编辑',
                 // 按钮功能
                 () => {
@@ -415,7 +420,7 @@ if (isPageHomepage()) {
 
     // UI组件, 例外和白名单part
     {
-        // 已关注UP主 免过滤, 默认开启, 反复开关需刷新
+        // 已关注UP主 免过滤, 默认开启
         whitelistItems.push(
             new CheckboxItem(
                 'homepage-following-whitelist-filter-status',
@@ -478,7 +483,7 @@ if (isPageHomepage()) {
         whitelistItems.push(
             new ButtonItem(
                 'homepage-title-keyword-whitelist-edit-button',
-                '编辑 标题关键词白名单',
+                '编辑 关键词白名单（支持正则）',
                 '编辑',
                 // 按钮功能：显示白名单编辑器
                 () => {

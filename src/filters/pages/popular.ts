@@ -188,10 +188,14 @@ if (isPagePopular()) {
                     const uploader = target.textContent
                     if (uploader) {
                         e.preventDefault()
-                        const onclick = () => {
+                        const onclickBlack = () => {
                             popularUploaderAction.add(uploader)
                         }
-                        contextMenuInstance.registerMenu(`屏蔽UP主：${uploader}`, onclick)
+                        const onclickWhite = () => {
+                            popularUploaderWhitelistAction.add(uploader)
+                        }
+                        contextMenuInstance.registerMenu(`◎ 屏蔽UP主：${uploader}`, onclickBlack)
+                        contextMenuInstance.registerMenu(`◎ 将UP主加入白名单`, onclickWhite)
                         contextMenuInstance.show(e.clientX, e.clientY)
                     }
                 } else if (
@@ -298,7 +302,7 @@ if (isPagePopular()) {
         titleKeywordItems.push(
             new ButtonItem(
                 'popular-title-keyword-edit-button',
-                '编辑 关键词黑名单',
+                '编辑 关键词黑名单（支持正则）',
                 '编辑',
                 // 按钮功能
                 () => {
@@ -394,7 +398,7 @@ if (isPagePopular()) {
         whitelistItems.push(
             new ButtonItem(
                 'popular-title-keyword-whitelist-edit-button',
-                '编辑 标题关键词白名单',
+                '编辑 关键词白名单（支持正则）',
                 '编辑',
                 // 按钮功能：显示白名单编辑器
                 () => {

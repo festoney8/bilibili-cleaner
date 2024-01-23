@@ -15,7 +15,8 @@ class TitleKeywordWhitelistFilter implements ISubFilter {
     }
 
     check(title: string): Promise<string> {
-        title = title.trim()
+        // 忽略大小写
+        title = title.trim().toLowerCase()
         return new Promise<string>((resolve, reject) => {
             try {
                 if (!this.isEnable || title.length === 0 || this.titleKeywordSet.size === 0) {
@@ -23,10 +24,20 @@ class TitleKeywordWhitelistFilter implements ISubFilter {
                 }
                 let flag = false
                 this.titleKeywordSet.forEach((word) => {
-                    if (word && title.includes(word)) {
-                        // 命中白名单
-                        flag = true
-                        reject(`Title Whitelist reject, ${title} match keyword ${word}`)
+                    if (word.startsWith('/') && word.endsWith('/')) {
+                        // 关键词为正则表达式（反斜杠使用单斜杠），大小写不敏感，支持unicodeSets
+                        const pattern = new RegExp(word.slice(1, -1), 'iv')
+                        if (title.match(pattern)) {
+                            // 命中白名单正则
+                            flag = true
+                            reject(`Title Whitelist reject, ${title} match keyword ${word}`)
+                        }
+                    } else {
+                        if (word && title.toLowerCase().includes(word.toLowerCase())) {
+                            // 命中白名单
+                            flag = true
+                            reject(`Title Whitelist reject, ${title} match keyword ${word}`)
+                        }
                     }
                 })
                 if (!flag) {

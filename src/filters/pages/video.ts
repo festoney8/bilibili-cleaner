@@ -302,7 +302,7 @@ if (isPageVideo()) {
         titleKeywordItems.push(
             new CheckboxItem(
                 videoTitleKeywordAction.statusKey,
-                '启用 播放页 关键词过滤',
+                '启用 播放页关键词过滤',
                 false,
                 () => {
                     videoTitleKeywordAction.enable()
@@ -317,7 +317,7 @@ if (isPageVideo()) {
         titleKeywordItems.push(
             new ButtonItem(
                 'video-title-keyword-edit-button',
-                '编辑 关键词黑名单',
+                '编辑 关键词黑名单（支持正则）',
                 '编辑',
                 // 按钮功能：打开编辑器
                 () => {
@@ -387,7 +387,7 @@ if (isPageVideo()) {
         whitelistItems.push(
             new CheckboxItem(
                 videoUploaderWhitelistAction.statusKey,
-                '启用 播放页 UP主白名单',
+                '启用 播放页UP主白名单',
                 false,
                 () => {
                     videoUploaderWhitelistAction.enable()
@@ -413,7 +413,7 @@ if (isPageVideo()) {
         whitelistItems.push(
             new CheckboxItem(
                 videoTitleKeywordWhitelistAction.statusKey,
-                '启用 播放页 关键词白名单',
+                '启用 播放页关键词白名单',
                 false,
                 () => {
                     videoTitleKeywordWhitelistAction.enable()
@@ -428,7 +428,7 @@ if (isPageVideo()) {
         whitelistItems.push(
             new ButtonItem(
                 'video-title-keyword-whitelist-edit-button',
-                '编辑 标题关键词白名单',
+                '编辑 关键词白名单（支持正则）',
                 '编辑',
                 // 按钮功能：打开编辑器
                 () => {

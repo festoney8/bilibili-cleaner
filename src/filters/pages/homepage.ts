@@ -368,7 +368,7 @@ if (isPageHomepage()) {
         titleKeywordItems.push(
             new ButtonItem(
                 'homepage-title-keyword-edit-button',
-                '编辑 关键词黑名单',
+                '编辑 关键词黑名单（支持正则）',
                 '编辑',
                 // 按钮功能
                 () => {
@@ -483,7 +483,7 @@ if (isPageHomepage()) {
         whitelistItems.push(
             new ButtonItem(
                 'homepage-title-keyword-whitelist-edit-button',
-                '编辑 标题关键词白名单',
+                '编辑 关键词白名单（支持正则）',
                 '编辑',
                 // 按钮功能：显示白名单编辑器
                 () => {

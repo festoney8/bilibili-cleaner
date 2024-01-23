@@ -98,7 +98,7 @@ export class UploaderAction implements Action {
         uploaderFilterInstance.setStatus(this.status)
         uploaderFilterInstance.setParams(this.value)
         // 初始化黑名单, callback触发edit, 必需用箭头函数
-        this.blacklist = new WordList(this.valueKey, 'UP主 黑名单', (values: string[]) => {
+        this.blacklist = new WordList(this.valueKey, 'UP主 黑名单', '保存时自动去重，实时生效', (values: string[]) => {
             this.edit(values)
         })
     }
@@ -150,7 +150,7 @@ export class BvidAction implements Action {
         bvidFilterInstance.setStatus(this.status)
         bvidFilterInstance.setParams(this.value)
         // 初始化黑名单, callback触发edit
-        this.blacklist = new WordList(this.valueKey, 'BV号 黑名单', (values: string[]) => {
+        this.blacklist = new WordList(this.valueKey, 'BV号 黑名单', '保存时自动去重，实时生效', (values: string[]) => {
             this.edit(values)
         })
     }
@@ -202,9 +202,14 @@ export class TitleKeywordAction implements Action {
         titleKeywordFilterInstance.setStatus(this.status)
         titleKeywordFilterInstance.setParams(this.value)
         // 初始化黑名单, callback触发edit
-        this.blacklist = new WordList(this.valueKey, '标题关键词 黑名单', (values: string[]) => {
-            this.edit(values)
-        })
+        this.blacklist = new WordList(
+            this.valueKey,
+            '标题关键词 黑名单',
+            `支持正则（iv模式）\n需使用 /.../ 将表达式包起来，如 /xyz|\\d+/`,
+            (values: string[]) => {
+                this.edit(values)
+            },
+        )
     }
 
     enable() {
@@ -254,7 +259,7 @@ export class UploaderWhitelistAction implements Action {
         uploaderWhitelistFilterInstance.setStatus(this.status)
         uploaderWhitelistFilterInstance.setParams(this.value)
         // 初始化白名单, callback触发edit
-        this.whitelist = new WordList(this.valueKey, 'UP主 白名单', (values: string[]) => {
+        this.whitelist = new WordList(this.valueKey, 'UP主 白名单', '保存时自动去重，实时生效', (values: string[]) => {
             this.edit(values)
         })
     }
@@ -306,9 +311,14 @@ export class TitleKeywordWhitelistAction implements Action {
         titleKeywordWhitelistFilterInstance.setStatus(this.status)
         titleKeywordWhitelistFilterInstance.setParams(this.value)
         // 初始化白名单, callback触发edit
-        this.whitelist = new WordList(this.valueKey, '标题关键词 白名单', (values: string[]) => {
-            this.edit(values)
-        })
+        this.whitelist = new WordList(
+            this.valueKey,
+            '标题关键词 白名单',
+            `支持正则（iv模式）\n需使用 /.../ 将表达式包起来，如 /xyz|\\d+/`,
+            (values: string[]) => {
+                this.edit(values)
+            },
+        )
     }
 
     enable() {

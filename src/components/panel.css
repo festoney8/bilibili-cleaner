@@ -182,33 +182,45 @@
 #bili-cleaner-wordlist {
     background: #fff;
     border-radius: 5px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
     position: fixed;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
-    border: 1px solid #000;
     z-index: 2147483641;
 }
 #bili-cleaner-wordlist .wordlist-header {
+    background-color: #fb7299;
+    color: #fff;
     font-size: 22px;
     font-weight: bold;
-    margin: 8px auto;
-    height: 40px;
-    line-height: 40px;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    line-height: 36px;
+    text-align: center;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+#bili-cleaner-wordlist .wordlist-description {
+    font-size: 18px;
+    margin: 6px auto;
+    line-height: 18px;
     text-align: center;
 }
 #bili-cleaner-wordlist textarea.wordlist-body {
     width: 340px;
     height: 400px;
-    margin: 5px 15px;
-    border: 1px solid #000;
-    border-radius: 5px;
+    margin: 0 12px;
+    border: 2px solid #ccc;
     overflow-y: scroll;
     font-size: 18px;
-    line-height: 24px;
-    padding: 8px;
+    line-height: 28px;
+    padding: 5px 10px;
     flex-grow: 1;
     resize: none;
 }

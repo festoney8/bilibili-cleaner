@@ -212,5 +212,12 @@
 
 ## Contribution
 
--   main branch 用于发布测试版和稳定版
+-   main branch 只用于发布测试版和稳定版
 -   dev branch 用于开发
+
+<details>
+<summary>视频过滤流程</summary>
+
+![](images/filter-flowchart.jpg)
+
+</details>

@@ -30,9 +30,19 @@ class TitleKeywordFilter implements ISubFilter {
                 }
                 let flag = false
                 this.titleKeywordSet.forEach((word) => {
-                    if (word && title.includes(word.toLowerCase())) {
-                        flag = true
-                        reject(`TitleKeyword reject, ${title} match ${word} in blacklist`)
+                    if (word.startsWith('/') && word.endsWith('/')) {
+                        // 关键词为正则表达式（反斜杠使用单斜杠），大小写不敏感，支持unicodeSets
+                        const pattern = new RegExp(word.slice(1, -1), 'iv')
+                        if (title.match(pattern)) {
+                            // 命中白名单正则
+                            flag = true
+                            reject(`TitleKeyword reject, ${title} match ${word} in blacklist`)
+                        }
+                    } else {
+                        if (word && title.includes(word.toLowerCase())) {
+                            flag = true
+                            reject(`TitleKeyword reject, ${title} match ${word} in blacklist`)
+                        }
                     }
                 })
                 if (!flag) {

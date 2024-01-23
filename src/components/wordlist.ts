@@ -153,6 +153,9 @@ export class WordList {
                 const ok = this.saveList(textarea.value.split('\n'))
                 if (ok) {
                     textarea.value = this.fetchList().join('\n')
+                    if (textarea.value.trim()) {
+                        textarea.value += '\n'
+                    }
                     save.style.backgroundColor = '#99CC66'
                     save.style.color = 'white'
                     setTimeout(() => {

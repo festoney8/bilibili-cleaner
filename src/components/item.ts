@@ -19,9 +19,9 @@ interface IItem {
  * itemFunc 功能函数
  * isItemFuncReload 功能函数是否在URL变动时重新运行
  * itemCSS item的CSS
- * callback 可选, 回调函数, 用于在关掉开关时触发外部事务
+ * callback 回调函数, 用于在关掉开关时触发外部事务
  */
-export interface ICheckboxItemOption {
+interface ICheckboxItemOption {
     itemID: string
     description: string
     defaultStatus?: boolean
@@ -190,7 +190,7 @@ export class CheckboxItem implements IItem {
  * isItemFuncReload 功能函数是否在URL变动时重新运行
  * itemCSS item的CSS
  */
-export interface IRadioItemOption {
+interface IRadioItemOption {
     itemID: string
     description: string
     radioName: string
@@ -372,9 +372,9 @@ export class RadioItem implements IItem {
  * minValue 最小值
  * maxValue 最大值
  * unit 数值单位
- * callback 可选, 回调函数, 在数值修改时回调, 可用于效果实时生效
+ * callback 回调函数, 在数值修改时回调, 可用于效果实时生效
  */
-export interface INumberItemOption {
+interface INumberItemOption {
     itemID: string
     description: string
     defaultValue: number
@@ -469,7 +469,7 @@ export class NumberItem implements IItem {
  * name 按钮名称
  * itemFunc 功能函数
  */
-export interface IButtonItemOption {
+interface IButtonItemOption {
     itemID: string
     description: string
     name: string

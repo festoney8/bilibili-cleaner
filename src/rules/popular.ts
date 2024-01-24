@@ -182,28 +182,22 @@ if (isPagePopular()) {
         ]
         // 官方默认 2 列布局, 默认启用
         layoutItems.push(
-            new RadioItem(
-                'popular-layout-default',
-                '官方默认 2 列布局',
-                'popular-layout-option',
-                layoutRadioItemIDList,
-                true,
-                undefined,
-                false,
-                null,
-            ),
+            new RadioItem({
+                itemID: 'popular-layout-default',
+                description: '官方默认 2 列布局',
+                radioName: 'popular-layout-option',
+                radioItemIDList: layoutRadioItemIDList,
+                defaultStatus: true,
+            }),
         )
         // 强制使用 4 列布局
         layoutItems.push(
-            new RadioItem(
-                'popular-layout-4-column',
-                '强制使用 4 列布局\n默认屏蔽Tag和简介，下同',
-                'popular-layout-option',
-                layoutRadioItemIDList,
-                false,
-                undefined,
-                false,
-                `/* 页面宽度 */
+            new RadioItem({
+                itemID: 'popular-layout-4-column',
+                description: '强制使用 4 列布局\n默认屏蔽Tag和简介，下同',
+                radioName: 'popular-layout-option',
+                radioItemIDList: layoutRadioItemIDList,
+                itemCSS: `/* 页面宽度 */
                 @media (min-width: 1300px) and (max-width: 1399.9px) {
                   .popular-container {
                     max-width: 1180px !important;
@@ -354,19 +348,16 @@ if (isPagePopular()) {
                 .rank-list .rank-item > .content .more-data {
                   display: none !important;
                 }`,
-            ),
+            }),
         )
         // 强制使用 5 列布局
         layoutItems.push(
-            new RadioItem(
-                'popular-layout-5-column',
-                '强制使用 5 列布局',
-                'popular-layout-option',
-                layoutRadioItemIDList,
-                false,
-                undefined,
-                false,
-                `/* 页面宽度 */
+            new RadioItem({
+                itemID: 'popular-layout-5-column',
+                description: '强制使用 5 列布局',
+                radioName: 'popular-layout-option',
+                radioItemIDList: layoutRadioItemIDList,
+                itemCSS: `/* 页面宽度 */
                 @media (min-width: 1300px) and (max-width: 1399.9px) {
                   .popular-container {
                     max-width: 1180px !important;
@@ -517,19 +508,16 @@ if (isPagePopular()) {
                 .rank-list .rank-item > .content .more-data {
                   display: none !important;
                 }`,
-            ),
+            }),
         )
         // 强制使用 6 列布局
         layoutItems.push(
-            new RadioItem(
-                'popular-layout-6-column',
-                '强制使用 6 列布局，建议开启 隐藏弹幕数',
-                'popular-layout-option',
-                layoutRadioItemIDList,
-                false,
-                undefined,
-                false,
-                `/* 页面宽度 */
+            new RadioItem({
+                itemID: 'popular-layout-6-column',
+                description: '强制使用 6 列布局，建议开启 隐藏弹幕数',
+                radioName: 'popular-layout-option',
+                radioItemIDList: layoutRadioItemIDList,
+                itemCSS: `/* 页面宽度 */
                 @media (min-width: 1300px) and (max-width: 1399.9px) {
                   .popular-container {
                     max-width: 1180px !important;
@@ -680,7 +668,7 @@ if (isPagePopular()) {
                 .rank-list .rank-item > .content .more-data {
                   display: none !important;
                 }`,
-            ),
+            }),
         )
     }
     popularGroupList.push(new Group('popular-layout', '页面强制布局 (单选，实验性)', layoutItems))

@@ -248,61 +248,49 @@ if (isPageHomepage()) {
         ]
         // 官方默认布局, 默认开启
         layoutItems.push(
-            new RadioItem(
-                'homepage-layout-default',
-                '官方默认，自动匹配页面缩放',
-                'homepage-layout-option',
-                layoutRadioItemIDList,
-                true,
-                undefined,
-                false,
-                null,
-            ),
+            new RadioItem({
+                itemID: 'homepage-layout-default',
+                description: '官方默认，自动匹配页面缩放',
+                radioName: 'homepage-layout-option',
+                radioItemIDList: layoutRadioItemIDList,
+                defaultStatus: true,
+            }),
         )
         // 强制使用 4 列布局
         layoutItems.push(
-            new RadioItem(
-                'homepage-layout-4-column',
-                '强制使用 4 列布局',
-                'homepage-layout-option',
-                layoutRadioItemIDList,
-                false,
-                undefined,
-                false,
-                `#i_cecream .recommended-container_floor-aside .container {
+            new RadioItem({
+                itemID: 'homepage-layout-4-column',
+                description: '强制使用 4 列布局',
+                radioName: 'homepage-layout-option',
+                radioItemIDList: layoutRadioItemIDList,
+                itemCSS: `#i_cecream .recommended-container_floor-aside .container {
                     grid-template-columns: repeat(4,1fr) !important;
                 }`,
-            ),
+            }),
         )
         // 强制使用 5 列布局
         layoutItems.push(
-            new RadioItem(
-                'homepage-layout-5-column',
-                '强制使用 5 列布局\n建议开启 增大视频信息字号',
-                'homepage-layout-option',
-                layoutRadioItemIDList,
-                false,
-                undefined,
-                false,
-                `#i_cecream .recommended-container_floor-aside .container {
+            new RadioItem({
+                itemID: 'homepage-layout-5-column',
+                description: '强制使用 5 列布局\n建议开启 增大视频信息字号',
+                radioName: 'homepage-layout-option',
+                radioItemIDList: layoutRadioItemIDList,
+                itemCSS: `#i_cecream .recommended-container_floor-aside .container {
                     grid-template-columns: repeat(5,1fr) !important;
                 }`,
-            ),
+            }),
         )
         // 强制使用 6 列布局
         layoutItems.push(
-            new RadioItem(
-                'homepage-layout-6-column',
-                '强制使用 6 列布局 (刷新)\n建议 隐藏发布时间，可选 显示活动轮播',
-                'homepage-layout-option',
-                layoutRadioItemIDList,
-                false,
-                undefined,
-                false,
-                `#i_cecream .recommended-container_floor-aside .container {
+            new RadioItem({
+                itemID: 'homepage-layout-6-column',
+                description: '强制使用 6 列布局 (刷新)\n建议 隐藏发布时间，可选 显示活动轮播',
+                radioName: 'homepage-layout-option',
+                radioItemIDList: layoutRadioItemIDList,
+                itemCSS: `#i_cecream .recommended-container_floor-aside .container {
                     grid-template-columns: repeat(6,1fr) !important;
                 }`,
-            ),
+            }),
         )
     }
     homepageGroupList.push(new Group('homepage-layout', '页面强制布局 (单选)', layoutItems))

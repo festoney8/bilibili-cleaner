@@ -256,17 +256,17 @@ if (isPageSearch()) {
             }),
         )
         durationItems.push(
-            new NumberItem(
-                searchDurationAction.valueKey,
-                '设定最低时长 (0~300s)',
-                60,
-                0,
-                300,
-                '秒',
-                (value: number) => {
+            new NumberItem({
+                itemID: searchDurationAction.valueKey,
+                description: '设定最低时长 (0~300s)',
+                defaultValue: 60,
+                minValue: 0,
+                maxValue: 300,
+                unit: '秒',
+                callback: (value: number) => {
                     searchDurationAction.change(value)
                 },
-            ),
+            }),
         )
     }
     searchFilterGroupList.push(new Group('search-duration-filter-group', '搜索页 视频时长过滤', durationItems))
@@ -292,15 +292,15 @@ if (isPageSearch()) {
         )
         // 按钮功能：打开uploader黑名单编辑框
         uploaderItems.push(
-            new ButtonItem(
-                'search-uploader-edit-button',
-                '编辑 UP主黑名单',
-                '编辑',
+            new ButtonItem({
+                itemID: 'search-uploader-edit-button',
+                description: '编辑 UP主黑名单',
+                name: '编辑',
                 // 按钮功能
-                () => {
+                itemFunc: () => {
                     searchUploaderAction.blacklist.show()
                 },
-            ),
+            }),
         )
     }
     searchFilterGroupList.push(
@@ -323,15 +323,15 @@ if (isPageSearch()) {
         )
         // 按钮功能：打开titleKeyword黑名单编辑框
         titleKeywordItems.push(
-            new ButtonItem(
-                'search-title-keyword-edit-button',
-                '编辑 关键词黑名单（支持正则）',
-                '编辑',
+            new ButtonItem({
+                itemID: 'search-title-keyword-edit-button',
+                description: '编辑 关键词黑名单（支持正则）',
+                name: '编辑',
                 // 按钮功能
-                () => {
+                itemFunc: () => {
                     searchTitleKeywordAction.blacklist.show()
                 },
-            ),
+            }),
         )
     }
     searchFilterGroupList.push(
@@ -359,15 +359,15 @@ if (isPageSearch()) {
         )
         // 按钮功能：打开bvid黑名单编辑框
         bvidItems.push(
-            new ButtonItem(
-                'search-bvid-edit-button',
-                '编辑 BV号黑名单',
-                '编辑',
+            new ButtonItem({
+                itemID: 'search-bvid-edit-button',
+                description: '编辑 BV号黑名单',
+                name: '编辑',
                 // 按钮功能
-                () => {
+                itemFunc: () => {
                     searchBvidAction.blacklist.show()
                 },
-            ),
+            }),
         )
     }
     searchFilterGroupList.push(new Group('search-bvid-filter-group', '搜索页 BV号过滤 (右键单击标题)', bvidItems))
@@ -403,15 +403,15 @@ if (isPageSearch()) {
             }),
         )
         whitelistItems.push(
-            new ButtonItem(
-                'search-uploader-whitelist-edit-button',
-                '编辑 UP主白名单',
-                '编辑',
+            new ButtonItem({
+                itemID: 'search-uploader-whitelist-edit-button',
+                description: '编辑 UP主白名单',
+                name: '编辑',
                 // 按钮功能：显示白名单编辑器
-                () => {
+                itemFunc: () => {
                     searchUploaderWhitelistAction.whitelist.show()
                 },
-            ),
+            }),
         )
         whitelistItems.push(
             new CheckboxItem({
@@ -426,15 +426,15 @@ if (isPageSearch()) {
             }),
         )
         whitelistItems.push(
-            new ButtonItem(
-                'search-title-keyword-whitelist-edit-button',
-                '编辑 关键词白名单（支持正则）',
-                '编辑',
+            new ButtonItem({
+                itemID: 'search-title-keyword-whitelist-edit-button',
+                description: '编辑 关键词白名单（支持正则）',
+                name: '编辑',
                 // 按钮功能：显示白名单编辑器
-                () => {
+                itemFunc: () => {
                     searchTitleKeyworldWhitelistAction.whitelist.show()
                 },
-            ),
+            }),
         )
     }
     searchFilterGroupList.push(new Group('search-whitelist-filter-group', '搜索页 白名单设定 (免过滤)', whitelistItems))

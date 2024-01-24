@@ -251,9 +251,17 @@ if (isPageVideo()) {
             }),
         )
         durationItems.push(
-            new NumberItem(videoDurationAction.valueKey, '设定最低时长 (0~300s)', 60, 0, 300, '秒', (value: number) =>
-                videoDurationAction.change(value),
-            ),
+            new NumberItem({
+                itemID: videoDurationAction.valueKey,
+                description: '设定最低时长 (0~300s)',
+                defaultValue: 60,
+                minValue: 0,
+                maxValue: 300,
+                unit: '秒',
+                callback: (value: number) => {
+                    videoDurationAction.change(value)
+                },
+            }),
         )
     }
     videoFilterGroupList.push(new Group('video-duration-filter-group', '播放页 视频时长过滤', durationItems))
@@ -278,15 +286,15 @@ if (isPageVideo()) {
             }),
         )
         uploaderItems.push(
-            new ButtonItem(
-                'video-uploader-edit-button',
-                '编辑 UP主黑名单',
-                '编辑',
+            new ButtonItem({
+                itemID: 'video-uploader-edit-button',
+                description: '编辑 UP主黑名单',
+                name: '编辑',
                 // 按钮功能：打开编辑器
-                () => {
+                itemFunc: () => {
                     videoUploaderAction.blacklist.show()
                 },
-            ),
+            }),
         )
     }
     videoFilterGroupList.push(new Group('video-uploader-filter-group', '播放页 UP主过滤 (右键单击UP主)', uploaderItems))
@@ -306,15 +314,15 @@ if (isPageVideo()) {
             }),
         )
         titleKeywordItems.push(
-            new ButtonItem(
-                'video-title-keyword-edit-button',
-                '编辑 关键词黑名单（支持正则）',
-                '编辑',
+            new ButtonItem({
+                itemID: 'video-title-keyword-edit-button',
+                description: '编辑 关键词黑名单（支持正则）',
+                name: '编辑',
                 // 按钮功能：打开编辑器
-                () => {
+                itemFunc: () => {
                     videoTitleKeywordAction.blacklist.show()
                 },
-            ),
+            }),
         )
     }
     videoFilterGroupList.push(new Group('video-title-keyword-filter-group', '播放页 标题关键词过滤', titleKeywordItems))
@@ -339,15 +347,15 @@ if (isPageVideo()) {
             }),
         )
         bvidItems.push(
-            new ButtonItem(
-                'video-bvid-edit-button',
-                '编辑 BV号黑名单',
-                '编辑',
+            new ButtonItem({
+                itemID: 'video-bvid-edit-button',
+                description: '编辑 BV号黑名单',
+                name: '编辑',
                 // 按钮功能：打开编辑器
-                () => {
+                itemFunc: () => {
                     videoBvidAction.blacklist.show()
                 },
-            ),
+            }),
         )
     }
     videoFilterGroupList.push(new Group('video-bvid-filter-group', '播放页 BV号过滤 (右键单击标题)', bvidItems))
@@ -383,15 +391,15 @@ if (isPageVideo()) {
             }),
         )
         whitelistItems.push(
-            new ButtonItem(
-                'video-uploader-whitelist-edit-button',
-                '编辑 UP主白名单',
-                '编辑',
+            new ButtonItem({
+                itemID: 'video-uploader-whitelist-edit-button',
+                description: '编辑 UP主白名单',
+                name: '编辑',
                 // 按钮功能：打开编辑器
-                () => {
+                itemFunc: () => {
                     videoUploaderWhitelistAction.whitelist.show()
                 },
-            ),
+            }),
         )
         whitelistItems.push(
             new CheckboxItem({
@@ -406,15 +414,15 @@ if (isPageVideo()) {
             }),
         )
         whitelistItems.push(
-            new ButtonItem(
-                'video-title-keyword-whitelist-edit-button',
-                '编辑 关键词白名单（支持正则）',
-                '编辑',
+            new ButtonItem({
+                itemID: 'video-title-keyword-whitelist-edit-button',
+                description: '编辑 关键词白名单（支持正则）',
+                name: '编辑',
                 // 按钮功能：打开编辑器
-                () => {
+                itemFunc: () => {
                     videoTitleKeywordWhitelistAction.whitelist.show()
                 },
-            ),
+            }),
         )
     }
     videoFilterGroupList.push(new Group('video-whitelist-filter-group', '播放页 白名单设定 (免过滤)', whitelistItems))

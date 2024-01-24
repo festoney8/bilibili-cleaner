@@ -694,47 +694,38 @@ if (!isPageLive()) {
             ]
             // 显示收藏 (官方默认), 默认开启
             headerRightItems.push(
-                new RadioItem(
-                    'common-nav-favorite-watchlater-default',
-                    '显示 收藏 (官方默认)\n新增稍后再看视频时，自动切换为稍后再看',
-                    'common-header-fav-option',
-                    favoriteRadioItemIDList,
-                    true,
-                    undefined,
-                    false,
-                    null,
-                ),
+                new RadioItem({
+                    itemID: 'common-nav-favorite-watchlater-default',
+                    description: '显示 收藏 (官方默认)\n新增稍后再看视频时，自动切换为稍后再看',
+                    radioName: 'common-header-fav-option',
+                    radioItemIDList: favoriteRadioItemIDList,
+                    defaultStatus: true,
+                }),
             )
             // 隐藏 收藏, 隐藏 稍后再看
             headerRightItems.push(
-                new RadioItem(
-                    'common-hide-nav-favorite',
-                    '隐藏 收藏，隐藏 稍后再看',
-                    'common-header-fav-option',
-                    favoriteRadioItemIDList,
-                    false,
-                    undefined,
-                    false,
-                    `.right-entry .v-popover-wrap:has(.header-favorite-container, [data-idx="fav"]) {
+                new RadioItem({
+                    itemID: 'common-hide-nav-favorite',
+                    description: '隐藏 收藏，隐藏 稍后再看',
+                    radioName: 'common-header-fav-option',
+                    radioItemIDList: favoriteRadioItemIDList,
+                    itemCSS: `.right-entry .v-popover-wrap:has(.header-favorite-container, [data-idx="fav"]) {
                         display: none !important;
                     }
                     /* 旧版header */
                     #internationalHeader .nav-user-center .item:has(.mini-favorite) {
                         display: none !important;
                     }`,
-                ),
+                }),
             )
             // 隐藏 收藏, 显示 稍后再看(实验性)
             headerRightItems.push(
-                new RadioItem(
-                    'common-hide-nav-favorite-keep-watchlater',
-                    '隐藏 收藏，显示 稍后再看(实验性)',
-                    'common-header-fav-option',
-                    favoriteRadioItemIDList,
-                    false,
-                    undefined,
-                    false,
-                    `
+                new RadioItem({
+                    itemID: 'common-hide-nav-favorite-keep-watchlater',
+                    description: '隐藏 收藏，显示 稍后再看(实验性)',
+                    radioName: 'common-header-fav-option',
+                    radioItemIDList: favoriteRadioItemIDList,
+                    itemCSS: `
                     /* 移除加入稍后再看时的上翻动画 */
                     .right-entry .v-popover-wrap .header-favorite-container-box {
                         animation: unset !important;
@@ -750,19 +741,16 @@ if (!isPageLive()) {
                             top: 10px;
                         }
                     }`,
-                ),
+                }),
             )
             // 显示 收藏, 显示 稍后再看(实验性)
             headerRightItems.push(
-                new RadioItem(
-                    'common-nav-keep-watchlater',
-                    '显示 收藏，显示 稍后再看(实验性)',
-                    'common-header-fav-option',
-                    favoriteRadioItemIDList,
-                    false,
-                    undefined,
-                    false,
-                    `
+                new RadioItem({
+                    itemID: 'common-nav-keep-watchlater',
+                    description: '显示 收藏，显示 稍后再看(实验性)',
+                    radioName: 'common-header-fav-option',
+                    radioItemIDList: favoriteRadioItemIDList,
+                    itemCSS: `
                     /* 移除加入稍后再看时的上翻动画 */
                     .right-entry .v-popover-wrap .header-favorite-container-box {
                         display: flex !important;
@@ -776,7 +764,7 @@ if (!isPageLive()) {
                             top: 15px;
                         }
                     }`,
-                ),
+                }),
             )
         }
         // 隐藏 历史

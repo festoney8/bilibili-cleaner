@@ -293,17 +293,17 @@ if (isPageHomepage()) {
             }),
         )
         durationItems.push(
-            new NumberItem(
-                homepageDurationAction.valueKey,
-                '设定最低时长 (0~300s)',
-                60,
-                0,
-                300,
-                '秒',
-                (value: number) => {
+            new NumberItem({
+                itemID: homepageDurationAction.valueKey,
+                description: '设定最低时长 (0~300s)',
+                defaultValue: 60,
+                minValue: 0,
+                maxValue: 300,
+                unit: '秒',
+                callback: (value: number) => {
                     homepageDurationAction.change(value)
                 },
-            ),
+            }),
         )
     }
     homepageFilterGroupList.push(new Group('homepage-duration-filter-group', '首页 视频时长过滤', durationItems))
@@ -329,15 +329,15 @@ if (isPageHomepage()) {
         )
         // 按钮功能：打开uploader黑名单编辑框
         uploaderItems.push(
-            new ButtonItem(
-                'homepage-uploader-edit-button',
-                '编辑 UP主黑名单',
-                '编辑',
+            new ButtonItem({
+                itemID: 'homepage-uploader-edit-button',
+                description: '编辑 UP主黑名单',
+                name: '编辑',
                 // 按钮功能
-                () => {
+                itemFunc: () => {
                     homepageUploaderAction.blacklist.show()
                 },
-            ),
+            }),
         )
     }
     homepageFilterGroupList.push(
@@ -360,15 +360,15 @@ if (isPageHomepage()) {
         )
         // 按钮功能：打开titleKeyword黑名单编辑框
         titleKeywordItems.push(
-            new ButtonItem(
-                'homepage-title-keyword-edit-button',
-                '编辑 关键词黑名单（支持正则）',
-                '编辑',
+            new ButtonItem({
+                itemID: 'homepage-title-keyword-edit-button',
+                description: '编辑 关键词黑名单（支持正则）',
+                name: '编辑',
                 // 按钮功能
-                () => {
+                itemFunc: () => {
                     homepageTitleKeywordAction.blacklist.show()
                 },
-            ),
+            }),
         )
     }
     homepageFilterGroupList.push(
@@ -396,15 +396,15 @@ if (isPageHomepage()) {
         )
         // 按钮功能：打开bvid黑名单编辑框
         bvidItems.push(
-            new ButtonItem(
-                'homepage-bvid-edit-button',
-                '编辑 BV号黑名单',
-                '编辑',
+            new ButtonItem({
+                itemID: 'homepage-bvid-edit-button',
+                description: '编辑 BV号黑名单',
+                name: '编辑',
                 // 按钮功能
-                () => {
+                itemFunc: () => {
                     homepageBvidAction.blacklist.show()
                 },
-            ),
+            }),
         )
     }
     homepageFilterGroupList.push(new Group('homepage-bvid-filter-group', '首页 BV号过滤 (右键单击标题)', bvidItems))
@@ -441,15 +441,15 @@ if (isPageHomepage()) {
             }),
         )
         whitelistItems.push(
-            new ButtonItem(
-                'homepage-uploader-whitelist-edit-button',
-                '编辑 UP主白名单',
-                '编辑',
+            new ButtonItem({
+                itemID: 'homepage-uploader-whitelist-edit-button',
+                description: '编辑 UP主白名单',
+                name: '编辑',
                 // 按钮功能：显示白名单编辑器
-                () => {
+                itemFunc: () => {
                     homepageUploaderWhitelistAction.whitelist.show()
                 },
-            ),
+            }),
         )
         whitelistItems.push(
             new CheckboxItem({
@@ -464,15 +464,15 @@ if (isPageHomepage()) {
             }),
         )
         whitelistItems.push(
-            new ButtonItem(
-                'homepage-title-keyword-whitelist-edit-button',
-                '编辑 关键词白名单（支持正则）',
-                '编辑',
+            new ButtonItem({
+                itemID: 'homepage-title-keyword-whitelist-edit-button',
+                description: '编辑 关键词白名单（支持正则）',
+                name: '编辑',
                 // 按钮功能：显示白名单编辑器
-                () => {
+                itemFunc: () => {
                     homepageTitleKeyworldWhitelistAction.whitelist.show()
                 },
-            ),
+            }),
         )
     }
     homepageFilterGroupList.push(

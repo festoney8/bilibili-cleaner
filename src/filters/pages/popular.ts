@@ -263,15 +263,15 @@ if (isPagePopular()) {
         )
         // 按钮功能：打开uploader黑名单编辑框
         uploaderItems.push(
-            new ButtonItem(
-                'popular-uploader-edit-button',
-                '编辑 UP主黑名单',
-                '编辑',
+            new ButtonItem({
+                itemID: 'popular-uploader-edit-button',
+                description: '编辑 UP主黑名单',
+                name: '编辑',
                 // 按钮功能
-                () => {
+                itemFunc: () => {
                     popularUploaderAction.blacklist.show()
                 },
-            ),
+            }),
         )
     }
     popularFilterGroupList.push(
@@ -294,15 +294,15 @@ if (isPagePopular()) {
         )
         // 按钮功能：打开titleKeyword黑名单编辑框
         titleKeywordItems.push(
-            new ButtonItem(
-                'popular-title-keyword-edit-button',
-                '编辑 关键词黑名单（支持正则）',
-                '编辑',
+            new ButtonItem({
+                itemID: 'popular-title-keyword-edit-button',
+                description: '编辑 关键词黑名单（支持正则）',
+                name: '编辑',
                 // 按钮功能
-                () => {
+                itemFunc: () => {
                     popularTitleKeywordAction.blacklist.show()
                 },
-            ),
+            }),
         )
     }
     popularFilterGroupList.push(
@@ -330,15 +330,15 @@ if (isPagePopular()) {
         )
         // 按钮功能：打开bvid黑名单编辑框
         bvidItems.push(
-            new ButtonItem(
-                'popular-bvid-edit-button',
-                '编辑 BV号黑名单',
-                '编辑',
+            new ButtonItem({
+                itemID: 'popular-bvid-edit-button',
+                description: '编辑 BV号黑名单',
+                name: '编辑',
                 // 按钮功能
-                () => {
+                itemFunc: () => {
                     popularBvidAction.blacklist.show()
                 },
-            ),
+            }),
         )
     }
     popularFilterGroupList.push(new Group('popular-bvid-filter-group', '热门页 BV号过滤 (右键单击标题)', bvidItems))
@@ -358,15 +358,15 @@ if (isPagePopular()) {
             }),
         )
         whitelistItems.push(
-            new ButtonItem(
-                'popular-uploader-whitelist-edit-button',
-                '编辑 UP主白名单',
-                '编辑',
+            new ButtonItem({
+                itemID: 'popular-uploader-whitelist-edit-button',
+                description: '编辑 UP主白名单',
+                name: '编辑',
                 // 按钮功能：显示白名单编辑器
-                () => {
+                itemFunc: () => {
                     popularUploaderWhitelistAction.whitelist.show()
                 },
-            ),
+            }),
         )
         whitelistItems.push(
             new CheckboxItem({
@@ -381,15 +381,15 @@ if (isPagePopular()) {
             }),
         )
         whitelistItems.push(
-            new ButtonItem(
-                'popular-title-keyword-whitelist-edit-button',
-                '编辑 关键词白名单（支持正则）',
-                '编辑',
+            new ButtonItem({
+                itemID: 'popular-title-keyword-whitelist-edit-button',
+                description: '编辑 关键词白名单（支持正则）',
+                name: '编辑',
                 // 按钮功能：显示白名单编辑器
-                () => {
+                itemFunc: () => {
                     popularTitleKeywordWhitelistAction.whitelist.show()
                 },
-            ),
+            }),
         )
     }
     popularFilterGroupList.push(

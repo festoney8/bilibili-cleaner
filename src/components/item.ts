@@ -180,32 +180,34 @@ export class CheckboxItem implements IItem {
     }
 }
 
+/**
+ * itemID item的唯一ID, 与GM database中的Key对应, 使用相同ID可共享item状态
+ * description item的功能介绍, 显示在panel内, \n可用来换行
+ * radioName radio input的name, 用于一组互斥选项
+ * radioItemIDList 当前item所在互斥组的ID列表, 用于修改其他item状态
+ * defaultStatus item默认开启状态, 第一次安装时使用, 对于所有用户均开启的项目默认给true
+ * itemFunc 功能函数
+ * isItemFuncReload 功能函数是否在URL变动时重新运行
+ * itemCSS item的CSS
+ */
+export interface IRadioItemOption {
+    itemID: string
+    description: string
+    radioName: string
+    radioItemIDList: string[]
+    defaultStatus?: boolean
+    itemFunc?: () => void
+    isItemFuncReload?: boolean
+    itemCSS?: myCSS
+}
+
 /** 互斥开关 */
 export class RadioItem implements IItem {
     nodeHTML = `<input class="bili-cleaner-item-checkbox" type="radio">`
     private isEnable: boolean | undefined
     private itemEle: HTMLInputElement | undefined
 
-    /**
-     * @param itemID item的唯一ID, 与GM database中的Key对应, 使用相同ID可共享item状态
-     * @param description item的功能介绍, 显示在panel内, \n可用来换行
-     * @param radioName radio input的name, 用于一组互斥选项
-     * @param radioItemIDList 当前item所在互斥组的ID列表, 用于修改其他item状态
-     * @param defaultStatus item默认开启状态, 第一次安装时使用, 对于所有用户均开启的项目默认给true
-     * @param itemFunc 功能函数
-     * @param isItemFuncReload 功能函数是否在URL变动时重新运行
-     * @param itemCSS item的CSS
-     */
-    constructor(
-        private itemID: string,
-        private description: string,
-        private radioName: string,
-        private radioItemIDList: string[],
-        private defaultStatus: boolean,
-        private itemFunc: (() => void) | undefined,
-        private isItemFuncReload: boolean,
-        private itemCSS: myCSS | null,
-    ) {
+    constructor(private option: IRadioItemOption) {
         this.isEnable = undefined
         this.itemEle = undefined
     }
@@ -216,7 +218,7 @@ export class RadioItem implements IItem {
      */
     setStatus(value: boolean, targetID: string | null = null) {
         if (!targetID) {
-            GM_setValue(`BILICLEANER_${this.itemID}`, value)
+            GM_setValue(`BILICLEANER_${this.option.itemID}`, value)
             this.isEnable = value
         } else {
             GM_setValue(`BILICLEANER_${targetID}`, value)
@@ -224,9 +226,9 @@ export class RadioItem implements IItem {
     }
     /** 获取item开关状态, 若第一次安装时不存在该key, 使用默认值 */
     getStatus() {
-        this.isEnable = GM_getValue(`BILICLEANER_${this.itemID}`)
-        if (this.defaultStatus && this.isEnable === undefined) {
-            this.isEnable = this.defaultStatus
+        this.isEnable = GM_getValue(`BILICLEANER_${this.option.itemID}`)
+        if (this.option.defaultStatus && this.isEnable === undefined) {
+            this.isEnable = this.option.defaultStatus
             this.setStatus(this.isEnable)
         }
     }
@@ -238,72 +240,74 @@ export class RadioItem implements IItem {
         try {
             this.getStatus()
             const e = document.createElement('label')
-            e.id = this.itemID
-            e.innerHTML = `${this.nodeHTML}<span>${this.description.replaceAll('\n', '<br>')}</span>`
+            e.id = this.option.itemID
+            e.innerHTML = `${this.nodeHTML}<span>${this.option.description.replaceAll('\n', '<br>')}</span>`
             if (this.isEnable) {
                 e.querySelector('input')!.checked = true
             }
             // 设定radio input所属互斥组
-            e.querySelector('input')!.name = this.radioName
+            e.querySelector('input')!.name = this.option.radioName
             const itemGroupList = document.querySelector(`#${groupID} .bili-cleaner-item-list`) as HTMLFormElement
             if (itemGroupList) {
                 itemGroupList.appendChild(e)
-                debug(`insertItem ${this.itemID} OK`)
+                debug(`insertItem ${this.option.itemID} OK`)
             }
         } catch (err) {
-            error(`insertItem ${this.itemID} err`)
+            error(`insertItem ${this.option.itemID} err`)
             error(err)
         }
     }
     /** 启用CSS片段, 向<html>插入style */
     insertItemCSS() {
-        if (!this.itemCSS) {
+        if (!this.option.itemCSS) {
             return
         }
         try {
-            if (document.querySelector(`html>style[bili-cleaner-css=${this.itemID}]`)) {
-                debug(`insertItemCSS ${this.itemID} CSS exist, ignore`)
+            if (document.querySelector(`html>style[bili-cleaner-css=${this.option.itemID}]`)) {
+                debug(`insertItemCSS ${this.option.itemID} CSS exist, ignore`)
                 return
             }
             const style = document.createElement('style')
             // 简单压缩, 若使用innerText, 多行CSS插入后会产生<br>标签
-            style.innerHTML = this.itemCSS.replace(/\n\s*/g, '').trim()
+            style.innerHTML = this.option.itemCSS.replace(/\n\s*/g, '').trim()
             // 指定CSS片段ID，用于实时启用停用
-            style.setAttribute('bili-cleaner-css', this.itemID)
+            style.setAttribute('bili-cleaner-css', this.option.itemID)
             // 放弃在head内插入style
             // 改为在html内插入style标签(与head/body同级), 避免版权视频播放页head内规则丢失bug
             document.documentElement.appendChild(style)
-            debug(`insertItemCSS ${this.itemID} OK`)
+            debug(`insertItemCSS ${this.option.itemID} OK`)
         } catch (err) {
-            error(`insertItemCSS ${this.itemID} failed`)
+            error(`insertItemCSS ${this.option.itemID} failed`)
             error(err)
         }
     }
     /** 停用CSS片段, 从<html>移除style */
     removeItemCSS() {
-        if (this.itemCSS) {
-            const style = document.querySelector(`html>style[bili-cleaner-css=${this.itemID}]`) as HTMLStyleElement
+        if (this.option.itemCSS) {
+            const style = document.querySelector(
+                `html>style[bili-cleaner-css=${this.option.itemID}]`,
+            ) as HTMLStyleElement
             if (style) {
                 style.parentNode?.removeChild(style)
-                debug(`removeItemCSS ${this.itemID} OK`)
+                debug(`removeItemCSS ${this.option.itemID} OK`)
             }
         }
     }
     /** 监听item option开关 */
     watchItem() {
         try {
-            this.itemEle = document.querySelector(`#${this.itemID} input`) as HTMLInputElement
+            this.itemEle = document.querySelector(`#${this.option.itemID} input`) as HTMLInputElement
             this.itemEle.addEventListener('change', (event: Event) => {
                 if ((<HTMLInputElement>event.target).checked) {
-                    debug(`radioItem ${this.itemID} checked`)
+                    debug(`radioItem ${this.option.itemID} checked`)
                     this.setStatus(true)
                     this.insertItemCSS()
-                    if (this.itemFunc !== undefined) {
-                        this.itemFunc()
+                    if (this.option.itemFunc !== undefined) {
+                        this.option.itemFunc()
                     }
                     // 相同name的其他option自动置为uncheck, 但这一行为无法被监听, 需传入itemID逐一修改
-                    this.radioItemIDList.forEach((targetID) => {
-                        if (targetID !== this.itemID) {
+                    this.option.radioItemIDList.forEach((targetID) => {
+                        if (targetID !== this.option.itemID) {
                             // 移除CSS, 修改互斥item状态
                             const style = document.querySelector(
                                 `html>style[bili-cleaner-css=${targetID}]`,
@@ -318,9 +322,9 @@ export class RadioItem implements IItem {
                     })
                 }
             })
-            debug(`watchItem ${this.itemID} OK`)
+            debug(`watchItem ${this.option.itemID} OK`)
         } catch (err) {
-            error(`watchItem ${this.itemID} err`)
+            error(`watchItem ${this.option.itemID} err`)
             error(err)
         }
     }
@@ -333,12 +337,12 @@ export class RadioItem implements IItem {
         if (this.isEnable) {
             try {
                 this.insertItemCSS()
-                if (enableFunc && this.itemFunc instanceof Function) {
-                    this.itemFunc()
+                if (enableFunc && this.option.itemFunc instanceof Function) {
+                    this.option.itemFunc()
                 }
-                debug(`enableItem ${this.itemID} OK`)
+                debug(`enableItem ${this.option.itemID} OK`)
             } catch (err) {
-                error(`enableItem ${this.itemID} Error`)
+                error(`enableItem ${this.option.itemID} Error`)
                 error(err)
             }
         }
@@ -349,16 +353,35 @@ export class RadioItem implements IItem {
     reloadItem() {
         // 存在其他item修改当前item状态的情况
         this.getStatus()
-        if (this.isItemFuncReload && this.isEnable && this.itemFunc instanceof Function) {
+        if (this.option.isItemFuncReload && this.isEnable && this.option.itemFunc instanceof Function) {
             try {
-                this.itemFunc()
-                debug(`reloadItem ${this.itemID} OK`)
+                this.option.itemFunc()
+                debug(`reloadItem ${this.option.itemID} OK`)
             } catch (err) {
-                error(`reloadItem ${this.itemID} Error`)
+                error(`reloadItem ${this.option.itemID} Error`)
                 error(err)
             }
         }
     }
+}
+
+/**
+ * itemID item的唯一ID, 用于在GM database中记录数值
+ * description 数值功能介绍
+ * defaultValue 默认值
+ * minValue 最小值
+ * maxValue 最大值
+ * unit 数值单位
+ * callback 可选, 回调函数, 在数值修改时回调, 可用于效果实时生效
+ */
+export interface INumberItemOption {
+    itemID: string
+    description: string
+    defaultValue: number
+    minValue: number
+    maxValue: number
+    unit: string
+    callback?: (value: number) => void
 }
 
 /** 数值设定 */
@@ -366,37 +389,20 @@ export class NumberItem implements IItem {
     nodeHTML = `<input class="bili-cleaner-item-number" type="number">`
     private itemValue: number | undefined
 
-    /**
-     * @param itemID item的唯一ID, 用于在GM database中记录数值
-     * @param description 数值功能介绍
-     * @param defaultValue 默认值
-     * @param minValue 最小值
-     * @param maxValue 最大值
-     * @param unit 数值单位
-     * @param callback 可选, 回调函数, 在数值修改时回调, 可用于效果实时生效
-     */
-    constructor(
-        private itemID: string,
-        private description: string,
-        private defaultValue: number,
-        private minValue: number,
-        private maxValue: number,
-        private unit: string,
-        private callback?: (value: number) => void | undefined,
-    ) {}
+    constructor(private option: INumberItemOption) {}
 
     /** 获取数值, 初次安装使用默认值 */
     getValue() {
-        this.itemValue = GM_getValue(`BILICLEANER_${this.itemID}`)
+        this.itemValue = GM_getValue(`BILICLEANER_${this.option.itemID}`)
         if (this.itemValue === undefined) {
-            this.itemValue = this.defaultValue
+            this.itemValue = this.option.defaultValue
             this.setValue(this.itemValue)
         }
     }
     /** 设定并记录数值 */
     setValue(value: number) {
         this.itemValue = value
-        GM_setValue(`BILICLEANER_${this.itemID}`, this.itemValue)
+        GM_setValue(`BILICLEANER_${this.option.itemID}`, this.itemValue)
     }
 
     /**
@@ -407,70 +413,74 @@ export class NumberItem implements IItem {
         try {
             this.getValue()
             const node = document.createElement('label')
-            node.id = this.itemID
-            node.innerHTML = `${this.description.replaceAll('\n', '<br>')}<span>${this.nodeHTML}</span>${this.unit}`
+            node.id = this.option.itemID
+            node.innerHTML = `${this.option.description.replaceAll('\n', '<br>')}<span>${this.nodeHTML}</span>${
+                this.option.unit
+            }`
             const inputNode = node.querySelector('input') as HTMLInputElement
             inputNode.setAttribute('value', this.itemValue!.toString())
-            inputNode.setAttribute('min', this.minValue.toString())
-            inputNode.setAttribute('max', this.maxValue.toString())
+            inputNode.setAttribute('min', this.option.minValue.toString())
+            inputNode.setAttribute('max', this.option.maxValue.toString())
             const itemGroupList = document.querySelector(`#${groupID} .bili-cleaner-item-list`) as HTMLFormElement
             if (itemGroupList) {
                 itemGroupList.appendChild(node)
-                debug(`insertItem ${this.itemID} OK`)
+                debug(`insertItem ${this.option.itemID} OK`)
             }
         } catch (err) {
-            error(`insertItem ${this.itemID} err`)
+            error(`insertItem ${this.option.itemID} err`)
             error(err)
         }
     }
     /** 监听数值变化并保持, 重置不合理的值 */
     watchItem() {
         try {
-            const itemEle = document.querySelector(`#${this.itemID} input`) as HTMLInputElement
+            const itemEle = document.querySelector(`#${this.option.itemID} input`) as HTMLInputElement
             let currValue
             itemEle.addEventListener('input', () => {
                 currValue = parseInt(itemEle.value)
                 if (isNaN(currValue)) {
-                    itemEle.value = this.minValue.toString()
+                    itemEle.value = this.option.minValue.toString()
                 } else {
-                    if (currValue > this.maxValue) {
-                        itemEle.value = this.maxValue.toString()
-                    } else if (currValue < this.minValue) {
-                        itemEle.value = this.minValue.toString()
+                    if (currValue > this.option.maxValue) {
+                        itemEle.value = this.option.maxValue.toString()
+                    } else if (currValue < this.option.minValue) {
+                        itemEle.value = this.option.minValue.toString()
                     }
                 }
                 this.setValue(parseInt(itemEle.value))
                 itemEle.value = parseInt(itemEle.value).toString()
-                debug(`${this.itemID} currValue ${itemEle.value}`)
+                debug(`${this.option.itemID} currValue ${itemEle.value}`)
                 // 调用回调函数
-                if (this.callback && typeof this.callback === 'function') {
-                    this.callback(parseInt(itemEle.value))
+                if (this.option.callback && typeof this.option.callback === 'function') {
+                    this.option.callback(parseInt(itemEle.value))
                 }
             })
-            debug(`watchItem ${this.itemID} OK`)
+            debug(`watchItem ${this.option.itemID} OK`)
         } catch (err) {
-            error(`watchItem ${this.itemID} err`)
+            error(`watchItem ${this.option.itemID} err`)
             error(err)
         }
     }
+}
+
+/**
+ * itemID item的唯一ID
+ * description 按钮功能介绍
+ * name 按钮名称
+ * itemFunc 功能函数
+ */
+export interface IButtonItemOption {
+    itemID: string
+    description: string
+    name: string
+    itemFunc: () => void
 }
 
 /** 普通按钮 */
 export class ButtonItem implements IItem {
     nodeHTML = `<button class="bili-cleaner-item-button" role="button"></button>`
 
-    /**
-     * @param itemID item的唯一ID
-     * @param description 按钮功能介绍
-     * @param name 按钮名称
-     * @param itemFunc 功能函数
-     */
-    constructor(
-        private itemID: string,
-        private description: string,
-        private name: string,
-        private itemFunc: () => void,
-    ) {}
+    constructor(private option: IButtonItemOption) {}
 
     /**
      * 在相应group内添加item
@@ -479,30 +489,30 @@ export class ButtonItem implements IItem {
     insertItem(groupID: string) {
         try {
             const node = document.createElement('label')
-            node.id = this.itemID
-            node.innerHTML = `${this.nodeHTML}${this.description.replaceAll('\n', '<br>')}`
-            node.querySelector('button')!.innerHTML = this.name
+            node.id = this.option.itemID
+            node.innerHTML = `${this.nodeHTML}${this.option.description.replaceAll('\n', '<br>')}`
+            node.querySelector('button')!.innerHTML = this.option.name
             const itemGroupList = document.querySelector(`#${groupID} .bili-cleaner-item-list`) as HTMLFormElement
             if (itemGroupList) {
                 itemGroupList.appendChild(node)
-                debug(`insertItem ${this.itemID} OK`)
+                debug(`insertItem ${this.option.itemID} OK`)
             }
         } catch (err) {
-            error(`insertItem ${this.itemID} err`)
+            error(`insertItem ${this.option.itemID} err`)
             error(err)
         }
     }
     /** 监听按钮按下 */
     watchItem() {
         try {
-            const itemEle = document.querySelector(`#${this.itemID} button`) as HTMLButtonElement
+            const itemEle = document.querySelector(`#${this.option.itemID} button`) as HTMLButtonElement
             itemEle.addEventListener('click', () => {
-                debug(`button ${this.itemID} click`)
-                this.itemFunc()
+                debug(`button ${this.option.itemID} click`)
+                this.option.itemFunc()
             })
-            debug(`watchItem ${this.itemID} OK`)
+            debug(`watchItem ${this.option.itemID} OK`)
         } catch (err) {
-            error(`watchItem ${this.itemID} err`)
+            error(`watchItem ${this.option.itemID} err`)
             error(err)
         }
     }

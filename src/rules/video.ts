@@ -917,6 +917,17 @@ if (isPageVideo() || isPagePlaylist()) {
                 `#bannerAd {display: none !important;}`,
             ),
         )
+        // 隐藏 投票
+        toolbarItems.push(
+            new CheckboxItem(
+                'video-page-hide-top-vote-card',
+                '隐藏 投票',
+                false,
+                undefined,
+                false,
+                `.comment-container .top-vote-card {display: none !important;}`,
+            ),
+        )
     }
     videoGroupList.push(new Group('video-toolbar', '视频下方 工具/简介/Tag', toolbarItems))
 
@@ -1343,6 +1354,17 @@ if (isPageVideo() || isPagePlaylist()) {
                 false,
                 `.comment-container .bili-avatar-nft-icon {display: none !important;}
                 .comment-container .bili-avatar-icon {display: none !important;}`,
+            ),
+        )
+        // 隐藏 用户投票 (红方/蓝方)
+        commentItems.push(
+            new CheckboxItem(
+                'video-page-hide-vote-info',
+                '隐藏 用户投票 (红方/蓝方)',
+                false,
+                undefined,
+                false,
+                `.comment-container .vote-info {display: none !important;}`,
             ),
         )
         // 隐藏 评论内容下tag(UP觉得很赞)

@@ -225,6 +225,27 @@ if (isPageVideo() || isPagePlaylist()) {
                 `.fixed-header .bili-header__bar {position: relative !important;}`,
             ),
         )
+        // 播放器和视频信息 交换位置(实验性)
+        basicItems.push(
+            new CheckboxItem(
+                'video-page-exchange-player-position',
+                '播放器和视频信息 交换位置(实验性)',
+                false,
+                undefined,
+                false,
+                `.left-container {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    padding-top: 50px !important;
+                }
+                #viewbox_report {order: 2;}
+                #playerWrap {order: 1;}
+                #arc_toolbar_report {order: 3;}
+                .left-container-under-player {order: 4;}
+                .video-info-container {height: unset !important; padding-top: 16px !important;}
+                .video-toolbar-container {padding-top: 12px !important;}`,
+            ),
+        )
     }
     videoGroupList.push(new Group('video-basic', '播放页 基本功能', basicItems))
 
@@ -896,6 +917,17 @@ if (isPageVideo() || isPagePlaylist()) {
                 `#bannerAd {display: none !important;}`,
             ),
         )
+        // 隐藏 投票
+        toolbarItems.push(
+            new CheckboxItem(
+                'video-page-hide-top-vote-card',
+                '隐藏 投票',
+                false,
+                undefined,
+                false,
+                `.comment-container .top-vote-card {display: none !important;}`,
+            ),
+        )
     }
     videoGroupList.push(new Group('video-toolbar', '视频下方 工具/简介/Tag', toolbarItems))
 
@@ -1322,6 +1354,17 @@ if (isPageVideo() || isPagePlaylist()) {
                 false,
                 `.comment-container .bili-avatar-nft-icon {display: none !important;}
                 .comment-container .bili-avatar-icon {display: none !important;}`,
+            ),
+        )
+        // 隐藏 用户投票 (红方/蓝方)
+        commentItems.push(
+            new CheckboxItem(
+                'video-page-hide-vote-info',
+                '隐藏 用户投票 (红方/蓝方)',
+                false,
+                undefined,
+                false,
+                `.comment-container .vote-info {display: none !important;}`,
             ),
         )
         // 隐藏 评论内容下tag(UP觉得很赞)

@@ -144,7 +144,10 @@ if (isPageHomepage()) {
                 mutationList.forEach((mutation) => {
                     if (mutation.addedNodes) {
                         mutation.addedNodes.forEach((node) => {
-                            if ((node as HTMLElement).className === 'container is-version8') {
+                            if (
+                                node instanceof HTMLElement &&
+                                (node as HTMLElement).className === 'container is-version8'
+                            ) {
                                 debugFilter('videoListContainer appear')
                                 obverser.disconnect()
                                 videoListContainer = document.querySelector('.container.is-version8') as HTMLElement

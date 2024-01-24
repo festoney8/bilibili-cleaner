@@ -11,11 +11,12 @@ import { searchGroupList } from './rules/search'
 import { liveGroupList } from './rules/live'
 import { dynamicGroupList } from './rules/dynamic'
 import { popularGroupList } from './rules/popular'
-import { isPageHomepage, isPagePopular, isPageVideo } from './utils/page-type'
+import { isPageHomepage, isPagePopular, isPageSearch, isPageVideo } from './utils/page-type'
 import { homepageFilterGroupList } from './filters/pages/homepage'
 import panelInstance from './components/panel'
 import { videoFilterGroupList } from './filters/pages/video'
 import { popularFilterGroupList } from './filters/pages/popular'
+import { searchFilterGroupList } from './filters/pages/search'
 
 log('script start')
 
@@ -42,7 +43,12 @@ const main = async () => {
     RULE_GROUPS.forEach((e) => e.enableGroup())
 
     // 载入视频过滤器
-    const FILTER_GROUPS: Group[] = [...homepageFilterGroupList, ...videoFilterGroupList, ...popularFilterGroupList]
+    const FILTER_GROUPS: Group[] = [
+        ...homepageFilterGroupList,
+        ...videoFilterGroupList,
+        ...popularFilterGroupList,
+        ...searchFilterGroupList,
+    ]
     FILTER_GROUPS.forEach((e) => e.enableGroup())
 
     // 监听各种形式的URL变化 (普通监听无法检测到切换视频)
@@ -113,7 +119,7 @@ const main = async () => {
     GM_registerMenuCommand('页面净化设置', () => {
         createPanelWithMode('rule', RULE_GROUPS)
     })
-    if (isPageHomepage() || isPageVideo() || isPagePopular()) {
+    if (isPageHomepage() || isPageVideo() || isPagePopular() || isPageSearch()) {
         GM_registerMenuCommand('视频过滤器', () => {
             createPanelWithMode('filter', FILTER_GROUPS)
         })

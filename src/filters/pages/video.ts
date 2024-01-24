@@ -116,7 +116,7 @@ if (isPageVideo()) {
                 mutationList.forEach((mutation) => {
                     if (mutation.addedNodes) {
                         mutation.addedNodes.forEach((node) => {
-                            if ((node as HTMLElement).id === 'reco_list') {
+                            if (node instanceof HTMLElement && (node as HTMLElement).id === 'reco_list') {
                                 debugFilter('videoListContainer appear')
                                 obverser.disconnect()
                                 videoListContainer = document.getElementById('reco_list') as HTMLElement

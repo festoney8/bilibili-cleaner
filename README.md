@@ -1,9 +1,8 @@
 <div align="center">
 <image src="./images/logo.png" height="120"></image>
 <h1>bilibili 页面净化大师</h1>
-<div><b>高度定制化的 bilibili 网页净化插件，提供 300+ 个功能开关，深度净化页面元素</b></div>
-<br>
-<div>支持去广告、BV号转AV号、播放器净化、过滤视频 等多种细节功能</div>
+<div>高度定制化的 bilibili 网页净化插件，提供 300+ 个功能开关，深度净化页面元素</div>
+<div>支持「去广告、URL净化、BV号转AV号、播放器净化、过滤视频」等多种细节功能</div>
 <br>
 
 [安装使用](#%E5%AE%89%E8%A3%85) / [功能介绍](#%E5%8A%9F%E8%83%BD%E4%BB%8B%E7%BB%8D) / [浏览器适配](#%E6%B5%8F%E8%A7%88%E5%99%A8%E9%80%82%E9%85%8D) / [净化效果](#%E5%87%80%E5%8C%96%E6%95%88%E6%9E%9C%E5%AF%B9%E6%AF%94) / [插件兼容](#%E4%B8%8E%E5%85%B6%E4%BB%96-bilibili-%E6%8F%92%E4%BB%B6%E7%9A%84%E5%85%BC%E5%AE%B9%E6%80%A7) / [数据导出](#%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%85%A5%E4%B8%8E%E5%AF%BC%E5%87%BA)
@@ -12,15 +11,9 @@
 
 </div>
 
-## 功能一览
+## 主要功能：页面净化、视频过滤
 
-### 页面元素净化
-
-![](images/preview.png)
-
-### 过滤视频推荐（测试阶段）
-
-![](images/preview-filter.png)
+![](images/preview.jpg)
 
 ## 安装
 
@@ -43,7 +36,7 @@
 
 ## 功能介绍
 
-### 页面净化
+### 1. 页面净化
 
 -   适用于 **净化新版 bilibili 网页**，不做老版本页面适配
 -   目前支持「首页、播放页、版权作品播放页、直播间、搜索页、动态页、热门视频/排行榜页」这 7 个页面，可在每个页面下开启插件菜单，查看功能列表
@@ -51,33 +44,34 @@
 -   默认开启少数基础功能，其余功能由用户自行设定
 -   大多数功能实时生效。脚本在开启网页后立即注入，所有隐藏元素规则在开启页面后 1 秒内生效。其他需要等待元素出现的功能，如「净化分享」生效较慢
 
-### 过滤视频
+### 2. 视频过滤
 
 -   **注意：过滤功能仍处于测试阶段**
--   **如果屏蔽列表添加了大量内容，请定时备份插件数据**
+-   **如果屏蔽列表添加了大量内容，请定时备份插件数据，[备份方法](https://github.com/festoney8/bilibili-cleaner?tab=readme-ov-file#%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%85%A5%E4%B8%8E%E5%AF%BC%E5%87%BA)**
 -   支持「首页、播放页、热门页（热门视频/每周必看/排行榜）」共 3 个页面
 -   支持「UP主、BV号、标题关键词、视频时长」共 4 种过滤模式
 -   黑名单、白名单全站通用，**一次屏蔽，全站隐藏**（只要开关开启就会隐藏）
 -   白名单权限高于黑名单，命中白名单的视频不会被隐藏
 -   「标题关键词过滤」功能的黑/白名单大小写不敏感，二者均支持正则表达式
     > 正则语句需使用 `/ ... /` 括起来，如 `/abc|d|e/`。反斜杠使用单斜杠，如 `/\d+/`。正则为 iv 模式，大小写不敏感。
--   Tips：
-    -   注意：屏蔽 UP 主时，不要反复点开他们的视频和个人页，推荐系统会误认为你喜欢，导致推送变差
-    -   时长过滤不宜设定过长，会丢失掉好视频，推荐设定 60~90 秒
-    -   屏蔽经常出现的 UP 主可以让「热门视频、每周必看、排行榜」变得非常舒服
-    -   由于白名单的高权限，编写白名单关键词请注意影响面，会导致命中白名单的低质量视频被强制显示出来
-    -   编写正则表达式请小心，可能造成大量视频被屏蔽
-    -   遇到每期必看的高质量 UP 主，可以顺手把他们加入白名单
-    -   屏蔽视频时会在 Console 输出日志，按 F12 查看日志
+-   **Tips：**
+    1. 注意：屏蔽 UP 主时，不要反复点开他们的视频和个人页，推荐系统会误认为你喜欢，导致推送变差
+    2. 时长过滤不宜设定过长，会丢失掉优质视频，推荐设定 60~90 秒
+    3. 屏蔽经常出现的 UP 主可以让「热门视频、每周必看、排行榜」变得非常舒服
+    4. 由于白名单的高权限，编写白名单关键词请注意影响面，会导致命中白名单的低质量视频被强制显示出来
+    5. 屏蔽后，如果视频没有消失，请查看是否命中了白名单功能。若确认无误，可上报 bug
+    6. 编写正则表达式请小心，可能造成大量视频屏蔽和频繁载入，慎重使用通配符
+    7. 遇到每期必看的高质量 UP 主，可以顺手把他们加入白名单
+    8. 屏蔽视频时会在 Console 输出日志，按 F12 查看日志
 
-### 快捷键
+### 3. 快捷键
 
 -   支持使用快捷键 `Alt + B` 或 `Ctrl + Alt + B` 快速开启/关闭**页面净化**功能，迅速查看净化对比
 -   Firefox 浏览器仅支持 `Ctrl + Alt + B`
 -   临时使用被隐藏的按钮时，只需快捷键快速关闭插件，不用打开菜单寻找选项
 -   快速关闭只支持停用CSS规则，部分功能不支持，如：BV号转AV号
 
-### 注意事项
+### 4. 注意事项
 
 -   给 UP 主充电时，若出现 **充电窗口载入失败 (报错NaN)**，请关闭 **通用项「URL参数净化」** 功能，刷新页面再充电
 -   **「版权视频播放页」大部分功能与「播放页」一致且互相同步，小部分独有功能已用 "★" 重点标出**
@@ -105,18 +99,14 @@
 
 ### Safari
 
--   未测试
+-   完全未测试
 
 ### 脚本管理插件
 
-|         | [Tampermonkey](https://www.tampermonkey.net/) (油猴插件)                                                | [Violentmonkey](https://violentmonkey.github.io/) (暴力猴)                                       |
-| ------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| Chrome  | [链接](https://chrome.google.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo)                      | [链接](https://chrome.google.com/webstore/detail/violentmonkey/jinjaccalgkegednnccohejagnlnfdag) |
-| Edge    | [链接](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd) | [链接](https://microsoftedge.microsoft.com/addons/detail/eeagobfjdenkkddmbclomhiblgggliao)       |
-| Firefox | [链接](https://addons.mozilla.org/firefox/addon/tampermonkey/)                                          | [链接](https://addons.mozilla.org/firefox/addon/violentmonkey/)                                  |
-| 测试    | **已测试，推荐**                                                                                        | 支持，部分测试                                                                                   |
+-   **[Tampermonkey](https://www.tampermonkey.net/)（油猴插件）：已测试，推荐**
 
--   Safari 浏览器的脚本管理插件未进行测试
+-   **[Violentmonkey](https://violentmonkey.github.io/)（暴力猴）：支持，部分测试**
+
 -   [Greasemonkey](https://www.greasespot.net/) 和 [ScriptCat](https://docs.scriptcat.org/) 未进行测试
 
 ## 净化效果对比
@@ -171,7 +161,7 @@
 
 ## 与其他 bilibili 插件的兼容性
 
-### 与 [Bilibili-Evolved](https://github.com/the1812/Bilibili-Evolved) 的兼容性
+### 1. 与 [Bilibili-Evolved](https://github.com/the1812/Bilibili-Evolved) 的兼容性
 
 -   绝大多数功能兼容，小部分功能重复，均不会产生崩坏
 
@@ -186,23 +176,34 @@
 
 -   **清爽首页、极简首页** 会接管首页布局，本脚本对其无效
 
-### 与 [bilibili-app-recommend](https://greasyfork.org/zh-CN/scripts/443530) 的兼容性
+-   可能存在其他未测试到的不兼容情况
+
+### 2. 与 [bilibili-app-recommend](https://greasyfork.org/zh-CN/scripts/443530) 的兼容性
 
 -   **兼容**，提供 **隐藏 视频tag / 隐藏 弹幕数 / 隐藏 点赞数** 功能，在首页功能菜单末尾
 
-### 与 [Bilibili 旧播放页](https://github.com/MotooriKashin/Bilibili-Old) 的兼容性
+### 3. 与 [Bilibili 旧播放页](https://github.com/MotooriKashin/Bilibili-Old) 的兼容性
 
 -   **不兼容**，旧播放页脚本完全接管页面，使用该脚本时请在脚本管理器中关闭本净化脚本，以免造成干扰
 
+### 4. 与 [Pakku.js](https://github.com/xmcp/pakku.js) 的兼容性
+
+-   **兼容**，推荐搭配使用
+
 ## 数据导入与导出
 
-### 导出数据 (以 Tampermonkey 为例)
+<details>
+<summary><b>导出数据</b></summary>
 
 ![](images/how-to-export.png)
 
-### 导入数据
+</details>
+<details>
+<summary><b>导入数据</b></summary>
 
 ![](images/how-to-import.png)
+
+</details>
 
 ## Ref
 

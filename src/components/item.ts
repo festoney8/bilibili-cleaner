@@ -12,6 +12,25 @@ interface IItem {
     reloadItem?(): void
 }
 
+/**
+ * itemID item的唯一ID, 与GM database中的Key对应, 使用相同ID可共享item状态
+ * description item的功能介绍, 显示在panel内, \n可用来换行
+ * defaultStatus item默认开启状态, 第一次安装时使用, 对于所有用户均开启的项目默认给true
+ * itemFunc 功能函数
+ * isItemFuncReload 功能函数是否在URL变动时重新运行
+ * itemCSS item的CSS
+ * callback 可选, 回调函数, 用于在关掉开关时触发外部事务
+ */
+export interface ICheckboxItemOption {
+    itemID: string
+    description: string
+    defaultStatus?: boolean
+    itemFunc?: () => void
+    isItemFuncReload?: boolean
+    itemCSS?: myCSS
+    callback?: () => void
+}
+
 /** 普通开关 */
 export class CheckboxItem implements IItem {
     nodeHTML = `<input class="bili-cleaner-item-checkbox" type="checkbox">`
@@ -19,24 +38,7 @@ export class CheckboxItem implements IItem {
     // item对应的HTML input node
     private itemEle: HTMLInputElement | undefined
 
-    /**
-     * @param itemID item的唯一ID, 与GM database中的Key对应, 使用相同ID可共享item状态
-     * @param description item的功能介绍, 显示在panel内, \n可用来换行
-     * @param defaultStatus item默认开启状态, 第一次安装时使用, 对于所有用户均开启的项目默认给true
-     * @param itemFunc 功能函数
-     * @param isItemFuncReload 功能函数是否在URL变动时重新运行
-     * @param itemCSS item的CSS
-     * @param callback 可选, 回调函数, 用于在关掉开关时触发外部事务
-     */
-    constructor(
-        private itemID: string,
-        private description: string,
-        private defaultStatus: boolean,
-        private itemFunc: (() => void) | undefined,
-        private isItemFuncReload: boolean,
-        private itemCSS: myCSS | null,
-        private callback?: (() => void) | undefined,
-    ) {
+    constructor(private option: ICheckboxItemOption) {
         this.isEnable = undefined
         this.itemEle = undefined
     }
@@ -45,14 +47,14 @@ export class CheckboxItem implements IItem {
      * @param value checkbox开关状态
      */
     setStatus(value: boolean) {
-        GM_setValue(`BILICLEANER_${this.itemID}`, value)
+        GM_setValue(`BILICLEANER_${this.option.itemID}`, value)
         this.isEnable = value
     }
     /** 获取item开关状态, 若第一次安装时不存在该key, 使用默认值 */
     getStatus() {
-        this.isEnable = GM_getValue(`BILICLEANER_${this.itemID}`)
-        if (this.defaultStatus && this.isEnable === undefined) {
-            this.isEnable = this.defaultStatus
+        this.isEnable = GM_getValue(`BILICLEANER_${this.option.itemID}`)
+        if (this.option.defaultStatus && this.isEnable === undefined) {
+            this.isEnable = this.option.defaultStatus
             this.setStatus(this.isEnable)
         }
     }
@@ -64,79 +66,81 @@ export class CheckboxItem implements IItem {
         try {
             this.getStatus()
             const e = document.createElement('label')
-            e.id = this.itemID
-            e.innerHTML = `${this.nodeHTML}<span>${this.description.replaceAll('\n', '<br>')}</span>`
+            e.id = this.option.itemID
+            e.innerHTML = `${this.nodeHTML}<span>${this.option.description.replaceAll('\n', '<br>')}</span>`
             if (this.isEnable) {
                 e.querySelector('input')!.checked = true
             }
             const itemGroupList = document.querySelector(`#${groupID} .bili-cleaner-item-list`) as HTMLFormElement
             if (itemGroupList) {
                 itemGroupList.appendChild(e)
-                debug(`insertItem ${this.itemID} OK`)
+                debug(`insertItem ${this.option.itemID} OK`)
             }
         } catch (err) {
-            error(`insertItem ${this.itemID} err`)
+            error(`insertItem ${this.option.itemID} err`)
             error(err)
         }
     }
     /** 启用CSS片段, 向<html>插入style */
     insertItemCSS() {
-        if (!this.itemCSS) {
+        if (!this.option.itemCSS) {
             return
         }
         try {
-            if (document.querySelector(`html>style[bili-cleaner-css=${this.itemID}]`)) {
-                debug(`insertItemCSS ${this.itemID} CSS exist, ignore`)
+            if (document.querySelector(`html>style[bili-cleaner-css=${this.option.itemID}]`)) {
+                debug(`insertItemCSS ${this.option.itemID} CSS exist, ignore`)
                 return
             }
             const style = document.createElement('style')
             // 简单压缩, 若使用innerText, 多行CSS插入后会产生<br>标签
-            style.innerHTML = this.itemCSS.replace(/\n\s*/g, '').trim()
+            style.innerHTML = this.option.itemCSS.replace(/\n\s*/g, '').trim()
             // 指定CSS片段ID，用于实时启用停用
-            style.setAttribute('bili-cleaner-css', this.itemID)
+            style.setAttribute('bili-cleaner-css', this.option.itemID)
             // 放弃在head内插入style
             // 改为在html内插入style标签(与head/body同级), 避免版权视频播放页head内规则丢失bug
             document.documentElement.appendChild(style)
-            debug(`insertItemCSS ${this.itemID} OK`)
+            debug(`insertItemCSS ${this.option.itemID} OK`)
         } catch (err) {
-            error(`insertItemCSS ${this.itemID} failed`)
+            error(`insertItemCSS ${this.option.itemID} failed`)
             error(err)
         }
     }
     /** 停用CSS片段, 从<html>移除style */
     removeItemCSS() {
-        if (this.itemCSS) {
-            const style = document.querySelector(`html>style[bili-cleaner-css=${this.itemID}]`) as HTMLStyleElement
+        if (this.option.itemCSS) {
+            const style = document.querySelector(
+                `html>style[bili-cleaner-css=${this.option.itemID}]`,
+            ) as HTMLStyleElement
             if (style) {
                 style.parentNode?.removeChild(style)
-                debug(`removeItemCSS ${this.itemID} OK`)
+                debug(`removeItemCSS ${this.option.itemID} OK`)
             }
         }
     }
     /** 监听item chekbox开关 */
     watchItem() {
         try {
-            this.itemEle = document.querySelector(`#${this.itemID} input`) as HTMLInputElement
+            this.itemEle = document.querySelector(`#${this.option.itemID} input`) as HTMLInputElement
             this.itemEle.addEventListener('change', (event: Event) => {
                 // this指向class, 使用event.target访问input
                 if ((<HTMLInputElement>event.target).checked) {
                     this.setStatus(true)
                     this.insertItemCSS()
-                    if (this.itemFunc !== undefined) {
-                        this.itemFunc()
+                    if (this.option.itemFunc !== undefined) {
+                        this.option.itemFunc()
                     }
                 } else {
                     this.setStatus(false)
                     this.removeItemCSS()
                     // 回调
-                    if (typeof this.callback === 'function') {
-                        this.callback()
+                    if (typeof this.option.callback === 'function') {
+                        this.option.callback()
                     }
                 }
             })
-            debug(`watchItem ${this.itemID} OK`)
+            debug(`watchItem ${this.option.itemID} OK`)
         } catch (err) {
-            error(`watchItem ${this.itemID} err`)
+            error(`watchItem ${this.option.itemID} err`)
             error(err)
         }
     }
@@ -149,12 +153,12 @@ export class CheckboxItem implements IItem {
         if (this.isEnable) {
             try {
                 this.insertItemCSS()
-                if (enableFunc && this.itemFunc instanceof Function) {
-                    this.itemFunc()
+                if (enableFunc && this.option.itemFunc instanceof Function) {
+                    this.option.itemFunc()
                 }
-                debug(`enableItem ${this.itemID} OK`)
+                debug(`enableItem ${this.option.itemID} OK`)
             } catch (err) {
-                error(`enableItem ${this.itemID} Error`)
+                error(`enableItem ${this.option.itemID} Error`)
                 error(err)
             }
         }
@@ -164,12 +168,12 @@ export class CheckboxItem implements IItem {
      */
     reloadItem() {
         // this.getStatus()
-        if (this.isItemFuncReload && this.isEnable && this.itemFunc instanceof Function) {
+        if (this.option.isItemFuncReload && this.isEnable && this.option.itemFunc instanceof Function) {
             try {
-                this.itemFunc()
-                debug(`reloadItem ${this.itemID} OK`)
+                this.option.itemFunc()
+                debug(`reloadItem ${this.option.itemID} OK`)
             } catch (err) {
-                error(`reloadItem ${this.itemID} Error`)
+                error(`reloadItem ${this.option.itemID} Error`)
                 error(err)
             }
         }

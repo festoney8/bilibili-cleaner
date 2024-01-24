@@ -15,13 +15,10 @@ if (isPagePopular()) {
     {
         // 隐藏 横幅banner, 同步首页设定
         basicItems.push(
-            new CheckboxItem(
-                'homepage-hide-banner',
-                '隐藏 横幅banner',
-                false,
-                undefined,
-                false,
-                `.header-banner__inner, .bili-header__banner {
+            new CheckboxItem({
+                itemID: 'homepage-hide-banner',
+                description: '隐藏 横幅banner',
+                itemCSS: `.header-banner__inner, .bili-header__banner {
                     display: none !important;
                 }
                 .bili-header .bili-header__bar:not(.slide-down) {
@@ -54,17 +51,14 @@ if (isPagePopular()) {
                 /* header高度 */
                 #biliMainHeader {min-height: unset !important;}
                 `,
-            ),
+            }),
         )
         // 隐藏 滚动页面时 顶部吸附顶栏, 同步首页设定
         basicItems.push(
-            new CheckboxItem(
-                'homepage-hide-sticky-header',
-                '隐藏 滚动页面时 顶部吸附顶栏',
-                false,
-                undefined,
-                false,
-                `.bili-header .left-entry__title svg {
+            new CheckboxItem({
+                itemID: 'homepage-hide-sticky-header',
+                description: '隐藏 滚动页面时 顶部吸附顶栏',
+                itemCSS: `.bili-header .left-entry__title svg {
                     display: none !important;
                 }
                 /* 高优先覆盖!important */
@@ -123,34 +117,29 @@ if (isPagePopular()) {
                 #nav-searchform.is-focus.is-exper4-actived {
                     border-bottom: unset !important;
                 }`,
-            ),
+            }),
         )
         // 隐藏 tips, 默认开启
         basicItems.push(
-            new CheckboxItem(
-                'popular-hide-tips',
-                '隐藏 tips',
-                true,
-                undefined,
-                false,
-                `.popular-list .popular-tips,
+            new CheckboxItem({
+                itemID: 'popular-hide-tips',
+                description: '隐藏 tips',
+                defaultStatus: true,
+                itemCSS: `.popular-list .popular-tips,
                 .rank-container .rank-tips,
                 .history-list .history-tips {display: none !important;}
                 .rank-container .rank-tab-wrap {
                     margin-bottom: 0 !important;
                     padding: 10px 0 !important;
                 }`,
-            ),
+            }),
         )
         // 隐藏 稍后再看按钮
         basicItems.push(
-            new CheckboxItem(
-                'popular-hide-watchlater',
-                '隐藏 稍后再看按钮',
-                false,
-                undefined,
-                false,
-                `.rank-container .rank-item .van-watchlater,
+            new CheckboxItem({
+                itemID: 'popular-hide-watchlater',
+                description: '隐藏 稍后再看按钮',
+                itemCSS: `.rank-container .rank-item .van-watchlater,
                 .history-list .video-card .van-watchlater,
                 .history-list .video-card .watch-later,
                 .weekly-list .video-card .van-watchlater,
@@ -159,17 +148,14 @@ if (isPagePopular()) {
                 .popular-list .video-card .watch-later {
                     display: none !important;
                 }`,
-            ),
+            }),
         )
         // 隐藏 弹幕数
         basicItems.push(
-            new CheckboxItem(
-                'popular-hide-danmaku-count',
-                '隐藏 弹幕数',
-                false,
-                undefined,
-                false,
-                `.popular-list .video-stat .like-text,
+            new CheckboxItem({
+                itemID: 'popular-hide-danmaku-count',
+                description: '隐藏 弹幕数',
+                itemCSS: `.popular-list .video-stat .like-text,
                 .weekly-list .video-stat .like-text,
                 .history-list .video-stat .like-text,
                 .rank-list .rank-item .detail-state .data-box:nth-child(2) {
@@ -181,7 +167,7 @@ if (isPagePopular()) {
                 .video-card .video-stat .play-text {
                     margin-right: 0 !important;
                 }`,
-            ),
+            }),
         )
     }
     popularGroupList.push(new Group('popular-basic', '热门/排行榜页 基本功能', basicItems))
@@ -703,14 +689,11 @@ if (isPagePopular()) {
     {
         // 隐藏 视频tag (人气飙升/1万点赞)
         hotItems.push(
-            new CheckboxItem(
-                'popular-hot-hide-tag',
-                '隐藏 视频tag (人气飙升/1万点赞)',
-                false,
-                undefined,
-                false,
-                `.popular-list .rcmd-tag {display: none !important;}`,
-            ),
+            new CheckboxItem({
+                itemID: 'popular-hot-hide-tag',
+                description: '隐藏 视频tag (人气飙升/1万点赞)',
+                itemCSS: `.popular-list .rcmd-tag {display: none !important;}`,
+            }),
         )
     }
     popularGroupList.push(new Group('popular-hot', '综合热门', hotItems))
@@ -719,14 +702,11 @@ if (isPagePopular()) {
     {
         // 隐藏 一句话简介
         weeklyItems.push(
-            new CheckboxItem(
-                'popular-weekly-hide-hint',
-                '隐藏 一句话简介',
-                false,
-                undefined,
-                false,
-                `.weekly-list .weekly-hint {display: none !important;}`,
-            ),
+            new CheckboxItem({
+                itemID: 'popular-weekly-hide-hint',
+                description: '隐藏 一句话简介',
+                itemCSS: `.weekly-list .weekly-hint {display: none !important;}`,
+            }),
         )
     }
     popularGroupList.push(new Group('popular-weekly', '每周必看', weeklyItems))
@@ -735,14 +715,11 @@ if (isPagePopular()) {
     {
         // 隐藏 一句话简介
         historyItems.push(
-            new CheckboxItem(
-                'popular-history-hide-hint',
-                '隐藏 一句话简介',
-                false,
-                undefined,
-                false,
-                `.history-list .history-hint {display: none !important;}`,
-            ),
+            new CheckboxItem({
+                itemID: 'popular-history-hide-hint',
+                description: '隐藏 一句话简介',
+                itemCSS: `.history-list .history-hint {display: none !important;}`,
+            }),
         )
     }
     popularGroupList.push(new Group('popular-history', '入站必刷', historyItems))

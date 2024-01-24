@@ -271,10 +271,9 @@ if (isPageHomepage()) {
     // UI组件, 时长过滤part
     {
         durationItems.push(
-            new CheckboxItem(
-                homepageDurationAction.statusKey,
-                '启用 首页时长过滤',
-                false,
+            new CheckboxItem({
+                itemID: homepageDurationAction.statusKey,
+                description: '启用 首页时长过滤',
                 /**
                  * 需使用匿名函数包装后传参, 否则报错, 下同
                  *
@@ -285,15 +284,13 @@ if (isPageHomepage()) {
                  *
                  * 可以在传递方法时使用箭头函数来保持 this 的上下文
                  */
-                () => {
+                itemFunc: () => {
                     homepageDurationAction.enable()
                 },
-                false,
-                null,
-                () => {
+                callback: () => {
                     homepageDurationAction.disable()
                 },
-            ),
+            }),
         )
         durationItems.push(
             new NumberItem(
@@ -314,24 +311,21 @@ if (isPageHomepage()) {
     // UI组件, UP主过滤part
     {
         uploaderItems.push(
-            new CheckboxItem(
-                homepageUploaderAction.statusKey,
-                '启用 首页UP主过滤',
-                false,
-                () => {
+            new CheckboxItem({
+                itemID: homepageUploaderAction.statusKey,
+                description: '启用 首页UP主过滤',
+                itemFunc: () => {
                     // 启用右键功能
                     isContextMenuUploaderEnable = true
                     contextMenuFunc()
                     homepageUploaderAction.enable()
                 },
-                false,
-                null,
-                () => {
+                callback: () => {
                     // 禁用右键功能
                     isContextMenuUploaderEnable = false
                     homepageUploaderAction.disable()
                 },
-            ),
+            }),
         )
         // 按钮功能：打开uploader黑名单编辑框
         uploaderItems.push(
@@ -353,19 +347,16 @@ if (isPageHomepage()) {
     // UI组件, 标题关键词过滤part
     {
         titleKeywordItems.push(
-            new CheckboxItem(
-                homepageTitleKeywordAction.statusKey,
-                '启用 首页关键词过滤',
-                false,
-                () => {
+            new CheckboxItem({
+                itemID: homepageTitleKeywordAction.statusKey,
+                description: '启用 首页关键词过滤',
+                itemFunc: () => {
                     homepageTitleKeywordAction.enable()
                 },
-                false,
-                null,
-                () => {
+                callback: () => {
                     homepageTitleKeywordAction.disable()
                 },
-            ),
+            }),
         )
         // 按钮功能：打开titleKeyword黑名单编辑框
         titleKeywordItems.push(
@@ -387,24 +378,21 @@ if (isPageHomepage()) {
     // UI组件, bvid过滤part
     {
         bvidItems.push(
-            new CheckboxItem(
-                homepageBvidAction.statusKey,
-                '启用 首页BV号过滤',
-                false,
-                () => {
+            new CheckboxItem({
+                itemID: homepageBvidAction.statusKey,
+                description: '启用 首页BV号过滤',
+                itemFunc: () => {
                     // 启用右键功能
                     isContextMenuBvidEnable = true
                     contextMenuFunc()
                     homepageBvidAction.enable()
                 },
-                false,
-                null,
-                () => {
+                callback: () => {
                     // 禁用右键功能
                     isContextMenuBvidEnable = false
                     homepageBvidAction.disable()
                 },
-            ),
+            }),
         )
         // 按钮功能：打开bvid黑名单编辑框
         bvidItems.push(
@@ -425,37 +413,32 @@ if (isPageHomepage()) {
     {
         // 已关注UP主 免过滤, 默认开启
         whitelistItems.push(
-            new CheckboxItem(
-                'homepage-following-whitelist-filter-status',
-                '标有 [已关注] 的视频免过滤 (实验性)',
-                true,
-                () => {
+            new CheckboxItem({
+                itemID: 'homepage-following-whitelist-filter-status',
+                description: '标有 [已关注] 的视频免过滤 (实验性)',
+                defaultStatus: true,
+                itemFunc: () => {
                     isFollowingWhitelistEnable = true
                     // 触发全站检测
                     checkVideoList(true)
                 },
-                false,
-                null,
-                () => {
+                callback: () => {
                     isFollowingWhitelistEnable = false
                     checkVideoList(true)
                 },
-            ),
+            }),
         )
         whitelistItems.push(
-            new CheckboxItem(
-                homepageUploaderWhitelistAction.statusKey,
-                '启用 首页UP主白名单',
-                false,
-                () => {
+            new CheckboxItem({
+                itemID: homepageUploaderWhitelistAction.statusKey,
+                description: '启用 首页UP主白名单',
+                itemFunc: () => {
                     homepageUploaderWhitelistAction.enable()
                 },
-                false,
-                null,
-                () => {
+                callback: () => {
                     homepageUploaderWhitelistAction.disable()
                 },
-            ),
+            }),
         )
         whitelistItems.push(
             new ButtonItem(
@@ -469,19 +452,16 @@ if (isPageHomepage()) {
             ),
         )
         whitelistItems.push(
-            new CheckboxItem(
-                homepageTitleKeyworldWhitelistAction.statusKey,
-                '启用 首页标题关键词白名单',
-                false,
-                () => {
+            new CheckboxItem({
+                itemID: homepageTitleKeyworldWhitelistAction.statusKey,
+                description: '启用 首页标题关键词白名单',
+                itemFunc: () => {
                     homepageTitleKeyworldWhitelistAction.enable()
                 },
-                false,
-                null,
-                () => {
+                callback: () => {
                     homepageTitleKeyworldWhitelistAction.disable()
                 },
-            ),
+            }),
         )
         whitelistItems.push(
             new ButtonItem(

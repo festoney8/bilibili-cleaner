@@ -239,19 +239,16 @@ if (isPageVideo()) {
     // UI组件, 时长过滤part
     {
         durationItems.push(
-            new CheckboxItem(
-                videoDurationAction.statusKey,
-                '启用 播放页 时长过滤',
-                false,
-                () => {
+            new CheckboxItem({
+                itemID: videoDurationAction.statusKey,
+                description: '启用 播放页 时长过滤',
+                itemFunc: () => {
                     videoDurationAction.enable()
                 },
-                false,
-                null,
-                () => {
+                callback: () => {
                     videoDurationAction.disable()
                 },
-            ),
+            }),
         )
         durationItems.push(
             new NumberItem(videoDurationAction.valueKey, '设定最低时长 (0~300s)', 60, 0, 300, '秒', (value: number) =>
@@ -264,24 +261,21 @@ if (isPageVideo()) {
     // UI组件, UP主过滤part
     {
         uploaderItems.push(
-            new CheckboxItem(
-                videoUploaderAction.statusKey,
-                '启用 播放页 UP主过滤',
-                false,
-                () => {
+            new CheckboxItem({
+                itemID: videoUploaderAction.statusKey,
+                description: '启用 播放页 UP主过滤',
+                itemFunc: () => {
                     // 启用右键菜单功能
                     isContextMenuUploaderEnable = true
                     contextMenuFunc()
                     videoUploaderAction.enable()
                 },
-                false,
-                null,
-                () => {
+                callback: () => {
                     // 禁用右键菜单功能
                     isContextMenuUploaderEnable = false
                     videoUploaderAction.disable()
                 },
-            ),
+            }),
         )
         uploaderItems.push(
             new ButtonItem(
@@ -300,19 +294,16 @@ if (isPageVideo()) {
     // UI组件, 标题关键词过滤part
     {
         titleKeywordItems.push(
-            new CheckboxItem(
-                videoTitleKeywordAction.statusKey,
-                '启用 播放页关键词过滤',
-                false,
-                () => {
+            new CheckboxItem({
+                itemID: videoTitleKeywordAction.statusKey,
+                description: '启用 播放页关键词过滤',
+                itemFunc: () => {
                     videoTitleKeywordAction.enable()
                 },
-                false,
-                null,
-                () => {
+                callback: () => {
                     videoTitleKeywordAction.disable()
                 },
-            ),
+            }),
         )
         titleKeywordItems.push(
             new ButtonItem(
@@ -331,24 +322,21 @@ if (isPageVideo()) {
     // UI组件, bvid过滤part
     {
         bvidItems.push(
-            new CheckboxItem(
-                videoBvidAction.statusKey,
-                '启用 播放页 BV号过滤',
-                false,
-                () => {
+            new CheckboxItem({
+                itemID: videoBvidAction.statusKey,
+                description: '启用 播放页 BV号过滤',
+                itemFunc: () => {
                     // 启用 右键功能
                     isContextMenuBvidEnable = true
                     contextMenuFunc()
                     videoBvidAction.enable()
                 },
-                false,
-                null,
-                () => {
+                callback: () => {
                     // 禁用 右键功能
                     isContextMenuBvidEnable = false
                     videoBvidAction.disable()
                 },
-            ),
+            }),
         )
         bvidItems.push(
             new ButtonItem(
@@ -368,36 +356,31 @@ if (isPageVideo()) {
     {
         // 不过滤接下来播放, 默认开启
         whitelistItems.push(
-            new CheckboxItem(
-                'video-next-play-whitelist-filter-status',
-                '接下来播放 免过滤',
-                true,
-                () => {
+            new CheckboxItem({
+                itemID: 'video-next-play-whitelist-filter-status',
+                description: '接下来播放 免过滤',
+                defaultStatus: true,
+                itemFunc: () => {
                     isNextPlayWhitelistEnable = true
                     checkVideoList(true)
                 },
-                false,
-                null,
-                () => {
+                callback: () => {
                     isNextPlayWhitelistEnable = false
                     checkVideoList(true)
                 },
-            ),
+            }),
         )
         whitelistItems.push(
-            new CheckboxItem(
-                videoUploaderWhitelistAction.statusKey,
-                '启用 播放页UP主白名单',
-                false,
-                () => {
+            new CheckboxItem({
+                itemID: videoUploaderWhitelistAction.statusKey,
+                description: '启用 播放页UP主白名单',
+                itemFunc: () => {
                     videoUploaderWhitelistAction.enable()
                 },
-                false,
-                null,
-                () => {
+                callback: () => {
                     videoUploaderWhitelistAction.disable()
                 },
-            ),
+            }),
         )
         whitelistItems.push(
             new ButtonItem(
@@ -411,19 +394,16 @@ if (isPageVideo()) {
             ),
         )
         whitelistItems.push(
-            new CheckboxItem(
-                videoTitleKeywordWhitelistAction.statusKey,
-                '启用 播放页关键词白名单',
-                false,
-                () => {
+            new CheckboxItem({
+                itemID: videoTitleKeywordWhitelistAction.statusKey,
+                description: '启用 播放页关键词白名单',
+                itemFunc: () => {
                     videoTitleKeywordWhitelistAction.enable()
                 },
-                false,
-                null,
-                () => {
+                callback: () => {
                     videoTitleKeywordWhitelistAction.disable()
                 },
-            ),
+            }),
         )
         whitelistItems.push(
             new ButtonItem(

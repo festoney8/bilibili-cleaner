@@ -321,52 +321,63 @@ if (isPageDynamic()) {
 
 // 基本功能part, basicItems
 {
-    basicItems.push(new CheckboxItem('border-radius', '页面直角化，去除圆角', false, undefined, false, borderRadiusCSS))
+    basicItems.push(
+        new CheckboxItem({
+            itemID: 'border-radius',
+            description: '页面直角化，去除圆角',
+            itemCSS: borderRadiusCSS,
+        }),
+    )
 
     // 滚动条美化, 默认开启
     basicItems.push(
-        new CheckboxItem(
-            'beauty-scrollbar',
-            '美化页面滚动条',
-            true,
-            undefined,
-            false,
-            `
-        /* WebKit */
-        ::-webkit-scrollbar {
-            width: 8px !important;
-            height: 8px !important;
-            background: transparent !important;
-        }
-        ::-webkit-scrollbar:hover {
-            background: rgba(128, 128, 128, 0.4) !important;
-        }
-        ::-webkit-scrollbar-thumb {
-            border: 1px solid rgba(255, 255, 255, 0.4) !important;
-            background-color: rgba(0, 0, 0, 0.4) !important;
-            z-index: 2147483647;
-            -webkit-border-radius: 8px !important;
-            background-clip: content-box !important;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background-color: rgba(0, 0, 0, 0.8) !important;
-        }
-        ::-webkit-scrollbar-thumb:active {
-            background-color: rgba(0, 0, 0, 0.6) !important;
-        }
+        new CheckboxItem({
+            itemID: 'beauty-scrollbar',
+            description: '美化页面滚动条',
+            defaultStatus: true,
+            itemCSS: `
+            /* WebKit */
+            ::-webkit-scrollbar {
+                width: 8px !important;
+                height: 8px !important;
+                background: transparent !important;
+            }
+            ::-webkit-scrollbar:hover {
+                background: rgba(128, 128, 128, 0.4) !important;
+            }
+            ::-webkit-scrollbar-thumb {
+                border: 1px solid rgba(255, 255, 255, 0.4) !important;
+                background-color: rgba(0, 0, 0, 0.4) !important;
+                z-index: 2147483647;
+                -webkit-border-radius: 8px !important;
+                background-clip: content-box !important;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background-color: rgba(0, 0, 0, 0.8) !important;
+            }
+            ::-webkit-scrollbar-thumb:active {
+                background-color: rgba(0, 0, 0, 0.6) !important;
+            }
 
-        /* Firefox */
-        * {
-            scrollbar-color: rgba(0, 0, 0, 0.6) transparent !important;
-            scrollbar-width: thin !important;
-        }
-        `,
-        ),
+            /* Firefox */
+            * {
+                scrollbar-color: rgba(0, 0, 0, 0.6) transparent !important;
+                scrollbar-width: thin !important;
+            }`,
+        }),
     )
 
     // URL参数净化, 在urlchange时需重载, 默认开启, 关闭功能需刷新
     // 以前会出现URL缺少参数导致充电窗口载入失败报错NaN的bug, 现无法复现, 猜测已修复
-    basicItems.push(new CheckboxItem('url-cleaner', 'URL参数净化', true, cleanURL, true, null))
+    basicItems.push(
+        new CheckboxItem({
+            itemID: 'url-cleaner',
+            description: 'URL参数净化',
+            defaultStatus: true,
+            itemFunc: cleanURL,
+            isItemFuncReload: true,
+        }),
+    )
 }
 commonGroupList.push(new Group('common-basic', '全站通用项 基本功能', basicItems))
 // 通用header净化，直播页除外
@@ -375,30 +386,24 @@ if (!isPageLive()) {
     {
         // 隐藏 主站Logo
         headerLeftItems.push(
-            new CheckboxItem(
-                'common-hide-nav-homepage-logo',
-                '隐藏 主站Logo',
-                false,
-                undefined,
-                false,
-                `div.bili-header__bar .left-entry li:has(>a[href="//www.bilibili.com"]) svg {
+            new CheckboxItem({
+                itemID: 'common-hide-nav-homepage-logo',
+                description: '隐藏 主站Logo',
+                itemCSS: `div.bili-header__bar .left-entry li:has(>a[href="//www.bilibili.com"]) svg {
                     display: none !important;
                 }
                 /* 旧版header */
                 #internationalHeader li.nav-link-item:has(>span>a[href="//www.bilibili.com"]) .navbar_logo {
                     display: none !important;
                 }`,
-            ),
+            }),
         )
         // 隐藏 首页
         headerLeftItems.push(
-            new CheckboxItem(
-                'common-hide-nav-homepage',
-                '隐藏 首页',
-                false,
-                undefined,
-                false,
-                `div.bili-header__bar li:has(>a[href="//www.bilibili.com"]) span {
+            new CheckboxItem({
+                itemID: 'common-hide-nav-homepage',
+                description: '隐藏 首页',
+                itemCSS: `div.bili-header__bar li:has(>a[href="//www.bilibili.com"]) span {
                     display: none !important;
                 }
                 div.bili-header__bar .left-entry .v-popover-wrap:has(>a[href="//www.bilibili.com"]) div {
@@ -412,119 +417,98 @@ if (!isPageLive()) {
                 #internationalHeader li.nav-link-item:has(>span>a[href="//www.bilibili.com"]) .navbar_pullup {
                     display: none !important;
                 }`,
-            ),
+            }),
         )
         // 隐藏 番剧
         headerLeftItems.push(
-            new CheckboxItem(
-                'common-hide-nav-anime',
-                '隐藏 番剧',
-                false,
-                undefined,
-                false,
-                `div.bili-header__bar .left-entry li:has(>a[href="//www.bilibili.com/anime/"]) {
+            new CheckboxItem({
+                itemID: 'common-hide-nav-anime',
+                description: '隐藏 番剧',
+                itemCSS: `div.bili-header__bar .left-entry li:has(>a[href="//www.bilibili.com/anime/"]) {
                     display: none !important;
                 }
                 /* 旧版header */
                 #internationalHeader li.nav-link-item:has(>a[href*="bilibili.com/anime"]) {
                     display: none !important;
                 }`,
-            ),
+            }),
         )
         // 隐藏 直播
         headerLeftItems.push(
-            new CheckboxItem(
-                'common-hide-nav-live',
-                '隐藏 直播',
-                false,
-                undefined,
-                false,
-                `div.bili-header__bar .left-entry li:has(>a[href="//live.bilibili.com"], >a[href="//live.bilibili.com/"]) {
+            new CheckboxItem({
+                itemID: 'common-hide-nav-live',
+                description: '隐藏 直播',
+                itemCSS: `div.bili-header__bar .left-entry li:has(>a[href="//live.bilibili.com"], >a[href="//live.bilibili.com/"]) {
                     display: none !important;
                 }
                 /* 旧版header */
                 #internationalHeader li.nav-link-item:has(>span>a[href*="live.bilibili.com"]) {
                     display: none !important;
                 }`,
-            ),
+            }),
         )
         // 隐藏 游戏中心
         headerLeftItems.push(
-            new CheckboxItem(
-                'common-hide-nav-game',
-                '隐藏 游戏中心',
-                false,
-                undefined,
-                false,
-                `div.bili-header__bar .left-entry li:has(>a[href^="//game.bilibili.com"]) {
+            new CheckboxItem({
+                itemID: 'common-hide-nav-game',
+                description: '隐藏 游戏中心',
+                itemCSS: `div.bili-header__bar .left-entry li:has(>a[href^="//game.bilibili.com"]) {
                     display: none !important;
                 }
                 /* 旧版header */
                 #internationalHeader li.nav-link-item:has(>span>a[href*="game.bilibili.com"]) {
                     display: none !important;
                 }`,
-            ),
+            }),
         )
         // 隐藏 会员购
         headerLeftItems.push(
-            new CheckboxItem(
-                'common-hide-nav-vipshop',
-                '隐藏 会员购',
-                false,
-                undefined,
-                false,
-                `div.bili-header__bar .left-entry li:has(>a[href^="//show.bilibili.com"]) {
+            new CheckboxItem({
+                itemID: 'common-hide-nav-vipshop',
+                description: '隐藏 会员购',
+                itemCSS: `div.bili-header__bar .left-entry li:has(>a[href^="//show.bilibili.com"]) {
                     display: none !important;
                 }
                 /* 旧版header */
                 #internationalHeader li.nav-link-item:has(>a[href*="show.bilibili.com"]) {
                     display: none !important;
                 }`,
-            ),
+            }),
         )
         // 隐藏 漫画
         headerLeftItems.push(
-            new CheckboxItem(
-                'common-hide-nav-manga',
-                '隐藏 漫画',
-                false,
-                undefined,
-                false,
-                `div.bili-header__bar .left-entry li:has(>a[href^="//manga.bilibili.com"]) {
+            new CheckboxItem({
+                itemID: 'common-hide-nav-manga',
+                description: '隐藏 漫画',
+                itemCSS: `div.bili-header__bar .left-entry li:has(>a[href^="//manga.bilibili.com"]) {
                     display: none !important;
                 }
                 /* 旧版header */
                 #internationalHeader li.nav-link-item:has(>span>a[href*="manga.bilibili.com"]) {
                     display: none !important;
                 }`,
-            ),
+            }),
         )
         // 隐藏 赛事
         headerLeftItems.push(
-            new CheckboxItem(
-                'common-hide-nav-match',
-                '隐藏 赛事',
-                false,
-                undefined,
-                false,
-                `div.bili-header__bar .left-entry li:has(>a[href^="//www.bilibili.com/match/"], >a[href^="//www.bilibili.com/v/game/match/"]) {
+            new CheckboxItem({
+                itemID: 'common-hide-nav-match',
+                description: '隐藏 赛事',
+                itemCSS: `div.bili-header__bar .left-entry li:has(>a[href^="//www.bilibili.com/match/"], >a[href^="//www.bilibili.com/v/game/match/"]) {
                     display: none !important;
                 }
                 /* 旧版header */
                 #internationalHeader li.nav-link-item:has(>a[href*="bilibili.com/match/"]) {
                     display: none !important;
                 }`,
-            ),
+            }),
         )
         // 隐藏 活动/活动直播
         headerLeftItems.push(
-            new CheckboxItem(
-                'common-hide-nav-moveclip',
-                '隐藏 活动/活动直播',
-                false,
-                undefined,
-                false,
-                `div.bili-header__bar li:has(.loc-mc-box) {
+            new CheckboxItem({
+                itemID: 'common-hide-nav-moveclip',
+                description: '隐藏 活动/活动直播',
+                itemCSS: `div.bili-header__bar li:has(.loc-mc-box) {
                     display: none !important;
                 }
                 div.bili-header__bar .left-entry li:not(:has(.v-popover)):has([href^="https://live.bilibili.com/"]) {
@@ -537,45 +521,37 @@ if (!isPageLive()) {
                 #internationalHeader li.nav-link-item:has(.loc-mc-box, [href^="https://live.bilibili.com/"]) {
                     display: none !important;
                 }`,
-            ),
+            }),
         )
         // 隐藏 百大评选
         headerLeftItems.push(
-            new CheckboxItem(
-                'common-hide-nav-bdu',
-                '隐藏 百大评选',
-                false,
-                undefined,
-                false,
-                `div.bili-header__bar .left-entry li:has(>div>a[href*="bilibili.com/BPU20"]) {display: none !important;}`,
-            ),
+            new CheckboxItem({
+                itemID: 'common-hide-nav-bdu',
+                description: '隐藏 百大评选',
+                itemCSS: `div.bili-header__bar .left-entry li:has(>div>a[href*="bilibili.com/BPU20"]) {display: none !important;}`,
+            }),
         )
         // 隐藏 下载客户端, 默认开启
         headerLeftItems.push(
-            new CheckboxItem(
-                'common-hide-nav-download-app',
-                '隐藏 下载客户端',
-                true,
-                undefined,
-                false,
-                `div.bili-header__bar .left-entry li:has(a[href="//app.bilibili.com"]) {
+            new CheckboxItem({
+                itemID: 'common-hide-nav-download-app',
+                description: '隐藏 下载客户端',
+                defaultStatus: true,
+                itemCSS: `div.bili-header__bar .left-entry li:has(a[href="//app.bilibili.com"]) {
                     display: none !important;
                 }
                 /* 旧版header */
                 #internationalHeader li.nav-link-item:has(a[href="//app.bilibili.com"]) {
                     display: none !important;
                 }`,
-            ),
+            }),
         )
         // 隐藏 所有官方活动(blackboard)
         headerLeftItems.push(
-            new CheckboxItem(
-                'common-hide-nav-blackboard',
-                '隐藏 所有官方活动(强制)',
-                false,
-                undefined,
-                false,
-                `div.bili-header__bar .left-entry li:has(>a[href*="bilibili.com/blackboard"]) {
+            new CheckboxItem({
+                itemID: 'common-hide-nav-blackboard',
+                description: '隐藏 所有官方活动(强制)',
+                itemCSS: `div.bili-header__bar .left-entry li:has(>a[href*="bilibili.com/blackboard"]) {
                     display: none !important;
                 }
                 div.bili-header__bar .left-entry li:has(>div>a[href*="bilibili.com/blackboard"]) {
@@ -591,7 +567,7 @@ if (!isPageLive()) {
                 #internationalHeader li.nav-link-item:has(.loc-mc-box, span>a[href*="bilibili.com/blackboard"]) {
                     display: none !important;
                 }`,
-            ),
+            }),
         )
     }
     commonGroupList.push(new Group('common-header-left', '全站通用项 顶栏 左侧', headerLeftItems))
@@ -599,42 +575,33 @@ if (!isPageLive()) {
     {
         // 隐藏 推荐搜索
         headerCenterItems.push(
-            new CheckboxItem(
-                'common-hide-nav-search-rcmd',
-                '隐藏 推荐搜索',
-                false,
-                undefined,
-                false,
-                `#nav-searchform .nav-search-input::placeholder {color: transparent;}
+            new CheckboxItem({
+                itemID: 'common-hide-nav-search-rcmd',
+                description: '隐藏 推荐搜索',
+                itemCSS: `#nav-searchform .nav-search-input::placeholder {color: transparent;}
                 /* 旧版header */
                 #internationalHeader #nav_searchform input::placeholder {color: transparent;}`,
-            ),
+            }),
         )
         // 隐藏 搜索历史
         headerCenterItems.push(
-            new CheckboxItem(
-                'common-hide-nav-search-history',
-                '隐藏 搜索历史',
-                false,
-                undefined,
-                false,
-                `.search-panel .history {display: none;}
+            new CheckboxItem({
+                itemID: 'common-hide-nav-search-history',
+                description: '隐藏 搜索历史',
+                itemCSS: `.search-panel .history {display: none;}
                 /* 旧版header */
                 #internationalHeader .nav-search-box .history {display: none !important;}`,
-            ),
+            }),
         )
         // 隐藏 bilibili热搜
         headerCenterItems.push(
-            new CheckboxItem(
-                'common-hide-nav-search-trending',
-                '隐藏 bilibili热搜',
-                false,
-                undefined,
-                false,
-                `.search-panel .trending {display: none;}
+            new CheckboxItem({
+                itemID: 'common-hide-nav-search-trending',
+                description: '隐藏 bilibili热搜',
+                itemCSS: `.search-panel .trending {display: none;}
                 /* 旧版header */
                 #internationalHeader .nav-search-box .trending {display: none !important;}`,
-            ),
+            }),
         )
     }
     commonGroupList.push(new Group('common-header-center', '全站通用项 顶栏 搜索框', headerCenterItems))
@@ -642,97 +609,80 @@ if (!isPageLive()) {
     {
         // 隐藏 头像
         headerRightItems.push(
-            new CheckboxItem(
-                'common-hide-nav-avatar',
-                '隐藏 头像',
-                false,
-                undefined,
-                false,
-                `.right-entry .v-popover-wrap.header-avatar-wrap {
+            new CheckboxItem({
+                itemID: 'common-hide-nav-avatar',
+                description: '隐藏 头像',
+                itemCSS: `.right-entry .v-popover-wrap.header-avatar-wrap {
                     display: none !important;
                 }
                 /* 旧版header */
                 #internationalHeader .nav-user-center .item:has(.mini-avatar) {
                     display: none !important;
                 }`,
-            ),
+            }),
         )
         // 隐藏 大会员, 默认开启
         headerRightItems.push(
-            new CheckboxItem(
-                'common-hide-nav-vip',
-                '隐藏 大会员',
-                true,
-                undefined,
-                false,
-                `.right-entry .vip-wrap:has([href*="//account.bilibili.com/big"]) {
+            new CheckboxItem({
+                itemID: 'common-hide-nav-vip',
+                description: '隐藏 大会员',
+                defaultStatus: true,
+                itemCSS: `.right-entry .vip-wrap:has([href*="//account.bilibili.com/big"]) {
                     display: none !important;
                 }
                 /* 旧版header */
                 #internationalHeader .nav-user-center .item:has(.mini-vip) {
                     display: none !important;
                 }`,
-            ),
+            }),
         )
         // 隐藏 消息
         headerRightItems.push(
-            new CheckboxItem(
-                'common-hide-nav-message',
-                '隐藏 消息',
-                false,
-                undefined,
-                false,
-                `.right-entry .v-popover-wrap:has([href*="//message.bilibili.com"], [data-idx="message"]) {
+            new CheckboxItem({
+                itemID: 'common-hide-nav-message',
+                description: '隐藏 消息',
+                itemCSS: `.right-entry .v-popover-wrap:has([href*="//message.bilibili.com"], [data-idx="message"]) {
                     display: none !important;
                 }
                 /* 旧版header */
                 #internationalHeader .nav-user-center .item:has(.nav-item-message) {
                     display: none !important;
                 }`,
-            ),
+            }),
         )
         // 隐藏 消息小红点
         headerRightItems.push(
-            new CheckboxItem(
-                'common-hide-nav-message-red-num',
-                '隐藏 消息小红点',
-                false,
-                undefined,
-                false,
-                `.right-entry .v-popover-wrap:has([href*="//message.bilibili.com"], [data-idx="message"]) .red-num--message {
+            new CheckboxItem({
+                itemID: 'common-hide-nav-message-red-num',
+                description: '隐藏 消息小红点',
+                itemCSS: `.right-entry .v-popover-wrap:has([href*="//message.bilibili.com"], [data-idx="message"]) .red-num--message {
                     display: none !important;
                 }`,
-            ),
+            }),
         )
         // 隐藏 动态
         headerRightItems.push(
-            new CheckboxItem(
-                'common-hide-nav-dynamic',
-                '隐藏 动态',
-                false,
-                undefined,
-                false,
-                `.right-entry .v-popover-wrap:has([href*="//t.bilibili.com"], [data-idx="dynamic"]) {
+            new CheckboxItem({
+                itemID: 'common-hide-nav-dynamic',
+                description: '隐藏 动态',
+                itemCSS: `.right-entry .v-popover-wrap:has([href*="//t.bilibili.com"], [data-idx="dynamic"]) {
                     display: none !important;
                 }
                 /* 旧版header */
                 #internationalHeader .nav-user-center .item:has(.nav-item-dynamic) {
                     display: none !important;
                 }`,
-            ),
+            }),
         )
         // 隐藏 动态小红点
         headerRightItems.push(
-            new CheckboxItem(
-                'common-hide-nav-dynamic-red-num',
-                '隐藏 动态小红点',
-                false,
-                undefined,
-                false,
-                `.right-entry .v-popover-wrap:has([href*="//t.bilibili.com"], [data-idx="dynamic"]) .red-num--dynamic {
+            new CheckboxItem({
+                itemID: 'common-hide-nav-dynamic-red-num',
+                description: '隐藏 动态小红点',
+                itemCSS: `.right-entry .v-popover-wrap:has([href*="//t.bilibili.com"], [data-idx="dynamic"]) .red-num--dynamic {
                     display: none !important;
                 }`,
-            ),
+            }),
         )
         // 收藏、稍后再看 相关 一组互斥选项
         {
@@ -831,55 +781,47 @@ if (!isPageLive()) {
         }
         // 隐藏 历史
         headerRightItems.push(
-            new CheckboxItem(
-                'common-hide-nav-history',
-                '隐藏 历史',
-                false,
-                undefined,
-                false,
-                `.right-entry .v-popover-wrap:has([href*="www.bilibili.com/account/history"], [data-idx="history"]) {
-                    display: none !important;
-                }
-                /* 旧版header */
-                #internationalHeader .nav-user-center .item:has(.mini-history) {
-                    display: none !important;
-                }`,
-            ),
+            new CheckboxItem({
+                itemID: 'common-hide-nav-history',
+                description: '隐藏 历史',
+                itemCSS: `
+                    .right-entry .v-popover-wrap:has([href*="www.bilibili.com/account/history"], [data-idx="history"]) {
+                        display: none !important;
+                    }
+                    /* 旧版header */
+                    #internationalHeader .nav-user-center .item:has(.mini-history) {
+                        display: none !important;
+                    }`,
+            }),
         )
         // 隐藏 创作中心
         headerRightItems.push(
-            new CheckboxItem(
-                'common-hide-nav-member',
-                '隐藏 创作中心',
-                false,
-                undefined,
-                false,
-                `.right-entry .right-entry-item:has(a[href*="//member.bilibili.com/platform/home"], [data-idx="creation"]) {
+            new CheckboxItem({
+                itemID: 'common-hide-nav-member',
+                description: '隐藏 创作中心',
+                itemCSS: `.right-entry .right-entry-item:has(a[href*="//member.bilibili.com/platform/home"], [data-idx="creation"]) {
                     display: none !important;
                 }
                 /* 旧版header */
                 #internationalHeader .nav-user-center .item:has(a[href="//member.bilibili.com/platform/home"]) {
                     display: none !important;
                 }`,
-            ),
+            }),
         )
         // 隐藏 投稿
         headerRightItems.push(
-            new CheckboxItem(
-                'common-hide-nav-upload',
-                '隐藏 投稿',
-                false,
-                undefined,
-                false,
+            new CheckboxItem({
+                itemID: 'common-hide-nav-upload',
+                description: '隐藏 投稿',
                 // 不可设定 display: none, 会导致历史和收藏popover显示不全
-                `.right-entry .right-entry-item.right-entry-item--upload {
+                itemCSS: `.right-entry .right-entry-item.right-entry-item--upload {
                     visibility: hidden !important;
                 }
                 /* 旧版header */
                 #internationalHeader .nav-user-center >div:has(.mini-upload) {
                     visibility: hidden !important;
                 }`,
-            ),
+            }),
         )
     }
     commonGroupList.push(new Group('common-header-right', '全站通用项 顶栏 右侧', headerRightItems))

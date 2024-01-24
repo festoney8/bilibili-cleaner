@@ -14,7 +14,7 @@
 #bili-cleaner #bili-cleaner-bar {
     width: max(32vw, 300px);
     height: 6vh;
-    background: #fb7299;
+    background: #00aeec;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     cursor: move;
@@ -122,9 +122,9 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 #bili-cleaner #bili-cleaner-group-list .bili-cleaner-group .bili-cleaner-item-checkbox:checked {
-    border-color: #fb7299;
-    box-shadow: #fb7299 0 0 0 16px inset;
-    background-color: #fb7299;
+    border-color: #00aeec;
+    box-shadow: #00aeec 0 0 0 16px inset;
+    background-color: #00aeec;
 }
 #bili-cleaner #bili-cleaner-group-list .bili-cleaner-group .bili-cleaner-item-checkbox:checked:before {
     left: 25px;
@@ -193,7 +193,7 @@
     z-index: 2147483641;
 }
 #bili-cleaner-wordlist .wordlist-header {
-    background-color: #fb7299;
+    background-color: #00aeec;
     color: #fff;
     font-size: 22px;
     font-weight: bold;

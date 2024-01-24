@@ -1,5 +1,9 @@
 // 未使用css-loader等工具
 // scss to css生成后, 把css手动贴进代码里:D
+
+// $theme-color: rgb(251, 114, 153);
+$theme-color: rgb(0, 174, 236);
+
 #bili-cleaner {
     position: fixed;
     left: 50%;
@@ -16,7 +20,7 @@
     & #bili-cleaner-bar {
         width: max(32vw, 300px);
         height: 6vh;
-        background: rgb(251, 114, 153);
+        background: $theme-color;
         border-top-left-radius: 10px;
         border-top-right-radius: 10px;
         cursor: move;
@@ -120,9 +124,9 @@
                     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
                 }
                 &:checked {
-                    border-color: rgb(251, 114, 153);
-                    box-shadow: rgb(251, 114, 153) 0 0 0 16px inset;
-                    background-color: rgb(251, 114, 153);
+                    border-color: $theme-color;
+                    box-shadow: $theme-color 0 0 0 16px inset;
+                    background-color: $theme-color;
                 }
                 &:checked:before {
                     left: 25px;
@@ -199,7 +203,7 @@
     z-index: 2147483641;
 
     & .wordlist-header {
-        background-color: #fb7299;
+        background-color: $theme-color;
         color: #fff;
         font-size: 22px;
         font-weight: bold;

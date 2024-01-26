@@ -144,7 +144,10 @@ if (isPageHomepage()) {
                 mutationList.forEach((mutation) => {
                     if (mutation.addedNodes) {
                         mutation.addedNodes.forEach((node) => {
-                            if ((node as HTMLElement).className === 'container is-version8') {
+                            if (
+                                node instanceof HTMLElement &&
+                                (node as HTMLElement).className === 'container is-version8'
+                            ) {
                                 debugFilter('videoListContainer appear')
                                 obverser.disconnect()
                                 videoListContainer = document.querySelector('.container.is-version8') as HTMLElement
@@ -259,239 +262,197 @@ if (isPageHomepage()) {
 
     //=======================================================================================
     // 构建UI菜单
-    const durationItems: (CheckboxItem | NumberItem)[] = []
-    const titleKeywordItems: (CheckboxItem | ButtonItem)[] = []
-    const bvidItems: (CheckboxItem | ButtonItem)[] = []
-    const uploaderItems: (CheckboxItem | ButtonItem)[] = []
-    const whitelistItems: (CheckboxItem | ButtonItem)[] = []
 
-    // UI组件, 时长过滤part
-    {
-        durationItems.push(
-            new CheckboxItem(
-                homepageDurationAction.statusKey,
-                '启用 首页时长过滤',
-                false,
-                /**
-                 * 需使用匿名函数包装后传参, 否则报错, 下同
-                 *
-                 * GPT4(对错未知):
-                 * 当把一个类的方法作为回调函数直接传递给另一个函数时，
-                 * 那个方法会失去它的上下文（也就是它的 this 值），因为它被调用的方式改变了。
-                 * 在这种情况下，this 可能会变成 undefined（严格模式）或全局对象（非严格模式）
-                 *
-                 * 可以在传递方法时使用箭头函数来保持 this 的上下文
-                 */
-                () => {
-                    homepageDurationAction.enable()
-                },
-                false,
-                null,
-                () => {
-                    homepageDurationAction.disable()
-                },
-            ),
-        )
-        durationItems.push(
-            new NumberItem(
-                homepageDurationAction.valueKey,
-                '设定最低时长 (0~300s)',
-                60,
-                0,
-                300,
-                '秒',
-                (value: number) => {
-                    homepageDurationAction.change(value)
-                },
-            ),
-        )
-    }
+    // UI组件, 时长过滤
+    const durationItems = [
+        // 启用 首页时长过滤
+        new CheckboxItem({
+            itemID: homepageDurationAction.statusKey,
+            description: '启用 首页时长过滤',
+            /**
+             * 需使用匿名函数包装后传参, 否则报错, 下同
+             *
+             * GPT4(对错未知):
+             * 当把一个类的方法作为回调函数直接传递给另一个函数时，
+             * 那个方法会失去它的上下文（也就是它的 this 值），因为它被调用的方式改变了。
+             * 在这种情况下，this 可能会变成 undefined（严格模式）或全局对象（非严格模式）
+             *
+             * 可以在传递方法时使用箭头函数来保持 this 的上下文
+             */
+            itemFunc: () => {
+                homepageDurationAction.enable()
+            },
+            callback: () => {
+                homepageDurationAction.disable()
+            },
+        }),
+        // 设定最低时长
+        new NumberItem({
+            itemID: homepageDurationAction.valueKey,
+            description: '设定最低时长 (0~300s)',
+            defaultValue: 60,
+            minValue: 0,
+            maxValue: 300,
+            unit: '秒',
+            callback: (value: number) => {
+                homepageDurationAction.change(value)
+            },
+        }),
+    ]
     homepageFilterGroupList.push(new Group('homepage-duration-filter-group', '首页 视频时长过滤', durationItems))
 
-    // UI组件, UP主过滤part
-    {
-        uploaderItems.push(
-            new CheckboxItem(
-                homepageUploaderAction.statusKey,
-                '启用 首页UP主过滤',
-                false,
-                () => {
-                    // 启用右键功能
-                    isContextMenuUploaderEnable = true
-                    contextMenuFunc()
-                    homepageUploaderAction.enable()
-                },
-                false,
-                null,
-                () => {
-                    // 禁用右键功能
-                    isContextMenuUploaderEnable = false
-                    homepageUploaderAction.disable()
-                },
-            ),
-        )
+    // UI组件, UP主过滤
+    const uploaderItems = [
+        // 启用 首页UP主过滤
+        new CheckboxItem({
+            itemID: homepageUploaderAction.statusKey,
+            description: '启用 首页UP主过滤',
+            itemFunc: () => {
+                // 启用右键功能
+                isContextMenuUploaderEnable = true
+                contextMenuFunc()
+                homepageUploaderAction.enable()
+            },
+            callback: () => {
+                // 禁用右键功能
+                isContextMenuUploaderEnable = false
+                homepageUploaderAction.disable()
+            },
+        }),
         // 按钮功能：打开uploader黑名单编辑框
-        uploaderItems.push(
-            new ButtonItem(
-                'homepage-uploader-edit-button',
-                '编辑 UP主黑名单',
-                '编辑',
-                // 按钮功能
-                () => {
-                    homepageUploaderAction.blacklist.show()
-                },
-            ),
-        )
-    }
+        new ButtonItem({
+            itemID: 'homepage-uploader-edit-button',
+            description: '编辑 UP主黑名单',
+            name: '编辑',
+            // 按钮功能
+            itemFunc: () => {
+                homepageUploaderAction.blacklist.show()
+            },
+        }),
+    ]
     homepageFilterGroupList.push(
         new Group('homepage-uploader-filter-group', '首页 UP主过滤 (右键单击UP主)', uploaderItems),
     )
 
-    // UI组件, 标题关键词过滤part
-    {
-        titleKeywordItems.push(
-            new CheckboxItem(
-                homepageTitleKeywordAction.statusKey,
-                '启用 首页关键词过滤',
-                false,
-                () => {
-                    homepageTitleKeywordAction.enable()
-                },
-                false,
-                null,
-                () => {
-                    homepageTitleKeywordAction.disable()
-                },
-            ),
-        )
+    // UI组件, 标题关键词过滤
+    const titleKeywordItems = [
+        // 启用 首页关键词过滤
+        new CheckboxItem({
+            itemID: homepageTitleKeywordAction.statusKey,
+            description: '启用 首页关键词过滤',
+            itemFunc: () => {
+                homepageTitleKeywordAction.enable()
+            },
+            callback: () => {
+                homepageTitleKeywordAction.disable()
+            },
+        }),
         // 按钮功能：打开titleKeyword黑名单编辑框
-        titleKeywordItems.push(
-            new ButtonItem(
-                'homepage-title-keyword-edit-button',
-                '编辑 关键词黑名单（支持正则）',
-                '编辑',
-                // 按钮功能
-                () => {
-                    homepageTitleKeywordAction.blacklist.show()
-                },
-            ),
-        )
-    }
+        new ButtonItem({
+            itemID: 'homepage-title-keyword-edit-button',
+            description: '编辑 关键词黑名单（支持正则）',
+            name: '编辑',
+            // 按钮功能
+            itemFunc: () => {
+                homepageTitleKeywordAction.blacklist.show()
+            },
+        }),
+    ]
     homepageFilterGroupList.push(
         new Group('homepage-title-keyword-filter-group', '首页 标题关键词过滤', titleKeywordItems),
     )
 
-    // UI组件, bvid过滤part
-    {
-        bvidItems.push(
-            new CheckboxItem(
-                homepageBvidAction.statusKey,
-                '启用 首页BV号过滤',
-                false,
-                () => {
-                    // 启用右键功能
-                    isContextMenuBvidEnable = true
-                    contextMenuFunc()
-                    homepageBvidAction.enable()
-                },
-                false,
-                null,
-                () => {
-                    // 禁用右键功能
-                    isContextMenuBvidEnable = false
-                    homepageBvidAction.disable()
-                },
-            ),
-        )
+    // UI组件, bvid过滤
+    const bvidItems = [
+        // 启用 首页BV号过滤
+        new CheckboxItem({
+            itemID: homepageBvidAction.statusKey,
+            description: '启用 首页BV号过滤',
+            itemFunc: () => {
+                // 启用右键功能
+                isContextMenuBvidEnable = true
+                contextMenuFunc()
+                homepageBvidAction.enable()
+            },
+            callback: () => {
+                // 禁用右键功能
+                isContextMenuBvidEnable = false
+                homepageBvidAction.disable()
+            },
+        }),
         // 按钮功能：打开bvid黑名单编辑框
-        bvidItems.push(
-            new ButtonItem(
-                'homepage-bvid-edit-button',
-                '编辑 BV号黑名单',
-                '编辑',
-                // 按钮功能
-                () => {
-                    homepageBvidAction.blacklist.show()
-                },
-            ),
-        )
-    }
+        new ButtonItem({
+            itemID: 'homepage-bvid-edit-button',
+            description: '编辑 BV号黑名单',
+            name: '编辑',
+            // 按钮功能
+            itemFunc: () => {
+                homepageBvidAction.blacklist.show()
+            },
+        }),
+    ]
     homepageFilterGroupList.push(new Group('homepage-bvid-filter-group', '首页 BV号过滤 (右键单击标题)', bvidItems))
 
-    // UI组件, 例外和白名单part
-    {
+    // UI组件, 例外和白名单
+    const whitelistItems = [
         // 已关注UP主 免过滤, 默认开启
-        whitelistItems.push(
-            new CheckboxItem(
-                'homepage-following-whitelist-filter-status',
-                '标有 [已关注] 的视频免过滤 (实验性)',
-                true,
-                () => {
-                    isFollowingWhitelistEnable = true
-                    // 触发全站检测
-                    checkVideoList(true)
-                },
-                false,
-                null,
-                () => {
-                    isFollowingWhitelistEnable = false
-                    checkVideoList(true)
-                },
-            ),
-        )
-        whitelistItems.push(
-            new CheckboxItem(
-                homepageUploaderWhitelistAction.statusKey,
-                '启用 首页UP主白名单',
-                false,
-                () => {
-                    homepageUploaderWhitelistAction.enable()
-                },
-                false,
-                null,
-                () => {
-                    homepageUploaderWhitelistAction.disable()
-                },
-            ),
-        )
-        whitelistItems.push(
-            new ButtonItem(
-                'homepage-uploader-whitelist-edit-button',
-                '编辑 UP主白名单',
-                '编辑',
-                // 按钮功能：显示白名单编辑器
-                () => {
-                    homepageUploaderWhitelistAction.whitelist.show()
-                },
-            ),
-        )
-        whitelistItems.push(
-            new CheckboxItem(
-                homepageTitleKeyworldWhitelistAction.statusKey,
-                '启用 首页标题关键词白名单',
-                false,
-                () => {
-                    homepageTitleKeyworldWhitelistAction.enable()
-                },
-                false,
-                null,
-                () => {
-                    homepageTitleKeyworldWhitelistAction.disable()
-                },
-            ),
-        )
-        whitelistItems.push(
-            new ButtonItem(
-                'homepage-title-keyword-whitelist-edit-button',
-                '编辑 关键词白名单（支持正则）',
-                '编辑',
-                // 按钮功能：显示白名单编辑器
-                () => {
-                    homepageTitleKeyworldWhitelistAction.whitelist.show()
-                },
-            ),
-        )
-    }
+        new CheckboxItem({
+            itemID: 'homepage-following-whitelist-filter-status',
+            description: '标有 [已关注] 的视频免过滤 (实验性)',
+            defaultStatus: true,
+            itemFunc: () => {
+                isFollowingWhitelistEnable = true
+                // 触发全站检测
+                checkVideoList(true)
+            },
+            callback: () => {
+                isFollowingWhitelistEnable = false
+                checkVideoList(true)
+            },
+        }),
+        // 启用 首页UP主白名单
+        new CheckboxItem({
+            itemID: homepageUploaderWhitelistAction.statusKey,
+            description: '启用 首页UP主白名单',
+            itemFunc: () => {
+                homepageUploaderWhitelistAction.enable()
+            },
+            callback: () => {
+                homepageUploaderWhitelistAction.disable()
+            },
+        }),
+        // 编辑 UP主白名单
+        new ButtonItem({
+            itemID: 'homepage-uploader-whitelist-edit-button',
+            description: '编辑 UP主白名单',
+            name: '编辑',
+            // 按钮功能：显示白名单编辑器
+            itemFunc: () => {
+                homepageUploaderWhitelistAction.whitelist.show()
+            },
+        }),
+        // 启用 首页标题关键词白名单
+        new CheckboxItem({
+            itemID: homepageTitleKeyworldWhitelistAction.statusKey,
+            description: '启用 首页标题关键词白名单',
+            itemFunc: () => {
+                homepageTitleKeyworldWhitelistAction.enable()
+            },
+            callback: () => {
+                homepageTitleKeyworldWhitelistAction.disable()
+            },
+        }),
+        // 编辑 关键词白名单
+        new ButtonItem({
+            itemID: 'homepage-title-keyword-whitelist-edit-button',
+            description: '编辑 关键词白名单（支持正则）',
+            name: '编辑',
+            // 按钮功能：显示白名单编辑器
+            itemFunc: () => {
+                homepageTitleKeyworldWhitelistAction.whitelist.show()
+            },
+        }),
+    ]
     homepageFilterGroupList.push(
         new Group('homepage-whitelist-filter-group', '首页 白名单设定 (免过滤)', whitelistItems),
     )

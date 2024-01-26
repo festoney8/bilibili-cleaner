@@ -2,26 +2,17 @@ import { Group } from '../components/group'
 import { CheckboxItem, RadioItem } from '../components/item'
 import { isPageHomepage } from '../utils/page-type'
 
-const basicItems: CheckboxItem[] = []
-const layoutItems: (CheckboxItem | RadioItem)[] = []
-const rcmdListItems: CheckboxItem[] = []
-const sidebarItems: CheckboxItem[] = []
-const biliAppRcmdItems: CheckboxItem[] = []
 // GroupList
 const homepageGroupList: Group[] = []
 
 if (isPageHomepage()) {
-    // 基础项part, basicItems
-    {
+    // 基础项
+    const basicItems = [
         // 隐藏 横幅banner
-        basicItems.push(
-            new CheckboxItem(
-                'homepage-hide-banner',
-                '隐藏 横幅banner',
-                false,
-                undefined,
-                false,
-                `.header-banner__inner, .bili-header__banner {
+        new CheckboxItem({
+            itemID: 'homepage-hide-banner',
+            description: '隐藏 横幅banner',
+            itemCSS: `.header-banner__inner, .bili-header__banner {
                     display: none !important;
                 }
                 .bili-header .bili-header__bar:not(.slide-down) {
@@ -51,17 +42,13 @@ if (isPageHomepage()) {
                 #i_cecream .bili-header__bar:not(.slide-down) {
                     transition: background-color 0.3s ease-out !important;
                 }`,
-            ),
-        )
+        }),
         // 隐藏 大图活动轮播, 默认开启
-        basicItems.push(
-            new CheckboxItem(
-                'homepage-hide-recommend-swipe',
-                '隐藏 大图活动轮播',
-                true,
-                undefined,
-                false,
-                `.recommended-swipe {
+        new CheckboxItem({
+            itemID: 'homepage-hide-recommend-swipe',
+            description: '隐藏 大图活动轮播',
+            defaultStatus: true,
+            itemCSS: `.recommended-swipe {
                     display: none !important;
                 }
                 /* 布局调整 */
@@ -97,18 +84,13 @@ if (isPageHomepage()) {
                 @media (min-width: 1701px) and (max-width: 2199.9px) {.bili-header .bili-header__channel {height:104px!important}}
                 @media (min-width: 2200px) {.bili-header .bili-header__channel {height:114px!important}}
                 `,
-            ),
-        )
+        }),
         // 隐藏 整个分区栏
-        basicItems.push(
-            new CheckboxItem(
-                'homepage-hide-subarea',
-                '隐藏 整个分区栏',
-                false,
-                undefined,
-                false,
-                // 高权限, 否则被压缩分区栏高度影响
-                `#i_cecream .bili-header__channel .channel-icons {
+        new CheckboxItem({
+            itemID: 'homepage-hide-subarea',
+            description: '隐藏 整个分区栏',
+            // 高权限, 否则被压缩分区栏高度影响
+            itemCSS: `#i_cecream .bili-header__channel .channel-icons {
                     display: none !important;
                 }
                 #i_cecream .bili-header__channel .right-channel-container {
@@ -121,17 +103,12 @@ if (isPageHomepage()) {
                 #i_cecream main.bili-feed4-layout:not(:has(.bilibili-app-recommend-root)) {
                     margin-top: 20px !important;
                 }`,
-            ),
-        )
+        }),
         // 隐藏 滚动页面时 顶部吸附顶栏
-        basicItems.push(
-            new CheckboxItem(
-                'homepage-hide-sticky-header',
-                '隐藏 滚动页面时 顶部吸附顶栏',
-                false,
-                undefined,
-                false,
-                `.bili-header .left-entry__title svg {
+        new CheckboxItem({
+            itemID: 'homepage-hide-sticky-header',
+            description: '隐藏 滚动页面时 顶部吸附顶栏',
+            itemCSS: `.bili-header .left-entry__title svg {
                     display: none !important;
                 }
                 /* 高优先覆盖!important */
@@ -198,17 +175,13 @@ if (isPageHomepage()) {
                 .bilibili-app-recommend-root .area-header {
                     top: 0 !important;
                 }`,
-            ),
-        )
+        }),
         // 隐藏 滚动页面时 顶部吸附分区栏
-        basicItems.push(
-            new CheckboxItem(
-                'homepage-hide-sticky-subarea',
-                '隐藏 滚动页面时 顶部吸附分区栏',
-                true,
-                undefined,
-                false,
-                `#i_cecream .header-channel {display: none !important;}
+        new CheckboxItem({
+            itemID: 'homepage-hide-sticky-subarea',
+            description: '隐藏 滚动页面时 顶部吸附分区栏',
+            defaultStatus: true,
+            itemCSS: `#i_cecream .header-channel {display: none !important;}
                 /* 吸附分区栏的动效转移给吸附header, 滚动后渐变出现 */
                 #i_cecream .bili-header__bar.slide-down {
                     transition: background-color 0.3s ease-out, box-shadow 0.3s ease-out !important;
@@ -216,28 +189,19 @@ if (isPageHomepage()) {
                 #i_cecream .bili-header__bar:not(.slide-down) {
                     transition: background-color 0.3s ease-out;
                 }`,
-            ),
-        )
+        }),
         // 隐藏 顶部adblock提示, 默认开启
-        basicItems.push(
-            new CheckboxItem(
-                'homepage-hide-adblock-tips',
-                '隐藏 顶部adblock提示',
-                true,
-                undefined,
-                false,
-                `.adblock-tips {display: none !important;}`,
-            ),
-        )
+        new CheckboxItem({
+            itemID: 'homepage-hide-adblock-tips',
+            description: '隐藏 顶部adblock提示',
+            defaultStatus: true,
+            itemCSS: `.adblock-tips {display: none !important;}`,
+        }),
         // 增大 视频信息字号
-        basicItems.push(
-            new CheckboxItem(
-                'homepage-increase-rcmd-list-font-size',
-                '增大 视频信息字号',
-                false,
-                undefined,
-                false,
-                `.bili-video-card .bili-video-card__info--tit,
+        new CheckboxItem({
+            itemID: 'homepage-increase-rcmd-list-font-size',
+            description: '增大 视频信息字号',
+            itemCSS: `.bili-video-card .bili-video-card__info--tit,
                 .bili-live-card .bili-live-card__info--tit,
                 .single-card.floor-card .title {
                     font-size: 16px !important;
@@ -251,91 +215,80 @@ if (isPageHomepage()) {
                 .bili-video-card__stats .bili-video-card__stats--right {
                     font-size: 14px !important;
                 }`,
-            ),
-        )
-    }
+        }),
+    ]
     homepageGroupList.push(new Group('homepage-basic', '首页 基本功能', basicItems))
 
-    // 页面布局part, layoutItems, 一组互斥选项
-    {
-        const layoutRadioItemIDList: string[] = [
-            'homepage-layout-default',
-            'homepage-layout-4-column',
-            'homepage-layout-5-column',
-            'homepage-layout-6-column',
-        ]
+    // 页面布局, 一组互斥选项
+    const layoutItems = [
         // 官方默认布局, 默认开启
-        layoutItems.push(
-            new RadioItem(
+        new RadioItem({
+            itemID: 'homepage-layout-default',
+            description: '官方默认，自动匹配页面缩放',
+            radioName: 'homepage-layout-option',
+            radioItemIDList: [
                 'homepage-layout-default',
-                '官方默认，自动匹配页面缩放',
-                'homepage-layout-option',
-                layoutRadioItemIDList,
-                true,
-                undefined,
-                false,
-                null,
-            ),
-        )
-        // 强制使用 4 列布局
-        layoutItems.push(
-            new RadioItem(
                 'homepage-layout-4-column',
-                '强制使用 4 列布局',
-                'homepage-layout-option',
-                layoutRadioItemIDList,
-                false,
-                undefined,
-                false,
-                `#i_cecream .recommended-container_floor-aside .container {
+                'homepage-layout-5-column',
+                'homepage-layout-6-column',
+            ],
+            defaultStatus: true,
+        }),
+        // 强制使用 4 列布局
+        new RadioItem({
+            itemID: 'homepage-layout-4-column',
+            description: '强制使用 4 列布局',
+            radioName: 'homepage-layout-option',
+            radioItemIDList: [
+                'homepage-layout-default',
+                'homepage-layout-4-column',
+                'homepage-layout-5-column',
+                'homepage-layout-6-column',
+            ],
+            itemCSS: `#i_cecream .recommended-container_floor-aside .container {
                     grid-template-columns: repeat(4,1fr) !important;
                 }`,
-            ),
-        )
+        }),
         // 强制使用 5 列布局
-        layoutItems.push(
-            new RadioItem(
+        new RadioItem({
+            itemID: 'homepage-layout-5-column',
+            description: '强制使用 5 列布局\n建议开启 增大视频信息字号',
+            radioName: 'homepage-layout-option',
+            radioItemIDList: [
+                'homepage-layout-default',
+                'homepage-layout-4-column',
                 'homepage-layout-5-column',
-                '强制使用 5 列布局\n建议开启 增大视频信息字号',
-                'homepage-layout-option',
-                layoutRadioItemIDList,
-                false,
-                undefined,
-                false,
-                `#i_cecream .recommended-container_floor-aside .container {
+                'homepage-layout-6-column',
+            ],
+            itemCSS: `#i_cecream .recommended-container_floor-aside .container {
                     grid-template-columns: repeat(5,1fr) !important;
                 }`,
-            ),
-        )
+        }),
         // 强制使用 6 列布局
-        layoutItems.push(
-            new RadioItem(
+        new RadioItem({
+            itemID: 'homepage-layout-6-column',
+            description: '强制使用 6 列布局 (刷新)\n建议 隐藏发布时间，可选 显示活动轮播',
+            radioName: 'homepage-layout-option',
+            radioItemIDList: [
+                'homepage-layout-default',
+                'homepage-layout-4-column',
+                'homepage-layout-5-column',
                 'homepage-layout-6-column',
-                '强制使用 6 列布局 (刷新)\n建议 隐藏发布时间，可选 显示活动轮播',
-                'homepage-layout-option',
-                layoutRadioItemIDList,
-                false,
-                undefined,
-                false,
-                `#i_cecream .recommended-container_floor-aside .container {
+            ],
+            itemCSS: `#i_cecream .recommended-container_floor-aside .container {
                     grid-template-columns: repeat(6,1fr) !important;
                 }`,
-            ),
-        )
-    }
+        }),
+    ]
     homepageGroupList.push(new Group('homepage-layout', '页面强制布局 (单选)', layoutItems))
 
-    // 视频列表part, rcmdListItems
-    {
+    // 视频列表
+    const rcmdListItems = [
         // 隐藏 视频tag (已关注/1万点赞)
-        rcmdListItems.push(
-            new CheckboxItem(
-                'homepage-hide-up-info-icon',
-                '隐藏 视频tag (已关注/1万点赞)',
-                false,
-                undefined,
-                false,
-                `/* CSS伪造Logo */
+        new CheckboxItem({
+            itemID: 'homepage-hide-up-info-icon',
+            description: '隐藏 视频tag (已关注/1万点赞)',
+            itemCSS: `/* CSS伪造Logo */
                 .bili-video-card .bili-video-card__info--icon-text {
                     width: 17px;
                     height: 17px;
@@ -358,50 +311,32 @@ if (isPageHomepage()) {
                     background-repeat: no-repeat;
                     background-position: center;
                 }`,
-            ),
-        )
+        }),
         // 隐藏 发布时间
-        rcmdListItems.push(
-            new CheckboxItem(
-                'homepage-hide-video-info-date',
-                '隐藏 发布时间',
-                false,
-                undefined,
-                false,
-                `main:not(:has(.bilibili-app-recommend-root)) .bili-video-card__info--date {display: none !important;}`,
-            ),
-        )
+        new CheckboxItem({
+            itemID: 'homepage-hide-video-info-date',
+            description: '隐藏 发布时间',
+            itemCSS: `main:not(:has(.bilibili-app-recommend-root)) .bili-video-card__info--date {display: none !important;}`,
+        }),
         // 隐藏 弹幕数, 默认开启
-        rcmdListItems.push(
-            new CheckboxItem(
-                'homepage-hide-danmaku-count',
-                '隐藏 弹幕数',
-                true,
-                undefined,
-                false,
-                `main:not(:has(.bilibili-app-recommend-root)) .bili-video-card__stats--item:nth-child(2) {visibility: hidden;}`,
-            ),
-        )
+        new CheckboxItem({
+            itemID: 'homepage-hide-danmaku-count',
+            description: '隐藏 弹幕数',
+            defaultStatus: true,
+            itemCSS: `main:not(:has(.bilibili-app-recommend-root)) .bili-video-card__stats--item:nth-child(2) {visibility: hidden;}`,
+        }),
         // 隐藏 稍后再看按钮
-        rcmdListItems.push(
-            new CheckboxItem(
-                'homepage-hide-bili-watch-later',
-                '隐藏 稍后再看按钮',
-                false,
-                undefined,
-                false,
-                `.bili-watch-later {display: none !important;}`,
-            ),
-        )
+        new CheckboxItem({
+            itemID: 'homepage-hide-bili-watch-later',
+            description: '隐藏 稍后再看按钮',
+            itemCSS: `.bili-watch-later {display: none !important;}`,
+        }),
         // 隐藏 广告, 默认开启
-        rcmdListItems.push(
-            new CheckboxItem(
-                'homepage-hide-ad-card',
-                '隐藏 广告',
-                true,
-                undefined,
-                false,
-                `.feed-card:has(.bili-video-card__info--ad, [href*="cm.bilibili.com"]) {
+        new CheckboxItem({
+            itemID: 'homepage-hide-ad-card',
+            description: '隐藏 广告',
+            defaultStatus: true,
+            itemCSS: `.feed-card:has(.bili-video-card__info--ad, [href*="cm.bilibili.com"]) {
                     display: none !important;
                 }
                 .bili-video-card.is-rcmd:has(.bili-video-card__info--ad, [href*="cm.bilibili.com"]) {
@@ -434,53 +369,34 @@ if (isPageHomepage()) {
                 .recommended-container_floor-aside .container .floor-single-card:first-of-type {
                     margin-top: 0 !important;
                 }`,
-            ),
-        )
+        }),
         // 隐藏 直播间推荐
-        rcmdListItems.push(
-            new CheckboxItem(
-                'homepage-hide-live-card-recommend',
-                '隐藏 直播间推荐',
-                false,
-                undefined,
-                false,
-                `.bili-live-card.is-rcmd {display: none !important;}`,
-            ),
-        )
+        new CheckboxItem({
+            itemID: 'homepage-hide-live-card-recommend',
+            description: '隐藏 直播间推荐',
+            itemCSS: `.bili-live-card.is-rcmd {display: none !important;}`,
+        }),
         // 精简 分区视频推荐, 默认开启
-        rcmdListItems.push(
-            new CheckboxItem(
-                'homepage-simple-sub-area-card-recommend',
-                '简化 分区视频推荐',
-                true,
-                undefined,
-                false,
-                `.floor-single-card .layer {display: none !important;}
+        new CheckboxItem({
+            itemID: 'homepage-simple-sub-area-card-recommend',
+            description: '简化 分区视频推荐',
+            defaultStatus: true,
+            itemCSS: `.floor-single-card .layer {display: none !important;}
                 .floor-single-card .floor-card {box-shadow: unset !important; border: none !important;}
                 .single-card.floor-card .floor-card-inner:hover {background: none !important;}`,
-            ),
-        )
+        }),
         // 隐藏 分区视频推荐
-        rcmdListItems.push(
-            new CheckboxItem(
-                'homepage-hide-sub-area-card-recommend',
-                '隐藏 分区视频推荐',
-                false,
-                undefined,
-                false,
-                // 含skeleton时不隐藏否则出现空档
-                `.floor-single-card:not(:has(.skeleton, .skeleton-item)) {display: none !important;}`,
-            ),
-        )
+        new CheckboxItem({
+            itemID: 'homepage-hide-sub-area-card-recommend',
+            description: '隐藏 分区视频推荐',
+            // 含skeleton时不隐藏否则出现空档
+            itemCSS: `.floor-single-card:not(:has(.skeleton, .skeleton-item)) {display: none !important;}`,
+        }),
         // 关闭 视频载入 骨架动效(skeleton animation) 实验性
-        rcmdListItems.push(
-            new CheckboxItem(
-                'homepage-hide-skeleton-animation',
-                '关闭 视频载入 骨架动效 (实验性)',
-                false,
-                undefined,
-                false,
-                `.bili-video-card .loading_animation .bili-video-card__skeleton--light,
+        new CheckboxItem({
+            itemID: 'homepage-hide-skeleton-animation',
+            description: '关闭 视频载入 骨架动效 (实验性)',
+            itemCSS: `.bili-video-card .loading_animation .bili-video-card__skeleton--light,
                 .bili-video-card .loading_animation .bili-video-card__skeleton--text,
                 .bili-video-card .loading_animation .bili-video-card__skeleton--face,
                 .bili-video-card .loading_animation .bili-video-card__skeleton--cover {
@@ -489,89 +405,61 @@ if (isPageHomepage()) {
                 .skeleton .skeleton-item {
                     animation: none !important;
                 }`,
-            ),
-        )
+        }),
         // 隐藏 视频载入 骨架(skeleton) 实验性
-        rcmdListItems.push(
-            new CheckboxItem(
-                'homepage-hide-skeleton',
-                '隐藏 视频载入 骨架 (实验性)',
-                false,
-                undefined,
-                false,
-                // anchor占位也隐藏
-                `.bili-video-card:has(.loading_animation), .load-more-anchor {
+        new CheckboxItem({
+            itemID: 'homepage-hide-skeleton',
+            description: '隐藏 视频载入 骨架 (实验性)',
+            // anchor占位也隐藏
+            itemCSS: `.bili-video-card:has(.loading_animation), .load-more-anchor {
                     visibility: hidden;
                 }
                 .floor-single-card:has(.skeleton, .skeleton-item) {
                     visibility: hidden;
                 }`,
-            ),
-        )
-    }
+        }),
+    ]
     homepageGroupList.push(new Group('homepage-rcmd-list', '视频列表', rcmdListItems))
 
-    // 右下角part, sidebarItems
-    {
+    // 右下角
+    const sidebarItems = [
         // 隐藏 下载桌面端弹窗, 默认开启
-        sidebarItems.push(
-            new CheckboxItem(
-                'homepage-hide-desktop-download-tip',
-                '隐藏 下载桌面端弹窗',
-                true,
-                undefined,
-                false,
-                `.desktop-download-tip {display: none !important;}`,
-            ),
-        )
+        new CheckboxItem({
+            itemID: 'homepage-hide-desktop-download-tip',
+            description: '隐藏 下载桌面端弹窗',
+            defaultStatus: true,
+            itemCSS: `.desktop-download-tip {display: none !important;}`,
+        }),
         // 隐藏 刷新
-        sidebarItems.push(
-            new CheckboxItem(
-                'homepage-hide-flexible-roll-btn',
-                '隐藏 刷新',
-                false,
-                undefined,
-                false,
-                `.palette-button-wrap .flexible-roll-btn {display: none !important;}`,
-            ),
-        )
+        new CheckboxItem({
+            itemID: 'homepage-hide-flexible-roll-btn',
+            description: '隐藏 刷新',
+            itemCSS: `.palette-button-wrap .flexible-roll-btn {display: none !important;}`,
+        }),
         // 隐藏 客服和反馈, 默认开启
-        sidebarItems.push(
-            new CheckboxItem(
-                'homepage-hide-feedback',
-                '隐藏 客服和反馈',
-                true,
-                undefined,
-                false,
-                `.palette-button-wrap .storage-box {display: none !important;}`,
-            ),
-        )
+        new CheckboxItem({
+            itemID: 'homepage-hide-feedback',
+            description: '隐藏 客服和反馈',
+            defaultStatus: true,
+            itemCSS: `.palette-button-wrap .storage-box {display: none !important;}`,
+        }),
         // 隐藏 回顶部
-        sidebarItems.push(
-            new CheckboxItem(
-                'homepage-hide-top-btn',
-                '隐藏 回顶部',
-                false,
-                undefined,
-                false,
-                `.palette-button-wrap .top-btn-wrap {display: none !important;}`,
-            ),
-        )
-    }
+        new CheckboxItem({
+            itemID: 'homepage-hide-top-btn',
+            description: '隐藏 回顶部',
+            itemCSS: `.palette-button-wrap .top-btn-wrap {display: none !important;}`,
+        }),
+    ]
     homepageGroupList.push(new Group('homepage-sidebar', '页面右下角 小按钮', sidebarItems))
 
-    // bilibili-app-recommend插件part, biliAppRcmdItems
-    {
+    // bilibili-app-recommend插件
+    const biliAppRcmdItems = [
         // 适配bilibili-app-recommend插件
         // 隐藏 视频tag (bilibili-app-recommend)
-        biliAppRcmdItems.push(
-            new CheckboxItem(
-                'homepage-hide-up-info-icon-bilibili-app-recommend',
-                '隐藏 视频tag',
-                false,
-                undefined,
-                false,
-                `/* adapt bilibili-app-recommend */
+        new CheckboxItem({
+            itemID: 'homepage-hide-up-info-icon-bilibili-app-recommend',
+            description: '隐藏 视频tag',
+            itemCSS: `/* adapt bilibili-app-recommend */
                 .bilibili-app-recommend-root .bili-video-card:not(:has(.ant-avatar)) .bili-video-card__info--owner>span[class^="_recommend-reason"] {
                     width: 17px;
                     height: 17px;
@@ -597,31 +485,20 @@ if (isPageHomepage()) {
                 .bilibili-app-recommend-root .bili-video-card:has(.ant-avatar) [class^="_recommend-reason"] {
                     display: none !important;
                 }`,
-            ),
-        )
+        }),
         // 隐藏 弹幕数 (bilibili-app-recommend)
-        biliAppRcmdItems.push(
-            new CheckboxItem(
-                'homepage-hide-danmaku-count-bilibili-app-recommend',
-                '隐藏 弹幕数',
-                false,
-                undefined,
-                false,
-                `.bili-video-card:has(use) .bili-video-card__stats--item:has([href="#widget-video-danmaku"]) {display: none !important;}`,
-            ),
-        )
+        new CheckboxItem({
+            itemID: 'homepage-hide-danmaku-count-bilibili-app-recommend',
+            description: '隐藏 弹幕数',
+            itemCSS: `.bili-video-card:has(use) .bili-video-card__stats--item:has([href="#widget-video-danmaku"]) {display: none !important;}`,
+        }),
         // 隐藏 点赞数 (bilibili-app-recommend)
-        biliAppRcmdItems.push(
-            new CheckboxItem(
-                'homepage-hide-agree-count-bilibili-app-recommend',
-                '隐藏 点赞数',
-                false,
-                undefined,
-                false,
-                `.bili-video-card:has(use) .bili-video-card__stats--item:has([href="#widget-agree"]) {display: none !important;}`,
-            ),
-        )
-    }
+        new CheckboxItem({
+            itemID: 'homepage-hide-agree-count-bilibili-app-recommend',
+            description: '隐藏 点赞数',
+            itemCSS: `.bili-video-card:has(use) .bili-video-card__stats--item:has([href="#widget-agree"]) {display: none !important;}`,
+        }),
+    ]
     homepageGroupList.push(new Group('homepage-bili-app-rcmd', '适配插件 [bilibili-app-recommend]', biliAppRcmdItems))
 }
 

@@ -353,10 +353,11 @@ if (isPageSearch()) {
 
     // UI组件, 例外和白名单part
     const whitelistItems = [
-        // 顶部匹配UP主 免过滤
+        // 顶部匹配UP主 免过滤, 默认开启
         new CheckboxItem({
-            itemID: 'search-top-itemID:uploader-whitelist-filter-status',
+            itemID: 'search-top-uploader-whitelist-filter-status',
             description: '搜索结果顶部UP主视频免过滤 (实验性)',
+            defaultStatus: true,
             itemFunc: () => {
                 isTopUploaderWhitelistEnable = true
                 // 触发全站检测

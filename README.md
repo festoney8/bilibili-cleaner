@@ -123,6 +123,13 @@
 ## 净化效果对比
 
 <details>
+<summary><b>查看 视频过滤 对比图（webp动图）</b></summary>
+
+![](images/screenshot-filter.webp)
+
+</details>
+
+<details>
 <summary><b>查看 播放页 对比图（webp动图）</b></summary>
 
 ![](images/screenshot-video.webp)

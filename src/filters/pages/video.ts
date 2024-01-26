@@ -230,201 +230,182 @@ if (isPageVideo()) {
 
     //=======================================================================================
     // 构建UI菜单
-    const durationItems: (CheckboxItem | NumberItem)[] = []
-    const titleKeywordItems: (CheckboxItem | ButtonItem)[] = []
-    const bvidItems: (CheckboxItem | ButtonItem)[] = []
-    const uploaderItems: (CheckboxItem | ButtonItem)[] = []
-    const whitelistItems: (CheckboxItem | ButtonItem)[] = []
 
     // UI组件, 时长过滤part
-    {
-        durationItems.push(
-            new CheckboxItem({
-                itemID: videoDurationAction.statusKey,
-                description: '启用 播放页 时长过滤',
-                itemFunc: () => {
-                    videoDurationAction.enable()
-                },
-                callback: () => {
-                    videoDurationAction.disable()
-                },
-            }),
-        )
-        durationItems.push(
-            new NumberItem({
-                itemID: videoDurationAction.valueKey,
-                description: '设定最低时长 (0~300s)',
-                defaultValue: 60,
-                minValue: 0,
-                maxValue: 300,
-                unit: '秒',
-                callback: (value: number) => {
-                    videoDurationAction.change(value)
-                },
-            }),
-        )
-    }
+    const durationItems = [
+        // 启用 播放页时长过滤
+        new CheckboxItem({
+            itemID: videoDurationAction.statusKey,
+            description: '启用 播放页时长过滤',
+            itemFunc: () => {
+                videoDurationAction.enable()
+            },
+            callback: () => {
+                videoDurationAction.disable()
+            },
+        }),
+        // 设定最低时长
+        new NumberItem({
+            itemID: videoDurationAction.valueKey,
+            description: '设定最低时长 (0~300s)',
+            defaultValue: 60,
+            minValue: 0,
+            maxValue: 300,
+            unit: '秒',
+            callback: (value: number) => {
+                videoDurationAction.change(value)
+            },
+        }),
+    ]
     videoFilterGroupList.push(new Group('video-duration-filter-group', '播放页 视频时长过滤', durationItems))
 
     // UI组件, UP主过滤part
-    {
-        uploaderItems.push(
-            new CheckboxItem({
-                itemID: videoUploaderAction.statusKey,
-                description: '启用 播放页 UP主过滤',
-                itemFunc: () => {
-                    // 启用右键菜单功能
-                    isContextMenuUploaderEnable = true
-                    contextMenuFunc()
-                    videoUploaderAction.enable()
-                },
-                callback: () => {
-                    // 禁用右键菜单功能
-                    isContextMenuUploaderEnable = false
-                    videoUploaderAction.disable()
-                },
-            }),
-        )
-        uploaderItems.push(
-            new ButtonItem({
-                itemID: 'video-uploader-edit-button',
-                description: '编辑 UP主黑名单',
-                name: '编辑',
-                // 按钮功能：打开编辑器
-                itemFunc: () => {
-                    videoUploaderAction.blacklist.show()
-                },
-            }),
-        )
-    }
+    const uploaderItems = [
+        // 启用 播放页UP主过滤
+        new CheckboxItem({
+            itemID: videoUploaderAction.statusKey,
+            description: '启用 播放页UP主过滤',
+            itemFunc: () => {
+                // 启用右键菜单功能
+                isContextMenuUploaderEnable = true
+                contextMenuFunc()
+                videoUploaderAction.enable()
+            },
+            callback: () => {
+                // 禁用右键菜单功能
+                isContextMenuUploaderEnable = false
+                videoUploaderAction.disable()
+            },
+        }),
+        // 编辑 UP主黑名单
+        new ButtonItem({
+            itemID: 'video-uploader-edit-button',
+            description: '编辑 UP主黑名单',
+            name: '编辑',
+            // 按钮功能：打开编辑器
+            itemFunc: () => {
+                videoUploaderAction.blacklist.show()
+            },
+        }),
+    ]
     videoFilterGroupList.push(new Group('video-uploader-filter-group', '播放页 UP主过滤 (右键单击UP主)', uploaderItems))
 
     // UI组件, 标题关键词过滤part
-    {
-        titleKeywordItems.push(
-            new CheckboxItem({
-                itemID: videoTitleKeywordAction.statusKey,
-                description: '启用 播放页关键词过滤',
-                itemFunc: () => {
-                    videoTitleKeywordAction.enable()
-                },
-                callback: () => {
-                    videoTitleKeywordAction.disable()
-                },
-            }),
-        )
-        titleKeywordItems.push(
-            new ButtonItem({
-                itemID: 'video-title-keyword-edit-button',
-                description: '编辑 关键词黑名单（支持正则）',
-                name: '编辑',
-                // 按钮功能：打开编辑器
-                itemFunc: () => {
-                    videoTitleKeywordAction.blacklist.show()
-                },
-            }),
-        )
-    }
+    const titleKeywordItems = [
+        // 启用 播放页关键词过滤
+        new CheckboxItem({
+            itemID: videoTitleKeywordAction.statusKey,
+            description: '启用 播放页关键词过滤',
+            itemFunc: () => {
+                videoTitleKeywordAction.enable()
+            },
+            callback: () => {
+                videoTitleKeywordAction.disable()
+            },
+        }),
+        // 编辑 关键词黑名单
+        new ButtonItem({
+            itemID: 'video-title-keyword-edit-button',
+            description: '编辑 关键词黑名单（支持正则）',
+            name: '编辑',
+            // 按钮功能：打开编辑器
+            itemFunc: () => {
+                videoTitleKeywordAction.blacklist.show()
+            },
+        }),
+    ]
     videoFilterGroupList.push(new Group('video-title-keyword-filter-group', '播放页 标题关键词过滤', titleKeywordItems))
 
     // UI组件, bvid过滤part
-    {
-        bvidItems.push(
-            new CheckboxItem({
-                itemID: videoBvidAction.statusKey,
-                description: '启用 播放页 BV号过滤',
-                itemFunc: () => {
-                    // 启用 右键功能
-                    isContextMenuBvidEnable = true
-                    contextMenuFunc()
-                    videoBvidAction.enable()
-                },
-                callback: () => {
-                    // 禁用 右键功能
-                    isContextMenuBvidEnable = false
-                    videoBvidAction.disable()
-                },
-            }),
-        )
-        bvidItems.push(
-            new ButtonItem({
-                itemID: 'video-bvid-edit-button',
-                description: '编辑 BV号黑名单',
-                name: '编辑',
-                // 按钮功能：打开编辑器
-                itemFunc: () => {
-                    videoBvidAction.blacklist.show()
-                },
-            }),
-        )
-    }
+    const bvidItems = [
+        // 启用 播放页 BV号过滤
+        new CheckboxItem({
+            itemID: videoBvidAction.statusKey,
+            description: '启用 播放页BV号过滤',
+            itemFunc: () => {
+                // 启用 右键功能
+                isContextMenuBvidEnable = true
+                contextMenuFunc()
+                videoBvidAction.enable()
+            },
+            callback: () => {
+                // 禁用 右键功能
+                isContextMenuBvidEnable = false
+                videoBvidAction.disable()
+            },
+        }),
+        // 编辑 BV号黑名单
+        new ButtonItem({
+            itemID: 'video-bvid-edit-button',
+            description: '编辑 BV号黑名单',
+            name: '编辑',
+            // 按钮功能：打开编辑器
+            itemFunc: () => {
+                videoBvidAction.blacklist.show()
+            },
+        }),
+    ]
     videoFilterGroupList.push(new Group('video-bvid-filter-group', '播放页 BV号过滤 (右键单击标题)', bvidItems))
 
     // UI组件, 免过滤和白名单part
-    {
-        // 不过滤接下来播放, 默认开启
-        whitelistItems.push(
-            new CheckboxItem({
-                itemID: 'video-next-play-whitelist-filter-status',
-                description: '接下来播放 免过滤',
-                defaultStatus: true,
-                itemFunc: () => {
-                    isNextPlayWhitelistEnable = true
-                    checkVideoList(true)
-                },
-                callback: () => {
-                    isNextPlayWhitelistEnable = false
-                    checkVideoList(true)
-                },
-            }),
-        )
-        whitelistItems.push(
-            new CheckboxItem({
-                itemID: videoUploaderWhitelistAction.statusKey,
-                description: '启用 播放页UP主白名单',
-                itemFunc: () => {
-                    videoUploaderWhitelistAction.enable()
-                },
-                callback: () => {
-                    videoUploaderWhitelistAction.disable()
-                },
-            }),
-        )
-        whitelistItems.push(
-            new ButtonItem({
-                itemID: 'video-uploader-whitelist-edit-button',
-                description: '编辑 UP主白名单',
-                name: '编辑',
-                // 按钮功能：打开编辑器
-                itemFunc: () => {
-                    videoUploaderWhitelistAction.whitelist.show()
-                },
-            }),
-        )
-        whitelistItems.push(
-            new CheckboxItem({
-                itemID: videoTitleKeywordWhitelistAction.statusKey,
-                description: '启用 播放页关键词白名单',
-                itemFunc: () => {
-                    videoTitleKeywordWhitelistAction.enable()
-                },
-                callback: () => {
-                    videoTitleKeywordWhitelistAction.disable()
-                },
-            }),
-        )
-        whitelistItems.push(
-            new ButtonItem({
-                itemID: 'video-title-keyword-whitelist-edit-button',
-                description: '编辑 关键词白名单（支持正则）',
-                name: '编辑',
-                // 按钮功能：打开编辑器
-                itemFunc: () => {
-                    videoTitleKeywordWhitelistAction.whitelist.show()
-                },
-            }),
-        )
-    }
+    const whitelistItems = [
+        // 接下来播放 免过滤
+        new CheckboxItem({
+            itemID: 'video-next-play-whitelist-filter-status',
+            description: '接下来播放 免过滤',
+            defaultStatus: true,
+            itemFunc: () => {
+                isNextPlayWhitelistEnable = true
+                checkVideoList(true)
+            },
+            callback: () => {
+                isNextPlayWhitelistEnable = false
+                checkVideoList(true)
+            },
+        }),
+        // 启用 播放页UP主白名单
+        new CheckboxItem({
+            itemID: videoUploaderWhitelistAction.statusKey,
+            description: '启用 播放页UP主白名单',
+            itemFunc: () => {
+                videoUploaderWhitelistAction.enable()
+            },
+            callback: () => {
+                videoUploaderWhitelistAction.disable()
+            },
+        }),
+        // 编辑 UP主白名单
+        new ButtonItem({
+            itemID: 'video-uploader-whitelist-edit-button',
+            description: '编辑 UP主白名单',
+            name: '编辑',
+            // 按钮功能：打开编辑器
+            itemFunc: () => {
+                videoUploaderWhitelistAction.whitelist.show()
+            },
+        }),
+        // 启用 播放页关键词白名单
+        new CheckboxItem({
+            itemID: videoTitleKeywordWhitelistAction.statusKey,
+            description: '启用 播放页关键词白名单',
+            itemFunc: () => {
+                videoTitleKeywordWhitelistAction.enable()
+            },
+            callback: () => {
+                videoTitleKeywordWhitelistAction.disable()
+            },
+        }),
+        // 编辑 关键词白名单
+        new ButtonItem({
+            itemID: 'video-title-keyword-whitelist-edit-button',
+            description: '编辑 关键词白名单（支持正则）',
+            name: '编辑',
+            // 按钮功能：打开编辑器
+            itemFunc: () => {
+                videoTitleKeywordWhitelistAction.whitelist.show()
+            },
+        }),
+    ]
     videoFilterGroupList.push(new Group('video-whitelist-filter-group', '播放页 白名单设定 (免过滤)', whitelistItems))
 }
 

@@ -235,208 +235,177 @@ if (isPageSearch()) {
 
     //=======================================================================================
     // 构建UI菜单
-    const durationItems: (CheckboxItem | NumberItem)[] = []
-    const titleKeywordItems: (CheckboxItem | ButtonItem)[] = []
-    const bvidItems: (CheckboxItem | ButtonItem)[] = []
-    const uploaderItems: (CheckboxItem | ButtonItem)[] = []
-    const whitelistItems: (CheckboxItem | ButtonItem)[] = []
 
     // UI组件, 时长过滤part
-    {
-        durationItems.push(
-            new CheckboxItem({
-                itemID: searchDurationAction.statusKey,
-                description: '启用 搜索页时长过滤',
-                itemFunc: () => {
-                    searchDurationAction.enable()
-                },
-                callback: () => {
-                    searchDurationAction.disable()
-                },
-            }),
-        )
-        durationItems.push(
-            new NumberItem({
-                itemID: searchDurationAction.valueKey,
-                description: '设定最低时长 (0~300s)',
-                defaultValue: 60,
-                minValue: 0,
-                maxValue: 300,
-                unit: '秒',
-                callback: (value: number) => {
-                    searchDurationAction.change(value)
-                },
-            }),
-        )
-    }
+    const durationItems = [
+        new CheckboxItem({
+            itemID: searchDurationAction.statusKey,
+            description: '启用 搜索页时长过滤',
+            itemFunc: () => {
+                searchDurationAction.enable()
+            },
+            callback: () => {
+                searchDurationAction.disable()
+            },
+        }),
+        new NumberItem({
+            itemID: searchDurationAction.valueKey,
+            description: '设定最低时长 (0~300s)',
+            defaultValue: 60,
+            minValue: 0,
+            maxValue: 300,
+            unit: '秒',
+            callback: (value: number) => {
+                searchDurationAction.change(value)
+            },
+        }),
+    ]
     searchFilterGroupList.push(new Group('search-duration-filter-group', '搜索页 视频时长过滤', durationItems))
 
     // UI组件, UP主过滤part
-    {
-        uploaderItems.push(
-            new CheckboxItem({
-                itemID: searchUploaderAction.statusKey,
-                description: '启用 搜索页UP主过滤',
-                itemFunc: () => {
-                    // 启用右键功能
-                    isContextMenuUploaderEnable = true
-                    contextMenuFunc()
-                    searchUploaderAction.enable()
-                },
-                callback: () => {
-                    // 禁用右键功能
-                    isContextMenuUploaderEnable = false
-                    searchUploaderAction.disable()
-                },
-            }),
-        )
+    const uploaderItems = [
+        new CheckboxItem({
+            itemID: searchUploaderAction.statusKey,
+            description: '启用 搜索页UP主过滤',
+            itemFunc: () => {
+                // 启用右键功能
+                isContextMenuUploaderEnable = true
+                contextMenuFunc()
+                searchUploaderAction.enable()
+            },
+            callback: () => {
+                // 禁用右键功能
+                isContextMenuUploaderEnable = false
+                searchUploaderAction.disable()
+            },
+        }),
         // 按钮功能：打开uploader黑名单编辑框
-        uploaderItems.push(
-            new ButtonItem({
-                itemID: 'search-uploader-edit-button',
-                description: '编辑 UP主黑名单',
-                name: '编辑',
-                // 按钮功能
-                itemFunc: () => {
-                    searchUploaderAction.blacklist.show()
-                },
-            }),
-        )
-    }
+        new ButtonItem({
+            itemID: 'search-uploader-edit-button',
+            description: '编辑 UP主黑名单',
+            name: '编辑',
+            // 按钮功能
+            itemFunc: () => {
+                searchUploaderAction.blacklist.show()
+            },
+        }),
+    ]
     searchFilterGroupList.push(
         new Group('search-uploader-filter-group', '搜索页 UP主过滤 (右键单击UP主)', uploaderItems),
     )
 
     // UI组件, 标题关键词过滤part
-    {
-        titleKeywordItems.push(
-            new CheckboxItem({
-                itemID: searchTitleKeywordAction.statusKey,
-                description: '启用 搜索页关键词过滤',
-                itemFunc: () => {
-                    searchTitleKeywordAction.enable()
-                },
-                callback: () => {
-                    searchTitleKeywordAction.disable()
-                },
-            }),
-        )
+    const titleKeywordItems = [
+        new CheckboxItem({
+            itemID: searchTitleKeywordAction.statusKey,
+            description: '启用 搜索页关键词过滤',
+            itemFunc: () => {
+                searchTitleKeywordAction.enable()
+            },
+            callback: () => {
+                searchTitleKeywordAction.disable()
+            },
+        }),
         // 按钮功能：打开titleKeyword黑名单编辑框
-        titleKeywordItems.push(
-            new ButtonItem({
-                itemID: 'search-title-keyword-edit-button',
-                description: '编辑 关键词黑名单（支持正则）',
-                name: '编辑',
-                // 按钮功能
-                itemFunc: () => {
-                    searchTitleKeywordAction.blacklist.show()
-                },
-            }),
-        )
-    }
+        new ButtonItem({
+            itemID: 'search-title-keyword-edit-button',
+            description: '编辑 关键词黑名单（支持正则）',
+            name: '编辑',
+            // 按钮功能
+            itemFunc: () => {
+                searchTitleKeywordAction.blacklist.show()
+            },
+        }),
+    ]
     searchFilterGroupList.push(
         new Group('search-title-keyword-filter-group', '搜索页 标题关键词过滤', titleKeywordItems),
     )
 
     // UI组件, bvid过滤part
-    {
-        bvidItems.push(
-            new CheckboxItem({
-                itemID: searchBvidAction.statusKey,
-                description: '启用 搜索页BV号过滤',
-                itemFunc: () => {
-                    // 启用右键功能
-                    isContextMenuBvidEnable = true
-                    contextMenuFunc()
-                    searchBvidAction.enable()
-                },
-                callback: () => {
-                    // 禁用右键功能
-                    isContextMenuBvidEnable = false
-                    searchBvidAction.disable()
-                },
-            }),
-        )
+    const bvidItems = [
+        new CheckboxItem({
+            itemID: searchBvidAction.statusKey,
+            description: '启用 搜索页BV号过滤',
+            itemFunc: () => {
+                // 启用右键功能
+                isContextMenuBvidEnable = true
+                contextMenuFunc()
+                searchBvidAction.enable()
+            },
+            callback: () => {
+                // 禁用右键功能
+                isContextMenuBvidEnable = false
+                searchBvidAction.disable()
+            },
+        }),
         // 按钮功能：打开bvid黑名单编辑框
-        bvidItems.push(
-            new ButtonItem({
-                itemID: 'search-bvid-edit-button',
-                description: '编辑 BV号黑名单',
-                name: '编辑',
-                // 按钮功能
-                itemFunc: () => {
-                    searchBvidAction.blacklist.show()
-                },
-            }),
-        )
-    }
+        new ButtonItem({
+            itemID: 'search-bvid-edit-button',
+            description: '编辑 BV号黑名单',
+            name: '编辑',
+            // 按钮功能
+            itemFunc: () => {
+                searchBvidAction.blacklist.show()
+            },
+        }),
+    ]
     searchFilterGroupList.push(new Group('search-bvid-filter-group', '搜索页 BV号过滤 (右键单击标题)', bvidItems))
 
     // UI组件, 例外和白名单part
-    {
+    const whitelistItems = [
         // 顶部匹配UP主 免过滤
-        whitelistItems.push(
-            new CheckboxItem({
-                itemID: 'search-top-itemID:uploader-whitelist-filter-status',
-                description: '搜索结果顶部UP主视频免过滤 (实验性)',
-                itemFunc: () => {
-                    isTopUploaderWhitelistEnable = true
-                    // 触发全站检测
-                    checkVideoList(true)
-                },
-                callback: () => {
-                    isTopUploaderWhitelistEnable = false
-                    checkVideoList(true)
-                },
-            }),
-        )
-        whitelistItems.push(
-            new CheckboxItem({
-                itemID: searchUploaderWhitelistAction.statusKey,
-                description: '启用 搜索页UP主白名单',
-                itemFunc: () => {
-                    searchUploaderWhitelistAction.enable()
-                },
-                callback: () => {
-                    searchUploaderWhitelistAction.disable()
-                },
-            }),
-        )
-        whitelistItems.push(
-            new ButtonItem({
-                itemID: 'search-uploader-whitelist-edit-button',
-                description: '编辑 UP主白名单',
-                name: '编辑',
-                // 按钮功能：显示白名单编辑器
-                itemFunc: () => {
-                    searchUploaderWhitelistAction.whitelist.show()
-                },
-            }),
-        )
-        whitelistItems.push(
-            new CheckboxItem({
-                itemID: searchTitleKeyworldWhitelistAction.statusKey,
-                description: '启用 搜索页标题关键词白名单',
-                itemFunc: () => {
-                    searchTitleKeyworldWhitelistAction.enable()
-                },
-                callback: () => {
-                    searchTitleKeyworldWhitelistAction.disable()
-                },
-            }),
-        )
-        whitelistItems.push(
-            new ButtonItem({
-                itemID: 'search-title-keyword-whitelist-edit-button',
-                description: '编辑 关键词白名单（支持正则）',
-                name: '编辑',
-                // 按钮功能：显示白名单编辑器
-                itemFunc: () => {
-                    searchTitleKeyworldWhitelistAction.whitelist.show()
-                },
-            }),
-        )
-    }
+        new CheckboxItem({
+            itemID: 'search-top-itemID:uploader-whitelist-filter-status',
+            description: '搜索结果顶部UP主视频免过滤 (实验性)',
+            itemFunc: () => {
+                isTopUploaderWhitelistEnable = true
+                // 触发全站检测
+                checkVideoList(true)
+            },
+            callback: () => {
+                isTopUploaderWhitelistEnable = false
+                checkVideoList(true)
+            },
+        }),
+        new CheckboxItem({
+            itemID: searchUploaderWhitelistAction.statusKey,
+            description: '启用 搜索页UP主白名单',
+            itemFunc: () => {
+                searchUploaderWhitelistAction.enable()
+            },
+            callback: () => {
+                searchUploaderWhitelistAction.disable()
+            },
+        }),
+        new ButtonItem({
+            itemID: 'search-uploader-whitelist-edit-button',
+            description: '编辑 UP主白名单',
+            name: '编辑',
+            // 按钮功能：显示白名单编辑器
+            itemFunc: () => {
+                searchUploaderWhitelistAction.whitelist.show()
+            },
+        }),
+        new CheckboxItem({
+            itemID: searchTitleKeyworldWhitelistAction.statusKey,
+            description: '启用 搜索页标题关键词白名单',
+            itemFunc: () => {
+                searchTitleKeyworldWhitelistAction.enable()
+            },
+            callback: () => {
+                searchTitleKeyworldWhitelistAction.disable()
+            },
+        }),
+        new ButtonItem({
+            itemID: 'search-title-keyword-whitelist-edit-button',
+            description: '编辑 关键词白名单（支持正则）',
+            name: '编辑',
+            // 按钮功能：显示白名单编辑器
+            itemFunc: () => {
+                searchTitleKeyworldWhitelistAction.whitelist.show()
+            },
+        }),
+    ]
     searchFilterGroupList.push(new Group('search-whitelist-filter-group', '搜索页 白名单设定 (免过滤)', whitelistItems))
 }
 

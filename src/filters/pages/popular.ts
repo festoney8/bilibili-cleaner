@@ -237,161 +237,144 @@ if (isPagePopular()) {
 
     //=======================================================================================
     // 构建UI菜单
-    const titleKeywordItems: (CheckboxItem | ButtonItem)[] = []
-    const bvidItems: (CheckboxItem | ButtonItem)[] = []
-    const uploaderItems: (CheckboxItem | ButtonItem)[] = []
-    const whitelistItems: (CheckboxItem | ButtonItem)[] = []
 
     // UI组件, UP主过滤part
-    {
-        uploaderItems.push(
-            new CheckboxItem({
-                itemID: popularUploaderAction.statusKey,
-                description: '启用 热门页 UP主过滤',
-                itemFunc: () => {
-                    // 启用右键功能
-                    isContextMenuUploaderEnable = true
-                    contextMenuFunc()
-                    popularUploaderAction.enable()
-                },
-                callback: () => {
-                    // 禁用右键功能
-                    isContextMenuUploaderEnable = false
-                    popularUploaderAction.disable()
-                },
-            }),
-        )
+    const uploaderItems = [
+        // 启用 热门页 UP主过滤
+        new CheckboxItem({
+            itemID: popularUploaderAction.statusKey,
+            description: '启用 热门页 UP主过滤',
+            itemFunc: () => {
+                // 启用右键功能
+                isContextMenuUploaderEnable = true
+                contextMenuFunc()
+                popularUploaderAction.enable()
+            },
+            callback: () => {
+                // 禁用右键功能
+                isContextMenuUploaderEnable = false
+                popularUploaderAction.disable()
+            },
+        }),
         // 按钮功能：打开uploader黑名单编辑框
-        uploaderItems.push(
-            new ButtonItem({
-                itemID: 'popular-uploader-edit-button',
-                description: '编辑 UP主黑名单',
-                name: '编辑',
-                // 按钮功能
-                itemFunc: () => {
-                    popularUploaderAction.blacklist.show()
-                },
-            }),
-        )
-    }
+        new ButtonItem({
+            itemID: 'popular-uploader-edit-button',
+            description: '编辑 UP主黑名单',
+            name: '编辑',
+            // 按钮功能
+            itemFunc: () => {
+                popularUploaderAction.blacklist.show()
+            },
+        }),
+    ]
     popularFilterGroupList.push(
         new Group('popular-uploader-filter-group', '热门页 UP主过滤 (右键单击UP主)', uploaderItems),
     )
 
     // UI组件, 标题关键词过滤part
-    {
-        titleKeywordItems.push(
-            new CheckboxItem({
-                itemID: popularTitleKeywordAction.statusKey,
-                description: '启用 热门页 关键词过滤',
-                itemFunc: () => {
-                    popularTitleKeywordAction.enable()
-                },
-                callback: () => {
-                    popularTitleKeywordAction.disable()
-                },
-            }),
-        )
+    const titleKeywordItems = [
+        // 启用 热门页 关键词过滤
+        new CheckboxItem({
+            itemID: popularTitleKeywordAction.statusKey,
+            description: '启用 热门页 关键词过滤',
+            itemFunc: () => {
+                popularTitleKeywordAction.enable()
+            },
+            callback: () => {
+                popularTitleKeywordAction.disable()
+            },
+        }),
         // 按钮功能：打开titleKeyword黑名单编辑框
-        titleKeywordItems.push(
-            new ButtonItem({
-                itemID: 'popular-title-keyword-edit-button',
-                description: '编辑 关键词黑名单（支持正则）',
-                name: '编辑',
-                // 按钮功能
-                itemFunc: () => {
-                    popularTitleKeywordAction.blacklist.show()
-                },
-            }),
-        )
-    }
+        new ButtonItem({
+            itemID: 'popular-title-keyword-edit-button',
+            description: '编辑 关键词黑名单（支持正则）',
+            name: '编辑',
+            // 按钮功能
+            itemFunc: () => {
+                popularTitleKeywordAction.blacklist.show()
+            },
+        }),
+    ]
     popularFilterGroupList.push(
         new Group('popular-title-keyword-filter-group', '热门页 标题关键词过滤', titleKeywordItems),
     )
 
     // UI组件, bvid过滤part
-    {
-        bvidItems.push(
-            new CheckboxItem({
-                itemID: popularBvidAction.statusKey,
-                description: '启用 热门页 BV号过滤',
-                itemFunc: () => {
-                    // 启用右键功能
-                    isContextMenuBvidEnable = true
-                    contextMenuFunc()
-                    popularBvidAction.enable()
-                },
-                callback: () => {
-                    // 禁用右键功能
-                    isContextMenuBvidEnable = false
-                    popularBvidAction.disable()
-                },
-            }),
-        )
+    const bvidItems = [
+        // 启用 热门页 BV号过滤
+        new CheckboxItem({
+            itemID: popularBvidAction.statusKey,
+            description: '启用 热门页 BV号过滤',
+            itemFunc: () => {
+                // 启用右键功能
+                isContextMenuBvidEnable = true
+                contextMenuFunc()
+                popularBvidAction.enable()
+            },
+            callback: () => {
+                // 禁用右键功能
+                isContextMenuBvidEnable = false
+                popularBvidAction.disable()
+            },
+        }),
         // 按钮功能：打开bvid黑名单编辑框
-        bvidItems.push(
-            new ButtonItem({
-                itemID: 'popular-bvid-edit-button',
-                description: '编辑 BV号黑名单',
-                name: '编辑',
-                // 按钮功能
-                itemFunc: () => {
-                    popularBvidAction.blacklist.show()
-                },
-            }),
-        )
-    }
+        new ButtonItem({
+            itemID: 'popular-bvid-edit-button',
+            description: '编辑 BV号黑名单',
+            name: '编辑',
+            // 按钮功能
+            itemFunc: () => {
+                popularBvidAction.blacklist.show()
+            },
+        }),
+    ]
     popularFilterGroupList.push(new Group('popular-bvid-filter-group', '热门页 BV号过滤 (右键单击标题)', bvidItems))
 
     // UI组件, 例外和白名单part
-    {
-        whitelistItems.push(
-            new CheckboxItem({
-                itemID: popularUploaderWhitelistAction.statusKey,
-                description: '启用 热门页 UP主白名单',
-                itemFunc: () => {
-                    popularUploaderWhitelistAction.enable()
-                },
-                callback: () => {
-                    popularUploaderWhitelistAction.disable()
-                },
-            }),
-        )
-        whitelistItems.push(
-            new ButtonItem({
-                itemID: 'popular-uploader-whitelist-edit-button',
-                description: '编辑 UP主白名单',
-                name: '编辑',
-                // 按钮功能：显示白名单编辑器
-                itemFunc: () => {
-                    popularUploaderWhitelistAction.whitelist.show()
-                },
-            }),
-        )
-        whitelistItems.push(
-            new CheckboxItem({
-                itemID: popularTitleKeywordWhitelistAction.statusKey,
-                description: '启用 热门页 标题关键词白名单',
-                itemFunc: () => {
-                    popularTitleKeywordWhitelistAction.enable()
-                },
-                callback: () => {
-                    popularTitleKeywordWhitelistAction.disable()
-                },
-            }),
-        )
-        whitelistItems.push(
-            new ButtonItem({
-                itemID: 'popular-title-keyword-whitelist-edit-button',
-                description: '编辑 关键词白名单（支持正则）',
-                name: '编辑',
-                // 按钮功能：显示白名单编辑器
-                itemFunc: () => {
-                    popularTitleKeywordWhitelistAction.whitelist.show()
-                },
-            }),
-        )
-    }
+    const whitelistItems = [
+        // 启用 热门页 UP主白名单
+        new CheckboxItem({
+            itemID: popularUploaderWhitelistAction.statusKey,
+            description: '启用 热门页 UP主白名单',
+            itemFunc: () => {
+                popularUploaderWhitelistAction.enable()
+            },
+            callback: () => {
+                popularUploaderWhitelistAction.disable()
+            },
+        }),
+        // 编辑 UP主白名单
+        new ButtonItem({
+            itemID: 'popular-uploader-whitelist-edit-button',
+            description: '编辑 UP主白名单',
+            name: '编辑',
+            // 按钮功能：显示白名单编辑器
+            itemFunc: () => {
+                popularUploaderWhitelistAction.whitelist.show()
+            },
+        }),
+        // 启用 热门页 标题关键词白名单
+        new CheckboxItem({
+            itemID: popularTitleKeywordWhitelistAction.statusKey,
+            description: '启用 热门页 标题关键词白名单',
+            itemFunc: () => {
+                popularTitleKeywordWhitelistAction.enable()
+            },
+            callback: () => {
+                popularTitleKeywordWhitelistAction.disable()
+            },
+        }),
+        // 编辑 关键词白名单
+        new ButtonItem({
+            itemID: 'popular-title-keyword-whitelist-edit-button',
+            description: '编辑 关键词白名单（支持正则）',
+            name: '编辑',
+            // 按钮功能：显示白名单编辑器
+            itemFunc: () => {
+                popularTitleKeywordWhitelistAction.whitelist.show()
+            },
+        }),
+    ]
     popularFilterGroupList.push(
         new Group('popular-whitelist-filter-group', '热门页 白名单设定 (免过滤)', whitelistItems),
     )

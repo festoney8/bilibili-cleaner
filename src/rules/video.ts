@@ -281,6 +281,13 @@ if (isPageVideo() || isPagePlaylist()) {
             description: '隐藏 投票弹窗',
             itemCSS: `.bpx-player-video-area .bili-vote, .bpx-player-video-area .bili-cmd-shrink {display: none !important;}`,
         }),
+        // 隐藏 播放效果调查, 默认开启
+        new CheckboxItem({
+            itemID: 'video-page-hide-bpx-player-bili-qoe-feedback',
+            description: '隐藏 播放效果调查',
+            defaultStatus: true,
+            itemCSS: `.bpx-player-video-area .bili-qoeFeedback {display: none !important;}`,
+        }),
         // 隐藏 评分弹窗
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-score',

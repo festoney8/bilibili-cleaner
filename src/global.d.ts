@@ -5,5 +5,9 @@ export declare global {
         isWide?: boolean
         hasBlackSide?: boolean
         setSize?: function
+        vd?: {
+            aid?: number
+            bvid?: string
+        }
     }
 }

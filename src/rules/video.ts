@@ -7,6 +7,7 @@ import { isPagePlaylist, isPageVideo } from '../utils/page-type'
 /** BV号转AV号 */
 const bv2av = () => {
     /**
+     * 可能会出现转换后av号带短横的bug(溢出)，作为后备方案
      * bv2av algo by mcfx
      * @see https://www.zhihu.com/question/381784377/answer/1099438784
      * @param x 输入BV号
@@ -25,7 +26,14 @@ const bv2av = () => {
         for (let i = 0; i < 6; i++) {
             r += tr[x[s[i]]] * 58 ** i
         }
-        return (r - add) ^ xor
+        // 修复一下溢出
+        const aid = (r - add) ^ xor
+        return aid > 0 ? aid : aid + 2147483648
+    }
+
+    // 从window对象获取avid
+    const getAid = (): number | undefined => {
+        return window.vd?.aid
     }
 
     if (location.href.includes('bilibili.com/video/BV')) {
@@ -37,7 +45,7 @@ const bv2av = () => {
             if (params.has('p')) {
                 partNum += `?p=${params.get('p')}`
             }
-            const aid = dec(bvid)
+            const aid = getAid() ?? dec(bvid)
             const newURL = `https://www.bilibili.com/video/av${aid}${partNum}${location.hash}`
             history.replaceState(null, '', newURL)
             debug('bv2av complete')

@@ -351,7 +351,10 @@ const basicItems = [
                 background-color: rgba(0, 0, 0, 0.6) !important;
             }
 
-            /* Firefox */
+            /*
+            Firefox and Chrome 121+
+            https://developer.chrome.com/docs/css-ui/scrollbar-styling
+            */
             * {
                 scrollbar-color: rgba(0, 0, 0, 0.6) transparent !important;
                 scrollbar-width: thin !important;

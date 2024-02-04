@@ -798,7 +798,7 @@ if (!isPageLive()) {
             itemCSSPlaceholder: '???',
         }),
     ]
-    commonGroupList.push(new Group('common-header-bar-padding', '全站通用项 顶栏 数值设定', headerWidthItems))
+    commonGroupList.push(new Group('common-header-bar-value', '全站通用项 顶栏 数值设定 (-1禁用)', headerWidthItems))
 }
 
 export { commonGroupList }

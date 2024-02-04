@@ -328,7 +328,10 @@ const basicItems = [
         description: '美化页面滚动条',
         defaultStatus: true,
         itemCSS: `
-            /* WebKit */
+            /* WebKit and Chrome
+            Chrome 121+支持sidebar新属性，但难看，继续用webkit
+            https://developer.chrome.com/docs/css-ui/scrollbar-styling
+            */
             ::-webkit-scrollbar {
                 width: 8px !important;
                 height: 8px !important;
@@ -351,13 +354,12 @@ const basicItems = [
                 background-color: rgba(0, 0, 0, 0.6) !important;
             }
 
-            /*
-            Firefox and Chrome 121+
-            https://developer.chrome.com/docs/css-ui/scrollbar-styling
-            */
-            * {
-                scrollbar-color: rgba(0, 0, 0, 0.6) transparent !important;
-                scrollbar-width: thin !important;
+            /* Firefox */
+            @-moz-document url-prefix() {
+                * {
+                    scrollbar-color: rgba(0, 0, 0, 0.6) transparent !important;
+                    scrollbar-width: thin !important;
+                }
             }`,
     }),
     // URL参数净化, 在urlchange时需重载, 默认开启, 关闭功能需刷新

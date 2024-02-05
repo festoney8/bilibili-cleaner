@@ -430,6 +430,13 @@ if (isPageHomepage()) {
             defaultStatus: true,
             itemCSS: `.desktop-download-tip {display: none !important;}`,
         }),
+        // 隐藏 下滑浏览推荐提示, 默认开启
+        new CheckboxItem({
+            itemID: 'homepage-hide-trial-feed-wrap',
+            description: '隐藏 下滑浏览推荐提示',
+            defaultStatus: true,
+            itemCSS: `.trial-feed-wrap {display: none !important;}`,
+        }),
         // 隐藏 刷新
         new CheckboxItem({
             itemID: 'homepage-hide-flexible-roll-btn',

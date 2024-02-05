@@ -2,7 +2,7 @@ import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
 import { debug } from '../utils/logger'
 import { matchAvidBvid, matchBvid } from '../utils/tool'
-import { isPagePlaylist, isPageVideo } from '../utils/page-type'
+import { isPageBnj, isPagePlaylist, isPageVideo } from '../utils/page-type'
 
 /** BV号转AV号 */
 const bv2av = () => {
@@ -274,7 +274,10 @@ if (isPageVideo() || isPagePlaylist()) {
         }),
     ]
     videoGroupList.push(new Group('video-info', '视频信息', infoItems))
+}
 
+// 临时适配拜年祭视频页(播放器、弹幕栏规则多数生效)
+if (isPageVideo() || isPagePlaylist() || isPageBnj()) {
     // 播放器
     const playerItems = [
         // 隐藏 一键三连弹窗
@@ -570,7 +573,11 @@ if (isPageVideo() || isPagePlaylist()) {
             description: '非全屏下 关闭弹幕栏 (刷新去黑边)',
             itemFunc: overridePlayerHeight,
             // video page的player height由JS动态设定
-            itemCSS: `.bpx-player-sending-area {display: none !important;}`,
+            itemCSS: `.bpx-player-sending-area {display: none !important;}
+                /* 活动播放器直接去黑边 */
+                .page-main-content:has(.festival-video-player) .video-player-box {height: fit-content !important;}
+                .festival-video-player {height: fit-content !important;}
+                .festival-video-player #bilibili-player {height: calc(100% - 46px) !important;}`,
         }),
         // 全屏下 关闭弹幕输入框
         new CheckboxItem({
@@ -596,7 +603,9 @@ if (isPageVideo() || isPagePlaylist()) {
         }),
     ]
     videoGroupList.push(new Group('video-danmaku', '弹幕栏', danmakuItems))
+}
 
+if (isPageVideo() || isPagePlaylist()) {
     // 视频下方
     const toolbarItems = [
         // 隐藏 分享按钮弹出菜单, 默认开启

@@ -57,7 +57,7 @@ export class Group {
     enableGroup(enableFunc = true) {
         try {
             this.items.forEach((e) => {
-                if (e instanceof CheckboxItem || e instanceof RadioItem) {
+                if (e instanceof CheckboxItem || e instanceof RadioItem || e instanceof NumberItem) {
                     e.enableItem(enableFunc)
                 }
             })
@@ -71,7 +71,7 @@ export class Group {
     reloadGroup() {
         try {
             this.items.forEach((e) => {
-                if (e instanceof CheckboxItem || e instanceof RadioItem) {
+                if (e instanceof CheckboxItem || e instanceof RadioItem || e instanceof NumberItem) {
                     e.reloadItem()
                 }
             })
@@ -85,7 +85,7 @@ export class Group {
     disableGroup() {
         try {
             this.items.forEach((e) => {
-                if (e instanceof CheckboxItem || e instanceof RadioItem) {
+                if (e instanceof CheckboxItem || e instanceof RadioItem || e instanceof NumberItem) {
                     e.removeItemCSS()
                 }
             })

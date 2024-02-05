@@ -368,11 +368,13 @@ export class RadioItem implements IItem {
 /**
  * itemID item的唯一ID, 用于在GM database中记录数值
  * description 数值功能介绍
- * defaultValue 默认值
+ * defaultValue 默认值, 数值为-1表示默认关闭
  * minValue 最小值
  * maxValue 最大值
  * unit 数值单位
- * callback 回调函数, 在数值修改时回调, 可用于效果实时生效
+ * itemCSS 样式
+ * itemCSSPlaceholder 样式占位符，用于替换成当前数值
+ * callback 回调函数, 在数值修改时回调, 用于一些功能实时生效
  */
 interface INumberItemOption {
     itemID: string
@@ -381,13 +383,16 @@ interface INumberItemOption {
     minValue: number
     maxValue: number
     unit: string
+    itemCSS?: myCSS
+    // CSS中待替换为数值的占位符
+    itemCSSPlaceholder?: string
     callback?: (value: number) => void
 }
 
 /** 数值设定 */
 export class NumberItem implements IItem {
     nodeHTML = `<input class="bili-cleaner-item-number" type="number">`
-    private itemValue: number | undefined
+    private itemValue = 0
 
     constructor(private option: INumberItemOption) {}
 
@@ -431,6 +436,46 @@ export class NumberItem implements IItem {
             error(err)
         }
     }
+
+    /** 插入CSS，若有占位符则替换成当前设定数值 */
+    insertItemCSS() {
+        try {
+            if (!this.option.itemCSS) {
+                return
+            }
+            if (document.querySelector(`html>style[bili-cleaner-css=${this.option.itemID}]`)) {
+                debug(`insertItemCSS ${this.option.itemID} CSS exist, ignore`)
+                return
+            }
+            const style = document.createElement('style')
+            let currCSS = this.option.itemCSS
+            if (this.option.itemCSSPlaceholder) {
+                this.getValue()
+                currCSS = currCSS.replaceAll(this.option.itemCSSPlaceholder, this.itemValue.toString())
+            }
+            style.innerHTML = currCSS.replace(/\n\s*/g, '').trim()
+            style.setAttribute('bili-cleaner-css', this.option.itemID)
+            document.documentElement.appendChild(style)
+            debug(`insertItemCSS ${this.option.itemID} OK`)
+        } catch (err) {
+            error(`insertItemCSS ${this.option.itemID} failed`)
+            error(err)
+        }
+    }
+
+    /** 移除CSS */
+    removeItemCSS() {
+        if (this.option.itemCSS) {
+            const style = document.querySelector(
+                `html>style[bili-cleaner-css=${this.option.itemID}]`,
+            ) as HTMLStyleElement
+            if (style) {
+                style.parentNode?.removeChild(style)
+                debug(`removeItemCSS ${this.option.itemID} OK`)
+            }
+        }
+    }
+
     /** 监听数值变化并保持, 重置不合理的值 */
     watchItem() {
         try {
@@ -439,7 +484,8 @@ export class NumberItem implements IItem {
             itemEle.addEventListener('input', () => {
                 currValue = parseInt(itemEle.value)
                 if (isNaN(currValue)) {
-                    itemEle.value = this.option.minValue.toString()
+                    // itemEle.value = this.option.minValue.toString()
+                    return
                 } else {
                     if (currValue > this.option.maxValue) {
                         itemEle.value = this.option.maxValue.toString()
@@ -450,6 +496,8 @@ export class NumberItem implements IItem {
                 this.setValue(parseInt(itemEle.value))
                 itemEle.value = parseInt(itemEle.value).toString()
                 debug(`${this.option.itemID} currValue ${itemEle.value}`)
+                // reload
+                this.reloadItem()
                 // 调用回调函数
                 if (this.option.callback && typeof this.option.callback === 'function') {
                     this.option.callback(parseInt(itemEle.value))
@@ -459,6 +507,34 @@ export class NumberItem implements IItem {
         } catch (err) {
             error(`watchItem ${this.option.itemID} err`)
             error(err)
+        }
+    }
+
+    /** 启用，设定带自定义数值的CSS, 数值为-1时禁用 */
+    enableItem(_enableFunc = false) {
+        this.getValue()
+        if (this.itemValue !== -1) {
+            try {
+                this.insertItemCSS()
+                debug(`enableItem ${this.option.itemID} OK`)
+            } catch (err) {
+                error(`enableItem ${this.option.itemID} Error`)
+                error(err)
+            }
+        }
+    }
+
+    /** 重载，在数值修改后重载CSS */
+    reloadItem() {
+        // this.getValue()
+        if (!this.option.itemCSS) {
+            return
+        }
+        if (this.itemValue !== -1) {
+            this.removeItemCSS()
+            this.insertItemCSS()
+        } else {
+            this.removeItemCSS()
         }
     }
 }

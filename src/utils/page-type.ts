@@ -27,6 +27,10 @@ const currPage = (): string => {
     if (href.includes('bilibili.com/list/watchlater') || href.includes('bilibili.com/list/ml')) {
         return 'playlist'
     }
+    // 匹配拜年祭活动页、拜年祭单品视频
+    if (href.match(/bilibili\.com\/festival\/20\d\dbnj/)) {
+        return 'bnj'
+    }
     return ''
 }
 
@@ -40,3 +44,4 @@ export const isPageDynamic = () => ans === 'dynamic'
 export const isPageLive = () => ans === 'live'
 export const isPageBangumi = () => ans === 'bangumi'
 export const isPagePlaylist = () => ans === 'playlist'
+export const isPageBnj = () => ans === 'bnj'

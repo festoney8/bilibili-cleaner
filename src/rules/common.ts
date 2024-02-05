@@ -1,5 +1,5 @@
 import { Group } from '../components/group'
-import { CheckboxItem, RadioItem } from '../components/item'
+import { CheckboxItem, NumberItem, RadioItem } from '../components/item'
 import { debug } from '../utils/logger'
 import {
     isPageBangumi,
@@ -328,7 +328,10 @@ const basicItems = [
         description: '美化页面滚动条',
         defaultStatus: true,
         itemCSS: `
-            /* WebKit */
+            /* WebKit and Chrome
+            Chrome 121+支持sidebar新属性，但难看，继续用webkit
+            https://developer.chrome.com/docs/css-ui/scrollbar-styling
+            */
             ::-webkit-scrollbar {
                 width: 8px !important;
                 height: 8px !important;
@@ -352,9 +355,11 @@ const basicItems = [
             }
 
             /* Firefox */
-            * {
-                scrollbar-color: rgba(0, 0, 0, 0.6) transparent !important;
-                scrollbar-width: thin !important;
+            @-moz-document url-prefix() {
+                * {
+                    scrollbar-color: rgba(0, 0, 0, 0.6) transparent !important;
+                    scrollbar-width: thin !important;
+                }
             }`,
     }),
     // URL参数净化, 在urlchange时需重载, 默认开启, 关闭功能需刷新
@@ -755,6 +760,45 @@ if (!isPageLive()) {
         }),
     ]
     commonGroupList.push(new Group('common-header-right', '全站通用项 顶栏 右侧', headerRightItems))
+
+    // 顶栏数值设定
+    const headerWidthItems = [
+        new NumberItem({
+            itemID: 'common-header-bar-padding-left',
+            description: '顶栏左侧 与页面左边界距离',
+            defaultValue: -1,
+            minValue: -1,
+            maxValue: 2000,
+            unit: 'px',
+            itemCSS: `.bili-header .bili-header__bar {padding-left: ???px !important;}`,
+            itemCSSPlaceholder: '???',
+        }),
+        new NumberItem({
+            itemID: 'common-header-bar-search-width',
+            description: '顶栏中间 搜索框宽度',
+            defaultValue: -1,
+            minValue: -1,
+            maxValue: 2000,
+            unit: 'px',
+            itemCSS: `.bili-header .center-search-container .center-search__bar {
+                width: ???px !important;
+                max-width: ???px !important;
+                min-width: 0px !important;
+            }`,
+            itemCSSPlaceholder: '???',
+        }),
+        new NumberItem({
+            itemID: 'common-header-bar-padding-right',
+            description: '顶栏右侧 与页面右边界距离',
+            defaultValue: -1,
+            minValue: -1,
+            maxValue: 2000,
+            unit: 'px',
+            itemCSS: `.bili-header .bili-header__bar {padding-right: ???px !important;}`,
+            itemCSSPlaceholder: '???',
+        }),
+    ]
+    commonGroupList.push(new Group('common-header-bar-value', '全站通用项 顶栏 数值设定 (-1禁用)', headerWidthItems))
 }
 
 export { commonGroupList }

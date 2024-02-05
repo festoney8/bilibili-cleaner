@@ -276,7 +276,7 @@ if (isPageVideo() || isPagePlaylist()) {
     videoGroupList.push(new Group('video-info', '视频信息', infoItems))
 }
 
-// 临时适配拜年祭视频页(播放器、弹幕栏规则多数生效)
+// 部分适配拜年祭视频页(播放器、弹幕栏规则多数生效)
 if (isPageVideo() || isPagePlaylist() || isPageBnj()) {
     // 播放器
     const playerItems = [
@@ -577,7 +577,7 @@ if (isPageVideo() || isPagePlaylist() || isPageBnj()) {
                 /* 活动播放器直接去黑边 */
                 .page-main-content:has(.festival-video-player) .video-player-box {height: fit-content !important;}
                 .festival-video-player {height: fit-content !important;}
-                .festival-video-player #bilibili-player {height: calc(100% - 46px) !important;}`,
+                .festival-video-player #bilibili-player:not(.mode-webscreen) {height: calc(100% - 46px) !important;}`,
         }),
         // 全屏下 关闭弹幕输入框
         new CheckboxItem({

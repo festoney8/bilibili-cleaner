@@ -222,6 +222,15 @@
 ![](images/how-to-import.png)
 
 </details>
+<details>
+<summary><b>数据云同步</b></summary>
+
+-   Tampermonkey/Violentmonkey 均支持同步数据到 Google Drive/Onedrive 等网盘
+-   [Tampermonkey Q105: How can I sync all scripts installed at Tampermonkey to another browser?](https://www.tampermonkey.net/faq.php?locale=en#Q105)
+-   [开启 Chrome 油猴插件「Tampermonkey」的同步备份功能](https://www.10wan.com/software-guide/1015_7tg8bw/)
+-   同步到 Google drive 的数据是默认隐藏的，参考 [Google Drive Appdata](https://developers.google.com/drive/api/guides/appdata?hl=zh-cn)
+
+</details>
 
 ## Ref
 

@@ -1,5 +1,5 @@
 // @ts-ignore isolatedModules
-import { GM_registerMenuCommand } from '$'
+import { GM_getValue, GM_registerMenuCommand } from '$'
 import { log, error, debug } from './utils/logger'
 import { init } from './init'
 import { Group } from './components/group'
@@ -17,6 +17,7 @@ import panelInstance from './components/panel'
 import { videoFilterGroupList } from './filters/pages/video'
 import { popularFilterGroupList } from './filters/pages/popular'
 import { searchFilterGroupList } from './filters/pages/search'
+import { SideBtn } from './components/sideBtn'
 
 log('script start')
 
@@ -43,13 +44,13 @@ const main = async () => {
     RULE_GROUPS.forEach((e) => e.enableGroup())
 
     // 载入视频过滤器
-    const FILTER_GROUPS: Group[] = [
+    const VIDEO_FILTER_GROUPS: Group[] = [
         ...homepageFilterGroupList,
         ...videoFilterGroupList,
         ...popularFilterGroupList,
         ...searchFilterGroupList,
     ]
-    FILTER_GROUPS.forEach((e) => e.enableGroup())
+    VIDEO_FILTER_GROUPS.forEach((e) => e.enableGroup())
 
     // 监听各种形式的URL变化 (普通监听无法检测到切换视频)
     let lastURL = location.href
@@ -116,13 +117,36 @@ const main = async () => {
                 debug(`${mode} panel replace complete`)
         }
     }
-    GM_registerMenuCommand('页面净化设置', () => {
+    GM_registerMenuCommand('✅页面净化设置', () => {
         createPanelWithMode('rule', RULE_GROUPS)
     })
     if (isPageHomepage() || isPageVideo() || isPagePopular() || isPageSearch()) {
-        GM_registerMenuCommand('视频过滤器', () => {
-            createPanelWithMode('filter', FILTER_GROUPS)
+        GM_registerMenuCommand('✅视频过滤设置', () => {
+            createPanelWithMode('filter', VIDEO_FILTER_GROUPS)
         })
+
+        // 过滤器快捷按钮
+        const videoFilterSideBtnID = 'video-filter-side-btn'
+        const sideBtn = new SideBtn(
+            videoFilterSideBtnID,
+            '视频过滤',
+            () => {
+                createPanelWithMode('filter', VIDEO_FILTER_GROUPS)
+            },
+            () => {
+                panelInstance.hide()
+            },
+        )
+        if (GM_getValue(`BILICLEANER_${videoFilterSideBtnID}`, false)) {
+            sideBtn.enable()
+            GM_registerMenuCommand('⚡️关闭 过滤器快捷按钮 (需刷新)', () => {
+                sideBtn.disable()
+            })
+        } else {
+            GM_registerMenuCommand('⚡️启用 过滤器快捷按钮 (需刷新)', () => {
+                sideBtn.enable()
+            })
+        }
     }
     debug('register menu complete')
 }

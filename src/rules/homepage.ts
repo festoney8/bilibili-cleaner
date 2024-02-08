@@ -1,3 +1,4 @@
+import { unsafeWindow } from '$'
 import { Group } from '../components/group'
 import { CheckboxItem, RadioItem } from '../components/item'
 import { isPageHomepage } from '../utils/page-type'
@@ -417,6 +418,31 @@ if (isPageHomepage()) {
                 .floor-single-card:has(.skeleton, .skeleton-item) {
                     visibility: hidden;
                 }`,
+        }),
+        // 增大 视频载入 视频数量
+        new CheckboxItem({
+            itemID: 'homepage-increase-rcmd-load-size',
+            description: '增大 视频载入 视频数量 (实验性)',
+            itemCSS: `
+            /* 扩增载入后会产生奇怪的骨架空位 */
+            .floor-single-card:has(.skeleton, .skeleton-item) {
+                display: none;
+            }`,
+            itemFunc: () => {
+                // hook fetch
+                const origFetch = unsafeWindow.fetch
+                unsafeWindow.fetch = (input, init?) => {
+                    if (
+                        typeof input == 'string' &&
+                        input.includes('api.bilibili.com') &&
+                        input.includes('feed/rcmd') &&
+                        init?.method?.toUpperCase() === 'GET'
+                    ) {
+                        input = input.replace('&ps=12&', '&ps=24&')
+                    }
+                    return origFetch(input, init)
+                }
+            },
         }),
     ]
     homepageGroupList.push(new Group('homepage-rcmd-list', '视频列表', rcmdListItems))

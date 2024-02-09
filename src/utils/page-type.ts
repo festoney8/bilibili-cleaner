@@ -28,7 +28,7 @@ const currPage = (): string => {
         return 'playlist'
     }
     // 匹配拜年祭活动页、拜年祭单品视频
-    if (href.match(/bilibili\.com\/festival\/20\d\dbnj/)) {
+    if (href.match(/bilibili\.com\/festival\/20\d\dbnj/) || href.includes('bilibili.com/festival/bnj20')) {
         return 'bnj'
     }
     return ''

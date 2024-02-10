@@ -17,7 +17,7 @@ export class SideBtn {
         position: fixed;
         bottom: 220px;
         right: 6px;
-        z-index: 1;
+        z-index: 99999;
         cursor: pointer;
         &:hover {
             background-color: #e3e5e7;

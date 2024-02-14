@@ -87,14 +87,16 @@ if (isPageLive()) {
             itemID: 'live-page-head-info-vm-upper-row-report',
             description: '隐藏 举报',
             defaultStatus: true,
-            itemCSS: `#head-info-vm .upper-row .right-ctnr div:has(.icon-report) {display: none !important;}`,
+            itemCSS: `
+            #head-info-vm .upper-row .right-ctnr div:has(.icon-report, [src*="img/report"]) {display: none !important;}`,
         }),
         // 隐藏 分享, 默认开启
         new CheckboxItem({
             itemID: 'live-page-head-info-vm-upper-row-share',
             description: '隐藏 分享',
             defaultStatus: true,
-            itemCSS: `#head-info-vm .upper-row .right-ctnr div:has(.icon-share) {display: none !important;}`,
+            itemCSS: `
+            #head-info-vm .upper-row .right-ctnr div:has(.icon-share, [src*="img/share"]) {display: none !important;}`,
         }),
         // 隐藏 人气榜, 默认开启
         new CheckboxItem({

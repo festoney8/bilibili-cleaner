@@ -139,9 +139,9 @@ if (isPageDynamic()) {
             itemID: 'hide-dynamic-page-bili-dyn-official-topic',
             description: '隐藏 动态内容中 官方话题Tag',
             // 不得隐藏普通tag .bili-rich-text-topic
-            itemCSS:
-                // 会造成部分动态内容要点缺失影响阅读
-                `.bili-dyn-content__orig__topic {display: none !important;}`,
+            itemCSS: `.bili-dyn-content__orig__topic, .bili-dyn-content__forw__topic {
+                display: none !important;
+            }`,
         }),
         // 动态内容中 普通Tag 去除高亮
         new CheckboxItem({

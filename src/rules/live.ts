@@ -1,6 +1,58 @@
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
+import { debug } from '../utils/logger'
 import { isPageLive } from '../utils/page-type'
+
+let isCleanLiveDanmakuRunning = false
+// 清理计数结尾弹幕
+let enableCleanCounter = false
+// 清理文字重复多遍的弹幕
+let enableCleanRedundant = false
+const cleanLiveDanmaku = () => {
+    if (!location.pathname.match(/^\/\d+/)) {
+        return
+    }
+    if (isCleanLiveDanmakuRunning) {
+        return
+    } else {
+        isCleanLiveDanmakuRunning = true
+    }
+    const clean = () => {
+        if (!enableCleanCounter && !enableCleanRedundant) {
+            return
+        }
+        const dmList = document.querySelectorAll('#live-player .danmaku-item-container .bili-dm')
+        if (!dmList.length) {
+            return
+        }
+        dmList.forEach((dm) => {
+            const dmText = dm.textContent?.trim()
+            if (dmText) {
+                if (enableCleanCounter && dmText.match(/.+[xXΧ×χ✘✖]\d+$/)) {
+                    debug('match danmaku', dmText)
+                    dm.innerHTML = ''
+                    return
+                }
+                // 出现5次及以上
+                if (enableCleanRedundant) {
+                    // 首尾匹配，直接清空内容
+                    if (dmText.match(/^([^\\.]+)\1{4,}$/)) {
+                        debug('match danmaku', dmText)
+                        dm.innerHTML = ''
+                        return
+                    }
+                    // 部分匹配，清除冗余
+                    if (dmText.match(/([^\\.]+)\1{3,}/)) {
+                        dm.innerHTML = dmText.replace(/([^\\.]+)\1{3,}/, '$1')
+                        debug('match danmaku', dmText)
+                        return
+                    }
+                }
+            }
+        })
+    }
+    setInterval(clean, 500)
+}
 
 // GroupList
 const liveGroupList: Group[] = []
@@ -168,11 +220,41 @@ if (isPageLive()) {
             defaultStatus: true,
             itemCSS: `#game-id {display: none !important;}`,
         }),
-        // 隐藏 复读计数弹幕
+        // 隐藏 播放器顶部复读计数弹幕
         new CheckboxItem({
             itemID: 'live-page-combo-danmaku',
-            description: '隐藏 播放器顶部复读计数弹幕',
+            description: '隐藏 播放器顶部变动计数弹幕',
             itemCSS: `.danmaku-item-container > div.combo {display: none !important;}`,
+        }),
+        // 隐藏 计数结尾的弹幕
+        new CheckboxItem({
+            itemID: 'live-page-clean-counter-danmaku',
+            description: '隐藏 计数结尾弹幕，如 ???? x24',
+            itemFunc: () => {
+                enableCleanCounter = true
+                cleanLiveDanmaku()
+            },
+        }),
+        // 隐藏 文字重复多遍的弹幕
+        new CheckboxItem({
+            itemID: 'live-page-clean-redundant-text-danmaku',
+            description: '隐藏 文字重复多遍的弹幕 (n≥5)\n如 prprprprpr, 88888888',
+            itemFunc: () => {
+                enableCleanRedundant = true
+                cleanLiveDanmaku()
+            },
+        }),
+        // 隐藏 弹幕中重复多遍的emoji
+        new CheckboxItem({
+            itemID: 'live-page-clean-redundant-emoji-danmaku',
+            description: '隐藏 弹幕中重复多遍的emoji (n≥3)',
+            itemCSS: `.danmaku-item-container .bili-dm:has(.bili-dm-emoji:nth-child(3)) .bili-dm-emoji {display: none !important;}`,
+        }),
+        // 隐藏 弹幕中全部小emoji
+        new CheckboxItem({
+            itemID: 'live-page-clean-all-danmaku-emoji',
+            description: '隐藏 弹幕中全部小emoji',
+            itemCSS: `.danmaku-item-container .bili-dm .bili-dm-emoji {display: none !important;}`,
         }),
         // 隐藏 礼物栏
         new CheckboxItem({

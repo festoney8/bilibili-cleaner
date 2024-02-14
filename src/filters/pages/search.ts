@@ -21,7 +21,7 @@ const searchFilterGroupList: Group[] = []
 let isContextMenuFuncRunning = false
 let isContextMenuUploaderEnable = false
 let isContextMenuBvidEnable = false
-// 推荐位UP主视频的不被过滤(实验性)，默认开启
+// 推荐位UP主视频的不被过滤，默认开启
 let isTopUploaderWhitelistEnable: boolean = GM_getValue('BILICLEANER_search-top-uploader-whitelist-filter-status', true)
 
 if (isPageSearch()) {
@@ -356,7 +356,7 @@ if (isPageSearch()) {
         // 顶部匹配UP主 免过滤, 默认开启
         new CheckboxItem({
             itemID: 'search-top-uploader-whitelist-filter-status',
-            description: '搜索结果顶部UP主视频免过滤 (实验性)',
+            description: '搜索结果顶部UP主视频免过滤',
             defaultStatus: true,
             itemFunc: () => {
                 isTopUploaderWhitelistEnable = true

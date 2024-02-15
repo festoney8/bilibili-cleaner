@@ -28,7 +28,7 @@ const cleanLiveDanmaku = () => {
         dmList.forEach((dm) => {
             const dmText = dm.textContent?.trim()
             if (dmText) {
-                if (enableCleanCounter && dmText.match(/.+[xXΧ×χ✘✖]\d+$/)) {
+                if (enableCleanCounter && dmText.match(/.+[xXΧ×χ✘✖] ?\d+$/)) {
                     debug('match danmaku', dmText)
                     dm.innerHTML = ''
                     return
@@ -36,15 +36,9 @@ const cleanLiveDanmaku = () => {
                 // 出现5次及以上
                 if (enableCleanRedundant) {
                     // 首尾匹配，直接清空内容
-                    if (dmText.match(/^([^\\.]+)\1{4,}$/)) {
+                    if (dmText.match(/(.+)\1{4,}/)) {
                         debug('match danmaku', dmText)
                         dm.innerHTML = ''
-                        return
-                    }
-                    // 部分匹配，清除冗余
-                    if (dmText.match(/([^\\.]+)\1{3,}/)) {
-                        dm.innerHTML = dmText.replace(/([^\\.]+)\1{3,}/, '$1')
-                        debug('match danmaku', dmText)
                         return
                     }
                 }
@@ -244,17 +238,23 @@ if (isPageLive()) {
                 cleanLiveDanmaku()
             },
         }),
-        // 隐藏 弹幕中重复多遍的emoji
+        // // 隐藏 弹幕中重复多遍的emoji
+        // new CheckboxItem({
+        //     itemID: 'live-page-clean-redundant-emoji-danmaku',
+        //     description: '隐藏 弹幕中重复多遍的emoji (n≥3)',
+        //     itemCSS: `.danmaku-item-container .bili-dm:has(.bili-dm-emoji:nth-child(3)) .bili-dm-emoji {display: none !important;}`,
+        // }),
+        // 隐藏 弹幕中的小表情
         new CheckboxItem({
-            itemID: 'live-page-clean-redundant-emoji-danmaku',
-            description: '隐藏 弹幕中重复多遍的emoji (n≥3)',
-            itemCSS: `.danmaku-item-container .bili-dm:has(.bili-dm-emoji:nth-child(3)) .bili-dm-emoji {display: none !important;}`,
-        }),
-        // 隐藏 弹幕中全部小emoji
-        new CheckboxItem({
-            itemID: 'live-page-clean-all-danmaku-emoji',
-            description: '隐藏 弹幕中全部小emoji',
+            itemID: 'live-page-clean-all-danmaku-small-emoji',
+            description: '隐藏 弹幕中的小表情',
             itemCSS: `.danmaku-item-container .bili-dm .bili-dm-emoji {display: none !important;}`,
+        }),
+        // 隐藏 弹幕中的大表情
+        new CheckboxItem({
+            itemID: 'live-page-clean-all-danmaku-big-emoji',
+            description: '隐藏 弹幕中的大表情',
+            itemCSS: `.danmaku-item-container .bili-dm img[style*="width:45px"] {display: none !important;}`,
         }),
         // 隐藏 礼物栏
         new CheckboxItem({

@@ -300,8 +300,8 @@ if (isPageDynamic()) {
             itemID: 'video-page-hide-at-reply-at-bots',
             description: '隐藏 召唤AI机器人的评论',
             defaultStatus: true,
-            // 8455326 @机器工具人
             itemCSS:
+                // 8455326 @机器工具人
                 // 234978716 @有趣的程序员
                 // 1141159409 @AI视频小助理
                 // 437175450 @AI视频小助理总结一下 (误伤)
@@ -314,6 +314,8 @@ if (isPageDynamic()) {
                 // 1358327273 @星崽丨StarZai
                 // 3546376048741135 @AI沈阳美食家
                 // 1835753760 @AI识片酱
+                // 9868463 @AI头脑风暴
+                // 358243654 @GPT_5
                 `.reply-item:has(.jump-link.user[data-user-id="8455326"]),
                 .reply-item:has(.jump-link.user[data-user-id="234978716"]),
                 .reply-item:has(.jump-link.user[data-user-id="1141159409"]),
@@ -326,7 +328,48 @@ if (isPageDynamic()) {
                 .reply-item:has(.jump-link.user[data-user-id="439438614"]),
                 .reply-item:has(.jump-link.user[data-user-id="1358327273"]),
                 .reply-item:has(.jump-link.user[data-user-id="3546376048741135"]),
-                .reply-item:has(.jump-link.user[data-user-id="1835753760"]) {
+                .reply-item:has(.jump-link.user[data-user-id="1835753760"]),
+                .reply-item:has(.jump-link.user[data-user-id="9868463"]),
+                .reply-item:has(.jump-link.user[data-user-id="358243654"]) {
+                    display: none !important;
+                }`,
+        }),
+        // 隐藏 AI机器人发布的评论
+        new CheckboxItem({
+            itemID: 'video-page-hide-bots-reply',
+            description: '隐藏 召唤AI机器人的评论',
+            defaultStatus: false,
+            itemCSS:
+                // 8455326 @机器工具人
+                // 234978716 @有趣的程序员
+                // 1141159409 @AI视频小助理
+                // 437175450 @AI视频小助理总结一下 (误伤)
+                // 1692825065 @AI笔记侠
+                // 690155730 @AI视频助手
+                // 689670224 @哔哩哔理点赞姬
+                // 3494380876859618 @课代表猫
+                // 1168527940 @AI课代表呀
+                // 439438614 @木几萌Moe
+                // 1358327273 @星崽丨StarZai
+                // 3546376048741135 @AI沈阳美食家
+                // 1835753760 @AI识片酱
+                // 9868463 @AI头脑风暴
+                // 358243654 @GPT_5
+                `.reply-item:has(.root-reply-container .user-name[data-user-id="8455326"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="234978716"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="1141159409"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="437175450"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="1692825065"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="690155730"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="689670224"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="3494380876859618"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="1168527940"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="439438614"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="1358327273"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="3546376048741135"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="1835753760"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="9868463"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="358243654"]) {
                     display: none !important;
                 }`,
         }),

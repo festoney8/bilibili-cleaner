@@ -650,7 +650,8 @@ if (!isPageLive()) {
                 'common-nav-keep-watchlater',
             ],
             defaultStatus: true,
-        }), // 隐藏 收藏, 隐藏 稍后再看
+        }),
+        // 隐藏 收藏, 隐藏 稍后再看
         new RadioItem({
             itemID: 'common-hide-nav-favorite',
             description: '隐藏 收藏，隐藏 稍后再看',
@@ -668,10 +669,11 @@ if (!isPageLive()) {
                     #internationalHeader .nav-user-center .item:has(.mini-favorite) {
                         display: none !important;
                     }`,
-        }), // 隐藏 收藏, 显示 稍后再看(实验性)
+        }),
+        // 隐藏 收藏, 显示 稍后再看
         new RadioItem({
             itemID: 'common-hide-nav-favorite-keep-watchlater',
-            description: '隐藏 收藏，显示 稍后再看(实验性)',
+            description: '隐藏 收藏，显示 稍后再看',
             radioName: 'common-header-fav-option',
             radioItemIDList: [
                 'common-nav-favorite-watchlater-default',
@@ -695,7 +697,8 @@ if (!isPageLive()) {
                             top: 10px;
                         }
                     }`,
-        }), // 显示 收藏, 显示 稍后再看(实验性)
+        }),
+        // 显示 收藏, 显示 稍后再看(实验性)
         new RadioItem({
             itemID: 'common-nav-keep-watchlater',
             description: '显示 收藏，显示 稍后再看(实验性)',
@@ -720,7 +723,8 @@ if (!isPageLive()) {
                             top: 15px;
                         }
                     }`,
-        }), // 隐藏 历史
+        }),
+        // 隐藏 历史
         new CheckboxItem({
             itemID: 'common-hide-nav-history',
             description: '隐藏 历史',

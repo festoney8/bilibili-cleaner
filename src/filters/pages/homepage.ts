@@ -22,7 +22,7 @@ const homepageFilterGroupList: Group[] = []
 let isContextMenuFuncRunning = false
 let isContextMenuUploaderEnable = false
 let isContextMenuBvidEnable = false
-// 带已关注tag的视频不被过滤(实验性)
+// 带已关注tag的视频不被过滤
 let isFollowingWhitelistEnable: boolean = GM_getValue('BILICLEANER_homepage-following-whitelist-filter-status', true)
 
 if (isPageHomepage()) {
@@ -398,7 +398,7 @@ if (isPageHomepage()) {
         // 已关注UP主 免过滤, 默认开启
         new CheckboxItem({
             itemID: 'homepage-following-whitelist-filter-status',
-            description: '标有 [已关注] 的视频免过滤 (实验性)',
+            description: '标有 [已关注] 的视频免过滤',
             defaultStatus: true,
             itemFunc: () => {
                 isFollowingWhitelistEnable = true

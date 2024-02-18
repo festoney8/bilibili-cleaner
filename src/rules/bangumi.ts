@@ -533,7 +533,7 @@ if (isPageBangumi()) {
         // 隐藏 AI机器人发布的评论
         new CheckboxItem({
             itemID: 'video-page-hide-bots-reply',
-            description: '隐藏 召唤AI机器人的评论',
+            description: '隐藏 AI机器人发布的评论',
             defaultStatus: false,
             itemCSS:
                 // 8455326 @机器工具人

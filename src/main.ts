@@ -18,6 +18,7 @@ import { videoFilterGroupList } from './filters/pages/video'
 import { popularFilterGroupList } from './filters/pages/popular'
 import { searchFilterGroupList } from './filters/pages/search'
 import { SideBtn } from './components/sideBtn'
+import { channelGroupList } from './rules/channel'
 
 log('script start')
 
@@ -39,6 +40,7 @@ const main = async () => {
         ...searchGroupList,
         ...dynamicGroupList,
         ...liveGroupList,
+        ...channelGroupList,
         ...commonGroupList,
     ]
     RULE_GROUPS.forEach((e) => e.enableGroup())

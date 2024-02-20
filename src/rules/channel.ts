@@ -1,5 +1,5 @@
 import { Group } from '../components/group'
-import { CheckboxItem } from '../components/item'
+import { CheckboxItem, NumberItem } from '../components/item'
 import { isPageChannel } from '../utils/page-type'
 
 // GroupList
@@ -32,6 +32,17 @@ if (isPageChannel()) {
             itemID: 'channel-hide-sticky-header',
             description: '隐藏 滚动页面时 顶部吸附 顶栏',
             itemCSS: `.bili-header__bar.slide-down {display: none !important;}`,
+        }),
+        // 设置 频道页 左右两侧边距
+        new NumberItem({
+            itemID: 'channel-layout-padding',
+            description: '设置 频道页 左右两侧边距',
+            defaultValue: -1,
+            minValue: -1,
+            maxValue: 500,
+            unit: 'px',
+            itemCSS: `.go-back-btn, .channel-layout, .channel-outer-nav {padding: 0 ???px !important;}`,
+            itemCSSPlaceholder: '???',
         }),
     ]
     channelGroupList.push(new Group('channel-basic', '频道页 基础功能', basicItems))
@@ -191,8 +202,7 @@ if (isPageChannel()) {
                 .bili-grid:has(.rank-list) .video-card-list .video-card-body>*:nth-of-type(1n + 13) {
                     display: unset !important
                 }
-            }
-            `,
+            }`,
         }),
         // 隐藏 广告banner
         new CheckboxItem({

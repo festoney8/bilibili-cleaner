@@ -1,6 +1,6 @@
 import { unsafeWindow } from '$'
 import { Group } from '../components/group'
-import { CheckboxItem, RadioItem } from '../components/item'
+import { CheckboxItem, NumberItem, RadioItem } from '../components/item'
 import { isPageHomepage } from '../utils/page-type'
 
 // GroupList
@@ -197,6 +197,18 @@ if (isPageHomepage()) {
             description: '隐藏 顶部adblock提示',
             defaultStatus: true,
             itemCSS: `.adblock-tips {display: none !important;}`,
+        }),
+        // 设置 页面左右两侧边距
+        new NumberItem({
+            itemID: 'homepage-layout-padding',
+            description: '设置 页面左右两侧边距',
+            defaultValue: -1,
+            minValue: -1,
+            maxValue: 500,
+            unit: 'px',
+            itemCSS: `.bili-feed4-layout, .bili-feed4 .bili-header .bili-header__channel {padding: 0 ???px !important;}
+                    .bili-feed4-layout, .bili-feed4 .bili-header .bili-header__channel {width: 100% !important;}`,
+            itemCSSPlaceholder: '???',
         }),
     ]
     homepageGroupList.push(new Group('homepage-basic', '首页 基本功能', basicItems))

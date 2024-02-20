@@ -368,9 +368,10 @@ export class RadioItem implements IItem {
 /**
  * itemID item的唯一ID, 用于在GM database中记录数值
  * description 数值功能介绍
- * defaultValue 默认值, 数值为-1表示默认关闭
+ * defaultValue 默认值
  * minValue 最小值
  * maxValue 最大值
+ * disableValue 禁用值
  * unit 数值单位
  * itemCSS 样式
  * itemCSSPlaceholder 样式占位符，用于替换成当前数值
@@ -382,6 +383,7 @@ interface INumberItemOption {
     defaultValue: number
     minValue: number
     maxValue: number
+    disableValue: number
     unit: string
     itemCSS?: myCSS
     // CSS中待替换为数值的占位符
@@ -396,11 +398,11 @@ export class NumberItem implements IItem {
 
     constructor(private option: INumberItemOption) {}
 
-    /** 获取数值, 初次安装使用默认值 */
+    /** 获取数值, 初次安装使用禁用值 */
     getValue() {
         this.itemValue = GM_getValue(`BILICLEANER_${this.option.itemID}`)
         if (this.itemValue === undefined) {
-            this.itemValue = this.option.defaultValue
+            this.itemValue = this.option.disableValue
             this.setValue(this.itemValue)
         }
     }
@@ -484,8 +486,7 @@ export class NumberItem implements IItem {
             itemEle.addEventListener('input', () => {
                 currValue = parseInt(itemEle.value)
                 if (isNaN(currValue)) {
-                    // itemEle.value = this.option.minValue.toString()
-                    return
+                    itemEle.value = this.option.disableValue.toString()
                 } else {
                     if (currValue > this.option.maxValue) {
                         itemEle.value = this.option.maxValue.toString()
@@ -510,10 +511,10 @@ export class NumberItem implements IItem {
         }
     }
 
-    /** 启用，设定带自定义数值的CSS, 数值为-1时禁用 */
+    /** 启用，设定带自定义数值的CSS, 数值为disableValue时禁用 */
     enableItem(_enableFunc = false) {
         this.getValue()
-        if (this.itemValue !== -1) {
+        if (this.itemValue !== this.option.disableValue) {
             try {
                 this.insertItemCSS()
                 debug(`enableItem ${this.option.itemID} OK`)
@@ -530,7 +531,7 @@ export class NumberItem implements IItem {
         if (!this.option.itemCSS) {
             return
         }
-        if (this.itemValue !== -1) {
+        if (this.itemValue !== this.option.disableValue) {
             this.removeItemCSS()
             this.insertItemCSS()
         } else {

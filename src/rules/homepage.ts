@@ -205,6 +205,7 @@ if (isPageHomepage()) {
             defaultValue: -1,
             minValue: -1,
             maxValue: 500,
+            disableValue: -1,
             unit: 'px',
             itemCSS: `.bili-feed4-layout, .bili-feed4 .bili-header .bili-header__channel {padding: 0 ???px !important;}
                     .bili-feed4-layout, .bili-feed4 .bili-header .bili-header__channel {width: 100% !important;}`,

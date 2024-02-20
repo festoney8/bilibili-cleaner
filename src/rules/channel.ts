@@ -40,6 +40,7 @@ if (isPageChannel()) {
             defaultValue: -1,
             minValue: -1,
             maxValue: 500,
+            disableValue: -1,
             unit: 'px',
             itemCSS: `.go-back-btn, .channel-layout, .channel-outer-nav {padding: 0 ???px !important;}`,
             itemCSSPlaceholder: '???',

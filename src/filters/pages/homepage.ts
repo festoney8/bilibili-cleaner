@@ -293,6 +293,7 @@ if (isPageHomepage()) {
             defaultValue: 60,
             minValue: 0,
             maxValue: 300,
+            disableValue: -1,
             unit: '秒',
             callback: (value: number) => {
                 homepageDurationAction.change(value)

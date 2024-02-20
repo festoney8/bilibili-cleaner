@@ -46,12 +46,11 @@ if (isPageChannel()) {
             .bili-grid:has([data-report="high_energy.content"]) {
                 grid-template-columns: unset !important;
                 margin-top: 0 !important;
-                margin-bottom: 10px !important;
+                margin-bottom: 0 !important;
             }
             .bili-grid:has([data-report="high_energy.content"]) aside[data-report="topic.card"] {
                 display: none !important;
             }
-
             @media (max-width: 1099.9px) {
                 .bili-grid:has([data-report="high_energy.content"]) .video-card-list .video-card-body {
                     grid-column: span 4;
@@ -128,7 +127,7 @@ if (isPageChannel()) {
             .bili-grid:has(.rank-list) {
                 grid-template-columns: unset !important;
                 margin-top: 0 !important;
-                margin-bottom: 10px !important;
+                margin-bottom: 0 !important;
             }
             .bili-grid:has(.rank-list) aside {
                 display: none !important;
@@ -203,6 +202,44 @@ if (isPageChannel()) {
             itemCSS: `.eva-banner:has([href*="cm.bilibili.com"]) {display: none !important;}
                     .bili-grid {margin-bottom: 20px !important;}`,
         }),
+        // 隐藏 发布时间
+        new CheckboxItem({
+            itemID: 'channel-hide-video-info-date',
+            description: '隐藏 发布时间',
+            itemCSS: `.bili-video-card__info--date {display: none !important;}`,
+        }),
+        // 隐藏 弹幕数, 默认开启
+        new CheckboxItem({
+            itemID: 'channel-hide-danmaku-count',
+            description: '隐藏 弹幕数',
+            defaultStatus: true,
+            itemCSS: `.bili-video-card__stats--item:nth-child(2) {visibility: hidden;}`,
+        }),
+        // 隐藏 稍后再看按钮
+        new CheckboxItem({
+            itemID: 'channel-hide-bili-watch-later',
+            description: '隐藏 稍后再看按钮',
+            itemCSS: `.bili-watch-later {display: none !important;}`,
+        }),
+        // 增大 视频信息字号
+        new CheckboxItem({
+            itemID: 'channel-increase-rcmd-list-font-size',
+            description: '增大 视频信息字号',
+            itemCSS: `.bili-video-card .bili-video-card__info--tit,
+                .bili-live-card .bili-live-card__info--tit,
+                .single-card.floor-card .title {
+                    font-size: 16px !important;
+                }
+                .bili-video-card .bili-video-card__info--bottom,
+                .floor-card .sub-title.sub-title {
+                    font-size: 14px !important;
+                }
+                .bili-video-card__stats,
+                .bili-video-card__stats .bili-video-card__stats--left,
+                .bili-video-card__stats .bili-video-card__stats--right {
+                    font-size: 14px !important;
+                }`,
+        }),
     ]
     channelGroupList.push(new Group('channel-video', '视频列表', videoListItems))
 
@@ -210,14 +247,14 @@ if (isPageChannel()) {
     const sidebarItems = [
         // 隐藏 新版反馈, 默认开启
         new CheckboxItem({
-            itemID: 'homepage-hide-feedback',
+            itemID: 'channel-hide-feedback',
             description: '隐藏 新版反馈',
             defaultStatus: true,
             itemCSS: `.palette-button-wrap .feedback {display: none !important;}`,
         }),
         // 隐藏 回顶部
         new CheckboxItem({
-            itemID: 'homepage-hide-top-btn',
+            itemID: 'channel-hide-top-btn',
             description: '隐藏 回顶部',
             itemCSS: `.palette-button-wrap .top-btn-wrap {display: none !important;}`,
         }),

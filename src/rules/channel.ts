@@ -58,7 +58,7 @@ if (isPageChannel()) {
             .bili-grid:has([data-report="high_energy.content"]) {
                 grid-template-columns: unset !important;
                 margin-top: 0 !important;
-                margin-bottom: 0 !important;
+                margin-bottom: 20px !important;
             }
             .bili-grid:has([data-report="high_energy.content"]) aside[data-report="topic.card"] {
                 display: none !important;

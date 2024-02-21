@@ -484,6 +484,9 @@ export class NumberItem implements IItem {
             const itemEle = document.querySelector(`#${this.option.itemID} input`) as HTMLInputElement
             let currValue
             itemEle.addEventListener('input', () => {
+                if (!itemEle.value.trim().match(/^-?\d+$/)) {
+                    return
+                }
                 currValue = parseInt(itemEle.value)
                 if (isNaN(currValue)) {
                     itemEle.value = this.option.disableValue.toString()

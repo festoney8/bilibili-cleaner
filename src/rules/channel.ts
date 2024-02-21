@@ -33,10 +33,10 @@ if (isPageChannel()) {
             description: '隐藏 滚动页面时 顶部吸附 顶栏',
             itemCSS: `.bili-header__bar.slide-down {display: none !important;}`,
         }),
-        // 设置 频道页 左右两侧边距
+        // 修改 页面两侧边距
         new NumberItem({
             itemID: 'channel-layout-padding',
-            description: '设置 频道页 左右两侧边距',
+            description: '修改 页面两侧边距 (-1禁用)',
             defaultValue: -1,
             minValue: -1,
             maxValue: 500,
@@ -231,6 +231,13 @@ if (isPageChannel()) {
             itemID: 'channel-hide-bili-watch-later',
             description: '隐藏 稍后再看按钮',
             itemCSS: `.bili-watch-later {display: none !important;}`,
+        }),
+        // 优化 近期投稿栏目 视频行距, 默认开启
+        new CheckboxItem({
+            itemID: 'channel-feed-card-body-grid-gap',
+            description: '优化 近期投稿栏目 视频行距',
+            defaultStatus: true,
+            itemCSS: `.feed-card-body {grid-gap: 20px 12px !important;}`,
         }),
         // 增大 视频信息字号
         new CheckboxItem({

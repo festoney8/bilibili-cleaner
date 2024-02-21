@@ -198,10 +198,10 @@ if (isPageHomepage()) {
             defaultStatus: true,
             itemCSS: `.adblock-tips {display: none !important;}`,
         }),
-        // 设置 页面左右两侧边距
+        // 修改 页面两侧边距
         new NumberItem({
             itemID: 'homepage-layout-padding',
-            description: '设置 页面左右两侧边距',
+            description: '修改 页面两侧边距 (-1禁用)',
             defaultValue: -1,
             minValue: -1,
             maxValue: 500,

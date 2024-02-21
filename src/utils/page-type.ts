@@ -27,8 +27,12 @@ const currPage = (): string => {
     if (href.includes('bilibili.com/list/watchlater') || href.includes('bilibili.com/list/ml')) {
         return 'playlist'
     }
-    // 匹配拜年祭活动页、拜年祭单品视频
+    // 频道子分类
+    if (!href.includes('bilibili.com/v/popular/') && href.includes('bilibili.com/v/')) {
+        return 'channel'
+    }
     if (href.match(/bilibili\.com\/festival\/20\d\dbnj/) || href.includes('bilibili.com/festival/bnj20')) {
+        // 匹配拜年祭活动页、拜年祭单品视频
         return 'bnj'
     }
     return ''
@@ -45,3 +49,4 @@ export const isPageLive = () => ans === 'live'
 export const isPageBangumi = () => ans === 'bangumi'
 export const isPagePlaylist = () => ans === 'playlist'
 export const isPageBnj = () => ans === 'bnj'
+export const isPageChannel = () => ans === 'channel'

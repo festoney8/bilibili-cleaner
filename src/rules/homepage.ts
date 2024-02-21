@@ -1,6 +1,6 @@
 import { unsafeWindow } from '$'
 import { Group } from '../components/group'
-import { CheckboxItem, RadioItem } from '../components/item'
+import { CheckboxItem, NumberItem, RadioItem } from '../components/item'
 import { isPageHomepage } from '../utils/page-type'
 
 // GroupList
@@ -198,24 +198,18 @@ if (isPageHomepage()) {
             defaultStatus: true,
             itemCSS: `.adblock-tips {display: none !important;}`,
         }),
-        // 增大 视频信息字号
-        new CheckboxItem({
-            itemID: 'homepage-increase-rcmd-list-font-size',
-            description: '增大 视频信息字号',
-            itemCSS: `.bili-video-card .bili-video-card__info--tit,
-                .bili-live-card .bili-live-card__info--tit,
-                .single-card.floor-card .title {
-                    font-size: 16px !important;
-                }
-                .bili-video-card .bili-video-card__info--bottom,
-                .floor-card .sub-title.sub-title {
-                    font-size: 14px !important;
-                }
-                .bili-video-card__stats,
-                .bili-video-card__stats .bili-video-card__stats--left,
-                .bili-video-card__stats .bili-video-card__stats--right {
-                    font-size: 14px !important;
-                }`,
+        // 修改 页面两侧边距
+        new NumberItem({
+            itemID: 'homepage-layout-padding',
+            description: '修改 页面两侧边距 (-1禁用)',
+            defaultValue: -1,
+            minValue: -1,
+            maxValue: 500,
+            disableValue: -1,
+            unit: 'px',
+            itemCSS: `.bili-feed4-layout, .bili-feed4 .bili-header .bili-header__channel {padding: 0 ???px !important;}
+                    .bili-feed4-layout, .bili-feed4 .bili-header .bili-header__channel {width: 100% !important;}`,
+            itemCSSPlaceholder: '???',
         }),
     ]
     homepageGroupList.push(new Group('homepage-basic', '首页 基本功能', basicItems))
@@ -285,6 +279,25 @@ if (isPageHomepage()) {
 
     // 视频列表
     const rcmdListItems = [
+        // 增大 视频信息字号
+        new CheckboxItem({
+            itemID: 'homepage-increase-rcmd-list-font-size',
+            description: '增大 视频信息字号',
+            itemCSS: `.bili-video-card .bili-video-card__info--tit,
+                .bili-live-card .bili-live-card__info--tit,
+                .single-card.floor-card .title {
+                    font-size: 16px !important;
+                }
+                .bili-video-card .bili-video-card__info--bottom,
+                .floor-card .sub-title.sub-title {
+                    font-size: 14px !important;
+                }
+                .bili-video-card__stats,
+                .bili-video-card__stats .bili-video-card__stats--left,
+                .bili-video-card__stats .bili-video-card__stats--right {
+                    font-size: 14px !important;
+                }`,
+        }),
         // 隐藏 视频tag (已关注/1万点赞)
         new CheckboxItem({
             itemID: 'homepage-hide-up-info-icon',

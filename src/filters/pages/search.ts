@@ -254,6 +254,7 @@ if (isPageSearch()) {
             defaultValue: 60,
             minValue: 0,
             maxValue: 300,
+            disableValue: 0,
             unit: '秒',
             callback: (value: number) => {
                 searchDurationAction.change(value)

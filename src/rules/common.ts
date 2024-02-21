@@ -3,6 +3,7 @@ import { CheckboxItem, NumberItem, RadioItem } from '../components/item'
 import { debug } from '../utils/logger'
 import {
     isPageBangumi,
+    isPageChannel,
     isPageDynamic,
     isPageHomepage,
     isPageLive,
@@ -311,6 +312,44 @@ if (isPageDynamic()) {
             .fixed-sidenav-storage div,
             .fixed-sidenav-storage a {
                 border-radius: 3px !important;
+            }`
+    } else if (isPageChannel()) {
+        borderRadiusCSS = `
+            #nav-searchform,
+            .nav-search-content,
+            .history-item,
+            .header-upload-entry,
+            .bili-header .search-panel,
+            .bili-header .header-upload-entry,
+            .bili-header__channel .channel-link,
+            .channel-entry-more__link,
+            .header-channel-fixed-right-item,
+            .recommended-swipe-body,
+            .bili-video-card .bili-video-card__cover,
+            .bili-video-card .bili-video-card__image,
+            .bili-video-card .bili-video-card__info--icon-text,
+            .bili-live-card,
+            .floor-card,
+            .floor-card .badge,
+            .single-card.floor-card .floor-card-inner,
+            .single-card.floor-card .cover-container,
+            .primary-btn,
+            .flexible-roll-btn,
+            .palette-button-wrap .flexible-roll-btn-inner,
+            .palette-button-wrap .storage-box,
+            .palette-button-wrap,
+            .v-popover-content {
+                border-radius: 3px !important;
+            }
+            .bili-video-card__stats {
+                border-bottom-left-radius: 3px !important;
+                border-bottom-right-radius: 3px !important;
+            }
+            .floor-card .layer {
+                display: none !important;
+            }
+            .single-card.floor-card {
+                border: none !important;
             }`
     }
 }
@@ -773,6 +812,7 @@ if (!isPageLive()) {
             defaultValue: -1,
             minValue: -1,
             maxValue: 2000,
+            disableValue: -1,
             unit: 'px',
             itemCSS: `.bili-header .bili-header__bar {padding-left: ???px !important;}`,
             itemCSSPlaceholder: '???',
@@ -783,6 +823,7 @@ if (!isPageLive()) {
             defaultValue: -1,
             minValue: -1,
             maxValue: 2000,
+            disableValue: -1,
             unit: 'px',
             itemCSS: `.bili-header .center-search-container .center-search__bar {
                 width: ???px !important;
@@ -797,6 +838,7 @@ if (!isPageLive()) {
             defaultValue: -1,
             minValue: -1,
             maxValue: 2000,
+            disableValue: -1,
             unit: 'px',
             itemCSS: `.bili-header .bili-header__bar {padding-right: ???px !important;}`,
             itemCSSPlaceholder: '???',

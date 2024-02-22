@@ -51,6 +51,9 @@ if (isPageChannel()) {
     // 视频列表
     const videoListItems = [
         // 隐藏 前方高能右侧 话题精选
+        // 适配视频过滤，不对元素做nth-child判断
+        // 使用grid-template-rows: 1fr auto 控制两行显示
+        // 使用grid-auto-rows: 0px隐藏第三行
         new CheckboxItem({
             itemID: 'channel-hide-high-energy-topic',
             description: '隐藏 前方高能右侧 话题精选',
@@ -63,12 +66,16 @@ if (isPageChannel()) {
             .bili-grid:has([data-report="high_energy.content"]) aside[data-report="topic.card"] {
                 display: none !important;
             }
+            .bili-grid:has([data-report="high_energy.content"]) .video-card-list {
+                min-height: unset !important;
+            }
             @media (max-width: 1099.9px) {
                 .bili-grid:has([data-report="high_energy.content"]) .video-card-list .video-card-body {
                     grid-column: span 4;
                     grid-template-columns: repeat(4, 1fr);
                     overflow: hidden;
-                    grid-template-rows: repeat(2, 1fr);
+                    /* grid-template-rows: repeat(2, 1fr); */
+                    grid-template-rows: 1fr auto;
                     grid-auto-rows: 0px;
                 }
                 .bili-grid:has([data-report="high_energy.content"]) .video-card-list .video-card-body>*:nth-of-type(1n + 7) {
@@ -80,7 +87,8 @@ if (isPageChannel()) {
                     grid-column: span 5;
                     grid-template-columns: repeat(5, 1fr);
                     overflow: hidden;
-                    grid-template-rows: repeat(2, 1fr);
+                    /* grid-template-rows: repeat(2, 1fr); */
+                    grid-template-rows: 1fr auto;
                     grid-auto-rows: 0px;
                 }
                 .bili-grid:has([data-report="high_energy.content"]) .video-card-list .video-card-body>*:nth-of-type(1n + 9) {
@@ -92,7 +100,8 @@ if (isPageChannel()) {
                     grid-column: span 5;
                     grid-template-columns: repeat(5, 1fr);
                     overflow: hidden;
-                    grid-template-rows: repeat(2, 1fr);
+                    /* grid-template-rows: repeat(2, 1fr); */
+                    grid-template-rows: 1fr auto;
                     grid-auto-rows: 0px;
                 }
                 .bili-grid:has([data-report="high_energy.content"]) .video-card-list .video-card-body>*:nth-of-type(1n + 9) {
@@ -104,7 +113,8 @@ if (isPageChannel()) {
                     grid-column: span 6;
                     grid-template-columns: repeat(6, 1fr);
                     overflow: hidden;
-                    grid-template-rows: repeat(2, 1fr);
+                    /* grid-template-rows: repeat(2, 1fr); */
+                    grid-template-rows: 1fr auto;
                     grid-auto-rows: 0px;
                 }
                 .bili-grid:has([data-report="high_energy.content"]) .video-card-list .video-card-body>*:nth-of-type(1n + 11) {
@@ -116,7 +126,8 @@ if (isPageChannel()) {
                     grid-column: span 6;
                     grid-template-columns: repeat(6, 1fr);
                     overflow: hidden;
-                    grid-template-rows: repeat(2, 1fr);
+                    /* grid-template-rows: repeat(2, 1fr); */
+                    grid-template-rows: 1fr auto;
                     grid-auto-rows: 0px;
                 }
                 .bili-grid:has([data-report="high_energy.content"]) .video-card-list .video-card-body>*:nth-of-type(1n + 13) {
@@ -139,17 +150,22 @@ if (isPageChannel()) {
             .bili-grid:has(.rank-list) {
                 grid-template-columns: unset !important;
                 margin-top: 0 !important;
-                margin-bottom: 0 !important;
+                margin-bottom: 20px !important;
             }
             .bili-grid:has(.rank-list) aside {
                 display: none !important;
+            }
+            .bili-grid.sub-dynamic:has(.rank-list),
+            .bili-grid:has(.rank-list) .video-card-list {
+                min-height: unset !important;
             }
             @media (max-width: 1099.9px) {
                 .bili-grid:has(.rank-list) .video-card-list .video-card-body {
                     grid-column: span 4;
                     grid-template-columns: repeat(4, 1fr);
                     overflow: hidden;
-                    grid-template-rows: repeat(2, 1fr);
+                    /* grid-template-rows: repeat(2, 1fr); */
+                    grid-template-rows: 1fr auto;
                     grid-auto-rows: 0px;
                 }
                 .bili-grid:has(.rank-list) .video-card-list .video-card-body>*:nth-of-type(1n + 7) {
@@ -161,7 +177,8 @@ if (isPageChannel()) {
                     grid-column: span 5;
                     grid-template-columns: repeat(5, 1fr);
                     overflow: hidden;
-                    grid-template-rows: repeat(2, 1fr);
+                    /* grid-template-rows: repeat(2, 1fr); */
+                    grid-template-rows: 1fr auto;
                     grid-auto-rows: 0px;
                 }
                 .bili-grid:has(.rank-list) .video-card-list .video-card-body>*:nth-of-type(1n + 9) {
@@ -173,7 +190,8 @@ if (isPageChannel()) {
                     grid-column: span 5;
                     grid-template-columns: repeat(5, 1fr);
                     overflow: hidden;
-                    grid-template-rows: repeat(2, 1fr);
+                    /* grid-template-rows: repeat(2, 1fr); */
+                    grid-template-rows: 1fr auto;
                     grid-auto-rows: 0px;
                 }
                 .bili-grid:has(.rank-list) .video-card-list .video-card-body>*:nth-of-type(1n + 9) {
@@ -185,7 +203,8 @@ if (isPageChannel()) {
                     grid-column: span 6;
                     grid-template-columns: repeat(6, 1fr);
                     overflow: hidden;
-                    grid-template-rows: repeat(2, 1fr);
+                    /* grid-template-rows: repeat(2, 1fr); */
+                    grid-template-rows: 1fr auto;
                     grid-auto-rows: 0px;
                 }
                 .bili-grid:has(.rank-list) .video-card-list .video-card-body>*:nth-of-type(1n + 11) {
@@ -197,7 +216,8 @@ if (isPageChannel()) {
                     grid-column: span 6;
                     grid-template-columns: repeat(6, 1fr);
                     overflow: hidden;
-                    grid-template-rows: repeat(2, 1fr);
+                    /* grid-template-rows: repeat(2, 1fr); */
+                    grid-template-rows: 1fr auto;
                     grid-auto-rows: 0px;
                 }
                 .bili-grid:has(.rank-list) .video-card-list .video-card-body>*:nth-of-type(1n + 13) {

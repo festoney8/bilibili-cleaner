@@ -11,7 +11,7 @@ import { searchGroupList } from './rules/search'
 import { liveGroupList } from './rules/live'
 import { dynamicGroupList } from './rules/dynamic'
 import { popularGroupList } from './rules/popular'
-import { isPageHomepage, isPagePopular, isPageSearch, isPageVideo } from './utils/page-type'
+import { isPageChannel, isPageHomepage, isPagePopular, isPageSearch, isPageVideo } from './utils/page-type'
 import { homepageFilterGroupList } from './filters/pages/homepage'
 import panelInstance from './components/panel'
 import { videoFilterGroupList } from './filters/pages/video'
@@ -19,6 +19,7 @@ import { popularFilterGroupList } from './filters/pages/popular'
 import { searchFilterGroupList } from './filters/pages/search'
 import { SideBtn } from './components/sideBtn'
 import { channelGroupList } from './rules/channel'
+import { channelFilterGroupList } from './filters/pages/channel'
 
 log('script start')
 
@@ -51,6 +52,7 @@ const main = async () => {
         ...videoFilterGroupList,
         ...popularFilterGroupList,
         ...searchFilterGroupList,
+        ...channelFilterGroupList,
     ]
     VIDEO_FILTER_GROUPS.forEach((e) => e.enableGroup())
 
@@ -122,7 +124,7 @@ const main = async () => {
     GM_registerMenuCommand('✅页面净化设置', () => {
         createPanelWithMode('rule', RULE_GROUPS)
     })
-    if (isPageHomepage() || isPageVideo() || isPagePopular() || isPageSearch()) {
+    if (isPageHomepage() || isPageVideo() || isPagePopular() || isPageSearch() || isPageChannel()) {
         GM_registerMenuCommand('✅视频过滤设置', () => {
             createPanelWithMode('filter', VIDEO_FILTER_GROUPS)
         })

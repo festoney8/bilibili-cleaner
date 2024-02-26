@@ -664,6 +664,12 @@ if (isPageBangumi()) {
                 .reply-view-image .preview-list {opacity: 0.2; transition: opacity 0.1s ease-in-out;}
                 .reply-view-image .preview-list:hover {opacity: 1; transition: opacity 0.1s ease-in-out;}`,
         }),
+        // 隐藏 整个评论区
+        new CheckboxItem({
+            itemID: 'video-page-hide-comment',
+            description: '隐藏 整个评论区',
+            itemCSS: `#comment, #comment-module {display: none;}`,
+        }),
     ]
     bangumiGroupList.push(new Group('bangumi-comment', '评论区', commentItems))
 

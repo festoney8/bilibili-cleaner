@@ -6,7 +6,8 @@ import {
     isPageChannel,
     isPageDynamic,
     isPageHomepage,
-    isPageLive,
+    isPageLiveHome,
+    isPageLiveRoom,
     isPagePlaylist,
     isPagePopular,
     isPageSearch,
@@ -124,7 +125,7 @@ if (isPageDynamic()) {
         .bili-dyn-card-video__body {
             border-radius: 0 3px 3px 0 !important;
         }`
-} else if (isPageLive()) {
+} else if (isPageLiveRoom()) {
     borderRadiusCSS = `
         #nav-searchform,
         #player-ctnr,
@@ -413,7 +414,7 @@ const basicItems = [
 ]
 commonGroupList.push(new Group('common-basic', '全站通用项 基本功能', basicItems))
 // 通用header净化，直播页除外
-if (!isPageLive()) {
+if (!isPageLiveRoom() && !isPageLiveHome()) {
     // 顶栏左侧
     const headerLeftItems = [
         // 隐藏 主站Logo

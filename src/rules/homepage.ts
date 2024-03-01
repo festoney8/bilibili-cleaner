@@ -481,7 +481,7 @@ if (isPageHomepage()) {
     ]
     homepageGroupList.push(new Group('homepage-rcmd-list', '视频列表', rcmdListItems))
 
-    // 右下角
+    // 页面侧栏 小组件
     const sidebarItems = [
         // 隐藏 下载桌面端弹窗, 默认开启
         new CheckboxItem({
@@ -496,6 +496,12 @@ if (isPageHomepage()) {
             description: '隐藏 下滑浏览推荐提示',
             defaultStatus: true,
             itemCSS: `.trial-feed-wrap {display: none !important;}`,
+        }),
+        // 隐藏 换一换
+        new CheckboxItem({
+            itemID: 'homepage-hide-feed-roll-btn',
+            description: '隐藏 换一换',
+            itemCSS: `.feed-roll-btn {display: none !important;}`,
         }),
         // 隐藏 刷新
         new CheckboxItem({
@@ -517,7 +523,7 @@ if (isPageHomepage()) {
             itemCSS: `.palette-button-wrap .top-btn-wrap {display: none !important;}`,
         }),
     ]
-    homepageGroupList.push(new Group('homepage-sidebar', '页面右下角 小按钮', sidebarItems))
+    homepageGroupList.push(new Group('homepage-sidebar', '页面侧栏 小组件', sidebarItems))
 
     // bilibili-app-recommend插件
     const biliAppRcmdItems = [

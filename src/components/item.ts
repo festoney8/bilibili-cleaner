@@ -15,7 +15,7 @@ interface IItem {
 /**
  * itemID item的唯一ID, 与GM database中的Key对应, 使用相同ID可共享item状态
  * description item的功能介绍, 显示在panel内, \n可用来换行
- * defaultStatus item默认开启状态, 第一次安装时使用, 对于所有用户均开启的项目默认给true
+ * defaultStatus item默认开启状态, 第一次安装时使用, 对于所有用户均开启的项目给true
  * itemFunc 功能函数
  * isItemFuncReload 功能函数是否在URL变动时重新运行
  * itemCSS item的CSS

@@ -66,7 +66,8 @@ if (isPageChannel()) {
             .bili-grid:has([data-report="high_energy.content"]) aside[data-report="topic.card"] {
                 display: none !important;
             }
-            .bili-grid:has([data-report="high_energy.content"]) .video-card-list {
+            .bili-grid:has([data-report="high_energy.content"]) .video-card-list,
+            .video-double-full {
                 min-height: unset !important;
             }
             @media (max-width: 1099.9px) {

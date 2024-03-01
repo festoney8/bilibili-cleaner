@@ -370,6 +370,12 @@ if (isPageVideo() || isPagePlaylist() || isPageBnj()) {
             description: '隐藏 高赞弹幕前点赞按钮',
             itemCSS: `.bili-dm .bili-high-icon {display: none !important}`,
         }),
+        // 隐藏 爆炸特效弹幕
+        new CheckboxItem({
+            itemID: 'video-page-bpx-player-bili-dm-boom',
+            description: '隐藏 爆炸特效弹幕',
+            itemCSS: `.bili-boom {display: none !important}`,
+        }),
         // 彩色渐变弹幕 变成白色
         new CheckboxItem({
             itemID: 'video-page-bpx-player-bili-dm-vip-white',
@@ -557,14 +563,13 @@ if (isPageVideo() || isPagePlaylist() || isPageBnj()) {
             description: '隐藏 发送按钮',
             itemCSS: `.bpx-player-dm-btn-send {display: none !important;}`,
         }),
-        // 隐藏 智能弹幕/广告弹幕
+        // 隐藏 智能弹幕 发送提示
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-postpanel',
             description: '隐藏 智能弹幕/广告弹幕',
-            itemCSS: `.bpx-player-postpanel-sug,
-                .bpx-player-postpanel-carousel,
-                .bpx-player-postpanel-popup {
-                    color: transparent !important;
+            itemCSS: `
+                .bpx-player-postpanel-sug, .bpx-player-postpanel-carousel, .bpx-player-postpanel-popup {
+                    display: none !important;
                 }`,
         }),
         // 非全屏下 关闭弹幕栏
@@ -1155,6 +1160,12 @@ if (isPageVideo() || isPagePlaylist()) {
                 .reply-view-image .preview-list:has(.preview-item-box:only-child) {display: none !important;}
                 .reply-view-image .preview-list {opacity: 0.2; transition: opacity 0.1s ease-in-out;}
                 .reply-view-image .preview-list:hover {opacity: 1; transition: opacity 0.1s ease-in-out;}`,
+        }),
+        // 隐藏 整个评论区 #42
+        new CheckboxItem({
+            itemID: 'video-page-hide-comment',
+            description: '隐藏 整个评论区',
+            itemCSS: `#comment, #comment-module {display: none;}`,
         }),
     ]
     videoGroupList.push(new Group('video-comment', '评论区', commentItems))

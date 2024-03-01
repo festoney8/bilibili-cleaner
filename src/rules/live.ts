@@ -1,7 +1,7 @@
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
 import { debug } from '../utils/logger'
-import { isPageLive } from '../utils/page-type'
+import { isPageLiveHome, isPageLiveRoom } from '../utils/page-type'
 
 let isCleanLiveDanmakuRunning = false
 // 清理计数结尾弹幕
@@ -51,8 +51,8 @@ const cleanLiveDanmaku = () => {
 // GroupList
 const liveGroupList: Group[] = []
 
-/** 直播页面规则, 只适用于直播间内, 不适用于直播首页 */
-if (isPageLive()) {
+// 直播页面规则, 只适用于直播间内, 不适用于直播首页
+if (isPageLiveRoom()) {
     // 基本功能
     const basicItems = [
         // 隐藏 页面右侧按钮 实验室/关注, 默认开启
@@ -447,7 +447,10 @@ if (isPageLive()) {
         }),
     ]
     liveGroupList.push(new Group('live-below', '下方页面 主播动态/直播公告', belowItems))
+}
 
+// 直播页顶栏规则
+if (isPageLiveHome() || isPageLiveRoom()) {
     // 顶栏左侧
     const headerLeftItems = [
         // 隐藏 直播LOGO

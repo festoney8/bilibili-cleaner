@@ -19,7 +19,10 @@ const currPage = (): string => {
         return 'dynamic'
     }
     if (host === 'live.bilibili.com') {
-        return 'live'
+        if (pathname.match(/^\/\d+/)) {
+            return 'liveRoom'
+        }
+        return 'liveHome'
     }
     if (href.includes('bilibili.com/bangumi/play/')) {
         return 'bangumi'
@@ -45,7 +48,8 @@ export const isPageVideo = () => ans === 'video'
 export const isPagePopular = () => ans === 'popular'
 export const isPageSearch = () => ans === 'search'
 export const isPageDynamic = () => ans === 'dynamic'
-export const isPageLive = () => ans === 'live'
+export const isPageLiveHome = () => ans === 'liveHome'
+export const isPageLiveRoom = () => ans === 'liveRoom'
 export const isPageBangumi = () => ans === 'bangumi'
 export const isPagePlaylist = () => ans === 'playlist'
 export const isPageBnj = () => ans === 'bnj'

@@ -501,6 +501,12 @@ if (isPageVideo() || isPagePlaylist() || isPageBnj()) {
             description: '隐藏 全屏',
             itemCSS: `.bpx-player-ctrl-full {display: none !important;}`,
         }),
+        // 隐藏 高能进度条 图钉按钮
+        new CheckboxItem({
+            itemID: 'video-page-hide-bpx-player-pbp-pin',
+            description: '隐藏 高能进度条 图钉按钮',
+            itemCSS: `.bpx-player-pbp-pin {display: none !important;}`,
+        }),
         // 隐藏 底边mini视频进度, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-shadow-progress-area',

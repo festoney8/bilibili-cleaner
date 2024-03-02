@@ -1015,6 +1015,9 @@ if (isPageVideo() || isPagePlaylist()) {
                 // 1835753760 @AI识片酱
                 // 9868463 @AI头脑风暴
                 // 358243654 @GPT_5
+                // 393788832 @Juice_AI
+                // 91394217 @AI全文总结
+                // 473018527 @AI视频总结
                 `.reply-item:has(.jump-link.user[data-user-id="8455326"]),
                 .reply-item:has(.jump-link.user[data-user-id="234978716"]),
                 .reply-item:has(.jump-link.user[data-user-id="1141159409"]),
@@ -1029,7 +1032,10 @@ if (isPageVideo() || isPagePlaylist()) {
                 .reply-item:has(.jump-link.user[data-user-id="3546376048741135"]),
                 .reply-item:has(.jump-link.user[data-user-id="1835753760"]),
                 .reply-item:has(.jump-link.user[data-user-id="9868463"]),
-                .reply-item:has(.jump-link.user[data-user-id="358243654"]) {
+                .reply-item:has(.jump-link.user[data-user-id="358243654"]),
+                .reply-item:has(.jump-link.user[data-user-id="393788832"]),
+                .reply-item:has(.jump-link.user[data-user-id="91394217"]),
+                .reply-item:has(.jump-link.user[data-user-id="473018527"]) {
                     display: none !important;
                 }`,
         }),
@@ -1054,6 +1060,9 @@ if (isPageVideo() || isPagePlaylist()) {
                 // 1835753760 @AI识片酱
                 // 9868463 @AI头脑风暴
                 // 358243654 @GPT_5
+                // 393788832 @Juice_AI
+                // 91394217 @AI全文总结
+                // 473018527 @AI视频总结
                 `.reply-item:has(.root-reply-container .user-name[data-user-id="8455326"]),
                 .reply-item:has(.root-reply-container .user-name[data-user-id="234978716"]),
                 .reply-item:has(.root-reply-container .user-name[data-user-id="1141159409"]),
@@ -1068,7 +1077,10 @@ if (isPageVideo() || isPagePlaylist()) {
                 .reply-item:has(.root-reply-container .user-name[data-user-id="3546376048741135"]),
                 .reply-item:has(.root-reply-container .user-name[data-user-id="1835753760"]),
                 .reply-item:has(.root-reply-container .user-name[data-user-id="9868463"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="358243654"]) {
+                .reply-item:has(.root-reply-container .user-name[data-user-id="358243654"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="393788832"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="91394217"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="473018527"]) {
                     display: none !important;
                 }`,
         }),

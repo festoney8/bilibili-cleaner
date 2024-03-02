@@ -446,6 +446,12 @@ if (isPageVideo() || isPagePlaylist() || isPageBnj()) {
             description: '隐藏 章节列表',
             itemCSS: `.bpx-player-ctrl-viewpoint {display: none !important;}`,
         }),
+        // 隐藏 Hi-Res无损
+        new CheckboxItem({
+            itemID: 'video-page-hide-bpx-player-ctrl-flac',
+            description: '隐藏 Hi-Res无损',
+            itemCSS: `.bpx-player-ctrl-flac {display: none !important;}`,
+        }),
         // 隐藏 选集
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-ctrl-eplist',

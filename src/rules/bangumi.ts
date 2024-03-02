@@ -151,6 +151,12 @@ if (isPageBangumi()) {
             description: '隐藏 下一个视频',
             itemCSS: `.bpx-player-ctrl-next {display: none !important;}`,
         }),
+        // 隐藏 Hi-Res无损
+        new CheckboxItem({
+            itemID: 'video-page-hide-bpx-player-ctrl-flac',
+            description: '隐藏 Hi-Res无损',
+            itemCSS: `.bpx-player-ctrl-flac {display: none !important;}`,
+        }),
         // 隐藏 选集
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-ctrl-eplist',

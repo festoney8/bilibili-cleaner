@@ -503,6 +503,12 @@ if (isPageHomepage()) {
             description: '隐藏 换一换',
             itemCSS: `.feed-roll-btn {display: none !important;}`,
         }),
+        // 隐藏 稍后再看
+        new CheckboxItem({
+            itemID: 'homepage-hide-watchlater-pip-button',
+            description: '隐藏 稍后再看',
+            itemCSS: `.watchlater-pip-button {display: none !important;}`,
+        }),
         // 隐藏 刷新
         new CheckboxItem({
             itemID: 'homepage-hide-flexible-roll-btn',
@@ -572,7 +578,7 @@ if (isPageHomepage()) {
             itemCSS: `.bili-video-card:has(use) .bili-video-card__stats--item:has([href="#widget-agree"]) {display: none !important;}`,
         }),
     ]
-    homepageGroupList.push(new Group('homepage-bili-app-rcmd', '适配插件 [bilibili-app-recommend]', biliAppRcmdItems))
+    homepageGroupList.push(new Group('homepage-bili-app-rcmd', '适配插件[bilibili-app-recommend]', biliAppRcmdItems))
 }
 
 export { homepageGroupList }

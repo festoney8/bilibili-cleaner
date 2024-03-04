@@ -358,6 +358,14 @@ if (isPageVideo() || isPagePlaylist() || isPageBnj()) {
             description: '隐藏 视频暂停时大Logo',
             itemCSS: `.bpx-player-state-wrap {display: none !important;}`,
         }),
+        // 隐藏 播放结束后视频推荐
+        new CheckboxItem({
+            itemID: 'video-page-hide-bpx-player-ending-related',
+            description: '隐藏 播放结束后视频推荐',
+            itemCSS: `
+                .bpx-player-ending-related {display: none !important;}
+                .bpx-player-ending-content {display: flex !important; align-items: center !important;}`,
+        }),
         // 隐藏 弹幕悬停 点赞/复制/举报
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-dialog-wrap',

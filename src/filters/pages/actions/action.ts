@@ -205,7 +205,7 @@ export class TitleKeywordAction implements Action {
         this.blacklist = new WordList(
             this.valueKey,
             '标题关键词 黑名单',
-            `支持正则(iv)，前后加斜杠。语法：/abc|\\d+/`,
+            `每行一个关键词，支持正则(iv)，语法：/abc|\\d+/`,
             (values: string[]) => {
                 this.edit(values)
             },
@@ -314,7 +314,7 @@ export class TitleKeywordWhitelistAction implements Action {
         this.whitelist = new WordList(
             this.valueKey,
             '标题关键词 白名单',
-            `支持正则(iv)，前后加斜杠。语法：/abc|\\d+/`,
+            `每行一个关键词，支持正则(iv)，语法：/abc|\\d+/`,
             (values: string[]) => {
                 this.edit(values)
             },

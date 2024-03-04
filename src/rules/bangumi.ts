@@ -151,6 +151,12 @@ if (isPageBangumi()) {
             description: '隐藏 下一个视频',
             itemCSS: `.bpx-player-ctrl-next {display: none !important;}`,
         }),
+        // 隐藏 Hi-Res无损
+        new CheckboxItem({
+            itemID: 'video-page-hide-bpx-player-ctrl-flac',
+            description: '隐藏 Hi-Res无损',
+            itemCSS: `.bpx-player-ctrl-flac {display: none !important;}`,
+        }),
         // 隐藏 选集
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-ctrl-eplist',
@@ -204,6 +210,12 @@ if (isPageBangumi()) {
             itemID: 'video-page-hide-bpx-player-ctrl-full',
             description: '隐藏 全屏',
             itemCSS: `.bpx-player-ctrl-full {display: none !important;}`,
+        }),
+        // 隐藏 高能进度条 图钉按钮
+        new CheckboxItem({
+            itemID: 'video-page-hide-bpx-player-pbp-pin',
+            description: '隐藏 高能进度条 图钉按钮',
+            itemCSS: `.bpx-player-pbp-pin {display: none !important;}`,
         }),
         // 隐藏 底边mini视频进度, 默认开启
         new CheckboxItem({
@@ -512,6 +524,9 @@ if (isPageBangumi()) {
                 // 1835753760 @AI识片酱
                 // 9868463 @AI头脑风暴
                 // 358243654 @GPT_5
+                // 393788832 @Juice_AI
+                // 91394217 @AI全文总结
+                // 473018527 @AI视频总结
                 `.reply-item:has(.jump-link.user[data-user-id="8455326"]),
                 .reply-item:has(.jump-link.user[data-user-id="234978716"]),
                 .reply-item:has(.jump-link.user[data-user-id="1141159409"]),
@@ -526,7 +541,10 @@ if (isPageBangumi()) {
                 .reply-item:has(.jump-link.user[data-user-id="3546376048741135"]),
                 .reply-item:has(.jump-link.user[data-user-id="1835753760"]),
                 .reply-item:has(.jump-link.user[data-user-id="9868463"]),
-                .reply-item:has(.jump-link.user[data-user-id="358243654"]) {
+                .reply-item:has(.jump-link.user[data-user-id="358243654"]),
+                .reply-item:has(.jump-link.user[data-user-id="393788832"]),
+                .reply-item:has(.jump-link.user[data-user-id="91394217"]),
+                .reply-item:has(.jump-link.user[data-user-id="473018527"]) {
                     display: none !important;
                 }`,
         }),
@@ -551,6 +569,9 @@ if (isPageBangumi()) {
                 // 1835753760 @AI识片酱
                 // 9868463 @AI头脑风暴
                 // 358243654 @GPT_5
+                // 393788832 @Juice_AI
+                // 91394217 @AI全文总结
+                // 473018527 @AI视频总结
                 `.reply-item:has(.root-reply-container .user-name[data-user-id="8455326"]),
                 .reply-item:has(.root-reply-container .user-name[data-user-id="234978716"]),
                 .reply-item:has(.root-reply-container .user-name[data-user-id="1141159409"]),
@@ -565,7 +586,10 @@ if (isPageBangumi()) {
                 .reply-item:has(.root-reply-container .user-name[data-user-id="3546376048741135"]),
                 .reply-item:has(.root-reply-container .user-name[data-user-id="1835753760"]),
                 .reply-item:has(.root-reply-container .user-name[data-user-id="9868463"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="358243654"]) {
+                .reply-item:has(.root-reply-container .user-name[data-user-id="358243654"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="393788832"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="91394217"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="473018527"]) {
                     display: none !important;
                 }`,
         }),

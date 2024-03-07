@@ -214,6 +214,13 @@ if (isPageLiveRoom()) {
             defaultStatus: true,
             itemCSS: `#game-id {display: none !important;}`,
         }),
+        // 隐藏 直播卡顿打分, 默认开启
+        new CheckboxItem({
+            itemID: 'live-page-head-web-player-research-container',
+            description: '隐藏 直播卡顿打分',
+            defaultStatus: true,
+            itemCSS: `.research-container {display: none !important;}`,
+        }),
         // 隐藏 播放器顶部复读计数弹幕
         new CheckboxItem({
             itemID: 'live-page-combo-danmaku',

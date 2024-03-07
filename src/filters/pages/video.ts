@@ -4,7 +4,7 @@ import { ButtonItem, CheckboxItem, NumberItem } from '../../components/item'
 import { Group } from '../../components/group'
 import { isPageVideo } from '../../utils/page-type'
 import contextMenuInstance from '../../components/contextmenu'
-import { matchBvid, showVideo } from '../../utils/tool'
+import { matchBvid, showVideo, waitForEle } from '../../utils/tool'
 import {
     BvidAction,
     DurationAction,
@@ -25,13 +25,36 @@ let isContextMenuBvidEnable = false
 let isNextPlayWhitelistEnable: boolean = GM_getValue('BILICLEANER_video-next-play-whitelist-filter-status', true)
 
 if (isPageVideo()) {
-    // 页面载入后监听流程
-
-    // 视频列表外层
-    let videoListContainer: HTMLElement | undefined = undefined
-    // 3. 检测视频列表
+    let videoListContainer: HTMLElement
+    // 构建SelectorFunc
+    const rcmdSelectorFunc: SelectorFunc = {
+        duration: (video: Element): string | null => {
+            const duration = video.querySelector('.pic-box span.duration')?.textContent
+            return duration ? duration : null
+        },
+        titleKeyword: (video: Element): string | null => {
+            const titleKeyword =
+                video.querySelector('.info > a p')?.getAttribute('title') ||
+                video.querySelector('.info > a p')?.textContent
+            return titleKeyword ? titleKeyword : null
+        },
+        bvid: (video: Element): string | null => {
+            const href =
+                video.querySelector('.info > a')?.getAttribute('href') ||
+                video.querySelector('.pic-box .framepreview-box > a')?.getAttribute('href')
+            if (href) {
+                return matchBvid(href)
+            }
+            return null
+        },
+        uploader: (video: Element): string | null => {
+            const uploader = video.querySelector('.info > .upname a')?.textContent
+            return uploader ? uploader : null
+        },
+    }
+    const nextSelectorFunc = rcmdSelectorFunc
+    // 检测视频列表
     const checkVideoList = (_fullSite: boolean) => {
-        // debugFilter('checkVideoList start')
         if (!videoListContainer) {
             debugFilter(`checkVideoList videoListContainer not exist`)
             return
@@ -45,33 +68,6 @@ if (isPageVideo()) {
             const rcmdVideos = videoListContainer.querySelectorAll<HTMLElement>(
                 `.rec-list .video-page-card-small, .rec-list .video-page-operator-card-small`,
             )
-            // 构建SelectorFunc
-            const rcmdSelectorFunc: SelectorFunc = {
-                duration: (video: Element): string | null => {
-                    const duration = video.querySelector('.pic-box span.duration')?.textContent
-                    return duration ? duration : null
-                },
-                titleKeyword: (video: Element): string | null => {
-                    const titleKeyword =
-                        video.querySelector('.info > a p')?.getAttribute('title') ||
-                        video.querySelector('.info > a p')?.textContent
-                    return titleKeyword ? titleKeyword : null
-                },
-                bvid: (video: Element): string | null => {
-                    const href =
-                        video.querySelector('.info > a')?.getAttribute('href') ||
-                        video.querySelector('.pic-box .framepreview-box > a')?.getAttribute('href')
-                    if (href) {
-                        return matchBvid(href)
-                    }
-                    return null
-                },
-                uploader: (video: Element): string | null => {
-                    const uploader = video.querySelector('.info > .upname a')?.textContent
-                    return uploader ? uploader : null
-                },
-            }
-            const nextSelectorFunc = rcmdSelectorFunc
 
             // 判断是否筛选接下来播放
             rcmdVideos.length && coreFilterInstance.checkAll([...rcmdVideos], false, rcmdSelectorFunc)
@@ -87,9 +83,9 @@ if (isPageVideo()) {
             error(err)
             error('checkVideoList error')
         }
-        // debugFilter('checkVideoList end')
     }
-    // 2. 监听 videoListContainer 内部变化, 有变化时检测视频列表
+
+    // 监听视频列表内部变化, 有变化时检测视频列表
     const watchVideoListContainer = () => {
         if (videoListContainer) {
             debugFilter('watchVideoListContainer start')
@@ -103,38 +99,20 @@ if (isPageVideo()) {
             debugFilter('watchVideoListContainer OK')
         }
     }
-    // 1. 检测/监听 videoListContainer 出现, 出现后监听 videoListContainer 内部变化
-    const waitForVideoListContainer = () => {
-        debugFilter(`waitForVideoListContainer start`)
-        // 检测/监听视频列表父节点出现
-        videoListContainer = document.getElementById('reco_list') as HTMLFormElement
-        if (videoListContainer) {
-            debugFilter('videoListContainer exist')
-            watchVideoListContainer()
-        } else {
-            const obverser = new MutationObserver((mutationList) => {
-                mutationList.forEach((mutation) => {
-                    if (mutation.addedNodes) {
-                        mutation.addedNodes.forEach((node) => {
-                            if (node instanceof HTMLElement && (node as HTMLElement).id === 'reco_list') {
-                                debugFilter('videoListContainer appear')
-                                obverser.disconnect()
-                                videoListContainer = document.getElementById('reco_list') as HTMLElement
-                                watchVideoListContainer()
-                            }
-                        })
-                    }
-                })
-            })
-            obverser.observe(document, { childList: true, subtree: true })
-            debugFilter('videoListContainer obverser start')
-        }
-    }
+
     try {
-        waitForVideoListContainer()
+        // 监听视频列表出现
+        waitForEle(document, '#reco_list', (node: Node): boolean => {
+            return node instanceof HTMLElement && (node as HTMLElement).id === 'reco_list'
+        }).then((ele) => {
+            if (ele) {
+                videoListContainer = ele
+                watchVideoListContainer()
+            }
+        })
     } catch (err) {
         error(err)
-        error(`waitForVideoListContainer ERROR`)
+        error(`watch video list ERROR`)
     }
 
     //=======================================================================================

@@ -78,28 +78,28 @@ class CoreFilter {
                     }
                 }
                 if (checkUploader) {
-                    const uploader = selectorFunc.uploader!(video)
+                    const uploader = selectorFunc.uploader!(video)?.trim()
                     if (uploader) {
                         blackTasks.push(uploaderFilterInstance.check(uploader))
                         info.uploader = uploader
                     }
                 }
                 if (checkTitleKeyword) {
-                    const title = selectorFunc.titleKeyword!(video)
+                    const title = selectorFunc.titleKeyword!(video)?.trim()
                     if (title) {
                         blackTasks.push(titleKeywordFilterInstance.check(title))
                         info.title = title
                     }
                 }
                 if (checkUploaderWhitelist) {
-                    const uploader = selectorFunc.uploader!(video)
+                    const uploader = selectorFunc.uploader!(video)?.trim()
                     if (uploader) {
                         whiteTasks.push(uploaderWhitelistFilterInstance.check(uploader))
                         info.uploader = uploader
                     }
                 }
                 if (checkTitleKeywordWhitelist) {
-                    const title = selectorFunc.titleKeyword!(video)
+                    const title = selectorFunc.titleKeyword!(video)?.trim()
                     if (title) {
                         whiteTasks.push(titleKeywordWhitelistFilterInstance.check(title))
                         info.title = title

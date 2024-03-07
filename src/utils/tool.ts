@@ -33,3 +33,36 @@ export const showVideo = (video: HTMLElement) => {
 export const isVideoHide = (video: HTMLElement) => {
     return video.style.display === 'none'
 }
+
+/**
+ * 监听元素出现
+ * @param watchEle 被监听的元素
+ * @param selector 选择器
+ * @param isTargetNode 判断Mutation node是否为target的函数
+ */
+export const waitForEle = async (
+    watchEle: HTMLElement | Document,
+    selector: string,
+    isTargetNode: (node: Node) => boolean,
+): Promise<HTMLElement | null> => {
+    let ele = watchEle.querySelector(selector) as HTMLElement | null
+    if (ele) {
+        return ele
+    }
+    return await new Promise<HTMLElement | null>((resolve) => {
+        const obverser = new MutationObserver((mutationList) => {
+            mutationList.forEach((mutation) => {
+                if (mutation.addedNodes) {
+                    mutation.addedNodes.forEach((node) => {
+                        if (isTargetNode(node)) {
+                            obverser.disconnect()
+                            ele = watchEle.querySelector(selector) as HTMLElement | null
+                            resolve(ele)
+                        }
+                    })
+                }
+            })
+        })
+        obverser.observe(watchEle, { childList: true, subtree: true })
+    })
+}

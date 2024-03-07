@@ -36,6 +36,31 @@ const bangumiSimpleShare = () => {
     }, 200)
 }
 
+/** 投币时取消自动点赞 */
+const coinDisableAutoLike = () => {
+    const disableAutoLike = () => {
+        let counter = 0
+        const timer = setInterval(() => {
+            const checkbox = document.querySelector(
+                '.main-container [class^="dialogcoin_like_checkbox"] input',
+            ) as HTMLInputElement
+            if (checkbox) {
+                checkbox.checked && checkbox.click()
+                clearInterval(timer)
+            } else {
+                counter++
+                if (counter > 100) {
+                    clearInterval(timer)
+                }
+            }
+        }, 50)
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        const coinBtn = document.querySelector('#ogv_weslie_tool_coin_info')
+        coinBtn?.addEventListener('click', disableAutoLike)
+    })
+}
+
 /**
  * 版权视频播放页规则
  * 尽可能与普通播放页video.ts共用itemID, 实现开关状态同步
@@ -316,6 +341,12 @@ if (isPageBangumi()) {
 
     // 视频下信息
     const toolbarItems = [
+        // 投币时不自动点赞 #46
+        new CheckboxItem({
+            itemID: 'video-page-coin-disable-auto-like',
+            description: '投币时不自动点赞(关闭需刷新)',
+            itemFunc: coinDisableAutoLike,
+        }),
         // 隐藏 分享按钮弹出菜单, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-video-share-popover',

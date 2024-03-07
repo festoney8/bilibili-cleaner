@@ -53,12 +53,17 @@ const coinDisableAutoLike = () => {
                     clearInterval(timer)
                 }
             }
-        }, 50)
+        }, 20)
     }
-    document.addEventListener('DOMContentLoaded', () => {
-        const coinBtn = document.querySelector('#ogv_weslie_tool_coin_info')
-        coinBtn?.addEventListener('click', disableAutoLike)
-    })
+    const coinBtn = document.querySelector('#ogv_weslie_tool_coin_info') as HTMLElement | null
+    if (coinBtn) {
+        coinBtn.addEventListener('click', disableAutoLike)
+    } else {
+        document.addEventListener('DOMContentLoaded', () => {
+            const coinBtn = document.querySelector('#ogv_weslie_tool_coin_info') as HTMLElement | null
+            coinBtn?.addEventListener('click', disableAutoLike)
+        })
+    }
 }
 
 /**
@@ -344,7 +349,7 @@ if (isPageBangumi()) {
         // 投币时不自动点赞 #46
         new CheckboxItem({
             itemID: 'video-page-coin-disable-auto-like',
-            description: '投币时不自动点赞(关闭需刷新)',
+            description: '投币时不自动点赞 (关闭需刷新)',
             itemFunc: coinDisableAutoLike,
         }),
         // 隐藏 分享按钮弹出菜单, 默认开启

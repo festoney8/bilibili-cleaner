@@ -5,7 +5,7 @@ import coreFilterInstance, { SelectorFunc } from '../filters/core'
 import settings from '../../settings'
 import { isPageHomepage } from '../../utils/page-type'
 import contextMenuInstance from '../../components/contextmenu'
-import { matchBvid, showVideo } from '../../utils/tool'
+import { matchBvid, showVideo, waitForEle } from '../../utils/tool'
 import {
     BvidAction,
     DurationAction,
@@ -26,11 +26,36 @@ let isContextMenuBvidEnable = false
 let isFollowingWhitelistEnable: boolean = GM_getValue('BILICLEANER_homepage-following-whitelist-filter-status', true)
 
 if (isPageHomepage()) {
-    // 页面载入后监听流程
-
-    // 视频列表外层
     let videoListContainer: HTMLElement
-    // 3. 检测视频列表
+    // 构建SelectorFunc
+    const rcmdSelectorFunc: SelectorFunc = {
+        duration: (video: Element): string | null => {
+            const duration = video.querySelector('span.bili-video-card__stats__duration')?.textContent
+            return duration ? duration : null
+        },
+        titleKeyword: (video: Element): string | null => {
+            const titleKeyword =
+                video.querySelector('h3.bili-video-card__info--tit')?.getAttribute('title') ||
+                video.querySelector('h3.bili-video-card__info--tit a')?.textContent
+            return titleKeyword ? titleKeyword : null
+        },
+        bvid: (video: Element): string | null => {
+            const href =
+                video.querySelector('h3.bili-video-card__info--tit a')?.getAttribute('href') ||
+                video.querySelector('a.bili-video-card__image--link')?.getAttribute('href') ||
+                video.querySelector('a.bili-video-card__image--link')?.getAttribute('data-target-url')
+            if (href) {
+                return matchBvid(href)
+            }
+            return null
+        },
+        uploader: (video: Element): string | null => {
+            const uploader = video.querySelector('span.bili-video-card__info--author')?.textContent
+            return uploader ? uploader : null
+        },
+    }
+    const feedSelectorFunc = rcmdSelectorFunc
+    // 检测视频列表
     const checkVideoList = (fullSite: boolean) => {
         // debugFilter('checkVideoList start')
         if (!videoListContainer) {
@@ -81,34 +106,6 @@ if (isPageHomepage()) {
                 })
             }
 
-            // 构建SelectorFunc
-            const rcmdSelectorFunc: SelectorFunc = {
-                duration: (video: Element): string | null => {
-                    const duration = video.querySelector('span.bili-video-card__stats__duration')?.textContent
-                    return duration ? duration : null
-                },
-                titleKeyword: (video: Element): string | null => {
-                    const titleKeyword =
-                        video.querySelector('h3.bili-video-card__info--tit')?.getAttribute('title') ||
-                        video.querySelector('h3.bili-video-card__info--tit a')?.textContent
-                    return titleKeyword ? titleKeyword : null
-                },
-                bvid: (video: Element): string | null => {
-                    const href =
-                        video.querySelector('h3.bili-video-card__info--tit a')?.getAttribute('href') ||
-                        video.querySelector('a.bili-video-card__image--link')?.getAttribute('href') ||
-                        video.querySelector('a.bili-video-card__image--link')?.getAttribute('data-target-url')
-                    if (href) {
-                        return matchBvid(href)
-                    }
-                    return null
-                },
-                uploader: (video: Element): string | null => {
-                    const uploader = video.querySelector('span.bili-video-card__info--author')?.textContent
-                    return uploader ? uploader : null
-                },
-            }
-            const feedSelectorFunc = rcmdSelectorFunc
             feedVideos.length && coreFilterInstance.checkAll(feedVideos, true, feedSelectorFunc)
             // debugFilter(`checkVideoList check ${rcmdVideos.length} rcmd videos`)
             rcmdVideos.length && coreFilterInstance.checkAll(rcmdVideos, true, rcmdSelectorFunc)
@@ -118,7 +115,7 @@ if (isPageHomepage()) {
             error('checkVideoList error')
         }
     }
-    // 2. 监听 videoListContainer 内部变化, 有变化时检测视频列表
+    // 监听视频列表内部变化, 有变化时检测视频列表
     const watchVideoListContainer = () => {
         if (videoListContainer) {
             debugFilter('watchVideoListContainer start')
@@ -132,40 +129,20 @@ if (isPageHomepage()) {
             debugFilter('watchVideoListContainer OK')
         }
     }
-    // 1. 检测/监听 videoListContainer 出现, 出现后监听 videoListContainer 内部变化
-    const waitForVideoListContainer = () => {
-        // 检测/监听视频列表父节点出现
-        videoListContainer = document.querySelector('.container.is-version8') as HTMLFormElement
-        if (videoListContainer) {
-            debugFilter('videoListContainer exist')
-            watchVideoListContainer()
-        } else {
-            const obverser = new MutationObserver((mutationList) => {
-                mutationList.forEach((mutation) => {
-                    if (mutation.addedNodes) {
-                        mutation.addedNodes.forEach((node) => {
-                            if (
-                                node instanceof HTMLElement &&
-                                (node as HTMLElement).className === 'container is-version8'
-                            ) {
-                                debugFilter('videoListContainer appear')
-                                obverser.disconnect()
-                                videoListContainer = document.querySelector('.container.is-version8') as HTMLElement
-                                watchVideoListContainer()
-                            }
-                        })
-                    }
-                })
-            })
-            obverser.observe(document, { childList: true, subtree: true })
-            debugFilter('videoListContainer obverser start')
-        }
-    }
+
     try {
-        waitForVideoListContainer()
+        // 监听视频列表出现
+        waitForEle(document, '.container.is-version8', (node: Node): boolean => {
+            return node instanceof HTMLElement && (node as HTMLElement).className === 'container is-version8'
+        }).then((ele) => {
+            if (ele) {
+                videoListContainer = ele
+                watchVideoListContainer()
+            }
+        })
     } catch (err) {
         error(err)
-        error(`waitForVideoListContainer ERROR`)
+        error(`watch video list ERROR`)
     }
 
     //=======================================================================================

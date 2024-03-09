@@ -5,7 +5,7 @@ import { Group } from '../../components/group'
 import settings from '../../settings'
 import { isPagePopular } from '../../utils/page-type'
 import contextMenuInstance from '../../components/contextmenu'
-import { matchBvid } from '../../utils/tool'
+import { matchBvid, waitForEle } from '../../utils/tool'
 import {
     BvidAction,
     TitleKeywordAction,
@@ -22,13 +22,38 @@ let isContextMenuUploaderEnable = false
 let isContextMenuBvidEnable = false
 
 if (isPagePopular()) {
-    // 页面载入后监听流程
-
-    // 视频列表外层
     let videoListContainer: HTMLElement
-    // 3. 检测视频列表
+    // 构建SelectorFunc
+    const hotSelectorFunc: SelectorFunc = {
+        // popular页 无duration
+        titleKeyword: (video: Element): string | null => {
+            const titleKeyword =
+                video.querySelector('.video-card__info .video-name')?.getAttribute('title') ||
+                video.querySelector('.video-card__info .video-name')?.textContent ||
+                video.querySelector('.info a.title')?.getAttribute('title') ||
+                video.querySelector('.info a.title')?.textContent
+            return titleKeyword ? titleKeyword : null
+        },
+        bvid: (video: Element): string | null => {
+            const href =
+                video.querySelector('.video-card__content > a')?.getAttribute('href') ||
+                video.querySelector('.content > .img > a')?.getAttribute('href')
+            if (href) {
+                return matchBvid(href)
+            }
+            return null
+        },
+        uploader: (video: Element): string | null => {
+            const uploader =
+                video.querySelector('span.up-name__text')?.textContent ||
+                video.querySelector('span.up-name__text')?.getAttribute('title') ||
+                video.querySelector('.data-box.up-name')?.textContent
+            return uploader ? uploader : null
+        },
+    }
+    // 检测视频列表
     const checkVideoList = (fullSite: boolean) => {
-        debugFilter('checkVideoList start')
+        // debugFilter('checkVideoList start')
         if (!videoListContainer) {
             debugFilter(`checkVideoList videoListContainer not exist`)
             return
@@ -56,48 +81,18 @@ if (isPagePopular()) {
                 rankVideos = videoListContainer.querySelectorAll<HTMLElement>(`.rank-list .rank-item`)
             }
 
-            // 构建SelectorFunc
-            const rcmdSelectorFunc: SelectorFunc = {
-                // popular页 无duration
-                titleKeyword: (video: Element): string | null => {
-                    const titleKeyword =
-                        video.querySelector('.video-card__info .video-name')?.getAttribute('title') ||
-                        video.querySelector('.video-card__info .video-name')?.textContent ||
-                        video.querySelector('.info a.title')?.getAttribute('title') ||
-                        video.querySelector('.info a.title')?.textContent
-                    return titleKeyword ? titleKeyword : null
-                },
-                bvid: (video: Element): string | null => {
-                    const href =
-                        video.querySelector('.video-card__content > a')?.getAttribute('href') ||
-                        video.querySelector('.content > .img > a')?.getAttribute('href')
-                    if (href) {
-                        return matchBvid(href)
-                    }
-                    return null
-                },
-                uploader: (video: Element): string | null => {
-                    const uploader =
-                        video.querySelector('span.up-name__text')?.textContent ||
-                        video.querySelector('span.up-name__text')?.getAttribute('title') ||
-                        video.querySelector('.data-box.up-name')?.textContent
-                    return uploader ? uploader : null
-                },
-            }
-            const feedSelectorFunc = rcmdSelectorFunc
-            hotVideos.length && coreFilterInstance.checkAll([...hotVideos], false, feedSelectorFunc)
+            hotVideos.length && coreFilterInstance.checkAll([...hotVideos], false, hotSelectorFunc)
             // debugFilter(`checkVideoList check ${hotVideos.length} hotVideos`)
-            weeklyVideos.length && coreFilterInstance.checkAll([...weeklyVideos], false, feedSelectorFunc)
+            weeklyVideos.length && coreFilterInstance.checkAll([...weeklyVideos], false, hotSelectorFunc)
             // debugFilter(`checkVideoList check ${weeklyVideos.length} weeklyVideos`)
-            rankVideos.length && coreFilterInstance.checkAll([...rankVideos], false, feedSelectorFunc)
+            rankVideos.length && coreFilterInstance.checkAll([...rankVideos], false, hotSelectorFunc)
             // debugFilter(`checkVideoList check ${rankVideos.length} rankVideos`)
         } catch (err) {
             error(err)
             error('checkVideoList error')
         }
-        debugFilter('checkVideoList end')
     }
-    // 2. 监听 videoListContainer 内部变化, 有变化时检测视频列表
+    // 监听视频列表内部变化, 有变化时检测视频列表
     const watchVideoListContainer = () => {
         if (videoListContainer) {
             debugFilter('watchVideoListContainer start')
@@ -111,37 +106,20 @@ if (isPagePopular()) {
             debugFilter('watchVideoListContainer OK')
         }
     }
-    // 1. 检测/监听 videoListContainer 出现, 出现后监听 videoListContainer 内部变化
-    const waitForVideoListContainer = () => {
-        // 检测/监听视频列表父节点出现
-        videoListContainer = document.querySelector('#app') as HTMLElement
-        if (videoListContainer) {
-            debugFilter('videoListContainer exist')
-            watchVideoListContainer()
-        } else {
-            const obverser = new MutationObserver((mutationList) => {
-                mutationList.forEach((mutation) => {
-                    if (mutation.addedNodes) {
-                        mutation.addedNodes.forEach((node) => {
-                            if (node instanceof HTMLElement && (node as HTMLElement).id === 'app') {
-                                debugFilter('videoListContainer appear')
-                                obverser.disconnect()
-                                videoListContainer = document.querySelector('#app') as HTMLElement
-                                watchVideoListContainer()
-                            }
-                        })
-                    }
-                })
-            })
-            obverser.observe(document, { childList: true, subtree: true })
-            debugFilter('videoListContainer obverser start')
-        }
-    }
+
     try {
-        waitForVideoListContainer()
+        // 监听视频列表出现
+        waitForEle(document, '#app', (node: Node): boolean => {
+            return node instanceof HTMLElement && (node as HTMLElement).id === 'app'
+        }).then((ele) => {
+            if (ele) {
+                videoListContainer = ele
+                watchVideoListContainer()
+            }
+        })
     } catch (err) {
         error(err)
-        error(`waitForVideoListContainer ERROR`)
+        error(`watch video list ERROR`)
     }
 
     //=======================================================================================

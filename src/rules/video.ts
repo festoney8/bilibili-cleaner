@@ -189,6 +189,40 @@ const overridePlayerHeight = () => {
     })
 }
 
+/** 投币时取消自动点赞 */
+const coinDisableAutoLike = () => {
+    const disableAutoLike = () => {
+        let counter = 0
+        const timer = setInterval(() => {
+            const checkbox = document.querySelector(
+                'body > .bili-dialog-m .bili-dialog-bomb .like-checkbox input',
+            ) as HTMLInputElement
+            if (checkbox) {
+                checkbox.checked && checkbox.click()
+                clearInterval(timer)
+            } else {
+                counter++
+                if (counter > 100) {
+                    clearInterval(timer)
+                }
+            }
+        }, 20)
+    }
+    const coinBtn = document.querySelector(
+        '#arc_toolbar_report .video-coin.video-toolbar-left-item',
+    ) as HTMLElement | null
+    if (coinBtn) {
+        coinBtn.addEventListener('click', disableAutoLike)
+    } else {
+        document.addEventListener('DOMContentLoaded', () => {
+            const coinBtn = document.querySelector(
+                '#arc_toolbar_report .video-coin.video-toolbar-left-item',
+            ) as HTMLElement | null
+            coinBtn?.addEventListener('click', disableAutoLike)
+        })
+    }
+}
+
 // GroupList
 const videoGroupList: Group[] = []
 
@@ -357,6 +391,14 @@ if (isPageVideo() || isPagePlaylist() || isPageBnj()) {
             itemID: 'video-page-hide-bpx-player-state-wrap',
             description: '隐藏 视频暂停时大Logo',
             itemCSS: `.bpx-player-state-wrap {display: none !important;}`,
+        }),
+        // 隐藏 播放结束后视频推荐
+        new CheckboxItem({
+            itemID: 'video-page-hide-bpx-player-ending-related',
+            description: '隐藏 播放结束后视频推荐',
+            itemCSS: `
+                .bpx-player-ending-related {display: none !important;}
+                .bpx-player-ending-content {display: flex !important; align-items: center !important;}`,
         }),
         // 隐藏 弹幕悬停 点赞/复制/举报
         new CheckboxItem({
@@ -625,6 +667,12 @@ if (isPageVideo() || isPagePlaylist() || isPageBnj()) {
 if (isPageVideo() || isPagePlaylist()) {
     // 视频下方
     const toolbarItems = [
+        // 投币时不自动点赞 #46
+        new CheckboxItem({
+            itemID: 'video-page-coin-disable-auto-like',
+            description: '投币时不自动点赞 (关闭需刷新)',
+            itemFunc: coinDisableAutoLike,
+        }),
         // 隐藏 分享按钮弹出菜单, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-video-share-popover',
@@ -687,7 +735,7 @@ if (isPageVideo() || isPagePlaylist()) {
             itemCSS: `.comment-container .top-vote-card {display: none !important;}`,
         }),
     ]
-    videoGroupList.push(new Group('video-toolbar', '视频下方 工具/简介/Tag', toolbarItems))
+    videoGroupList.push(new Group('video-toolbar', '视频下方 三连/简介/Tag', toolbarItems))
 
     // up主信息
     const upInfoItems = [

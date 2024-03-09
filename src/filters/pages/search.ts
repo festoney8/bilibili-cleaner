@@ -4,7 +4,7 @@ import { Group } from '../../components/group'
 import coreFilterInstance, { SelectorFunc } from '../filters/core'
 import { isPageSearch } from '../../utils/page-type'
 import contextMenuInstance from '../../components/contextmenu'
-import { matchBvid, showVideo } from '../../utils/tool'
+import { matchBvid, showVideo, waitForEle } from '../../utils/tool'
 import {
     BvidAction,
     DurationAction,
@@ -25,11 +25,34 @@ let isContextMenuBvidEnable = false
 let isTopUploaderWhitelistEnable: boolean = GM_getValue('BILICLEANER_search-top-uploader-whitelist-filter-status', true)
 
 if (isPageSearch()) {
-    // 页面载入后监听流程
-
-    // 视频列表外层
     let videoListContainer: HTMLElement
-    // 3. 检测视频列表
+    // 构建SelectorFunc
+    const searchSelectorFunc: SelectorFunc = {
+        duration: (video: Element): string | null => {
+            const duration = video.querySelector('span.bili-video-card__stats__duration')?.textContent
+            return duration ? duration : null
+        },
+        titleKeyword: (video: Element): string | null => {
+            const titleKeyword =
+                video.querySelector('h3.bili-video-card__info--tit')?.textContent ||
+                video.querySelector('h3.bili-video-card__info--tit')?.getAttribute('title')
+            return titleKeyword ? titleKeyword : null
+        },
+        bvid: (video: Element): string | null => {
+            const href =
+                video.querySelector('.bili-video-card__wrap > a')?.getAttribute('href') ||
+                video.querySelector('.bili-video-card__info--right > a')?.getAttribute('href')
+            if (href) {
+                return matchBvid(href)
+            }
+            return null
+        },
+        uploader: (video: Element): string | null => {
+            const uploader = video.querySelector('span.bili-video-card__info--author')?.textContent
+            return uploader ? uploader : null
+        },
+    }
+    // 检测视频列表
     const checkVideoList = (_fullSite: boolean) => {
         // debugFilter('checkVideoList start')
         if (!videoListContainer) {
@@ -49,49 +72,21 @@ if (isPageSearch()) {
                 ),
             ]
 
-            const contentSelectorFunc: SelectorFunc = {
-                duration: (video: Element): string | null => {
-                    const duration = video.querySelector('span.bili-video-card__stats__duration')?.textContent
-                    return duration ? duration : null
-                },
-                titleKeyword: (video: Element): string | null => {
-                    const titleKeyword =
-                        video.querySelector('h3.bili-video-card__info--tit')?.textContent ||
-                        video.querySelector('h3.bili-video-card__info--tit')?.getAttribute('title')
-                    return titleKeyword ? titleKeyword : null
-                },
-                bvid: (video: Element): string | null => {
-                    const href =
-                        video.querySelector('.bili-video-card__wrap > a')?.getAttribute('href') ||
-                        video.querySelector('.bili-video-card__info--right > a')?.getAttribute('href')
-                    if (href) {
-                        return matchBvid(href)
-                    }
-                    return null
-                },
-                uploader: (video: Element): string | null => {
-                    const uploader = video.querySelector('span.bili-video-card__info--author')?.textContent
-                    return uploader ? uploader : null
-                },
-            }
-            // topVideo的uploader全返回null
-            const topSelectorFunc = contentSelectorFunc
-
             // 顶部UP主视频白名单
             if (isTopUploaderWhitelistEnable) {
                 topVideos.forEach((video) => showVideo(video))
             } else {
-                topVideos.length && coreFilterInstance.checkAll(topVideos, false, topSelectorFunc)
+                topVideos.length && coreFilterInstance.checkAll(topVideos, false, searchSelectorFunc)
                 debugFilter(`checkVideoList check ${topVideos.length} top videos`)
             }
-            contentVideos.length && coreFilterInstance.checkAll(contentVideos, false, contentSelectorFunc)
+            contentVideos.length && coreFilterInstance.checkAll(contentVideos, false, searchSelectorFunc)
             debugFilter(`checkVideoList check ${contentVideos.length} content videos`)
         } catch (err) {
             error(err)
             error('checkVideoList error')
         }
     }
-    // 2. 监听 videoListContainer 内部变化, 有变化时检测视频列表
+    // 监听视频列表内部变化, 有变化时检测视频列表
     const watchVideoListContainer = () => {
         if (videoListContainer) {
             debugFilter('watchVideoListContainer start')
@@ -103,40 +98,19 @@ if (isPageSearch()) {
             debugFilter('watchVideoListContainer OK')
         }
     }
-    // 1. 检测/监听 videoListContainer 出现, 出现后监听 videoListContainer 内部变化
-    const waitForVideoListContainer = () => {
-        // 检测/监听视频列表父节点出现
-        videoListContainer = document.querySelector('.search-content') as HTMLFormElement
-        if (videoListContainer) {
-            debugFilter('videoListContainer exist')
-            watchVideoListContainer()
-        } else {
-            const obverser = new MutationObserver((mutationList) => {
-                mutationList.forEach((mutation) => {
-                    if (mutation.addedNodes) {
-                        mutation.addedNodes.forEach((node) => {
-                            if (
-                                node instanceof HTMLElement &&
-                                (node as HTMLElement).className?.includes('search-content')
-                            ) {
-                                debugFilter('videoListContainer appear')
-                                obverser.disconnect()
-                                videoListContainer = document.querySelector('.search-content') as HTMLElement
-                                watchVideoListContainer()
-                            }
-                        })
-                    }
-                })
-            })
-            obverser.observe(document, { childList: true, subtree: true })
-            debugFilter('videoListContainer obverser start')
-        }
-    }
     try {
-        waitForVideoListContainer()
+        // 监听视频列表出现
+        waitForEle(document, '.search-content', (node: Node): boolean => {
+            return node instanceof HTMLElement && (node as HTMLElement).className?.includes('search-content')
+        }).then((ele) => {
+            if (ele) {
+                videoListContainer = ele
+                watchVideoListContainer()
+            }
+        })
     } catch (err) {
         error(err)
-        error(`waitForVideoListContainer ERROR`)
+        error(`watch video list ERROR`)
     }
 
     //=======================================================================================

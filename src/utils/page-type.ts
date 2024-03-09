@@ -19,7 +19,8 @@ const currPage = (): string => {
         return 'dynamic'
     }
     if (host === 'live.bilibili.com') {
-        if (pathname.match(/^\/\d+/)) {
+        // 匹配blanc页，用于对iframe内直播生效
+        if (pathname.match(/^\/(?:blanc\/)?\d+/)) {
             return 'liveRoom'
         }
         return 'liveHome'

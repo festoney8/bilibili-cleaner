@@ -214,6 +214,13 @@ if (isPageLiveRoom()) {
             defaultStatus: true,
             itemCSS: `#game-id {display: none !important;}`,
         }),
+        // 隐藏 直播卡顿打分, 默认开启
+        new CheckboxItem({
+            itemID: 'live-page-head-web-player-research-container',
+            description: '隐藏 直播卡顿打分',
+            defaultStatus: true,
+            itemCSS: `.research-container {display: none !important;}`,
+        }),
         // 隐藏 播放器顶部复读计数弹幕
         new CheckboxItem({
             itemID: 'live-page-combo-danmaku',
@@ -401,13 +408,8 @@ if (isPageLiveRoom()) {
             itemID: 'live-page-chat-control-panel',
             description: '隐藏 关闭全部互动框和控制栏',
             itemCSS: `#chat-control-panel-vm {display: none !important;}
-                .chat-history-panel {
-                    border-radius: 0 0 12px 12px;
-                }
                 /* 高权限调高度 */
-                #aside-area-vm .chat-history-panel {
-                    height: calc(100% - 15px) !important;
-                }`,
+                #aside-area-vm .chat-history-panel {height: 100% !important;}`,
         }),
     ]
     liveGroupList.push(new Group('live-right-container', '右栏 高能榜/弹幕列表', rightContainerItems))
@@ -569,19 +571,19 @@ if (isPageLiveHome() || isPageLiveRoom()) {
     const headerCenterItems = [
         // 隐藏 搜索框 推荐搜索
         new CheckboxItem({
-            itemID: 'common-hide-nav-search-rcmd',
+            itemID: 'live-page-nav-search-rcmd',
             description: '隐藏 搜索框 推荐搜索',
             itemCSS: `#nav-searchform input::placeholder {visibility: hidden;}`,
         }),
         // 隐藏 搜索框 搜索历史
         new CheckboxItem({
-            itemID: 'common-hide-nav-search-history',
+            itemID: 'live-page-nav-search-history',
             description: '隐藏 搜索框 搜索历史',
             itemCSS: `#nav-searchform .history {display: none !important;}`,
         }),
         // 隐藏 搜索框 bilibili热搜
         new CheckboxItem({
-            itemID: 'common-hide-nav-search-trending',
+            itemID: 'live-page-nav-search-trending',
             description: '隐藏 搜索框 bilibili热搜',
             itemCSS: `#nav-searchform .trending {display: none !important;}`,
         }),

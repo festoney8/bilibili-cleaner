@@ -5,7 +5,7 @@ import coreFilterInstance, { SelectorFunc } from '../filters/core'
 import settings from '../../settings'
 import { isPageChannel } from '../../utils/page-type'
 import contextMenuInstance from '../../components/contextmenu'
-import { matchBvid } from '../../utils/tool'
+import { matchBvid, waitForEle } from '../../utils/tool'
 import {
     BvidAction,
     DurationAction,
@@ -23,10 +23,31 @@ let isContextMenuUploaderEnable = false
 let isContextMenuBvidEnable = false
 
 if (isPageChannel()) {
-    // 页面载入后监听流程
-
     let videoListContainer: HTMLElement
-    // 3. 检测视频列表
+    // 构建SelectorFunc
+    const feedSelectorFunc: SelectorFunc = {
+        duration: (video: Element): string | null => {
+            const duration = video.querySelector('span.bili-video-card__stats__duration')?.textContent
+            return duration ? duration : null
+        },
+        titleKeyword: (video: Element): string | null => {
+            const titleKeyword =
+                video.querySelector('h3.bili-video-card__info--tit')?.getAttribute('title') ||
+                video.querySelector('h3.bili-video-card__info--tit a')?.textContent
+            return titleKeyword ? titleKeyword : null
+        },
+        bvid: (video: Element): string | null => {
+            const href =
+                video.querySelector('h3.bili-video-card__info--tit a')?.getAttribute('href') ||
+                video.querySelector('a.bili-video-card__image--link')?.getAttribute('href')
+            return href ? matchBvid(href) : null
+        },
+        uploader: (video: Element): string | null => {
+            const uploader = video.querySelector('span.bili-video-card__info--author')?.textContent
+            return uploader ? uploader : null
+        },
+    }
+    // 检测视频列表
     const checkVideoList = (fullSite: boolean) => {
         // debugFilter('checkVideoList start')
         if (!videoListContainer) {
@@ -54,33 +75,6 @@ if (isPageChannel()) {
                 ]
             }
 
-            if (!feedVideos.length) {
-                return
-            }
-
-            // 构建SelectorFunc
-            const feedSelectorFunc: SelectorFunc = {
-                duration: (video: Element): string | null => {
-                    const duration = video.querySelector('span.bili-video-card__stats__duration')?.textContent
-                    return duration ? duration : null
-                },
-                titleKeyword: (video: Element): string | null => {
-                    const titleKeyword =
-                        video.querySelector('h3.bili-video-card__info--tit')?.getAttribute('title') ||
-                        video.querySelector('h3.bili-video-card__info--tit a')?.textContent
-                    return titleKeyword ? titleKeyword : null
-                },
-                bvid: (video: Element): string | null => {
-                    const href =
-                        video.querySelector('h3.bili-video-card__info--tit a')?.getAttribute('href') ||
-                        video.querySelector('a.bili-video-card__image--link')?.getAttribute('href')
-                    return href ? matchBvid(href) : null
-                },
-                uploader: (video: Element): string | null => {
-                    const uploader = video.querySelector('span.bili-video-card__info--author')?.textContent
-                    return uploader ? uploader : null
-                },
-            }
             feedVideos.length && coreFilterInstance.checkAll(feedVideos, true, feedSelectorFunc)
             // debugFilter(`checkVideoList check ${feedVideos.length} feed videos`)
         } catch (err) {
@@ -88,7 +82,7 @@ if (isPageChannel()) {
             error('checkVideoList error')
         }
     }
-    // 2. 监听 videoListContainer 内部变化, 有变化时检测视频列表
+    // 监听视频列表内部变化, 有变化时检测视频列表
     const watchVideoListContainer = () => {
         if (videoListContainer) {
             debugFilter('watchVideoListContainer start')
@@ -102,37 +96,19 @@ if (isPageChannel()) {
             debugFilter('watchVideoListContainer OK')
         }
     }
-    // 1. 检测/监听 videoListContainer 出现, 出现后监听 videoListContainer 内部变化
-    const waitForVideoListContainer = () => {
-        // 检测/监听视频列表父节点出现
-        videoListContainer = document.querySelector('main.channel-layout') as HTMLFormElement
-        if (videoListContainer) {
-            debugFilter('videoListContainer exist')
-            watchVideoListContainer()
-        } else {
-            const obverser = new MutationObserver((mutationList) => {
-                mutationList.forEach((mutation) => {
-                    if (mutation.addedNodes) {
-                        mutation.addedNodes.forEach((node) => {
-                            if (node instanceof HTMLElement && (node as HTMLElement).className === 'channel-layout') {
-                                debugFilter('videoListContainer appear')
-                                obverser.disconnect()
-                                videoListContainer = document.querySelector('.channel-layout') as HTMLElement
-                                watchVideoListContainer()
-                            }
-                        })
-                    }
-                })
-            })
-            obverser.observe(document, { childList: true, subtree: true })
-            debugFilter('videoListContainer obverser start')
-        }
-    }
     try {
-        waitForVideoListContainer()
+        // 监听视频列表出现
+        waitForEle(document, 'main.channel-layout', (node: Node): boolean => {
+            return node instanceof HTMLElement && (node as HTMLElement).className === 'channel-layout'
+        }).then((ele) => {
+            if (ele) {
+                videoListContainer = ele
+                watchVideoListContainer()
+            }
+        })
     } catch (err) {
         error(err)
-        error(`waitForVideoListContainer ERROR`)
+        error(`watch video list ERROR`)
     }
 
     //=======================================================================================

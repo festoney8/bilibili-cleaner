@@ -571,19 +571,19 @@ if (isPageLiveHome() || isPageLiveRoom()) {
     const headerCenterItems = [
         // 隐藏 搜索框 推荐搜索
         new CheckboxItem({
-            itemID: 'common-hide-nav-search-rcmd',
+            itemID: 'live-page-nav-search-rcmd',
             description: '隐藏 搜索框 推荐搜索',
             itemCSS: `#nav-searchform input::placeholder {visibility: hidden;}`,
         }),
         // 隐藏 搜索框 搜索历史
         new CheckboxItem({
-            itemID: 'common-hide-nav-search-history',
+            itemID: 'live-page-nav-search-history',
             description: '隐藏 搜索框 搜索历史',
             itemCSS: `#nav-searchform .history {display: none !important;}`,
         }),
         // 隐藏 搜索框 bilibili热搜
         new CheckboxItem({
-            itemID: 'common-hide-nav-search-trending',
+            itemID: 'live-page-nav-search-trending',
             description: '隐藏 搜索框 bilibili热搜',
             itemCSS: `#nav-searchform .trending {display: none !important;}`,
         }),

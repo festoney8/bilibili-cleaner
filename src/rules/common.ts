@@ -425,7 +425,10 @@ if (!isPageLiveHome()) {
                     display: none !important;
                 }
                 /* 旧版header */
-                #internationalHeader li.nav-link-item:has(>span>a[href="//www.bilibili.com"]) .navbar_logo {
+                #internationalHeader li.nav-link-item:has(>span>a[href="//www.bilibili.com"], >span>a[href="www.bilibili.com/"]) .navbar_logo {
+                    display: none !important;
+                }
+                #biliMainHeader .left-entry .v-popover-wrap a[href="https://www.bilibili.com/"]>svg {
                     display: none !important;
                 }`,
         }),
@@ -446,6 +449,12 @@ if (!isPageLiveHome()) {
                 }
                 #internationalHeader li.nav-link-item:has(>span>a[href="//www.bilibili.com"]) .navbar_pullup {
                     display: none !important;
+                }
+                #biliMainHeader .left-entry .v-popover-wrap a[href="https://www.bilibili.com/"] .mini-header__title {
+                    display: none !important;
+                }
+                #biliMainHeader .bili-header .left-entry__title .mini-header__logo {
+                    margin-right: 0 !important;
                 }`,
         }),
         // 隐藏 番剧
@@ -457,6 +466,9 @@ if (!isPageLiveHome()) {
                 }
                 /* 旧版header */
                 #internationalHeader li.nav-link-item:has(>a[href*="bilibili.com/anime"]) {
+                    display: none !important;
+                }
+                #biliMainHeader .left-entry .v-popover-wrap:has(>a[href*="bilibili.com/anime"]) {
                     display: none !important;
                 }`,
         }),
@@ -470,6 +482,9 @@ if (!isPageLiveHome()) {
                 /* 旧版header */
                 #internationalHeader li.nav-link-item:has(>span>a[href*="live.bilibili.com"]) {
                     display: none !important;
+                }
+                #biliMainHeader .left-entry .v-popover-wrap:has(>a[href*="live.bilibili.com"]) {
+                    display: none !important;
                 }`,
         }),
         // 隐藏 游戏中心
@@ -481,6 +496,9 @@ if (!isPageLiveHome()) {
                 }
                 /* 旧版header */
                 #internationalHeader li.nav-link-item:has(>span>a[href*="game.bilibili.com"]) {
+                    display: none !important;
+                }
+                #biliMainHeader .left-entry .v-popover-wrap:has(>a[href*="game.bilibili.com"]) {
                     display: none !important;
                 }`,
         }),
@@ -494,6 +512,9 @@ if (!isPageLiveHome()) {
                 /* 旧版header */
                 #internationalHeader li.nav-link-item:has(>a[href*="show.bilibili.com"]) {
                     display: none !important;
+                }
+                #biliMainHeader .left-entry .v-popover-wrap:has(>a[href*="show.bilibili.com"]) {
+                    display: none !important;
                 }`,
         }),
         // 隐藏 漫画
@@ -506,6 +527,9 @@ if (!isPageLiveHome()) {
                 /* 旧版header */
                 #internationalHeader li.nav-link-item:has(>span>a[href*="manga.bilibili.com"]) {
                     display: none !important;
+                }
+                #biliMainHeader .left-entry .v-popover-wrap:has(>a[href*="manga.bilibili.com"]) {
+                    display: none !important;
                 }`,
         }),
         // 隐藏 赛事
@@ -517,6 +541,9 @@ if (!isPageLiveHome()) {
                 }
                 /* 旧版header */
                 #internationalHeader li.nav-link-item:has(>a[href*="bilibili.com/match/"]) {
+                    display: none !important;
+                }
+                #biliMainHeader .left-entry .v-popover-wrap:has(>a[href*="bilibili.com/match/"]) {
                     display: none !important;
                 }`,
         }),
@@ -532,9 +559,6 @@ if (!isPageLiveHome()) {
                 }
                 /* 旧版header */
                 #internationalHeader li.nav-link-item:has(a[href*="live.bilibili.com/blackboard"]) {
-                    display: none !important;
-                }
-                #internationalHeader li.nav-link-item:has(.loc-mc-box, [href^="https://live.bilibili.com/"]) {
                     display: none !important;
                 }`,
         }),
@@ -554,6 +578,9 @@ if (!isPageLiveHome()) {
                 }
                 /* 旧版header */
                 #internationalHeader li.nav-link-item:has(a[href*="app.bilibili.com"]) {
+                    display: none !important;
+                }
+                #biliMainHeader .left-entry .v-popover-wrap:has(>a[href*="app.bilibili.com"]) {
                     display: none !important;
                 }`,
         }),
@@ -653,7 +680,12 @@ if (!isPageLiveHome()) {
         new CheckboxItem({
             itemID: 'common-hide-nav-message-red-num',
             description: '隐藏 消息小红点',
-            itemCSS: `.right-entry .v-popover-wrap:has([href*="//message.bilibili.com"], [data-idx="message"]) .red-num--message {
+            itemCSS: `
+                .right-entry .v-popover-wrap:has([href*="//message.bilibili.com"], [data-idx="message"]) .red-num--message {
+                    display: none !important;
+                }
+                /* 旧版header */
+                #internationalHeader .nav-user-center .nav-item-message .num {
                     display: none !important;
                 }`,
         }),
@@ -673,7 +705,12 @@ if (!isPageLiveHome()) {
         new CheckboxItem({
             itemID: 'common-hide-nav-dynamic-red-num',
             description: '隐藏 动态小红点',
-            itemCSS: `.right-entry .v-popover-wrap:has([href*="//t.bilibili.com"], [data-idx="dynamic"]) .red-num--dynamic {
+            itemCSS: `
+                .right-entry .v-popover-wrap:has([href*="//t.bilibili.com"], [data-idx="dynamic"]) .red-num--dynamic {
+                    display: none !important;
+                }
+                /* 旧版header */
+                #internationalHeader .nav-user-center .nav-item-dynamic .num {
                     display: none !important;
                 }`,
         }),

@@ -47,6 +47,7 @@
 -   适用于 **净化新版 bilibili 网页**，不做老版本页面适配
 -   混搭各种功能，调节浏览器缩放比例，可调节出自己满意的页面效果
 -   默认用户已登录，默认开启基础屏蔽功能，大会员体验最佳
+-   已知bug：赛事直播（和各种支持切换视角的直播），因使用了iframe，由于浏览器[同源策略](https://developer.mozilla.org/zh-CN/docs/Web/Security/Same-origin_policy)安全限制，页面净化规则不会生效
 
 > [!NOTE]
 >

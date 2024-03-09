@@ -785,7 +785,7 @@ if (!isPageLiveRoom() && !isPageLiveHome()) {
                     display: none !important;
                 }
                 /* 旧版header */
-                #internationalHeader .nav-user-center .item:has(a[href="//member.bilibili.com/platform/home"]) {
+                #internationalHeader .nav-user-center .item:has(a[href*="member.bilibili.com/platform/home"]) {
                     display: none !important;
                 }`,
         }),

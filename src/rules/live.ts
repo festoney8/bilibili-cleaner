@@ -408,13 +408,8 @@ if (isPageLiveRoom()) {
             itemID: 'live-page-chat-control-panel',
             description: '隐藏 关闭全部互动框和控制栏',
             itemCSS: `#chat-control-panel-vm {display: none !important;}
-                .chat-history-panel {
-                    border-radius: 0 0 12px 12px;
-                }
                 /* 高权限调高度 */
-                #aside-area-vm .chat-history-panel {
-                    height: calc(100% - 15px) !important;
-                }`,
+                #aside-area-vm .chat-history-panel {height: 100% !important;}`,
         }),
     ]
     liveGroupList.push(new Group('live-right-container', '右栏 高能榜/弹幕列表', rightContainerItems))

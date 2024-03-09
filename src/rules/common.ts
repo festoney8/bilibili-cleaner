@@ -413,8 +413,8 @@ const basicItems = [
     }),
 ]
 commonGroupList.push(new Group('common-basic', '全站通用项 基本功能', basicItems))
-// 通用header净化，直播页除外
-if (!isPageLiveRoom() && !isPageLiveHome()) {
+// 通用header净化，直播首页除外
+if (!isPageLiveHome()) {
     // 顶栏左侧
     const headerLeftItems = [
         // 隐藏 主站Logo
@@ -553,7 +553,7 @@ if (!isPageLiveRoom() && !isPageLiveHome()) {
                     display: none !important;
                 }
                 /* 旧版header */
-                #internationalHeader li.nav-link-item:has(a[href="//app.bilibili.com"]) {
+                #internationalHeader li.nav-link-item:has(a[href*="app.bilibili.com"]) {
                     display: none !important;
                 }`,
         }),

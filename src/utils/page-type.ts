@@ -19,9 +19,14 @@ const currPage = (): string => {
         return 'dynamic'
     }
     if (host === 'live.bilibili.com') {
-        // 匹配blanc页，用于对iframe内直播生效
+        // 匹配blanc页（赛事直播or活动直播用），用于对iframe内直播生效
         if (pathname.match(/^\/(?:blanc\/)?\d+/)) {
             return 'liveRoom'
+        }
+        // 匹配天选时刻iframe, 不做处理
+        // https://live.bilibili.com/p/html/live-lottery/anchor-join.html
+        if (pathname.includes('live-lottery')) {
+            return ''
         }
         return 'liveHome'
     }

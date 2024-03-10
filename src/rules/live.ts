@@ -221,6 +221,12 @@ if (isPageLiveRoom()) {
             defaultStatus: true,
             itemCSS: `.research-container {display: none !important;}`,
         }),
+        // 隐藏 天选时刻
+        new CheckboxItem({
+            itemID: 'live-page-head-web-player-live-lottery',
+            description: '隐藏 天选时刻',
+            itemCSS: `#anchor-guest-box-id {display: none !important;}`,
+        }),
         // 隐藏 播放器顶部复读计数弹幕
         new CheckboxItem({
             itemID: 'live-page-combo-danmaku',

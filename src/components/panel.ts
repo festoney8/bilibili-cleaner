@@ -89,6 +89,20 @@ class Panel {
                     const diffY = e.clientY - initY
                     panel.style.left = `${initLeft + diffX}px`
                     panel.style.top = `${initTop + diffY}px`
+                    // 限制bar不超出视口
+                    const rect = bar.getBoundingClientRect()
+                    if (rect.left < 0) {
+                        panel.style.left = `${initLeft + diffX - rect.left}px`
+                    }
+                    if (rect.top < 0) {
+                        panel.style.top = `${initTop + diffY - rect.top}px`
+                    }
+                    if (rect.right > window.innerWidth) {
+                        panel.style.left = `${initLeft + diffX - (rect.right - window.innerWidth)}px`
+                    }
+                    if (rect.bottom > window.innerHeight) {
+                        panel.style.top = `${initTop + diffY - (rect.bottom - window.innerHeight)}px`
+                    }
                 }
             })
             document.addEventListener('mouseup', () => {

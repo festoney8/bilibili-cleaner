@@ -19,6 +19,14 @@ import {
  * 净化掉vd_source参数会导致充电窗口载入失败
  */
 const cleanURL = () => {
+    // 直播页只净化直播间
+    if (location.host === 'live.bilibili.com' && !isPageLiveRoom()) {
+        return
+    }
+    // 天选时刻iframe特殊处理
+    if (location.href.includes('live-lottery')) {
+        return
+    }
     const keysToRemove = new Set([
         'from_source',
         'spm_id_from',

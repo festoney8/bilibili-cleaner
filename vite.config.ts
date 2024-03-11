@@ -21,6 +21,7 @@ export default defineConfig({
                     '*://message.bilibili.com/pages/nav/index_new_pc_sync',
                     '*://data.bilibili.com/*',
                     '*://cm.bilibili.com/*',
+                    '*://link.bilibili.com/*',
                     '*://passport.bilibili.com/*',
                     '*://api.bilibili.com/*',
                     '*://api.*.bilibili.com/*',

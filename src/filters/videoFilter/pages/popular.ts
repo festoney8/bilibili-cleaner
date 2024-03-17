@@ -1,11 +1,11 @@
-import { debugFilter, error } from '../../utils/logger'
+import { debugVideoFilter as debug, error } from '../../../utils/logger'
 import coreFilterInstance, { SelectorFunc } from '../filters/core'
-import { ButtonItem, CheckboxItem } from '../../components/item'
-import { Group } from '../../components/group'
-import settings from '../../settings'
-import { isPagePopular } from '../../utils/page-type'
-import contextMenuInstance from '../../components/contextmenu'
-import { matchBvid, waitForEle } from '../../utils/tool'
+import { ButtonItem, CheckboxItem } from '../../../components/item'
+import { Group } from '../../../components/group'
+import settings from '../../../settings'
+import { isPagePopular } from '../../../utils/page-type'
+import contextMenuInstance from '../../../components/contextmenu'
+import { matchBvid, waitForEle } from '../../../utils/tool'
 import {
     BvidAction,
     TitleKeywordAction,
@@ -53,9 +53,9 @@ if (isPagePopular()) {
     }
     // 检测视频列表
     const checkVideoList = (fullSite: boolean) => {
-        // debugFilter('checkVideoList start')
+        // debug('checkVideoList start')
         if (!videoListContainer) {
-            debugFilter(`checkVideoList videoListContainer not exist`)
+            debug(`checkVideoList videoListContainer not exist`)
             return
         }
         try {
@@ -82,11 +82,11 @@ if (isPagePopular()) {
             }
 
             hotVideos.length && coreFilterInstance.checkAll([...hotVideos], false, hotSelectorFunc)
-            // debugFilter(`checkVideoList check ${hotVideos.length} hotVideos`)
+            // debug(`checkVideoList check ${hotVideos.length} hotVideos`)
             weeklyVideos.length && coreFilterInstance.checkAll([...weeklyVideos], false, hotSelectorFunc)
-            // debugFilter(`checkVideoList check ${weeklyVideos.length} weeklyVideos`)
+            // debug(`checkVideoList check ${weeklyVideos.length} weeklyVideos`)
             rankVideos.length && coreFilterInstance.checkAll([...rankVideos], false, hotSelectorFunc)
-            // debugFilter(`checkVideoList check ${rankVideos.length} rankVideos`)
+            // debug(`checkVideoList check ${rankVideos.length} rankVideos`)
         } catch (err) {
             error(err)
             error('checkVideoList error')
@@ -95,7 +95,7 @@ if (isPagePopular()) {
     // 监听视频列表内部变化, 有变化时检测视频列表
     const watchVideoListContainer = () => {
         if (videoListContainer) {
-            debugFilter('watchVideoListContainer start')
+            debug('watchVideoListContainer start')
             // 初次全站检测
             checkVideoList(true)
             const videoObverser = new MutationObserver(() => {
@@ -103,7 +103,7 @@ if (isPagePopular()) {
                 checkVideoList(true)
             })
             videoObverser.observe(videoListContainer, { childList: true, subtree: true })
-            debugFilter('watchVideoListContainer OK')
+            debug('watchVideoListContainer OK')
         }
     }
 
@@ -210,7 +210,7 @@ if (isPagePopular()) {
         document.addEventListener('click', () => {
             contextMenuInstance.hide()
         })
-        debugFilter('contextMenuFunc listen contextmenu')
+        debug('contextMenuFunc listen contextmenu')
     }
 
     //=======================================================================================

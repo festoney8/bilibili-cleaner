@@ -1,7 +1,7 @@
-import { error } from '../../../utils/logger'
+import { error } from '../../../../utils/logger'
 import { ISubFilter } from '../core'
 
-class TitleKeywordFilter implements ISubFilter {
+class TitleKeywordWhitelistFilter implements ISubFilter {
     isEnable = false
     private titleKeywordSet = new Set<string>()
 
@@ -13,19 +13,13 @@ class TitleKeywordFilter implements ISubFilter {
         this.titleKeywordSet = new Set(values.map((v) => v.trim()).filter((v) => v))
     }
 
-    addParam(value: string) {
-        if (value.trim()) {
-            this.titleKeywordSet.add(value.trim())
-        }
-    }
-
     check(title: string): Promise<string> {
         // 忽略大小写
         title = title.trim().toLowerCase()
         return new Promise<string>((resolve, reject) => {
             try {
                 if (!this.isEnable || title.length === 0 || this.titleKeywordSet.size === 0) {
-                    resolve(`TitleKeyword resolve, disable or empty`)
+                    resolve(`Title Whitelist resolve, disable or empty`)
                 }
                 let flag = false
                 this.titleKeywordSet.forEach((word) => {
@@ -35,26 +29,27 @@ class TitleKeywordFilter implements ISubFilter {
                         if (title.match(pattern)) {
                             // 命中白名单正则
                             flag = true
-                            reject(`TitleKeyword reject, ${title} match ${word} in blacklist`)
+                            reject(`Title Whitelist reject, ${title} match keyword ${word}`)
                         }
                     } else {
-                        if (word && title.includes(word.toLowerCase())) {
+                        if (word && title.toLowerCase().includes(word.toLowerCase())) {
+                            // 命中白名单
                             flag = true
-                            reject(`TitleKeyword reject, ${title} match ${word} in blacklist`)
+                            reject(`Title Whitelist reject, ${title} match keyword ${word}`)
                         }
                     }
                 })
                 if (!flag) {
-                    resolve(`TitleKeyword resolve, title not match blacklist`)
+                    resolve(`Title Whitelist resolve, title not match whitelist`)
                 }
             } catch (err) {
                 error(err)
-                resolve(`TitleKeyword resolve, error`)
+                resolve(`Title Whitelist resolve, error`)
             }
         })
     }
 }
 
 // 单例
-const titleKeywordFilterInstance = new TitleKeywordFilter()
-export default titleKeywordFilterInstance
+const titleKeywordWhitelistFilterInstance = new TitleKeywordWhitelistFilter()
+export default titleKeywordWhitelistFilterInstance

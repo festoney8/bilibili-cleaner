@@ -1,5 +1,5 @@
 import { GM_getValue, GM_setValue } from '$'
-import { debug, error } from '../utils/logger'
+import { debugComponents as debug, error } from '../utils/logger'
 
 /** IItem是插件的每项功能设定, 在每个group内显示为一行组件 */
 interface IItem {

@@ -1,6 +1,6 @@
 // @ts-ignore isolatedModules
 import { GM_getValue, GM_registerMenuCommand } from '$'
-import { log, error, debug } from './utils/logger'
+import { log, error, debugMain as debug } from './utils/logger'
 import { init } from './init'
 import { Group } from './components/group'
 import { homepageGroupList } from './rules/homepage'
@@ -12,14 +12,14 @@ import { liveGroupList } from './rules/live'
 import { dynamicGroupList } from './rules/dynamic'
 import { popularGroupList } from './rules/popular'
 import { isPageChannel, isPageHomepage, isPagePopular, isPageSearch, isPageVideo } from './utils/page-type'
-import { homepageFilterGroupList } from './filters/pages/homepage'
-import panelInstance from './components/panel'
-import { videoFilterGroupList } from './filters/pages/video'
-import { popularFilterGroupList } from './filters/pages/popular'
-import { searchFilterGroupList } from './filters/pages/search'
+import { homepageFilterGroupList } from './filters/videoFilter/pages/homepage'
+import { videoFilterGroupList } from './filters/videoFilter/pages/video'
+import { popularFilterGroupList } from './filters/videoFilter/pages/popular'
+import { searchFilterGroupList } from './filters/videoFilter/pages/search'
 import { SideBtn } from './components/sideBtn'
 import { channelGroupList } from './rules/channel'
-import { channelFilterGroupList } from './filters/pages/channel'
+import { channelFilterGroupList } from './filters/videoFilter/pages/channel'
+import panelInstance from './components/panel'
 
 log('script start')
 

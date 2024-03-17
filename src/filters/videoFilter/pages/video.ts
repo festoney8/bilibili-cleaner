@@ -1,10 +1,10 @@
-import { debugFilter, error } from '../../utils/logger'
+import { debugVideoFilter as debug, error } from '../../../utils/logger'
 import coreFilterInstance, { SelectorFunc } from '../filters/core'
-import { ButtonItem, CheckboxItem, NumberItem } from '../../components/item'
-import { Group } from '../../components/group'
-import { isPageVideo } from '../../utils/page-type'
-import contextMenuInstance from '../../components/contextmenu'
-import { matchBvid, showVideo, waitForEle } from '../../utils/tool'
+import { ButtonItem, CheckboxItem, NumberItem } from '../../../components/item'
+import { Group } from '../../../components/group'
+import { isPageVideo } from '../../../utils/page-type'
+import contextMenuInstance from '../../../components/contextmenu'
+import { matchBvid, showVideo, waitForEle } from '../../../utils/tool'
 import {
     BvidAction,
     DurationAction,
@@ -56,7 +56,7 @@ if (isPageVideo()) {
     // 检测视频列表
     const checkVideoList = (_fullSite: boolean) => {
         if (!videoListContainer) {
-            debugFilter(`checkVideoList videoListContainer not exist`)
+            debug(`checkVideoList videoListContainer not exist`)
             return
         }
         try {
@@ -71,13 +71,13 @@ if (isPageVideo()) {
 
             // 判断是否筛选接下来播放
             rcmdVideos.length && coreFilterInstance.checkAll([...rcmdVideos], false, rcmdSelectorFunc)
-            // debugFilter(`checkVideoList check ${rcmdVideos.length} rcmd videos`)
+            // debug(`checkVideoList check ${rcmdVideos.length} rcmd videos`)
             if (isNextPlayWhitelistEnable) {
                 // 清除隐藏状态
                 nextVideos.forEach((video) => showVideo(video))
             } else {
                 nextVideos.length && coreFilterInstance.checkAll([...nextVideos], false, nextSelectorFunc)
-                // debugFilter(`checkVideoList check ${nextVideos.length} next videos`)
+                // debug(`checkVideoList check ${nextVideos.length} next videos`)
             }
         } catch (err) {
             error(err)
@@ -88,7 +88,7 @@ if (isPageVideo()) {
     // 监听视频列表内部变化, 有变化时检测视频列表
     const watchVideoListContainer = () => {
         if (videoListContainer) {
-            debugFilter('watchVideoListContainer start')
+            debug('watchVideoListContainer start')
             // 播放页右栏载入慢, 始终做全站检测
             checkVideoList(true)
             const videoObverser = new MutationObserver(() => {
@@ -96,7 +96,7 @@ if (isPageVideo()) {
             })
             // 播放页需监听subtree
             videoObverser.observe(videoListContainer, { childList: true, subtree: true })
-            debugFilter('watchVideoListContainer OK')
+            debug('watchVideoListContainer OK')
         }
     }
 
@@ -155,7 +155,7 @@ if (isPageVideo()) {
         // 监听右键单击
         document.addEventListener('contextmenu', (e) => {
             if (e.target instanceof HTMLElement) {
-                // debugFilter(e.target.classList)
+                // debug(e.target.classList)
                 const target = e.target
                 if (
                     isContextMenuUploaderEnable &&
@@ -203,7 +203,7 @@ if (isPageVideo()) {
         document.addEventListener('click', () => {
             contextMenuInstance.hide()
         })
-        debugFilter('contextMenuFunc listen contextmenu')
+        debug('contextMenuFunc listen contextmenu')
     }
 
     //=======================================================================================

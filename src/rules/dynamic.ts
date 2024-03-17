@@ -1,6 +1,6 @@
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
-import { debug } from '../utils/logger'
+import { debugRules as debug } from '../utils/logger'
 import { isPageDynamic } from '../utils/page-type'
 
 // 自动展开 相同UP主被折叠的动态

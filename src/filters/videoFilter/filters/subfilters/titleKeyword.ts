@@ -1,7 +1,7 @@
-import { debugFilter, error } from '../../../utils/logger'
+import { error } from '../../../../utils/logger'
 import { ISubFilter } from '../core'
 
-class TitleKeywordWhitelistFilter implements ISubFilter {
+class TitleKeywordFilter implements ISubFilter {
     isEnable = false
     private titleKeywordSet = new Set<string>()
 
@@ -10,8 +10,13 @@ class TitleKeywordWhitelistFilter implements ISubFilter {
     }
 
     setParams(values: string[]) {
-        debugFilter(`TitleKeywordWhitelist`, Array.from(this.titleKeywordSet).join('|'))
         this.titleKeywordSet = new Set(values.map((v) => v.trim()).filter((v) => v))
+    }
+
+    addParam(value: string) {
+        if (value.trim()) {
+            this.titleKeywordSet.add(value.trim())
+        }
     }
 
     check(title: string): Promise<string> {
@@ -20,7 +25,7 @@ class TitleKeywordWhitelistFilter implements ISubFilter {
         return new Promise<string>((resolve, reject) => {
             try {
                 if (!this.isEnable || title.length === 0 || this.titleKeywordSet.size === 0) {
-                    resolve(`Title Whitelist resolve, disable or empty`)
+                    resolve(`TitleKeyword resolve, disable or empty`)
                 }
                 let flag = false
                 this.titleKeywordSet.forEach((word) => {
@@ -30,27 +35,26 @@ class TitleKeywordWhitelistFilter implements ISubFilter {
                         if (title.match(pattern)) {
                             // 命中白名单正则
                             flag = true
-                            reject(`Title Whitelist reject, ${title} match keyword ${word}`)
+                            reject(`TitleKeyword reject, ${title} match ${word} in blacklist`)
                         }
                     } else {
-                        if (word && title.toLowerCase().includes(word.toLowerCase())) {
-                            // 命中白名单
+                        if (word && title.includes(word.toLowerCase())) {
                             flag = true
-                            reject(`Title Whitelist reject, ${title} match keyword ${word}`)
+                            reject(`TitleKeyword reject, ${title} match ${word} in blacklist`)
                         }
                     }
                 })
                 if (!flag) {
-                    resolve(`Title Whitelist resolve, title not match whitelist`)
+                    resolve(`TitleKeyword resolve, title not match blacklist`)
                 }
             } catch (err) {
                 error(err)
-                resolve(`Title Whitelist resolve, error`)
+                resolve(`TitleKeyword resolve, error`)
             }
         })
     }
 }
 
 // 单例
-const titleKeywordWhitelistFilterInstance = new TitleKeywordWhitelistFilter()
-export default titleKeywordWhitelistFilterInstance
+const titleKeywordFilterInstance = new TitleKeywordFilter()
+export default titleKeywordFilterInstance

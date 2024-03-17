@@ -1,4 +1,4 @@
-import { debug, error } from '../utils/logger'
+import { debugComponents as debug, error } from '../utils/logger'
 
 type Menu = {
     name: string

@@ -1,4 +1,4 @@
-import { error } from '../../../utils/logger'
+import { error } from '../../../../utils/logger'
 import { ISubFilter } from '../core'
 
 class DurationFilter implements ISubFilter {

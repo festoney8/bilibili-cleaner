@@ -1,11 +1,10 @@
-import { debugFilter, error } from '../../utils/logger'
-import { ButtonItem, CheckboxItem, NumberItem } from '../../components/item'
-import { Group } from '../../components/group'
+import { debugVideoFilter as debug, error } from '../../../utils/logger'
+import { ButtonItem, CheckboxItem, NumberItem } from '../../../components/item'
+import { Group } from '../../../components/group'
 import coreFilterInstance, { SelectorFunc } from '../filters/core'
-import settings from '../../settings'
-import { isPageChannel } from '../../utils/page-type'
-import contextMenuInstance from '../../components/contextmenu'
-import { matchBvid, waitForEle } from '../../utils/tool'
+import { isPageSearch } from '../../../utils/page-type'
+import contextMenuInstance from '../../../components/contextmenu'
+import { matchBvid, showVideo, waitForEle } from '../../../utils/tool'
 import {
     BvidAction,
     DurationAction,
@@ -14,33 +13,39 @@ import {
     UploaderAction,
     UploaderWhitelistAction,
 } from './actions/action'
+import { GM_getValue } from '$'
 
-const channelFilterGroupList: Group[] = []
+const searchFilterGroupList: Group[] = []
 
 // 右键菜单功能, 全局控制
 let isContextMenuFuncRunning = false
 let isContextMenuUploaderEnable = false
 let isContextMenuBvidEnable = false
+// 推荐位UP主视频的不被过滤，默认开启
+let isTopUploaderWhitelistEnable: boolean = GM_getValue('BILICLEANER_search-top-uploader-whitelist-filter-status', true)
 
-if (isPageChannel()) {
+if (isPageSearch()) {
     let videoListContainer: HTMLElement
     // 构建SelectorFunc
-    const feedSelectorFunc: SelectorFunc = {
+    const searchSelectorFunc: SelectorFunc = {
         duration: (video: Element): string | null => {
             const duration = video.querySelector('span.bili-video-card__stats__duration')?.textContent
             return duration ? duration : null
         },
         titleKeyword: (video: Element): string | null => {
             const titleKeyword =
-                video.querySelector('h3.bili-video-card__info--tit')?.getAttribute('title') ||
-                video.querySelector('h3.bili-video-card__info--tit a')?.textContent
+                video.querySelector('h3.bili-video-card__info--tit')?.textContent ||
+                video.querySelector('h3.bili-video-card__info--tit')?.getAttribute('title')
             return titleKeyword ? titleKeyword : null
         },
         bvid: (video: Element): string | null => {
             const href =
-                video.querySelector('h3.bili-video-card__info--tit a')?.getAttribute('href') ||
-                video.querySelector('a.bili-video-card__image--link')?.getAttribute('href')
-            return href ? matchBvid(href) : null
+                video.querySelector('.bili-video-card__wrap > a')?.getAttribute('href') ||
+                video.querySelector('.bili-video-card__info--right > a')?.getAttribute('href')
+            if (href) {
+                return matchBvid(href)
+            }
+            return null
         },
         uploader: (video: Element): string | null => {
             const uploader = video.querySelector('span.bili-video-card__info--author')?.textContent
@@ -48,35 +53,34 @@ if (isPageChannel()) {
         },
     }
     // 检测视频列表
-    const checkVideoList = (fullSite: boolean) => {
-        // debugFilter('checkVideoList start')
+    const checkVideoList = (_fullSite: boolean) => {
+        // debug('checkVideoList start')
         if (!videoListContainer) {
             // 在container未出现时, 各项屏蔽功能enable会调用checkVideoList, 需要判空
-            debugFilter(`checkVideoList videoListContainer not exist`)
+            debug(`checkVideoList videoListContainer not exist`)
             return
         }
         try {
-            let feedVideos: HTMLElement[]
-            if (!fullSite) {
-                // 选取增量
-                feedVideos = [
-                    ...videoListContainer.querySelectorAll<HTMLElement>(
-                        `.bili-grid .video-card-body .bili-video-card:not([${settings.filterSign}]),
-                        .feed-card-body .bili-video-card:not([${settings.filterSign}])`,
-                    ),
-                ]
-            } else {
-                // 选取全站, 含已过滤
-                feedVideos = [
-                    ...videoListContainer.querySelectorAll<HTMLElement>(
-                        `.bili-grid .video-card-body .bili-video-card,
-                        .feed-card-body .bili-video-card`,
-                    ),
-                ]
-            }
+            // 顶部UP主的视频列表
+            const topVideos = [
+                ...videoListContainer.querySelectorAll<HTMLElement>(`.user-video-info .video-list > .video-list-item`),
+            ]
+            // 普通搜索结果，视频列表
+            const contentVideos = [
+                ...videoListContainer.querySelectorAll<HTMLElement>(
+                    `.video.search-all-list .video-list > div, .search-page-video .video-list > div`,
+                ),
+            ]
 
-            feedVideos.length && coreFilterInstance.checkAll(feedVideos, true, feedSelectorFunc)
-            // debugFilter(`checkVideoList check ${feedVideos.length} feed videos`)
+            // 顶部UP主视频白名单
+            if (isTopUploaderWhitelistEnable) {
+                topVideos.forEach((video) => showVideo(video))
+            } else {
+                topVideos.length && coreFilterInstance.checkAll(topVideos, false, searchSelectorFunc)
+                debug(`checkVideoList check ${topVideos.length} top videos`)
+            }
+            contentVideos.length && coreFilterInstance.checkAll(contentVideos, false, searchSelectorFunc)
+            debug(`checkVideoList check ${contentVideos.length} content videos`)
         } catch (err) {
             error(err)
             error('checkVideoList error')
@@ -85,21 +89,19 @@ if (isPageChannel()) {
     // 监听视频列表内部变化, 有变化时检测视频列表
     const watchVideoListContainer = () => {
         if (videoListContainer) {
-            debugFilter('watchVideoListContainer start')
-            // 初次全站检测
+            debug('watchVideoListContainer start')
             checkVideoList(true)
             const videoObverser = new MutationObserver(() => {
-                // 增量检测
-                checkVideoList(false)
+                checkVideoList(true)
             })
             videoObverser.observe(videoListContainer, { childList: true, subtree: true })
-            debugFilter('watchVideoListContainer OK')
+            debug('watchVideoListContainer OK')
         }
     }
     try {
         // 监听视频列表出现
-        waitForEle(document, 'main.channel-layout', (node: Node): boolean => {
-            return node instanceof HTMLElement && (node as HTMLElement).className === 'channel-layout'
+        waitForEle(document, '.search-content', (node: Node): boolean => {
+            return node instanceof HTMLElement && (node as HTMLElement).className?.includes('search-content')
         }).then((ele) => {
             if (ele) {
                 videoListContainer = ele
@@ -114,36 +116,36 @@ if (isPageChannel()) {
     //=======================================================================================
 
     // 初始化 行为实例
-    const channelDurationAction = new DurationAction(
-        'channel-duration-filter-status',
+    const searchDurationAction = new DurationAction(
+        'search-duration-filter-status',
         'global-duration-filter-value',
         checkVideoList,
     )
-    const channelUploaderAction = new UploaderAction(
-        'channel-uploader-filter-status',
+    const searchUploaderAction = new UploaderAction(
+        'search-uploader-filter-status',
         'global-uploader-filter-value',
         checkVideoList,
     )
-    const channelBvidAction = new BvidAction('channel-bvid-filter-status', 'global-bvid-filter-value', checkVideoList)
-    const channelTitleKeywordAction = new TitleKeywordAction(
-        'channel-title-keyword-filter-status',
+    const searchBvidAction = new BvidAction('search-bvid-filter-status', 'global-bvid-filter-value', checkVideoList)
+    const searchTitleKeywordAction = new TitleKeywordAction(
+        'search-title-keyword-filter-status',
         'global-title-keyword-filter-value',
         checkVideoList,
     )
-    const channelUploaderWhitelistAction = new UploaderWhitelistAction(
-        'channel-uploader-whitelist-filter-status',
+    const searchUploaderWhitelistAction = new UploaderWhitelistAction(
+        'search-uploader-whitelist-filter-status',
         'global-uploader-whitelist-filter-value',
         checkVideoList,
     )
-    const channelTitleKeyworldWhitelistAction = new TitleKeywordWhitelistAction(
-        'channel-title-keyword-whitelist-filter-status',
+    const searchTitleKeyworldWhitelistAction = new TitleKeywordWhitelistAction(
+        'search-title-keyword-whitelist-filter-status',
         'global-title-keyword-whitelist-filter-value',
         checkVideoList,
     )
 
     //=======================================================================================
 
-    // 右键监听函数, 频道页右键单击指定元素时修改右键菜单, 用于屏蔽视频BVID, 屏蔽UP主
+    // 右键监听函数, 搜索页右键单击指定元素时修改右键菜单, 用于屏蔽视频BVID, 屏蔽UP主
     const contextMenuFunc = () => {
         if (isContextMenuFuncRunning) {
             return
@@ -152,7 +154,7 @@ if (isPageChannel()) {
         // 监听右键单击
         document.addEventListener('contextmenu', (e) => {
             if (e.target instanceof HTMLElement) {
-                // debugFilter(e.target.classList)
+                debug(e.target.classList)
                 if (
                     isContextMenuUploaderEnable &&
                     (e.target.classList.contains('bili-video-card__info--author') ||
@@ -164,10 +166,10 @@ if (isPageChannel()) {
                     if (uploader) {
                         e.preventDefault()
                         const onclickBlack = () => {
-                            channelUploaderAction.add(uploader)
+                            searchUploaderAction.add(uploader)
                         }
                         const onclickWhite = () => {
-                            channelUploaderWhitelistAction.add(uploader)
+                            searchUploaderWhitelistAction.add(uploader)
                         }
                         contextMenuInstance.registerMenu(`◎ 屏蔽UP主：${uploader}`, onclickBlack)
                         contextMenuInstance.registerMenu(`◎ 将UP主加入白名单`, onclickWhite)
@@ -175,17 +177,19 @@ if (isPageChannel()) {
                     }
                 } else if (
                     isContextMenuBvidEnable &&
-                    e.target.parentElement?.classList.contains('bili-video-card__info--tit')
+                    (e.target.classList.contains('bili-video-card__info--tit') ||
+                        (e.target.classList.contains('keyword') &&
+                            e.target.parentElement?.classList.contains('bili-video-card__info--tit')))
                 ) {
                     // 命中视频标题, 提取bvid
-                    const node = e.target.parentElement
-                    const href = node.querySelector(':scope > a')?.getAttribute('href')
+                    const node = e.target.closest('.bili-video-card__info--right')
+                    const href = node?.querySelector(':scope > a')?.getAttribute('href')
                     if (href) {
                         const bvid = matchBvid(href)
                         if (bvid) {
                             e.preventDefault()
                             const onclick = () => {
-                                channelBvidAction.add(bvid)
+                                searchBvidAction.add(bvid)
                             }
                             contextMenuInstance.registerMenu(`屏蔽视频：${bvid}`, onclick)
                             contextMenuInstance.show(e.clientX, e.clientY)
@@ -200,38 +204,26 @@ if (isPageChannel()) {
         document.addEventListener('click', () => {
             contextMenuInstance.hide()
         })
-        debugFilter('contextMenuFunc listen contextmenu')
+        debug('contextMenuFunc listen contextmenu')
     }
 
     //=======================================================================================
     // 构建UI菜单
 
-    // UI组件, 时长过滤
+    // UI组件, 时长过滤part
     const durationItems = [
-        // 启用 频道页时长过滤
         new CheckboxItem({
-            itemID: channelDurationAction.statusKey,
-            description: '启用 频道页时长过滤',
-            /**
-             * 需使用匿名函数包装后传参, 否则报错, 下同
-             *
-             * GPT4(对错未知):
-             * 当把一个类的方法作为回调函数直接传递给另一个函数时，
-             * 那个方法会失去它的上下文（也就是它的 this 值），因为它被调用的方式改变了。
-             * 在这种情况下，this 可能会变成 undefined（严格模式）或全局对象（非严格模式）
-             *
-             * 可以在传递方法时使用箭头函数来保持 this 的上下文
-             */
+            itemID: searchDurationAction.statusKey,
+            description: '启用 搜索页时长过滤',
             itemFunc: () => {
-                channelDurationAction.enable()
+                searchDurationAction.enable()
             },
             callback: () => {
-                channelDurationAction.disable()
+                searchDurationAction.disable()
             },
         }),
-        // 设定最低时长
         new NumberItem({
-            itemID: channelDurationAction.valueKey,
+            itemID: searchDurationAction.valueKey,
             description: '设定最低时长 (0~300s)',
             defaultValue: 60,
             minValue: 0,
@@ -239,152 +231,158 @@ if (isPageChannel()) {
             disableValue: 0,
             unit: '秒',
             callback: (value: number) => {
-                channelDurationAction.change(value)
+                searchDurationAction.change(value)
             },
         }),
     ]
-    channelFilterGroupList.push(new Group('channel-duration-filter-group', '频道页 视频时长过滤', durationItems))
+    searchFilterGroupList.push(new Group('search-duration-filter-group', '搜索页 视频时长过滤', durationItems))
 
-    // UI组件, UP主过滤
+    // UI组件, UP主过滤part
     const uploaderItems = [
-        // 启用 频道页UP主过滤
         new CheckboxItem({
-            itemID: channelUploaderAction.statusKey,
-            description: '启用 频道页UP主过滤',
+            itemID: searchUploaderAction.statusKey,
+            description: '启用 搜索页UP主过滤',
             itemFunc: () => {
                 // 启用右键功能
                 isContextMenuUploaderEnable = true
                 contextMenuFunc()
-                channelUploaderAction.enable()
+                searchUploaderAction.enable()
             },
             callback: () => {
                 // 禁用右键功能
                 isContextMenuUploaderEnable = false
-                channelUploaderAction.disable()
+                searchUploaderAction.disable()
             },
         }),
         // 按钮功能：打开uploader黑名单编辑框
         new ButtonItem({
-            itemID: 'channel-uploader-edit-button',
+            itemID: 'search-uploader-edit-button',
             description: '编辑 UP主黑名单',
             name: '编辑',
             // 按钮功能
             itemFunc: () => {
-                channelUploaderAction.blacklist.show()
+                searchUploaderAction.blacklist.show()
             },
         }),
     ]
-    channelFilterGroupList.push(
-        new Group('channel-uploader-filter-group', '频道页 UP主过滤 (右键单击UP主)', uploaderItems),
+    searchFilterGroupList.push(
+        new Group('search-uploader-filter-group', '搜索页 UP主过滤 (右键单击UP主)', uploaderItems),
     )
 
-    // UI组件, 标题关键词过滤
+    // UI组件, 标题关键词过滤part
     const titleKeywordItems = [
-        // 启用 频道页关键词过滤
         new CheckboxItem({
-            itemID: channelTitleKeywordAction.statusKey,
-            description: '启用 频道页关键词过滤',
+            itemID: searchTitleKeywordAction.statusKey,
+            description: '启用 搜索页关键词过滤',
             itemFunc: () => {
-                channelTitleKeywordAction.enable()
+                searchTitleKeywordAction.enable()
             },
             callback: () => {
-                channelTitleKeywordAction.disable()
+                searchTitleKeywordAction.disable()
             },
         }),
         // 按钮功能：打开titleKeyword黑名单编辑框
         new ButtonItem({
-            itemID: 'channel-title-keyword-edit-button',
+            itemID: 'search-title-keyword-edit-button',
             description: '编辑 关键词黑名单（支持正则）',
             name: '编辑',
             // 按钮功能
             itemFunc: () => {
-                channelTitleKeywordAction.blacklist.show()
+                searchTitleKeywordAction.blacklist.show()
             },
         }),
     ]
-    channelFilterGroupList.push(
-        new Group('channel-title-keyword-filter-group', '频道页 标题关键词过滤', titleKeywordItems),
+    searchFilterGroupList.push(
+        new Group('search-title-keyword-filter-group', '搜索页 标题关键词过滤', titleKeywordItems),
     )
 
-    // UI组件, bvid过滤
+    // UI组件, bvid过滤part
     const bvidItems = [
-        // 启用 频道页BV号过滤
         new CheckboxItem({
-            itemID: channelBvidAction.statusKey,
-            description: '启用 频道页BV号过滤',
+            itemID: searchBvidAction.statusKey,
+            description: '启用 搜索页BV号过滤',
             itemFunc: () => {
                 // 启用右键功能
                 isContextMenuBvidEnable = true
                 contextMenuFunc()
-                channelBvidAction.enable()
+                searchBvidAction.enable()
             },
             callback: () => {
                 // 禁用右键功能
                 isContextMenuBvidEnable = false
-                channelBvidAction.disable()
+                searchBvidAction.disable()
             },
         }),
         // 按钮功能：打开bvid黑名单编辑框
         new ButtonItem({
-            itemID: 'channel-bvid-edit-button',
+            itemID: 'search-bvid-edit-button',
             description: '编辑 BV号黑名单',
             name: '编辑',
             // 按钮功能
             itemFunc: () => {
-                channelBvidAction.blacklist.show()
+                searchBvidAction.blacklist.show()
             },
         }),
     ]
-    channelFilterGroupList.push(new Group('channel-bvid-filter-group', '频道页 BV号过滤 (右键单击标题)', bvidItems))
+    searchFilterGroupList.push(new Group('search-bvid-filter-group', '搜索页 BV号过滤 (右键单击标题)', bvidItems))
 
-    // UI组件, 例外和白名单
+    // UI组件, 例外和白名单part
     const whitelistItems = [
-        // 启用 频道页UP主白名单
+        // 顶部匹配UP主 免过滤, 默认开启
         new CheckboxItem({
-            itemID: channelUploaderWhitelistAction.statusKey,
-            description: '启用 频道页UP主白名单',
+            itemID: 'search-top-uploader-whitelist-filter-status',
+            description: '搜索结果顶部UP主视频免过滤',
+            defaultStatus: true,
             itemFunc: () => {
-                channelUploaderWhitelistAction.enable()
+                isTopUploaderWhitelistEnable = true
+                // 触发全站检测
+                checkVideoList(true)
             },
             callback: () => {
-                channelUploaderWhitelistAction.disable()
+                isTopUploaderWhitelistEnable = false
+                checkVideoList(true)
             },
         }),
-        // 编辑 UP主白名单
+        new CheckboxItem({
+            itemID: searchUploaderWhitelistAction.statusKey,
+            description: '启用 搜索页UP主白名单',
+            itemFunc: () => {
+                searchUploaderWhitelistAction.enable()
+            },
+            callback: () => {
+                searchUploaderWhitelistAction.disable()
+            },
+        }),
         new ButtonItem({
-            itemID: 'channel-uploader-whitelist-edit-button',
+            itemID: 'search-uploader-whitelist-edit-button',
             description: '编辑 UP主白名单',
             name: '编辑',
             // 按钮功能：显示白名单编辑器
             itemFunc: () => {
-                channelUploaderWhitelistAction.whitelist.show()
+                searchUploaderWhitelistAction.whitelist.show()
             },
         }),
-        // 启用 频道页标题关键词白名单
         new CheckboxItem({
-            itemID: channelTitleKeyworldWhitelistAction.statusKey,
-            description: '启用 频道页标题关键词白名单',
+            itemID: searchTitleKeyworldWhitelistAction.statusKey,
+            description: '启用 搜索页标题关键词白名单',
             itemFunc: () => {
-                channelTitleKeyworldWhitelistAction.enable()
+                searchTitleKeyworldWhitelistAction.enable()
             },
             callback: () => {
-                channelTitleKeyworldWhitelistAction.disable()
+                searchTitleKeyworldWhitelistAction.disable()
             },
         }),
-        // 编辑 关键词白名单
         new ButtonItem({
-            itemID: 'channel-title-keyword-whitelist-edit-button',
+            itemID: 'search-title-keyword-whitelist-edit-button',
             description: '编辑 关键词白名单（支持正则）',
             name: '编辑',
             // 按钮功能：显示白名单编辑器
             itemFunc: () => {
-                channelTitleKeyworldWhitelistAction.whitelist.show()
+                searchTitleKeyworldWhitelistAction.whitelist.show()
             },
         }),
     ]
-    channelFilterGroupList.push(
-        new Group('channel-whitelist-filter-group', '频道页 白名单设定 (免过滤)', whitelistItems),
-    )
+    searchFilterGroupList.push(new Group('search-whitelist-filter-group', '搜索页 白名单设定 (免过滤)', whitelistItems))
 }
 
-export { channelFilterGroupList }
+export { searchFilterGroupList }

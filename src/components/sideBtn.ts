@@ -1,5 +1,5 @@
 import { GM_getValue, GM_setValue } from '$'
-import { error, debug } from '../utils/logger'
+import { error, debugComponents as debug } from '../utils/logger'
 
 export class SideBtn {
     private nodeHTML = `<button class="bili-cleaner-side-btn" type="button"></button>`

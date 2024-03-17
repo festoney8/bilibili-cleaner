@@ -1,6 +1,6 @@
-import settings from '../../settings'
-import { debugFilter, error, log } from '../../utils/logger'
-import { hideVideo, isVideoHide, showVideo } from '../../utils/tool'
+import settings from '../../../settings'
+import { debugVideoFilter as debug, error, log } from '../../../utils/logger'
+import { hideVideo, isVideoHide, showVideo } from '../../../utils/tool'
 import bvidFilterInstance from './subfilters/bvid'
 import durationFilterInstance from './subfilters/duration'
 import titleKeywordFilterInstance from './subfilters/titleKeyword'
@@ -40,7 +40,7 @@ class CoreFilter {
      * @param selectorFunc 使用selector选取元素的函数
      */
     checkAll(videos: HTMLElement[], sign = true, selectorFunc: SelectorFunc) {
-        debugFilter(`checkAll start`)
+        debug(`checkAll start`)
         try {
             const checkDuration = durationFilterInstance.isEnable && selectorFunc.duration !== undefined
             const checkTitleKeyword = titleKeywordFilterInstance.isEnable && selectorFunc.titleKeyword !== undefined
@@ -110,7 +110,7 @@ class CoreFilter {
                 Promise.all(blackTasks)
                     .then((_result) => {
                         // 未命中黑名单
-                        // debugFilter(_result)
+                        // debug(_result)
                         showVideo(video)
                         Promise.all(whiteTasks)
                             .then((_result) => {})
@@ -118,12 +118,12 @@ class CoreFilter {
                     })
                     .catch((_result) => {
                         // 命中黑名单
-                        // debugFilter(_result)
+                        // debug(_result)
                         if (whiteTasks) {
                             Promise.all(whiteTasks)
                                 .then((_result) => {
                                     // 命中黑名单，未命中白名单
-                                    // debugFilter(_result)
+                                    // debug(_result)
                                     if (!isVideoHide(video)) {
                                         log(
                                             `hide video\nbvid: ${info.bvid}\ntime: ${info.duration}\nup: ${info.uploader}\ntitle: ${info.title}`,
@@ -133,7 +133,7 @@ class CoreFilter {
                                 })
                                 .catch((_result) => {
                                     // 命中白名单
-                                    // debugFilter(_result)
+                                    // debug(_result)
                                     showVideo(video)
                                 })
                         } else {

@@ -1,5 +1,5 @@
 import { GM_getValue, GM_setValue } from '$'
-import { debug, error } from '../utils/logger'
+import { debugComponents as debug, error } from '../utils/logger'
 
 export class WordList {
     private wordArr: string[] = []

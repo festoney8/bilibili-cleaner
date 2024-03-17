@@ -1,11 +1,11 @@
-import { debugFilter, error } from '../../utils/logger'
-import { ButtonItem, CheckboxItem, NumberItem } from '../../components/item'
-import { Group } from '../../components/group'
+import { debugVideoFilter as debug, error } from '../../../utils/logger'
+import { ButtonItem, CheckboxItem, NumberItem } from '../../../components/item'
+import { Group } from '../../../components/group'
 import coreFilterInstance, { SelectorFunc } from '../filters/core'
-import settings from '../../settings'
-import { isPageHomepage } from '../../utils/page-type'
-import contextMenuInstance from '../../components/contextmenu'
-import { matchBvid, showVideo, waitForEle } from '../../utils/tool'
+import settings from '../../../settings'
+import { isPageHomepage } from '../../../utils/page-type'
+import contextMenuInstance from '../../../components/contextmenu'
+import { matchBvid, showVideo, waitForEle } from '../../../utils/tool'
 import {
     BvidAction,
     DurationAction,
@@ -57,10 +57,10 @@ if (isPageHomepage()) {
     const feedSelectorFunc = rcmdSelectorFunc
     // 检测视频列表
     const checkVideoList = (fullSite: boolean) => {
-        // debugFilter('checkVideoList start')
+        // debug('checkVideoList start')
         if (!videoListContainer) {
             // 在container未出现时, 各项屏蔽功能enable会调用checkVideoList, 需要判空
-            debugFilter(`checkVideoList videoListContainer not exist`)
+            debug(`checkVideoList videoListContainer not exist`)
             return
         }
         try {
@@ -107,9 +107,9 @@ if (isPageHomepage()) {
             }
 
             feedVideos.length && coreFilterInstance.checkAll(feedVideos, true, feedSelectorFunc)
-            // debugFilter(`checkVideoList check ${rcmdVideos.length} rcmd videos`)
+            // debug(`checkVideoList check ${rcmdVideos.length} rcmd videos`)
             rcmdVideos.length && coreFilterInstance.checkAll(rcmdVideos, true, rcmdSelectorFunc)
-            // debugFilter(`checkVideoList check ${feedVideos.length} feed videos`)
+            // debug(`checkVideoList check ${feedVideos.length} feed videos`)
         } catch (err) {
             error(err)
             error('checkVideoList error')
@@ -118,7 +118,7 @@ if (isPageHomepage()) {
     // 监听视频列表内部变化, 有变化时检测视频列表
     const watchVideoListContainer = () => {
         if (videoListContainer) {
-            debugFilter('watchVideoListContainer start')
+            debug('watchVideoListContainer start')
             // 初次全站检测
             checkVideoList(true)
             const videoObverser = new MutationObserver(() => {
@@ -126,7 +126,7 @@ if (isPageHomepage()) {
                 checkVideoList(false)
             })
             videoObverser.observe(videoListContainer, { childList: true })
-            debugFilter('watchVideoListContainer OK')
+            debug('watchVideoListContainer OK')
         }
     }
 
@@ -186,7 +186,7 @@ if (isPageHomepage()) {
         // 监听右键单击
         document.addEventListener('contextmenu', (e) => {
             if (e.target instanceof HTMLElement) {
-                // debugFilter(e.target.classList)
+                // debug(e.target.classList)
                 if (
                     isContextMenuUploaderEnable &&
                     (e.target.classList.contains('bili-video-card__info--author') ||
@@ -234,7 +234,7 @@ if (isPageHomepage()) {
         document.addEventListener('click', () => {
             contextMenuInstance.hide()
         })
-        debugFilter('contextMenuFunc listen contextmenu')
+        debug('contextMenuFunc listen contextmenu')
     }
 
     //=======================================================================================

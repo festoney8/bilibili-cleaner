@@ -1,6 +1,6 @@
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
-import { debug } from '../utils/logger'
+import { debugRules as debug } from '../utils/logger'
 import { isPageBangumi } from '../utils/page-type'
 
 // GroupList

@@ -1,4 +1,4 @@
-import { debugFilter, error } from '../../../utils/logger'
+import { error } from '../../../../utils/logger'
 import { ISubFilter } from '../core'
 
 class UploaderWhitelistFilter implements ISubFilter {
@@ -10,12 +10,12 @@ class UploaderWhitelistFilter implements ISubFilter {
     }
 
     setParams(values: string[]) {
-        debugFilter(`UploaderWhitelist`, Array.from(this.uploaderSet).join('|'))
+        // debug(`UploaderWhitelist`, Array.from(this.uploaderSet).join('|'))
         this.uploaderSet = new Set(values.map((v) => v.trim()).filter((v) => v))
     }
 
     addParam(value: string) {
-        debugFilter(`UploaderWhitelist`, Array.from(this.uploaderSet).join('|'))
+        // debug(`UploaderWhitelist`, Array.from(this.uploaderSet).join('|'))
         if (value.trim()) {
             this.uploaderSet.add(value.trim())
         }

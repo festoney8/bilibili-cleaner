@@ -1,6 +1,6 @@
 import { GM_getValue } from '$'
-import { WordList } from '../../../components/wordlist'
-import { debugFilter } from '../../../utils/logger'
+import { WordList } from '../../../../components/wordlist'
+import { debugVideoFilter as debug } from '../../../../utils/logger'
 import agencyInstance from '../../agency/agency'
 import bvidFilterInstance from '../../filters/subfilters/bvid'
 import durationFilterInstance from '../../filters/subfilters/duration'
@@ -55,19 +55,19 @@ export class DurationAction implements Action {
         durationFilterInstance.setParams(this.value)
     }
     enable() {
-        debugFilter(`DurationAction enable`)
+        debug(`DurationAction enable`)
         // 告知agency
         agencyInstance.notifyDuration('enable')
         // 触发全站过滤
         this.checkVideoList(true)
     }
     disable() {
-        debugFilter(`DurationAction disable`)
+        debug(`DurationAction disable`)
         agencyInstance.notifyDuration('disable')
         this.checkVideoList(true)
     }
     change(value: number) {
-        debugFilter(`DurationAction change ${value}`)
+        debug(`DurationAction change ${value}`)
         agencyInstance.notifyDuration('change', value)
         this.checkVideoList(true)
     }

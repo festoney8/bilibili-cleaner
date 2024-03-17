@@ -1,6 +1,6 @@
 import settings from '../../../settings'
 import { debugVideoFilter as debug, error, log } from '../../../utils/logger'
-import { hideVideo, isVideoHide, showVideo } from '../../../utils/tool'
+import { hideEle, isEleHide, showEle } from '../../../utils/tool'
 import bvidFilterInstance from './subfilters/bvid'
 import durationFilterInstance from './subfilters/duration'
 import titleKeywordFilterInstance from './subfilters/titleKeyword'
@@ -8,8 +8,8 @@ import titleKeywordWhitelistFilterInstance from './subfilters/titleKeywordWhitel
 import uploaderFilterInstance from './subfilters/uploader'
 import uploaderWhitelistFilterInstance from './subfilters/uploaderWhitelist'
 
-// 子过滤器实现ISubFilter，包括白名单
-export interface ISubFilter {
+// 子过滤器实现IVideoSubFilter，包括白名单
+export interface IVideoSubFilter {
     isEnable: boolean
     setStatus(status: boolean): void
     setParams(value: string[] | number): void
@@ -17,7 +17,7 @@ export interface ISubFilter {
     check(value: string): Promise<string>
 }
 
-export type SelectorFunc = {
+export type VideoSelectorFunc = {
     duration?: (video: HTMLElement) => string | null
     titleKeyword?: (video: HTMLElement) => string | null
     bvid?: (video: HTMLElement) => string | null
@@ -31,7 +31,7 @@ interface VideoInfo {
     bvid?: string | undefined
 }
 
-class CoreFilter {
+class CoreVideoFilter {
     /**
      * 检测视频列表中每个视频是否合法, 并隐藏不合法的视频
      * 对选取出的 标题/UP主/时长/BVID 进行并发检测
@@ -39,7 +39,7 @@ class CoreFilter {
      * @param sign attribute标记
      * @param selectorFunc 使用selector选取元素的函数
      */
-    checkAll(videos: HTMLElement[], sign = true, selectorFunc: SelectorFunc) {
+    checkAll(videos: HTMLElement[], sign = true, selectorFunc: VideoSelectorFunc) {
         debug(`checkAll start`)
         try {
             const checkDuration = durationFilterInstance.isEnable && selectorFunc.duration !== undefined
@@ -53,7 +53,7 @@ class CoreFilter {
 
             if (!checkDuration && !checkTitleKeyword && !checkUploader && !checkBvid) {
                 // 黑名单全部关闭时 恢复全部视频
-                videos.forEach((video) => showVideo(video))
+                videos.forEach((video) => showEle(video))
                 return
             }
 
@@ -111,7 +111,7 @@ class CoreFilter {
                     .then((_result) => {
                         // 未命中黑名单
                         // debug(_result)
-                        showVideo(video)
+                        showEle(video)
                         Promise.all(whiteTasks)
                             .then((_result) => {})
                             .catch((_result) => {})
@@ -124,25 +124,25 @@ class CoreFilter {
                                 .then((_result) => {
                                     // 命中黑名单，未命中白名单
                                     // debug(_result)
-                                    if (!isVideoHide(video)) {
+                                    if (!isEleHide(video)) {
                                         log(
                                             `hide video\nbvid: ${info.bvid}\ntime: ${info.duration}\nup: ${info.uploader}\ntitle: ${info.title}`,
                                         )
                                     }
-                                    hideVideo(video)
+                                    hideEle(video)
                                 })
                                 .catch((_result) => {
                                     // 命中白名单
                                     // debug(_result)
-                                    showVideo(video)
+                                    showEle(video)
                                 })
                         } else {
-                            if (!isVideoHide(video)) {
+                            if (!isEleHide(video)) {
                                 log(
                                     `hide video\nbvid: ${info.bvid}\ntime: ${info.duration}\nup: ${info.uploader}\ntitle: ${info.title}`,
                                 )
                             }
-                            hideVideo(video)
+                            hideEle(video)
                         }
                     })
 
@@ -156,6 +156,6 @@ class CoreFilter {
     }
 }
 
-// CoreFilter全局单例
-const coreFilterInstance = new CoreFilter()
-export default coreFilterInstance
+// CoreVideoFilter全局单例
+const coreVideoFilterInstance = new CoreVideoFilter()
+export default coreVideoFilterInstance

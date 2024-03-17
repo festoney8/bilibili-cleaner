@@ -1,5 +1,5 @@
 import { debugVideoFilter as debug, error } from '../../../utils/logger'
-import coreFilterInstance, { SelectorFunc } from '../filters/core'
+import coreFilterInstance, { VideoSelectorFunc } from '../filters/core'
 import { ButtonItem, CheckboxItem } from '../../../components/item'
 import { Group } from '../../../components/group'
 import settings from '../../../settings'
@@ -14,7 +14,7 @@ import {
     UploaderWhitelistAction,
 } from './actions/action'
 
-const popularFilterGroupList: Group[] = []
+const popularPageVideoFilterGroupList: Group[] = []
 
 // 右键菜单功能, 全局控制
 let isContextMenuFuncRunning = false
@@ -24,7 +24,7 @@ let isContextMenuBvidEnable = false
 if (isPagePopular()) {
     let videoListContainer: HTMLElement
     // 构建SelectorFunc
-    const hotSelectorFunc: SelectorFunc = {
+    const hotSelectorFunc: VideoSelectorFunc = {
         // popular页 无duration
         titleKeyword: (video: Element): string | null => {
             const titleKeyword =
@@ -245,7 +245,7 @@ if (isPagePopular()) {
             },
         }),
     ]
-    popularFilterGroupList.push(
+    popularPageVideoFilterGroupList.push(
         new Group('popular-uploader-filter-group', '热门页 UP主过滤 (右键单击UP主)', uploaderItems),
     )
 
@@ -273,7 +273,7 @@ if (isPagePopular()) {
             },
         }),
     ]
-    popularFilterGroupList.push(
+    popularPageVideoFilterGroupList.push(
         new Group('popular-title-keyword-filter-group', '热门页 标题关键词过滤', titleKeywordItems),
     )
 
@@ -306,7 +306,9 @@ if (isPagePopular()) {
             },
         }),
     ]
-    popularFilterGroupList.push(new Group('popular-bvid-filter-group', '热门页 BV号过滤 (右键单击标题)', bvidItems))
+    popularPageVideoFilterGroupList.push(
+        new Group('popular-bvid-filter-group', '热门页 BV号过滤 (右键单击标题)', bvidItems),
+    )
 
     // UI组件, 例外和白名单part
     const whitelistItems = [
@@ -353,9 +355,9 @@ if (isPagePopular()) {
             },
         }),
     ]
-    popularFilterGroupList.push(
+    popularPageVideoFilterGroupList.push(
         new Group('popular-whitelist-filter-group', '热门页 白名单设定 (免过滤)', whitelistItems),
     )
 }
 
-export { popularFilterGroupList }
+export { popularPageVideoFilterGroupList }

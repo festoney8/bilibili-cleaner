@@ -1,10 +1,10 @@
 import { debugVideoFilter as debug, error } from '../../../utils/logger'
 import { ButtonItem, CheckboxItem, NumberItem } from '../../../components/item'
 import { Group } from '../../../components/group'
-import coreFilterInstance, { SelectorFunc } from '../filters/core'
+import coreFilterInstance, { VideoSelectorFunc } from '../filters/core'
 import { isPageSearch } from '../../../utils/page-type'
 import contextMenuInstance from '../../../components/contextmenu'
-import { matchBvid, showVideo, waitForEle } from '../../../utils/tool'
+import { matchBvid, showEle, waitForEle } from '../../../utils/tool'
 import {
     BvidAction,
     DurationAction,
@@ -15,7 +15,7 @@ import {
 } from './actions/action'
 import { GM_getValue } from '$'
 
-const searchFilterGroupList: Group[] = []
+const searchPageVideoFilterGroupList: Group[] = []
 
 // 右键菜单功能, 全局控制
 let isContextMenuFuncRunning = false
@@ -27,7 +27,7 @@ let isTopUploaderWhitelistEnable: boolean = GM_getValue('BILICLEANER_search-top-
 if (isPageSearch()) {
     let videoListContainer: HTMLElement
     // 构建SelectorFunc
-    const searchSelectorFunc: SelectorFunc = {
+    const searchSelectorFunc: VideoSelectorFunc = {
         duration: (video: Element): string | null => {
             const duration = video.querySelector('span.bili-video-card__stats__duration')?.textContent
             return duration ? duration : null
@@ -74,7 +74,7 @@ if (isPageSearch()) {
 
             // 顶部UP主视频白名单
             if (isTopUploaderWhitelistEnable) {
-                topVideos.forEach((video) => showVideo(video))
+                topVideos.forEach((video) => showEle(video))
             } else {
                 topVideos.length && coreFilterInstance.checkAll(topVideos, false, searchSelectorFunc)
                 debug(`checkVideoList check ${topVideos.length} top videos`)
@@ -235,7 +235,7 @@ if (isPageSearch()) {
             },
         }),
     ]
-    searchFilterGroupList.push(new Group('search-duration-filter-group', '搜索页 视频时长过滤', durationItems))
+    searchPageVideoFilterGroupList.push(new Group('search-duration-filter-group', '搜索页 视频时长过滤', durationItems))
 
     // UI组件, UP主过滤part
     const uploaderItems = [
@@ -265,7 +265,7 @@ if (isPageSearch()) {
             },
         }),
     ]
-    searchFilterGroupList.push(
+    searchPageVideoFilterGroupList.push(
         new Group('search-uploader-filter-group', '搜索页 UP主过滤 (右键单击UP主)', uploaderItems),
     )
 
@@ -292,7 +292,7 @@ if (isPageSearch()) {
             },
         }),
     ]
-    searchFilterGroupList.push(
+    searchPageVideoFilterGroupList.push(
         new Group('search-title-keyword-filter-group', '搜索页 标题关键词过滤', titleKeywordItems),
     )
 
@@ -324,7 +324,9 @@ if (isPageSearch()) {
             },
         }),
     ]
-    searchFilterGroupList.push(new Group('search-bvid-filter-group', '搜索页 BV号过滤 (右键单击标题)', bvidItems))
+    searchPageVideoFilterGroupList.push(
+        new Group('search-bvid-filter-group', '搜索页 BV号过滤 (右键单击标题)', bvidItems),
+    )
 
     // UI组件, 例外和白名单part
     const whitelistItems = [
@@ -382,7 +384,9 @@ if (isPageSearch()) {
             },
         }),
     ]
-    searchFilterGroupList.push(new Group('search-whitelist-filter-group', '搜索页 白名单设定 (免过滤)', whitelistItems))
+    searchPageVideoFilterGroupList.push(
+        new Group('search-whitelist-filter-group', '搜索页 白名单设定 (免过滤)', whitelistItems),
+    )
 }
 
-export { searchFilterGroupList }
+export { searchPageVideoFilterGroupList }

@@ -1,11 +1,11 @@
 import { debugVideoFilter as debug, error } from '../../../utils/logger'
 import { ButtonItem, CheckboxItem, NumberItem } from '../../../components/item'
 import { Group } from '../../../components/group'
-import coreFilterInstance, { SelectorFunc } from '../filters/core'
+import coreFilterInstance, { VideoSelectorFunc } from '../filters/core'
 import settings from '../../../settings'
 import { isPageHomepage } from '../../../utils/page-type'
 import contextMenuInstance from '../../../components/contextmenu'
-import { matchBvid, showVideo, waitForEle } from '../../../utils/tool'
+import { matchBvid, showEle, waitForEle } from '../../../utils/tool'
 import {
     BvidAction,
     DurationAction,
@@ -16,7 +16,7 @@ import {
 } from './actions/action'
 import { GM_getValue } from '$'
 
-const homepageFilterGroupList: Group[] = []
+const homepagePageVideoFilterGroupList: Group[] = []
 
 // 右键菜单功能, 全局控制
 let isContextMenuFuncRunning = false
@@ -28,7 +28,7 @@ let isFollowingWhitelistEnable: boolean = GM_getValue('BILICLEANER_homepage-foll
 if (isPageHomepage()) {
     let videoListContainer: HTMLElement
     // 构建SelectorFunc
-    const rcmdSelectorFunc: SelectorFunc = {
+    const rcmdSelectorFunc: VideoSelectorFunc = {
         duration: (video: Element): string | null => {
             const duration = video.querySelector('span.bili-video-card__stats__duration')?.textContent
             return duration ? duration : null
@@ -92,7 +92,7 @@ if (isPageHomepage()) {
                     const icontext = video.querySelector('.bili-video-card__info--icon-text')?.textContent?.trim()
                     if (icontext === '已关注') {
                         // 清除隐藏状态
-                        showVideo(video)
+                        showEle(video)
                     }
                     return icontext !== '已关注'
                 })
@@ -100,7 +100,7 @@ if (isPageHomepage()) {
                     const icontext = video.querySelector('.bili-video-card__info--icon-text')?.textContent?.trim()
                     if (icontext === '已关注') {
                         // 清除隐藏状态
-                        showVideo(video)
+                        showEle(video)
                     }
                     return icontext !== '已关注'
                 })
@@ -277,7 +277,9 @@ if (isPageHomepage()) {
             },
         }),
     ]
-    homepageFilterGroupList.push(new Group('homepage-duration-filter-group', '首页 视频时长过滤', durationItems))
+    homepagePageVideoFilterGroupList.push(
+        new Group('homepage-duration-filter-group', '首页 视频时长过滤', durationItems),
+    )
 
     // UI组件, UP主过滤
     const uploaderItems = [
@@ -308,7 +310,7 @@ if (isPageHomepage()) {
             },
         }),
     ]
-    homepageFilterGroupList.push(
+    homepagePageVideoFilterGroupList.push(
         new Group('homepage-uploader-filter-group', '首页 UP主过滤 (右键单击UP主)', uploaderItems),
     )
 
@@ -336,7 +338,7 @@ if (isPageHomepage()) {
             },
         }),
     ]
-    homepageFilterGroupList.push(
+    homepagePageVideoFilterGroupList.push(
         new Group('homepage-title-keyword-filter-group', '首页 标题关键词过滤', titleKeywordItems),
     )
 
@@ -369,7 +371,9 @@ if (isPageHomepage()) {
             },
         }),
     ]
-    homepageFilterGroupList.push(new Group('homepage-bvid-filter-group', '首页 BV号过滤 (右键单击标题)', bvidItems))
+    homepagePageVideoFilterGroupList.push(
+        new Group('homepage-bvid-filter-group', '首页 BV号过滤 (右键单击标题)', bvidItems),
+    )
 
     // UI组件, 例外和白名单
     const whitelistItems = [
@@ -431,9 +435,9 @@ if (isPageHomepage()) {
             },
         }),
     ]
-    homepageFilterGroupList.push(
+    homepagePageVideoFilterGroupList.push(
         new Group('homepage-whitelist-filter-group', '首页 白名单设定 (免过滤)', whitelistItems),
     )
 }
 
-export { homepageFilterGroupList }
+export { homepagePageVideoFilterGroupList }

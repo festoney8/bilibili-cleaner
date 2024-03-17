@@ -1,7 +1,7 @@
 import { error } from '../../../../utils/logger'
-import { ISubFilter } from '../core'
+import { IVideoSubFilter } from '../core'
 
-class TitleKeywordFilter implements ISubFilter {
+class TitleKeywordFilter implements IVideoSubFilter {
     isEnable = false
     private titleKeywordSet = new Set<string>()
 

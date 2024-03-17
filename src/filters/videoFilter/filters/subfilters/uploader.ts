@@ -1,7 +1,7 @@
 import { error } from '../../../../utils/logger'
-import { ISubFilter } from '../core'
+import { IVideoSubFilter } from '../core'
 
-class UploaderFilter implements ISubFilter {
+class UploaderFilter implements IVideoSubFilter {
     isEnable = false
     private uploaderSet = new Set<string>()
 

@@ -12,13 +12,13 @@ import { liveGroupList } from './rules/live'
 import { dynamicGroupList } from './rules/dynamic'
 import { popularGroupList } from './rules/popular'
 import { isPageChannel, isPageHomepage, isPagePopular, isPageSearch, isPageVideo } from './utils/page-type'
-import { homepageFilterGroupList } from './filters/videoFilter/pages/homepage'
-import { videoFilterGroupList } from './filters/videoFilter/pages/video'
-import { popularFilterGroupList } from './filters/videoFilter/pages/popular'
-import { searchFilterGroupList } from './filters/videoFilter/pages/search'
+import { homepagePageVideoFilterGroupList } from './filters/videoFilter/pages/homepage'
+import { videoPageVideoFilterGroupList } from './filters/videoFilter/pages/video'
+import { popularPageVideoFilterGroupList } from './filters/videoFilter/pages/popular'
+import { searchPageVideoFilterGroupList } from './filters/videoFilter/pages/search'
 import { SideBtn } from './components/sideBtn'
 import { channelGroupList } from './rules/channel'
-import { channelFilterGroupList } from './filters/videoFilter/pages/channel'
+import { channelPageVideoFilterGroupList } from './filters/videoFilter/pages/channel'
 import panelInstance from './components/panel'
 
 log('script start')
@@ -48,11 +48,11 @@ const main = async () => {
 
     // 载入视频过滤器
     const VIDEO_FILTER_GROUPS: Group[] = [
-        ...homepageFilterGroupList,
-        ...videoFilterGroupList,
-        ...popularFilterGroupList,
-        ...searchFilterGroupList,
-        ...channelFilterGroupList,
+        ...homepagePageVideoFilterGroupList,
+        ...videoPageVideoFilterGroupList,
+        ...popularPageVideoFilterGroupList,
+        ...searchPageVideoFilterGroupList,
+        ...channelPageVideoFilterGroupList,
     ]
     VIDEO_FILTER_GROUPS.forEach((e) => e.enableGroup())
 

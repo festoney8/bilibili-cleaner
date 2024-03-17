@@ -19,19 +19,19 @@ export const matchAvidBvid = (s: string): string | null => {
     return null
 }
 
-// 隐藏视频
-export const hideVideo = (video: HTMLElement) => {
-    video.style.setProperty('display', 'none', 'important')
+// 隐藏元素
+export const hideEle = (ele: HTMLElement) => {
+    ele.style.setProperty('display', 'none', 'important')
 }
-// 显示视频
-export const showVideo = (video: HTMLElement) => {
-    if (video.style.display === 'none') {
-        video.style.removeProperty('display')
+// 显示元素
+export const showEle = (ele: HTMLElement) => {
+    if (ele.style.display === 'none') {
+        ele.style.removeProperty('display')
     }
 }
 // 判断是否隐藏中
-export const isVideoHide = (video: HTMLElement) => {
-    return video.style.display === 'none'
+export const isEleHide = (ele: HTMLElement) => {
+    return ele.style.display === 'none'
 }
 
 /**

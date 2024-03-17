@@ -1,7 +1,7 @@
 import { error } from '../../../../utils/logger'
-import { ISubFilter } from '../core'
+import { IVideoSubFilter } from '../core'
 
-class DurationFilter implements ISubFilter {
+class DurationFilter implements IVideoSubFilter {
     // 匹配时长的正则
     private readonly pattern = /^(\d+:)?\d\d:\d\d$/g
     // 时长阈值, 单位秒

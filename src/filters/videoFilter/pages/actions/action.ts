@@ -10,7 +10,7 @@ import uploaderFilterInstance from '../../filters/subfilters/uploader'
 import uploaderWhitelistFilterInstance from '../../filters/subfilters/uploaderWhitelist'
 
 // 定义各种黑名单功能、白名单功能的属性和行为
-interface Action {
+interface VideoFilterAction {
     statusKey: string
     valueKey: string
     status: boolean
@@ -31,7 +31,7 @@ interface Action {
  * 将类的成员函数作为参数传递时，【必须】使用箭头函数包裹，避免出现this上下文丢失问题
  */
 
-export class DurationAction implements Action {
+export class DurationAction implements VideoFilterAction {
     statusKey: string
     valueKey: string
     checkVideoList: (fullSite: boolean) => void
@@ -73,7 +73,7 @@ export class DurationAction implements Action {
     }
 }
 
-export class UploaderAction implements Action {
+export class UploaderAction implements VideoFilterAction {
     statusKey: string
     valueKey: string
     checkVideoList: (fullSite: boolean) => void
@@ -125,7 +125,7 @@ export class UploaderAction implements Action {
     }
 }
 
-export class BvidAction implements Action {
+export class BvidAction implements VideoFilterAction {
     statusKey: string
     valueKey: string
     checkVideoList: (fullSite: boolean) => void
@@ -177,7 +177,7 @@ export class BvidAction implements Action {
     }
 }
 
-export class TitleKeywordAction implements Action {
+export class TitleKeywordAction implements VideoFilterAction {
     statusKey: string
     valueKey: string
     checkVideoList: (fullSite: boolean) => void
@@ -234,7 +234,7 @@ export class TitleKeywordAction implements Action {
     }
 }
 
-export class UploaderWhitelistAction implements Action {
+export class UploaderWhitelistAction implements VideoFilterAction {
     statusKey: string
     valueKey: string
     checkVideoList: (fullSite: boolean) => void
@@ -286,7 +286,7 @@ export class UploaderWhitelistAction implements Action {
     }
 }
 
-export class TitleKeywordWhitelistAction implements Action {
+export class TitleKeywordWhitelistAction implements VideoFilterAction {
     statusKey: string
     valueKey: string
     checkVideoList: (fullSite: boolean) => void

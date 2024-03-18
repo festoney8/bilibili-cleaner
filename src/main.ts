@@ -11,7 +11,14 @@ import { searchGroupList } from './rules/search'
 import { liveGroupList } from './rules/live'
 import { dynamicGroupList } from './rules/dynamic'
 import { popularGroupList } from './rules/popular'
-import { isPageChannel, isPageHomepage, isPagePopular, isPageSearch, isPageVideo } from './utils/page-type'
+import {
+    isPageBangumi,
+    isPageChannel,
+    isPageHomepage,
+    isPagePopular,
+    isPageSearch,
+    isPageVideo,
+} from './utils/page-type'
 import { homepagePageVideoFilterGroupList } from './filters/videoFilter/pages/homepage'
 import { videoPageVideoFilterGroupList } from './filters/videoFilter/pages/video'
 import { popularPageVideoFilterGroupList } from './filters/videoFilter/pages/popular'
@@ -20,6 +27,7 @@ import { SideBtn } from './components/sideBtn'
 import { channelGroupList } from './rules/channel'
 import { channelPageVideoFilterGroupList } from './filters/videoFilter/pages/channel'
 import panelInstance from './components/panel'
+import { videoPageCommentFilterGroupList } from './filters/commentFilter/pages/video'
 
 log('script start')
 
@@ -55,6 +63,10 @@ const main = async () => {
         ...channelPageVideoFilterGroupList,
     ]
     VIDEO_FILTER_GROUPS.forEach((e) => e.enableGroup())
+
+    // 载入评论过滤器
+    const COMMENT_FILTER_GROUPS: Group[] = [...videoPageCommentFilterGroupList]
+    COMMENT_FILTER_GROUPS.forEach((e) => e.enableGroup())
 
     // 监听各种形式的URL变化 (普通监听无法检测到切换视频)
     let lastURL = location.href
@@ -143,11 +155,39 @@ const main = async () => {
         )
         if (GM_getValue(`BILICLEANER_${videoFilterSideBtnID}`, false)) {
             sideBtn.enable()
-            GM_registerMenuCommand('⚡️关闭 过滤器快捷按钮 (需刷新)', () => {
+            GM_registerMenuCommand('⚡️关闭 视频过滤 快捷按钮 (刷新)', () => {
                 sideBtn.disable()
             })
         } else {
-            GM_registerMenuCommand('⚡️启用 过滤器快捷按钮 (需刷新)', () => {
+            GM_registerMenuCommand('⚡️启用 视频过滤 快捷按钮 (刷新)', () => {
+                sideBtn.enable()
+            })
+        }
+    }
+    if (isPageVideo() || isPageBangumi()) {
+        GM_registerMenuCommand('✅评论过滤设置', () => {
+            createPanelWithMode('filter', COMMENT_FILTER_GROUPS)
+        })
+
+        // 评论过滤 快捷按钮
+        const commentFilterSideBtnID = 'comment-filter-side-btn'
+        const sideBtn = new SideBtn(
+            commentFilterSideBtnID,
+            '评论过滤',
+            () => {
+                createPanelWithMode('filter', COMMENT_FILTER_GROUPS)
+            },
+            () => {
+                panelInstance.hide()
+            },
+        )
+        if (GM_getValue(`BILICLEANER_${commentFilterSideBtnID}`, false)) {
+            sideBtn.enable()
+            GM_registerMenuCommand('⚡️关闭 评论过滤 快捷按钮 (刷新)', () => {
+                sideBtn.disable()
+            })
+        } else {
+            GM_registerMenuCommand('⚡️启用 评论过滤 快捷按钮 (刷新)', () => {
                 sideBtn.enable()
             })
         }

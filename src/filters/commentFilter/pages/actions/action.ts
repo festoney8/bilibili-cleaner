@@ -1,0 +1,137 @@
+import { GM_getValue } from '$'
+import { WordList } from '../../../../components/wordlist'
+import commentFilterAgencyInstance from '../../agency/agency'
+import contentFilterInstance from '../../filters/subfilters/content'
+import usernameFilterInstance from '../../filters/subfilters/username'
+
+// 定义各种黑名单功能、白名单功能的属性和行为
+interface CommentFilterAction {
+    statusKey: string
+    valueKey: string
+    status: boolean
+    value: number | string | string[]
+    // 检测评论列表的函数
+    checkCommentList(fullSite: boolean): void
+    blacklist?: WordList
+    whitelist?: WordList
+
+    enable(): void
+    disable(): void
+    change?(value: number): void
+    add?(value: string): void
+    edit?(value: string[]): void
+}
+
+/**
+ * 将类的成员函数作为参数传递时，【必须】使用箭头函数包裹，避免出现this上下文丢失问题
+ */
+
+export class UsernameAction implements CommentFilterAction {
+    statusKey: string
+    valueKey: string
+    checkCommentList: (fullSite: boolean) => void
+    status: boolean
+    value: string[]
+    blacklist: WordList
+
+    /**
+     * 评论区用户过滤操作
+     * @param statusKey 是否启用的GM key
+     * @param valueKey 存储数据的GM key
+     * @param checkCommentList 检测评论列表函数
+     */
+    constructor(statusKey: string, valueKey: string, checkCommentList: (fullSite: boolean) => void) {
+        this.statusKey = statusKey
+        this.valueKey = valueKey
+        this.status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
+        this.value = GM_getValue(`BILICLEANER_${this.valueKey}`, [])
+        this.checkCommentList = checkCommentList
+
+        // 配置子过滤器
+        usernameFilterInstance.setStatus(this.status)
+        usernameFilterInstance.setParams(this.value)
+        // 初始化黑名单, callback触发edit, 必需用箭头函数
+        this.blacklist = new WordList(
+            this.valueKey,
+            '用户名 黑名单',
+            '保存时自动去重，实时生效',
+            (values: string[]) => {
+                this.edit(values)
+            },
+        )
+    }
+
+    enable() {
+        commentFilterAgencyInstance.notifyUsername('enable')
+        this.checkCommentList(true)
+    }
+    disable() {
+        commentFilterAgencyInstance.notifyUsername('disable')
+        this.checkCommentList(true)
+    }
+    add(value: string) {
+        this.blacklist.addValue(value)
+        commentFilterAgencyInstance.notifyUsername('add', value)
+        this.checkCommentList(true)
+    }
+    edit(values: string[]) {
+        commentFilterAgencyInstance.notifyUsername('edit', values)
+        this.checkCommentList(true)
+    }
+}
+
+export class ContentAction implements CommentFilterAction {
+    statusKey: string
+    valueKey: string
+    checkCommentList: (fullSite: boolean) => void
+    status: boolean
+    value: string[]
+    blacklist: WordList
+
+    /**
+     * 评论内容关键字过滤操作
+     * @param statusKey 是否启用的GM key
+     * @param valueKey 存储数据的GM key
+     * @param checkCommentList 检测评论列表函数
+     */
+    constructor(statusKey: string, valueKey: string, checkCommentList: (fullSite: boolean) => void) {
+        this.statusKey = statusKey
+        this.valueKey = valueKey
+        this.status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
+        this.value = GM_getValue(`BILICLEANER_${this.valueKey}`, [])
+        this.checkCommentList = checkCommentList
+
+        // 配置子过滤器
+        contentFilterInstance.setStatus(this.status)
+        contentFilterInstance.setParams(this.value)
+        // 初始化黑名单, callback触发edit
+        this.blacklist = new WordList(
+            this.valueKey,
+            '评论关键词 黑名单',
+            `每行一个关键词，支持正则(iv)，语法：/abc|\\d+/`,
+            (values: string[]) => {
+                this.edit(values)
+            },
+        )
+    }
+
+    enable() {
+        // 告知agency
+        commentFilterAgencyInstance.notifyContent('enable')
+        // 触发全站过滤
+        this.checkCommentList(true)
+    }
+    disable() {
+        commentFilterAgencyInstance.notifyContent('disable')
+        this.checkCommentList(true)
+    }
+    add(value: string) {
+        this.blacklist.addValue(value)
+        commentFilterAgencyInstance.notifyContent('add', value)
+        this.checkCommentList(true)
+    }
+    edit(values: string[]) {
+        commentFilterAgencyInstance.notifyContent('edit', values)
+        this.checkCommentList(true)
+    }
+}

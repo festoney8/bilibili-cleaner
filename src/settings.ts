@@ -3,7 +3,7 @@ export default {
     enableDebugComponents: false,
     enableDebugRules: false,
     enableDebugVideoFilter: false,
-    enableDebugCommentFilter: true,
+    enableDebugCommentFilter: false,
     // 标记视频过滤器检测过的视频
     filterSign: 'bili-cleaner-filtered',
 }

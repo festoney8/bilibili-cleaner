@@ -10,7 +10,7 @@ export default defineConfig({
                 namespace: 'http://tampermonkey.net/',
                 version: '3.2.0',
                 description:
-                    '净化 B站/哔哩哔哩 网页元素，去广告，URL净化，BV号转AV号，播放器净化，过滤推荐视频，提供300+项功能，定制自己的B站页面',
+                    '净化 B站/哔哩哔哩 网页元素，去广告，BV号转AV号，播放器净化，过滤视频，过滤评论，提供300+项功能，定制自己的B站页面',
                 author: 'festoney8',
                 homepage: 'https://github.com/festoney8/bilibili-cleaner',
                 supportURL: 'https://github.com/festoney8/bilibili-cleaner',

@@ -188,7 +188,7 @@ if (isPageVideo() || isPageBangumi()) {
                     const username = target.textContent?.trim()
                     if (username) {
                         e.preventDefault()
-                        contextMenuInstance.registerMenu(`◎ 屏蔽用户：${username}`, () => {
+                        contextMenuInstance.registerMenu(`屏蔽用户：${username}`, () => {
                             usernameAction.add(username)
                         })
                         contextMenuInstance.show(e.clientX, e.clientY)

@@ -107,7 +107,6 @@ const main = async () => {
     const createPanelWithMode = (mode: string, groups: Group[]) => {
         switch (panelInstance.mode) {
             case undefined:
-                debug(`${mode} panel create start`)
                 panelInstance.create()
                 panelInstance.mode = mode
                 groups.forEach((e) => {
@@ -115,14 +114,11 @@ const main = async () => {
                     e.insertGroupItems()
                 })
                 panelInstance.show()
-                debug(`${mode} panel create complete`)
                 break
             case mode:
-                debug(`${mode} panel exist, just show it`)
                 panelInstance.show()
                 break
             default:
-                debug(`${mode} panel replace other panel`)
                 panelInstance.clearGroups()
                 panelInstance.mode = mode
                 groups.forEach((e) => {
@@ -130,7 +126,6 @@ const main = async () => {
                     e.insertGroupItems()
                 })
                 panelInstance.show()
-                debug(`${mode} panel replace complete`)
         }
     }
     // 页面净化设置

@@ -1,18 +1,19 @@
 import { GM_getValue } from '$'
 import { Group } from '../../../components/group'
 import { CheckboxItem, ButtonItem } from '../../../components/item'
-import settings from '../../../settings'
 import { debugCommentFilter as debug, error } from '../../../utils/logger'
 import { isPageBangumi, isPageVideo } from '../../../utils/page-type'
 import { showEle, waitForEle } from '../../../utils/tool'
-import coreCommentFilterInstance, { CommentSelectorFunc } from '../filters/core'
 import { ContentAction, UsernameAction } from './actions/action'
+import contextMenuInstance from '../../../components/contextmenu'
+import coreCommentFilterInstance, { CommentSelectorFunc } from '../filters/core'
+import settings from '../../../settings'
 
 const videoPageCommentFilterGroupList: Group[] = []
 
 // 右键菜单功能
-// let isContextMenuFuncRunning = false
-// let isContextMenuUsernameEnable = false
+let isContextMenuFuncRunning = false
+let isContextMenuUsernameEnable = false
 
 // 白名单功能开关
 let isRootCommentWhitelistEnable: boolean = GM_getValue('BILICLEANER_video-comment-root-whitelist-status', false)
@@ -85,7 +86,6 @@ if (isPageVideo() || isPageBangumi()) {
                     `.sub-reply-item:not(.jump-link.user):not([${settings.filterSign}])`,
                 )
             }
-            debug(rootComments.length, subComments.length)
 
             // 白名单过滤
             rootComments = Array.from(rootComments).filter((e) => {
@@ -96,7 +96,9 @@ if (isPageVideo() || isPageBangumi()) {
                     (isPinnedCommentWhitelistEnable && e.querySelector('.root-reply-container .top-icon')) ||
                     (isLinkCommentWhitelistEnable &&
                         e.querySelector(
-                            '.root-reply-container .jump-link.video-time, .root-reply-container .jump-link.normal, .root-reply-container .jump-link.video',
+                            `.root-reply-container .jump-link.video-time,
+                            .root-reply-container .jump-link.normal,
+                            .root-reply-container .jump-link.video`,
                         ))
                 if (isWhite) {
                     showEle(e)
@@ -109,7 +111,9 @@ if (isPageVideo() || isPageBangumi()) {
                     (isUploaderCommentWhitelistEnable && e.querySelector('.sub-up-icon')) ||
                     (isLinkCommentWhitelistEnable &&
                         e.querySelector(
-                            '.root-reply-container .jump-link.video-time, .root-reply-container .jump-link.normal, .root-reply-container .jump-link.video',
+                            `.jump-link.video-time,
+                            .jump-link.normal,
+                            .jump-link.video`,
                         ))
 
                 if (isWhite) {
@@ -167,61 +171,39 @@ if (isPageVideo() || isPageBangumi()) {
     )
     //=======================================================================================
 
-    // // 右键监听函数, 右键单击指定元素时修改右键菜单, 用于屏蔽评论用户
-    // const contextMenuFunc = () => {
-    //     if (isContextMenuFuncRunning) {
-    //         return
-    //     }
-    //     isContextMenuFuncRunning = true
-    //     // 监听右键单击
-    //     document.addEventListener('contextmenu', (e) => {
-    //         if (e.target instanceof HTMLElement) {
-    //             // debug(e.target.classList)
-    //             const target = e.target
-    //             if (
-    //                 isContextMenuUsernameEnable &&
-    //                 target.classList.contains('name')
-    //                 // target.closest('.upname span.name') === target
-    //             ) {
-    //                 // 命中UP主
-    //                 const uploader = target.textContent
-    //                 if (uploader) {
-    //                     e.preventDefault()
-    //                     const onclickBlack = () => {
-    //                         usernameAction.add(uploader)
-    //                     }
-    //                     contextMenuInstance.registerMenu(`◎ 屏蔽UP主：${uploader}`, onclickBlack)
-    //                     contextMenuInstance.show(e.clientX, e.clientY)
-    //                 }
-    //             } else if (
-    //                 isContextMenuBvidEnable &&
-    //                 target.classList.contains('title')
-    //                 // target.closest('.info > a > p') === target
-    //             ) {
-    //                 // 命中评论标题, 提取bvid
-    //                 const href = target.parentElement?.getAttribute('href')
-    //                 if (href) {
-    //                     const bvid = matchBvid(href)
-    //                     if (bvid) {
-    //                         e.preventDefault()
-    //                         const onclick = () => {
-    //                             commentBvidAction.add(bvid)
-    //                         }
-    //                         contextMenuInstance.registerMenu(`屏蔽评论：${bvid}`, onclick)
-    //                         contextMenuInstance.show(e.clientX, e.clientY)
-    //                     }
-    //                 }
-    //             } else {
-    //                 contextMenuInstance.hide()
-    //             }
-    //         }
-    //     })
-    //     // 监听左键单击，关闭右键菜单
-    //     document.addEventListener('click', () => {
-    //         contextMenuInstance.hide()
-    //     })
-    //     debug('contextMenuFunc listen contextmenu')
-    // }
+    // 右键监听函数, 屏蔽评论用户
+    const contextMenuFunc = () => {
+        if (isContextMenuFuncRunning) {
+            return
+        }
+        isContextMenuFuncRunning = true
+        document.addEventListener('contextmenu', (e) => {
+            if (e.target instanceof HTMLElement) {
+                const target = e.target
+                if (
+                    isContextMenuUsernameEnable &&
+                    (target.classList.contains('user-name') || target.classList.contains('sub-user-name'))
+                ) {
+                    // 命中用户
+                    const username = target.textContent?.trim()
+                    if (username) {
+                        e.preventDefault()
+                        contextMenuInstance.registerMenu(`◎ 屏蔽用户：${username}`, () => {
+                            usernameAction.add(username)
+                        })
+                        contextMenuInstance.show(e.clientX, e.clientY)
+                    }
+                } else {
+                    contextMenuInstance.hide()
+                }
+            }
+        })
+        // 关闭右键菜单
+        document.addEventListener('click', () => {
+            contextMenuInstance.hide()
+        })
+        debug('contextMenuFunc listen contextmenu')
+    }
 
     //=======================================================================================
     // 构建UI菜单
@@ -231,16 +213,16 @@ if (isPageVideo() || isPageBangumi()) {
         // 启用 播放页UP主过滤
         new CheckboxItem({
             itemID: usernameAction.statusKey,
-            description: '启用 评论区 用户名过滤',
+            description: '启用 评论区 用户名过滤\n(右键单击用户名)',
             itemFunc: () => {
                 // 启用右键菜单功能
-                // isContextMenuUsernameEnable = true
-                // contextMenuFunc()
+                isContextMenuUsernameEnable = true
+                contextMenuFunc()
                 usernameAction.enable()
             },
             callback: () => {
                 // 禁用右键菜单功能
-                // isContextMenuUsernameEnable = false
+                isContextMenuUsernameEnable = false
                 usernameAction.disable()
             },
         }),
@@ -255,7 +237,7 @@ if (isPageVideo() || isPageBangumi()) {
         }),
     ]
     videoPageCommentFilterGroupList.push(
-        new Group('comment-username-filter-group', '播放页 评论用户过滤 (右键单击用户名)', usernameItems),
+        new Group('comment-username-filter-group', '播放页 评论区 用户过滤', usernameItems),
     )
 
     // UI组件, 评论内容过滤part
@@ -281,9 +263,7 @@ if (isPageVideo() || isPageBangumi()) {
             },
         }),
     ]
-    videoPageCommentFilterGroupList.push(
-        new Group('comment-content-filter-group', '播放页 评论关键词过滤', contentItems),
-    )
+    videoPageCommentFilterGroupList.push(new Group('comment-content-filter-group', '评论区 关键词过滤', contentItems))
 
     // UI组件, 白名单part
     const whitelistItems = [
@@ -313,10 +293,11 @@ if (isPageVideo() || isPageBangumi()) {
                 checkCommentList(true)
             },
         }),
-        // UP主的评论 免过滤
+        // UP主的评论 免过滤, 默认开启
         new CheckboxItem({
             itemID: 'video-comment-uploader-whitelist-status',
             description: 'UP主的评论 免过滤',
+            defaultStatus: true,
             itemFunc: () => {
                 isUploaderCommentWhitelistEnable = true
                 checkCommentList(true)
@@ -326,10 +307,11 @@ if (isPageVideo() || isPageBangumi()) {
                 checkCommentList(true)
             },
         }),
-        // 置顶评论 免过滤
+        // 置顶评论 免过滤, 默认开启
         new CheckboxItem({
             itemID: 'video-comment-pinned-whitelist-status',
             description: '置顶评论 免过滤',
+            defaultStatus: true,
             itemFunc: () => {
                 isPinnedCommentWhitelistEnable = true
                 checkCommentList(true)
@@ -339,10 +321,11 @@ if (isPageVideo() || isPageBangumi()) {
                 checkCommentList(true)
             },
         }),
-        // 笔记评论 免过滤
+        // 笔记评论 免过滤, 默认开启
         new CheckboxItem({
             itemID: 'video-comment-note-whitelist-status',
-            description: '笔记评论/图片评论 免过滤',
+            description: '笔记/图片评论 免过滤',
+            defaultStatus: true,
             itemFunc: () => {
                 isNoteCommentWhitelistEnable = true
                 checkCommentList(true)
@@ -352,10 +335,11 @@ if (isPageVideo() || isPageBangumi()) {
                 checkCommentList(true)
             },
         }),
-        // 含超链接的评论 免过滤
+        // 含超链接的评论 免过滤, 默认开启
         new CheckboxItem({
             itemID: 'video-comment-link-whitelist-status',
-            description: '含超链接的评论 免过滤',
+            description: '含超链接的评论 免过滤\n（站内视频/URL/播放时间跳转）',
+            defaultStatus: true,
             itemFunc: () => {
                 isLinkCommentWhitelistEnable = true
                 checkCommentList(true)
@@ -367,7 +351,7 @@ if (isPageVideo() || isPageBangumi()) {
         }),
     ]
     videoPageCommentFilterGroupList.push(
-        new Group('comment-content-filter-whitelist-group', '白名单设置 (免过滤)', whitelistItems),
+        new Group('comment-content-filter-whitelist-group', '评论区 白名单设置 (免过滤)', whitelistItems),
     )
 }
 

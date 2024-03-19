@@ -133,21 +133,30 @@ const main = async () => {
                 debug(`${mode} panel replace complete`)
         }
     }
+    // 页面净化设置
     GM_registerMenuCommand('✅页面净化设置', () => {
         createPanelWithMode('rule', RULE_GROUPS)
     })
+    // 视频过滤设置
     if (isPageHomepage() || isPageVideo() || isPagePopular() || isPageSearch() || isPageChannel()) {
         GM_registerMenuCommand('✅视频过滤设置', () => {
-            createPanelWithMode('filter', VIDEO_FILTER_GROUPS)
+            createPanelWithMode('videoFilter', VIDEO_FILTER_GROUPS)
         })
-
-        // 过滤器快捷按钮
+    }
+    // 评论过滤设置
+    if (isPageVideo() || isPageBangumi()) {
+        GM_registerMenuCommand('✅评论过滤设置', () => {
+            createPanelWithMode('commentFilter', COMMENT_FILTER_GROUPS)
+        })
+    }
+    // 视频过滤 快捷按钮
+    if (isPageHomepage() || isPageVideo() || isPagePopular() || isPageSearch() || isPageChannel()) {
         const videoFilterSideBtnID = 'video-filter-side-btn'
         const sideBtn = new SideBtn(
             videoFilterSideBtnID,
             '视频过滤',
             () => {
-                createPanelWithMode('filter', VIDEO_FILTER_GROUPS)
+                createPanelWithMode('videoFilter', VIDEO_FILTER_GROUPS)
             },
             () => {
                 panelInstance.hide()
@@ -164,18 +173,14 @@ const main = async () => {
             })
         }
     }
+    // 评论过滤 快捷按钮
     if (isPageVideo() || isPageBangumi()) {
-        GM_registerMenuCommand('✅评论过滤设置', () => {
-            createPanelWithMode('filter', COMMENT_FILTER_GROUPS)
-        })
-
-        // 评论过滤 快捷按钮
         const commentFilterSideBtnID = 'comment-filter-side-btn'
         const sideBtn = new SideBtn(
             commentFilterSideBtnID,
             '评论过滤',
             () => {
-                createPanelWithMode('filter', COMMENT_FILTER_GROUPS)
+                createPanelWithMode('commentFilter', COMMENT_FILTER_GROUPS)
             },
             () => {
                 panelInstance.hide()

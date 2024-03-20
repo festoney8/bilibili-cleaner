@@ -1,7 +1,7 @@
-import { error } from '../../../utils/logger'
-import { ISubFilter } from '../core'
+import { error } from '../../../../utils/logger'
+import { IVideoSubFilter } from '../core'
 
-class UploaderFilter implements ISubFilter {
+class UploaderWhitelistFilter implements IVideoSubFilter {
     isEnable = false
     private uploaderSet = new Set<string>()
 
@@ -10,10 +10,12 @@ class UploaderFilter implements ISubFilter {
     }
 
     setParams(values: string[]) {
+        // debug(`UploaderWhitelist`, Array.from(this.uploaderSet).join('|'))
         this.uploaderSet = new Set(values.map((v) => v.trim()).filter((v) => v))
     }
 
     addParam(value: string) {
+        // debug(`UploaderWhitelist`, Array.from(this.uploaderSet).join('|'))
         if (value.trim()) {
             this.uploaderSet.add(value.trim())
         }
@@ -24,20 +26,20 @@ class UploaderFilter implements ISubFilter {
         return new Promise<string>((resolve, reject) => {
             try {
                 if (!this.isEnable || uploader.length === 0 || this.uploaderSet.size === 0) {
-                    resolve(`Uploader resolve, disable or empty`)
+                    resolve(`Uploader White resolve, disable or empty`)
                 } else if (this.uploaderSet.has(uploader)) {
-                    reject(`Uploader reject, uploader ${uploader} in blacklist`)
+                    reject(`Uploader White reject, ${uploader} in whitelist`)
                 } else {
-                    resolve(`Uploader resolve, uploader not in blacklist`)
+                    resolve(`Uploader White resolve, uploader not in whitelist`)
                 }
             } catch (err) {
                 error(err)
-                resolve(`Uploader resolve, error`)
+                resolve(`Uploader White resolve, error`)
             }
         })
     }
 }
 
 // 单例
-const uploaderFilterInstance = new UploaderFilter()
-export default uploaderFilterInstance
+const uploaderWhitelistFilterInstance = new UploaderWhitelistFilter()
+export default uploaderWhitelistFilterInstance

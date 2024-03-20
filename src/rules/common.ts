@@ -1,6 +1,6 @@
 import { Group } from '../components/group'
 import { CheckboxItem, NumberItem, RadioItem } from '../components/item'
-import { debug } from '../utils/logger'
+import { debugRules as debug } from '../utils/logger'
 import {
     isPageBangumi,
     isPageChannel,
@@ -19,13 +19,15 @@ import {
  * 净化掉vd_source参数会导致充电窗口载入失败
  */
 const cleanURL = () => {
-    // 直播页只净化直播间
-    if (location.host === 'live.bilibili.com' && !isPageLiveRoom()) {
-        return
-    }
-    // 天选时刻iframe特殊处理
-    if (location.href.includes('live-lottery')) {
-        return
+    // 直播域名各种iframe页面（天选、抽奖）和活动页特殊处理
+    if (location.host === 'live.bilibili.com') {
+        if (
+            location.href.includes('live.bilibili.com/p/html') ||
+            location.href.includes('live.bilibili.com/activity') ||
+            location.href.includes('live.bilibili.com/blackboard')
+        ) {
+            return
+        }
     }
     const keysToRemove = new Set([
         'from_source',

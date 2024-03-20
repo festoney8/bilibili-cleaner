@@ -1,10 +1,10 @@
-import { debugFilter, error } from '../../utils/logger'
-import { ButtonItem, CheckboxItem, NumberItem } from '../../components/item'
-import { Group } from '../../components/group'
-import coreFilterInstance, { SelectorFunc } from '../filters/core'
-import { isPageSearch } from '../../utils/page-type'
-import contextMenuInstance from '../../components/contextmenu'
-import { matchBvid, showVideo, waitForEle } from '../../utils/tool'
+import { debugVideoFilter as debug, error } from '../../../utils/logger'
+import { ButtonItem, CheckboxItem, NumberItem } from '../../../components/item'
+import { Group } from '../../../components/group'
+import coreFilterInstance, { VideoSelectorFunc } from '../filters/core'
+import { isPageSearch } from '../../../utils/page-type'
+import contextMenuInstance from '../../../components/contextmenu'
+import { matchBvid, showEle, waitForEle } from '../../../utils/tool'
 import {
     BvidAction,
     DurationAction,
@@ -15,7 +15,7 @@ import {
 } from './actions/action'
 import { GM_getValue } from '$'
 
-const searchFilterGroupList: Group[] = []
+const searchPageVideoFilterGroupList: Group[] = []
 
 // 右键菜单功能, 全局控制
 let isContextMenuFuncRunning = false
@@ -27,7 +27,7 @@ let isTopUploaderWhitelistEnable: boolean = GM_getValue('BILICLEANER_search-top-
 if (isPageSearch()) {
     let videoListContainer: HTMLElement
     // 构建SelectorFunc
-    const searchSelectorFunc: SelectorFunc = {
+    const searchSelectorFunc: VideoSelectorFunc = {
         duration: (video: Element): string | null => {
             const duration = video.querySelector('span.bili-video-card__stats__duration')?.textContent
             return duration ? duration : null
@@ -54,10 +54,10 @@ if (isPageSearch()) {
     }
     // 检测视频列表
     const checkVideoList = (_fullSite: boolean) => {
-        // debugFilter('checkVideoList start')
+        // debug('checkVideoList start')
         if (!videoListContainer) {
             // 在container未出现时, 各项屏蔽功能enable会调用checkVideoList, 需要判空
-            debugFilter(`checkVideoList videoListContainer not exist`)
+            debug(`checkVideoList videoListContainer not exist`)
             return
         }
         try {
@@ -74,13 +74,13 @@ if (isPageSearch()) {
 
             // 顶部UP主视频白名单
             if (isTopUploaderWhitelistEnable) {
-                topVideos.forEach((video) => showVideo(video))
+                topVideos.forEach((video) => showEle(video))
             } else {
                 topVideos.length && coreFilterInstance.checkAll(topVideos, false, searchSelectorFunc)
-                debugFilter(`checkVideoList check ${topVideos.length} top videos`)
+                debug(`checkVideoList check ${topVideos.length} top videos`)
             }
             contentVideos.length && coreFilterInstance.checkAll(contentVideos, false, searchSelectorFunc)
-            debugFilter(`checkVideoList check ${contentVideos.length} content videos`)
+            debug(`checkVideoList check ${contentVideos.length} content videos`)
         } catch (err) {
             error(err)
             error('checkVideoList error')
@@ -89,13 +89,13 @@ if (isPageSearch()) {
     // 监听视频列表内部变化, 有变化时检测视频列表
     const watchVideoListContainer = () => {
         if (videoListContainer) {
-            debugFilter('watchVideoListContainer start')
+            debug('watchVideoListContainer start')
             checkVideoList(true)
             const videoObverser = new MutationObserver(() => {
                 checkVideoList(true)
             })
             videoObverser.observe(videoListContainer, { childList: true, subtree: true })
-            debugFilter('watchVideoListContainer OK')
+            debug('watchVideoListContainer OK')
         }
     }
     try {
@@ -154,7 +154,7 @@ if (isPageSearch()) {
         // 监听右键单击
         document.addEventListener('contextmenu', (e) => {
             if (e.target instanceof HTMLElement) {
-                debugFilter(e.target.classList)
+                debug(e.target.classList)
                 if (
                     isContextMenuUploaderEnable &&
                     (e.target.classList.contains('bili-video-card__info--author') ||
@@ -204,7 +204,7 @@ if (isPageSearch()) {
         document.addEventListener('click', () => {
             contextMenuInstance.hide()
         })
-        debugFilter('contextMenuFunc listen contextmenu')
+        debug('contextMenuFunc listen contextmenu')
     }
 
     //=======================================================================================
@@ -235,7 +235,7 @@ if (isPageSearch()) {
             },
         }),
     ]
-    searchFilterGroupList.push(new Group('search-duration-filter-group', '搜索页 视频时长过滤', durationItems))
+    searchPageVideoFilterGroupList.push(new Group('search-duration-filter-group', '搜索页 视频时长过滤', durationItems))
 
     // UI组件, UP主过滤part
     const uploaderItems = [
@@ -265,7 +265,7 @@ if (isPageSearch()) {
             },
         }),
     ]
-    searchFilterGroupList.push(
+    searchPageVideoFilterGroupList.push(
         new Group('search-uploader-filter-group', '搜索页 UP主过滤 (右键单击UP主)', uploaderItems),
     )
 
@@ -292,7 +292,7 @@ if (isPageSearch()) {
             },
         }),
     ]
-    searchFilterGroupList.push(
+    searchPageVideoFilterGroupList.push(
         new Group('search-title-keyword-filter-group', '搜索页 标题关键词过滤', titleKeywordItems),
     )
 
@@ -324,7 +324,9 @@ if (isPageSearch()) {
             },
         }),
     ]
-    searchFilterGroupList.push(new Group('search-bvid-filter-group', '搜索页 BV号过滤 (右键单击标题)', bvidItems))
+    searchPageVideoFilterGroupList.push(
+        new Group('search-bvid-filter-group', '搜索页 BV号过滤 (右键单击标题)', bvidItems),
+    )
 
     // UI组件, 例外和白名单part
     const whitelistItems = [
@@ -382,7 +384,9 @@ if (isPageSearch()) {
             },
         }),
     ]
-    searchFilterGroupList.push(new Group('search-whitelist-filter-group', '搜索页 白名单设定 (免过滤)', whitelistItems))
+    searchPageVideoFilterGroupList.push(
+        new Group('search-whitelist-filter-group', '搜索页 白名单设定 (免过滤)', whitelistItems),
+    )
 }
 
-export { searchFilterGroupList }
+export { searchPageVideoFilterGroupList }

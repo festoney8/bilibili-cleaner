@@ -1,10 +1,10 @@
-import { debugFilter, error } from '../../utils/logger'
-import coreFilterInstance, { SelectorFunc } from '../filters/core'
-import { ButtonItem, CheckboxItem, NumberItem } from '../../components/item'
-import { Group } from '../../components/group'
-import { isPageVideo } from '../../utils/page-type'
-import contextMenuInstance from '../../components/contextmenu'
-import { matchBvid, showVideo, waitForEle } from '../../utils/tool'
+import { debugVideoFilter as debug, error } from '../../../utils/logger'
+import coreFilterInstance, { VideoSelectorFunc } from '../filters/core'
+import { ButtonItem, CheckboxItem, NumberItem } from '../../../components/item'
+import { Group } from '../../../components/group'
+import { isPageVideo } from '../../../utils/page-type'
+import contextMenuInstance from '../../../components/contextmenu'
+import { matchBvid, showEle, waitForEle } from '../../../utils/tool'
 import {
     BvidAction,
     DurationAction,
@@ -15,7 +15,7 @@ import {
 } from './actions/action'
 import { GM_getValue } from '$'
 
-const videoFilterGroupList: Group[] = []
+const videoPageVideoFilterGroupList: Group[] = []
 
 // 右键菜单功能, 全局控制
 let isContextMenuFuncRunning = false
@@ -27,7 +27,7 @@ let isNextPlayWhitelistEnable: boolean = GM_getValue('BILICLEANER_video-next-pla
 if (isPageVideo()) {
     let videoListContainer: HTMLElement
     // 构建SelectorFunc
-    const rcmdSelectorFunc: SelectorFunc = {
+    const rcmdSelectorFunc: VideoSelectorFunc = {
         duration: (video: Element): string | null => {
             const duration = video.querySelector('.pic-box span.duration')?.textContent
             return duration ? duration : null
@@ -56,7 +56,7 @@ if (isPageVideo()) {
     // 检测视频列表
     const checkVideoList = (_fullSite: boolean) => {
         if (!videoListContainer) {
-            debugFilter(`checkVideoList videoListContainer not exist`)
+            debug(`checkVideoList videoListContainer not exist`)
             return
         }
         try {
@@ -71,13 +71,13 @@ if (isPageVideo()) {
 
             // 判断是否筛选接下来播放
             rcmdVideos.length && coreFilterInstance.checkAll([...rcmdVideos], false, rcmdSelectorFunc)
-            // debugFilter(`checkVideoList check ${rcmdVideos.length} rcmd videos`)
+            // debug(`checkVideoList check ${rcmdVideos.length} rcmd videos`)
             if (isNextPlayWhitelistEnable) {
                 // 清除隐藏状态
-                nextVideos.forEach((video) => showVideo(video))
+                nextVideos.forEach((video) => showEle(video))
             } else {
                 nextVideos.length && coreFilterInstance.checkAll([...nextVideos], false, nextSelectorFunc)
-                // debugFilter(`checkVideoList check ${nextVideos.length} next videos`)
+                // debug(`checkVideoList check ${nextVideos.length} next videos`)
             }
         } catch (err) {
             error(err)
@@ -88,7 +88,7 @@ if (isPageVideo()) {
     // 监听视频列表内部变化, 有变化时检测视频列表
     const watchVideoListContainer = () => {
         if (videoListContainer) {
-            debugFilter('watchVideoListContainer start')
+            debug('watchVideoListContainer start')
             // 播放页右栏载入慢, 始终做全站检测
             checkVideoList(true)
             const videoObverser = new MutationObserver(() => {
@@ -96,7 +96,7 @@ if (isPageVideo()) {
             })
             // 播放页需监听subtree
             videoObverser.observe(videoListContainer, { childList: true, subtree: true })
-            debugFilter('watchVideoListContainer OK')
+            debug('watchVideoListContainer OK')
         }
     }
 
@@ -155,7 +155,7 @@ if (isPageVideo()) {
         // 监听右键单击
         document.addEventListener('contextmenu', (e) => {
             if (e.target instanceof HTMLElement) {
-                // debugFilter(e.target.classList)
+                // debug(e.target.classList)
                 const target = e.target
                 if (
                     isContextMenuUploaderEnable &&
@@ -203,7 +203,7 @@ if (isPageVideo()) {
         document.addEventListener('click', () => {
             contextMenuInstance.hide()
         })
-        debugFilter('contextMenuFunc listen contextmenu')
+        debug('contextMenuFunc listen contextmenu')
     }
 
     //=======================================================================================
@@ -236,7 +236,7 @@ if (isPageVideo()) {
             },
         }),
     ]
-    videoFilterGroupList.push(new Group('video-duration-filter-group', '播放页 视频时长过滤', durationItems))
+    videoPageVideoFilterGroupList.push(new Group('video-duration-filter-group', '播放页 视频时长过滤', durationItems))
 
     // UI组件, UP主过滤part
     const uploaderItems = [
@@ -267,7 +267,9 @@ if (isPageVideo()) {
             },
         }),
     ]
-    videoFilterGroupList.push(new Group('video-uploader-filter-group', '播放页 UP主过滤 (右键单击UP主)', uploaderItems))
+    videoPageVideoFilterGroupList.push(
+        new Group('video-uploader-filter-group', '播放页 UP主过滤 (右键单击UP主)', uploaderItems),
+    )
 
     // UI组件, 标题关键词过滤part
     const titleKeywordItems = [
@@ -293,7 +295,9 @@ if (isPageVideo()) {
             },
         }),
     ]
-    videoFilterGroupList.push(new Group('video-title-keyword-filter-group', '播放页 标题关键词过滤', titleKeywordItems))
+    videoPageVideoFilterGroupList.push(
+        new Group('video-title-keyword-filter-group', '播放页 标题关键词过滤', titleKeywordItems),
+    )
 
     // UI组件, bvid过滤part
     const bvidItems = [
@@ -324,7 +328,9 @@ if (isPageVideo()) {
             },
         }),
     ]
-    videoFilterGroupList.push(new Group('video-bvid-filter-group', '播放页 BV号过滤 (右键单击标题)', bvidItems))
+    videoPageVideoFilterGroupList.push(
+        new Group('video-bvid-filter-group', '播放页 BV号过滤 (右键单击标题)', bvidItems),
+    )
 
     // UI组件, 免过滤和白名单part
     const whitelistItems = [
@@ -385,7 +391,9 @@ if (isPageVideo()) {
             },
         }),
     ]
-    videoFilterGroupList.push(new Group('video-whitelist-filter-group', '播放页 白名单设定 (免过滤)', whitelistItems))
+    videoPageVideoFilterGroupList.push(
+        new Group('video-whitelist-filter-group', '播放页 白名单设定 (免过滤)', whitelistItems),
+    )
 }
 
-export { videoFilterGroupList }
+export { videoPageVideoFilterGroupList }

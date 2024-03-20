@@ -6,7 +6,7 @@ import uploaderFilterInstance from '../filters/subfilters/uploader'
 import uploaderWhitelistFilterInstance from '../filters/subfilters/uploaderWhitelist'
 
 // 代理, 接收页面操作通知, 更新子过滤器的参数
-class FilterAgency {
+class VideoFilterAgency {
     notifyDuration(event: string, value?: number) {
         switch (event) {
             case 'disable':
@@ -124,5 +124,5 @@ class FilterAgency {
 }
 
 // 单例
-const agencyInstance = new FilterAgency()
-export default agencyInstance
+const videoFilterAgencyInstance = new VideoFilterAgency()
+export default videoFilterAgencyInstance

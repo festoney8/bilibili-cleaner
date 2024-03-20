@@ -1,11 +1,11 @@
-import { debugFilter, error } from '../../utils/logger'
-import { ButtonItem, CheckboxItem, NumberItem } from '../../components/item'
-import { Group } from '../../components/group'
-import coreFilterInstance, { SelectorFunc } from '../filters/core'
-import settings from '../../settings'
-import { isPageChannel } from '../../utils/page-type'
-import contextMenuInstance from '../../components/contextmenu'
-import { matchBvid, waitForEle } from '../../utils/tool'
+import { debugVideoFilter as debug, error } from '../../../utils/logger'
+import { ButtonItem, CheckboxItem, NumberItem } from '../../../components/item'
+import { Group } from '../../../components/group'
+import coreFilterInstance, { VideoSelectorFunc } from '../filters/core'
+import settings from '../../../settings'
+import { isPageChannel } from '../../../utils/page-type'
+import contextMenuInstance from '../../../components/contextmenu'
+import { matchBvid, waitForEle } from '../../../utils/tool'
 import {
     BvidAction,
     DurationAction,
@@ -15,7 +15,7 @@ import {
     UploaderWhitelistAction,
 } from './actions/action'
 
-const channelFilterGroupList: Group[] = []
+const channelPageVideoFilterGroupList: Group[] = []
 
 // 右键菜单功能, 全局控制
 let isContextMenuFuncRunning = false
@@ -25,7 +25,7 @@ let isContextMenuBvidEnable = false
 if (isPageChannel()) {
     let videoListContainer: HTMLElement
     // 构建SelectorFunc
-    const feedSelectorFunc: SelectorFunc = {
+    const feedSelectorFunc: VideoSelectorFunc = {
         duration: (video: Element): string | null => {
             const duration = video.querySelector('span.bili-video-card__stats__duration')?.textContent
             return duration ? duration : null
@@ -49,10 +49,10 @@ if (isPageChannel()) {
     }
     // 检测视频列表
     const checkVideoList = (fullSite: boolean) => {
-        // debugFilter('checkVideoList start')
+        // debug('checkVideoList start')
         if (!videoListContainer) {
             // 在container未出现时, 各项屏蔽功能enable会调用checkVideoList, 需要判空
-            debugFilter(`checkVideoList videoListContainer not exist`)
+            debug(`checkVideoList videoListContainer not exist`)
             return
         }
         try {
@@ -76,7 +76,7 @@ if (isPageChannel()) {
             }
 
             feedVideos.length && coreFilterInstance.checkAll(feedVideos, true, feedSelectorFunc)
-            // debugFilter(`checkVideoList check ${feedVideos.length} feed videos`)
+            // debug(`checkVideoList check ${feedVideos.length} feed videos`)
         } catch (err) {
             error(err)
             error('checkVideoList error')
@@ -85,7 +85,7 @@ if (isPageChannel()) {
     // 监听视频列表内部变化, 有变化时检测视频列表
     const watchVideoListContainer = () => {
         if (videoListContainer) {
-            debugFilter('watchVideoListContainer start')
+            debug('watchVideoListContainer start')
             // 初次全站检测
             checkVideoList(true)
             const videoObverser = new MutationObserver(() => {
@@ -93,7 +93,7 @@ if (isPageChannel()) {
                 checkVideoList(false)
             })
             videoObverser.observe(videoListContainer, { childList: true, subtree: true })
-            debugFilter('watchVideoListContainer OK')
+            debug('watchVideoListContainer OK')
         }
     }
     try {
@@ -152,7 +152,7 @@ if (isPageChannel()) {
         // 监听右键单击
         document.addEventListener('contextmenu', (e) => {
             if (e.target instanceof HTMLElement) {
-                // debugFilter(e.target.classList)
+                // debug(e.target.classList)
                 if (
                     isContextMenuUploaderEnable &&
                     (e.target.classList.contains('bili-video-card__info--author') ||
@@ -200,7 +200,7 @@ if (isPageChannel()) {
         document.addEventListener('click', () => {
             contextMenuInstance.hide()
         })
-        debugFilter('contextMenuFunc listen contextmenu')
+        debug('contextMenuFunc listen contextmenu')
     }
 
     //=======================================================================================
@@ -243,7 +243,9 @@ if (isPageChannel()) {
             },
         }),
     ]
-    channelFilterGroupList.push(new Group('channel-duration-filter-group', '频道页 视频时长过滤', durationItems))
+    channelPageVideoFilterGroupList.push(
+        new Group('channel-duration-filter-group', '频道页 视频时长过滤', durationItems),
+    )
 
     // UI组件, UP主过滤
     const uploaderItems = [
@@ -274,7 +276,7 @@ if (isPageChannel()) {
             },
         }),
     ]
-    channelFilterGroupList.push(
+    channelPageVideoFilterGroupList.push(
         new Group('channel-uploader-filter-group', '频道页 UP主过滤 (右键单击UP主)', uploaderItems),
     )
 
@@ -302,7 +304,7 @@ if (isPageChannel()) {
             },
         }),
     ]
-    channelFilterGroupList.push(
+    channelPageVideoFilterGroupList.push(
         new Group('channel-title-keyword-filter-group', '频道页 标题关键词过滤', titleKeywordItems),
     )
 
@@ -335,7 +337,9 @@ if (isPageChannel()) {
             },
         }),
     ]
-    channelFilterGroupList.push(new Group('channel-bvid-filter-group', '频道页 BV号过滤 (右键单击标题)', bvidItems))
+    channelPageVideoFilterGroupList.push(
+        new Group('channel-bvid-filter-group', '频道页 BV号过滤 (右键单击标题)', bvidItems),
+    )
 
     // UI组件, 例外和白名单
     const whitelistItems = [
@@ -382,9 +386,9 @@ if (isPageChannel()) {
             },
         }),
     ]
-    channelFilterGroupList.push(
+    channelPageVideoFilterGroupList.push(
         new Group('channel-whitelist-filter-group', '频道页 白名单设定 (免过滤)', whitelistItems),
     )
 }
 
-export { channelFilterGroupList }
+export { channelPageVideoFilterGroupList }

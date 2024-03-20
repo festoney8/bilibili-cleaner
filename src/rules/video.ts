@@ -1,6 +1,6 @@
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
-import { debug } from '../utils/logger'
+import { debugRules as debug } from '../utils/logger'
 import { matchAvidBvid, matchBvid } from '../utils/tool'
 import { isPageBnj, isPagePlaylist, isPageVideo } from '../utils/page-type'
 

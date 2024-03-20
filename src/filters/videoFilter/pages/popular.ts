@@ -1,11 +1,11 @@
-import { debugFilter, error } from '../../utils/logger'
-import coreFilterInstance, { SelectorFunc } from '../filters/core'
-import { ButtonItem, CheckboxItem } from '../../components/item'
-import { Group } from '../../components/group'
-import settings from '../../settings'
-import { isPagePopular } from '../../utils/page-type'
-import contextMenuInstance from '../../components/contextmenu'
-import { matchBvid, waitForEle } from '../../utils/tool'
+import { debugVideoFilter as debug, error } from '../../../utils/logger'
+import coreFilterInstance, { VideoSelectorFunc } from '../filters/core'
+import { ButtonItem, CheckboxItem } from '../../../components/item'
+import { Group } from '../../../components/group'
+import settings from '../../../settings'
+import { isPagePopular } from '../../../utils/page-type'
+import contextMenuInstance from '../../../components/contextmenu'
+import { matchBvid, waitForEle } from '../../../utils/tool'
 import {
     BvidAction,
     TitleKeywordAction,
@@ -14,7 +14,7 @@ import {
     UploaderWhitelistAction,
 } from './actions/action'
 
-const popularFilterGroupList: Group[] = []
+const popularPageVideoFilterGroupList: Group[] = []
 
 // 右键菜单功能, 全局控制
 let isContextMenuFuncRunning = false
@@ -24,7 +24,7 @@ let isContextMenuBvidEnable = false
 if (isPagePopular()) {
     let videoListContainer: HTMLElement
     // 构建SelectorFunc
-    const hotSelectorFunc: SelectorFunc = {
+    const hotSelectorFunc: VideoSelectorFunc = {
         // popular页 无duration
         titleKeyword: (video: Element): string | null => {
             const titleKeyword =
@@ -53,9 +53,9 @@ if (isPagePopular()) {
     }
     // 检测视频列表
     const checkVideoList = (fullSite: boolean) => {
-        // debugFilter('checkVideoList start')
+        // debug('checkVideoList start')
         if (!videoListContainer) {
-            debugFilter(`checkVideoList videoListContainer not exist`)
+            debug(`checkVideoList videoListContainer not exist`)
             return
         }
         try {
@@ -82,11 +82,11 @@ if (isPagePopular()) {
             }
 
             hotVideos.length && coreFilterInstance.checkAll([...hotVideos], false, hotSelectorFunc)
-            // debugFilter(`checkVideoList check ${hotVideos.length} hotVideos`)
+            // debug(`checkVideoList check ${hotVideos.length} hotVideos`)
             weeklyVideos.length && coreFilterInstance.checkAll([...weeklyVideos], false, hotSelectorFunc)
-            // debugFilter(`checkVideoList check ${weeklyVideos.length} weeklyVideos`)
+            // debug(`checkVideoList check ${weeklyVideos.length} weeklyVideos`)
             rankVideos.length && coreFilterInstance.checkAll([...rankVideos], false, hotSelectorFunc)
-            // debugFilter(`checkVideoList check ${rankVideos.length} rankVideos`)
+            // debug(`checkVideoList check ${rankVideos.length} rankVideos`)
         } catch (err) {
             error(err)
             error('checkVideoList error')
@@ -95,7 +95,7 @@ if (isPagePopular()) {
     // 监听视频列表内部变化, 有变化时检测视频列表
     const watchVideoListContainer = () => {
         if (videoListContainer) {
-            debugFilter('watchVideoListContainer start')
+            debug('watchVideoListContainer start')
             // 初次全站检测
             checkVideoList(true)
             const videoObverser = new MutationObserver(() => {
@@ -103,7 +103,7 @@ if (isPagePopular()) {
                 checkVideoList(true)
             })
             videoObverser.observe(videoListContainer, { childList: true, subtree: true })
-            debugFilter('watchVideoListContainer OK')
+            debug('watchVideoListContainer OK')
         }
     }
 
@@ -210,7 +210,7 @@ if (isPagePopular()) {
         document.addEventListener('click', () => {
             contextMenuInstance.hide()
         })
-        debugFilter('contextMenuFunc listen contextmenu')
+        debug('contextMenuFunc listen contextmenu')
     }
 
     //=======================================================================================
@@ -245,7 +245,7 @@ if (isPagePopular()) {
             },
         }),
     ]
-    popularFilterGroupList.push(
+    popularPageVideoFilterGroupList.push(
         new Group('popular-uploader-filter-group', '热门页 UP主过滤 (右键单击UP主)', uploaderItems),
     )
 
@@ -273,7 +273,7 @@ if (isPagePopular()) {
             },
         }),
     ]
-    popularFilterGroupList.push(
+    popularPageVideoFilterGroupList.push(
         new Group('popular-title-keyword-filter-group', '热门页 标题关键词过滤', titleKeywordItems),
     )
 
@@ -306,7 +306,9 @@ if (isPagePopular()) {
             },
         }),
     ]
-    popularFilterGroupList.push(new Group('popular-bvid-filter-group', '热门页 BV号过滤 (右键单击标题)', bvidItems))
+    popularPageVideoFilterGroupList.push(
+        new Group('popular-bvid-filter-group', '热门页 BV号过滤 (右键单击标题)', bvidItems),
+    )
 
     // UI组件, 例外和白名单part
     const whitelistItems = [
@@ -353,9 +355,9 @@ if (isPagePopular()) {
             },
         }),
     ]
-    popularFilterGroupList.push(
+    popularPageVideoFilterGroupList.push(
         new Group('popular-whitelist-filter-group', '热门页 白名单设定 (免过滤)', whitelistItems),
     )
 }
 
-export { popularFilterGroupList }
+export { popularPageVideoFilterGroupList }

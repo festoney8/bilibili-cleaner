@@ -1,7 +1,7 @@
-import { error } from '../../../utils/logger'
-import { ISubFilter } from '../core'
+import { error } from '../../../../utils/logger'
+import { IVideoSubFilter } from '../core'
 
-class BvidFilter implements ISubFilter {
+class BvidFilter implements IVideoSubFilter {
     isEnable = false
     private bvidSet = new Set<string>()
 

@@ -763,7 +763,16 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-page-hide-up-bili-avatar-pendent-dom',
             description: '隐藏 UP主头像外饰品',
             itemCSS: `.up-info-container .bili-avatar-pendent-dom {display: none !important;}
-                .up-avatar-wrap .up-avatar {background-color: transparent !important;}`,
+                .up-avatar-wrap {width: 48px !important; height:48px !important;}
+                .up-avatar-wrap .up-avatar {background-color: transparent !important;}
+                .up-avatar-wrap .bili-avatar {width: 48px !important; height:48px !important; transform: unset !important;}`,
+        }),
+        // 隐藏 UP主头像icon
+        new CheckboxItem({
+            itemID: 'video-page-hide-up-bili-avatar-icon',
+            description: '隐藏 UP主头像icon',
+            itemCSS: `.up-info-container .bili-avatar-icon {display: none !important;}
+                .up-info-container .bili-avatar-nft-icon {display: none !important;}`,
         }),
         // 隐藏 创作团队header, 默认开启
         new CheckboxItem({

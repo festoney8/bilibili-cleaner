@@ -8,49 +8,41 @@ import { isPageBnj, isPagePlaylist, isPageVideo } from '../utils/page-type'
 const bv2av = () => {
     /**
      * 可能会出现转换后av号带短横的bug(溢出)，作为后备方案
-     * bv2av algo by mcfx
      * @see https://www.zhihu.com/question/381784377/answer/1099438784
-     * @param x 输入BV号
+     * @see https://github.com/SocialSisterYi/bilibili-API-collect/issues/740
+     * @see https://socialsisteryi.github.io/bilibili-API-collect/docs/misc/bvid_desc.html
+     * @param bvid 输入BV号
      * @returns 输出纯数字av号
      */
-    const dec = (x: string): number => {
-        const table = 'fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF'
-        const tr: { [key: string]: number } = {}
-        for (let i = 0; i < 58; i++) {
-            tr[table[i]] = i
-        }
-        const s = [11, 10, 3, 8, 4, 6]
-        const xor = 177451812
-        const add = 8728348608
-        let r = 0
-        for (let i = 0; i < 6; i++) {
-            r += tr[x[s[i]]] * 58 ** i
-        }
-        // 修复一下溢出
-        const aid = (r - add) ^ xor
-        return aid > 0 ? aid : aid + 2147483648
+    const XOR_CODE = 23442827791579n
+    const MASK_CODE = 2251799813685247n
+    const BASE = 58n
+    const data = 'FcwAPNKTMug3GV5Lj7EJnHpWsx4tb8haYeviqBz6rkCy12mUSDQX9RdoZf'
+    const dec = (bvid: string): number => {
+        const bvidArr = Array.from<string>(bvid)
+        ;[bvidArr[3], bvidArr[9]] = [bvidArr[9], bvidArr[3]]
+        ;[bvidArr[4], bvidArr[7]] = [bvidArr[7], bvidArr[4]]
+        bvidArr.splice(0, 3)
+        const tmp = bvidArr.reduce((pre, bvidChar) => pre * BASE + BigInt(data.indexOf(bvidChar)), 0n)
+        return Number((tmp & MASK_CODE) ^ XOR_CODE)
     }
 
-    // 从window对象获取avid
-    const getAid = (): number | undefined => {
-        return window.vd?.aid
-    }
-
-    if (location.href.includes('bilibili.com/video/BV')) {
-        const bvid = matchBvid(location.href)
-        if (bvid) {
-            // 保留query string中分P参数, anchor中reply定位
-            let partNum = ''
-            const params = new URLSearchParams(location.search)
-            if (params.has('p')) {
-                partNum += `?p=${params.get('p')}`
+    try {
+        if (location.href.includes('bilibili.com/video/BV')) {
+            const bvid = matchBvid(location.href)
+            if (bvid) {
+                // 保留query string中分P参数, anchor中reply定位
+                let partNum = ''
+                const params = new URLSearchParams(location.search)
+                if (params.has('p')) {
+                    partNum += `?p=${params.get('p')}`
+                }
+                const aid = dec(bvid)
+                const newURL = `https://www.bilibili.com/video/av${aid}${partNum}${location.hash}`
+                history.replaceState(null, '', newURL)
             }
-            const aid = getAid() ?? dec(bvid)
-            const newURL = `https://www.bilibili.com/video/av${aid}${partNum}${location.hash}`
-            history.replaceState(null, '', newURL)
-            debug('bv2av complete')
         }
-    }
+    } catch (err) {}
 }
 
 /** 净化分享按钮功能, 暂不支持从稍后再看列表、收藏夹列表分享 */
@@ -763,7 +755,16 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-page-hide-up-bili-avatar-pendent-dom',
             description: '隐藏 UP主头像外饰品',
             itemCSS: `.up-info-container .bili-avatar-pendent-dom {display: none !important;}
-                .up-avatar-wrap .up-avatar {background-color: transparent !important;}`,
+                .up-avatar-wrap {width: 48px !important; height:48px !important;}
+                .up-avatar-wrap .up-avatar {background-color: transparent !important;}
+                .up-avatar-wrap .bili-avatar {width: 48px !important; height:48px !important; transform: unset !important;}`,
+        }),
+        // 隐藏 UP主头像icon
+        new CheckboxItem({
+            itemID: 'video-page-hide-up-bili-avatar-icon',
+            description: '隐藏 UP主头像icon',
+            itemCSS: `.up-info-container .bili-avatar-icon {display: none !important;}
+                .up-info-container .bili-avatar-nft-icon {display: none !important;}`,
         }),
         // 隐藏 创作团队header, 默认开启
         new CheckboxItem({

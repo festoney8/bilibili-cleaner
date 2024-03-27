@@ -262,7 +262,7 @@ export class UploaderKeywordAction implements VideoFilterAction {
         // 初始化黑名单, callback触发edit
         this.blacklist = new WordList(
             this.valueKey,
-            '昵称关键词 黑名单',
+            'UP主昵称关键词 黑名单',
             `每行一个关键词，支持正则(iv)，语法：/abc|\\d+/`,
             (values: string[]) => {
                 this.edit(values)

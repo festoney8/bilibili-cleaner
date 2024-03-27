@@ -255,10 +255,10 @@ if (isPagePopular()) {
                 popularUploaderAction.blacklist.show()
             },
         }),
-        // 启用 昵称关键词过滤
+        // 启用 UP主昵称关键词过滤
         new CheckboxItem({
             itemID: popularUploaderKeywordAction.statusKey,
-            description: '启用 昵称关键词过滤',
+            description: '启用 UP主昵称关键词过滤',
             itemFunc: () => {
                 popularUploaderKeywordAction.enable()
             },
@@ -266,10 +266,10 @@ if (isPagePopular()) {
                 popularUploaderKeywordAction.disable()
             },
         }),
-        // 编辑 昵称关键词黑名单
+        // 编辑 UP主昵称关键词黑名单
         new ButtonItem({
             itemID: 'popular-uploader-keyword-edit-button',
-            description: '编辑 昵称关键词黑名单',
+            description: '编辑 UP主昵称关键词黑名单',
             name: '编辑',
             itemFunc: () => {
                 popularUploaderKeywordAction.blacklist.show()

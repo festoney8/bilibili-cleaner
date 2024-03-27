@@ -275,10 +275,10 @@ if (isPageSearch()) {
                 searchUploaderAction.blacklist.show()
             },
         }),
-        // 启用 昵称关键词过滤
+        // 启用 UP主昵称关键词过滤
         new CheckboxItem({
             itemID: searchUploaderKeywordAction.statusKey,
-            description: '启用 昵称关键词过滤',
+            description: '启用 UP主昵称关键词过滤',
             itemFunc: () => {
                 searchUploaderKeywordAction.enable()
             },
@@ -286,10 +286,10 @@ if (isPageSearch()) {
                 searchUploaderKeywordAction.disable()
             },
         }),
-        // 编辑 昵称关键词黑名单
+        // 编辑 UP主昵称关键词黑名单
         new ButtonItem({
             itemID: 'search-uploader-keyword-edit-button',
-            description: '编辑 昵称关键词黑名单',
+            description: '编辑 UP主昵称关键词黑名单',
             name: '编辑',
             itemFunc: () => {
                 searchUploaderKeywordAction.blacklist.show()

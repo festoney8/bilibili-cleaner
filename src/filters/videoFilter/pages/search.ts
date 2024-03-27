@@ -11,6 +11,7 @@ import {
     TitleKeywordAction,
     TitleKeywordWhitelistAction,
     UploaderAction,
+    UploaderKeywordAction,
     UploaderWhitelistAction,
 } from './actions/action'
 import { GM_getValue } from '$'
@@ -126,6 +127,11 @@ if (isPageSearch()) {
         'global-uploader-filter-value',
         checkVideoList,
     )
+    const searchUploaderKeywordAction = new UploaderKeywordAction(
+        'search-uploader-keyword-filter-status',
+        'global-uploader-keyword-filter-value',
+        checkVideoList,
+    )
     const searchBvidAction = new BvidAction('search-bvid-filter-status', 'global-bvid-filter-value', checkVideoList)
     const searchTitleKeywordAction = new TitleKeywordAction(
         'search-title-keyword-filter-status',
@@ -214,7 +220,7 @@ if (isPageSearch()) {
     const durationItems = [
         new CheckboxItem({
             itemID: searchDurationAction.statusKey,
-            description: '启用 搜索页时长过滤',
+            description: '启用 时长过滤',
             itemFunc: () => {
                 searchDurationAction.enable()
             },
@@ -241,7 +247,7 @@ if (isPageSearch()) {
     const uploaderItems = [
         new CheckboxItem({
             itemID: searchUploaderAction.statusKey,
-            description: '启用 搜索页UP主过滤',
+            description: '启用 UP主过滤 (右键单击UP主)',
             itemFunc: () => {
                 // 启用右键功能
                 isContextMenuUploaderEnable = true
@@ -264,16 +270,34 @@ if (isPageSearch()) {
                 searchUploaderAction.blacklist.show()
             },
         }),
+        // 启用 昵称关键词过滤
+        new CheckboxItem({
+            itemID: searchUploaderKeywordAction.statusKey,
+            description: '启用 昵称关键词过滤',
+            itemFunc: () => {
+                searchUploaderKeywordAction.enable()
+            },
+            callback: () => {
+                searchUploaderKeywordAction.disable()
+            },
+        }),
+        // 编辑 昵称关键词黑名单
+        new ButtonItem({
+            itemID: 'search-uploader-keyword-edit-button',
+            description: '编辑 昵称关键词黑名单',
+            name: '编辑',
+            itemFunc: () => {
+                searchUploaderKeywordAction.blacklist.show()
+            },
+        }),
     ]
-    searchPageVideoFilterGroupList.push(
-        new Group('search-uploader-filter-group', '搜索页 UP主过滤 (右键单击UP主)', uploaderItems),
-    )
+    searchPageVideoFilterGroupList.push(new Group('search-uploader-filter-group', '搜索页 UP主过滤', uploaderItems))
 
     // UI组件, 标题关键词过滤part
     const titleKeywordItems = [
         new CheckboxItem({
             itemID: searchTitleKeywordAction.statusKey,
-            description: '启用 搜索页关键词过滤',
+            description: '启用 标题关键词过滤',
             itemFunc: () => {
                 searchTitleKeywordAction.enable()
             },
@@ -284,7 +308,7 @@ if (isPageSearch()) {
         // 按钮功能：打开titleKeyword黑名单编辑框
         new ButtonItem({
             itemID: 'search-title-keyword-edit-button',
-            description: '编辑 关键词黑名单（支持正则）',
+            description: '编辑 标题关键词黑名单（支持正则）',
             name: '编辑',
             // 按钮功能
             itemFunc: () => {
@@ -300,7 +324,7 @@ if (isPageSearch()) {
     const bvidItems = [
         new CheckboxItem({
             itemID: searchBvidAction.statusKey,
-            description: '启用 搜索页BV号过滤',
+            description: '启用 BV号过滤 (右键单击标题)',
             itemFunc: () => {
                 // 启用右键功能
                 isContextMenuBvidEnable = true
@@ -324,9 +348,7 @@ if (isPageSearch()) {
             },
         }),
     ]
-    searchPageVideoFilterGroupList.push(
-        new Group('search-bvid-filter-group', '搜索页 BV号过滤 (右键单击标题)', bvidItems),
-    )
+    searchPageVideoFilterGroupList.push(new Group('search-bvid-filter-group', '搜索页 BV号过滤', bvidItems))
 
     // UI组件, 例外和白名单part
     const whitelistItems = [
@@ -347,7 +369,7 @@ if (isPageSearch()) {
         }),
         new CheckboxItem({
             itemID: searchUploaderWhitelistAction.statusKey,
-            description: '启用 搜索页UP主白名单',
+            description: '启用 UP主白名单',
             itemFunc: () => {
                 searchUploaderWhitelistAction.enable()
             },
@@ -366,7 +388,7 @@ if (isPageSearch()) {
         }),
         new CheckboxItem({
             itemID: searchTitleKeyworldWhitelistAction.statusKey,
-            description: '启用 搜索页标题关键词白名单',
+            description: '启用 标题关键词白名单',
             itemFunc: () => {
                 searchTitleKeyworldWhitelistAction.enable()
             },
@@ -376,7 +398,7 @@ if (isPageSearch()) {
         }),
         new ButtonItem({
             itemID: 'search-title-keyword-whitelist-edit-button',
-            description: '编辑 关键词白名单（支持正则）',
+            description: '编辑 标题关键词白名单（支持正则）',
             name: '编辑',
             // 按钮功能：显示白名单编辑器
             itemFunc: () => {

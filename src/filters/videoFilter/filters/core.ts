@@ -6,6 +6,7 @@ import durationFilterInstance from './subfilters/duration'
 import titleKeywordFilterInstance from './subfilters/titleKeyword'
 import titleKeywordWhitelistFilterInstance from './subfilters/titleKeywordWhitelist'
 import uploaderFilterInstance from './subfilters/uploader'
+import uploaderKeywordFilterInstance from './subfilters/uploaderKeyword'
 import uploaderWhitelistFilterInstance from './subfilters/uploaderWhitelist'
 
 // 子过滤器实现IVideoSubFilter，包括白名单
@@ -45,6 +46,7 @@ class CoreVideoFilter {
             const checkDuration = durationFilterInstance.isEnable && selectorFunc.duration !== undefined
             const checkTitleKeyword = titleKeywordFilterInstance.isEnable && selectorFunc.titleKeyword !== undefined
             const checkUploader = uploaderFilterInstance.isEnable && selectorFunc.uploader !== undefined
+            const checkUploaderKeyword = uploaderKeywordFilterInstance.isEnable && selectorFunc.uploader !== undefined
             const checkBvid = bvidFilterInstance.isEnable && selectorFunc.bvid !== undefined
             const checkUploaderWhitelist =
                 uploaderWhitelistFilterInstance.isEnable && selectorFunc.uploader !== undefined
@@ -81,6 +83,13 @@ class CoreVideoFilter {
                     const uploader = selectorFunc.uploader!(video)?.trim()
                     if (uploader) {
                         blackTasks.push(uploaderFilterInstance.check(uploader))
+                        info.uploader = uploader
+                    }
+                }
+                if (checkUploaderKeyword) {
+                    const uploader = selectorFunc.uploader!(video)?.trim()
+                    if (uploader) {
+                        blackTasks.push(uploaderKeywordFilterInstance.check(uploader))
                         info.uploader = uploader
                     }
                 }

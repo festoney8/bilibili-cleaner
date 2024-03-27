@@ -11,6 +11,7 @@ import {
     TitleKeywordAction,
     TitleKeywordWhitelistAction,
     UploaderAction,
+    UploaderKeywordAction,
     UploaderWhitelistAction,
 } from './actions/action'
 import { GM_getValue } from '$'
@@ -128,6 +129,11 @@ if (isPageVideo()) {
         'global-uploader-filter-value',
         checkVideoList,
     )
+    const videoUploaderKeywordAction = new UploaderKeywordAction(
+        'video-uploader-keyword-filter-status',
+        'global-uploader-keyword-filter-value',
+        checkVideoList,
+    )
     const videoBvidAction = new BvidAction('video-bvid-filter-status', 'global-bvid-filter-value', checkVideoList)
     const videoTitleKeywordAction = new TitleKeywordAction(
         'video-title-keyword-filter-status',
@@ -214,7 +220,7 @@ if (isPageVideo()) {
         // 启用 播放页时长过滤
         new CheckboxItem({
             itemID: videoDurationAction.statusKey,
-            description: '启用 播放页时长过滤',
+            description: '启用 时长过滤',
             itemFunc: () => {
                 videoDurationAction.enable()
             },
@@ -243,7 +249,7 @@ if (isPageVideo()) {
         // 启用 播放页UP主过滤
         new CheckboxItem({
             itemID: videoUploaderAction.statusKey,
-            description: '启用 播放页UP主过滤',
+            description: '启用 UP主过滤 (右键单击UP主)',
             itemFunc: () => {
                 // 启用右键菜单功能
                 isContextMenuUploaderEnable = true
@@ -266,17 +272,35 @@ if (isPageVideo()) {
                 videoUploaderAction.blacklist.show()
             },
         }),
+        // 启用 昵称关键词过滤
+        new CheckboxItem({
+            itemID: videoUploaderKeywordAction.statusKey,
+            description: '启用 昵称关键词过滤',
+            itemFunc: () => {
+                videoUploaderKeywordAction.enable()
+            },
+            callback: () => {
+                videoUploaderKeywordAction.disable()
+            },
+        }),
+        // 编辑 昵称关键词黑名单
+        new ButtonItem({
+            itemID: 'video-uploader-keyword-edit-button',
+            description: '编辑 昵称关键词黑名单',
+            name: '编辑',
+            itemFunc: () => {
+                videoUploaderKeywordAction.blacklist.show()
+            },
+        }),
     ]
-    videoPageVideoFilterGroupList.push(
-        new Group('video-uploader-filter-group', '播放页 UP主过滤 (右键单击UP主)', uploaderItems),
-    )
+    videoPageVideoFilterGroupList.push(new Group('video-uploader-filter-group', '播放页 UP主过滤', uploaderItems))
 
     // UI组件, 标题关键词过滤part
     const titleKeywordItems = [
         // 启用 播放页关键词过滤
         new CheckboxItem({
             itemID: videoTitleKeywordAction.statusKey,
-            description: '启用 播放页关键词过滤',
+            description: '启用 标题关键词过滤',
             itemFunc: () => {
                 videoTitleKeywordAction.enable()
             },
@@ -287,7 +311,7 @@ if (isPageVideo()) {
         // 编辑 关键词黑名单
         new ButtonItem({
             itemID: 'video-title-keyword-edit-button',
-            description: '编辑 关键词黑名单（支持正则）',
+            description: '编辑 标题关键词黑名单（支持正则）',
             name: '编辑',
             // 按钮功能：打开编辑器
             itemFunc: () => {
@@ -304,7 +328,7 @@ if (isPageVideo()) {
         // 启用 播放页 BV号过滤
         new CheckboxItem({
             itemID: videoBvidAction.statusKey,
-            description: '启用 播放页BV号过滤',
+            description: '启用 BV号过滤 (右键单击标题)',
             itemFunc: () => {
                 // 启用 右键功能
                 isContextMenuBvidEnable = true
@@ -328,9 +352,7 @@ if (isPageVideo()) {
             },
         }),
     ]
-    videoPageVideoFilterGroupList.push(
-        new Group('video-bvid-filter-group', '播放页 BV号过滤 (右键单击标题)', bvidItems),
-    )
+    videoPageVideoFilterGroupList.push(new Group('video-bvid-filter-group', '播放页 BV号过滤', bvidItems))
 
     // UI组件, 免过滤和白名单part
     const whitelistItems = [
@@ -351,7 +373,7 @@ if (isPageVideo()) {
         // 启用 播放页UP主白名单
         new CheckboxItem({
             itemID: videoUploaderWhitelistAction.statusKey,
-            description: '启用 播放页UP主白名单',
+            description: '启用 UP主白名单',
             itemFunc: () => {
                 videoUploaderWhitelistAction.enable()
             },
@@ -372,7 +394,7 @@ if (isPageVideo()) {
         // 启用 播放页关键词白名单
         new CheckboxItem({
             itemID: videoTitleKeywordWhitelistAction.statusKey,
-            description: '启用 播放页关键词白名单',
+            description: '启用 标题关键词白名单',
             itemFunc: () => {
                 videoTitleKeywordWhitelistAction.enable()
             },
@@ -383,7 +405,7 @@ if (isPageVideo()) {
         // 编辑 关键词白名单
         new ButtonItem({
             itemID: 'video-title-keyword-whitelist-edit-button',
-            description: '编辑 关键词白名单（支持正则）',
+            description: '编辑 标题关键词白名单（支持正则）',
             name: '编辑',
             // 按钮功能：打开编辑器
             itemFunc: () => {

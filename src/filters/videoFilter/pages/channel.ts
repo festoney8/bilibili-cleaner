@@ -12,6 +12,7 @@ import {
     TitleKeywordAction,
     TitleKeywordWhitelistAction,
     UploaderAction,
+    UploaderKeywordAction,
     UploaderWhitelistAction,
 } from './actions/action'
 
@@ -124,6 +125,11 @@ if (isPageChannel()) {
         'global-uploader-filter-value',
         checkVideoList,
     )
+    const channelUploaderKeywordAction = new UploaderKeywordAction(
+        'channel-uploader-keyword-filter-status',
+        'global-uploader-keyword-filter-value',
+        checkVideoList,
+    )
     const channelBvidAction = new BvidAction('channel-bvid-filter-status', 'global-bvid-filter-value', checkVideoList)
     const channelTitleKeywordAction = new TitleKeywordAction(
         'channel-title-keyword-filter-status',
@@ -211,7 +217,7 @@ if (isPageChannel()) {
         // 启用 频道页时长过滤
         new CheckboxItem({
             itemID: channelDurationAction.statusKey,
-            description: '启用 频道页时长过滤',
+            description: '启用 时长过滤',
             /**
              * 需使用匿名函数包装后传参, 否则报错, 下同
              *
@@ -249,10 +255,10 @@ if (isPageChannel()) {
 
     // UI组件, UP主过滤
     const uploaderItems = [
-        // 启用 频道页UP主过滤
+        // 启用 UP主过滤
         new CheckboxItem({
             itemID: channelUploaderAction.statusKey,
-            description: '启用 频道页UP主过滤',
+            description: '启用 UP主过滤 (右键单击UP主)',
             itemFunc: () => {
                 // 启用右键功能
                 isContextMenuUploaderEnable = true
@@ -265,7 +271,7 @@ if (isPageChannel()) {
                 channelUploaderAction.disable()
             },
         }),
-        // 按钮功能：打开uploader黑名单编辑框
+        // 编辑 UP主黑名单
         new ButtonItem({
             itemID: 'channel-uploader-edit-button',
             description: '编辑 UP主黑名单',
@@ -275,17 +281,35 @@ if (isPageChannel()) {
                 channelUploaderAction.blacklist.show()
             },
         }),
+        // 启用 昵称关键词过滤
+        new CheckboxItem({
+            itemID: channelUploaderKeywordAction.statusKey,
+            description: '启用 昵称关键词过滤',
+            itemFunc: () => {
+                channelUploaderKeywordAction.enable()
+            },
+            callback: () => {
+                channelUploaderKeywordAction.disable()
+            },
+        }),
+        // 编辑 昵称关键词黑名单
+        new ButtonItem({
+            itemID: 'channel-uploader-keyword-edit-button',
+            description: '编辑 昵称关键词黑名单',
+            name: '编辑',
+            itemFunc: () => {
+                channelUploaderKeywordAction.blacklist.show()
+            },
+        }),
     ]
-    channelPageVideoFilterGroupList.push(
-        new Group('channel-uploader-filter-group', '频道页 UP主过滤 (右键单击UP主)', uploaderItems),
-    )
+    channelPageVideoFilterGroupList.push(new Group('channel-uploader-filter-group', '频道页 UP主过滤', uploaderItems))
 
     // UI组件, 标题关键词过滤
     const titleKeywordItems = [
         // 启用 频道页关键词过滤
         new CheckboxItem({
             itemID: channelTitleKeywordAction.statusKey,
-            description: '启用 频道页关键词过滤',
+            description: '启用 标题关键词过滤',
             itemFunc: () => {
                 channelTitleKeywordAction.enable()
             },
@@ -296,7 +320,7 @@ if (isPageChannel()) {
         // 按钮功能：打开titleKeyword黑名单编辑框
         new ButtonItem({
             itemID: 'channel-title-keyword-edit-button',
-            description: '编辑 关键词黑名单（支持正则）',
+            description: '编辑 标题关键词黑名单（支持正则）',
             name: '编辑',
             // 按钮功能
             itemFunc: () => {
@@ -313,7 +337,7 @@ if (isPageChannel()) {
         // 启用 频道页BV号过滤
         new CheckboxItem({
             itemID: channelBvidAction.statusKey,
-            description: '启用 频道页BV号过滤',
+            description: '启用 BV号过滤',
             itemFunc: () => {
                 // 启用右键功能
                 isContextMenuBvidEnable = true
@@ -346,7 +370,7 @@ if (isPageChannel()) {
         // 启用 频道页UP主白名单
         new CheckboxItem({
             itemID: channelUploaderWhitelistAction.statusKey,
-            description: '启用 频道页UP主白名单',
+            description: '启用 UP主白名单 (右键单击UP主)',
             itemFunc: () => {
                 channelUploaderWhitelistAction.enable()
             },
@@ -367,7 +391,7 @@ if (isPageChannel()) {
         // 启用 频道页标题关键词白名单
         new CheckboxItem({
             itemID: channelTitleKeyworldWhitelistAction.statusKey,
-            description: '启用 频道页标题关键词白名单',
+            description: '启用 标题关键词白名单',
             itemFunc: () => {
                 channelTitleKeyworldWhitelistAction.enable()
             },
@@ -378,7 +402,7 @@ if (isPageChannel()) {
         // 编辑 关键词白名单
         new ButtonItem({
             itemID: 'channel-title-keyword-whitelist-edit-button',
-            description: '编辑 关键词白名单（支持正则）',
+            description: '编辑 标题关键词白名单（支持正则）',
             name: '编辑',
             // 按钮功能：显示白名单编辑器
             itemFunc: () => {

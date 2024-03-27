@@ -238,8 +238,11 @@ if (isPageHomepage()) {
                 }
             }
         })
-        // 监听左键单击，关闭右键菜单
+        // 关闭右键菜单
         document.addEventListener('click', () => {
+            menu.hide()
+        })
+        document.addEventListener('wheel', () => {
             menu.hide()
         })
         debug('contextMenuFunc listen contextmenu')

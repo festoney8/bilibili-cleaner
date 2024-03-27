@@ -204,6 +204,9 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         document.addEventListener('click', () => {
             menu.hide()
         })
+        document.addEventListener('wheel', () => {
+            menu.hide()
+        })
         debug('contextMenuFunc listen contextmenu')
     }
 

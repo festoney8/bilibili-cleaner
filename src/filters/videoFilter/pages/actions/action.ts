@@ -7,6 +7,7 @@ import durationFilterInstance from '../../filters/subfilters/duration'
 import titleKeywordFilterInstance from '../../filters/subfilters/titleKeyword'
 import titleKeywordWhitelistFilterInstance from '../../filters/subfilters/titleKeywordWhitelist'
 import uploaderFilterInstance from '../../filters/subfilters/uploader'
+import uploaderKeywordFilterInstance from '../../filters/subfilters/uploaderKeyword'
 import uploaderWhitelistFilterInstance from '../../filters/subfilters/uploaderWhitelist'
 
 // 定义各种黑名单功能、白名单功能的属性和行为
@@ -230,6 +231,63 @@ export class TitleKeywordAction implements VideoFilterAction {
     // edit由编辑黑名单的保存动作回调, 数据由编辑器实例存储
     edit(values: string[]) {
         agencyInstance.notifyTitleKeyword('edit', values)
+        this.checkVideoList(true)
+    }
+}
+
+export class UploaderKeywordAction implements VideoFilterAction {
+    statusKey: string
+    valueKey: string
+    checkVideoList: (fullSite: boolean) => void
+    status: boolean
+    value: string[]
+    blacklist: WordList
+
+    /**
+     * 昵称关键字过滤操作
+     * @param statusKey 是否启用的GM key
+     * @param valueKey 存储数据的GM key
+     * @param checkVideoList 检测视频列表函数
+     */
+    constructor(statusKey: string, valueKey: string, checkVideoList: (fullSite: boolean) => void) {
+        this.statusKey = statusKey
+        this.valueKey = valueKey
+        this.status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
+        this.value = GM_getValue(`BILICLEANER_${this.valueKey}`, [])
+        this.checkVideoList = checkVideoList
+
+        // 配置子过滤器
+        uploaderKeywordFilterInstance.setStatus(this.status)
+        uploaderKeywordFilterInstance.setParams(this.value)
+        // 初始化黑名单, callback触发edit
+        this.blacklist = new WordList(
+            this.valueKey,
+            'UP主昵称关键词 黑名单',
+            `每行一个关键词，支持正则(iv)，语法：/abc|\\d+/`,
+            (values: string[]) => {
+                this.edit(values)
+            },
+        )
+    }
+
+    enable() {
+        // 告知agency
+        agencyInstance.notifyUploaderKeyword('enable')
+        // 触发全站过滤
+        this.checkVideoList(true)
+    }
+    disable() {
+        agencyInstance.notifyUploaderKeyword('disable')
+        this.checkVideoList(true)
+    }
+    add(value: string) {
+        this.blacklist.addValue(value)
+        agencyInstance.notifyUploaderKeyword('add', value)
+        this.checkVideoList(true)
+    }
+    // edit由编辑黑名单的保存动作回调, 数据由编辑器实例存储
+    edit(values: string[]) {
+        agencyInstance.notifyUploaderKeyword('edit', values)
         this.checkVideoList(true)
     }
 }

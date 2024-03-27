@@ -4,13 +4,14 @@ import { ButtonItem, CheckboxItem } from '../../../components/item'
 import { Group } from '../../../components/group'
 import settings from '../../../settings'
 import { isPagePopular } from '../../../utils/page-type'
-import contextMenuInstance from '../../../components/contextmenu'
+import { ContextMenu } from '../../../components/contextmenu'
 import { matchBvid, waitForEle } from '../../../utils/tool'
 import {
     BvidAction,
     TitleKeywordAction,
     TitleKeywordWhitelistAction,
     UploaderAction,
+    UploaderKeywordAction,
     UploaderWhitelistAction,
 } from './actions/action'
 
@@ -130,6 +131,11 @@ if (isPagePopular()) {
         'global-uploader-filter-value',
         checkVideoList,
     )
+    const popularUploaderKeywordAction = new UploaderKeywordAction(
+        'popular-uploader-keyword-filter-status',
+        'global-uploader-keyword-filter-value',
+        checkVideoList,
+    )
     const popularBvidAction = new BvidAction('popular-bvid-filter-status', 'global-bvid-filter-value', checkVideoList)
     const popularTitleKeywordAction = new TitleKeywordAction(
         'popular-title-keyword-filter-status',
@@ -154,8 +160,10 @@ if (isPagePopular()) {
             return
         }
         isContextMenuFuncRunning = true
+        const menu = new ContextMenu()
         // 监听右键单击
         document.addEventListener('contextmenu', (e) => {
+            menu.hide()
             if (e.target instanceof HTMLElement) {
                 const target = e.target
                 if (
@@ -172,9 +180,9 @@ if (isPagePopular()) {
                         const onclickWhite = () => {
                             popularUploaderWhitelistAction.add(uploader)
                         }
-                        contextMenuInstance.registerMenu(`◎ 屏蔽UP主：${uploader}`, onclickBlack)
-                        contextMenuInstance.registerMenu(`◎ 将UP主加入白名单`, onclickWhite)
-                        contextMenuInstance.show(e.clientX, e.clientY)
+                        menu.registerMenu(`◎ 屏蔽UP主：${uploader}`, onclickBlack)
+                        menu.registerMenu(`◎ 将UP主加入白名单`, onclickWhite)
+                        menu.show(e.clientX, e.clientY)
                     }
                 } else if (
                     isContextMenuBvidEnable &&
@@ -197,18 +205,21 @@ if (isPagePopular()) {
                             const onclick = () => {
                                 popularBvidAction.add(bvid)
                             }
-                            contextMenuInstance.registerMenu(`屏蔽视频：${bvid}`, onclick)
-                            contextMenuInstance.show(e.clientX, e.clientY)
+                            menu.registerMenu(`屏蔽视频：${bvid}`, onclick)
+                            menu.show(e.clientX, e.clientY)
                         }
                     }
                 } else {
-                    contextMenuInstance.hide()
+                    menu.hide()
                 }
             }
         })
-        // 监听左键单击，关闭右键菜单
+        // 关闭右键菜单
         document.addEventListener('click', () => {
-            contextMenuInstance.hide()
+            menu.hide()
+        })
+        document.addEventListener('wheel', () => {
+            menu.hide()
         })
         debug('contextMenuFunc listen contextmenu')
     }
@@ -221,7 +232,7 @@ if (isPagePopular()) {
         // 启用 热门页 UP主过滤
         new CheckboxItem({
             itemID: popularUploaderAction.statusKey,
-            description: '启用 热门页 UP主过滤',
+            description: '启用 UP主过滤 (右键单击UP主)',
             itemFunc: () => {
                 // 启用右键功能
                 isContextMenuUploaderEnable = true
@@ -244,17 +255,35 @@ if (isPagePopular()) {
                 popularUploaderAction.blacklist.show()
             },
         }),
+        // 启用 UP主昵称关键词过滤
+        new CheckboxItem({
+            itemID: popularUploaderKeywordAction.statusKey,
+            description: '启用 UP主昵称关键词过滤',
+            itemFunc: () => {
+                popularUploaderKeywordAction.enable()
+            },
+            callback: () => {
+                popularUploaderKeywordAction.disable()
+            },
+        }),
+        // 编辑 UP主昵称关键词黑名单
+        new ButtonItem({
+            itemID: 'popular-uploader-keyword-edit-button',
+            description: '编辑 UP主昵称关键词黑名单',
+            name: '编辑',
+            itemFunc: () => {
+                popularUploaderKeywordAction.blacklist.show()
+            },
+        }),
     ]
-    popularPageVideoFilterGroupList.push(
-        new Group('popular-uploader-filter-group', '热门页 UP主过滤 (右键单击UP主)', uploaderItems),
-    )
+    popularPageVideoFilterGroupList.push(new Group('popular-uploader-filter-group', '热门页 UP主过滤', uploaderItems))
 
     // UI组件, 标题关键词过滤part
     const titleKeywordItems = [
         // 启用 热门页 关键词过滤
         new CheckboxItem({
             itemID: popularTitleKeywordAction.statusKey,
-            description: '启用 热门页 关键词过滤',
+            description: '启用 标题关键词过滤',
             itemFunc: () => {
                 popularTitleKeywordAction.enable()
             },
@@ -265,7 +294,7 @@ if (isPagePopular()) {
         // 按钮功能：打开titleKeyword黑名单编辑框
         new ButtonItem({
             itemID: 'popular-title-keyword-edit-button',
-            description: '编辑 关键词黑名单（支持正则）',
+            description: '编辑 标题关键词黑名单（支持正则）',
             name: '编辑',
             // 按钮功能
             itemFunc: () => {
@@ -282,7 +311,7 @@ if (isPagePopular()) {
         // 启用 热门页 BV号过滤
         new CheckboxItem({
             itemID: popularBvidAction.statusKey,
-            description: '启用 热门页 BV号过滤',
+            description: '启用 BV号过滤 (右键单击标题)',
             itemFunc: () => {
                 // 启用右键功能
                 isContextMenuBvidEnable = true
@@ -306,16 +335,14 @@ if (isPagePopular()) {
             },
         }),
     ]
-    popularPageVideoFilterGroupList.push(
-        new Group('popular-bvid-filter-group', '热门页 BV号过滤 (右键单击标题)', bvidItems),
-    )
+    popularPageVideoFilterGroupList.push(new Group('popular-bvid-filter-group', '热门页 BV号过滤', bvidItems))
 
     // UI组件, 例外和白名单part
     const whitelistItems = [
         // 启用 热门页 UP主白名单
         new CheckboxItem({
             itemID: popularUploaderWhitelistAction.statusKey,
-            description: '启用 热门页 UP主白名单',
+            description: '启用 UP主白名单 (右键单击UP主)',
             itemFunc: () => {
                 popularUploaderWhitelistAction.enable()
             },
@@ -336,7 +363,7 @@ if (isPagePopular()) {
         // 启用 热门页 标题关键词白名单
         new CheckboxItem({
             itemID: popularTitleKeywordWhitelistAction.statusKey,
-            description: '启用 热门页 标题关键词白名单',
+            description: '启用 标题关键词白名单',
             itemFunc: () => {
                 popularTitleKeywordWhitelistAction.enable()
             },
@@ -347,7 +374,7 @@ if (isPagePopular()) {
         // 编辑 关键词白名单
         new ButtonItem({
             itemID: 'popular-title-keyword-whitelist-edit-button',
-            description: '编辑 关键词白名单（支持正则）',
+            description: '编辑 标题关键词白名单（支持正则）',
             name: '编辑',
             // 按钮功能：显示白名单编辑器
             itemFunc: () => {

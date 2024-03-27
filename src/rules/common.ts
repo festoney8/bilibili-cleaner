@@ -691,7 +691,7 @@ if (!isPageLiveHome()) {
             itemID: 'common-hide-nav-message-red-num',
             description: '隐藏 消息小红点',
             itemCSS: `
-                .right-entry .v-popover-wrap:has([href*="//message.bilibili.com"], [data-idx="message"]) .red-num--message {
+                .right-entry .v-popover-wrap:has([href*="//message.bilibili.com"], [data-idx="message"]) :is(.red-num--message, .red-point--message) {
                     display: none !important;
                 }
                 /* 旧版header */

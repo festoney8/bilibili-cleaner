@@ -2,12 +2,12 @@ import { GM_getValue } from '$'
 import { Group } from '../../../components/group'
 import { CheckboxItem, ButtonItem } from '../../../components/item'
 import { debugCommentFilter as debug, error } from '../../../utils/logger'
-import { isPageBangumi, isPageVideo } from '../../../utils/page-type'
+import { isPageBangumi, isPagePlaylist, isPageVideo } from '../../../utils/page-type'
 import { showEle, waitForEle } from '../../../utils/tool'
 import { ContentAction, UsernameAction } from './actions/action'
-import contextMenuInstance from '../../../components/contextmenu'
 import coreCommentFilterInstance, { CommentSelectorFunc } from '../filters/core'
 import settings from '../../../settings'
+import { ContextMenu } from '../../../components/contextmenu'
 
 const videoPageCommentFilterGroupList: Group[] = []
 
@@ -23,7 +23,7 @@ let isPinnedCommentWhitelistEnable: boolean = GM_getValue('BILICLEANER_video-com
 let isNoteCommentWhitelistEnable: boolean = GM_getValue('BILICLEANER_video-comment-note-whitelist-status', true)
 let isLinkCommentWhitelistEnable: boolean = GM_getValue('BILICLEANER_video-comment-link-whitelist-status', true)
 
-if (isPageVideo() || isPageBangumi()) {
+if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
     let commentListContainer: HTMLElement
     // 一级评论
     const rootCommentSelectorFunc: CommentSelectorFunc = {
@@ -177,7 +177,9 @@ if (isPageVideo() || isPageBangumi()) {
             return
         }
         isContextMenuFuncRunning = true
+        const menu = new ContextMenu()
         document.addEventListener('contextmenu', (e) => {
+            menu.hide()
             if (e.target instanceof HTMLElement) {
                 const target = e.target
                 if (
@@ -188,19 +190,22 @@ if (isPageVideo() || isPageBangumi()) {
                     const username = target.textContent?.trim()
                     if (username) {
                         e.preventDefault()
-                        contextMenuInstance.registerMenu(`屏蔽用户：${username}`, () => {
+                        menu.registerMenu(`屏蔽用户：${username}`, () => {
                             usernameAction.add(username)
                         })
-                        contextMenuInstance.show(e.clientX, e.clientY)
+                        menu.show(e.clientX, e.clientY)
                     }
                 } else {
-                    contextMenuInstance.hide()
+                    menu.hide()
                 }
             }
         })
         // 关闭右键菜单
         document.addEventListener('click', () => {
-            contextMenuInstance.hide()
+            menu.hide()
+        })
+        document.addEventListener('wheel', () => {
+            menu.hide()
         })
         debug('contextMenuFunc listen contextmenu')
     }

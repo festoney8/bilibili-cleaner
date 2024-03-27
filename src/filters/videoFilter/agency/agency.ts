@@ -3,6 +3,7 @@ import durationFilterInstance from '../filters/subfilters/duration'
 import titleKeywordFilterInstance from '../filters/subfilters/titleKeyword'
 import titleKeywordWhitelistFilterInstance from '../filters/subfilters/titleKeywordWhitelist'
 import uploaderFilterInstance from '../filters/subfilters/uploader'
+import uploaderKeywordFilterInstance from '../filters/subfilters/uploaderKeyword'
 import uploaderWhitelistFilterInstance from '../filters/subfilters/uploaderWhitelist'
 
 // 代理, 接收页面操作通知, 更新子过滤器的参数
@@ -82,6 +83,26 @@ class VideoFilterAgency {
             case 'edit':
                 if (Array.isArray(value)) {
                     titleKeywordFilterInstance.setParams(value.map((v) => v.trim()).filter((v) => v))
+                }
+                break
+        }
+    }
+    notifyUploaderKeyword(event: string, value?: string | string[]) {
+        switch (event) {
+            case 'disable':
+                uploaderKeywordFilterInstance.setStatus(false)
+                break
+            case 'enable':
+                uploaderKeywordFilterInstance.setStatus(true)
+                break
+            case 'add':
+                if (typeof value === 'string' && value.trim()) {
+                    uploaderKeywordFilterInstance.addParam(value.trim())
+                }
+                break
+            case 'edit':
+                if (Array.isArray(value)) {
+                    uploaderKeywordFilterInstance.setParams(value.map((v) => v.trim()).filter((v) => v))
                 }
                 break
         }

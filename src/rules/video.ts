@@ -7,7 +7,7 @@ import { isPageBnj, isPagePlaylist, isPageVideo } from '../utils/page-type'
 /** BV号转AV号 */
 const bv2av = () => {
     /**
-     * 可能会出现转换后av号带短横的bug(溢出)，作为后备方案
+     * algo by bilibili-API-collect
      * @see https://www.zhihu.com/question/381784377/answer/1099438784
      * @see https://github.com/SocialSisterYi/bilibili-API-collect/issues/740
      * @see https://socialsisteryi.github.io/bilibili-API-collect/docs/misc/bvid_desc.html
@@ -63,15 +63,11 @@ const simpleShare = () => {
             // 新增click事件
             // 若replace element, 会在切换视频后无法更新视频分享数量, 故直接新增click事件覆盖剪贴板
             shareBtn.addEventListener('click', () => {
-                let title = document.querySelector('#viewbox_report > h1')?.textContent
-                if (!title) {
-                    // 尝试稍后再看or收藏夹列表
-                    title = document.querySelector('.video-title-href')?.textContent
-                    if (!title) {
-                        return
-                    }
-                }
+                let title = document.querySelector(
+                    '.video-info-title .video-title, #viewbox_report > h1, .video-title-href',
+                )?.textContent
                 if (
+                    title &&
                     !'（({【[［《「＜｛〔〖<〈『'.includes(title[0]) &&
                     !'）)}】]］》」＞｝〕〗>〉』'.includes(title.slice(-1))
                 ) {
@@ -79,7 +75,9 @@ const simpleShare = () => {
                 }
                 // 匹配av号, BV号, 分P号
                 const avbv = matchAvidBvid(location.href)
-                let shareText = `${title} \nhttps://www.bilibili.com/video/${avbv}`
+                let shareText = title
+                    ? `${title} \nhttps://www.bilibili.com/video/${avbv}`
+                    : `https://www.bilibili.com/video/${avbv}`
                 const urlObj = new URL(location.href)
                 const params = new URLSearchParams(urlObj.search)
                 if (params.has('p')) {
@@ -812,6 +810,13 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-page-hide-right-container-reco-list-next-play-next-button',
             description: '隐藏 自动连播按钮',
             itemCSS: `#reco_list .next-play .next-button {display: none !important;}`,
+        }),
+        // 隐藏 接下来播放
+        new CheckboxItem({
+            itemID: 'video-page-hide-right-container-reco-list-next-play',
+            description: '隐藏 接下来播放',
+            itemCSS: `#reco_list .next-play {display: none !important;}
+                     #reco_list .rec-list {margin-top: 0 !important;}`,
         }),
         // 视频合集 增加合集列表高度, 默认开启
         new CheckboxItem({

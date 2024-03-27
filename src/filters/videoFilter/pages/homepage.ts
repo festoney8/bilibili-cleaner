@@ -4,7 +4,7 @@ import { Group } from '../../../components/group'
 import coreFilterInstance, { VideoSelectorFunc } from '../filters/core'
 import settings from '../../../settings'
 import { isPageHomepage } from '../../../utils/page-type'
-import contextMenuInstance from '../../../components/contextmenu'
+import { ContextMenu } from '../../../components/contextmenu'
 import { matchBvid, showEle, waitForEle } from '../../../utils/tool'
 import {
     BvidAction,
@@ -12,6 +12,7 @@ import {
     TitleKeywordAction,
     TitleKeywordWhitelistAction,
     UploaderAction,
+    UploaderKeywordAction,
     UploaderWhitelistAction,
 } from './actions/action'
 import { GM_getValue } from '$'
@@ -158,6 +159,11 @@ if (isPageHomepage()) {
         'global-uploader-filter-value',
         checkVideoList,
     )
+    const homepageUploaderKeywordAction = new UploaderKeywordAction(
+        'homepage-uploader-keyword-filter-status',
+        'global-uploader-keyword-filter-value',
+        checkVideoList,
+    )
     const homepageBvidAction = new BvidAction('homepage-bvid-filter-status', 'global-bvid-filter-value', checkVideoList)
     const homepageTitleKeywordAction = new TitleKeywordAction(
         'homepage-title-keyword-filter-status',
@@ -183,8 +189,10 @@ if (isPageHomepage()) {
             return
         }
         isContextMenuFuncRunning = true
+        const menu = new ContextMenu()
         // 监听右键单击
         document.addEventListener('contextmenu', (e) => {
+            menu.hide()
             if (e.target instanceof HTMLElement) {
                 // debug(e.target.classList)
                 if (
@@ -203,9 +211,9 @@ if (isPageHomepage()) {
                         const onclickWhite = () => {
                             homepageUploaderWhitelistAction.add(uploader)
                         }
-                        contextMenuInstance.registerMenu(`◎ 屏蔽UP主：${uploader}`, onclickBlack)
-                        contextMenuInstance.registerMenu(`◎ 将UP主加入白名单`, onclickWhite)
-                        contextMenuInstance.show(e.clientX, e.clientY)
+                        menu.registerMenu(`◎ 屏蔽UP主：${uploader}`, onclickBlack)
+                        menu.registerMenu(`◎ 将UP主加入白名单`, onclickWhite)
+                        menu.show(e.clientX, e.clientY)
                     }
                 } else if (
                     isContextMenuBvidEnable &&
@@ -221,18 +229,21 @@ if (isPageHomepage()) {
                             const onclick = () => {
                                 homepageBvidAction.add(bvid)
                             }
-                            contextMenuInstance.registerMenu(`屏蔽视频：${bvid}`, onclick)
-                            contextMenuInstance.show(e.clientX, e.clientY)
+                            menu.registerMenu(`屏蔽视频：${bvid}`, onclick)
+                            menu.show(e.clientX, e.clientY)
                         }
                     }
                 } else {
-                    contextMenuInstance.hide()
+                    menu.hide()
                 }
             }
         })
-        // 监听左键单击，关闭右键菜单
+        // 关闭右键菜单
         document.addEventListener('click', () => {
-            contextMenuInstance.hide()
+            menu.hide()
+        })
+        document.addEventListener('wheel', () => {
+            menu.hide()
         })
         debug('contextMenuFunc listen contextmenu')
     }
@@ -245,7 +256,7 @@ if (isPageHomepage()) {
         // 启用 首页时长过滤
         new CheckboxItem({
             itemID: homepageDurationAction.statusKey,
-            description: '启用 首页时长过滤',
+            description: '启用 时长过滤',
             /**
              * 需使用匿名函数包装后传参, 否则报错, 下同
              *
@@ -286,7 +297,7 @@ if (isPageHomepage()) {
         // 启用 首页UP主过滤
         new CheckboxItem({
             itemID: homepageUploaderAction.statusKey,
-            description: '启用 首页UP主过滤',
+            description: '启用 UP主过滤 (右键单击UP主)',
             itemFunc: () => {
                 // 启用右键功能
                 isContextMenuUploaderEnable = true
@@ -309,17 +320,35 @@ if (isPageHomepage()) {
                 homepageUploaderAction.blacklist.show()
             },
         }),
+        // 启用 UP主昵称关键词过滤
+        new CheckboxItem({
+            itemID: homepageUploaderKeywordAction.statusKey,
+            description: '启用 UP主昵称关键词过滤',
+            itemFunc: () => {
+                homepageUploaderKeywordAction.enable()
+            },
+            callback: () => {
+                homepageUploaderKeywordAction.disable()
+            },
+        }),
+        // 编辑 UP主昵称关键词黑名单
+        new ButtonItem({
+            itemID: 'homepage-uploader-keyword-edit-button',
+            description: '编辑 UP主昵称关键词黑名单',
+            name: '编辑',
+            itemFunc: () => {
+                homepageUploaderKeywordAction.blacklist.show()
+            },
+        }),
     ]
-    homepagePageVideoFilterGroupList.push(
-        new Group('homepage-uploader-filter-group', '首页 UP主过滤 (右键单击UP主)', uploaderItems),
-    )
+    homepagePageVideoFilterGroupList.push(new Group('homepage-uploader-filter-group', '首页 UP主过滤', uploaderItems))
 
     // UI组件, 标题关键词过滤
     const titleKeywordItems = [
         // 启用 首页关键词过滤
         new CheckboxItem({
             itemID: homepageTitleKeywordAction.statusKey,
-            description: '启用 首页关键词过滤',
+            description: '启用 标题关键词过滤',
             itemFunc: () => {
                 homepageTitleKeywordAction.enable()
             },
@@ -330,7 +359,7 @@ if (isPageHomepage()) {
         // 按钮功能：打开titleKeyword黑名单编辑框
         new ButtonItem({
             itemID: 'homepage-title-keyword-edit-button',
-            description: '编辑 关键词黑名单（支持正则）',
+            description: '编辑 标题关键词黑名单（支持正则）',
             name: '编辑',
             // 按钮功能
             itemFunc: () => {
@@ -347,7 +376,7 @@ if (isPageHomepage()) {
         // 启用 首页BV号过滤
         new CheckboxItem({
             itemID: homepageBvidAction.statusKey,
-            description: '启用 首页BV号过滤',
+            description: '启用 BV号过滤 (右键单击标题)',
             itemFunc: () => {
                 // 启用右键功能
                 isContextMenuBvidEnable = true
@@ -371,9 +400,7 @@ if (isPageHomepage()) {
             },
         }),
     ]
-    homepagePageVideoFilterGroupList.push(
-        new Group('homepage-bvid-filter-group', '首页 BV号过滤 (右键单击标题)', bvidItems),
-    )
+    homepagePageVideoFilterGroupList.push(new Group('homepage-bvid-filter-group', '首页 BV号过滤', bvidItems))
 
     // UI组件, 例外和白名单
     const whitelistItems = [
@@ -395,7 +422,7 @@ if (isPageHomepage()) {
         // 启用 首页UP主白名单
         new CheckboxItem({
             itemID: homepageUploaderWhitelistAction.statusKey,
-            description: '启用 首页UP主白名单',
+            description: '启用 UP主白名单 (右键单击UP主)',
             itemFunc: () => {
                 homepageUploaderWhitelistAction.enable()
             },
@@ -416,7 +443,7 @@ if (isPageHomepage()) {
         // 启用 首页标题关键词白名单
         new CheckboxItem({
             itemID: homepageTitleKeyworldWhitelistAction.statusKey,
-            description: '启用 首页标题关键词白名单',
+            description: '启用 标题关键词白名单',
             itemFunc: () => {
                 homepageTitleKeyworldWhitelistAction.enable()
             },
@@ -427,7 +454,7 @@ if (isPageHomepage()) {
         // 编辑 关键词白名单
         new ButtonItem({
             itemID: 'homepage-title-keyword-whitelist-edit-button',
-            description: '编辑 关键词白名单（支持正则）',
+            description: '编辑 标题关键词白名单（支持正则）',
             name: '编辑',
             // 按钮功能：显示白名单编辑器
             itemFunc: () => {

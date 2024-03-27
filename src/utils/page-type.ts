@@ -33,7 +33,7 @@ const currPage = (): string => {
     if (href.includes('bilibili.com/bangumi/play/')) {
         return 'bangumi'
     }
-    if (href.includes('bilibili.com/list/watchlater') || href.includes('bilibili.com/list/ml')) {
+    if (href.includes('bilibili.com/list/')) {
         return 'playlist'
     }
     // 频道子分类

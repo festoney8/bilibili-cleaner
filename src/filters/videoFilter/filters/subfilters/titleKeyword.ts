@@ -33,7 +33,7 @@ class TitleKeywordFilter implements IVideoSubFilter {
                         // 关键词为正则表达式（反斜杠使用单斜杠），大小写不敏感，支持unicodeSets
                         const pattern = new RegExp(word.slice(1, -1), 'iv')
                         if (title.match(pattern)) {
-                            // 命中白名单正则
+                            // 命中黑名单正则
                             flag = true
                             reject(`TitleKeyword reject, ${title} match ${word} in blacklist`)
                         }

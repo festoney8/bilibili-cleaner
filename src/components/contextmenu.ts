@@ -4,7 +4,7 @@ type Menu = {
     name: string
     onclick: () => void
 }
-class ContextMenu {
+export class ContextMenu {
     private nodeHTML = `
         <div id="bili-cleaner-context-menu-container">
             <ul>
@@ -108,7 +108,3 @@ class ContextMenu {
         this.isShowing = false
     }
 }
-
-// 单例
-const contextMenuInstance = new ContextMenu()
-export default contextMenuInstance

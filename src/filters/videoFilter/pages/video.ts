@@ -2,8 +2,7 @@ import { debugVideoFilter as debug, error } from '../../../utils/logger'
 import coreFilterInstance, { VideoSelectorFunc } from '../filters/core'
 import { ButtonItem, CheckboxItem, NumberItem } from '../../../components/item'
 import { Group } from '../../../components/group'
-import { isPageVideo } from '../../../utils/page-type'
-import contextMenuInstance from '../../../components/contextmenu'
+import { isPagePlaylist, isPageVideo } from '../../../utils/page-type'
 import { matchBvid, showEle, waitForEle } from '../../../utils/tool'
 import {
     BvidAction,
@@ -11,9 +10,11 @@ import {
     TitleKeywordAction,
     TitleKeywordWhitelistAction,
     UploaderAction,
+    UploaderKeywordAction,
     UploaderWhitelistAction,
 } from './actions/action'
 import { GM_getValue } from '$'
+import { ContextMenu } from '../../../components/contextmenu'
 
 const videoPageVideoFilterGroupList: Group[] = []
 
@@ -24,7 +25,7 @@ let isContextMenuBvidEnable = false
 // 接下来播放是否免过滤
 let isNextPlayWhitelistEnable: boolean = GM_getValue('BILICLEANER_video-next-play-whitelist-filter-status', true)
 
-if (isPageVideo()) {
+if (isPageVideo() || isPagePlaylist()) {
     let videoListContainer: HTMLElement
     // 构建SelectorFunc
     const rcmdSelectorFunc: VideoSelectorFunc = {
@@ -48,7 +49,7 @@ if (isPageVideo()) {
             return null
         },
         uploader: (video: Element): string | null => {
-            const uploader = video.querySelector('.info > .upname a')?.textContent
+            const uploader = video.querySelector('.info > .upname .name')?.textContent?.trim()
             return uploader ? uploader : null
         },
     }
@@ -66,7 +67,7 @@ if (isPageVideo()) {
             )
             // 推荐列表
             const rcmdVideos = videoListContainer.querySelectorAll<HTMLElement>(
-                `.rec-list .video-page-card-small, .rec-list .video-page-operator-card-small`,
+                `.rec-list .video-page-card-small, .rec-list .video-page-operator-card-small, .recommend-video-card`,
             )
 
             // 判断是否筛选接下来播放
@@ -102,8 +103,12 @@ if (isPageVideo()) {
 
     try {
         // 监听视频列表出现
-        waitForEle(document, '#reco_list', (node: Node): boolean => {
-            return node instanceof HTMLElement && (node as HTMLElement).id === 'reco_list'
+        waitForEle(document, '#reco_list, .recommend-list-container', (node: Node): boolean => {
+            return (
+                node instanceof HTMLElement &&
+                ((node as HTMLElement).id === 'reco_list' ||
+                    (node as HTMLElement).className === 'recommend-list-container')
+            )
         }).then((ele) => {
             if (ele) {
                 videoListContainer = ele
@@ -126,6 +131,11 @@ if (isPageVideo()) {
     const videoUploaderAction = new UploaderAction(
         'video-uploader-filter-status',
         'global-uploader-filter-value',
+        checkVideoList,
+    )
+    const videoUploaderKeywordAction = new UploaderKeywordAction(
+        'video-uploader-keyword-filter-status',
+        'global-uploader-keyword-filter-value',
         checkVideoList,
     )
     const videoBvidAction = new BvidAction('video-bvid-filter-status', 'global-bvid-filter-value', checkVideoList)
@@ -152,16 +162,14 @@ if (isPageVideo()) {
             return
         }
         isContextMenuFuncRunning = true
+        const menu = new ContextMenu()
         // 监听右键单击
         document.addEventListener('contextmenu', (e) => {
+            menu.hide()
             if (e.target instanceof HTMLElement) {
                 // debug(e.target.classList)
                 const target = e.target
-                if (
-                    isContextMenuUploaderEnable &&
-                    target.classList.contains('name')
-                    // target.closest('.upname span.name') === target
-                ) {
+                if (isContextMenuUploaderEnable && target.classList.contains('name')) {
                     // 命中UP主
                     const uploader = target.textContent
                     if (uploader) {
@@ -172,15 +180,11 @@ if (isPageVideo()) {
                         const onclickWhite = () => {
                             videoUploaderWhitelistAction.add(uploader)
                         }
-                        contextMenuInstance.registerMenu(`◎ 屏蔽UP主：${uploader}`, onclickBlack)
-                        contextMenuInstance.registerMenu(`◎ 将UP主加入白名单`, onclickWhite)
-                        contextMenuInstance.show(e.clientX, e.clientY)
+                        menu.registerMenu(`◎ 屏蔽UP主：${uploader}`, onclickBlack)
+                        menu.registerMenu(`◎ 将UP主加入白名单`, onclickWhite)
+                        menu.show(e.clientX, e.clientY)
                     }
-                } else if (
-                    isContextMenuBvidEnable &&
-                    target.classList.contains('title')
-                    // target.closest('.info > a > p') === target
-                ) {
+                } else if (isContextMenuBvidEnable && target.classList.contains('title')) {
                     // 命中视频标题, 提取bvid
                     const href = target.parentElement?.getAttribute('href')
                     if (href) {
@@ -190,18 +194,21 @@ if (isPageVideo()) {
                             const onclick = () => {
                                 videoBvidAction.add(bvid)
                             }
-                            contextMenuInstance.registerMenu(`屏蔽视频：${bvid}`, onclick)
-                            contextMenuInstance.show(e.clientX, e.clientY)
+                            menu.registerMenu(`屏蔽视频：${bvid}`, onclick)
+                            menu.show(e.clientX, e.clientY)
                         }
                     }
                 } else {
-                    contextMenuInstance.hide()
+                    menu.hide()
                 }
             }
         })
-        // 监听左键单击，关闭右键菜单
+        // 关闭右键菜单
         document.addEventListener('click', () => {
-            contextMenuInstance.hide()
+            menu.hide()
+        })
+        document.addEventListener('wheel', () => {
+            menu.hide()
         })
         debug('contextMenuFunc listen contextmenu')
     }
@@ -214,7 +221,7 @@ if (isPageVideo()) {
         // 启用 播放页时长过滤
         new CheckboxItem({
             itemID: videoDurationAction.statusKey,
-            description: '启用 播放页时长过滤',
+            description: '启用 时长过滤',
             itemFunc: () => {
                 videoDurationAction.enable()
             },
@@ -243,7 +250,7 @@ if (isPageVideo()) {
         // 启用 播放页UP主过滤
         new CheckboxItem({
             itemID: videoUploaderAction.statusKey,
-            description: '启用 播放页UP主过滤',
+            description: '启用 UP主过滤 (右键单击UP主)',
             itemFunc: () => {
                 // 启用右键菜单功能
                 isContextMenuUploaderEnable = true
@@ -266,17 +273,35 @@ if (isPageVideo()) {
                 videoUploaderAction.blacklist.show()
             },
         }),
+        // 启用 UP主昵称关键词过滤
+        new CheckboxItem({
+            itemID: videoUploaderKeywordAction.statusKey,
+            description: '启用 UP主昵称关键词过滤',
+            itemFunc: () => {
+                videoUploaderKeywordAction.enable()
+            },
+            callback: () => {
+                videoUploaderKeywordAction.disable()
+            },
+        }),
+        // 编辑 UP主昵称关键词黑名单
+        new ButtonItem({
+            itemID: 'video-uploader-keyword-edit-button',
+            description: '编辑 UP主昵称关键词黑名单',
+            name: '编辑',
+            itemFunc: () => {
+                videoUploaderKeywordAction.blacklist.show()
+            },
+        }),
     ]
-    videoPageVideoFilterGroupList.push(
-        new Group('video-uploader-filter-group', '播放页 UP主过滤 (右键单击UP主)', uploaderItems),
-    )
+    videoPageVideoFilterGroupList.push(new Group('video-uploader-filter-group', '播放页 UP主过滤', uploaderItems))
 
     // UI组件, 标题关键词过滤part
     const titleKeywordItems = [
         // 启用 播放页关键词过滤
         new CheckboxItem({
             itemID: videoTitleKeywordAction.statusKey,
-            description: '启用 播放页关键词过滤',
+            description: '启用 标题关键词过滤',
             itemFunc: () => {
                 videoTitleKeywordAction.enable()
             },
@@ -287,7 +312,7 @@ if (isPageVideo()) {
         // 编辑 关键词黑名单
         new ButtonItem({
             itemID: 'video-title-keyword-edit-button',
-            description: '编辑 关键词黑名单（支持正则）',
+            description: '编辑 标题关键词黑名单（支持正则）',
             name: '编辑',
             // 按钮功能：打开编辑器
             itemFunc: () => {
@@ -304,7 +329,7 @@ if (isPageVideo()) {
         // 启用 播放页 BV号过滤
         new CheckboxItem({
             itemID: videoBvidAction.statusKey,
-            description: '启用 播放页BV号过滤',
+            description: '启用 BV号过滤 (右键单击标题)',
             itemFunc: () => {
                 // 启用 右键功能
                 isContextMenuBvidEnable = true
@@ -328,9 +353,7 @@ if (isPageVideo()) {
             },
         }),
     ]
-    videoPageVideoFilterGroupList.push(
-        new Group('video-bvid-filter-group', '播放页 BV号过滤 (右键单击标题)', bvidItems),
-    )
+    videoPageVideoFilterGroupList.push(new Group('video-bvid-filter-group', '播放页 BV号过滤', bvidItems))
 
     // UI组件, 免过滤和白名单part
     const whitelistItems = [
@@ -351,7 +374,7 @@ if (isPageVideo()) {
         // 启用 播放页UP主白名单
         new CheckboxItem({
             itemID: videoUploaderWhitelistAction.statusKey,
-            description: '启用 播放页UP主白名单',
+            description: '启用 UP主白名单',
             itemFunc: () => {
                 videoUploaderWhitelistAction.enable()
             },
@@ -372,7 +395,7 @@ if (isPageVideo()) {
         // 启用 播放页关键词白名单
         new CheckboxItem({
             itemID: videoTitleKeywordWhitelistAction.statusKey,
-            description: '启用 播放页关键词白名单',
+            description: '启用 标题关键词白名单',
             itemFunc: () => {
                 videoTitleKeywordWhitelistAction.enable()
             },
@@ -383,7 +406,7 @@ if (isPageVideo()) {
         // 编辑 关键词白名单
         new ButtonItem({
             itemID: 'video-title-keyword-whitelist-edit-button',
-            description: '编辑 关键词白名单（支持正则）',
+            description: '编辑 标题关键词白名单（支持正则）',
             name: '编辑',
             // 按钮功能：打开编辑器
             itemFunc: () => {

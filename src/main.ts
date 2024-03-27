@@ -15,6 +15,7 @@ import {
     isPageBangumi,
     isPageChannel,
     isPageHomepage,
+    isPagePlaylist,
     isPagePopular,
     isPageSearch,
     isPageVideo,
@@ -133,19 +134,19 @@ const main = async () => {
         createPanelWithMode('rule', RULE_GROUPS)
     })
     // 视频过滤设置
-    if (isPageHomepage() || isPageVideo() || isPagePopular() || isPageSearch() || isPageChannel()) {
+    if (isPageHomepage() || isPageVideo() || isPagePopular() || isPageSearch() || isPageChannel() || isPagePlaylist()) {
         GM_registerMenuCommand('✅视频过滤设置', () => {
             createPanelWithMode('videoFilter', VIDEO_FILTER_GROUPS)
         })
     }
     // 评论过滤设置
-    if (isPageVideo() || isPageBangumi()) {
+    if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         GM_registerMenuCommand('✅评论过滤设置', () => {
             createPanelWithMode('commentFilter', COMMENT_FILTER_GROUPS)
         })
     }
     // 视频过滤 快捷按钮
-    if (isPageHomepage() || isPageVideo() || isPagePopular() || isPageSearch() || isPageChannel()) {
+    if (isPageHomepage() || isPageVideo() || isPagePopular() || isPageSearch() || isPageChannel() || isPagePlaylist()) {
         const videoFilterSideBtnID = 'video-filter-side-btn'
         const sideBtn = new SideBtn(
             videoFilterSideBtnID,
@@ -169,7 +170,7 @@ const main = async () => {
         }
     }
     // 评论过滤 快捷按钮
-    if (isPageVideo() || isPageBangumi()) {
+    if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         const commentFilterSideBtnID = 'comment-filter-side-btn'
         const sideBtn = new SideBtn(
             commentFilterSideBtnID,

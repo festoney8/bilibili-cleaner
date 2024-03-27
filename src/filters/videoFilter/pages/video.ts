@@ -2,8 +2,7 @@ import { debugVideoFilter as debug, error } from '../../../utils/logger'
 import coreFilterInstance, { VideoSelectorFunc } from '../filters/core'
 import { ButtonItem, CheckboxItem, NumberItem } from '../../../components/item'
 import { Group } from '../../../components/group'
-import { isPageVideo } from '../../../utils/page-type'
-import contextMenuInstance from '../../../components/contextmenu'
+import { isPagePlaylist, isPageVideo } from '../../../utils/page-type'
 import { matchBvid, showEle, waitForEle } from '../../../utils/tool'
 import {
     BvidAction,
@@ -15,6 +14,7 @@ import {
     UploaderWhitelistAction,
 } from './actions/action'
 import { GM_getValue } from '$'
+import { ContextMenu } from '../../../components/contextmenu'
 
 const videoPageVideoFilterGroupList: Group[] = []
 
@@ -25,7 +25,7 @@ let isContextMenuBvidEnable = false
 // 接下来播放是否免过滤
 let isNextPlayWhitelistEnable: boolean = GM_getValue('BILICLEANER_video-next-play-whitelist-filter-status', true)
 
-if (isPageVideo()) {
+if (isPageVideo() || isPagePlaylist()) {
     let videoListContainer: HTMLElement
     // 构建SelectorFunc
     const rcmdSelectorFunc: VideoSelectorFunc = {
@@ -49,7 +49,7 @@ if (isPageVideo()) {
             return null
         },
         uploader: (video: Element): string | null => {
-            const uploader = video.querySelector('.info > .upname a')?.textContent
+            const uploader = video.querySelector('.info > .upname .name')?.textContent?.trim()
             return uploader ? uploader : null
         },
     }
@@ -67,7 +67,7 @@ if (isPageVideo()) {
             )
             // 推荐列表
             const rcmdVideos = videoListContainer.querySelectorAll<HTMLElement>(
-                `.rec-list .video-page-card-small, .rec-list .video-page-operator-card-small`,
+                `.rec-list .video-page-card-small, .rec-list .video-page-operator-card-small, .recommend-video-card`,
             )
 
             // 判断是否筛选接下来播放
@@ -103,8 +103,12 @@ if (isPageVideo()) {
 
     try {
         // 监听视频列表出现
-        waitForEle(document, '#reco_list', (node: Node): boolean => {
-            return node instanceof HTMLElement && (node as HTMLElement).id === 'reco_list'
+        waitForEle(document, '#reco_list, .recommend-list-container', (node: Node): boolean => {
+            return (
+                node instanceof HTMLElement &&
+                ((node as HTMLElement).id === 'reco_list' ||
+                    (node as HTMLElement).className === 'recommend-list-container')
+            )
         }).then((ele) => {
             if (ele) {
                 videoListContainer = ele
@@ -158,16 +162,14 @@ if (isPageVideo()) {
             return
         }
         isContextMenuFuncRunning = true
+        const menu = new ContextMenu()
         // 监听右键单击
         document.addEventListener('contextmenu', (e) => {
+            menu.hide()
             if (e.target instanceof HTMLElement) {
                 // debug(e.target.classList)
                 const target = e.target
-                if (
-                    isContextMenuUploaderEnable &&
-                    target.classList.contains('name')
-                    // target.closest('.upname span.name') === target
-                ) {
+                if (isContextMenuUploaderEnable && target.classList.contains('name')) {
                     // 命中UP主
                     const uploader = target.textContent
                     if (uploader) {
@@ -178,15 +180,11 @@ if (isPageVideo()) {
                         const onclickWhite = () => {
                             videoUploaderWhitelistAction.add(uploader)
                         }
-                        contextMenuInstance.registerMenu(`◎ 屏蔽UP主：${uploader}`, onclickBlack)
-                        contextMenuInstance.registerMenu(`◎ 将UP主加入白名单`, onclickWhite)
-                        contextMenuInstance.show(e.clientX, e.clientY)
+                        menu.registerMenu(`◎ 屏蔽UP主：${uploader}`, onclickBlack)
+                        menu.registerMenu(`◎ 将UP主加入白名单`, onclickWhite)
+                        menu.show(e.clientX, e.clientY)
                     }
-                } else if (
-                    isContextMenuBvidEnable &&
-                    target.classList.contains('title')
-                    // target.closest('.info > a > p') === target
-                ) {
+                } else if (isContextMenuBvidEnable && target.classList.contains('title')) {
                     // 命中视频标题, 提取bvid
                     const href = target.parentElement?.getAttribute('href')
                     if (href) {
@@ -196,18 +194,18 @@ if (isPageVideo()) {
                             const onclick = () => {
                                 videoBvidAction.add(bvid)
                             }
-                            contextMenuInstance.registerMenu(`屏蔽视频：${bvid}`, onclick)
-                            contextMenuInstance.show(e.clientX, e.clientY)
+                            menu.registerMenu(`屏蔽视频：${bvid}`, onclick)
+                            menu.show(e.clientX, e.clientY)
                         }
                     }
                 } else {
-                    contextMenuInstance.hide()
+                    menu.hide()
                 }
             }
         })
         // 监听左键单击，关闭右键菜单
         document.addEventListener('click', () => {
-            contextMenuInstance.hide()
+            menu.hide()
         })
         debug('contextMenuFunc listen contextmenu')
     }

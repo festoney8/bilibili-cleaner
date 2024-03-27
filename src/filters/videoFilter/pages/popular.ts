@@ -4,7 +4,7 @@ import { ButtonItem, CheckboxItem } from '../../../components/item'
 import { Group } from '../../../components/group'
 import settings from '../../../settings'
 import { isPagePopular } from '../../../utils/page-type'
-import contextMenuInstance from '../../../components/contextmenu'
+import { ContextMenu } from '../../../components/contextmenu'
 import { matchBvid, waitForEle } from '../../../utils/tool'
 import {
     BvidAction,
@@ -160,8 +160,10 @@ if (isPagePopular()) {
             return
         }
         isContextMenuFuncRunning = true
+        const menu = new ContextMenu()
         // 监听右键单击
         document.addEventListener('contextmenu', (e) => {
+            menu.hide()
             if (e.target instanceof HTMLElement) {
                 const target = e.target
                 if (
@@ -178,9 +180,9 @@ if (isPagePopular()) {
                         const onclickWhite = () => {
                             popularUploaderWhitelistAction.add(uploader)
                         }
-                        contextMenuInstance.registerMenu(`◎ 屏蔽UP主：${uploader}`, onclickBlack)
-                        contextMenuInstance.registerMenu(`◎ 将UP主加入白名单`, onclickWhite)
-                        contextMenuInstance.show(e.clientX, e.clientY)
+                        menu.registerMenu(`◎ 屏蔽UP主：${uploader}`, onclickBlack)
+                        menu.registerMenu(`◎ 将UP主加入白名单`, onclickWhite)
+                        menu.show(e.clientX, e.clientY)
                     }
                 } else if (
                     isContextMenuBvidEnable &&
@@ -203,18 +205,18 @@ if (isPagePopular()) {
                             const onclick = () => {
                                 popularBvidAction.add(bvid)
                             }
-                            contextMenuInstance.registerMenu(`屏蔽视频：${bvid}`, onclick)
-                            contextMenuInstance.show(e.clientX, e.clientY)
+                            menu.registerMenu(`屏蔽视频：${bvid}`, onclick)
+                            menu.show(e.clientX, e.clientY)
                         }
                     }
                 } else {
-                    contextMenuInstance.hide()
+                    menu.hide()
                 }
             }
         })
         // 监听左键单击，关闭右键菜单
         document.addEventListener('click', () => {
-            contextMenuInstance.hide()
+            menu.hide()
         })
         debug('contextMenuFunc listen contextmenu')
     }

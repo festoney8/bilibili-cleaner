@@ -119,10 +119,8 @@ export class WordList {
 
     /** 插入节点, 显示编辑框 */
     insertNode() {
-        const node = document.getElementById('bili-cleaner-wordlist') as HTMLDivElement
-        if (node) {
-            return
-        }
+        document.getElementById('bili-cleaner-wordlist')?.remove()
+
         const e = document.createElement('div')
         e.innerHTML = this.nodeHTML.trim()
         e.querySelector('.wordlist-header')!.innerHTML = this.title.replace('\n', '<br>')

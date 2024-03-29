@@ -61,11 +61,13 @@ export class DurationAction implements VideoFilterAction {
         agencyInstance.notifyDuration('enable')
         // 触发全站过滤
         this.checkVideoList(true)
+        this.status = true
     }
     disable() {
         debug(`DurationAction disable`)
         agencyInstance.notifyDuration('disable')
         this.checkVideoList(true)
+        this.status = false
     }
     change(value: number) {
         debug(`DurationAction change ${value}`)
@@ -109,10 +111,12 @@ export class UploaderAction implements VideoFilterAction {
         agencyInstance.notifyUploader('enable')
         // 触发全站过滤
         this.checkVideoList(true)
+        this.status = true
     }
     disable() {
         agencyInstance.notifyUploader('disable')
         this.checkVideoList(true)
+        this.status = false
     }
     add(value: string) {
         this.blacklist.addValue(value)
@@ -161,10 +165,12 @@ export class BvidAction implements VideoFilterAction {
         agencyInstance.notifyBvid('enable')
         // 触发全站过滤
         this.checkVideoList(true)
+        this.status = true
     }
     disable() {
         agencyInstance.notifyBvid('disable')
         this.checkVideoList(true)
+        this.status = false
     }
     add(value: string) {
         this.blacklist.addValue(value)
@@ -218,10 +224,12 @@ export class TitleKeywordAction implements VideoFilterAction {
         agencyInstance.notifyTitleKeyword('enable')
         // 触发全站过滤
         this.checkVideoList(true)
+        this.status = true
     }
     disable() {
         agencyInstance.notifyTitleKeyword('disable')
         this.checkVideoList(true)
+        this.status = false
     }
     add(value: string) {
         this.blacklist.addValue(value)
@@ -275,10 +283,12 @@ export class UploaderKeywordAction implements VideoFilterAction {
         agencyInstance.notifyUploaderKeyword('enable')
         // 触发全站过滤
         this.checkVideoList(true)
+        this.status = true
     }
     disable() {
         agencyInstance.notifyUploaderKeyword('disable')
         this.checkVideoList(true)
+        this.status = false
     }
     add(value: string) {
         this.blacklist.addValue(value)
@@ -327,10 +337,12 @@ export class UploaderWhitelistAction implements VideoFilterAction {
         agencyInstance.notifyUploaderWhitelist('enable')
         // 触发全站过滤
         this.checkVideoList(true)
+        this.status = true
     }
     disable() {
         agencyInstance.notifyUploaderWhitelist('disable')
         this.checkVideoList(true)
+        this.status = false
     }
     add(value: string) {
         this.whitelist.addValue(value)
@@ -384,10 +396,12 @@ export class TitleKeywordWhitelistAction implements VideoFilterAction {
         agencyInstance.notifyTitleKeywordWhitelist('enable')
         // 触发全站过滤
         this.checkVideoList(true)
+        this.status = true
     }
     disable() {
         agencyInstance.notifyTitleKeywordWhitelist('disable')
         this.checkVideoList(true)
+        this.status = false
     }
     // edit由编辑白名单的保存动作回调, 数据由编辑器实例存储
     edit(values: string[]) {

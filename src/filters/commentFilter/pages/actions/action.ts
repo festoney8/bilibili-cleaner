@@ -64,10 +64,12 @@ export class UsernameAction implements CommentFilterAction {
     enable() {
         commentFilterAgencyInstance.notifyUsername('enable')
         this.checkCommentList(true)
+        this.status = true
     }
     disable() {
         commentFilterAgencyInstance.notifyUsername('disable')
         this.checkCommentList(true)
+        this.status = false
     }
     add(value: string) {
         this.blacklist.addValue(value)
@@ -120,10 +122,12 @@ export class ContentAction implements CommentFilterAction {
         commentFilterAgencyInstance.notifyContent('enable')
         // 触发全站过滤
         this.checkCommentList(true)
+        this.status = true
     }
     disable() {
         commentFilterAgencyInstance.notifyContent('disable')
         this.checkCommentList(true)
+        this.status = false
     }
     add(value: string) {
         this.blacklist.addValue(value)

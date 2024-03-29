@@ -116,37 +116,6 @@ if (isPageHomepage()) {
             error('checkVideoList error')
         }
     }
-    // 监听视频列表内部变化, 有变化时检测视频列表
-    const watchVideoListContainer = () => {
-        if (videoListContainer) {
-            debug('watchVideoListContainer start')
-            // 初次全站检测
-            checkVideoList(true)
-            const videoObverser = new MutationObserver(() => {
-                // 增量检测
-                checkVideoList(false)
-            })
-            videoObverser.observe(videoListContainer, { childList: true })
-            debug('watchVideoListContainer OK')
-        }
-    }
-
-    try {
-        // 监听视频列表出现
-        waitForEle(document, '.container.is-version8', (node: Node): boolean => {
-            return node instanceof HTMLElement && (node as HTMLElement).className === 'container is-version8'
-        }).then((ele) => {
-            if (ele) {
-                videoListContainer = ele
-                watchVideoListContainer()
-            }
-        })
-    } catch (err) {
-        error(err)
-        error(`watch video list ERROR`)
-    }
-
-    //=======================================================================================
 
     // 初始化 行为实例
     const homepageDurationAction = new DurationAction(
@@ -180,6 +149,52 @@ if (isPageHomepage()) {
         'global-title-keyword-whitelist-filter-value',
         checkVideoList,
     )
+
+    // 监听视频列表内部变化, 有变化时检测视频列表
+    const watchVideoListContainer = () => {
+        if (videoListContainer) {
+            debug('watchVideoListContainer start')
+            if (
+                homepageDurationAction.status ||
+                homepageUploaderAction.status ||
+                homepageUploaderKeywordAction.status ||
+                homepageBvidAction.status ||
+                homepageTitleKeywordAction.status
+            ) {
+                // 初次全站检测
+                checkVideoList(true)
+            }
+            const videoObverser = new MutationObserver(() => {
+                if (
+                    homepageDurationAction.status ||
+                    homepageUploaderAction.status ||
+                    homepageUploaderKeywordAction.status ||
+                    homepageBvidAction.status ||
+                    homepageTitleKeywordAction.status
+                ) {
+                    // 增量检测
+                    checkVideoList(false)
+                }
+            })
+            videoObverser.observe(videoListContainer, { childList: true })
+            debug('watchVideoListContainer OK')
+        }
+    }
+
+    try {
+        // 监听视频列表出现
+        waitForEle(document, '.container.is-version8', (node: Node): boolean => {
+            return node instanceof HTMLElement && (node as HTMLElement).className === 'container is-version8'
+        }).then((ele) => {
+            if (ele) {
+                videoListContainer = ele
+                watchVideoListContainer()
+            }
+        })
+    } catch (err) {
+        error(err)
+        error(`watch video list ERROR`)
+    }
 
     //=======================================================================================
 

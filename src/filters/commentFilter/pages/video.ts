@@ -131,12 +131,28 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         }
     }
 
+    // 配置 行为实例
+    const usernameAction = new UsernameAction(
+        'video-comment-username-filter-status',
+        'global-comment-username-filter-value',
+        checkCommentList,
+    )
+    const contentAction = new ContentAction(
+        'video-comment-content-filter-status',
+        'global-comment-content-filter-value',
+        checkCommentList,
+    )
+
     // 监听评论列表内部变化, 有变化时检测评论列表
     const watchCommentListContainer = () => {
         if (commentListContainer) {
-            checkCommentList(true)
+            if (usernameAction.status || contentAction.status) {
+                checkCommentList(true)
+            }
             const commentObverser = new MutationObserver(() => {
-                checkCommentList(false)
+                if (usernameAction.status || contentAction.status) {
+                    checkCommentList(false)
+                }
             })
             commentObverser.observe(commentListContainer, { childList: true, subtree: true })
         }
@@ -156,19 +172,6 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         error(`watch comment list ERROR`)
     }
 
-    //=======================================================================================
-
-    // 配置 行为实例
-    const usernameAction = new UsernameAction(
-        'video-comment-username-filter-status',
-        'global-comment-username-filter-value',
-        checkCommentList,
-    )
-    const contentAction = new ContentAction(
-        'video-comment-content-filter-status',
-        'global-comment-content-filter-value',
-        checkCommentList,
-    )
     //=======================================================================================
 
     // 右键监听函数, 屏蔽评论用户

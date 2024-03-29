@@ -863,6 +863,14 @@ if (isPageVideo() || isPagePlaylist()) {
             description: '隐藏 分P视频 自动连播',
             itemCSS: `#multi_page .next-button {display: none !important;}`,
         }),
+        // 相关视频 视频信息置底, 默认开启
+        new CheckboxItem({
+            itemID: 'video-page-right-container-set-info-bottom',
+            description: '相关视频 视频信息置底',
+            defaultStatus: true,
+            itemCSS: `.video-page-card-small .card-box .info {display: flex !important; flex-direction: column !important;}
+                    .video-page-card-small .card-box .info .upname {margin-top: auto !important;}`,
+        }),
         // 隐藏 相关视频 视频时长
         new CheckboxItem({
             itemID: 'video-page-hide-right-container-duration',
@@ -884,7 +892,7 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-page-hide-right-container-reco-list-rec-list-info-up',
             description: '隐藏 相关视频 UP主',
             itemCSS: `#reco_list .info .upname {
-                    display: none !important;
+                    visibility: hidden !important;
                 }
                 #reco_list .info {
                     display: flex;

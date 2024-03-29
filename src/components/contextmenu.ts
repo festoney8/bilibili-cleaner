@@ -21,7 +21,7 @@ export class ContextMenu {
         z-index: 99999;
     }
     #bili-cleaner-context-menu-container li {
-        padding: 6px 12px;
+        padding: 5px 10px;
         font-size: 1rem;
     }
     #bili-cleaner-context-menu-container li:hover {

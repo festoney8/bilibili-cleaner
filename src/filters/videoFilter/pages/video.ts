@@ -184,9 +184,14 @@ if (isPageVideo() || isPagePlaylist()) {
             if (e.target instanceof HTMLElement) {
                 // debug(e.target.classList)
                 const target = e.target
-                if (isContextMenuUploaderEnable && target.classList.contains('name')) {
+                if (
+                    isContextMenuUploaderEnable &&
+                    (target.classList.contains('name') ||
+                        target.classList.contains('up-name') ||
+                        (target.classList.contains('mask') && target.parentElement?.classList.contains('up-name')))
+                ) {
                     // 命中UP主
-                    const uploader = target.textContent
+                    const uploader = target.textContent || target.parentElement?.textContent
                     if (uploader) {
                         e.preventDefault()
                         const onclickBlack = () => {
@@ -209,7 +214,7 @@ if (isPageVideo() || isPagePlaylist()) {
                             const onclick = () => {
                                 videoBvidAction.add(bvid)
                             }
-                            menu.registerMenu(`屏蔽视频：${bvid}`, onclick)
+                            menu.registerMenu(`屏蔽视频 ${bvid}`, onclick)
                             menu.show(e.clientX, e.clientY)
                         }
                     }

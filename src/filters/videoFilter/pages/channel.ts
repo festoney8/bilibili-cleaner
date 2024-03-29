@@ -210,7 +210,7 @@ if (isPageChannel()) {
                             const onclick = () => {
                                 channelBvidAction.add(bvid)
                             }
-                            menu.registerMenu(`屏蔽视频：${bvid}`, onclick)
+                            menu.registerMenu(`屏蔽视频 ${bvid}`, onclick)
                             menu.show(e.clientX, e.clientY)
                         }
                     }

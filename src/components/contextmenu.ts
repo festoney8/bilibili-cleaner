@@ -97,6 +97,15 @@ export class ContextMenu {
         this.node.style.display = 'block'
 
         this.isShowing = true
+
+        // 监听关闭操作
+        const hideMenu = () => {
+            this.hide()
+        }
+        document.addEventListener('click', () => {
+            hideMenu()
+            document.removeEventListener('click', hideMenu)
+        })
     }
     /** 隐藏右键菜单 */
     hide() {

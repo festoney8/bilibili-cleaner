@@ -228,13 +228,6 @@ if (isPagePopular()) {
                 }
             }
         })
-        // 关闭右键菜单
-        document.addEventListener('click', () => {
-            menu.hide()
-        })
-        document.addEventListener('wheel', () => {
-            menu.hide()
-        })
         debug('contextMenuFunc listen contextmenu')
     }
 

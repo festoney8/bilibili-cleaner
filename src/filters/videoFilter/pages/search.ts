@@ -87,34 +87,6 @@ if (isPageSearch()) {
             error('checkVideoList error')
         }
     }
-    // 监听视频列表内部变化, 有变化时检测视频列表
-    const watchVideoListContainer = () => {
-        if (videoListContainer) {
-            debug('watchVideoListContainer start')
-            checkVideoList(true)
-            const videoObverser = new MutationObserver(() => {
-                checkVideoList(true)
-            })
-            videoObverser.observe(videoListContainer, { childList: true, subtree: true })
-            debug('watchVideoListContainer OK')
-        }
-    }
-    try {
-        // 监听视频列表出现
-        waitForEle(document, '.search-content', (node: Node): boolean => {
-            return node instanceof HTMLElement && (node as HTMLElement).className?.includes('search-content')
-        }).then((ele) => {
-            if (ele) {
-                videoListContainer = ele
-                watchVideoListContainer()
-            }
-        })
-    } catch (err) {
-        error(err)
-        error(`watch video list ERROR`)
-    }
-
-    //=======================================================================================
 
     // 初始化 行为实例
     const searchDurationAction = new DurationAction(
@@ -148,6 +120,50 @@ if (isPageSearch()) {
         'global-title-keyword-whitelist-filter-value',
         checkVideoList,
     )
+
+    // 监听视频列表内部变化, 有变化时检测视频列表
+    const watchVideoListContainer = () => {
+        if (videoListContainer) {
+            debug('watchVideoListContainer start')
+            if (
+                searchDurationAction.status ||
+                searchUploaderAction.status ||
+                searchUploaderKeywordAction.status ||
+                searchBvidAction.status ||
+                searchTitleKeywordAction.status
+            ) {
+                checkVideoList(true)
+            }
+            const videoObverser = new MutationObserver(() => {
+                if (
+                    searchDurationAction.status ||
+                    searchUploaderAction.status ||
+                    searchUploaderKeywordAction.status ||
+                    searchBvidAction.status ||
+                    searchTitleKeywordAction.status
+                ) {
+                    checkVideoList(true)
+                }
+            })
+            videoObverser.observe(videoListContainer, { childList: true, subtree: true })
+            debug('watchVideoListContainer OK')
+        }
+    }
+
+    try {
+        // 监听视频列表出现
+        waitForEle(document, '.search-content', (node: Node): boolean => {
+            return node instanceof HTMLElement && (node as HTMLElement).className?.includes('search-content')
+        }).then((ele) => {
+            if (ele) {
+                videoListContainer = ele
+                watchVideoListContainer()
+            }
+        })
+    } catch (err) {
+        error(err)
+        error(`watch video list ERROR`)
+    }
 
     //=======================================================================================
 
@@ -199,7 +215,7 @@ if (isPageSearch()) {
                             const onclick = () => {
                                 searchBvidAction.add(bvid)
                             }
-                            menu.registerMenu(`屏蔽视频：${bvid}`, onclick)
+                            menu.registerMenu(`屏蔽视频 ${bvid}`, onclick)
                             menu.show(e.clientX, e.clientY)
                         }
                     }
@@ -207,13 +223,6 @@ if (isPageSearch()) {
                     menu.hide()
                 }
             }
-        })
-        // 关闭右键菜单
-        document.addEventListener('click', () => {
-            menu.hide()
-        })
-        document.addEventListener('wheel', () => {
-            menu.hide()
         })
         debug('contextMenuFunc listen contextmenu')
     }

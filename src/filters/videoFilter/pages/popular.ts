@@ -93,37 +93,6 @@ if (isPagePopular()) {
             error('checkVideoList error')
         }
     }
-    // 监听视频列表内部变化, 有变化时检测视频列表
-    const watchVideoListContainer = () => {
-        if (videoListContainer) {
-            debug('watchVideoListContainer start')
-            // 初次全站检测
-            checkVideoList(true)
-            const videoObverser = new MutationObserver(() => {
-                // 增量检测
-                checkVideoList(true)
-            })
-            videoObverser.observe(videoListContainer, { childList: true, subtree: true })
-            debug('watchVideoListContainer OK')
-        }
-    }
-
-    try {
-        // 监听视频列表出现
-        waitForEle(document, '#app', (node: Node): boolean => {
-            return node instanceof HTMLElement && (node as HTMLElement).id === 'app'
-        }).then((ele) => {
-            if (ele) {
-                videoListContainer = ele
-                watchVideoListContainer()
-            }
-        })
-    } catch (err) {
-        error(err)
-        error(`watch video list ERROR`)
-    }
-
-    //=======================================================================================
 
     // 配置 行为实例
     const popularUploaderAction = new UploaderAction(
@@ -152,6 +121,51 @@ if (isPagePopular()) {
         'global-title-keyword-whitelist-filter-value',
         checkVideoList,
     )
+
+    // 监听视频列表内部变化, 有变化时检测视频列表
+    const watchVideoListContainer = () => {
+        if (videoListContainer) {
+            debug('watchVideoListContainer start')
+            if (
+                popularUploaderAction.status ||
+                popularUploaderKeywordAction.status ||
+                popularBvidAction.status ||
+                popularTitleKeywordAction.status
+            ) {
+                // 初次全站检测
+                checkVideoList(true)
+            }
+            const videoObverser = new MutationObserver(() => {
+                if (
+                    popularUploaderAction.status ||
+                    popularUploaderKeywordAction.status ||
+                    popularBvidAction.status ||
+                    popularTitleKeywordAction.status
+                ) {
+                    // 增量检测
+                    checkVideoList(true)
+                }
+            })
+            videoObverser.observe(videoListContainer, { childList: true, subtree: true })
+            debug('watchVideoListContainer OK')
+        }
+    }
+
+    try {
+        // 监听视频列表出现
+        waitForEle(document, '#app', (node: Node): boolean => {
+            return node instanceof HTMLElement && (node as HTMLElement).id === 'app'
+        }).then((ele) => {
+            if (ele) {
+                videoListContainer = ele
+                watchVideoListContainer()
+            }
+        })
+    } catch (err) {
+        error(err)
+        error(`watch video list ERROR`)
+    }
+
     //=======================================================================================
 
     // 右键监听函数, 热门页右键单击指定元素时修改右键菜单, 用于屏蔽视频BVID, 屏蔽UP主
@@ -205,7 +219,7 @@ if (isPagePopular()) {
                             const onclick = () => {
                                 popularBvidAction.add(bvid)
                             }
-                            menu.registerMenu(`屏蔽视频：${bvid}`, onclick)
+                            menu.registerMenu(`屏蔽视频 ${bvid}`, onclick)
                             menu.show(e.clientX, e.clientY)
                         }
                     }
@@ -213,13 +227,6 @@ if (isPagePopular()) {
                     menu.hide()
                 }
             }
-        })
-        // 关闭右键菜单
-        document.addEventListener('click', () => {
-            menu.hide()
-        })
-        document.addEventListener('wheel', () => {
-            menu.hide()
         })
         debug('contextMenuFunc listen contextmenu')
     }

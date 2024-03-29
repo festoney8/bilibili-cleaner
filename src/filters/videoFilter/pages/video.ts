@@ -86,42 +86,6 @@ if (isPageVideo() || isPagePlaylist()) {
         }
     }
 
-    // 监听视频列表内部变化, 有变化时检测视频列表
-    const watchVideoListContainer = () => {
-        if (videoListContainer) {
-            debug('watchVideoListContainer start')
-            // 播放页右栏载入慢, 始终做全站检测
-            checkVideoList(true)
-            const videoObverser = new MutationObserver(() => {
-                checkVideoList(true)
-            })
-            // 播放页需监听subtree
-            videoObverser.observe(videoListContainer, { childList: true, subtree: true })
-            debug('watchVideoListContainer OK')
-        }
-    }
-
-    try {
-        // 监听视频列表出现
-        waitForEle(document, '#reco_list, .recommend-list-container', (node: Node): boolean => {
-            return (
-                node instanceof HTMLElement &&
-                ((node as HTMLElement).id === 'reco_list' ||
-                    (node as HTMLElement).className === 'recommend-list-container')
-            )
-        }).then((ele) => {
-            if (ele) {
-                videoListContainer = ele
-                watchVideoListContainer()
-            }
-        })
-    } catch (err) {
-        error(err)
-        error(`watch video list ERROR`)
-    }
-
-    //=======================================================================================
-
     // 配置 行为实例
     const videoDurationAction = new DurationAction(
         'video-duration-filter-status',
@@ -154,6 +118,57 @@ if (isPageVideo() || isPagePlaylist()) {
         'global-title-keyword-whitelist-filter-value',
         checkVideoList,
     )
+
+    // 监听视频列表内部变化, 有变化时检测视频列表
+    const watchVideoListContainer = () => {
+        if (videoListContainer) {
+            debug('watchVideoListContainer start')
+            if (
+                videoDurationAction.status ||
+                videoUploaderAction.status ||
+                videoUploaderKeywordAction.status ||
+                videoBvidAction.status ||
+                videoTitleKeywordAction.status
+            ) {
+                // 播放页右栏载入慢, 始终做全站检测
+                checkVideoList(true)
+            }
+            const videoObverser = new MutationObserver(() => {
+                if (
+                    videoDurationAction.status ||
+                    videoUploaderAction.status ||
+                    videoUploaderKeywordAction.status ||
+                    videoBvidAction.status ||
+                    videoTitleKeywordAction.status
+                ) {
+                    checkVideoList(true)
+                }
+            })
+            // 播放页需监听subtree
+            videoObverser.observe(videoListContainer, { childList: true, subtree: true })
+            debug('watchVideoListContainer OK')
+        }
+    }
+
+    try {
+        // 监听视频列表出现
+        waitForEle(document, '#reco_list, .recommend-list-container', (node: Node): boolean => {
+            return (
+                node instanceof HTMLElement &&
+                ((node as HTMLElement).id === 'reco_list' ||
+                    (node as HTMLElement).className === 'recommend-list-container')
+            )
+        }).then((ele) => {
+            if (ele) {
+                videoListContainer = ele
+                watchVideoListContainer()
+            }
+        })
+    } catch (err) {
+        error(err)
+        error(`watch video list ERROR`)
+    }
+
     //=======================================================================================
 
     // 右键监听函数, 播放页右键单击指定元素时修改右键菜单, 用于屏蔽视频BVID, 屏蔽UP主
@@ -169,9 +184,14 @@ if (isPageVideo() || isPagePlaylist()) {
             if (e.target instanceof HTMLElement) {
                 // debug(e.target.classList)
                 const target = e.target
-                if (isContextMenuUploaderEnable && target.classList.contains('name')) {
+                if (
+                    isContextMenuUploaderEnable &&
+                    (target.classList.contains('name') ||
+                        target.classList.contains('up-name') ||
+                        (target.classList.contains('mask') && target.parentElement?.classList.contains('up-name')))
+                ) {
                     // 命中UP主
-                    const uploader = target.textContent
+                    const uploader = target.textContent || target.parentElement?.textContent
                     if (uploader) {
                         e.preventDefault()
                         const onclickBlack = () => {
@@ -194,7 +214,7 @@ if (isPageVideo() || isPagePlaylist()) {
                             const onclick = () => {
                                 videoBvidAction.add(bvid)
                             }
-                            menu.registerMenu(`屏蔽视频：${bvid}`, onclick)
+                            menu.registerMenu(`屏蔽视频 ${bvid}`, onclick)
                             menu.show(e.clientX, e.clientY)
                         }
                     }
@@ -202,13 +222,6 @@ if (isPageVideo() || isPagePlaylist()) {
                     menu.hide()
                 }
             }
-        })
-        // 关闭右键菜单
-        document.addEventListener('click', () => {
-            menu.hide()
-        })
-        document.addEventListener('wheel', () => {
-            menu.hide()
         })
         debug('contextMenuFunc listen contextmenu')
     }

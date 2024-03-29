@@ -21,7 +21,7 @@ export class ContextMenu {
         z-index: 99999;
     }
     #bili-cleaner-context-menu-container li {
-        padding: 6px 12px;
+        padding: 5px 10px;
         font-size: 1rem;
     }
     #bili-cleaner-context-menu-container li:hover {
@@ -97,6 +97,15 @@ export class ContextMenu {
         this.node.style.display = 'block'
 
         this.isShowing = true
+
+        // 监听关闭操作
+        const hideMenu = () => {
+            this.hide()
+        }
+        document.addEventListener('click', () => {
+            hideMenu()
+            document.removeEventListener('click', hideMenu)
+        })
     }
     /** 隐藏右键菜单 */
     hide() {

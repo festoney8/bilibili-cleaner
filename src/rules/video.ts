@@ -269,32 +269,32 @@ if (isPageVideo() || isPagePlaylist()) {
         new CheckboxItem({
             itemID: 'video-page-hide-video-info-danmaku-count',
             description: '隐藏 弹幕数',
-            itemCSS: `.video-info-detail .dm {display: none !important;}`,
+            itemCSS: `:is(.video-info-detail, .video-info-meta) .dm {display: none !important;}`,
         }),
         // 隐藏 发布日期
         new CheckboxItem({
             itemID: 'video-page-hide-video-info-pubdate',
             description: '隐藏 发布日期',
-            itemCSS: `.video-info-detail .pubdate-ip {display: none !important;}`,
+            itemCSS: `:is(.video-info-detail, .video-info-meta) .pubdate-ip {display: none !important;}`,
         }),
         // 隐藏 版权声明
         new CheckboxItem({
             itemID: 'video-page-hide-video-info-copyright',
             description: '隐藏 版权声明',
-            itemCSS: `.video-info-detail .copyright {display: none !important;}`,
+            itemCSS: `:is(.video-info-detail, .video-info-meta) .copyright {display: none !important;}`,
         }),
         // 隐藏 视频荣誉(排行榜/每周必看)
         new CheckboxItem({
             itemID: 'video-page-hide-video-info-honor',
             description: '隐藏 视频荣誉(排行榜/每周必看)',
-            itemCSS: `.video-info-detail .honor-rank, .video-info-detail .honor-weekly {display: none !important;}`,
+            itemCSS: `:is(.video-info-detail, .video-info-meta) .honor-rank, .v:is(ideo-info-detail, ideo-info-meta) .honor-weekly {display: none !important;}`,
         }),
         // 隐藏 温馨提示(饮酒/危险/AI生成), 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-video-info-argue',
             description: '隐藏 温馨提示(饮酒/危险/AI生成)',
             defaultStatus: true,
-            itemCSS: `.video-info-detail .argue, .video-info-detail .video-argue {display: none !important;}`,
+            itemCSS: `:is(.video-info-detail, .video-info-meta) .argue, .v:is(ideo-info-detail, ideo-info-meta) .video-argue {display: none !important;}`,
         }),
     ]
     videoGroupList.push(new Group('video-info', '视频信息', infoItems))

@@ -231,7 +231,8 @@ if (isPageLiveRoom()) {
         new CheckboxItem({
             itemID: 'live-page-combo-danmaku',
             description: '隐藏 播放器顶部变动计数弹幕',
-            itemCSS: `.danmaku-item-container > div.combo {display: none !important;}`,
+            itemCSS: `.danmaku-item-container > div.combo {display: none !important;}
+                    .bilibili-combo-danmaku-container {display: none !important;}`,
         }),
         // 隐藏 计数结尾的弹幕
         new CheckboxItem({

@@ -294,7 +294,7 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-page-hide-video-info-argue',
             description: '隐藏 温馨提示(饮酒/危险/AI生成)',
             defaultStatus: true,
-            itemCSS: `:is(.video-info-detail, .video-info-meta) .argue, .v:is(ideo-info-detail, ideo-info-meta) .video-argue {display: none !important;}`,
+            itemCSS: `:is(.video-info-detail, .video-info-meta) :is(.argue, .video-argue) {display: none !important;}`,
         }),
     ]
     videoGroupList.push(new Group('video-info', '视频信息', infoItems))

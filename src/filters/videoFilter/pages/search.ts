@@ -179,13 +179,11 @@ if (isPageSearch()) {
             menu.hide()
             if (e.target instanceof HTMLElement) {
                 debug(e.target.classList)
-                if (
-                    isContextMenuUploaderEnable &&
-                    (e.target.classList.contains('bili-video-card__info--author') ||
-                        e.target.classList.contains('bili-video-card__info--date'))
-                ) {
+                if (isContextMenuUploaderEnable && e.target.closest('.bili-video-card__info--owner')) {
                     // 命中UP主或日期
-                    const node = e.target.parentElement?.querySelector('.bili-video-card__info--author')
+                    const node = e.target
+                        .closest('.bili-video-card__info--owner')
+                        ?.querySelector('.bili-video-card__info--author')
                     const uploader = node?.textContent
                     if (uploader) {
                         e.preventDefault()
@@ -199,23 +197,19 @@ if (isPageSearch()) {
                         menu.registerMenu(`◎ 将UP主加入白名单`, onclickWhite)
                         menu.show(e.clientX, e.clientY)
                     }
-                } else if (
-                    isContextMenuBvidEnable &&
-                    (e.target.classList.contains('bili-video-card__info--tit') ||
-                        (e.target.classList.contains('keyword') &&
-                            e.target.parentElement?.classList.contains('bili-video-card__info--tit')))
-                ) {
+                } else if (isContextMenuBvidEnable && e.target.closest('.bili-video-card__info--tit')) {
                     // 命中视频标题, 提取bvid
-                    const node = e.target.closest('.bili-video-card__info--right')
-                    const href = node?.querySelector(':scope > a')?.getAttribute('href')
+                    const href = e.target
+                        .closest('.bili-video-card__info--right')
+                        ?.querySelector(':scope > a')
+                        ?.getAttribute('href')
                     if (href) {
                         const bvid = matchBvid(href)
                         if (bvid) {
                             e.preventDefault()
-                            const onclick = () => {
+                            menu.registerMenu(`屏蔽视频 ${bvid}`, () => {
                                 searchBvidAction.add(bvid)
-                            }
-                            menu.registerMenu(`屏蔽视频 ${bvid}`, onclick)
+                            })
                             menu.show(e.clientX, e.clientY)
                         }
                     }

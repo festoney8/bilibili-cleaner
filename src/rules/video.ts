@@ -1156,7 +1156,7 @@ if (isPageVideo() || isPagePlaylist()) {
         new CheckboxItem({
             itemID: 'video-page-hide-zero-like-at-reply',
             description: '隐藏 包含@的 无人点赞评论',
-            itemCSS: `.comment-container .reply-item:has(.root-reply .jump-link.user):not(:has(.sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
+            itemCSS: `.comment-container .reply-item:has(.root-reply .jump-link.user):not(:has(.top-icon, .sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
         }),
         // 隐藏 包含@的 全部评论
         new CheckboxItem({

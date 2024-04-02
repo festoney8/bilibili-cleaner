@@ -210,13 +210,11 @@ if (isPageHomepage()) {
             menu.hide()
             if (e.target instanceof HTMLElement) {
                 // debug(e.target.classList)
-                if (
-                    isContextMenuUploaderEnable &&
-                    (e.target.classList.contains('bili-video-card__info--author') ||
-                        e.target.classList.contains('bili-video-card__info--date'))
-                ) {
+                if (isContextMenuUploaderEnable && e.target.closest('.bili-video-card__info--owner')) {
                     // 命中UP主或日期
-                    const node = e.target.parentElement?.querySelector('.bili-video-card__info--author')
+                    const node = e.target
+                        .closest('.bili-video-card__info--owner')
+                        ?.querySelector('.bili-video-card__info--author')
                     const uploader = node?.textContent
                     if (uploader) {
                         e.preventDefault()

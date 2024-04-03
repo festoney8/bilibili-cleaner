@@ -989,6 +989,12 @@ if (isPageVideo() || isPagePlaylist()) {
             itemCSS: `.main-reply-box .reply-box-textarea::placeholder {color: transparent !important;}
                 .fixed-reply-box .reply-box-textarea::placeholder {color: transparent !important;}`,
         }),
+        // 隐藏 评论区用户卡片
+        new CheckboxItem({
+            itemID: 'video-page-hide-comment-user-card',
+            description: '隐藏 评论区用户卡片\n鼠标放在用户名上时不显示卡片',
+            itemCSS: `.user-card {display: none!important;}`,
+        }),
         // 隐藏 评论内容右侧装饰
         new CheckboxItem({
             itemID: 'video-page-hide-reply-decorate',

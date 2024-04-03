@@ -188,10 +188,14 @@ if (isPageVideo() || isPagePlaylist()) {
                     isContextMenuUploaderEnable &&
                     (target.classList.contains('name') ||
                         target.classList.contains('up-name') ||
-                        (target.classList.contains('mask') && target.parentElement?.classList.contains('up-name')))
+                        target.parentElement?.classList.contains('up-name') ||
+                        target.closest('.staff-info'))
                 ) {
                     // 命中UP主
-                    const uploader = target.textContent || target.parentElement?.textContent
+                    const uploader =
+                        target.closest('.staff-info')?.querySelector('.staff-name')?.textContent?.trim() ||
+                        target.textContent?.trim() ||
+                        target.parentElement?.textContent?.trim()
                     if (uploader) {
                         e.preventDefault()
                         const onclickBlack = () => {

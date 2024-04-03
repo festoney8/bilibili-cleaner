@@ -283,7 +283,7 @@ if (isPageHomepage()) {
         // 强制使用 6 列布局
         new RadioItem({
             itemID: 'homepage-layout-6-column',
-            description: '强制使用 6 列布局 (刷新)\n建议 隐藏发布时间，可选 显示活动轮播',
+            description: '强制使用 6 列布局\n建议 隐藏发布时间，可选 显示活动轮播',
             radioName: 'homepage-layout-option',
             radioItemIDList: [
                 'homepage-layout-default',
@@ -427,10 +427,10 @@ if (isPageHomepage()) {
             // 含skeleton时不隐藏否则出现空档
             itemCSS: `.floor-single-card:not(:has(.skeleton, .skeleton-item)) {display: none !important;}`,
         }),
-        // 关闭 视频载入 骨架动效(skeleton animation) 实验性
+        // 关闭 视频载入 骨架动效(skeleton animation)
         new CheckboxItem({
             itemID: 'homepage-hide-skeleton-animation',
-            description: '关闭 视频载入 骨架动效 (实验性)',
+            description: '关闭 视频载入 骨架动效',
             itemCSS: `.bili-video-card .loading_animation .bili-video-card__skeleton--light,
                 .bili-video-card .loading_animation .bili-video-card__skeleton--text,
                 .bili-video-card .loading_animation .bili-video-card__skeleton--face,
@@ -441,10 +441,10 @@ if (isPageHomepage()) {
                     animation: none !important;
                 }`,
         }),
-        // 隐藏 视频载入 骨架(skeleton) 实验性
+        // 隐藏 视频载入 骨架(skeleton)
         new CheckboxItem({
             itemID: 'homepage-hide-skeleton',
-            description: '隐藏 视频载入 骨架 (实验性)',
+            description: '隐藏 视频载入 骨架',
             // anchor占位也隐藏
             itemCSS: `.bili-video-card:has(.loading_animation), .load-more-anchor {
                     visibility: hidden;

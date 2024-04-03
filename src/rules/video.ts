@@ -294,7 +294,7 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-page-hide-video-info-argue',
             description: '隐藏 温馨提示(饮酒/危险/AI生成)',
             defaultStatus: true,
-            itemCSS: `:is(.video-info-detail, .video-info-meta) .argue, .v:is(ideo-info-detail, ideo-info-meta) .video-argue {display: none !important;}`,
+            itemCSS: `:is(.video-info-detail, .video-info-meta) :is(.argue, .video-argue) {display: none !important;}`,
         }),
     ]
     videoGroupList.push(new Group('video-info', '视频信息', infoItems))
@@ -989,6 +989,12 @@ if (isPageVideo() || isPagePlaylist()) {
             itemCSS: `.main-reply-box .reply-box-textarea::placeholder {color: transparent !important;}
                 .fixed-reply-box .reply-box-textarea::placeholder {color: transparent !important;}`,
         }),
+        // 隐藏 评论区用户卡片
+        new CheckboxItem({
+            itemID: 'video-page-hide-comment-user-card',
+            description: '隐藏 评论区用户卡片\n鼠标放在用户名上时不显示卡片',
+            itemCSS: `.user-card {display: none!important;}`,
+        }),
         // 隐藏 评论内容右侧装饰
         new CheckboxItem({
             itemID: 'video-page-hide-reply-decorate',
@@ -1156,7 +1162,7 @@ if (isPageVideo() || isPagePlaylist()) {
         new CheckboxItem({
             itemID: 'video-page-hide-zero-like-at-reply',
             description: '隐藏 包含@的 无人点赞评论',
-            itemCSS: `.comment-container .reply-item:has(.root-reply .jump-link.user):not(:has(.sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
+            itemCSS: `.comment-container .reply-item:has(.root-reply .jump-link.user):not(:has(.top-icon, .sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
         }),
         // 隐藏 包含@的 全部评论
         new CheckboxItem({

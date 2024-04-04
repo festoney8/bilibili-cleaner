@@ -36,6 +36,9 @@ const currPage = (): string => {
     if (href.includes('bilibili.com/list/')) {
         return 'playlist'
     }
+    if (host === 'space.bilibili.com') {
+        return 'space'
+    }
     // 频道子分类
     if (!href.includes('bilibili.com/v/popular/') && href.includes('bilibili.com/v/')) {
         return 'channel'
@@ -60,3 +63,4 @@ export const isPageBangumi = () => ans === 'bangumi'
 export const isPagePlaylist = () => ans === 'playlist'
 export const isPageBnj = () => ans === 'bnj'
 export const isPageChannel = () => ans === 'channel'
+export const isPageSpace = () => ans === 'space'

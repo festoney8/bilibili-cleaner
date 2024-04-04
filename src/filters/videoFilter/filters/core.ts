@@ -51,7 +51,7 @@ class CoreVideoFilter {
             const checkUploaderWhitelist =
                 uploaderWhitelistFilterInstance.isEnable && selectorFunc.uploader !== undefined
             const checkTitleKeywordWhitelist =
-                titleKeywordWhitelistFilterInstance.isEnable && selectorFunc.uploader !== undefined
+                titleKeywordWhitelistFilterInstance.isEnable && selectorFunc.titleKeyword !== undefined
 
             if (!checkDuration && !checkTitleKeyword && !checkUploader && !checkBvid) {
                 // 黑名单全部关闭时 恢复全部视频

@@ -14,19 +14,21 @@ if (isPageSpace()) {
     // 构建SelectorFunc
     const submitSelectorFunc: VideoSelectorFunc = {
         duration: (video: Element): string | null => {
-            const duration = video.querySelector('span.length')?.textContent
+            const duration = video.querySelector('span.length')?.textContent?.trim()
             return duration ? duration : null
         },
         titleKeyword: (video: Element): string | null => {
             const titleKeyword =
-                video.querySelector('a.title')?.textContent || video.querySelector('a.title')?.getAttribute('title')
+                video.querySelector('a.title')?.textContent?.trim() ||
+                video.querySelector('a.title')?.getAttribute('title')?.trim()
             return titleKeyword ? titleKeyword : null
         },
         bvid: (video: Element): string | null => {
-            const href = video.querySelector('a.title')?.getAttribute('href')
+            const href = video.querySelector('a.title')?.getAttribute('href')?.trim()
             return href ? matchBvid(href) : null
         },
     }
+    const homeSelectorFunc = submitSelectorFunc
     const collectionSelectorFunc = submitSelectorFunc
 
     // 检测视频列表
@@ -38,6 +40,12 @@ if (isPageSpace()) {
             return
         }
         try {
+            // 主页视频
+            if (location.pathname.match(/^\/\d+$/)) {
+                const homeVideos = [...videoListContainer.querySelectorAll<HTMLElement>(`#page-index .small-item`)]
+                homeVideos.length && coreFilterInstance.checkAll(homeVideos, false, homeSelectorFunc)
+                debug(`checkVideoList check ${homeVideos.length} home video`)
+            }
             // 投稿视频
             if (location.pathname.match(/^\/\d+\/video$/)) {
                 const submitVideos = [
@@ -152,6 +160,21 @@ if (isPageSpace()) {
     //=======================================================================================
     // 构建UI菜单
 
+    // 样式补丁，用于主页视频列表过滤后对齐视频
+    const patchCSS = `
+        @media (min-width: 1420px) {
+            #page-index .video .content .small-item:nth-child(4n+1) {padding-left: 7px !important; padding-right: 7px !important;}
+            #page-index .video .content .small-item:nth-child(4n+4) {padding-left: 7px !important; padding-right: 7px !important;}
+            #page-index .video .content .small-item:nth-child(5n+5) {padding-left: 7px !important; padding-right: 7px !important;}
+            #page-index .video .content .small-item:nth-child(5n+1) {padding-left: 7px !important; padding-right: 7px !important;}
+            #page-index .video .content .small-item:nth-child(13),
+            #page-index .video .content .small-item:nth-child(14),
+            #page-index .video .content .small-item:nth-child(15) {display: block}
+        }
+        #page-index .video .content .small-item:nth-child(4n+1) {padding-left: 7px !important; padding-right: 7px !important;}
+        #page-index .video .content .small-item:nth-child(4n+4) {padding-left: 7px !important; padding-right: 7px !important;}
+        .small-item {padding: 10px 7px !important;}`
+
     // UI组件, 时长过滤
     const durationItems = [
         // 启用 空间页时长过滤
@@ -164,6 +187,7 @@ if (isPageSpace()) {
             callback: () => {
                 spaceDurationAction.disable()
             },
+            itemCSS: patchCSS,
         }),
         // 设定最低时长
         new NumberItem({
@@ -193,6 +217,7 @@ if (isPageSpace()) {
             callback: () => {
                 spaceTitleKeywordAction.disable()
             },
+            itemCSS: patchCSS,
         }),
         // 编辑 标题关键词黑名单
         new ButtonItem({
@@ -225,6 +250,7 @@ if (isPageSpace()) {
                 isContextMenuBvidEnable = false
                 spaceBvidAction.disable()
             },
+            itemCSS: patchCSS,
         }),
         // 编辑 BV号黑名单
         new ButtonItem({

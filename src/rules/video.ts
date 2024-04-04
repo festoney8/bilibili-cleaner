@@ -230,7 +230,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 净化分享, 默认开启, 关闭功能需刷新
         new CheckboxItem({
             itemID: 'video-page-simple-share',
-            description: '净化分享功能 (充电时需关闭)',
+            description: '净化分享功能',
             defaultStatus: true,
             itemFunc: simpleShare,
             itemCSS: `.video-share-popover .video-share-dropdown .dropdown-bottom {display: none !important;}

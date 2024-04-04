@@ -20,14 +20,12 @@ import {
  */
 const cleanURL = () => {
     // 直播域名各种iframe页面（天选、抽奖）和活动页特殊处理
-    if (location.host === 'live.bilibili.com') {
-        if (
-            location.href.includes('live.bilibili.com/p/html') ||
-            location.href.includes('live.bilibili.com/activity') ||
-            location.href.includes('live.bilibili.com/blackboard')
-        ) {
-            return
-        }
+    if (
+        location.href.includes('live.bilibili.com/p/html') ||
+        location.href.includes('live.bilibili.com/activity') ||
+        location.href.includes('live.bilibili.com/blackboard')
+    ) {
+        return
     }
     const keysToRemove = new Set([
         'from_source',
@@ -416,7 +414,7 @@ const basicItems = [
     // 以前会出现URL缺少参数导致充电窗口载入失败报错NaN的bug, 现无法复现, 猜测已修复
     new CheckboxItem({
         itemID: 'url-cleaner',
-        description: 'URL参数净化',
+        description: 'URL参数净化 (充电时需关闭)',
         defaultStatus: true,
         itemFunc: cleanURL,
         isItemFuncReload: true,

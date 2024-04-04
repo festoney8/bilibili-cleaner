@@ -18,6 +18,7 @@ import {
     isPagePlaylist,
     isPagePopular,
     isPageSearch,
+    isPageSpace,
     isPageVideo,
 } from './utils/page-type'
 import { homepagePageVideoFilterGroupList } from './filters/videoFilter/pages/homepage'
@@ -29,6 +30,7 @@ import { channelGroupList } from './rules/channel'
 import { channelPageVideoFilterGroupList } from './filters/videoFilter/pages/channel'
 import panelInstance from './components/panel'
 import { videoPageCommentFilterGroupList } from './filters/commentFilter/pages/video'
+import { spacePageVideoFilterGroupList } from './filters/videoFilter/pages/space'
 
 log('script start')
 
@@ -62,6 +64,7 @@ const main = async () => {
         ...popularPageVideoFilterGroupList,
         ...searchPageVideoFilterGroupList,
         ...channelPageVideoFilterGroupList,
+        ...spacePageVideoFilterGroupList,
     ]
     VIDEO_FILTER_GROUPS.forEach((e) => e.enableGroup())
 
@@ -134,7 +137,15 @@ const main = async () => {
         createPanelWithMode('rule', RULE_GROUPS)
     })
     // 视频过滤设置
-    if (isPageHomepage() || isPageVideo() || isPagePopular() || isPageSearch() || isPageChannel() || isPagePlaylist()) {
+    if (
+        isPageHomepage() ||
+        isPageVideo() ||
+        isPagePopular() ||
+        isPageSearch() ||
+        isPageChannel() ||
+        isPagePlaylist() ||
+        isPageSpace()
+    ) {
         GM_registerMenuCommand('✅视频过滤设置', () => {
             createPanelWithMode('videoFilter', VIDEO_FILTER_GROUPS)
         })
@@ -146,7 +157,15 @@ const main = async () => {
         })
     }
     // 视频过滤 快捷按钮
-    if (isPageHomepage() || isPageVideo() || isPagePopular() || isPageSearch() || isPageChannel() || isPagePlaylist()) {
+    if (
+        isPageHomepage() ||
+        isPageVideo() ||
+        isPagePopular() ||
+        isPageSearch() ||
+        isPageChannel() ||
+        isPagePlaylist() ||
+        isPageSpace()
+    ) {
         const videoFilterSideBtnID = 'video-filter-side-btn'
         const sideBtn = new SideBtn(
             videoFilterSideBtnID,

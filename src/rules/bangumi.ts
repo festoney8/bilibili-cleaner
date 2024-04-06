@@ -1,5 +1,5 @@
 import { Group } from '../components/group'
-import { CheckboxItem } from '../components/item'
+import { CheckboxItem, NumberItem } from '../components/item'
 import { debugRules as debug } from '../utils/logger'
 import { isPageBangumi } from '../utils/page-type'
 
@@ -253,6 +253,47 @@ if (isPageBangumi()) {
             description: '隐藏 底边mini视频进度',
             defaultStatus: true,
             itemCSS: `.bpx-player-shadow-progress-area {display: none !important;}`,
+        }),
+        // 小窗播放器 隐藏底边进度
+        new CheckboxItem({
+            itemID: 'video-page-hide-bpx-player-mini-mode-process',
+            description: '小窗播放器 隐藏底边进度',
+            defaultStatus: true,
+            itemCSS: `.bpx-player-container[data-screen=mini]:not(:hover) .bpx-player-mini-progress {display: none;}`,
+        }),
+        // 小窗播放器 隐藏弹幕
+        new CheckboxItem({
+            itemID: 'video-page-hide-bpx-player-mini-mode-danmaku',
+            description: '小窗播放器 隐藏弹幕',
+            itemCSS: `.bpx-player-container[data-screen=mini] .bpx-player-row-dm-wrap {visibility: hidden !important;}`,
+        }),
+        // 小窗播放器 缩放百分比
+        new NumberItem({
+            itemID: 'video-page-bpx-player-mini-mode-zoom',
+            description: '小窗播放器 缩放百分比 (100=禁用)',
+            defaultValue: 100,
+            minValue: 0,
+            maxValue: 500,
+            disableValue: 100,
+            unit: '%',
+            itemCSS: `
+                .bpx-player-container[data-screen=mini] {
+                    height: calc(225px * ??? / 100);
+                    width: calc(400px * ??? / 100);
+                }
+                .bpx-player-container[data-revision="1"][data-screen=mini],
+                .bpx-player-container[data-revision="2"][data-screen=mini] {
+                    height: calc(180px * ??? / 100);
+                    width: calc(320px * ??? / 100);
+                }
+                @media screen and (min-width:1681px) {
+                    .bpx-player-container[data-revision="1"][data-screen=mini],
+                    .bpx-player-container[data-revision="2"][data-screen=mini] {
+                        height: calc(203px * ??? / 100);
+                        width: calc(360px * ??? / 100);
+                    }
+                }`,
+            itemCSSPlaceholder: '???',
         }),
     ]
     bangumiGroupList.push(new Group('bangumi-player-control', '播放控制', playerControlItems))
@@ -748,10 +789,10 @@ if (isPageBangumi()) {
             defaultStatus: true,
             itemCSS: `[class*='navTools_navMenu'] [title='新版反馈'] {display: none !important;}`,
         }),
-        // 隐藏 小窗播放器
+        // 隐藏 小窗播放开关
         new CheckboxItem({
             itemID: 'video-page-hide-sidenav-mini',
-            description: '隐藏 小窗播放器',
+            description: '隐藏 小窗播放开关',
             itemCSS: `[class*='navTools_navMenu'] [title*='迷你播放器'] {display: none !important;}`,
         }),
         // 隐藏 客服, 默认开启

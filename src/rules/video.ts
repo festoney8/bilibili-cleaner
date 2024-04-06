@@ -1,5 +1,5 @@
 import { Group } from '../components/group'
-import { CheckboxItem } from '../components/item'
+import { CheckboxItem, NumberItem } from '../components/item'
 import { debugRules as debug } from '../utils/logger'
 import { matchAvidBvid, matchBvid } from '../utils/tool'
 import { isPageBnj, isPagePlaylist, isPageVideo } from '../utils/page-type'
@@ -448,6 +448,48 @@ if (isPageVideo() || isPagePlaylist() || isPageBnj()) {
                     -ms-background-clip: text !important;
                     -ms-text-stroke: 3px transparent;
                 }`,
+        }),
+        // 小窗播放器 隐藏底边进度
+        new CheckboxItem({
+            itemID: 'video-page-hide-bpx-player-mini-mode-process',
+            description: '小窗播放器 隐藏底边进度',
+            defaultStatus: true,
+            itemCSS: `.bpx-player-container[data-screen=mini]:not(:hover) .bpx-player-mini-progress {display: none;}`,
+        }),
+        // 小窗播放器 隐藏弹幕
+        new CheckboxItem({
+            itemID: 'video-page-hide-bpx-player-mini-mode-danmaku',
+            description: '小窗播放器 隐藏弹幕',
+            defaultStatus: true,
+            itemCSS: `.bpx-player-container[data-screen=mini] .bpx-player-row-dm-wrap {visibility: hidden !important;}`,
+        }),
+        // 小窗播放器 缩放百分比
+        new NumberItem({
+            itemID: 'video-page-bpx-player-mini-mode-zoom',
+            description: '小窗播放器 缩放百分比 (100=禁用)',
+            defaultValue: 100,
+            minValue: 0,
+            maxValue: 500,
+            disableValue: 100,
+            unit: '%',
+            itemCSS: `
+                .bpx-player-container[data-screen=mini] {
+                    height: calc(225px * ??? / 100);
+                    width: calc(400px * ??? / 100);
+                }
+                .bpx-player-container[data-revision="1"][data-screen=mini],
+                .bpx-player-container[data-revision="2"][data-screen=mini] {
+                    height: calc(180px * ??? / 100);
+                    width: calc(320px * ??? / 100);
+                }
+                @media screen and (min-width:1681px) {
+                    .bpx-player-container[data-revision="1"][data-screen=mini],
+                    .bpx-player-container[data-revision="2"][data-screen=mini] {
+                        height: calc(203px * ??? / 100);
+                        width: calc(360px * ??? / 100);
+                    }
+                }`,
+            itemCSSPlaceholder: '???',
         }),
     ]
     videoGroupList.push(new Group('video-player', '播放器', playerItems))
@@ -1264,10 +1306,10 @@ if (isPageVideo() || isPagePlaylist()) {
 
     // 右下角
     const sidebarItems = [
-        // 隐藏 小窗播放器
+        // 隐藏 小窗播放开关
         new CheckboxItem({
             itemID: 'video-page-hide-sidenav-right-container-live',
-            description: '隐藏 小窗播放器',
+            description: '隐藏 小窗播放开关',
             itemCSS: `.fixed-sidenav-storage .mini-player-window {display: none !important;}
                 /* 适配watchlater, favlist */
                 .float-nav-exp .nav-menu .item.mini {display: none !important;}`,

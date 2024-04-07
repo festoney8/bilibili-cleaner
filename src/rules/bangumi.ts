@@ -1,6 +1,7 @@
+import { GM_getValue, GM_setValue } from '$'
 import { Group } from '../components/group'
-import { CheckboxItem, NumberItem } from '../components/item'
-import { debugRules as debug } from '../utils/logger'
+import { CheckboxItem } from '../components/item'
+import { debugRules as debug, error } from '../utils/logger'
 import { isPageBangumi } from '../utils/page-type'
 
 // GroupList
@@ -267,33 +268,101 @@ if (isPageBangumi()) {
             description: '小窗播放器 隐藏弹幕',
             itemCSS: `.bpx-player-container[data-screen=mini] .bpx-player-row-dm-wrap {visibility: hidden !important;}`,
         }),
-        // 小窗播放器 缩放百分比
-        new NumberItem({
-            itemID: 'video-page-bpx-player-mini-mode-zoom',
-            description: '小窗播放器 缩放百分比 (100=禁用)',
-            defaultValue: 100,
-            minValue: 0,
-            maxValue: 500,
-            disableValue: 100,
-            unit: '%',
-            itemCSS: `
-                .bpx-player-container[data-screen=mini] {
-                    height: calc(225px * ??? / 100);
-                    width: calc(400px * ??? / 100);
-                }
-                .bpx-player-container[data-revision="1"][data-screen=mini],
-                .bpx-player-container[data-revision="2"][data-screen=mini] {
-                    height: calc(180px * ??? / 100);
-                    width: calc(320px * ??? / 100);
-                }
-                @media screen and (min-width:1681px) {
-                    .bpx-player-container[data-revision="1"][data-screen=mini],
-                    .bpx-player-container[data-revision="2"][data-screen=mini] {
-                        height: calc(203px * ??? / 100);
-                        width: calc(360px * ??? / 100);
+        // 小窗播放器 滚轮调节大小
+        new CheckboxItem({
+            itemID: 'video-page-bpx-player-mini-mode-wheel-adjust',
+            description: '小窗播放器 滚轮调节大小',
+            itemFunc: () => {
+                const adjust = async () => {
+                    try {
+                        const insertCSS = (zoom: number) => {
+                            const cssText = `
+                                    .bpx-player-container[data-screen=mini] {
+                                        height: calc(225px * ${zoom}) !important;
+                                        width: calc(400px * ${zoom}) !important;
+                                    }
+                                    .bpx-player-container[data-revision="1"][data-screen=mini],
+                                    .bpx-player-container[data-revision="2"][data-screen=mini] {
+                                        height: calc(180px * ${zoom}) !important;
+                                        width: calc(320px * ${zoom}) !important;
+                                    }
+                                    @media screen and (min-width:1681px) {
+                                        .bpx-player-container[data-revision="1"][data-screen=mini],
+                                        .bpx-player-container[data-revision="2"][data-screen=mini] {
+                                            height: calc(203px * ${zoom}) !important;
+                                            width: calc(360px * ${zoom}) !important;
+                                        }
+                                    }`
+                                .replace(/\n\s*/g, '')
+                                .trim()
+                            const node = document.querySelector(
+                                `html>style[bili-cleaner-css=video-page-bpx-player-mini-mode-wheel-adjust]`,
+                            )
+                            if (node) {
+                                node.innerHTML = cssText
+                            } else {
+                                const style = document.createElement('style')
+                                style.innerHTML = cssText
+                                style.setAttribute('bili-cleaner-css', 'video-page-bpx-player-mini-mode-wheel-adjust')
+                                document.documentElement.appendChild(style)
+                            }
+                        }
+                        // 载入上次缩放
+                        const oldZoom: number | undefined = GM_getValue(
+                            'BILICLEANER_video-page-bpx-player-mini-mode-zoom',
+                        )
+                        oldZoom && insertCSS(oldZoom)
+
+                        // 等player出现
+                        let cnt = 0
+                        const interval = setInterval(() => {
+                            const player = document.querySelector('.bpx-player-container') as HTMLElement | null
+                            if (player) {
+                                clearInterval(interval)
+                                // 判断鼠标位置，消除大播放器内下拉页面影响小窗大小的bug
+                                let flag = false
+                                player.addEventListener('mouseenter', () => {
+                                    if (player.getAttribute('data-screen') === 'mini') {
+                                        flag = true
+                                    }
+                                })
+                                player.addEventListener('mouseleave', () => {
+                                    flag = false
+                                })
+                                let lastZoom = oldZoom || 1
+                                // 监听滚轮
+                                player.addEventListener('wheel', (e) => {
+                                    if (flag) {
+                                        e.stopPropagation()
+                                        e.preventDefault()
+                                        const scaleSpeed = 5
+                                        let zoom = lastZoom - (Math.sign(e.deltaY) * scaleSpeed) / 100
+                                        zoom = zoom < 0.5 ? 0.5 : zoom
+                                        zoom = zoom > 3 ? 3 : zoom
+                                        if (zoom !== lastZoom) {
+                                            lastZoom = zoom
+                                            insertCSS(zoom)
+                                            GM_setValue('BILICLEANER_video-page-bpx-player-mini-mode-zoom', zoom)
+                                        }
+                                    }
+                                })
+                            } else {
+                                cnt++
+                                if (cnt > 20) {
+                                    clearInterval(interval)
+                                }
+                            }
+                        }, 500)
+                    } catch (err) {
+                        error('adjust mini player size error')
+                        error(err)
                     }
-                }`,
-            itemCSSPlaceholder: '???',
+                }
+                document.readyState === 'complete' ? adjust() : document.addEventListener('DOMContentLoaded', adjust)
+            },
+            callback: () => {
+                document.querySelector(`style[bili-cleaner-css=video-page-bpx-player-mini-mode-wheel-adjust]`)?.remove()
+            },
         }),
     ]
     bangumiGroupList.push(new Group('bangumi-player-control', '播放控制', playerControlItems))

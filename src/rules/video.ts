@@ -1117,6 +1117,12 @@ if (isPageVideo() || isPagePlaylist()) {
             description: '隐藏 ID后粉丝牌',
             itemCSS: `.comment-container .fan-badge {display: none !important;}`,
         }),
+        // 隐藏 老粉、原始粉丝Tag
+        new CheckboxItem({
+            itemID: 'video-page-hide-contractor-box',
+            description: '隐藏 老粉、原始粉丝Tag',
+            itemCSS: `.comment-container .contractor-box {display: none !important;}`,
+        }),
         // 隐藏 一级评论用户等级
         new CheckboxItem({
             itemID: 'video-page-hide-user-level',

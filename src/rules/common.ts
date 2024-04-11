@@ -60,9 +60,12 @@ const cleanURL = () => {
         'visit_id',
         'extra_jump_from',
     ])
-    // 搜索页参数, 意义不明所以做一下判断
     if (isPageSearch()) {
         keysToRemove.add('vt')
+    }
+    if (isPageLiveRoom()) {
+        keysToRemove.add('bbid')
+        keysToRemove.add('ts')
     }
     const url = location.href
     const urlObj = new URL(url)

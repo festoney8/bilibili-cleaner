@@ -419,6 +419,12 @@ const basicItems = [
         itemFunc: cleanURL,
         isItemFuncReload: true,
     }),
+    // 隐藏页底 footer
+    new CheckboxItem({
+        itemID: 'hide-footer',
+        description: '隐藏 页底footer',
+        itemCSS: `.international-footer {display: none !important;}`,
+    }),
 ]
 commonGroupList.push(new Group('common-basic', '全站通用项 基本功能', basicItems))
 // 通用header净化，直播首页除外

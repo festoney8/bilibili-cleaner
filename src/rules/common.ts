@@ -426,7 +426,7 @@ const basicItems = [
     new CheckboxItem({
         itemID: 'hide-footer',
         description: '隐藏 页底footer',
-        itemCSS: `.international-footer {display: none !important;}`,
+        itemCSS: `.international-footer, #biliMainFooter, .biliMainFooterWrapper, .link-footer-ctnr {display: none !important;}`,
     }),
 ]
 commonGroupList.push(new Group('common-basic', '全站通用项 基本功能', basicItems))

@@ -173,7 +173,7 @@ if (isPageSpace()) {
         }
         #page-index .video .content .small-item:nth-child(4n+1) {padding-left: 7px !important; padding-right: 7px !important;}
         #page-index .video .content .small-item:nth-child(4n+4) {padding-left: 7px !important; padding-right: 7px !important;}
-        .small-item {padding: 10px 7px !important;}`
+        #page-index .video .content .small-item {padding: 10px 7px !important;}`
 
     // UI组件, 时长过滤
     const durationItems = [

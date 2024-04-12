@@ -1055,14 +1055,16 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-page-hide-right-container-right-bottom-banner',
             description: '隐藏 活动banner',
             defaultStatus: true,
-            itemCSS: `#right-bottom-banner {display: none !important;}`,
+            itemCSS: `#right-bottom-banner {display: none !important;}
+                    .video-container-v1 .right-container .right-container-inner {padding-bottom: 15px !important;}`,
         }),
         // 隐藏 直播间推荐, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-right-container-live',
             description: '隐藏 直播间推荐',
             defaultStatus: true,
-            itemCSS: `.right-container .pop-live-small-mode {display: none !important;}`,
+            itemCSS: `.right-container .pop-live-small-mode {display: none !important;}
+                    .video-container-v1 .right-container .right-container-inner {padding-bottom: 15px !important;}`,
         }),
     ]
     videoGroupList.push(new Group('video-right', '右侧 视频栏', rightItems))

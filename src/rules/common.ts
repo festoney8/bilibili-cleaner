@@ -60,9 +60,12 @@ const cleanURL = () => {
         'visit_id',
         'extra_jump_from',
     ])
-    // 搜索页参数, 意义不明所以做一下判断
     if (isPageSearch()) {
         keysToRemove.add('vt')
+    }
+    if (isPageLiveRoom()) {
+        keysToRemove.add('bbid')
+        keysToRemove.add('ts')
     }
     const url = location.href
     const urlObj = new URL(url)
@@ -418,6 +421,12 @@ const basicItems = [
         defaultStatus: true,
         itemFunc: cleanURL,
         isItemFuncReload: true,
+    }),
+    // 隐藏页底 footer
+    new CheckboxItem({
+        itemID: 'hide-footer',
+        description: '隐藏 页底footer',
+        itemCSS: `.international-footer {display: none !important;}`,
     }),
 ]
 commonGroupList.push(new Group('common-basic', '全站通用项 基本功能', basicItems))

@@ -48,7 +48,6 @@ const cleanLiveDanmaku = () => {
     setInterval(clean, 500)
 }
 
-// GroupList
 const liveGroupList: Group[] = []
 
 // 直播页面规则, 只适用于直播间内, 不适用于直播首页

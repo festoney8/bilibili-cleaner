@@ -2,7 +2,6 @@ import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
 import { isPageSearch } from '../utils/page-type'
 
-// GroupList
 const searchGroupList: Group[] = []
 
 if (isPageSearch()) {

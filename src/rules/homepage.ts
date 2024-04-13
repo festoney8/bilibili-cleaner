@@ -372,6 +372,12 @@ if (isPageHomepage()) {
             description: '隐藏 稍后再看按钮',
             itemCSS: `.bili-watch-later {display: none !important;}`,
         }),
+        // 隐藏 视频预览中的弹幕
+        new CheckboxItem({
+            itemID: 'homepage-hide-inline-player-danmaku',
+            description: '隐藏 视频预览中的弹幕',
+            itemCSS: `.bpx-player-row-dm-wrap, .bpx-player-cmd-dm-wrap {display: none !important;}`,
+        }),
         // 隐藏 广告, 默认开启
         new CheckboxItem({
             itemID: 'homepage-hide-ad-card',

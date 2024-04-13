@@ -1,7 +1,6 @@
 import { log } from './utils/logger'
 
 /**
- * 初始化项目
  * 等待<html>出现+渲染, 用于插入节点
  * pnpm run dev调试时，可能出现由于vite-plugin-monkey抢先监听document
  * 导致脚本载入失败或载入缓慢的情况, 若刷新无效可先build再调试

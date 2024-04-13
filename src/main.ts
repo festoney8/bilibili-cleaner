@@ -77,10 +77,8 @@ const main = async () => {
     setInterval(() => {
         const currURL = location.href
         if (currURL !== lastURL) {
-            debug('url change detected')
             RULE_GROUPS.forEach((e) => e.reloadGroup())
             lastURL = currURL
-            debug('url change reload groups complete')
         }
     }, 500)
 

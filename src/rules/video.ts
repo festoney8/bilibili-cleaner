@@ -344,7 +344,7 @@ if (isPageVideo() || isPagePlaylist() || isPageBnj()) {
         // 隐藏 视频链接
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-link',
-            description: '隐藏 视频链接',
+            description: '隐藏 视频链接(稍后再看)',
             itemCSS: `.bpx-player-video-area .bili-link {display: none !important;}`,
         }),
         // 隐藏 左上角 播放器内标题

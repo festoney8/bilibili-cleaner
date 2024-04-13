@@ -20,7 +20,6 @@ const dynamicUnfold = () => {
     setInterval(unfold, 500)
 }
 
-// GroupList
 const dynamicGroupList: Group[] = []
 
 /**

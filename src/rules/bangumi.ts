@@ -4,7 +4,6 @@ import { CheckboxItem } from '../components/item'
 import { debugRules as debug, error } from '../utils/logger'
 import { isPageBangumi } from '../utils/page-type'
 
-// GroupList
 const bangumiGroupList: Group[] = []
 
 /** 覆盖版权视频页分享按钮功能 (疑似firefox在bangumi page覆盖失败) */

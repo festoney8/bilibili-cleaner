@@ -3,7 +3,6 @@ import { Group } from '../components/group'
 import { CheckboxItem, NumberItem, RadioItem } from '../components/item'
 import { isPageHomepage } from '../utils/page-type'
 
-// GroupList
 const homepageGroupList: Group[] = []
 
 if (isPageHomepage()) {
@@ -319,6 +318,13 @@ if (isPageHomepage()) {
                     font-size: 14px !important;
                 }`,
         }),
+        // 隐藏 视频负反馈 恢复标题宽度
+        new CheckboxItem({
+            itemID: 'homepage-hide-no-interest',
+            description: '隐藏 视频负反馈 恢复标题宽度',
+            itemCSS: `.bili-video-card.enable-no-interest, .bili-live-card.enable-no-interest {--title-padding-right: 0;}
+                    .bili-video-card__info--no-interest, .bili-live-card__info--no-interest {display: none !important;}`,
+        }),
         // 隐藏 视频tag (已关注/1万点赞)
         new CheckboxItem({
             itemID: 'homepage-hide-up-info-icon',
@@ -365,6 +371,12 @@ if (isPageHomepage()) {
             itemID: 'homepage-hide-bili-watch-later',
             description: '隐藏 稍后再看按钮',
             itemCSS: `.bili-watch-later {display: none !important;}`,
+        }),
+        // 隐藏 视频预览中的弹幕
+        new CheckboxItem({
+            itemID: 'homepage-hide-inline-player-danmaku',
+            description: '隐藏 视频预览中的弹幕',
+            itemCSS: `.bpx-player-row-dm-wrap, .bpx-player-cmd-dm-wrap {display: none !important;}`,
         }),
         // 隐藏 广告, 默认开启
         new CheckboxItem({

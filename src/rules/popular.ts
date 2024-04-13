@@ -2,7 +2,6 @@ import { Group } from '../components/group'
 import { CheckboxItem, RadioItem } from '../components/item'
 import { isPagePopular } from '../utils/page-type'
 
-// GroupList
 const popularGroupList: Group[] = []
 
 if (isPagePopular()) {

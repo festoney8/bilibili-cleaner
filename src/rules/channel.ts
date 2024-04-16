@@ -7,6 +7,44 @@ const channelGroupList: Group[] = []
 if (isPageChannel()) {
     // 基础项
     const basicItems = [
+        // 隐藏 横幅banner, 同步首页设定
+        new CheckboxItem({
+            itemID: 'homepage-hide-banner',
+            description: '隐藏 横幅banner',
+            itemCSS: `.header-banner__inner, .bili-header__banner {
+                    display: none !important;
+                }
+                .bili-header .bili-header__bar:not(.slide-down) {
+                    position: relative !important;
+                    box-shadow: 0 2px 4px #00000014;
+                }
+                .bili-header__channel {
+                    margin-top: 5px !important;
+                }
+                /* icon和文字颜色 */
+                .bili-header .right-entry__outside .right-entry-icon {
+                    color: #18191c !important;
+                }
+                .bili-header .left-entry .entry-title, .bili-header .left-entry .download-entry, .bili-header .left-entry .default-entry, .bili-header .left-entry .loc-entry {
+                    color: #18191c !important;
+                }
+                .bili-header .left-entry .entry-title .zhuzhan-icon {
+                    color: #00aeec !important;
+                }
+                .bili-header .right-entry__outside .right-entry-text {
+                    color: #61666d !important;
+                }
+                /* header滚动后渐变出现, 否则闪动 */
+                #i_cecream .bili-header__bar.slide-down {
+                    transition: background-color 0.3s ease-out, box-shadow 0.3s ease-out !important;
+                }
+                #i_cecream .bili-header__bar:not(.slide-down) {
+                    transition: background-color 0.3s ease-out !important;
+                }
+                /* header高度 */
+                #biliMainHeader {min-height: unset !important;}
+                `,
+        }),
         // 隐藏 全站分区栏
         new CheckboxItem({
             itemID: 'channel-hide-subarea',

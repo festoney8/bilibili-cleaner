@@ -20,11 +20,17 @@ if (isPageSearch()) {
             defaultStatus: true,
             itemCSS: `.video-list.row>div:has([href*="cm.bilibili.com"]) {display: none !important;}`,
         }),
-        // 隐藏 搜索结果顶部的版权作品
+        // 隐藏 搜索结果顶部 版权作品
         new CheckboxItem({
             itemID: 'hide-search-page-bangumi-pgc-list',
-            description: '隐藏 搜索结果顶部的版权作品',
+            description: '隐藏 搜索结果顶部 版权作品',
             itemCSS: `.bangumi-pgc-list {display: none !important;}`,
+        }),
+        // 隐藏 搜索结果顶部 游戏、热搜话题
+        new CheckboxItem({
+            itemID: 'hide-search-page-activity-game-list',
+            description: '隐藏 搜索结果顶部 游戏、热搜话题',
+            itemCSS: `.activity-game-list {display: none !important;}`,
         }),
         // 隐藏 弹幕数量, 默认开启
         new CheckboxItem({

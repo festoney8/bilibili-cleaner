@@ -506,7 +506,7 @@ if (!isPageLiveHome()) {
         new CheckboxItem({
             itemID: 'common-hide-nav-anime-popover',
             description: '隐藏 番剧弹出框',
-            itemCSS: `.bili-header__bar .left-entry .default-entry[href="//www.bilibili.com/anime/"] + .v-popover {
+            itemCSS: `.bili-header__bar .left-entry .default-entry[href*="//www.bilibili.com/anime/"] + .v-popover {
                 display: none !important;
             }`,
         }),
@@ -529,7 +529,7 @@ if (!isPageLiveHome()) {
         new CheckboxItem({
             itemID: 'common-hide-nav-live-popover',
             description: '隐藏 直播弹出框',
-            itemCSS: `.bili-header__bar .left-entry :is(.default-entry[href="//live.bilibili.com"], .default-entry[href="//live.bilibili.com/"]) + .v-popover {
+            itemCSS: `.bili-header__bar .left-entry :is(.default-entry[href*="//live.bilibili.com"]) + .v-popover {
                     display: none !important;
                 }`,
         }),
@@ -552,7 +552,7 @@ if (!isPageLiveHome()) {
         new CheckboxItem({
             itemID: 'common-hide-nav-game-popover',
             description: '隐藏 游戏中心弹出框',
-            itemCSS: `.bili-header__bar .left-entry .default-entry[href^="//game.bilibili.com"] + .v-popover {
+            itemCSS: `.bili-header__bar .left-entry .default-entry[href*="//game.bilibili.com"] + .v-popover {
                     display: none !important;
                 }`,
         }),
@@ -590,7 +590,7 @@ if (!isPageLiveHome()) {
         new CheckboxItem({
             itemID: 'common-hide-nav-manga-popover',
             description: '隐藏 漫画弹出框',
-            itemCSS: `.bili-header__bar .left-entry .default-entry[href^="//manga.bilibili.com"] + .v-popover {
+            itemCSS: `.bili-header__bar .left-entry .default-entry[href*="//manga.bilibili.com"] + .v-popover {
                     display: none !important;
                 }`,
         }),

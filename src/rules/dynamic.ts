@@ -191,6 +191,14 @@ if (isPageDynamic()) {
                     display: none !important;
                 }`,
         }),
+        // 隐藏 被block的充电动态
+        new CheckboxItem({
+            itemID: 'hide-dynamic-page-bili-dyn-blocked',
+            description: '隐藏 被block的充电动态',
+            itemCSS: `.bili-dyn-list__item:has(.dyn-blocked-mask) {
+                    display: none !important;
+                }`,
+        }),
         // 自动展开 相同UP主被折叠的动态
         new CheckboxItem({
             itemID: 'dynamic-page-unfold-dynamic',

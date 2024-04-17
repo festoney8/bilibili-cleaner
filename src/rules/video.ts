@@ -329,22 +329,28 @@ if (isPageVideo() || isPagePlaylist() || isPageBnj()) {
             description: '隐藏 评分弹窗',
             itemCSS: `.bpx-player-video-area .bili-score {display: none !important;}`,
         }),
+        // 隐藏 评分总结弹窗
+        new CheckboxItem({
+            itemID: 'video-page-hide-bpx-player-bili-score-sum',
+            description: '隐藏 评分总结弹窗',
+            itemCSS: `.bpx-player-video-area .bili-scoreSum {display: none !important;}`,
+        }),
         // 隐藏 打卡弹窗
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-clock',
             description: '隐藏 打卡弹窗',
             itemCSS: `.bpx-player-video-area .bili-clock {display: none !important;}`,
         }),
-        // 隐藏 视频预告
+        // 隐藏 视频预告弹窗
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-reserve',
-            description: '隐藏 视频预告',
+            description: '隐藏 视频预告弹窗',
             itemCSS: `.bpx-player-video-area .bili-reserve {display: none !important;}`,
         }),
-        // 隐藏 视频链接
+        // 隐藏 视频链接弹窗
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-link',
-            description: '隐藏 视频链接(稍后再看)',
+            description: '隐藏 视频链接弹窗(稍后再看)',
             itemCSS: `.bpx-player-video-area .bili-link {display: none !important;}`,
         }),
         // 隐藏 左上角 播放器内标题

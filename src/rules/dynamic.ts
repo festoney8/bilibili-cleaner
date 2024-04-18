@@ -1,6 +1,5 @@
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
-import { debugRules as debug } from '../utils/logger'
 import { isPageDynamic } from '../utils/page-type'
 
 // 自动展开 相同UP主被折叠的动态
@@ -10,11 +9,8 @@ const dynamicUnfold = () => {
         const dynFoldNodes = document.querySelectorAll('main .bili-dyn-list__item .bili-dyn-item-fold')
         if (dynFoldNodes.length) {
             dynFoldNodes.forEach((e) => {
-                if (e instanceof HTMLDivElement) {
-                    e.click()
-                }
+                e instanceof HTMLDivElement && e.click()
             })
-            debug(`unfold ${dynFoldNodes.length} fold`)
         }
     }
     setInterval(unfold, 500)
@@ -178,9 +174,7 @@ if (isPageDynamic()) {
             itemID: 'hide-dynamic-page-bili-dyn-forward',
             description: '隐藏 转发的动态',
             itemCSS: `.bili-dyn-list__item:has(.bili-dyn-content__orig.reference) {
-                    visibility: hidden !important;
-                    height: 0 !important;
-                    margin: 0 !important;
+                    display: none !important;
                 }`,
         }),
         // 隐藏 投票动态
@@ -188,6 +182,14 @@ if (isPageDynamic()) {
             itemID: 'hide-dynamic-page-bili-dyn-vote',
             description: '隐藏 投票动态',
             itemCSS: `.bili-dyn-list__item:has(.bili-dyn-card-vote) {
+                    display: none !important;
+                }`,
+        }),
+        // 隐藏 直播通知动态
+        new CheckboxItem({
+            itemID: 'hide-dynamic-page-bili-dyn-live',
+            description: '隐藏 直播通知动态',
+            itemCSS: `.bili-dyn-list__item:has(.bili-dyn-card-live) {
                     display: none !important;
                 }`,
         }),

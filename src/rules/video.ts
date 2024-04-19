@@ -67,11 +67,7 @@ const simpleShare = () => {
                 let title = document.querySelector(
                     '.video-info-title .video-title, #viewbox_report > h1, .video-title-href',
                 )?.textContent
-                if (
-                    title &&
-                    !'（({【[［《「＜｛〔〖<〈『'.includes(title[0]) &&
-                    !'）)}】]］》」＞｝〕〗>〉』'.includes(title.slice(-1))
-                ) {
+                if (title && !title.match(/^[（【［《「＜｛〔〖〈『].*|.*[）】］》」＞｝〕〗〉』]$/)) {
                     title = `【${title}】`
                 }
                 // 匹配av号, BV号, 分P号
@@ -1372,9 +1368,7 @@ if (isPageVideo() || isPagePlaylist()) {
             itemCSS: `.reply-view-image .last-image, .reply-view-image .next-image {zoom: 1.4;}
                 .reply-view-image:has(.preview-item-box:only-child) .last-image {display: none !important;}
                 .reply-view-image:has(.preview-item-box:only-child) .next-image {display: none !important;}
-                .reply-view-image .preview-list:has(.preview-item-box:only-child) {display: none !important;}
-                .reply-view-image .preview-list {opacity: 0.2; transition: opacity 0.1s ease-in-out;}
-                .reply-view-image .preview-list:hover {opacity: 1; transition: opacity 0.1s ease-in-out;}`,
+                .reply-view-image .preview-list {display: none !important;}`,
         }),
         // 隐藏 整个评论区 #42
         new CheckboxItem({

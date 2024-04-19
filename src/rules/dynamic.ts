@@ -485,9 +485,7 @@ if (isPageDynamic()) {
             itemCSS: `.reply-view-image .last-image, .reply-view-image .next-image {zoom: 1.4;}
                 .reply-view-image:has(.preview-item-box:only-child) .last-image {display: none !important;}
                 .reply-view-image:has(.preview-item-box:only-child) .next-image {display: none !important;}
-                .reply-view-image .preview-list:has(.preview-item-box:only-child) {display: none !important;}
-                .reply-view-image .preview-list {opacity: 0.2; transition: opacity 0.1s ease-in-out;}
-                .reply-view-image .preview-list:hover {opacity: 1; transition: opacity 0.1s ease-in-out;}`,
+                .reply-view-image .preview-list {display: none !important;}`,
         }),
     ]
     dynamicGroupList.push(new Group('dynamic-comment', '动态评论区', commentItems))

@@ -1,6 +1,5 @@
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
-import { debugRules as debug } from '../utils/logger'
 import { isPageDynamic } from '../utils/page-type'
 
 // 自动展开 相同UP主被折叠的动态
@@ -10,11 +9,8 @@ const dynamicUnfold = () => {
         const dynFoldNodes = document.querySelectorAll('main .bili-dyn-list__item .bili-dyn-item-fold')
         if (dynFoldNodes.length) {
             dynFoldNodes.forEach((e) => {
-                if (e instanceof HTMLDivElement) {
-                    e.click()
-                }
+                e instanceof HTMLDivElement && e.click()
             })
-            debug(`unfold ${dynFoldNodes.length} fold`)
         }
     }
     setInterval(unfold, 500)
@@ -178,9 +174,7 @@ if (isPageDynamic()) {
             itemID: 'hide-dynamic-page-bili-dyn-forward',
             description: '隐藏 转发的动态',
             itemCSS: `.bili-dyn-list__item:has(.bili-dyn-content__orig.reference) {
-                    visibility: hidden !important;
-                    height: 0 !important;
-                    margin: 0 !important;
+                    display: none !important;
                 }`,
         }),
         // 隐藏 投票动态
@@ -188,6 +182,14 @@ if (isPageDynamic()) {
             itemID: 'hide-dynamic-page-bili-dyn-vote',
             description: '隐藏 投票动态',
             itemCSS: `.bili-dyn-list__item:has(.bili-dyn-card-vote) {
+                    display: none !important;
+                }`,
+        }),
+        // 隐藏 直播通知动态
+        new CheckboxItem({
+            itemID: 'hide-dynamic-page-bili-dyn-live',
+            description: '隐藏 直播通知动态',
+            itemCSS: `.bili-dyn-list__item:has(.bili-dyn-card-live) {
                     display: none !important;
                 }`,
         }),
@@ -215,27 +217,27 @@ if (isPageDynamic()) {
             itemID: 'video-page-hide-reply-notice',
             description: '隐藏 活动/notice',
             defaultStatus: true,
-            itemCSS: `.comment-container .reply-header .reply-notice {display: none !important;}`,
+            itemCSS: `.reply-header .reply-notice {display: none !important;}`,
         }),
         // 隐藏 整个评论框
         new CheckboxItem({
             itemID: 'video-page-hide-main-reply-box',
             description: '隐藏 整个评论框',
-            itemCSS: `.comment-container .main-reply-box, .comment-container .fixed-reply-box {display: none !important;}`,
+            itemCSS: `.main-reply-box, .comment-container .fixed-reply-box {display: none !important;}`,
         }),
         // 隐藏 页面底部 吸附评论框, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-fixed-reply-box',
             description: '隐藏 页面底部 吸附评论框',
             defaultStatus: true,
-            itemCSS: `.comment-container .fixed-reply-box {display: none !important;}`,
+            itemCSS: `.fixed-reply-box {display: none !important;}`,
         }),
         // 隐藏 评论编辑器内占位文字, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-reply-box-textarea-placeholder',
             description: '隐藏 评论编辑器内占位文字',
             defaultStatus: true,
-            itemCSS: `.comment-container .reply-box-textarea::placeholder {color: transparent !important;}`,
+            itemCSS: `.reply-box-textarea::placeholder {color: transparent !important;}`,
         }),
         // 隐藏 评论区用户卡片
         new CheckboxItem({
@@ -247,71 +249,71 @@ if (isPageDynamic()) {
         new CheckboxItem({
             itemID: 'video-page-hide-reply-decorate',
             description: '隐藏 评论右侧装饰',
-            itemCSS: `.comment-container .reply-decorate {display: none !important;}`,
+            itemCSS: `.reply-decorate {display: none !important;}`,
         }),
         // 隐藏 ID后粉丝牌
         new CheckboxItem({
             itemID: 'video-page-hide-fan-badge',
             description: '隐藏 ID后粉丝牌',
-            itemCSS: `.comment-container .fan-badge {display: none !important;}`,
+            itemCSS: `.fan-badge {display: none !important;}`,
         }),
         // 隐藏 老粉、原始粉丝Tag
         new CheckboxItem({
             itemID: 'video-page-hide-contractor-box',
             description: '隐藏 老粉、原始粉丝Tag',
-            itemCSS: `.comment-container .contractor-box {display: none !important;}`,
+            itemCSS: `.contractor-box {display: none !important;}`,
         }),
         // 隐藏 一级评论用户等级
         new CheckboxItem({
             itemID: 'video-page-hide-user-level',
             description: '隐藏 一级评论用户等级',
-            itemCSS: `.comment-container .user-level {display: none !important;}`,
+            itemCSS: `.user-level {display: none !important;}`,
         }),
         // 隐藏 二级评论用户等级
         new CheckboxItem({
             itemID: 'video-page-hide-sub-user-level',
             description: '隐藏 二级评论用户等级',
-            itemCSS: `.comment-container .sub-user-level {display: none !important;}`,
+            itemCSS: `.sub-user-level {display: none !important;}`,
         }),
         // 隐藏 用户头像外圈饰品
         new CheckboxItem({
             itemID: 'video-page-hide-bili-avatar-pendent-dom',
             description: '隐藏 用户头像外圈饰品',
-            itemCSS: `.comment-container .bili-avatar-pendent-dom {display: none !important;}`,
+            itemCSS: `.bili-avatar-pendent-dom {display: none !important;}`,
         }),
         // 隐藏 用户头像右下小icon
         new CheckboxItem({
             itemID: 'video-page-hide-bili-avatar-nft-icon',
             description: '隐藏 用户头像右下小icon',
-            itemCSS: `.comment-container .bili-avatar-nft-icon {display: none !important;}
+            itemCSS: `.bili-avatar-nft-icon {display: none !important;}
                 .comment-container .bili-avatar-icon {display: none !important;}`,
         }),
         // 隐藏 评论内容下tag(UP觉得很赞)
         new CheckboxItem({
             itemID: 'video-page-hide-reply-tag-list',
             description: '隐藏 评论内容下tag(UP觉得很赞)',
-            itemCSS: `.comment-container .reply-tag-list {display: none !important;}`,
+            itemCSS: `.reply-tag-list {display: none !important;}`,
         }),
         // 隐藏 笔记评论前的小Logo, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-note-prefix',
             description: '隐藏 笔记评论前的小Logo',
             defaultStatus: true,
-            itemCSS: `.comment-container .note-prefix {display: none !important;}`,
+            itemCSS: `.note-prefix {display: none !important;}`,
         }),
         // 隐藏 评论内容搜索关键词高亮, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-jump-link-search-word',
             description: '隐藏 评论内容搜索关键词高亮',
             defaultStatus: true,
-            itemCSS: `.comment-container .reply-content .jump-link.search-word {color: inherit !important;}
+            itemCSS: `.reply-content .jump-link.search-word {color: inherit !important;}
                 .comment-container .reply-content .icon.search-word {display: none !important;}`,
         }),
         // 隐藏 二级评论中的@高亮
         new CheckboxItem({
             itemID: 'video-page-hide-reply-content-user-highlight',
             description: '隐藏 二级评论中的@高亮',
-            itemCSS: `.comment-container .sub-reply-container .reply-content .jump-link.user {color: inherit !important;}
+            itemCSS: `.sub-reply-container .reply-content .jump-link.user {color: inherit !important;}
                 .comment-container .sub-reply-container .reply-content .jump-link.user:hover {color: #40C5F1 !important;}`,
         }),
         // 隐藏 召唤AI机器人的评论, 默认开启
@@ -396,38 +398,38 @@ if (isPageDynamic()) {
         new CheckboxItem({
             itemID: 'video-page-hide-zero-like-at-reply',
             description: '隐藏 包含@的 无人点赞评论',
-            itemCSS: `.comment-container .reply-item:has(.root-reply .jump-link.user):not(:has(.sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
+            itemCSS: `.reply-item:has(.root-reply .jump-link.user):not(:has(.delete-reply, .top-icon, .sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
         }),
         // 隐藏 包含@的 全部评论
         new CheckboxItem({
             itemID: 'video-page-hide-at-reply-all',
             description: '隐藏 包含@的 全部评论',
-            itemCSS: `.comment-container .reply-item:has(.root-reply .jump-link.user):not(:has(.sub-up-icon)) {display: none !important;}`,
+            itemCSS: `.reply-item:has(.root-reply .jump-link.user):not(:has(.delete-reply, .top-icon, .sub-up-icon)) {display: none !important;}`,
         }),
         // 隐藏 LV1 无人点赞评论
         new CheckboxItem({
             itemID: 'video-page-hide-zero-like-lv1-reply',
             description: '隐藏 LV1 无人点赞评论',
-            itemCSS: `.comment-container .reply-item:has(.st1.lv1):not(:has(.sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
+            itemCSS: `.reply-item:has(.user-level.level-1):not(:has(.delete-reply, .top-icon, .sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
         }),
         // 隐藏 LV2 无人点赞评论
         new CheckboxItem({
             itemID: 'video-page-hide-zero-like-lv2-reply',
             description: '隐藏 LV2 无人点赞评论',
-            itemCSS: `.comment-container .reply-item:has(.st1.lv2):not(:has(.sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
+            itemCSS: `.reply-item:has(.user-level.level-2):not(:has(.delete-reply, .top-icon, .sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
         }),
         // 隐藏 LV3 无人点赞评论
         new CheckboxItem({
             itemID: 'video-page-hide-zero-like-lv3-reply',
             description: '隐藏 LV3 无人点赞评论',
-            itemCSS: `.comment-container .reply-item:has(.st1.lv3):not(:has(.sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
+            itemCSS: `.reply-item:has(.user-level.level-3):not(:has(.delete-reply, .top-icon, .sub-up-icon, .reply-info .reply-like span)) {display: none !important;}`,
         }),
         // 一级评论 踩/回复 只在hover时显示, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-root-reply-dislike-reply-btn',
             description: '一级评论 踩/回复 只在hover时显示',
             defaultStatus: true,
-            itemCSS: `.comment-container .reply-info:not(:has(i.disliked)) .reply-btn,
+            itemCSS: `.reply-info:not(:has(i.disliked)) .reply-btn,
                 .comment-container .reply-info:not(:has(i.disliked)) .reply-dislike {
                     visibility: hidden;
                 }
@@ -441,7 +443,7 @@ if (isPageDynamic()) {
             itemID: 'video-page-hide-sub-reply-dislike-reply-btn',
             description: '二级评论 踩/回复 只在hover时显示',
             defaultStatus: true,
-            itemCSS: `.comment-container .sub-reply-item:not(:has(i.disliked)) .sub-reply-btn,
+            itemCSS: `.sub-reply-item:not(:has(i.disliked)) .sub-reply-btn,
                 .comment-container .sub-reply-item:not(:has(i.disliked)) .sub-reply-dislike {
                     visibility: hidden;
                 }
@@ -454,25 +456,25 @@ if (isPageDynamic()) {
         new CheckboxItem({
             itemID: 'video-page-hide-emoji-large',
             description: '隐藏 大表情',
-            itemCSS: `.comment-container .emoji-large {display: none !important;}`,
+            itemCSS: `.emoji-large {display: none !important;}`,
         }),
         // 大表情变成小表情
         new CheckboxItem({
             itemID: 'video-page-hide-emoji-large-zoom',
             description: '大表情变成小表情',
-            itemCSS: `.comment-container .emoji-large {zoom: .5;}`,
+            itemCSS: `.emoji-large {zoom: .5;}`,
         }),
         // 用户名 全部大会员色
         new CheckboxItem({
             itemID: 'video-page-reply-user-name-color-pink',
             description: '用户名 全部大会员色',
-            itemCSS: `.comment-container .reply-item .user-name, .comment-container .reply-item .sub-user-name {color: #FB7299 !important;}}`,
+            itemCSS: `.reply-item .user-name, .comment-container .reply-item .sub-user-name {color: #FB7299 !important;}}`,
         }),
         // 用户名 全部恢复默认色
         new CheckboxItem({
             itemID: 'video-page-reply-user-name-color-default',
             description: '用户名 全部恢复默认色',
-            itemCSS: `.comment-container .reply-item .user-name, .comment-container .reply-item .sub-user-name {color: #61666d !important;}}`,
+            itemCSS: `.reply-item .user-name, .comment-container .reply-item .sub-user-name {color: #61666d !important;}}`,
         }),
         // 笔记图片 查看大图优化, 默认开启
         new CheckboxItem({
@@ -483,9 +485,7 @@ if (isPageDynamic()) {
             itemCSS: `.reply-view-image .last-image, .reply-view-image .next-image {zoom: 1.4;}
                 .reply-view-image:has(.preview-item-box:only-child) .last-image {display: none !important;}
                 .reply-view-image:has(.preview-item-box:only-child) .next-image {display: none !important;}
-                .reply-view-image .preview-list:has(.preview-item-box:only-child) {display: none !important;}
-                .reply-view-image .preview-list {opacity: 0.2; transition: opacity 0.1s ease-in-out;}
-                .reply-view-image .preview-list:hover {opacity: 1; transition: opacity 0.1s ease-in-out;}`,
+                .reply-view-image .preview-list {display: none !important;}`,
         }),
     ]
     dynamicGroupList.push(new Group('dynamic-comment', '动态评论区', commentItems))

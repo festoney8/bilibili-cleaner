@@ -979,8 +979,8 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-page-right-container-set-info-bottom',
             description: '相关视频 视频信息置底',
             defaultStatus: true,
-            itemCSS: `.video-page-card-small .card-box .info {display: flex !important; flex-direction: column !important;}
-                    .video-page-card-small .card-box .info .upname {margin-top: auto !important;}`,
+            itemCSS: `:is(.video-page-card-small, .video-page-operator-card-small) .card-box .info {display: flex !important; flex-direction: column !important;}
+                    :is(.video-page-card-small, .video-page-operator-card-small) .card-box .info .upname {margin-top: auto !important;}`,
         }),
         // 隐藏 相关视频 视频时长
         new CheckboxItem({

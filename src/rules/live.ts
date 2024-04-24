@@ -614,27 +614,45 @@ if (isPageLiveHome() || isPageLiveRoom()) {
         new CheckboxItem({
             itemID: 'live-page-header-dynamic',
             description: '隐藏 动态',
-            itemCSS: `#right-part .shortcuts-ctnr .shortcut-item:has(.link-panel-ctnr) {display: none !important;}`,
+            itemCSS: `#right-part .shortcut-item:has(.link-panel-ctnr) {display: none !important;}`,
         }),
         // 隐藏 签到
         new CheckboxItem({
             itemID: 'live-page-header-checkin',
             description: '隐藏 签到',
-            itemCSS: `#right-part .shortcuts-ctnr .shortcut-item:has(.calendar-checkin) {display: none !important;}`,
+            itemCSS: `#right-part .shortcut-item:has(.calendar-checkin) {display: none !important;}`,
         }),
         // 隐藏 幻星互动, 默认开启
         new CheckboxItem({
             itemID: 'live-page-header-interact',
             description: '隐藏 幻星互动',
             defaultStatus: true,
-            itemCSS: `#right-part .shortcuts-ctnr .shortcut-item:has(.fanbox-panel-ctnr) {display: none !important;}`,
+            itemCSS: `#right-part .shortcut-item:has(.fanbox-panel-ctnr) {display: none !important;}`,
+        }),
+        // 隐藏 关注
+        new CheckboxItem({
+            itemID: 'live-page-header-follow-panel',
+            description: '隐藏 关注',
+            itemCSS: `#right-part .shortcut-item:has(.follow-panel-set) {display: none;}`,
+        }),
+        // 隐藏 购买电池
+        new CheckboxItem({
+            itemID: 'live-page-header-recharge',
+            description: '隐藏 购买电池',
+            itemCSS: `#right-part .shortcut-item:has(.item-icon-recharge) {display: none;}`,
+        }),
+        // 隐藏 下载客户端
+        new CheckboxItem({
+            itemID: 'live-page-header-bili-download-panel',
+            description: '隐藏 下载客户端',
+            itemCSS: `#right-part .shortcut-item:has(.bili-download-panel) {visibility: hidden;}`,
         }),
         // 隐藏 我要开播, 默认开启
         new CheckboxItem({
             itemID: 'live-page-header-go-live',
             description: '隐藏 我要开播',
             defaultStatus: true,
-            itemCSS: `#right-part .shortcuts-ctnr .shortcut-item:has(.download-panel-ctnr) {visibility: hidden;}`,
+            itemCSS: `#right-part .shortcut-item:has(.download-panel-ctnr) {visibility: hidden;}`,
         }),
     ]
     liveGroupList.push(new Group('live-header-right', '顶栏 右侧', headerRightItems))

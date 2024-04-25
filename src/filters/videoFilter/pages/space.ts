@@ -143,8 +143,11 @@ if (isPageSpace()) {
                         const bvid = matchBvid(href)
                         if (bvid) {
                             e.preventDefault()
-                            menu.registerMenu(`屏蔽视频 ${bvid}`, () => {
+                            menu.registerMenu(`◎ 屏蔽视频 ${bvid}`, () => {
                                 spaceBvidAction.add(bvid)
+                            })
+                            menu.registerMenu(`◎ 复制视频链接`, () => {
+                                navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`)
                             })
                             menu.show(e.clientX, e.clientY)
                         }

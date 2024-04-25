@@ -218,14 +218,19 @@ if (isPageHomepage()) {
                     const uploader = node?.textContent
                     if (uploader) {
                         e.preventDefault()
-                        const onclickBlack = () => {
+                        menu.registerMenu(`◎ 屏蔽UP主：${uploader}`, () => {
                             homepageUploaderAction.add(uploader)
-                        }
-                        const onclickWhite = () => {
+                        })
+                        menu.registerMenu(`◎ 将UP主加入白名单`, () => {
                             homepageUploaderWhitelistAction.add(uploader)
-                        }
-                        menu.registerMenu(`◎ 屏蔽UP主：${uploader}`, onclickBlack)
-                        menu.registerMenu(`◎ 将UP主加入白名单`, onclickWhite)
+                        })
+                        menu.registerMenu(`◎ 复制主页链接`, () => {
+                            const url = node.closest('.bili-video-card__info--owner')?.getAttribute('href')
+                            if (url) {
+                                const matches = url.match(/space\.bilibili\.com\/\d+/g)
+                                matches && navigator.clipboard.writeText(`https://${matches[0]}`)
+                            }
+                        })
                         menu.show(e.clientX, e.clientY)
                     }
                 } else if (
@@ -239,10 +244,12 @@ if (isPageHomepage()) {
                         const bvid = matchBvid(href)
                         if (bvid) {
                             e.preventDefault()
-                            const onclick = () => {
+                            menu.registerMenu(`◎ 屏蔽视频 ${bvid}`, () => {
                                 homepageBvidAction.add(bvid)
-                            }
-                            menu.registerMenu(`屏蔽视频 ${bvid}`, onclick)
+                            })
+                            menu.registerMenu(`◎ 复制视频链接`, () => {
+                                navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`)
+                            })
                             menu.show(e.clientX, e.clientY)
                         }
                     }

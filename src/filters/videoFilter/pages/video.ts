@@ -198,14 +198,20 @@ if (isPageVideo() || isPagePlaylist()) {
                         target.parentElement?.textContent?.trim()
                     if (uploader) {
                         e.preventDefault()
-                        const onclickBlack = () => {
+                        menu.registerMenu(`◎ 屏蔽UP主：${uploader}`, () => {
                             videoUploaderAction.add(uploader)
-                        }
-                        const onclickWhite = () => {
+                        })
+                        menu.registerMenu(`◎ 将UP主加入白名单`, () => {
                             videoUploaderWhitelistAction.add(uploader)
+                        })
+                        const url = target.closest('.upname')?.querySelector(':scope a')?.getAttribute('href')
+                        if (url) {
+                            const matches = url.match(/space\.bilibili\.com\/\d+/g)
+                            matches &&
+                                menu.registerMenu(`◎ 复制主页链接`, () => {
+                                    navigator.clipboard.writeText(`https://${matches[0]}`)
+                                })
                         }
-                        menu.registerMenu(`◎ 屏蔽UP主：${uploader}`, onclickBlack)
-                        menu.registerMenu(`◎ 将UP主加入白名单`, onclickWhite)
                         menu.show(e.clientX, e.clientY)
                     }
                 } else if (isContextMenuBvidEnable && target.classList.contains('title')) {
@@ -215,10 +221,12 @@ if (isPageVideo() || isPagePlaylist()) {
                         const bvid = matchBvid(href)
                         if (bvid) {
                             e.preventDefault()
-                            const onclick = () => {
+                            menu.registerMenu(`◎ 屏蔽视频 ${bvid}`, () => {
                                 videoBvidAction.add(bvid)
-                            }
-                            menu.registerMenu(`屏蔽视频 ${bvid}`, onclick)
+                            })
+                            menu.registerMenu(`◎ 复制视频链接`, () => {
+                                navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`)
+                            })
                             menu.show(e.clientX, e.clientY)
                         }
                     }

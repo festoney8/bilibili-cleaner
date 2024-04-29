@@ -268,7 +268,7 @@ if (isPageVideo() || isPagePlaylist()) {
             },
         }),
     ]
-    videoPageVideoFilterGroupList.push(new Group('video-duration-filter-group', '播放页 视频时长过滤', durationItems))
+    videoPageVideoFilterGroupList.push(new Group('video-duration-filter-group', '播放页 时长过滤', durationItems))
 
     // UI组件, UP主过滤part
     const uploaderItems = [

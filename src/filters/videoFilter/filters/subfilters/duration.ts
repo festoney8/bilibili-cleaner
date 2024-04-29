@@ -1,9 +1,6 @@
-import { error } from '../../../../utils/logger'
 import { IVideoSubFilter } from '../core'
 
 class DurationFilter implements IVideoSubFilter {
-    // 匹配时长的正则
-    private readonly pattern = /^(\d+:)?\d\d:\d\d$/g
     // 时长阈值, 单位秒
     private threshold = 0
     isEnable = false
@@ -16,35 +13,34 @@ class DurationFilter implements IVideoSubFilter {
         this.threshold = threshold
     }
 
-    private isLegal(duration: string): boolean {
-        const hhmmss = duration.split(':')
-        if (hhmmss.length == 2) {
-            return parseInt(hhmmss[0]) * 60 + parseInt(hhmmss[1]) >= this.threshold
-        } else if (hhmmss.length > 2) {
-            return true
+    // duration转换为秒数, 支持 HH:MM:SS, MM:SS, 纯数字
+    durationToSec = (duration: string): number => {
+        duration = duration.trim()
+        if (duration.match(/^(?:\d+:)?\d+:\d+$/)) {
+            const parts = duration.split(':').map((part) => parseInt(part))
+            if (parts.length === 3) {
+                return parts[0] * 3600 + parts[1] * 60 + parts[2]
+            }
+            if (parts.length === 2) {
+                return parts[0] * 60 + parts[1]
+            }
+        } else if (duration.match(/^\d+$/)) {
+            return parseInt(duration)
         }
-        return true
+        return -1
     }
 
     check(duration: string): Promise<string> {
-        duration = duration.trim()
         return new Promise<string>((resolve, reject) => {
-            try {
-                if (!this.isEnable || this.threshold === 0) {
-                    resolve(`Duration resolve, disable or 0`)
-                    return
-                } else if (duration && duration.match(this.pattern)) {
-                    if (this.isLegal(duration)) {
-                        resolve(`Duration resolve, duration OK`)
-                    } else {
-                        reject(`Duration reject, ${duration} < ${this.threshold}s`)
-                    }
+            if (!this.isEnable || this.threshold === 0) {
+                resolve(`Duration resolve, disable or 0`)
+            } else {
+                const seconds = this.durationToSec(duration)
+                if (seconds > 0 && seconds > this.threshold) {
+                    resolve(`Duration OK`)
                 } else {
-                    resolve(`Duration resolve`)
+                    reject(`Duration too short`)
                 }
-            } catch (err) {
-                error(err)
-                resolve(`Duration resolve, error`)
             }
         })
     }

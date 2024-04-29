@@ -257,7 +257,7 @@ if (isPageSearch()) {
             },
         }),
     ]
-    searchPageVideoFilterGroupList.push(new Group('search-duration-filter-group', '搜索页 视频时长过滤', durationItems))
+    searchPageVideoFilterGroupList.push(new Group('search-duration-filter-group', '搜索页 时长过滤', durationItems))
 
     // UI组件, UP主过滤part
     const uploaderItems = [

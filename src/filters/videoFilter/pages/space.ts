@@ -206,7 +206,7 @@ if (isPageSpace()) {
             },
         }),
     ]
-    spacePageVideoFilterGroupList.push(new Group('space-duration-filter-group', '空间页 视频时长过滤', durationItems))
+    spacePageVideoFilterGroupList.push(new Group('space-duration-filter-group', '空间页 时长过滤', durationItems))
 
     // UI组件, 标题关键词过滤
     const titleKeywordItems = [

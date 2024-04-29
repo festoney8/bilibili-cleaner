@@ -15,7 +15,7 @@ export interface IVideoSubFilter {
     setStatus(status: boolean): void
     setParams(value: string[] | number): void
     addParam?(value: string): void
-    check(value: string): Promise<string>
+    check(value: string | boolean | number): Promise<string>
 }
 
 export type VideoSelectorFunc = {
@@ -23,6 +23,8 @@ export type VideoSelectorFunc = {
     titleKeyword?: (video: HTMLElement) => string | null
     bvid?: (video: HTMLElement) => string | null
     uploader?: (video: HTMLElement) => string | null
+    coinLikeRatio?: (video: HTMLElement) => number | null
+    isVertical?: (video: HTMLElement) => boolean | null
 }
 
 interface VideoInfo {
@@ -30,6 +32,8 @@ interface VideoInfo {
     title?: string | undefined
     uploader?: string | undefined
     bvid?: string | undefined
+    coinLikeRatio?: number | undefined
+    isVertical?: boolean | undefined
 }
 
 class CoreVideoFilter {

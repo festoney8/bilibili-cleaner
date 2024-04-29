@@ -301,9 +301,7 @@ if (isPageHomepage()) {
             },
         }),
     ]
-    homepagePageVideoFilterGroupList.push(
-        new Group('homepage-duration-filter-group', '首页 视频时长过滤', durationItems),
-    )
+    homepagePageVideoFilterGroupList.push(new Group('homepage-duration-filter-group', '首页 时长过滤', durationItems))
 
     // UI组件, UP主过滤
     const uploaderItems = [

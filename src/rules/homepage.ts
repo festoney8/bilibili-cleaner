@@ -479,7 +479,7 @@ if (isPageHomepage()) {
                 const origFetch = unsafeWindow.fetch
                 unsafeWindow.fetch = (input, init?) => {
                     if (
-                        typeof input == 'string' &&
+                        typeof input === 'string' &&
                         input.includes('api.bilibili.com') &&
                         input.includes('feed/rcmd') &&
                         init?.method?.toUpperCase() === 'GET'

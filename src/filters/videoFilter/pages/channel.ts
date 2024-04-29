@@ -267,9 +267,7 @@ if (isPageChannel()) {
             },
         }),
     ]
-    channelPageVideoFilterGroupList.push(
-        new Group('channel-duration-filter-group', '频道页 视频时长过滤', durationItems),
-    )
+    channelPageVideoFilterGroupList.push(new Group('channel-duration-filter-group', '频道页 时长过滤', durationItems))
 
     // UI组件, UP主过滤
     const uploaderItems = [

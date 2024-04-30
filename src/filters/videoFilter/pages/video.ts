@@ -121,8 +121,7 @@ if (isPageVideo() || isPagePlaylist()) {
 
     // 监听视频列表内部变化, 有变化时检测视频列表
     const watchVideoListContainer = () => {
-        if (videoListContainer) {
-            debug('watchVideoListContainer start')
+        const check = async (fullSite: boolean) => {
             if (
                 videoDurationAction.status ||
                 videoUploaderAction.status ||
@@ -130,21 +129,15 @@ if (isPageVideo() || isPagePlaylist()) {
                 videoBvidAction.status ||
                 videoTitleKeywordAction.status
             ) {
-                // 播放页右栏载入慢, 始终做全站检测
-                checkVideoList(true)
+                checkVideoList(fullSite)
             }
+        }
+        if (videoListContainer) {
+            check(true)
             const videoObverser = new MutationObserver(() => {
-                if (
-                    videoDurationAction.status ||
-                    videoUploaderAction.status ||
-                    videoUploaderKeywordAction.status ||
-                    videoBvidAction.status ||
-                    videoTitleKeywordAction.status
-                ) {
-                    checkVideoList(true)
-                }
+                // 播放页右栏载入慢, 始终做全站检测
+                check(true)
             })
-            // 播放页需监听subtree
             videoObverser.observe(videoListContainer, { childList: true, subtree: true })
             debug('watchVideoListContainer OK')
         }

@@ -119,9 +119,7 @@ if (isPageChannel()) {
 
     // 监听视频列表内部变化, 有变化时检测视频列表
     const watchVideoListContainer = () => {
-        if (videoListContainer) {
-            debug('watchVideoListContainer start')
-            // 初次全站检测
+        const check = async (fillSite: boolean) => {
             if (
                 channelDurationAction.status ||
                 channelUploaderAction.status ||
@@ -129,19 +127,15 @@ if (isPageChannel()) {
                 channelBvidAction.status ||
                 channelTitleKeywordAction.status
             ) {
-                checkVideoList(true)
+                checkVideoList(fillSite)
             }
+        }
+        if (videoListContainer) {
+            // 初次全站检测
+            check(true)
             const videoObverser = new MutationObserver(() => {
-                if (
-                    channelDurationAction.status ||
-                    channelUploaderAction.status ||
-                    channelUploaderKeywordAction.status ||
-                    channelBvidAction.status ||
-                    channelTitleKeywordAction.status
-                ) {
-                    // 增量检测
-                    checkVideoList(false)
-                }
+                // 增量检测
+                check(false)
             })
             videoObverser.observe(videoListContainer, { childList: true, subtree: true })
             debug('watchVideoListContainer OK')

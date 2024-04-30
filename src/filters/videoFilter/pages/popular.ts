@@ -229,8 +229,7 @@ if (isPagePopular()) {
 
     // 监听视频列表内部变化, 有变化时检测视频列表
     const watchVideoListContainer = async () => {
-        if (videoListContainer) {
-            debug('watchVideoListContainer start')
+        const check = async (fullSite: boolean) => {
             if (
                 popularDurationAction.status ||
                 popularUploaderAction.status ||
@@ -240,36 +239,19 @@ if (isPagePopular()) {
                 popularBvidAction.status ||
                 popularTitleKeywordAction.status
             ) {
-                // 初次全站检测
                 if (location.pathname.match(/\/v\/popular\/(?:all|rank|weekly)/)) {
-                    if (popularDurationAction.status || popularQualityAction.status || popularDimensionAction) {
-                        await parseResp()
-                    } else {
-                        parseResp()
-                    }
+                    popularDurationAction.status || popularQualityAction.status || popularDimensionAction.status
+                        ? await parseResp()
+                        : parseResp()
                 }
-                checkVideoList(true)
+                checkVideoList(fullSite)
             }
+        }
+
+        if (videoListContainer) {
+            check(true)
             const videoObverser = new MutationObserver(async () => {
-                if (
-                    popularDurationAction.status ||
-                    popularUploaderAction.status ||
-                    popularQualityAction.status ||
-                    popularDimensionAction.status ||
-                    popularUploaderKeywordAction.status ||
-                    popularBvidAction.status ||
-                    popularTitleKeywordAction.status
-                ) {
-                    // 全量检测
-                    if (location.pathname.match(/\/v\/popular\/(?:all|rank|weekly)/)) {
-                        if (popularDurationAction.status || popularQualityAction.status || popularDimensionAction) {
-                            await parseResp()
-                        } else {
-                            parseResp()
-                        }
-                    }
-                    checkVideoList(true)
-                }
+                check(true)
             })
             videoObverser.observe(videoListContainer, { childList: true, subtree: true })
             debug('watchVideoListContainer OK')
@@ -410,8 +392,8 @@ if (isPagePopular()) {
         }),
         new NumberItem({
             itemID: popularQualityAction.valueKey,
-            description: '设定 劣质视频过滤百分比',
-            defaultValue: 20,
+            description: '劣质视频过滤百分比 (0~80%)',
+            defaultValue: 25,
             minValue: 0,
             maxValue: 80,
             disableValue: 0,

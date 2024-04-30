@@ -143,8 +143,11 @@ if (isPageSpace()) {
                         const bvid = matchBvid(href)
                         if (bvid) {
                             e.preventDefault()
-                            menu.registerMenu(`屏蔽视频 ${bvid}`, () => {
+                            menu.registerMenu(`◎ 屏蔽视频 ${bvid}`, () => {
                                 spaceBvidAction.add(bvid)
+                            })
+                            menu.registerMenu(`◎ 复制视频链接`, () => {
+                                navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`)
                             })
                             menu.show(e.clientX, e.clientY)
                         }
@@ -203,7 +206,7 @@ if (isPageSpace()) {
             },
         }),
     ]
-    spacePageVideoFilterGroupList.push(new Group('space-duration-filter-group', '空间页 视频时长过滤', durationItems))
+    spacePageVideoFilterGroupList.push(new Group('space-duration-filter-group', '空间页 时长过滤', durationItems))
 
     // UI组件, 标题关键词过滤
     const titleKeywordItems = [

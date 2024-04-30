@@ -1,5 +1,7 @@
 import bvidFilterInstance from '../filters/subfilters/bvid'
+import dimensionFilterInstance from '../filters/subfilters/dimension'
 import durationFilterInstance from '../filters/subfilters/duration'
+import qualityFilterInstance from '../filters/subfilters/quality'
 import titleKeywordFilterInstance from '../filters/subfilters/titleKeyword'
 import titleKeywordWhitelistFilterInstance from '../filters/subfilters/titleKeywordWhitelist'
 import uploaderFilterInstance from '../filters/subfilters/uploader'
@@ -42,6 +44,31 @@ class VideoFilterAgency {
                 if (Array.isArray(value)) {
                     uploaderFilterInstance.setParams(value.map((v) => v.trim()).filter((v) => v))
                 }
+                break
+        }
+    }
+    notifyQuality(event: string, value?: number) {
+        switch (event) {
+            case 'disable':
+                qualityFilterInstance.setStatus(false)
+                break
+            case 'enable':
+                qualityFilterInstance.setStatus(true)
+                break
+            case 'change':
+                if (typeof value === 'number') {
+                    qualityFilterInstance.setParams(value)
+                }
+                break
+        }
+    }
+    notifyDimension(event: string) {
+        switch (event) {
+            case 'disable':
+                dimensionFilterInstance.setStatus(false)
+                break
+            case 'enable':
+                dimensionFilterInstance.setStatus(true)
                 break
         }
     }

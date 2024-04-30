@@ -398,11 +398,11 @@ export class NumberItem implements IItem {
 
     constructor(private option: INumberItemOption) {}
 
-    /** 获取数值, 初次安装使用禁用值 */
+    /** 获取数值, 初次安装使用默认值 */
     getValue() {
         this.itemValue = GM_getValue(`BILICLEANER_${this.option.itemID}`)
         if (this.itemValue === undefined) {
-            this.itemValue = this.option.disableValue
+            this.itemValue = this.option.defaultValue
             this.setValue(this.itemValue)
         }
     }

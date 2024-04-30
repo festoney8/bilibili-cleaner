@@ -8,7 +8,9 @@ import { ContextMenu } from '../../../components/contextmenu'
 import { matchBvid, waitForEle } from '../../../utils/tool'
 import {
     BvidAction,
+    DimensionAction,
     DurationAction,
+    QualityAction,
     TitleKeywordAction,
     TitleKeywordWhitelistAction,
     UploaderAction,
@@ -27,7 +29,7 @@ let isContextMenuBvidEnable = false
 if (isPagePopular()) {
     interface VInfo {
         duration: number
-        isVertical: boolean
+        dimension: boolean
         like: number
         coin: number
     }
@@ -35,7 +37,7 @@ if (isPagePopular()) {
     const videoInfoMap = new Map<string, VInfo>()
 
     // hook fetch
-    let apiResp: Response | null = null
+    let apiResp: Response | undefined = undefined
     const origFetch = unsafeWindow.fetch
     unsafeWindow.fetch = (input, init?) => {
         if (typeof input === 'string' && input.includes('api.bilibili.com') && init?.method?.toUpperCase() === 'GET') {
@@ -52,18 +54,19 @@ if (isPagePopular()) {
     // 解析API数据，存入map
     const parseResp = async () => {
         await apiResp
-            ?.json()
+            ?.clone()
+            .json()
             .then((json) => {
                 json.data.list.forEach((v: any) => {
                     const bvid = v.bvid
-                    bvid &&
-                        !videoInfoMap.has(bvid) &&
+                    if (bvid && !videoInfoMap.has(bvid)) {
                         videoInfoMap.set(bvid, {
-                            duration: v.duration || 0,
-                            isVertical: (v.dimension && v.dimension.height > v.dimension.width) || false,
-                            like: (v.stat && v.stat.like) || 0,
-                            coin: (v.stat && v.stat.coin) || 0,
+                            duration: v.duration,
+                            dimension: v.dimension.width > v.dimension.height,
+                            like: v.stat.like,
+                            coin: v.stat.coin,
                         })
+                    }
                 })
                 // debug('parse json complete, videoInfoMap size', videoInfoMap.size)
             })
@@ -71,7 +74,7 @@ if (isPagePopular()) {
                 error('Error parsing JSON:', err)
             })
             .finally(() => {
-                apiResp = null
+                apiResp = undefined
             })
     }
 
@@ -129,17 +132,18 @@ if (isPagePopular()) {
             }
             return null
         },
-        isVertical: (video: Element): boolean | null => {
+        dimension: (video: Element): boolean | null => {
             const href =
                 video.querySelector('.video-card__content > a')?.getAttribute('href') ||
                 video.querySelector('.content > .img > a')?.getAttribute('href')
             if (href) {
                 const bvid = matchBvid(href)
                 if (bvid) {
-                    return videoInfoMap.get(bvid)?.isVertical || false
+                    const d = videoInfoMap.get(bvid)?.dimension
+                    return typeof d === 'boolean' ? d : null
                 }
             }
-            return false
+            return null
         },
     }
     // 检测视频列表
@@ -190,6 +194,12 @@ if (isPagePopular()) {
         'global-duration-filter-value',
         checkVideoList,
     )
+    const popularQualityAction = new QualityAction(
+        'popular-quality-filter-status',
+        'global-quality-filter-value',
+        checkVideoList,
+    )
+    const popularDimensionAction = new DimensionAction('popular-dimension-filter-status', checkVideoList)
     const popularUploaderAction = new UploaderAction(
         'popular-uploader-filter-status',
         'global-uploader-filter-value',
@@ -224,28 +234,40 @@ if (isPagePopular()) {
             if (
                 popularDurationAction.status ||
                 popularUploaderAction.status ||
+                popularQualityAction.status ||
+                popularDimensionAction.status ||
                 popularUploaderKeywordAction.status ||
                 popularBvidAction.status ||
                 popularTitleKeywordAction.status
             ) {
                 // 初次全站检测
-                popularDurationAction.status &&
-                    location.pathname.match(/\/v\/popular\/(?:all|rank|weekly)/) &&
-                    (await parseResp())
+                if (location.pathname.match(/\/v\/popular\/(?:all|rank|weekly)/)) {
+                    if (popularDurationAction.status || popularQualityAction.status || popularDimensionAction) {
+                        await parseResp()
+                    } else {
+                        parseResp()
+                    }
+                }
                 checkVideoList(true)
             }
             const videoObverser = new MutationObserver(async () => {
                 if (
                     popularDurationAction.status ||
                     popularUploaderAction.status ||
+                    popularQualityAction.status ||
+                    popularDimensionAction.status ||
                     popularUploaderKeywordAction.status ||
                     popularBvidAction.status ||
                     popularTitleKeywordAction.status
                 ) {
                     // 全量检测
-                    popularDurationAction.status &&
-                        location.pathname.match(/\/v\/popular\/(?:all|rank|weekly)/) &&
-                        (await parseResp())
+                    if (location.pathname.match(/\/v\/popular\/(?:all|rank|weekly)/)) {
+                        if (popularDurationAction.status || popularQualityAction.status || popularDimensionAction) {
+                            await parseResp()
+                        } else {
+                            parseResp()
+                        }
+                    }
                     checkVideoList(true)
                 }
             })
@@ -341,7 +363,7 @@ if (isPagePopular()) {
     const durationItems = [
         new CheckboxItem({
             itemID: popularDurationAction.statusKey,
-            description: '启用 时长过滤 (实验性)',
+            description: '启用 时长过滤 (刷新)',
             itemFunc: () => {
                 popularDurationAction.enable()
             },
@@ -362,8 +384,45 @@ if (isPagePopular()) {
             },
         }),
     ]
+    popularPageVideoFilterGroupList.push(new Group('popular-duration-filter-group', '热门页 时长过滤', durationItems))
+
+    // UI组件，视频质量过滤part
+    const qualityItems = [
+        new CheckboxItem({
+            itemID: popularDimensionAction.statusKey,
+            description: '启用 竖屏视频过滤 (刷新)',
+            itemFunc: () => {
+                popularDimensionAction.enable()
+            },
+            callback: () => {
+                popularDimensionAction.disable()
+            },
+        }),
+        new CheckboxItem({
+            itemID: popularQualityAction.statusKey,
+            description: '启用 劣质视频过滤 (刷新)',
+            itemFunc: () => {
+                popularQualityAction.enable()
+            },
+            callback: () => {
+                popularQualityAction.disable()
+            },
+        }),
+        new NumberItem({
+            itemID: popularQualityAction.valueKey,
+            description: '设定 劣质视频过滤百分比',
+            defaultValue: 20,
+            minValue: 0,
+            maxValue: 80,
+            disableValue: 0,
+            unit: '%',
+            callback: (value: number) => {
+                popularQualityAction.change(value)
+            },
+        }),
+    ]
     popularPageVideoFilterGroupList.push(
-        new Group('popular-duration-filter-group', '热门页 时长过滤 (刷新生效)', durationItems),
+        new Group('popular-quality-filter-group', '热门页 视频质量过滤 (实验功能)', qualityItems),
     )
 
     // UI组件, UP主过滤part

@@ -2,7 +2,9 @@ import settings from '../../../settings'
 import { debugVideoFilter as debug, error, log } from '../../../utils/logger'
 import { hideEle, isEleHide, showEle } from '../../../utils/tool'
 import bvidFilterInstance from './subfilters/bvid'
+import dimensionFilterInstance from './subfilters/dimension'
 import durationFilterInstance from './subfilters/duration'
+import qualityFilterInstance from './subfilters/quality'
 import titleKeywordFilterInstance from './subfilters/titleKeyword'
 import titleKeywordWhitelistFilterInstance from './subfilters/titleKeywordWhitelist'
 import uploaderFilterInstance from './subfilters/uploader'
@@ -13,7 +15,7 @@ import uploaderWhitelistFilterInstance from './subfilters/uploaderWhitelist'
 export interface IVideoSubFilter {
     isEnable: boolean
     setStatus(status: boolean): void
-    setParams(value: string[] | number): void
+    setParams?(value: string[] | number): void
     addParam?(value: string): void
     check(value: string | boolean | number): Promise<string>
 }
@@ -24,7 +26,7 @@ export type VideoSelectorFunc = {
     bvid?: (video: HTMLElement) => string | null
     uploader?: (video: HTMLElement) => string | null
     coinLikeRatio?: (video: HTMLElement) => number | null
-    isVertical?: (video: HTMLElement) => boolean | null
+    dimension?: (video: HTMLElement) => boolean | null
 }
 
 interface VideoInfo {
@@ -33,7 +35,7 @@ interface VideoInfo {
     uploader?: string | undefined
     bvid?: string | undefined
     coinLikeRatio?: number | undefined
-    isVertical?: boolean | undefined
+    dimension?: boolean | undefined // true横屏 false竖屏
 }
 
 class CoreVideoFilter {
@@ -48,6 +50,8 @@ class CoreVideoFilter {
         debug(`checkAll start`)
         try {
             const checkDuration = durationFilterInstance.isEnable && selectorFunc.duration !== undefined
+            const checkQuality = qualityFilterInstance.isEnable && selectorFunc.coinLikeRatio !== undefined
+            const checkDimension = dimensionFilterInstance.isEnable && selectorFunc.dimension !== undefined
             const checkTitleKeyword = titleKeywordFilterInstance.isEnable && selectorFunc.titleKeyword !== undefined
             const checkUploader = uploaderFilterInstance.isEnable && selectorFunc.uploader !== undefined
             const checkUploaderKeyword = uploaderKeywordFilterInstance.isEnable && selectorFunc.uploader !== undefined
@@ -57,7 +61,15 @@ class CoreVideoFilter {
             const checkTitleKeywordWhitelist =
                 titleKeywordWhitelistFilterInstance.isEnable && selectorFunc.titleKeyword !== undefined
 
-            if (!checkDuration && !checkTitleKeyword && !checkUploader && !checkBvid) {
+            if (
+                !checkDuration &&
+                !checkQuality &&
+                !checkDimension &&
+                !checkTitleKeyword &&
+                !checkUploader &&
+                !checkUploaderKeyword &&
+                !checkBvid
+            ) {
                 // 黑名单全部关闭时 恢复全部视频
                 videos.forEach((video) => showEle(video))
                 return
@@ -74,6 +86,20 @@ class CoreVideoFilter {
                     if (duration) {
                         blackTasks.push(durationFilterInstance.check(duration))
                         info.duration = duration
+                    }
+                }
+                if (checkQuality) {
+                    const ratio = selectorFunc.coinLikeRatio!(video)
+                    if (ratio) {
+                        blackTasks.push(qualityFilterInstance.check(ratio))
+                        info.coinLikeRatio = ratio
+                    }
+                }
+                if (checkDimension) {
+                    const dimension = selectorFunc.dimension!(video)
+                    if (dimension !== null) {
+                        blackTasks.push(dimensionFilterInstance.check(dimension))
+                        info.dimension = dimension
                     }
                 }
                 if (checkBvid) {
@@ -139,7 +165,7 @@ class CoreVideoFilter {
                                     // debug(_result)
                                     if (!isEleHide(video)) {
                                         log(
-                                            `hide video\nbvid: ${info.bvid}\ntime: ${info.duration}\nup: ${info.uploader}\ntitle: ${info.title}`,
+                                            `hide video\nbvid: ${info.bvid}\ntime: ${info.duration}\nup: ${info.uploader}\nratio: ${info.coinLikeRatio}\ntitle: ${info.title}`,
                                         )
                                     }
                                     hideEle(video)
@@ -152,7 +178,7 @@ class CoreVideoFilter {
                         } else {
                             if (!isEleHide(video)) {
                                 log(
-                                    `hide video\nbvid: ${info.bvid}\ntime: ${info.duration}\nup: ${info.uploader}\ntitle: ${info.title}`,
+                                    `hide video\nbvid: ${info.bvid}\ntime: ${info.duration}\nup: ${info.uploader}\nratio: ${info.coinLikeRatio}\ntitle: ${info.title}`,
                                 )
                             }
                             hideEle(video)

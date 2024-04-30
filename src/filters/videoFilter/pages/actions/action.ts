@@ -4,6 +4,8 @@ import { debugVideoFilter as debug } from '../../../../utils/logger'
 import agencyInstance from '../../agency/agency'
 import bvidFilterInstance from '../../filters/subfilters/bvid'
 import durationFilterInstance from '../../filters/subfilters/duration'
+import dimensionFilterInstance from '../../filters/subfilters/dimension'
+import qualityFilterInstance from '../../filters/subfilters/quality'
 import titleKeywordFilterInstance from '../../filters/subfilters/titleKeyword'
 import titleKeywordWhitelistFilterInstance from '../../filters/subfilters/titleKeywordWhitelist'
 import uploaderFilterInstance from '../../filters/subfilters/uploader'
@@ -13,9 +15,9 @@ import uploaderWhitelistFilterInstance from '../../filters/subfilters/uploaderWh
 // 定义各种黑名单功能、白名单功能的属性和行为
 interface VideoFilterAction {
     statusKey: string
-    valueKey: string
+    valueKey?: string
     status: boolean
-    value: number | string | string[]
+    value?: number | string | string[]
     // 检测视频列表的函数
     checkVideoList(fullSite: boolean): void
     blacklist?: WordList
@@ -127,6 +129,78 @@ export class UploaderAction implements VideoFilterAction {
     edit(values: string[]) {
         agencyInstance.notifyUploader('edit', values)
         this.checkVideoList(true)
+    }
+}
+
+export class QualityAction implements VideoFilterAction {
+    statusKey: string
+    valueKey: string
+    checkVideoList: (fullSite: boolean) => void
+    status: boolean
+    value: number
+
+    /**
+     * 视频质量过滤操作
+     * @param statusKey 是否启用的GM key
+     * @param valueKey 存储数据的GM key
+     * @param checkVideoList 检测视频列表函数
+     */
+    constructor(statusKey: string, valueKey: string, checkVideoList: (fullSite: boolean) => void) {
+        this.statusKey = statusKey
+        this.valueKey = valueKey
+        this.checkVideoList = checkVideoList
+        this.status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
+        this.value = GM_getValue(`BILICLEANER_${this.valueKey}`, 20)
+        qualityFilterInstance.setStatus(this.status)
+        qualityFilterInstance.setParams(this.value)
+    }
+    enable() {
+        debug(`QualityAction enable`)
+        agencyInstance.notifyQuality('enable')
+        this.checkVideoList(true)
+        this.status = true
+    }
+    disable() {
+        debug(`QualityAction disable`)
+        agencyInstance.notifyQuality('disable')
+        this.checkVideoList(true)
+        this.status = false
+    }
+    change(value: number) {
+        debug(`QualityAction change ${value}`)
+        agencyInstance.notifyQuality('change', value)
+        this.checkVideoList(true)
+    }
+}
+
+export class DimensionAction implements VideoFilterAction {
+    statusKey: string
+    checkVideoList: (fullSite: boolean) => void
+    status: boolean
+
+    /**
+     * 视频横竖屏过滤操作
+     * @param statusKey 是否启用的GM key
+     * @param valueKey 存储数据的GM key
+     * @param checkVideoList 检测视频列表函数
+     */
+    constructor(statusKey: string, checkVideoList: (fullSite: boolean) => void) {
+        this.statusKey = statusKey
+        this.checkVideoList = checkVideoList
+        this.status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
+        dimensionFilterInstance.setStatus(this.status)
+    }
+    enable() {
+        debug(`DimensionAction enable`)
+        agencyInstance.notifyDimension('enable')
+        this.checkVideoList(true)
+        this.status = true
+    }
+    disable() {
+        debug(`DimensionAction disable`)
+        agencyInstance.notifyDimension('disable')
+        this.checkVideoList(true)
+        this.status = false
     }
 }
 

@@ -123,8 +123,7 @@ if (isPageSearch()) {
 
     // 监听视频列表内部变化, 有变化时检测视频列表
     const watchVideoListContainer = () => {
-        if (videoListContainer) {
-            debug('watchVideoListContainer start')
+        const check = async (fullSite: boolean) => {
             if (
                 searchDurationAction.status ||
                 searchUploaderAction.status ||
@@ -132,18 +131,13 @@ if (isPageSearch()) {
                 searchBvidAction.status ||
                 searchTitleKeywordAction.status
             ) {
-                checkVideoList(true)
+                checkVideoList(fullSite)
             }
+        }
+        if (videoListContainer) {
+            check(true)
             const videoObverser = new MutationObserver(() => {
-                if (
-                    searchDurationAction.status ||
-                    searchUploaderAction.status ||
-                    searchUploaderKeywordAction.status ||
-                    searchBvidAction.status ||
-                    searchTitleKeywordAction.status
-                ) {
-                    checkVideoList(true)
-                }
+                check(true)
             })
             videoObverser.observe(videoListContainer, { childList: true, subtree: true })
             debug('watchVideoListContainer OK')

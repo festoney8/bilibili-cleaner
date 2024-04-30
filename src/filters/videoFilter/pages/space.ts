@@ -90,16 +90,16 @@ if (isPageSpace()) {
 
     // 监听视频列表内部变化, 有变化时检测视频列表
     const watchVideoListContainer = () => {
-        if (videoListContainer) {
-            debug('watchVideoListContainer start')
+        const check = async (fullSite: boolean) => {
             if (spaceDurationAction.status || spaceBvidAction.status || spaceTitleKeywordAction.status) {
-                checkVideoList(true)
+                checkVideoList(fullSite)
             }
+        }
+        if (videoListContainer) {
+            check(true)
             const videoObverser = new MutationObserver(() => {
-                if (spaceDurationAction.status || spaceBvidAction.status || spaceTitleKeywordAction.status) {
-                    // 全量检测
-                    checkVideoList(true)
-                }
+                // 全量检测
+                check(true)
             })
             videoObverser.observe(videoListContainer, { childList: true, subtree: true })
             debug('watchVideoListContainer OK')

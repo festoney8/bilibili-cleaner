@@ -152,8 +152,7 @@ if (isPageHomepage()) {
 
     // 监听视频列表内部变化, 有变化时检测视频列表
     const watchVideoListContainer = () => {
-        if (videoListContainer) {
-            debug('watchVideoListContainer start')
+        const check = async (fullSite: boolean) => {
             if (
                 homepageDurationAction.status ||
                 homepageUploaderAction.status ||
@@ -161,20 +160,15 @@ if (isPageHomepage()) {
                 homepageBvidAction.status ||
                 homepageTitleKeywordAction.status
             ) {
-                // 初次全站检测
-                checkVideoList(true)
+                checkVideoList(fullSite)
             }
+        }
+        if (videoListContainer) {
+            // 初次全站检测
+            check(true)
             const videoObverser = new MutationObserver(() => {
-                if (
-                    homepageDurationAction.status ||
-                    homepageUploaderAction.status ||
-                    homepageUploaderKeywordAction.status ||
-                    homepageBvidAction.status ||
-                    homepageTitleKeywordAction.status
-                ) {
-                    // 增量检测
-                    checkVideoList(false)
-                }
+                // 增量检测
+                check(false)
             })
             videoObverser.observe(videoListContainer, { childList: true })
             debug('watchVideoListContainer OK')

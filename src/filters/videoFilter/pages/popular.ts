@@ -392,8 +392,8 @@ if (isPagePopular()) {
         }),
         new NumberItem({
             itemID: popularQualityAction.valueKey,
-            description: '设定 劣质视频过滤百分比',
-            defaultValue: 20,
+            description: '劣质视频过滤百分比 (0~80%)',
+            defaultValue: 25,
             minValue: 0,
             maxValue: 80,
             disableValue: 0,

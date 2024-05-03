@@ -34,6 +34,16 @@ if (isPageDynamic()) {
                 /* 高权限覆盖*/
                 aside.right section.sticky {top: 15px !important;}`,
         }),
+        // 交换 左栏与右栏位置
+        new CheckboxItem({
+            itemID: 'exchange-dynamic-page-left-right-aside',
+            description: '交换 左栏与右栏位置',
+            itemCSS: `
+                aside.left {order: 3; margin-right: 0 !important;}
+                main {order: 2;}
+                aside.right {order: 1; margin-right: 12px !important;}
+                .bili-dyn-sidebar {order: 4;}`,
+        }),
     ]
     dynamicGroupList.push(new Group('dynamic-basic', '动态页 基本功能', basicItems))
 
@@ -103,6 +113,36 @@ if (isPageDynamic()) {
             description: '隐藏 动态发布框',
             itemCSS: `.bili-dyn-publishing {display: none !important;}
                 main section:nth-child(1) {margin-bottom: 0 !important;}`,
+        }),
+        // 双行显示 UP 主列表
+        new CheckboxItem({
+            itemID: 'dynamic-page-up-list-dual-line-mode',
+            description: '双行显示 UP 主列表',
+            itemCSS: `
+                .bili-dyn-up-list__content {
+                    display: grid !important;
+                    grid-auto-flow: column !important;
+                    grid-template-rows: auto auto !important;
+                }
+                .bili-dyn-up-list__content .shim {
+                    display: none !important;
+                }
+                .bili-dyn-up-list__item {
+                    height: auto !important;
+                }
+                .bili-dyn-up-list__window {
+                    padding: 10px !important;
+                }
+                /* 左右按钮突出显示 */
+                .bili-dyn-up-list__nav__btn {
+                    zoom: 1.4;
+                    transition: background-color 0.1s linear;
+                }
+                .bili-dyn-up-list__nav__btn:hover {
+                    background-color: #00AEEC !important;
+                    color: white !important;
+                }
+            `,
         }),
         // 隐藏 动态分类Tab bar
         new CheckboxItem({

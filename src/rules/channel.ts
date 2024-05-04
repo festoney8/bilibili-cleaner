@@ -268,7 +268,7 @@ if (isPageChannel()) {
             itemID: 'channel-hide-ad-banner',
             description: '隐藏 广告banner',
             defaultStatus: true,
-            itemCSS: `.eva-banner:has([href*="cm.bilibili.com"]) {display: none !important;}
+            itemCSS: `.eva-banner {display: none !important;}
                     .bili-grid {margin-bottom: 20px !important;}`,
         }),
         // 隐藏 发布时间

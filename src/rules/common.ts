@@ -20,11 +20,7 @@ import {
  */
 const cleanURL = () => {
     // 直播域名各种iframe页面（天选、抽奖）和活动页特殊处理
-    if (
-        location.href.includes('live.bilibili.com/p/html') ||
-        location.href.includes('live.bilibili.com/activity') ||
-        location.href.includes('live.bilibili.com/blackboard')
-    ) {
+    if (location.href.match(/live\.bilibili\.com\/(p\/html|activity|blackboard)/)) {
         return
     }
     const keysToRemove = new Set([
@@ -73,22 +69,17 @@ const cleanURL = () => {
 
     const temp = []
     for (const k of params.keys()) {
-        if (keysToRemove.has(k)) {
-            temp.push(k)
-        }
+        keysToRemove.has(k) && temp.push(k)
     }
     for (const k of temp) {
         params.delete(k)
     }
-    if (params.has('p') && params.get('p') == '1') {
+    if (params.get('p') === '1') {
         params.delete('p')
     }
 
     urlObj.search = params.toString()
-    let newURL = urlObj.toString()
-    if (newURL.endsWith('/')) {
-        newURL = newURL.slice(0, -1)
-    }
+    const newURL = urlObj.toString().replace(/\/$/, '')
     if (newURL !== url) {
         history.replaceState(null, '', newURL)
     }

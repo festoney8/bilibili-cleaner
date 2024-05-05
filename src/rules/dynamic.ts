@@ -107,12 +107,11 @@ if (isPageDynamic()) {
 
     // 中栏
     const centerItems = [
-        // 隐藏 动态发布框
+        // 扩增 中栏宽度
         new CheckboxItem({
-            itemID: 'hide-dynamic-page-bili-dyn-publishing',
-            description: '隐藏 动态发布框',
-            itemCSS: `.bili-dyn-publishing {display: none !important;}
-                main section:nth-child(1) {margin-bottom: 0 !important;}`,
+            itemID: 'expand-dynamic-page-bili-dyn-width',
+            description: '扩增 中栏宽度',
+            itemCSS: `main {flex-grow: 0.8 !important;}`,
         }),
         // 双行显示 UP 主列表
         new CheckboxItem({
@@ -143,6 +142,13 @@ if (isPageDynamic()) {
                     color: white !important;
                 }
             `,
+        }),
+        // 隐藏 动态发布框
+        new CheckboxItem({
+            itemID: 'hide-dynamic-page-bili-dyn-publishing',
+            description: '隐藏 动态发布框',
+            itemCSS: `.bili-dyn-publishing {display: none !important;}
+                main section:nth-child(1) {margin-bottom: 0 !important;}`,
         }),
         // 隐藏 动态分类Tab bar
         new CheckboxItem({

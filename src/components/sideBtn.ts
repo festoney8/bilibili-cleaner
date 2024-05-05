@@ -31,8 +31,7 @@ export class SideBtn {
     constructor(
         private btnID: string,
         private btnContent: string,
-        private showFunc: () => void,
-        private hideFunc: () => void,
+        private btnFunc: () => void,
     ) {}
 
     enable() {
@@ -88,15 +87,8 @@ export class SideBtn {
             })
 
             // 单击事件
-            let isShowing = false
             node.addEventListener('click', () => {
-                if (!isShowing) {
-                    this.showFunc()
-                    isShowing = true
-                } else {
-                    this.hideFunc()
-                    isShowing = false
-                }
+                this.btnFunc()
             })
 
             // 插入节点

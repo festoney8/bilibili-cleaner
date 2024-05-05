@@ -23,9 +23,8 @@ const currPage = (): string => {
         if (pathname.match(/^\/(?:blanc\/)?\d+/)) {
             return 'liveRoom'
         }
-        // 匹配天选时刻iframe, 不做处理
-        // https://live.bilibili.com/p/html/live-lottery/anchor-join.html
-        if (pathname.includes('live-lottery')) {
+        // 匹配各种直播页iframe、直播活动, 不做处理
+        if (href.match(/live\.bilibili\.com\/(p\/html|activity|blackboard)/)) {
             return ''
         }
         return 'liveHome'

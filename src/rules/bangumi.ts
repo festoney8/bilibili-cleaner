@@ -468,13 +468,6 @@ if (isPageBangumi()) {
             defaultStatus: true,
             itemCSS: `#share-container-id [class^='Share_share'] {display: none !important;}`,
         }),
-        // bangumi独有项：隐藏 用手机观看, 默认开启
-        new CheckboxItem({
-            itemID: 'bangumi-page-hide-watch-on-phone',
-            description: '隐藏 用手机观看 ★',
-            defaultStatus: true,
-            itemCSS: `.toolbar span:has(>[class^='Phone_mobile']) {display: none !important;}`,
-        }),
         // bangumi独有项：隐藏 一起看, 默认开启
         new CheckboxItem({
             itemID: 'bangumi-page-hide-watch-together',

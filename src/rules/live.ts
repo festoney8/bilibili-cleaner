@@ -593,10 +593,10 @@ if (isPageLiveHome() || isPageLiveRoom()) {
             description: '隐藏 搜索框 bilibili热搜',
             itemCSS: `#nav-searchform .trending {display: none !important;}`,
         }),
-        // 隐藏 关闭搜索框
+        // 隐藏 整个搜索框
         new CheckboxItem({
             itemID: 'live-page-header-search-block',
-            description: '隐藏 关闭搜索框',
+            description: '隐藏 整个搜索框',
             itemCSS: `#nav-searchform {display: none !important;}`,
         }),
     ]
@@ -609,25 +609,6 @@ if (isPageLiveHome() || isPageLiveRoom()) {
             itemID: 'live-page-header-avatar',
             description: '隐藏 头像',
             itemCSS: `#right-part .user-panel {display: none !important;}`,
-        }),
-        // 隐藏 动态
-        new CheckboxItem({
-            itemID: 'live-page-header-dynamic',
-            description: '隐藏 动态',
-            itemCSS: `#right-part .shortcut-item:has(.link-panel-ctnr) {display: none !important;}`,
-        }),
-        // 隐藏 签到
-        new CheckboxItem({
-            itemID: 'live-page-header-checkin',
-            description: '隐藏 签到',
-            itemCSS: `#right-part .shortcut-item:has(.calendar-checkin) {display: none !important;}`,
-        }),
-        // 隐藏 幻星互动, 默认开启
-        new CheckboxItem({
-            itemID: 'live-page-header-interact',
-            description: '隐藏 幻星互动',
-            defaultStatus: true,
-            itemCSS: `#right-part .shortcut-item:has(.fanbox-panel-ctnr) {display: none !important;}`,
         }),
         // 隐藏 关注
         new CheckboxItem({

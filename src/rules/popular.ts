@@ -169,6 +169,7 @@ if (isPagePopular()) {
                 'popular-layout-5-column',
                 'popular-layout-6-column',
             ],
+            itemCSS: `.cm-module {display: none !important;}`,
             defaultStatus: true,
         }),
         // 强制使用 4 列布局
@@ -182,7 +183,11 @@ if (isPagePopular()) {
                 'popular-layout-5-column',
                 'popular-layout-6-column',
             ],
-            itemCSS: `/* 页面宽度 */
+            itemCSS: `
+                .cm-module {
+                    display: none !important
+                }
+                /* 页面宽度 */
                 @media (min-width: 1300px) and (max-width: 1399.9px) {
                   .popular-container {
                     max-width: 1180px !important;
@@ -345,7 +350,11 @@ if (isPagePopular()) {
                 'popular-layout-5-column',
                 'popular-layout-6-column',
             ],
-            itemCSS: `/* 页面宽度 */
+            itemCSS: `
+                .cm-module {
+                    display: none !important;
+                }
+                /* 页面宽度 */
                 @media (min-width: 1300px) and (max-width: 1399.9px) {
                   .popular-container {
                     max-width: 1180px !important;
@@ -508,7 +517,11 @@ if (isPagePopular()) {
                 'popular-layout-5-column',
                 'popular-layout-6-column',
             ],
-            itemCSS: `/* 页面宽度 */
+            itemCSS: `
+                .cm-module {
+                    display: none !important;
+                }
+                /* 页面宽度 */
                 @media (min-width: 1300px) and (max-width: 1399.9px) {
                   .popular-container {
                     max-width: 1180px !important;

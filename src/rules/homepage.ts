@@ -366,6 +366,12 @@ if (isPageHomepage()) {
             defaultStatus: true,
             itemCSS: `main:not(:has(.bilibili-app-recommend-root)) .bili-video-card__stats--item:nth-child(2) {visibility: hidden;}`,
         }),
+        // 隐藏 稍后再看提示语
+        new CheckboxItem({
+            itemID: 'homepage-hide-bili-watch-later-tip',
+            description: '隐藏 稍后再看提示语',
+            itemCSS: `.bili-watch-later__tip--lab {display: none !important;}`,
+        }),
         // 隐藏 稍后再看按钮
         new CheckboxItem({
             itemID: 'homepage-hide-bili-watch-later',

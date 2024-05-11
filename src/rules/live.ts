@@ -479,12 +479,6 @@ if (isPageLiveHome() || isPageLiveRoom()) {
             description: '隐藏 直播',
             itemCSS: `#main-ctnr .dp-table-cell a[name="live"] {display: none !important;}`,
         }),
-        // 隐藏 全部
-        new CheckboxItem({
-            itemID: 'live-page-header-all',
-            description: '隐藏 全部',
-            itemCSS: `#main-ctnr .dp-table-cell a[name="all"] {display: none !important;}`,
-        }),
         // 隐藏 网游
         new CheckboxItem({
             itemID: 'live-page-header-net-game',

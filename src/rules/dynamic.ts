@@ -53,7 +53,7 @@ if (isPageDynamic()) {
         new CheckboxItem({
             itemID: 'hide-dynamic-page-bili-dyn-my-info',
             description: '隐藏 个人信息框',
-            itemCSS: `section:has(> .bili-dyn-my-info) {display: none !important;}
+            itemCSS: `aside.left section {display: none !important;}
                 .bili-dyn-live-users {top: 15px !important;}`,
         }),
         // 隐藏 直播中Logo
@@ -111,7 +111,11 @@ if (isPageDynamic()) {
         new CheckboxItem({
             itemID: 'expand-dynamic-page-bili-dyn-width',
             description: '扩增 中栏宽度',
-            itemCSS: `main {flex-grow: 0.8 !important;}`,
+            itemCSS: `
+                main {flex-grow: 0.8 !important;}
+                /* 限制查看图片时img高度 */
+                .bili-album__watch__content img {max-height: 80vh !important;}
+            `,
         }),
         // 双行显示 UP 主列表
         new CheckboxItem({

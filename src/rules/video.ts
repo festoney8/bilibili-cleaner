@@ -942,7 +942,9 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-page-hide-right-container-section-next-btn',
             description: '隐藏 视频合集 自动连播',
             itemCSS: `.base-video-sections-v1 .next-button {display: none !important;}
-                .video-sections-head_first-line .next-button {display: none !important;}`,
+                .video-sections-head_first-line .first-line-left {max-width: 100% !important;}
+                .video-sections-head_first-line .first-line-title {max-width: unset !important;}
+                .video-sections-head_first-line .first-line-right {display: none !important;}`,
         }),
         // 隐藏 视频合集 播放量
         new CheckboxItem({

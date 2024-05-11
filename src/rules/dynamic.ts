@@ -219,6 +219,12 @@ if (isPageDynamic()) {
                     margin: 0 !important;
                 }`,
         }),
+        // 隐藏 抽奖动态(含转发)
+        new CheckboxItem({
+            itemID: 'hide-dynamic-page-bili-dyn-lottery',
+            description: '隐藏 抽奖动态(含转发)',
+            itemCSS: `.bili-dyn-list__item:has([data-type="lottery"]) {display: none !important;}`,
+        }),
         // 隐藏 转发的动态
         new CheckboxItem({
             itemID: 'hide-dynamic-page-bili-dyn-forward',

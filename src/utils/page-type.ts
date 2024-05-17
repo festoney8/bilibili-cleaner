@@ -42,9 +42,9 @@ const currPage = (): string => {
     if (!href.includes('bilibili.com/v/popular/') && href.includes('bilibili.com/v/')) {
         return 'channel'
     }
-    if (href.match(/bilibili\.com\/festival\/20\d\dbnj/) || href.includes('bilibili.com/festival/bnj20')) {
-        // 匹配拜年祭活动页、拜年祭单品视频
-        return 'bnj'
+    // 拜年祭等活动
+    if (href.includes('www.bilibili.com/festival/')) {
+        return 'festival'
     }
     return ''
 }
@@ -60,6 +60,6 @@ export const isPageLiveHome = () => ans === 'liveHome'
 export const isPageLiveRoom = () => ans === 'liveRoom'
 export const isPageBangumi = () => ans === 'bangumi'
 export const isPagePlaylist = () => ans === 'playlist'
-export const isPageBnj = () => ans === 'bnj'
+export const isPageFestival = () => ans === 'festival'
 export const isPageChannel = () => ans === 'channel'
 export const isPageSpace = () => ans === 'space'

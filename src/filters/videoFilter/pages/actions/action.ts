@@ -103,9 +103,14 @@ export class UploaderAction implements VideoFilterAction {
         uploaderFilterInstance.setStatus(this.status)
         uploaderFilterInstance.setParams(this.value)
         // 初始化黑名单, callback触发edit, 必需用箭头函数
-        this.blacklist = new WordList(this.valueKey, 'UP主 黑名单', '保存时自动去重，实时生效', (values: string[]) => {
-            this.edit(values)
-        })
+        this.blacklist = new WordList(
+            this.valueKey,
+            'UP主 黑名单',
+            '每行一个UP主昵称，保存时自动去重',
+            (values: string[]) => {
+                this.edit(values)
+            },
+        )
     }
 
     enable() {
@@ -229,9 +234,14 @@ export class BvidAction implements VideoFilterAction {
         bvidFilterInstance.setStatus(this.status)
         bvidFilterInstance.setParams(this.value)
         // 初始化黑名单, callback触发edit
-        this.blacklist = new WordList(this.valueKey, 'BV号 黑名单', '保存时自动去重，实时生效', (values: string[]) => {
-            this.edit(values)
-        })
+        this.blacklist = new WordList(
+            this.valueKey,
+            'BV号 黑名单',
+            '每行一个BV号，保存时自动去重',
+            (values: string[]) => {
+                this.edit(values)
+            },
+        )
     }
 
     enable() {
@@ -286,7 +296,7 @@ export class TitleKeywordAction implements VideoFilterAction {
         this.blacklist = new WordList(
             this.valueKey,
             '标题关键词 黑名单',
-            `每行一个关键词，支持正则(iv)，语法：/abc|\\d+/`,
+            `每行一个关键词或正则，不区分大小写\n正则无需flag（默认iv模式）语法：/abc|\\d+/`,
             (values: string[]) => {
                 this.edit(values)
             },
@@ -345,7 +355,7 @@ export class UploaderKeywordAction implements VideoFilterAction {
         this.blacklist = new WordList(
             this.valueKey,
             'UP主昵称关键词 黑名单',
-            `每行一个关键词，支持正则(iv)，语法：/abc|\\d+/`,
+            `每行一个关键词或正则，不区分大小写\n正则无需flag（默认iv模式）语法：/abc|\\d+/`,
             (values: string[]) => {
                 this.edit(values)
             },
@@ -401,9 +411,14 @@ export class UploaderWhitelistAction implements VideoFilterAction {
         uploaderWhitelistFilterInstance.setStatus(this.status)
         uploaderWhitelistFilterInstance.setParams(this.value)
         // 初始化白名单, callback触发edit
-        this.whitelist = new WordList(this.valueKey, 'UP主 白名单', '保存时自动去重，实时生效', (values: string[]) => {
-            this.edit(values)
-        })
+        this.whitelist = new WordList(
+            this.valueKey,
+            'UP主 白名单',
+            '每行一个UP主昵称，保存时自动去重',
+            (values: string[]) => {
+                this.edit(values)
+            },
+        )
     }
 
     enable() {
@@ -458,7 +473,7 @@ export class TitleKeywordWhitelistAction implements VideoFilterAction {
         this.whitelist = new WordList(
             this.valueKey,
             '标题关键词 白名单',
-            `每行一个关键词，支持正则(iv)，语法：/abc|\\d+/`,
+            `每行一个关键词或正则，不区分大小写\n正则无需flag（默认iv模式）语法：/abc|\\d+/`,
             (values: string[]) => {
                 this.edit(values)
             },

@@ -389,10 +389,11 @@ if (isPageHomepage()) {
             itemID: 'homepage-hide-ad-card',
             description: '隐藏 广告',
             defaultStatus: true,
-            itemCSS: `.feed-card:has(.bili-video-card__info--ad, [href*="cm.bilibili.com"]) {
+            itemCSS: `
+                :is(.feed-card, .bili-video-card.is-rcmd):has(.bili-video-card__info--ad, [href*="cm.bilibili.com"]) {
                     display: none !important;
                 }
-                .bili-video-card.is-rcmd:has(.bili-video-card__info--ad, [href*="cm.bilibili.com"]) {
+                :is(.feed-card, .bili-video-card.is-rcmd):not(:has(.bili-video-card__wrap, .bili-video-card__skeleton)) {
                     display: none !important;
                 }
 

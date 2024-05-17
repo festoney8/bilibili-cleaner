@@ -2,7 +2,7 @@ import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
 import { debugRules as debug, error } from '../utils/logger'
 import { matchAvidBvid, matchBvid } from '../utils/tool'
-import { isPageBnj, isPagePlaylist, isPageVideo } from '../utils/page-type'
+import { isPageFestival, isPagePlaylist, isPageVideo } from '../utils/page-type'
 import { GM_getValue, GM_setValue } from '$'
 
 /** BV号转AV号 */
@@ -297,7 +297,7 @@ if (isPageVideo() || isPagePlaylist()) {
 }
 
 // 部分适配拜年祭视频页(播放器、弹幕栏规则多数生效)
-if (isPageVideo() || isPagePlaylist() || isPageBnj()) {
+if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
     // 播放器
     const playerItems = [
         // 隐藏 一键三连弹窗

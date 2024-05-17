@@ -54,7 +54,7 @@ export class UsernameAction implements CommentFilterAction {
         this.blacklist = new WordList(
             this.valueKey,
             '用户名 黑名单',
-            '保存时自动去重，实时生效',
+            '每行一个用户名，保存时自动去重',
             (values: string[]) => {
                 this.edit(values)
             },
@@ -110,7 +110,7 @@ export class ContentAction implements CommentFilterAction {
         this.blacklist = new WordList(
             this.valueKey,
             '评论关键词 黑名单',
-            `每行一个关键词，支持正则(iv)，语法：/abc|\\d+/`,
+            `每行一个关键词或正则，不区分大小写\n正则无需flag（默认iv模式）语法：/abc|\\d+/`,
             (values: string[]) => {
                 this.edit(values)
             },

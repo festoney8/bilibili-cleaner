@@ -275,6 +275,12 @@ if (isPageDynamic()) {
             defaultStatus: true,
             itemCSS: `.reply-header .reply-notice {display: none !important;}`,
         }),
+        // 隐藏 投票
+        new CheckboxItem({
+            itemID: 'video-page-hide-top-vote-card',
+            description: '隐藏 投票',
+            itemCSS: `.comment-container .top-vote-card {display: none !important;}`,
+        }),
         // 隐藏 整个评论框
         new CheckboxItem({
             itemID: 'video-page-hide-main-reply-box',
@@ -343,6 +349,12 @@ if (isPageDynamic()) {
             description: '隐藏 用户头像右下小icon',
             itemCSS: `.bili-avatar-nft-icon {display: none !important;}
                 .comment-container .bili-avatar-icon {display: none !important;}`,
+        }),
+        // 隐藏 用户投票 (红方/蓝方)
+        new CheckboxItem({
+            itemID: 'video-page-hide-vote-info',
+            description: '隐藏 用户投票 (红方/蓝方)',
+            itemCSS: `.comment-container .vote-info {display: none !important;}`,
         }),
         // 隐藏 评论内容下tag(UP觉得很赞)
         new CheckboxItem({

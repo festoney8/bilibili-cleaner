@@ -560,25 +560,18 @@ if (isPageDynamic()) {
 
     // 右下角
     const sidebarItems = [
-        // 隐藏 新版反馈, 默认开启
-        new CheckboxItem({
-            itemID: 'hide-dynamic-page-sidebar-feedback',
-            description: '隐藏 新版反馈',
-            defaultStatus: true,
-            itemCSS: `.bili-dyn-sidebar .bili-dyn-sidebar__btn:nth-child(1) {visibility: hidden !important;}`,
-        }),
         // 隐藏 回到旧版, 默认开启
         new CheckboxItem({
             itemID: 'hide-dynamic-page-sidebar-old-version',
             description: '隐藏 回到旧版',
             defaultStatus: true,
-            itemCSS: `.bili-dyn-sidebar .bili-dyn-sidebar__btn:nth-child(2) {visibility: hidden !important;}`,
+            itemCSS: `.bili-dyn-sidebar .bili-dyn-sidebar__btn:first-child {visibility: hidden !important;}`,
         }),
         // 隐藏 回顶部
         new CheckboxItem({
             itemID: 'hide-dynamic-page-sidebar-back-to-top',
             description: '隐藏 回顶部',
-            itemCSS: `.bili-dyn-sidebar .bili-dyn-sidebar__btn:nth-child(3) {visibility: hidden !important;}`,
+            itemCSS: `.bili-dyn-sidebar .bili-dyn-sidebar__btn:last-child {visibility: hidden !important;}`,
         }),
     ]
     dynamicGroupList.push(new Group('dynamic-sidebar', '页面右下角 小按钮', sidebarItems))

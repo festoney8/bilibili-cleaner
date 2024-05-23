@@ -166,14 +166,17 @@ if (isPageDynamic()) {
     try {
         waitForEle(
             document,
-            '.bili-dyn-home--member, .bili-comment-container, .bili-comment',
+            '.bili-dyn-home--member, .bili-comment-container, .bili-comment, #app',
             (node: Node): boolean => {
-                return (
-                    node instanceof HTMLElement &&
-                    ((node as HTMLElement).className === 'bili-dyn-home--member' ||
+                if (node instanceof HTMLElement) {
+                    return (
+                        (node as HTMLElement).className === 'bili-dyn-home--member' ||
                         (node as HTMLElement).className.includes('bili-comment-container') ||
-                        (node as HTMLElement).className.includes('bili-comment'))
-                )
+                        (node as HTMLElement).className.includes('bili-comment') ||
+                        (node as HTMLElement).id === 'app'
+                    )
+                }
+                return false
             },
         ).then((ele) => {
             if (ele) {
@@ -225,7 +228,7 @@ if (isPageDynamic()) {
 
     // UI组件, 用户名过滤part
     const usernameItems = [
-        // 启用 播放页UP主过滤
+        // 启用 动态页UP主过滤
         new CheckboxItem({
             itemID: usernameAction.statusKey,
             description: '启用 评论区 用户名过滤\n(右键单击用户名)',
@@ -252,12 +255,12 @@ if (isPageDynamic()) {
         }),
     ]
     dynamicPageCommentFilterGroupList.push(
-        new Group('comment-username-filter-group', '播放页 评论区 用户过滤', usernameItems),
+        new Group('comment-username-filter-group', '动态页 评论区 用户过滤', usernameItems),
     )
 
     // UI组件, 评论内容过滤part
     const contentItems = [
-        // 启用 播放页关键词过滤
+        // 启用 动态页关键词过滤
         new CheckboxItem({
             itemID: contentAction.statusKey,
             description: '启用 评论区 关键词过滤',

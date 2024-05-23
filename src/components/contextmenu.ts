@@ -20,6 +20,13 @@ export class ContextMenu {
         overflow: hidden;
         z-index: 99999;
     }
+    #bili-cleaner-context-menu-container ul {
+        margin-block-start: 0;
+        margin-block-end: 0;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+        padding-inline-start: 0;
+    }
     #bili-cleaner-context-menu-container li {
         padding: 5px 10px;
         font-size: 1rem;

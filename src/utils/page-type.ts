@@ -15,7 +15,11 @@ const currPage = (): string => {
     if (host === 'search.bilibili.com') {
         return 'search'
     }
-    if (host === 't.bilibili.com' || href.includes('bilibili.com/opus/')) {
+    if (
+        host === 't.bilibili.com' ||
+        href.includes('bilibili.com/opus/') ||
+        href.includes('bilibili.com/v/topic/detail')
+    ) {
         return 'dynamic'
     }
     if (host === 'live.bilibili.com') {

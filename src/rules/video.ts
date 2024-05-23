@@ -240,21 +240,27 @@ if (isPageVideo() || isPagePlaylist()) {
             description: '顶栏 滚动页面后不再吸附顶部',
             itemCSS: `.fixed-header .bili-header__bar {position: relative !important;}`,
         }),
-        // 播放器和视频信息 交换位置(实验性)
+        // 播放器和视频信息 交换位置
         new CheckboxItem({
             itemID: 'video-page-exchange-player-position',
-            description: '播放器和视频信息 交换位置(实验性)',
-            itemCSS: `.left-container {
+            description: '播放器和视频信息 交换位置',
+            itemCSS: `
+                .left-container, .playlist-container--left {
                     display: flex !important;
                     flex-direction: column !important;
                     padding-top: 50px !important;
                 }
-                #viewbox_report {order: 2;}
-                #playerWrap {order: 1;}
-                #arc_toolbar_report {order: 3;}
-                .left-container-under-player {order: 4;}
-                .video-info-container {height: unset !important; padding-top: 16px !important;}
-                .video-toolbar-container {padding-top: 12px !important;}`,
+                .left-container > *, .playlist-container--left > * {
+                    order: 1;
+                }
+                #playerWrap {
+                    order: 0 !important;
+                }
+                .video-info-container {
+                    height: auto !important;
+                    padding-top: 16px !important;
+                }
+            `,
         }),
     ]
     videoGroupList.push(new Group('video-basic', '播放页 基本功能', basicItems))

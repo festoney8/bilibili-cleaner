@@ -42,7 +42,7 @@
 > -   **重要：下列页面均有独立菜单，不同页面菜单不同**，按下图打开菜单进行设置，实时生效
 > -   **页面净化：「首页、播放页、影视番剧播放页、直播间、搜索页、动态页、热门页、频道页」**
 > -   **视频过滤：「首页、播放页、搜索页、热门页、频道页、空间页」**
-> -   **评论过滤：「播放页、影视番剧播放页」**
+> -   **评论过滤：「播放页、影视番剧播放页、动态页」**
 
 ![](images/usage.png)
 
@@ -100,9 +100,9 @@
 
 ## 浏览器适配
 
-### Chrome / Edge
+### Chrome / Edge / 其他 Chromium 内核浏览器
 
--   **要求 Chrome 内核版本 >= 105**，浏览器内核版本过低会导致部分功能失效，如：无法净化顶栏
+-   **要求 Chromium 内核版本 >= 105**，内核版本过低会导致部分功能失效，如：无法净化顶栏
 
     > 鉴于 Google 在推行 [Manifest V3](https://developer.chrome.com/docs/extensions/migrating/checklist)，未来会影响油猴插件，参考[Tampermonkey changelog](https://www.tampermonkey.net/changelog.php#v5.0.0)。
     > 可考虑启用浏览器开发者模式，Chrome 和 Edge 均可在插件管理页找到开关。

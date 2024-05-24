@@ -160,6 +160,22 @@ if (isPageDynamic()) {
             description: '隐藏 动态分类Tab bar',
             itemCSS: `.bili-dyn-list-tabs {display: none !important;}`,
         }),
+        // 隐藏 头像框
+        new CheckboxItem({
+            itemID: 'hide-dynamic-page-bili-dyn-avatar-pendent',
+            description: '隐藏 头像框',
+            itemCSS: `
+                .b-avatar__layer.center {width: 48px !important; height: 48px !important;}
+                .b-avatar__layers .b-avatar__layer.center:nth-child(2) picture {display: none !important;}
+                .b-avatar__layers:has(.b-avatar__layer__res[style^="background"]) {display: none !important;}
+            `,
+        }),
+        // 隐藏 头像徽章
+        new CheckboxItem({
+            itemID: 'hide-dynamic-page-bili-dyn-avatar-icon',
+            description: '隐藏 头像徽章',
+            itemCSS: `.b-avatar__layers .b-avatar__layer:last-child:not(.center) {display: none !important;}`,
+        }),
         // 隐藏 动态右侧饰品
         new CheckboxItem({
             itemID: 'hide-dynamic-page-bili-dyn-ornament',
@@ -254,6 +270,14 @@ if (isPageDynamic()) {
             itemID: 'hide-dynamic-page-bili-dyn-blocked',
             description: '隐藏 被block的充电动态',
             itemCSS: `.bili-dyn-list__item:has(.dyn-blocked-mask) {
+                    display: none !important;
+                }`,
+        }),
+        // 隐藏 全部充电视频(含已充电)
+        new CheckboxItem({
+            itemID: 'hide-dynamic-page-bili-dyn-charge-video',
+            description: '隐藏 全部充电视频(含已充电)',
+            itemCSS: `.bili-dyn-list__item:has(.bili-dyn-card-video__badge [src*="qcRJ6sJU91"]) {
                     display: none !important;
                 }`,
         }),
@@ -560,25 +584,18 @@ if (isPageDynamic()) {
 
     // 右下角
     const sidebarItems = [
-        // 隐藏 新版反馈, 默认开启
-        new CheckboxItem({
-            itemID: 'hide-dynamic-page-sidebar-feedback',
-            description: '隐藏 新版反馈',
-            defaultStatus: true,
-            itemCSS: `.bili-dyn-sidebar .bili-dyn-sidebar__btn:nth-child(1) {visibility: hidden !important;}`,
-        }),
         // 隐藏 回到旧版, 默认开启
         new CheckboxItem({
             itemID: 'hide-dynamic-page-sidebar-old-version',
             description: '隐藏 回到旧版',
             defaultStatus: true,
-            itemCSS: `.bili-dyn-sidebar .bili-dyn-sidebar__btn:nth-child(2) {visibility: hidden !important;}`,
+            itemCSS: `.bili-dyn-sidebar .bili-dyn-sidebar__btn:first-child {visibility: hidden !important;}`,
         }),
         // 隐藏 回顶部
         new CheckboxItem({
             itemID: 'hide-dynamic-page-sidebar-back-to-top',
             description: '隐藏 回顶部',
-            itemCSS: `.bili-dyn-sidebar .bili-dyn-sidebar__btn:nth-child(3) {visibility: hidden !important;}`,
+            itemCSS: `.bili-dyn-sidebar .bili-dyn-sidebar__btn:last-child {visibility: hidden !important;}`,
         }),
     ]
     dynamicGroupList.push(new Group('dynamic-sidebar', '页面右下角 小按钮', sidebarItems))

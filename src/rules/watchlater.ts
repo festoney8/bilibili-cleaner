@@ -32,6 +32,7 @@ if (isPageWatchlater()) {
                     border-bottom: none !important;
                 }
                 .av-item .av-about .t {
+                    font-size: 15px !important;
                     width: unset !important;
                     overflow: unset !important;
                     text-wrap: wrap !important;

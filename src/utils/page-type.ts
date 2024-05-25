@@ -3,7 +3,11 @@ const host = location.host
 const pathname = location.pathname
 
 const currPage = (): string => {
-    if (href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'].includes(pathname)) {
+    if (
+        href.startsWith('https://www.bilibili.com/') &&
+        ['/index.html', '/'].includes(pathname) &&
+        !pathname.includes('/correspond/')
+    ) {
         return 'homepage'
     }
     if (href.includes('bilibili.com/video/')) {

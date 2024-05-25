@@ -33,6 +33,7 @@ import { channelPageVideoFilterGroupList } from './filters/videoFilter/pages/cha
 import { videoPageCommentFilterGroupList } from './filters/commentFilter/pages/video'
 import { spacePageVideoFilterGroupList } from './filters/videoFilter/pages/space'
 import { dynamicPageCommentFilterGroupList } from './filters/commentFilter/pages/dynamic'
+import { watchlaterGroupList } from './rules/watchlater'
 
 const main = async () => {
     // 载入元素屏蔽规则
@@ -45,6 +46,7 @@ const main = async () => {
         ...dynamicGroupList,
         ...liveGroupList,
         ...channelGroupList,
+        ...watchlaterGroupList,
         ...commonGroupList,
     ]
     RULE_GROUPS.forEach((e) => e.enableGroup())

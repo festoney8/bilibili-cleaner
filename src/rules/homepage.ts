@@ -364,7 +364,7 @@ if (isPageHomepage()) {
             itemID: 'homepage-hide-danmaku-count',
             description: '隐藏 弹幕数',
             defaultStatus: true,
-            itemCSS: `main:not(:has(.bilibili-app-recommend-root)) .bili-video-card__stats--item:nth-child(2) {visibility: hidden;}`,
+            itemCSS: `main:not(:has(.bilibili-app-recommend-root)) .bili-video-card__stats--item:nth-child(2) {display: none !important;}`,
         }),
         // 隐藏 稍后再看提示语
         new CheckboxItem({

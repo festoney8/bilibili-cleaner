@@ -50,6 +50,9 @@ const currPage = (): string => {
     if (href.includes('www.bilibili.com/festival/')) {
         return 'festival'
     }
+    if (href.includes('bilibili.com/watchlater')) {
+        return 'watchlater'
+    }
     return ''
 }
 
@@ -67,3 +70,4 @@ export const isPagePlaylist = () => ans === 'playlist'
 export const isPageFestival = () => ans === 'festival'
 export const isPageChannel = () => ans === 'channel'
 export const isPageSpace = () => ans === 'space'
+export const isPageWatchlater = () => ans === 'watchlater'

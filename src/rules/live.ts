@@ -107,7 +107,8 @@ if (isPageLiveRoom()) {
             ${settings.fontFaceRegular}
             body,
             .gift-item,
-            .feed-card {
+            .feed-card,
+            .bb-comment, .comment-bilibili-fold {
                 font-family: PingFang SC, HarmonyOS_Regular, Helvetica Neue, Microsoft YaHei, sans-serif !important;
                 font-weight: 400;
             }
@@ -444,10 +445,10 @@ if (isPageLiveRoom()) {
             defaultStatus: true,
             itemCSS: `.flip-view {display: none !important;}`,
         }),
-        // 隐藏 直播间介绍
+        // 隐藏 直播间推荐
         new CheckboxItem({
             itemID: 'live-page-room-info-ctnr',
-            description: '隐藏 直播间介绍',
+            description: '隐藏 直播间推荐/直播间介绍',
             itemCSS: `#sections-vm .room-info-ctnr {display: none !important;}`,
         }),
         // 隐藏 主播动态
@@ -460,7 +461,7 @@ if (isPageLiveRoom()) {
         new CheckboxItem({
             itemID: 'live-page-announcement-cntr',
             description: '隐藏 主播公告',
-            itemCSS: `#sections-vm .announcement-cntr {display: none !important;}`,
+            itemCSS: `#sections-vm .room-detail-box {display: none !important;}`,
         }),
         // 隐藏 全部内容
         new CheckboxItem({

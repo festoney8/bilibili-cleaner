@@ -2,6 +2,7 @@ import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
 import { debugRules as debug } from '../utils/logger'
 import { isPageLiveHome, isPageLiveRoom } from '../utils/page-type'
+import settings from '../settings'
 
 let isCleanLiveDanmakuRunning = false
 // 清理计数结尾弹幕
@@ -97,6 +98,20 @@ if (isPageLiveRoom()) {
                     background-color: #23ade5;
                 }
                 `,
+        }),
+        // 修复字体
+        new CheckboxItem({
+            itemID: 'font-patch',
+            description: '修复字体 (实验功能)\n直播页、热门页、稍后再看页',
+            itemCSS: `
+            ${settings.fontFaceRegular}
+            body,
+            .gift-item,
+            .feed-card {
+                font-family: PingFang SC, HarmonyOS_Regular, Helvetica Neue, Microsoft YaHei, sans-serif !important;
+                font-weight: 400;
+            }
+            `,
         }),
     ]
     liveGroupList.push(new Group('live-basic', '直播页 基本功能', basicItems))

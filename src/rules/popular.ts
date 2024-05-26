@@ -1,6 +1,7 @@
 import { Group } from '../components/group'
 import { CheckboxItem, RadioItem } from '../components/item'
 import { isPagePopular } from '../utils/page-type'
+import settings from '../settings'
 
 const popularGroupList: Group[] = []
 
@@ -152,6 +153,26 @@ if (isPagePopular()) {
                 .video-card .video-stat .play-text {
                     margin-right: 0 !important;
                 }`,
+        }),
+        // 修复字体
+        new CheckboxItem({
+            itemID: 'font-patch',
+            description: '修复字体 (实验功能)\n直播页、热门页、稍后再看页',
+            itemCSS: `
+                ${settings.fontFaceRegular}
+                ${settings.fontFaceMedium}
+                #internationalHeader,
+                .international-header,
+                .suggest-wrap,
+                .van-popover {
+                    font-family: PingFang SC, HarmonyOS_Regular, Helvetica Neue, Microsoft YaHei, sans-serif !important;
+                    font-weight: 400;
+                }
+                #app {
+                    font-family: PingFang SC, HarmonyOS_Medium, Helvetica Neue, Microsoft YaHei, sans-serif !important;
+                    font-weight: 500;
+                }
+            `,
         }),
     ]
     popularGroupList.push(new Group('popular-basic', '热门/排行榜页 基本功能', basicItems))
@@ -674,7 +695,7 @@ if (isPagePopular()) {
                 }`,
         }),
     ]
-    popularGroupList.push(new Group('popular-layout', '页面强制布局 (单选，实验性)', layoutItems))
+    popularGroupList.push(new Group('popular-layout', '页面强制布局 (单选)', layoutItems))
 
     // 综合热门
     const hotItems = [

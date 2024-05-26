@@ -1,6 +1,7 @@
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
 import { isPageWatchlater } from '../utils/page-type'
+import settings from '../settings'
 
 const watchlaterGroupList: Group[] = []
 
@@ -59,6 +60,18 @@ if (isPageWatchlater()) {
                     margin: 0 0 0 6px !important;
                     font-size: 14px !important;
                     float: unset !important;
+                }
+            `,
+        }),
+        // 修复字体
+        new CheckboxItem({
+            itemID: 'font-patch',
+            description: '修复字体 (实验功能)\n直播页、热门页、稍后再看页',
+            itemCSS: `
+                ${settings.fontFaceRegular}
+                body {
+                    font-family: PingFang SC, HarmonyOS_Regular, Helvetica Neue, Microsoft YaHei, sans-serif !important;
+                    font-weight: 400;
                 }
             `,
         }),

@@ -3,7 +3,7 @@ import coreFilterInstance, { VideoSelectorFunc } from '../filters/core'
 import { ButtonItem, CheckboxItem, NumberItem } from '../../../components/item'
 import { Group } from '../../../components/group'
 import { isPagePlaylist, isPageVideo } from '../../../utils/page-type'
-import { matchBvid, showEle, waitForEle } from '../../../utils/tool'
+import { hideEle, isEleHide, matchBvid, showEle, waitForEle } from '../../../utils/tool'
 import {
     BvidAction,
     DurationAction,
@@ -24,7 +24,8 @@ let isContextMenuUploaderEnable = false
 let isContextMenuBvidEnable = false
 // 接下来播放是否免过滤
 let isNextPlayWhitelistEnable: boolean = GM_getValue('BILICLEANER_video-next-play-whitelist-filter-status', true)
-
+// 视频结束后播放器内推荐是否免过滤
+let isEndingWhitelistEnable: boolean = GM_getValue('BILICLEANER_video-ending-whitelist-filter-status', true)
 if (isPageVideo() || isPagePlaylist()) {
     let videoListContainer: HTMLElement
     // 构建SelectorFunc
@@ -143,6 +144,52 @@ if (isPageVideo() || isPagePlaylist()) {
         }
     }
 
+    // 视频结束后筛选播放器内视频
+    const watchPlayerEnding = () => {
+        if (isEndingWhitelistEnable) {
+            return
+        }
+        const video = document.querySelector('video')
+        if (!video) {
+            return
+        }
+        const check = () => {
+            const rightList = document.querySelectorAll<HTMLElement>(`.next-play .video-page-card-small,
+            .next-play .video-page-operator-card-small,
+            .rec-list .video-page-card-small,
+            .rec-list .video-page-operator-card-small,
+            .recommend-video-card`)
+            const blacklistVideoTitle = new Set<string>()
+            rightList.forEach((video: HTMLElement) => {
+                if (isEleHide(video)) {
+                    const title =
+                        video.querySelector('.info > a p')?.getAttribute('title') ||
+                        video.querySelector('.info > a p')?.textContent
+                    title && blacklistVideoTitle.add(title)
+                }
+            })
+            let cnt = 0
+            const endingInterval = setInterval(() => {
+                const endingVideos = document.querySelectorAll<HTMLElement>('.bpx-player-ending-related-item')
+                if (endingVideos.length > 0) {
+                    endingVideos.forEach((video: HTMLElement) => {
+                        const title = video.querySelector('.bpx-player-ending-related-item-title')?.textContent?.trim()
+                        if (title && blacklistVideoTitle.has(title)) {
+                            hideEle(video)
+                        }
+                    })
+                    clearInterval(endingInterval)
+                } else {
+                    cnt++
+                    if (cnt > 100) {
+                        clearInterval(endingInterval)
+                    }
+                }
+            }, 10)
+        }
+        video.ended ? check() : video.addEventListener('ended', check)
+    }
+
     try {
         // 监听视频列表出现
         waitForEle(document, '#reco_list, .recommend-list-container', (node: Node): boolean => {
@@ -157,6 +204,8 @@ if (isPageVideo() || isPagePlaylist()) {
                 watchVideoListContainer()
             }
         })
+        // 监听视频播放结束，筛选播放器内视频推荐
+        document.addEventListener('DOMContentLoaded', watchPlayerEnding)
     } catch (err) {
         error(err)
         error(`watch video list ERROR`)
@@ -387,6 +436,22 @@ if (isPageVideo() || isPagePlaylist()) {
             callback: () => {
                 isNextPlayWhitelistEnable = false
                 checkVideoList(true)
+            },
+        }),
+        // 视频播放结束推荐 免过滤
+        new CheckboxItem({
+            itemID: 'video-ending-whitelist-filter-status',
+            description: '视频播放结束推荐 免过滤',
+            defaultStatus: true,
+            itemFunc: () => {
+                isEndingWhitelistEnable = true
+                document
+                    .querySelectorAll<HTMLElement>('.bpx-player-ending-related-item')
+                    .forEach((e: HTMLElement) => showEle(e))
+            },
+            callback: () => {
+                isEndingWhitelistEnable = false
+                watchPlayerEnding()
             },
         }),
         // 启用 播放页UP主白名单

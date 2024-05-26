@@ -26,6 +26,7 @@ export default defineConfig({
                     '*://api.bilibili.com/*',
                     '*://api.*.bilibili.com/*',
                     '*://*.chat.bilibili.com/*',
+                    '*://member.bilibili.com/*',
                 ],
                 icon: 'https://www.bilibili.com/favicon.ico',
                 'run-at': 'document-start',

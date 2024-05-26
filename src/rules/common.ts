@@ -19,6 +19,9 @@ import {
  * 净化掉vd_source参数会导致充电窗口载入失败
  */
 const cleanURL = () => {
+    if (location.href.includes('www.bilibili.com/correspond/')) {
+        return
+    }
     // 直播域名各种iframe页面（天选、抽奖）和活动页特殊处理
     if (location.href.match(/live\.bilibili\.com\/(p\/html|activity|blackboard)/)) {
         return

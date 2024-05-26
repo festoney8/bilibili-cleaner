@@ -157,7 +157,7 @@ if (isPagePopular()) {
         // 修复字体
         new CheckboxItem({
             itemID: 'font-patch',
-            description: '修复字体 (实验功能)\n直播页、热门页、稍后再看页',
+            description: '修复字体 (实验功能)\n直播/热门/空间/稍后再看页',
             itemCSS: `
                 ${settings.fontFaceRegular}
                 ${settings.fontFaceMedium}

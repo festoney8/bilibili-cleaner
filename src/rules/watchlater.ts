@@ -15,25 +15,38 @@ if (isPageWatchlater()) {
             itemCSS: `
                 .list-box > span {
                     display: grid !important;
-                    grid-template-columns: repeat(2, calc(50% - 12px)) !important;
-                    column-gap: 24px !important;
-                    row-gap: 30px !important;
+                    grid-template-columns: repeat(2, calc(50% - 10px)) !important;
+                    column-gap: 20px !important;
+                    row-gap: 16px !important;
                 }
                 .watch-later-list {
                     margin-bottom: 50px !important;
                 }
+                .watch-later-list header {
+                    margin: 8px 0 16px !important;
+                }
                 .av-item {
                     width: unset !important;
                     margin: 0 !important;
-                    padding: 0 0 0 36px !important;
+                    border-radius: 8px !important;
+                    padding: 8px 8px 8px 32px !important;
+                }
+                .av-item:hover {
+                    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2) !important;
+                    transition: box-shadow 0.1s linear;
                 }
                 .av-item .av-about {
                     display: flex !important;
                     flex-direction: column !important;
                     border-bottom: none !important;
                 }
+                .av-item .av-pic .branch,
+                .av-item .av-pic .corner {
+                    font-size: 13px !important;
+                }
                 .av-item .av-about .t {
                     font-size: 15px !important;
+                    font-weight: 500 !important;
                     width: unset !important;
                     overflow: unset !important;
                     text-wrap: wrap !important;
@@ -69,9 +82,15 @@ if (isPageWatchlater()) {
             description: '修复字体 (实验功能)\n直播/热门/空间/稍后再看页',
             itemCSS: `
                 ${settings.fontFaceRegular}
+                ${settings.fontFaceMedium}
                 body {
                     font-family: PingFang SC, HarmonyOS_Regular, Helvetica Neue, Microsoft YaHei, sans-serif !important;
                     font-weight: 400;
+                    font-size: 14px;
+                }
+                .av-item .av-about .t {
+                    font-family: PingFang SC, HarmonyOS_Medium, Helvetica Neue, Microsoft YaHei, sans-serif !important;
+                    font-weight: 500 !important;
                 }
             `,
         }),

@@ -3,7 +3,11 @@ const host = location.host
 const pathname = location.pathname
 
 const currPage = (): string => {
-    if (href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'].includes(pathname)) {
+    if (
+        href.startsWith('https://www.bilibili.com/') &&
+        ['/index.html', '/'].includes(pathname) &&
+        !pathname.includes('/correspond/')
+    ) {
         return 'homepage'
     }
     if (href.includes('bilibili.com/video/')) {
@@ -50,6 +54,9 @@ const currPage = (): string => {
     if (href.includes('www.bilibili.com/festival/')) {
         return 'festival'
     }
+    if (href.includes('bilibili.com/watchlater')) {
+        return 'watchlater'
+    }
     return ''
 }
 
@@ -67,3 +74,4 @@ export const isPagePlaylist = () => ans === 'playlist'
 export const isPageFestival = () => ans === 'festival'
 export const isPageChannel = () => ans === 'channel'
 export const isPageSpace = () => ans === 'space'
+export const isPageWatchlater = () => ans === 'watchlater'

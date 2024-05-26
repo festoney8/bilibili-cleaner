@@ -3,7 +3,7 @@ import { debugComponents as debug, error } from '../utils/logger'
 
 /** IItem是插件的每项功能设定, 在每个group内显示为一行组件 */
 interface IItem {
-    readonly nodeHTML: myHTML
+    readonly nodeHTML: string
     insertItem(groupID: string): void
     insertItemCSS?(): void
     removeItemCSS?(): void
@@ -27,7 +27,7 @@ interface ICheckboxItemOption {
     defaultStatus?: boolean
     itemFunc?: () => void
     isItemFuncReload?: boolean
-    itemCSS?: myCSS
+    itemCSS?: string
     callback?: () => void
 }
 
@@ -198,7 +198,7 @@ interface IRadioItemOption {
     defaultStatus?: boolean
     itemFunc?: () => void
     isItemFuncReload?: boolean
-    itemCSS?: myCSS
+    itemCSS?: string
 }
 
 /** 互斥开关 */
@@ -385,7 +385,7 @@ interface INumberItemOption {
     maxValue: number
     disableValue: number
     unit: string
-    itemCSS?: myCSS
+    itemCSS?: string
     // CSS中待替换为数值的占位符
     itemCSSPlaceholder?: string
     callback?: (value: number) => void

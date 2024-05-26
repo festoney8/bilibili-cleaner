@@ -2,6 +2,7 @@ import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
 import { debugRules as debug } from '../utils/logger'
 import { isPageLiveHome, isPageLiveRoom } from '../utils/page-type'
+import settings from '../settings'
 
 let isCleanLiveDanmakuRunning = false
 // 清理计数结尾弹幕
@@ -97,6 +98,21 @@ if (isPageLiveRoom()) {
                     background-color: #23ade5;
                 }
                 `,
+        }),
+        // 修复字体
+        new CheckboxItem({
+            itemID: 'font-patch',
+            description: '修复字体 (实验功能)\n直播/热门/空间/稍后再看页',
+            itemCSS: `
+            ${settings.fontFaceRegular}
+            body,
+            .gift-item,
+            .feed-card,
+            .bb-comment, .comment-bilibili-fold {
+                font-family: PingFang SC, HarmonyOS_Regular, Helvetica Neue, Microsoft YaHei, sans-serif !important;
+                font-weight: 400;
+            }
+            `,
         }),
     ]
     liveGroupList.push(new Group('live-basic', '直播页 基本功能', basicItems))
@@ -429,10 +445,10 @@ if (isPageLiveRoom()) {
             defaultStatus: true,
             itemCSS: `.flip-view {display: none !important;}`,
         }),
-        // 隐藏 直播间介绍
+        // 隐藏 直播间推荐
         new CheckboxItem({
             itemID: 'live-page-room-info-ctnr',
-            description: '隐藏 直播间介绍',
+            description: '隐藏 直播间推荐/直播间介绍',
             itemCSS: `#sections-vm .room-info-ctnr {display: none !important;}`,
         }),
         // 隐藏 主播动态
@@ -445,7 +461,7 @@ if (isPageLiveRoom()) {
         new CheckboxItem({
             itemID: 'live-page-announcement-cntr',
             description: '隐藏 主播公告',
-            itemCSS: `#sections-vm .announcement-cntr {display: none !important;}`,
+            itemCSS: `#sections-vm .room-detail-box {display: none !important;}`,
         }),
         // 隐藏 全部内容
         new CheckboxItem({

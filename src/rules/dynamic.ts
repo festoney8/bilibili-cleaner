@@ -1,6 +1,7 @@
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
 import { isPageDynamic } from '../utils/page-type'
+import settings from '../settings'
 
 // 自动展开 相同UP主被折叠的动态
 const dynamicUnfold = () => {
@@ -24,6 +25,32 @@ const dynamicGroupList: Group[] = []
  * 评论区规则适配2种动态详情页(t.bilibili.com/12121212和bilibili.com/opus/12121212)
  */
 if (isPageDynamic()) {
+    let fontPatchCSS = ''
+    if (location.href.match(/www\.bilibili\.com\/opus\/\d+/)) {
+        fontPatchCSS = `
+        ${settings.fontFaceRegular}
+        ${settings.fontFaceMedium}
+        .reply-item .root-reply-container .content-warp .user-info .user-name {
+            font-family: PingFang SC,HarmonyOS_Medium,Helvetica Neue,Microsoft YaHei,sans-serif !important;
+            font-weight: 500 !important;
+            font-size: 14px !important;
+        }`
+    } else if (location.href.match(/t\.bilibili\.com\/\d+/)) {
+        fontPatchCSS = `
+        ${settings.fontFaceRegular}
+        body {
+            font-family: PingFang SC, HarmonyOS_Regular, Helvetica Neue, Microsoft YaHei, sans-serif !important;
+            font-weight: 400;
+        }`
+    } else if (location.href.includes('www.bilibili.com/v/topic/detail/')) {
+        fontPatchCSS = `
+        ${settings.fontFaceRegular}
+        body {
+            font-family: PingFang SC, HarmonyOS_Regular, Helvetica Neue, Microsoft YaHei, sans-serif !important;
+            font-weight: 400;
+        }`
+    }
+
     // 基本功能
     const basicItems = [
         // 顶栏 不再吸附顶部
@@ -43,6 +70,12 @@ if (isPageDynamic()) {
                 main {order: 2;}
                 aside.right {order: 1; margin-right: 12px !important;}
                 .bili-dyn-sidebar {order: 4;}`,
+        }),
+        // 修复字体
+        new CheckboxItem({
+            itemID: 'font-patch',
+            description: '修复字体 (实验功能)',
+            itemCSS: fontPatchCSS,
         }),
     ]
     dynamicGroupList.push(new Group('dynamic-basic', '动态页 基本功能', basicItems))

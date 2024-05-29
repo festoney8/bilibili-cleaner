@@ -19,13 +19,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
-      # https://github.com/pnpm/action-setup/issues/99#issuecomment-1918361558
-      - run: corepack enable
       - name: install node and pnpm
-        uses: actions/setup-node@v4
+        uses: pnpm/action-setup@v4
         with:
-          node-version: 20
-          cache: "pnpm"
+          version: 8
 
       - name: install
         run: pnpm install

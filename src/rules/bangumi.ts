@@ -187,6 +187,12 @@ if (isPageBangumi()) {
             description: '隐藏 Hi-Res无损',
             itemCSS: `.bpx-player-ctrl-flac {display: none !important;}`,
         }),
+        // 隐藏 清晰度
+        new CheckboxItem({
+            itemID: 'video-page-hide-bpx-player-ctrl-quality',
+            description: '隐藏 清晰度',
+            itemCSS: `.bpx-player-ctrl-quality {display: none !important;}`,
+        }),
         // 隐藏 选集
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-ctrl-eplist',
@@ -671,6 +677,7 @@ if (isPageBangumi()) {
                 // 393788832 @Juice_AI
                 // 91394217 @AI全文总结
                 // 473018527 @AI视频总结
+                // 3546639035795567 @AI总结视频
                 `.reply-item:has(.jump-link.user[data-user-id="8455326"]),
                 .reply-item:has(.jump-link.user[data-user-id="234978716"]),
                 .reply-item:has(.jump-link.user[data-user-id="1141159409"]),
@@ -688,7 +695,8 @@ if (isPageBangumi()) {
                 .reply-item:has(.jump-link.user[data-user-id="358243654"]),
                 .reply-item:has(.jump-link.user[data-user-id="393788832"]),
                 .reply-item:has(.jump-link.user[data-user-id="91394217"]),
-                .reply-item:has(.jump-link.user[data-user-id="473018527"]) {
+                .reply-item:has(.jump-link.user[data-user-id="473018527"]),
+                .reply-item:has(.jump-link.user[data-user-id="3546639035795567"]) {
                     display: none !important;
                 }`,
         }),
@@ -716,6 +724,7 @@ if (isPageBangumi()) {
                 // 393788832 @Juice_AI
                 // 91394217 @AI全文总结
                 // 473018527 @AI视频总结
+                // 3546639035795567 @AI总结视频
                 `.reply-item:has(.root-reply-container .user-name[data-user-id="8455326"]),
                 .reply-item:has(.root-reply-container .user-name[data-user-id="234978716"]),
                 .reply-item:has(.root-reply-container .user-name[data-user-id="1141159409"]),
@@ -733,7 +742,8 @@ if (isPageBangumi()) {
                 .reply-item:has(.root-reply-container .user-name[data-user-id="358243654"]),
                 .reply-item:has(.root-reply-container .user-name[data-user-id="393788832"]),
                 .reply-item:has(.root-reply-container .user-name[data-user-id="91394217"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="473018527"]) {
+                .reply-item:has(.root-reply-container .user-name[data-user-id="473018527"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="3546639035795567"]) {
                     display: none !important;
                 }`,
         }),

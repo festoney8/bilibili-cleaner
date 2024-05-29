@@ -1,6 +1,7 @@
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
 import { isPageDynamic } from '../utils/page-type'
+import settings from '../settings'
 
 // 自动展开 相同UP主被折叠的动态
 const dynamicUnfold = () => {
@@ -24,6 +25,32 @@ const dynamicGroupList: Group[] = []
  * 评论区规则适配2种动态详情页(t.bilibili.com/12121212和bilibili.com/opus/12121212)
  */
 if (isPageDynamic()) {
+    let fontPatchCSS = ''
+    if (location.href.match(/www\.bilibili\.com\/opus\/\d+/)) {
+        fontPatchCSS = `
+        ${settings.fontFaceRegular}
+        ${settings.fontFaceMedium}
+        .reply-item .root-reply-container .content-warp .user-info .user-name {
+            font-family: PingFang SC,HarmonyOS_Medium,Helvetica Neue,Microsoft YaHei,sans-serif !important;
+            font-weight: 500 !important;
+            font-size: 14px !important;
+        }`
+    } else if (location.href.match(/t\.bilibili\.com\/\d+/)) {
+        fontPatchCSS = `
+        ${settings.fontFaceRegular}
+        body {
+            font-family: PingFang SC, HarmonyOS_Regular, Helvetica Neue, Microsoft YaHei, sans-serif !important;
+            font-weight: 400;
+        }`
+    } else if (location.href.includes('www.bilibili.com/v/topic/detail/')) {
+        fontPatchCSS = `
+        ${settings.fontFaceRegular}
+        body {
+            font-family: PingFang SC, HarmonyOS_Regular, Helvetica Neue, Microsoft YaHei, sans-serif !important;
+            font-weight: 400;
+        }`
+    }
+
     // 基本功能
     const basicItems = [
         // 顶栏 不再吸附顶部
@@ -43,6 +70,12 @@ if (isPageDynamic()) {
                 main {order: 2;}
                 aside.right {order: 1; margin-right: 12px !important;}
                 .bili-dyn-sidebar {order: 4;}`,
+        }),
+        // 修复字体
+        new CheckboxItem({
+            itemID: 'font-patch',
+            description: '修复字体 (实验功能)',
+            itemCSS: fontPatchCSS,
         }),
     ]
     dynamicGroupList.push(new Group('dynamic-basic', '动态页 基本功能', basicItems))
@@ -429,6 +462,10 @@ if (isPageDynamic()) {
                 // 1835753760 @AI识片酱
                 // 9868463 @AI头脑风暴
                 // 358243654 @GPT_5
+                // 393788832 @Juice_AI
+                // 91394217 @AI全文总结
+                // 473018527 @AI视频总结
+                // 3546639035795567 @AI总结视频
                 `.reply-item:has(.jump-link.user[data-user-id="8455326"]),
                 .reply-item:has(.jump-link.user[data-user-id="234978716"]),
                 .reply-item:has(.jump-link.user[data-user-id="1141159409"]),
@@ -443,7 +480,11 @@ if (isPageDynamic()) {
                 .reply-item:has(.jump-link.user[data-user-id="3546376048741135"]),
                 .reply-item:has(.jump-link.user[data-user-id="1835753760"]),
                 .reply-item:has(.jump-link.user[data-user-id="9868463"]),
-                .reply-item:has(.jump-link.user[data-user-id="358243654"]) {
+                .reply-item:has(.jump-link.user[data-user-id="358243654"]),
+                .reply-item:has(.jump-link.user[data-user-id="393788832"]),
+                .reply-item:has(.jump-link.user[data-user-id="91394217"]),
+                .reply-item:has(.jump-link.user[data-user-id="473018527"]),
+                .reply-item:has(.jump-link.user[data-user-id="3546639035795567"]) {
                     display: none !important;
                 }`,
         }),
@@ -468,6 +509,10 @@ if (isPageDynamic()) {
                 // 1835753760 @AI识片酱
                 // 9868463 @AI头脑风暴
                 // 358243654 @GPT_5
+                // 393788832 @Juice_AI
+                // 91394217 @AI全文总结
+                // 473018527 @AI视频总结
+                // 3546639035795567 @AI总结视频
                 `.reply-item:has(.root-reply-container .user-name[data-user-id="8455326"]),
                 .reply-item:has(.root-reply-container .user-name[data-user-id="234978716"]),
                 .reply-item:has(.root-reply-container .user-name[data-user-id="1141159409"]),
@@ -482,7 +527,11 @@ if (isPageDynamic()) {
                 .reply-item:has(.root-reply-container .user-name[data-user-id="3546376048741135"]),
                 .reply-item:has(.root-reply-container .user-name[data-user-id="1835753760"]),
                 .reply-item:has(.root-reply-container .user-name[data-user-id="9868463"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="358243654"]) {
+                .reply-item:has(.root-reply-container .user-name[data-user-id="358243654"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="393788832"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="91394217"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="473018527"]),
+                .reply-item:has(.root-reply-container .user-name[data-user-id="3546639035795567"]) {
                     display: none !important;
                 }`,
         }),

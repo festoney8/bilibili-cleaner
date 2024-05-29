@@ -85,6 +85,10 @@ if (isPageLiveRoom()) {
                     color: #61666D !important;
                     fill: #61666D !important;
                 }
+                /* 礼物栏 */
+                #gift-control-vm {
+                    background-image: unset !important;
+                }
                 /* 右侧弹幕框背景 */
                 #chat-control-panel-vm .live-skin-coloration-area .live-skin-main-text {
                     color: #C9CCD0 !important;
@@ -97,12 +101,18 @@ if (isPageLiveRoom()) {
                 #chat-control-panel-vm .bl-button--primary {
                     background-color: #23ade5;
                 }
+                #chat-control-panel-vm .icon-left-part svg>path {
+                    fill: #C9CCD0;
+                }
+                #chat-control-panel-vm .icon-left-part>div:hover svg>path {
+                    fill: #00AEEC;
+                }
                 `,
         }),
         // 修复字体
         new CheckboxItem({
             itemID: 'font-patch',
-            description: '修复字体 (实验功能)\n直播/热门/空间/稍后再看页',
+            description: '修复字体 (实验功能)',
             itemCSS: `
             ${settings.fontFaceRegular}
             body,
@@ -119,6 +129,12 @@ if (isPageLiveRoom()) {
 
     // 直播信息栏
     const infoItems = [
+        // 隐藏 头像饰品
+        new CheckboxItem({
+            itemID: 'live-page-head-info-avatar-pendant',
+            description: '隐藏 头像饰品',
+            itemCSS: `.blive-avatar :is(.blive-avatar-pendant, .blive-avatar-icons){display: none !important;}`,
+        }),
         // 隐藏 粉丝团
         new CheckboxItem({
             itemID: 'live-page-head-info-vm-upper-row-follow-ctnr',

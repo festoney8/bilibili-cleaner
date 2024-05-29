@@ -157,7 +157,7 @@ if (isPagePopular()) {
         // 修复字体
         new CheckboxItem({
             itemID: 'font-patch',
-            description: '修复字体 (实验功能)\n直播/热门/空间/稍后再看页',
+            description: '修复字体 (实验功能)',
             itemCSS: `
                 ${settings.fontFaceRegular}
                 ${settings.fontFaceMedium}
@@ -190,7 +190,23 @@ if (isPagePopular()) {
                 'popular-layout-5-column',
                 'popular-layout-6-column',
             ],
-            itemCSS: `.cm-module {display: none !important;}`,
+            itemCSS: `
+                .cm-module {
+                    display: none !important;
+                }
+                /* grid替代flex做双列布局，屏蔽视频后不产生空白 */
+                .video-list,
+                .popular-list .card-list,
+                .history-list .card-list {
+                    display: grid !important;
+                    grid-template-columns: auto auto;
+                }
+                .popular-list .card-list .video-card,
+                .video-list .video-card,
+                .history-list .card-list .video-card {
+                    width: unset !important;
+                }
+            `,
             defaultStatus: true,
         }),
         // 强制使用 4 列布局

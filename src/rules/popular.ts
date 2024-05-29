@@ -190,7 +190,23 @@ if (isPagePopular()) {
                 'popular-layout-5-column',
                 'popular-layout-6-column',
             ],
-            itemCSS: `.cm-module {display: none !important;}`,
+            itemCSS: `
+                .cm-module {
+                    display: none !important;
+                }
+                /* grid替代flex做双列布局，屏蔽视频后不产生空白 */
+                .video-list,
+                .popular-list .card-list,
+                .history-list .card-list {
+                    display: grid !important;
+                    grid-template-columns: auto auto;
+                }
+                .popular-list .card-list .video-card,
+                .video-list .video-card,
+                .history-list .card-list .video-card {
+                    width: unset !important;
+                }
+            `,
             defaultStatus: true,
         }),
         // 强制使用 4 列布局

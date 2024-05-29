@@ -176,6 +176,8 @@ if (isPageVideo() || isPagePlaylist()) {
                         const title = video.querySelector('.bpx-player-ending-related-item-title')?.textContent?.trim()
                         if (title && blacklistVideoTitle.has(title)) {
                             hideEle(video)
+                        } else {
+                            showEle(video)
                         }
                     })
                     clearInterval(endingInterval)

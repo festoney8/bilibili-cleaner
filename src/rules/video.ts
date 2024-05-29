@@ -601,6 +601,12 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
             description: '隐藏 Hi-Res无损',
             itemCSS: `.bpx-player-ctrl-flac {display: none !important;}`,
         }),
+        // 隐藏 清晰度
+        new CheckboxItem({
+            itemID: 'video-page-hide-bpx-player-ctrl-quality',
+            description: '隐藏 清晰度',
+            itemCSS: `.bpx-player-ctrl-quality {display: none !important;}`,
+        }),
         // 隐藏 选集
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-ctrl-eplist',

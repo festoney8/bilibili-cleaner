@@ -259,6 +259,8 @@ if (isPageVideo() || isPagePlaylist()) {
                 .video-info-container {
                     height: auto !important;
                     padding-top: 16px !important;
+                    /* 高权限消除展开标题的间距 */
+                    margin-bottom: 0 !important;
                 }
             `,
         }),
@@ -267,6 +269,27 @@ if (isPageVideo() || isPagePlaylist()) {
 
     // 视频信息
     const infoItems = [
+        // 展开 完整视频标题
+        new CheckboxItem({
+            itemID: 'video-page-unfold-video-info-title',
+            description: '展开 完整视频标题(多行)',
+            itemCSS: `
+                .video-info-container:has(.show-more) {
+                    height: fit-content !important;
+                    margin-bottom: 12px;
+                }
+                .video-info-container .video-info-title-inner-overflow .video-title {
+                    margin-right: unset !important;
+                    text-wrap: wrap !important;
+                }
+                .video-info-container .video-info-title-inner .video-title .video-title-href {
+                    text-wrap: wrap !important;
+                }
+                .video-info-container .show-more {
+                    display: none !important;
+                }
+            `,
+        }),
         // 隐藏 弹幕数
         new CheckboxItem({
             itemID: 'video-page-hide-video-info-danmaku-count',

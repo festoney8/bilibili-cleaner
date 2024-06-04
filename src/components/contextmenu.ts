@@ -1,4 +1,5 @@
 import { debugComponents as debug, error } from '../utils/logger'
+import contextMenuStyle from './contextmenu.scss?inline'
 
 type Menu = {
     name: string
@@ -10,33 +11,6 @@ export class ContextMenu {
             <ul>
             </ul>
         </div>`
-    private nodeCSS = `
-    #bili-cleaner-context-menu-container {
-        position: fixed;
-        background: white;
-        border-radius: 5px;
-        box-shadow: 0 0 6px rgba(0,0,0,.3);
-        user-select: none;
-        overflow: hidden;
-        z-index: 99999;
-    }
-    #bili-cleaner-context-menu-container ul {
-        margin-block-start: 0;
-        margin-block-end: 0;
-        margin-inline-start: 0px;
-        margin-inline-end: 0px;
-        padding-inline-start: 0;
-    }
-    #bili-cleaner-context-menu-container li {
-        padding: 5px 10px;
-        font-size: 1rem;
-    }
-    #bili-cleaner-context-menu-container li:hover {
-        background: rgb(251, 114, 153);
-        font-weight: 500;
-        color: white;
-    }
-    `
     private menus: Menu[] = []
     private node: HTMLDivElement | undefined
     private isShowing = false
@@ -50,7 +24,7 @@ export class ContextMenu {
                 return
             }
             const style = document.createElement('style')
-            style.innerHTML = this.nodeCSS.replace(/\n\s*/g, '').trim()
+            style.innerHTML = contextMenuStyle
             style.setAttribute('id', 'bili-cleaner-context-menu-css')
             document.head.appendChild(style)
             debug('insertContextMenuCSS OK')

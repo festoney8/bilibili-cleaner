@@ -670,9 +670,12 @@ if (!isPageLiveHome()) {
         new CheckboxItem({
             itemID: 'common-hide-nav-search-rcmd',
             description: '隐藏 推荐搜索',
-            itemCSS: `#nav-searchform .nav-search-input::placeholder {color: transparent;}
+            itemCSS: `
+                #nav-searchform .nav-search-input::placeholder {color: transparent;}
+                #nav-searchform .nav-search-input {user-select: none;}
                 /* 旧版header */
-                #internationalHeader #nav_searchform input::placeholder {color: transparent;}`,
+                #internationalHeader #nav_searchform input::placeholder {color: transparent;}
+                #internationalHeader #nav_searchform input {user-select: none;}`,
         }),
         // 隐藏 搜索历史
         new CheckboxItem({

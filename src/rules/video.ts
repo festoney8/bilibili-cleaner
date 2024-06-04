@@ -160,7 +160,7 @@ const overridePlayerHeight = () => {
     // 监听宽屏按钮click
     let isWide = window.isWide
     const observeBtn = new MutationObserver(() => {
-        const wideBtn = document.querySelector('#bilibili-player .bpx-player-ctrl-wide') as HTMLFormElement
+        const wideBtn = document.querySelector('#bilibili-player .bpx-player-ctrl-wide') as HTMLElement
         if (wideBtn) {
             wideBtn.addEventListener('click', () => {
                 debug('wideBtn click detected')

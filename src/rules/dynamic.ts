@@ -1,7 +1,8 @@
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
 import { isPageDynamic } from '../utils/page-type'
-import settings from '../settings'
+import fontFaceRegular from './styles/fontFaceRegular.scss?inline'
+import fontFaceMedium from './styles/fontFaceMedium.scss?inline'
 
 // 自动展开 相同UP主被折叠的动态
 const dynamicUnfold = () => {
@@ -28,8 +29,8 @@ if (isPageDynamic()) {
     let fontPatchCSS = ''
     if (location.href.match(/www\.bilibili\.com\/opus\/\d+/)) {
         fontPatchCSS = `
-        ${settings.fontFaceRegular}
-        ${settings.fontFaceMedium}
+        ${fontFaceRegular}
+        ${fontFaceMedium}
         .reply-item .root-reply-container .content-warp .user-info .user-name {
             font-family: PingFang SC,HarmonyOS_Medium,Helvetica Neue,Microsoft YaHei,sans-serif !important;
             font-weight: 500 !important;
@@ -37,14 +38,14 @@ if (isPageDynamic()) {
         }`
     } else if (location.href.match(/t\.bilibili\.com\/\d+/)) {
         fontPatchCSS = `
-        ${settings.fontFaceRegular}
+        ${fontFaceRegular}
         body {
             font-family: PingFang SC, HarmonyOS_Regular, Helvetica Neue, Microsoft YaHei, sans-serif !important;
             font-weight: 400;
         }`
     } else if (location.href.includes('www.bilibili.com/v/topic/detail/')) {
         fontPatchCSS = `
-        ${settings.fontFaceRegular}
+        ${fontFaceRegular}
         body {
             font-family: PingFang SC, HarmonyOS_Regular, Helvetica Neue, Microsoft YaHei, sans-serif !important;
             font-weight: 400;

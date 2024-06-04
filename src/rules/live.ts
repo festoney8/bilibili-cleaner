@@ -2,7 +2,7 @@ import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
 import { debugRules as debug } from '../utils/logger'
 import { isPageLiveHome, isPageLiveRoom } from '../utils/page-type'
-import settings from '../settings'
+import fontFaceRegular from './styles/fontFaceRegular.scss?inline'
 
 let isCleanLiveDanmakuRunning = false
 // 清理计数结尾弹幕
@@ -114,7 +114,7 @@ if (isPageLiveRoom()) {
             itemID: 'font-patch',
             description: '修复字体 (实验功能)',
             itemCSS: `
-            ${settings.fontFaceRegular}
+            ${fontFaceRegular}
             body,
             .gift-item,
             .feed-card,

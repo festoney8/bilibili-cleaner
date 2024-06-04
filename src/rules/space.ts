@@ -1,7 +1,7 @@
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
 import { isPageSpace } from '../utils/page-type'
-import settings from '../settings'
+import fontFaceRegular from './styles/fontFaceRegular.scss?inline'
 
 const spaceGroupList: Group[] = []
 
@@ -13,7 +13,7 @@ if (isPageSpace()) {
             itemID: 'font-patch',
             description: '修复字体 (实验功能)',
             itemCSS: `
-                ${settings.fontFaceRegular}
+                ${fontFaceRegular}
                 body,
                 .h .h-sign,
                 .reply-item .root-reply-container .content-warp .user-info .user-name,

@@ -177,8 +177,8 @@ export class WordList {
     /** 可拖拽bar */
     draggableBar() {
         try {
-            const wordlist = document.getElementById('bili-cleaner-wordlist') as HTMLFormElement
-            const bar = document.querySelector('#bili-cleaner-wordlist .wordlist-header') as HTMLFormElement
+            const wordlist = document.getElementById('bili-cleaner-wordlist') as HTMLElement
+            const bar = document.querySelector('#bili-cleaner-wordlist .wordlist-header') as HTMLElement
             let isDragging = false
             let initX: number, initY: number, initLeft: number, initTop: number
 

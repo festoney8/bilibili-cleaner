@@ -58,7 +58,7 @@ export class Panel {
     /** 右上角关闭按钮 */
     watchCloseBtn() {
         try {
-            const closeBtn = document.getElementById('bili-cleaner-close') as HTMLFormElement
+            const closeBtn = document.getElementById('bili-cleaner-close') as HTMLElement
             closeBtn.addEventListener('click', () => {
                 this.hide()
             })
@@ -71,8 +71,8 @@ export class Panel {
     /** 可拖拽panel bar, 拖拽panel顶部的bar可移动panel, 其他区域不可拖拽 */
     draggableBar() {
         try {
-            const panel = document.getElementById('bili-cleaner') as HTMLFormElement
-            const bar = document.getElementById('bili-cleaner-bar') as HTMLFormElement
+            const panel = document.getElementById('bili-cleaner') as HTMLElement
+            const bar = document.getElementById('bili-cleaner-bar') as HTMLElement
             let isDragging = false
             let initX: number, initY: number, initLeft: number, initTop: number
 
@@ -125,7 +125,7 @@ export class Panel {
     }
     /** 隐藏panel */
     hide() {
-        const panel = document.getElementById('bili-cleaner') as HTMLFormElement
+        const panel = document.getElementById('bili-cleaner') as HTMLElement
         if (panel) {
             // 使用 display:none 代替 remove(), 同一页面内再次打开panel记录上次位置
             panel.style.display = 'none'
@@ -134,7 +134,7 @@ export class Panel {
     }
     /** 显示panel */
     show() {
-        const panel = document.getElementById('bili-cleaner') as HTMLFormElement
+        const panel = document.getElementById('bili-cleaner') as HTMLElement
         if (panel) {
             panel.style.removeProperty('display')
         }
@@ -142,7 +142,7 @@ export class Panel {
     }
     /** 清空panel内groups, 用于替换功能group */
     clearGroups() {
-        const groupList = document.getElementById('bili-cleaner-group-list') as HTMLFormElement
+        const groupList = document.getElementById('bili-cleaner-group-list') as HTMLElement
         if (groupList) {
             groupList.innerHTML = ''
         }

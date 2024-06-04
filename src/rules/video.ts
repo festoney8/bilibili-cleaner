@@ -3,7 +3,7 @@ import { CheckboxItem } from '../components/item'
 import { debugRules as debug, error } from '../utils/logger'
 import { matchAvidBvid, matchBvid } from '../utils/tool'
 import { isPageFestival, isPagePlaylist, isPageVideo } from '../utils/page-type'
-import { GM_getValue, GM_setValue } from '$'
+import { GM_getValue, GM_setValue, unsafeWindow } from '$'
 
 /** BV号转AV号 */
 const bv2av = () => {
@@ -263,6 +263,62 @@ if (isPageVideo() || isPagePlaylist()) {
                     margin-bottom: 0 !important;
                 }
             `,
+            // fix #80 宽屏模式下播放器遮盖up主
+            itemFunc: () => {
+                let _isWide = window.isWide
+                const onIsWideChange = (isWide: boolean) => {
+                    if (isWide) {
+                        let cnt = 0
+                        const id = setInterval(() => {
+                            const player = document.querySelector(
+                                `.bpx-player-container[data-screen="wide"]`,
+                            ) as HTMLElement
+                            if (player) {
+                                const top = parseInt(getComputedStyle(player).height) + 50
+                                const upPanel = document.querySelector('.up-panel-container') as HTMLElement
+                                if (upPanel) {
+                                    upPanel.style.position = 'relative'
+                                    upPanel.style.top = `${top}px`
+                                }
+                                const danmakuBox = document.querySelector('#danmukuBox') as HTMLElement
+                                if (danmakuBox) {
+                                    danmakuBox.style.marginTop = `${top}px`
+                                }
+                                clearInterval(id)
+                            } else {
+                                cnt++
+                                if (cnt > 100) {
+                                    clearInterval(id)
+                                }
+                            }
+                        }, 10)
+                    } else {
+                        const upPanel = document.querySelector('.up-panel-container') as HTMLElement
+                        if (upPanel) {
+                            upPanel.style.position = 'static'
+                            upPanel.style.top = '0'
+                        }
+                        const danmakuBox = document.querySelector('#danmukuBox') as HTMLElement
+                        if (danmakuBox) {
+                            danmakuBox.style.marginTop = '0'
+                        }
+                    }
+                }
+                window.isWide && onIsWideChange(true)
+                Object.defineProperty(unsafeWindow, 'isWide', {
+                    get() {
+                        return _isWide
+                    },
+                    set(value) {
+                        _isWide = value
+                        if (typeof _isWide === 'boolean') {
+                            onIsWideChange(_isWide)
+                        }
+                    },
+                    configurable: true,
+                    enumerable: true,
+                })
+            },
         }),
     ]
     videoGroupList.push(new Group('video-basic', '播放页 基本功能', basicItems))

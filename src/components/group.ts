@@ -32,7 +32,7 @@ export class Group {
         e.querySelector('.bili-cleaner-group')!.id = this.groupID
         e.querySelector('.bili-cleaner-group-title')!.innerHTML = this.title.replaceAll('\n', '<br>')
 
-        const groupList = document.getElementById('bili-cleaner-group-list') as HTMLFormElement
+        const groupList = document.getElementById('bili-cleaner-group-list') as HTMLElement
         groupList.appendChild(e)
     }
     /** 插入group内item列表, 并逐一监听 */

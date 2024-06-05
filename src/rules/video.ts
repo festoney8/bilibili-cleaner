@@ -3,7 +3,7 @@ import { CheckboxItem } from '../components/item'
 import { debugRules as debug, error } from '../utils/logger'
 import { matchAvidBvid, matchBvid } from '../utils/tool'
 import { isPageFestival, isPagePlaylist, isPageVideo } from '../utils/page-type'
-import { GM_getValue, GM_setValue } from '$'
+import { GM_getValue, GM_setValue, unsafeWindow } from '$'
 
 /** BV号转AV号 */
 const bv2av = () => {
@@ -90,13 +90,31 @@ const simpleShare = () => {
     }, 200)
 }
 
+/** 宽屏模式监听 */
+let _isWide = unsafeWindow.isWide
+// 修改unsafeWindow.isWide时执行的函数列表
+const onIsWideChangeFuncArr: (() => void)[] = []
+Object.defineProperty(unsafeWindow, 'isWide', {
+    get() {
+        return _isWide
+    },
+    set(value) {
+        _isWide = value
+        if (typeof _isWide === 'boolean') {
+            onIsWideChangeFuncArr.forEach((func) => func())
+        }
+    },
+    configurable: true,
+    enumerable: true,
+})
+
 /** 隐藏弹幕栏时，强行调节播放器高度 */
 const overridePlayerHeight = () => {
     // 念咒
     const genSizeCSS = (): string => {
-        const e = window.isWide
-        const i = window.innerHeight
-        const t = Math.max((document.body && document.body.clientWidth) || window.innerWidth, 1100)
+        const e = unsafeWindow.isWide
+        const i = unsafeWindow.innerHeight
+        const t = Math.max((document.body && document.body.clientWidth) || unsafeWindow.innerWidth, 1100)
         const n = 1680 < innerWidth ? 411 : 350
         const o = (16 * (i - (1690 < innerWidth ? 318 : 308))) / 9
         const r = t - 112 - n
@@ -108,12 +126,12 @@ const overridePlayerHeight = () => {
             d = 1694
         }
         let a = d + n
-        if (window.isWide) {
+        if (unsafeWindow.isWide) {
             a -= 125
             d -= 100
         }
         let l
-        if (window.hasBlackSide && !window.isWide) {
+        if (unsafeWindow.hasBlackSide && !unsafeWindow.isWide) {
             l = Math.round((d - 14 + (e ? n : 0)) * 0.5625) + 96
         } else {
             l = Math.round((d + (e ? n : 0)) * 0.5625)
@@ -156,24 +174,8 @@ const overridePlayerHeight = () => {
     if (document.head) {
         observeStyle.observe(document.head, { childList: true })
     }
-
-    // 监听宽屏按钮click
-    let isWide = window.isWide
-    const observeBtn = new MutationObserver(() => {
-        const wideBtn = document.querySelector('#bilibili-player .bpx-player-ctrl-wide') as HTMLFormElement
-        if (wideBtn) {
-            wideBtn.addEventListener('click', () => {
-                debug('wideBtn click detected')
-                window.isWide = !isWide
-                isWide = !isWide
-                overrideCSS()
-            })
-            observeBtn.disconnect()
-        }
-    })
-    document.addEventListener('DOMContentLoaded', () => {
-        observeBtn.observe(document, { childList: true, subtree: true })
-    })
+    // 宽屏模式
+    onIsWideChangeFuncArr.push(overrideCSS)
 }
 
 /** 投币时取消自动点赞 */
@@ -259,14 +261,80 @@ if (isPageVideo() || isPagePlaylist()) {
                 .video-info-container {
                     height: auto !important;
                     padding-top: 16px !important;
+                    /* 高权限消除展开标题的间距 */
+                    margin-bottom: 0 !important;
                 }
             `,
+            // fix #80 宽屏模式下播放器遮盖up主
+            itemFunc: () => {
+                const func = () => {
+                    if (unsafeWindow.isWide) {
+                        let cnt = 0
+                        const id = setInterval(() => {
+                            const player = document.querySelector(
+                                `.bpx-player-container[data-screen="wide"]`,
+                            ) as HTMLElement
+                            if (player) {
+                                const top = parseInt(getComputedStyle(player).height) + 50
+                                const danmakuBox = document.querySelector('#danmukuBox') as HTMLElement
+                                if (danmakuBox) {
+                                    danmakuBox.style.marginTop = `${top}px`
+                                }
+                                const upPanel = document.querySelector('.up-panel-container') as HTMLElement
+                                if (upPanel) {
+                                    upPanel.style.position = 'relative'
+                                    upPanel.style.top = `${top}px`
+                                }
+                                clearInterval(id)
+                            } else {
+                                cnt++
+                                if (cnt > 200) {
+                                    clearInterval(id)
+                                }
+                            }
+                        }, 10)
+                    } else {
+                        const upPanel = document.querySelector('.up-panel-container') as HTMLElement
+                        if (upPanel) {
+                            upPanel.style.position = 'static'
+                            upPanel.style.top = '0'
+                        }
+                        const danmakuBox = document.querySelector('#danmukuBox') as HTMLElement
+                        if (danmakuBox) {
+                            danmakuBox.style.marginTop = '0'
+                        }
+                    }
+                }
+                unsafeWindow.isWide && func()
+                onIsWideChangeFuncArr.push(func)
+            },
         }),
     ]
     videoGroupList.push(new Group('video-basic', '播放页 基本功能', basicItems))
 
     // 视频信息
     const infoItems = [
+        // 展开 完整视频标题
+        new CheckboxItem({
+            itemID: 'video-page-unfold-video-info-title',
+            description: '展开 完整视频标题(多行)',
+            itemCSS: `
+                .video-info-container:has(.show-more) {
+                    height: fit-content !important;
+                    margin-bottom: 12px;
+                }
+                .video-info-container .video-info-title-inner-overflow .video-title {
+                    margin-right: unset !important;
+                    text-wrap: wrap !important;
+                }
+                .video-info-container .video-info-title-inner .video-title .video-title-href {
+                    text-wrap: wrap !important;
+                }
+                .video-info-container .show-more {
+                    display: none !important;
+                }
+            `,
+        }),
         // 隐藏 弹幕数
         new CheckboxItem({
             itemID: 'video-page-hide-video-info-danmaku-count',

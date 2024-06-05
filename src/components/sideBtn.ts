@@ -1,33 +1,9 @@
 import { GM_getValue, GM_setValue } from '$'
 import { error, debugComponents as debug } from '../utils/logger'
+import sideBtnStyle from './sideBtn.scss?inline'
 
 export class SideBtn {
     private nodeHTML = `<button class="bili-cleaner-side-btn" type="button"></button>`
-    private nodeCSS = `
-    button.bili-cleaner-side-btn {
-        border: 1px #E3E5E7 solid;
-        width: 40px;
-        height: 40px;
-        padding: 0;
-        font-size: 13px;
-        color: black;
-        border-radius: 6px;
-        background-color: white;
-        transition: background-color 0.1s linear;
-        position: fixed;
-        bottom: 220px;
-        right: 6px;
-        z-index: 99999;
-        cursor: pointer;
-        &:hover {
-            background-color: #e3e5e7;
-            curser: pointer;
-        }
-    }
-    /* 全屏播放时隐藏 */
-    html:has(#bilibili-player.mode-webscreen) button.bili-cleaner-side-btn {
-        display: none !important;
-    }`
     constructor(
         private btnID: string,
         private btnContent: string,
@@ -43,7 +19,7 @@ export class SideBtn {
 
             // 添加CSS
             const style = document.createElement('style')
-            style.innerHTML = this.nodeCSS.replace(/\n\s*/g, '').trim()
+            style.innerHTML = sideBtnStyle
             style.setAttribute('bili-cleaner-css', this.btnID)
             document.documentElement.appendChild(style)
 

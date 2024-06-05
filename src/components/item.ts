@@ -71,7 +71,7 @@ export class CheckboxItem implements IItem {
             if (this.isEnable) {
                 e.querySelector('input')!.checked = true
             }
-            const itemGroupList = document.querySelector(`#${groupID} .bili-cleaner-item-list`) as HTMLFormElement
+            const itemGroupList = document.querySelector(`#${groupID} .bili-cleaner-item-list`) as HTMLElement
             if (itemGroupList) {
                 itemGroupList.appendChild(e)
                 debug(`insertItem ${this.option.itemID} OK`)
@@ -247,7 +247,7 @@ export class RadioItem implements IItem {
             }
             // 设定radio input所属互斥组
             e.querySelector('input')!.name = this.option.radioName
-            const itemGroupList = document.querySelector(`#${groupID} .bili-cleaner-item-list`) as HTMLFormElement
+            const itemGroupList = document.querySelector(`#${groupID} .bili-cleaner-item-list`) as HTMLElement
             if (itemGroupList) {
                 itemGroupList.appendChild(e)
                 debug(`insertItem ${this.option.itemID} OK`)
@@ -428,7 +428,7 @@ export class NumberItem implements IItem {
             inputNode.setAttribute('value', this.itemValue!.toString())
             inputNode.setAttribute('min', this.option.minValue.toString())
             inputNode.setAttribute('max', this.option.maxValue.toString())
-            const itemGroupList = document.querySelector(`#${groupID} .bili-cleaner-item-list`) as HTMLFormElement
+            const itemGroupList = document.querySelector(`#${groupID} .bili-cleaner-item-list`) as HTMLElement
             if (itemGroupList) {
                 itemGroupList.appendChild(node)
                 debug(`insertItem ${this.option.itemID} OK`)
@@ -572,7 +572,7 @@ export class ButtonItem implements IItem {
             node.id = this.option.itemID
             node.innerHTML = `${this.nodeHTML}${this.option.description.replaceAll('\n', '<br>')}`
             node.querySelector('button')!.innerHTML = this.option.name
-            const itemGroupList = document.querySelector(`#${groupID} .bili-cleaner-item-list`) as HTMLFormElement
+            const itemGroupList = document.querySelector(`#${groupID} .bili-cleaner-item-list`) as HTMLElement
             if (itemGroupList) {
                 itemGroupList.appendChild(node)
                 debug(`insertItem ${this.option.itemID} OK`)

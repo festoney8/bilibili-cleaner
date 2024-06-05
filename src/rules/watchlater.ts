@@ -1,7 +1,8 @@
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
 import { isPageWatchlater } from '../utils/page-type'
-import settings from '../settings'
+import fontFaceRegular from './styles/fontFaceRegular.scss?inline'
+import fontFaceMedium from './styles/fontFaceMedium.scss?inline'
 
 const watchlaterGroupList: Group[] = []
 
@@ -81,8 +82,8 @@ if (isPageWatchlater()) {
             itemID: 'font-patch',
             description: '修复字体 (实验功能)',
             itemCSS: `
-                ${settings.fontFaceRegular}
-                ${settings.fontFaceMedium}
+                ${fontFaceRegular}
+                ${fontFaceMedium}
                 body {
                     font-family: PingFang SC, HarmonyOS_Regular, Helvetica Neue, Microsoft YaHei, sans-serif !important;
                     font-weight: 400;

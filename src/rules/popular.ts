@@ -1,7 +1,8 @@
 import { Group } from '../components/group'
 import { CheckboxItem, RadioItem } from '../components/item'
 import { isPagePopular } from '../utils/page-type'
-import settings from '../settings'
+import fontFaceRegular from './styles/fontFaceRegular.scss?inline'
+import fontFaceMedium from './styles/fontFaceMedium.scss?inline'
 
 const popularGroupList: Group[] = []
 
@@ -159,8 +160,8 @@ if (isPagePopular()) {
             itemID: 'font-patch',
             description: '修复字体 (实验功能)',
             itemCSS: `
-                ${settings.fontFaceRegular}
-                ${settings.fontFaceMedium}
+                ${fontFaceRegular}
+                ${fontFaceMedium}
                 #internationalHeader,
                 .international-header,
                 .suggest-wrap,

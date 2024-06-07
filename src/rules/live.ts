@@ -497,104 +497,172 @@ if (isPageLiveHome() || isPageLiveRoom()) {
         new CheckboxItem({
             itemID: 'live-page-header-entry-logo',
             description: '隐藏 直播LOGO',
-            itemCSS: `#main-ctnr a.entry_logo[href="//live.bilibili.com"] {display: none !important;}`,
+            itemCSS: `
+                #main-ctnr a.entry_logo[href="//live.bilibili.com"] {display: none !important;}
+                .link-navbar-more .search-bar-ctnr {margin: 0 auto !important;}
+                .pre-hold-nav-logo {display: none !important;}
+            `,
         }),
         // 隐藏 首页
         new CheckboxItem({
             itemID: 'live-page-header-entry-title',
             description: '隐藏 首页',
-            itemCSS: `#main-ctnr a.entry-title[href="//www.bilibili.com"] {display: none !important;}`,
+            itemCSS: `
+                #main-ctnr a.entry-title[href="//www.bilibili.com"] {display: none !important;}
+                .link-navbar-more .search-bar-ctnr {margin: 0 auto !important;}
+                #prehold-nav-vm .nav-item:has(a[href="//www.bilibili.com"]) {display: none !important;}
+            `,
         }),
         // 隐藏 直播
         new CheckboxItem({
             itemID: 'live-page-header-live',
             description: '隐藏 直播',
-            itemCSS: `#main-ctnr .dp-table-cell a[name="live"] {display: none !important;}`,
+            itemCSS: `
+                #main-ctnr .dp-table-cell a[name="live"] {display: none !important;}
+                .link-navbar-more .search-bar-ctnr {margin: 0 auto !important;}
+                #prehold-nav-vm .nav-item:has(a[href="//live.bilibili.com"]) {display: none !important;}
+            `,
         }),
         // 隐藏 网游
         new CheckboxItem({
             itemID: 'live-page-header-net-game',
             description: '隐藏 网游',
-            itemCSS: `#main-ctnr .dp-table-cell a[name="网游"] {display: none !important;}`,
+            itemCSS: `
+                #main-ctnr .dp-table-cell a[name="网游"] {display: none !important;}
+                .link-navbar-more .search-bar-ctnr {margin: 0 auto !important;}
+                #prehold-nav-vm .nav-item:has(a[href*="parentAreaId=2"]) {display: none !important;}
+            `,
         }),
         // 隐藏 手游
         new CheckboxItem({
             itemID: 'live-page-header-mobile-game',
             description: '隐藏 手游',
-            itemCSS: `#main-ctnr .dp-table-cell a[name="手游"] {display: none !important;}`,
+            itemCSS: `
+                #main-ctnr .dp-table-cell a[name="手游"] {display: none !important;}
+                .link-navbar-more .search-bar-ctnr {margin: 0 auto !important;}
+                #prehold-nav-vm .nav-item:has(a[href*="parentAreaId=3"]) {display: none !important;}
+            `,
         }),
         // 隐藏 单机游戏
         new CheckboxItem({
             itemID: 'live-page-header-standalone-game',
             description: '隐藏 单机游戏',
-            itemCSS: `#main-ctnr .dp-table-cell a[name="单机游戏"] {display: none !important;}`,
-        }),
-        // 隐藏 娱乐
-        new CheckboxItem({
-            itemID: 'live-page-header-standalone-entertainment',
-            description: '隐藏 娱乐',
-            itemCSS: `#main-ctnr .dp-table-cell a[name="娱乐"] {display: none !important;}`,
-        }),
-        // 隐藏 电台
-        new CheckboxItem({
-            itemID: 'live-page-header-standalone-radio',
-            description: '隐藏 电台',
-            itemCSS: `#main-ctnr .dp-table-cell a[name="电台"] {display: none !important;}`,
+            itemCSS: `
+                #main-ctnr .dp-table-cell a[name="单机游戏"] {display: none !important;}
+                .link-navbar-more .search-bar-ctnr {margin: 0 auto !important;}
+                #prehold-nav-vm .nav-item:has(a[href*="parentAreaId=6"]) {display: none !important;}
+            `,
         }),
         // 隐藏 虚拟主播
         new CheckboxItem({
             itemID: 'live-page-header-standalone-vtuber',
             description: '隐藏 虚拟主播',
-            itemCSS: `#main-ctnr .dp-table-cell a[name="虚拟主播"] {display: none !important;}`,
+            itemCSS: `
+                #main-ctnr .dp-table-cell a[name="虚拟主播"] {display: none !important;}
+                .link-navbar-more .search-bar-ctnr {margin: 0 auto !important;}
+                #prehold-nav-vm .nav-item:has(a[href*="parentAreaId=9"]) {display: none !important;}
+            `,
         }),
-        // 隐藏 聊天室
+        // 隐藏 娱乐
         new CheckboxItem({
-            itemID: 'live-page-header-standalone-chatroom',
-            description: '隐藏 聊天室',
-            itemCSS: `#main-ctnr .dp-table-cell a[name="聊天室"] {display: none !important;}`,
+            itemID: 'live-page-header-standalone-entertainment',
+            description: '隐藏 娱乐',
+            itemCSS: `
+                #main-ctnr .dp-table-cell a[name="娱乐"] {display: none !important;}
+                .link-navbar-more .search-bar-ctnr {margin: 0 auto !important;}
+                #prehold-nav-vm .nav-item:has(a[href*="parentAreaId=1&"]) {display: none !important;}
+            `,
         }),
-        // 隐藏 生活
+        // 隐藏 电台
         new CheckboxItem({
-            itemID: 'live-page-header-standalone-living',
-            description: '隐藏 生活',
-            itemCSS: `#main-ctnr .dp-table-cell a[name="生活"] {display: none !important;}`,
-        }),
-        // 隐藏 知识
-        new CheckboxItem({
-            itemID: 'live-page-header-standalone-knowledge',
-            description: '隐藏 知识',
-            itemCSS: `#main-ctnr .dp-table-cell a[name="知识"] {display: none !important;}`,
+            itemID: 'live-page-header-standalone-radio',
+            description: '隐藏 电台',
+            itemCSS: `
+                #main-ctnr .dp-table-cell a[name="电台"] {display: none !important;}
+                .link-navbar-more .search-bar-ctnr {margin: 0 auto !important;}
+                #prehold-nav-vm .nav-item:has(a[href*="parentAreaId=5"]) {display: none !important;}
+            `,
         }),
         // 隐藏 赛事
         new CheckboxItem({
             itemID: 'live-page-header-standalone-match',
             description: '隐藏 赛事',
-            itemCSS: `#main-ctnr .dp-table-cell a[name="赛事"] {display: none !important;}`,
+            itemCSS: `
+                #main-ctnr .dp-table-cell a[name="赛事"] {display: none !important;}
+                .link-navbar-more .search-bar-ctnr {margin: 0 auto !important;}
+                #prehold-nav-vm .nav-item:has(a[href*="parentAreaId=13"]) {display: none !important;}
+            `,
+        }),
+        // 隐藏 聊天室
+        new CheckboxItem({
+            itemID: 'live-page-header-standalone-chatroom',
+            description: '隐藏 聊天室',
+            itemCSS: `
+                #main-ctnr .dp-table-cell a[name="聊天室"] {display: none !important;}
+                .link-navbar-more .search-bar-ctnr {margin: 0 auto !important;}
+                #prehold-nav-vm .nav-item:has(a[href*="parentAreaId=14"]) {display: none !important;}
+            `,
+        }),
+        // 隐藏 生活
+        new CheckboxItem({
+            itemID: 'live-page-header-standalone-living',
+            description: '隐藏 生活',
+            itemCSS: `
+                #main-ctnr .dp-table-cell a[name="生活"] {display: none !important;}
+                .link-navbar-more .search-bar-ctnr {margin: 0 auto !important;}
+                #prehold-nav-vm .nav-item:has(a[href*="parentAreaId=10"]) {display: none !important;}
+            `,
+        }),
+        // 隐藏 知识
+        new CheckboxItem({
+            itemID: 'live-page-header-standalone-knowledge',
+            description: '隐藏 知识',
+            itemCSS: `
+                #main-ctnr .dp-table-cell a[name="知识"] {display: none !important;}
+                .link-navbar-more .search-bar-ctnr {margin: 0 auto !important;}
+                #prehold-nav-vm .nav-item:has(a[href*="parentAreaId=11"]) {display: none !important;}
+            `,
         }),
         // 隐藏 帮我玩
         new CheckboxItem({
             itemID: 'live-page-header-standalone-helpmeplay',
             description: '隐藏 帮我玩',
-            itemCSS: `#main-ctnr .dp-table-cell a[name="帮我玩"] {display: none !important;}`,
+            itemCSS: `
+                #main-ctnr .dp-table-cell a[name="帮我玩"] {display: none !important;}
+                .link-navbar-more .search-bar-ctnr {margin: 0 auto !important;}
+                #prehold-nav-vm .nav-item:has(a[href*="parentAreaId=301"]) {display: none !important;}
+            `,
         }),
         // 隐藏 互动玩法
         new CheckboxItem({
             itemID: 'live-page-header-standalone-interact',
             description: '隐藏 互动玩法',
-            itemCSS: `#main-ctnr .dp-table-cell a[name="互动玩法"] {display: none !important;}`,
+            itemCSS: `
+                #main-ctnr .dp-table-cell a[name="互动玩法"] {display: none !important;}
+                .link-navbar-more .search-bar-ctnr {margin: 0 auto !important;}
+                #prehold-nav-vm .nav-item:has(a[href*="parentAreaId=15"]) {display: none !important;}
+            `,
         }),
         // 隐藏 购物
         new CheckboxItem({
             itemID: 'live-page-header-standalone-shopping',
             description: '隐藏 购物',
-            itemCSS: `#main-ctnr .dp-table-cell a[name="购物"] {display: none !important;}`,
+            itemCSS: `
+                #main-ctnr .dp-table-cell a[name="购物"] {display: none !important;}
+                .link-navbar-more .search-bar-ctnr {margin: 0 auto !important;}
+                #prehold-nav-vm .nav-item:has(a[href*="parentAreaId=300"]) {display: none !important;}
+            `,
         }),
         // 隐藏 更多, 默认开启
         new CheckboxItem({
             itemID: 'live-page-header-showmore-link',
             description: '隐藏 顶栏-更多',
             defaultStatus: true,
-            itemCSS: `#main-ctnr .showmore-link {display: none !important;}`,
+            itemCSS: `
+                #main-ctnr .showmore-link {display: none !important;}
+                .link-navbar-more .search-bar-ctnr {margin: 0 auto !important;}
+                #prehold-nav-vm .nav-item:last-child {display: none !important;}
+            `,
         }),
     ]
     liveGroupList.push(new Group('live-header-left', '顶栏 左侧', headerLeftItems))

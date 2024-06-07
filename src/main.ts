@@ -19,6 +19,7 @@ import {
     isPageChannel,
     isPageDynamic,
     isPageHomepage,
+    isPageInvalid,
     isPagePlaylist,
     isPagePopular,
     isPageSearch,
@@ -213,10 +214,12 @@ const main = async () => {
 }
 
 try {
-    log('script start')
-    await init()
-    await main()
-    log('script end')
+    if (!isPageInvalid()) {
+        log('script start')
+        await init()
+        await main()
+        log('script end')
+    }
 } catch (err) {
     error(err)
 }

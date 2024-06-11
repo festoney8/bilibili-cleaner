@@ -400,7 +400,7 @@ const basicItems = [
             @-moz-document url-prefix() {
                 * {
                     scrollbar-color: rgba(0, 0, 0, 0.6) transparent !important;
-                    scrollbar-width: thin !important;
+                    scrollbar-width: thin;
                 }
             }`,
     }),

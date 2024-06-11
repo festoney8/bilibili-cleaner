@@ -94,19 +94,21 @@ const simpleShare = () => {
 let _isWide = unsafeWindow.isWide
 // 修改unsafeWindow.isWide时执行的函数列表
 const onIsWideChangeFuncArr: (() => void)[] = []
-Object.defineProperty(unsafeWindow, 'isWide', {
-    get() {
-        return _isWide
-    },
-    set(value) {
-        _isWide = value
-        if (typeof _isWide === 'boolean') {
-            onIsWideChangeFuncArr.forEach((func) => func())
-        }
-    },
-    configurable: true,
-    enumerable: true,
-})
+if (isPageVideo() || isPagePlaylist()) {
+    Object.defineProperty(unsafeWindow, 'isWide', {
+        get() {
+            return _isWide
+        },
+        set(value) {
+            _isWide = value
+            if (typeof _isWide === 'boolean') {
+                onIsWideChangeFuncArr.forEach((func) => func())
+            }
+        },
+        configurable: true,
+        enumerable: true,
+    })
+}
 
 /** 隐藏弹幕栏时，强行调节播放器高度 */
 const overridePlayerHeight = () => {
@@ -164,6 +166,9 @@ const overridePlayerHeight = () => {
         }
     }
 
+    if (document.getElementById('setSizeStyle')) {
+        overrideCSS()
+    }
     // 监听官方style #setSizeStyle 出现
     const observeStyle = new MutationObserver(() => {
         if (document.getElementById('setSizeStyle')) {
@@ -171,9 +176,7 @@ const overridePlayerHeight = () => {
             observeStyle.disconnect()
         }
     })
-    if (document.head) {
-        observeStyle.observe(document.head, { childList: true })
-    }
+    document.head && observeStyle.observe(document.head, { childList: true })
     // 宽屏模式
     onIsWideChangeFuncArr.push(overrideCSS)
 }
@@ -211,6 +214,50 @@ const coinDisableAutoLike = () => {
         })
     }
 }
+
+const disableAdjustVolume = () => {}
+/** 全屏时可滚动 */
+// const fullScreenScroll = () => {
+//     waitForEle(document.body, '.bpx-player-ctrl-web ~ .bpx-player-ctrl-full', (node: Node): boolean => {
+//         return node instanceof HTMLElement && (node as HTMLElement).className.includes('bpx-player-ctrl-full')
+//     }).then(() => {
+//         const isFull = () => {
+//             return (
+//                 document.fullscreenElement ||
+//                 (window.innerWidth === screen.width && window.innerHeight === screen.height)
+//             )
+//         }
+
+//         // 触发用户稀有事件，绕过浏览器API对requestFullscreen的限制
+//         // 取消播放器触发的全屏，用document.body触发全屏，置于top-layer
+//         // target必须赋予到变量，否则无法过检测
+//         const ele = document.body
+//         ele.addEventListener('touchend', () => ele.requestFullscreen().then().catch())
+
+//         // 修改全屏按钮动作，全屏可滚动 = 网页全屏滚动 + 浏览器全屏
+//         const webScreenBtn = document.querySelector<HTMLElement>('.bpx-player-ctrl-web')
+//         const fullScreenBtn = document.querySelector<HTMLElement>('.bpx-player-ctrl-full')
+//         if (webScreenBtn && fullScreenBtn) {
+//             const newBtn = fullScreenBtn.cloneNode(true) as HTMLElement
+//             fullScreenBtn.parentElement!.replaceChild(newBtn, fullScreenBtn)
+//             newBtn.onclick = async () => {
+//                 if (isFull() || (!isFull() && !document.querySelector('.webscreen-fix'))) {
+//                     webScreenBtn.click()
+//                 }
+//                 if (!isFull()) {
+//                     ele.dispatchEvent(new TouchEvent('touchend'))
+//                     webScreenBtn.style.display = 'none'
+//                 } else {
+//                     webScreenBtn.style.display = 'block'
+//                 }
+//             }
+//             document.addEventListener('fullscreenchange', () => {
+//                 if (isFull()) {
+//                 }
+//             })
+//         }
+//     })
+// }
 
 const videoGroupList: Group[] = []
 
@@ -309,6 +356,138 @@ if (isPageVideo() || isPagePlaylist()) {
                 onIsWideChangeFuncArr.push(func)
             },
         }),
+        // 网页全屏时 可滚动页面
+        new CheckboxItem({
+            itemID: 'webscreen-scrollable',
+            description: '网页全屏时 页面可滚动 (实验功能)\n滚轮调节视频音量会失效',
+            itemCSS: `
+                .webscreen-fix {
+                    position: unset;
+                    top: unset;
+                    left: unset;
+                    margin: unset;
+                    padding: unset;
+                    width: unset;
+                    height: unset;
+                }
+                .webscreen-fix #biliMainHeader {
+                    display: none;
+                }
+                .webscreen-fix #mirror-vdcon {
+                    box-sizing: content-box;
+                    position: relative;
+                }
+                .webscreen-fix :is(.left-container, .playlist-container--left) {
+                    position: static !important;
+                    margin-top: 100vh;
+                }
+                .webscreen-fix :is(.left-container, .playlist-container--left) .video-info-container {
+                    height: fit-content;
+                }
+                .webscreen-fix :is(.left-container, .playlist-container--left) #bilibili-player.mode-webscreen {
+                    position: static;
+                    border-radius: unset;
+                    z-index: unset;
+                    left: unset;
+                    top: unset;
+                    width: 100%;
+                    height: 100%;
+                }
+                .webscreen-fix :is(.left-container, .playlist-container--left) #playerWrap {
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    top: 0;
+                    height: 100vh;
+                    width: 100vw;
+                    padding-right: 0;
+                }
+                .webscreen-fix :is(.right-container, .playlist-container--right) {
+                    margin-top: 100vh;
+                }
+                .webscreen-fix::-webkit-scrollbar {
+                    display: none !important;
+                }
+                /* firefox */
+                @-moz-document url-prefix() {
+                    html:has(.webscreen-fix), body.webscreen-fix {
+                        scrollbar-width: none !important;
+                    }
+                }
+            `,
+            // 在Chrome上可以神奇的禁用滚轮调节音量，Firefox不生效
+            itemFunc: () => document.addEventListener('wheel', disableAdjustVolume),
+            callback: () => document.removeEventListener('wheel', disableAdjustVolume),
+        }),
+        // // 全屏时 可滚动页面
+        // new CheckboxItem({
+        //     itemID: 'fullscreen-scrollable',
+        //     description: '全屏时 页面可滚动 (实验功能)',
+        //     itemCSS: `
+        // .webscreen-fix {
+        //     position: unset;
+        //     top: unset;
+        //     left: unset;
+        //     margin: unset;
+        //     padding: unset;
+        //     width: unset;
+        //     height: unset;
+        // }
+        // .webscreen-fix #biliMainHeader {
+        //     display: none;
+        // }
+        // .webscreen-fix #mirror-vdcon {
+        //     box-sizing: content-box;
+        //     position: relative;
+        // }
+        // .webscreen-fix :is(.left-container, .playlist-container--left) {
+        //     position: static !important;
+        //     margin-top: 100vh;
+        // }
+        // .webscreen-fix :is(.left-container, .playlist-container--left) .video-info-container {
+        //     height: fit-content;
+        // }
+        // .webscreen-fix :is(.left-container, .playlist-container--left) #bilibili-player.mode-webscreen {
+        //     position: static;
+        //     border-radius: unset;
+        //     z-index: unset;
+        //     left: unset;
+        //     top: unset;
+        //     width: 100%;
+        //     height: 100%;
+        // }
+        // .webscreen-fix :is(.left-container, .playlist-container--left) #playerWrap {
+        //     position: absolute;
+        //     left: 0;
+        //     right: 0;
+        //     top: 0;
+        //     height: 100vh;
+        //     width: 100vw;
+        //     padding-right: 0;
+        // }
+        // .webscreen-fix :is(.right-container, .playlist-container--right) {
+        //     margin-top: 100vh;
+        // }
+        // .webscreen-fix::-webkit-scrollbar {
+        //     display: none !important;
+        // }
+        // /* firefox */
+        // @-moz-document url-prefix() {
+        //     html:has(.webscreen-fix), body.webscreen-fix {
+        //         scrollbar-width: none !important;
+        //     }
+        // }
+        //     `,
+        //     itemFunc: () => {
+        //         document.addEventListener('wheel', disableAdjustVolume)
+        //         document.readyState === 'complete'
+        //             ? fullScreenScroll()
+        //             : document.addEventListener('DOMContentLoaded', fullScreenScroll)
+        //     },
+        //     callback: () => {
+        //         document.removeEventListener('wheel', disableAdjustVolume)
+        //     },
+        // }),
     ]
     videoGroupList.push(new Group('video-basic', '播放页 基本功能', basicItems))
 
@@ -810,7 +989,7 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
         // 非全屏下 关闭弹幕栏
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-sending-area',
-            description: '非全屏下 关闭弹幕栏 (刷新去黑边)',
+            description: '非全屏下 关闭弹幕栏',
             itemFunc: overridePlayerHeight,
             // video page的player height由JS动态设定
             itemCSS: `.bpx-player-sending-area {display: none !important;}

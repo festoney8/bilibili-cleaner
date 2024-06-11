@@ -5,91 +5,6 @@ import { matchAvidBvid, matchBvid } from '../utils/tool'
 import { isPageFestival, isPagePlaylist, isPageVideo } from '../utils/page-type'
 import { GM_getValue, GM_setValue, unsafeWindow } from '$'
 
-/** BV号转AV号 */
-const bv2av = () => {
-    /**
-     * algo by bilibili-API-collect
-     * @see https://www.zhihu.com/question/381784377/answer/1099438784
-     * @see https://github.com/SocialSisterYi/bilibili-API-collect/issues/740
-     * @see https://socialsisteryi.github.io/bilibili-API-collect/docs/misc/bvid_desc.html
-     * @param bvid 输入BV号
-     * @returns 输出纯数字av号
-     */
-    const XOR_CODE = 23442827791579n
-    const MASK_CODE = 2251799813685247n
-    const BASE = 58n
-    const data = 'FcwAPNKTMug3GV5Lj7EJnHpWsx4tb8haYeviqBz6rkCy12mUSDQX9RdoZf'
-    const dec = (bvid: string): number => {
-        const bvidArr = Array.from<string>(bvid)
-        ;[bvidArr[3], bvidArr[9]] = [bvidArr[9], bvidArr[3]]
-        ;[bvidArr[4], bvidArr[7]] = [bvidArr[7], bvidArr[4]]
-        bvidArr.splice(0, 3)
-        const tmp = bvidArr.reduce((pre, bvidChar) => pre * BASE + BigInt(data.indexOf(bvidChar)), 0n)
-        return Number((tmp & MASK_CODE) ^ XOR_CODE)
-    }
-
-    try {
-        if (location.href.includes('bilibili.com/video/BV')) {
-            const bvid = matchBvid(location.href)
-            if (bvid) {
-                // 保留query string中分P参数, anchor中reply定位
-                let partNum = ''
-                const params = new URLSearchParams(location.search)
-                if (params.has('p')) {
-                    partNum += `?p=${params.get('p')}`
-                }
-                const aid = dec(bvid)
-                const newURL = `https://www.bilibili.com/video/av${aid}${partNum}${location.hash}`
-                history.replaceState(null, '', newURL)
-            }
-        }
-    } catch (err) {}
-}
-
-/** 净化分享按钮功能, 暂不支持从稍后再看列表、收藏夹列表分享 */
-let isSimpleShareBtn = false
-const simpleShare = () => {
-    if (isSimpleShareBtn) {
-        return
-    }
-    // 监听shareBtn出现
-    let shareBtn
-    let counter = 0
-    const checkElement = setInterval(() => {
-        counter++
-        shareBtn = document.getElementById('share-btn-outer')
-        if (shareBtn) {
-            isSimpleShareBtn = true
-            clearInterval(checkElement)
-            // 新增click事件
-            // 若replace element, 会在切换视频后无法更新视频分享数量, 故直接新增click事件覆盖剪贴板
-            shareBtn.addEventListener('click', () => {
-                let title = document.querySelector(
-                    '.video-info-title .video-title, #viewbox_report > h1, .video-title-href',
-                )?.textContent
-                if (title && !title.match(/^[（【［《「＜｛〔〖〈『].*|.*[）】］》」＞｝〕〗〉』]$/)) {
-                    title = `【${title}】`
-                }
-                // 匹配av号, BV号, 分P号
-                const avbv = matchAvidBvid(location.href)
-                let shareText = title
-                    ? `${title} \nhttps://www.bilibili.com/video/${avbv}`
-                    : `https://www.bilibili.com/video/${avbv}`
-                const urlObj = new URL(location.href)
-                const params = new URLSearchParams(urlObj.search)
-                if (params.has('p')) {
-                    shareText += `?p=${params.get('p')}`
-                }
-                navigator.clipboard.writeText(shareText)
-            })
-            debug('simpleShare complete')
-        } else if (counter > 50) {
-            clearInterval(checkElement)
-            debug('simpleShare timeout')
-        }
-    }, 200)
-}
-
 /** 宽屏模式监听 */
 let _isWide = unsafeWindow.isWide
 // 修改unsafeWindow.isWide时执行的函数列表
@@ -108,111 +23,6 @@ if (isPageVideo() || isPagePlaylist()) {
         configurable: true,
         enumerable: true,
     })
-}
-
-/** 隐藏弹幕栏时，强行调节播放器高度 */
-const overridePlayerHeight = () => {
-    // 念咒
-    const genSizeCSS = (): string => {
-        const e = unsafeWindow.isWide
-        const i = unsafeWindow.innerHeight
-        const t = Math.max((document.body && document.body.clientWidth) || unsafeWindow.innerWidth, 1100)
-        const n = 1680 < innerWidth ? 411 : 350
-        const o = (16 * (i - (1690 < innerWidth ? 318 : 308))) / 9
-        const r = t - 112 - n
-        let d = r < o ? r : o
-        if (d < 668) {
-            d = 668
-        }
-        if (1694 < d) {
-            d = 1694
-        }
-        let a = d + n
-        if (unsafeWindow.isWide) {
-            a -= 125
-            d -= 100
-        }
-        let l
-        if (unsafeWindow.hasBlackSide && !unsafeWindow.isWide) {
-            l = Math.round((d - 14 + (e ? n : 0)) * 0.5625) + 96
-        } else {
-            l = Math.round((d + (e ? n : 0)) * 0.5625)
-        }
-        const s = `
-            .video-container-v1 {width: auto;padding: 0 10px;}
-            .left-container {width: ${a - n}px;}
-            #bilibili-player {width: ${a - (e ? -30 : n)}px;height: ${l}px;position: ${e ? 'relative' : 'static'};}
-            #oldfanfollowEntry {position: relative;top: ${e ? `${l + 10}px` : '0'};}
-            #danmukuBox {margin-top: ${e ? `${l + 28}px` : '0'};}
-            #playerWrap {height: ${l}px;}
-            .video-discover {margin-left: ${(a - n) / 2}px;}
-            `
-        return s.replace(/\n\s*/g, '').trim()
-    }
-
-    // override CSS
-    // 插入新style覆盖(必须在原style出现后，appendChild在head尾部，权限更高)
-    const overrideCSS = () => {
-        const overrideStyle = document.getElementById('overrideSetSizeStyle') as HTMLStyleElement
-        if (!overrideStyle) {
-            const newStyleNode = document.createElement('style')
-            newStyleNode.id = 'overrideSetSizeStyle'
-            newStyleNode.innerHTML = genSizeCSS()
-            document.head.appendChild(newStyleNode)
-            debug('override setSize OK')
-        } else {
-            overrideStyle.innerHTML = genSizeCSS()
-            debug('refresh setSize OK')
-        }
-    }
-
-    if (document.getElementById('setSizeStyle')) {
-        overrideCSS()
-    }
-    // 监听官方style #setSizeStyle 出现
-    const observeStyle = new MutationObserver(() => {
-        if (document.getElementById('setSizeStyle')) {
-            overrideCSS()
-            observeStyle.disconnect()
-        }
-    })
-    document.head && observeStyle.observe(document.head, { childList: true })
-    // 宽屏模式
-    onIsWideChangeFuncArr.push(overrideCSS)
-}
-
-/** 投币时取消自动点赞 */
-const coinDisableAutoLike = () => {
-    const disableAutoLike = () => {
-        let counter = 0
-        const timer = setInterval(() => {
-            const checkbox = document.querySelector(
-                'body > .bili-dialog-m .bili-dialog-bomb .like-checkbox input',
-            ) as HTMLInputElement
-            if (checkbox) {
-                checkbox.checked && checkbox.click()
-                clearInterval(timer)
-            } else {
-                counter++
-                if (counter > 100) {
-                    clearInterval(timer)
-                }
-            }
-        }, 20)
-    }
-    const coinBtn = document.querySelector(
-        '#arc_toolbar_report .video-coin.video-toolbar-left-item',
-    ) as HTMLElement | null
-    if (coinBtn) {
-        coinBtn.addEventListener('click', disableAutoLike)
-    } else {
-        document.addEventListener('DOMContentLoaded', () => {
-            const coinBtn = document.querySelector(
-                '#arc_toolbar_report .video-coin.video-toolbar-left-item',
-            ) as HTMLElement | null
-            coinBtn?.addEventListener('click', disableAutoLike)
-        })
-    }
 }
 
 const disableAdjustVolume = () => {}
@@ -269,7 +79,45 @@ if (isPageVideo() || isPagePlaylist()) {
         new CheckboxItem({
             itemID: 'video-page-bv2av',
             description: 'BV号转AV号',
-            itemFunc: bv2av,
+            itemFunc: () => {
+                /**
+                 * algo by bilibili-API-collect
+                 * @see https://www.zhihu.com/question/381784377/answer/1099438784
+                 * @see https://github.com/SocialSisterYi/bilibili-API-collect/issues/740
+                 * @see https://socialsisteryi.github.io/bilibili-API-collect/docs/misc/bvid_desc.html
+                 * @param bvid 输入BV号
+                 * @returns 输出纯数字av号
+                 */
+                const XOR_CODE = 23442827791579n
+                const MASK_CODE = 2251799813685247n
+                const BASE = 58n
+                const data = 'FcwAPNKTMug3GV5Lj7EJnHpWsx4tb8haYeviqBz6rkCy12mUSDQX9RdoZf'
+                const dec = (bvid: string): number => {
+                    const bvidArr = Array.from<string>(bvid)
+                    ;[bvidArr[3], bvidArr[9]] = [bvidArr[9], bvidArr[3]]
+                    ;[bvidArr[4], bvidArr[7]] = [bvidArr[7], bvidArr[4]]
+                    bvidArr.splice(0, 3)
+                    const tmp = bvidArr.reduce((pre, bvidChar) => pre * BASE + BigInt(data.indexOf(bvidChar)), 0n)
+                    return Number((tmp & MASK_CODE) ^ XOR_CODE)
+                }
+
+                try {
+                    if (location.href.includes('bilibili.com/video/BV')) {
+                        const bvid = matchBvid(location.href)
+                        if (bvid) {
+                            // 保留query string中分P参数, anchor中reply定位
+                            let partNum = ''
+                            const params = new URLSearchParams(location.search)
+                            if (params.has('p')) {
+                                partNum += `?p=${params.get('p')}`
+                            }
+                            const aid = dec(bvid)
+                            const newURL = `https://www.bilibili.com/video/av${aid}${partNum}${location.hash}`
+                            history.replaceState(null, '', newURL)
+                        }
+                    }
+                } catch (err) {}
+            },
             isItemFuncReload: true,
         }),
         // 净化分享, 默认开启, 关闭功能需刷新
@@ -277,11 +125,52 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-page-simple-share',
             description: '净化分享功能',
             defaultStatus: true,
-            itemFunc: simpleShare,
-            itemCSS: `.video-share-popover .video-share-dropdown .dropdown-bottom {display: none !important;}
+            itemCSS: `
+                .video-share-popover .video-share-dropdown .dropdown-bottom {display: none !important;}
                 .video-share-popover .video-share-dropdown .dropdown-top {padding: 15px !important;}
                 .video-share-popover .video-share-dropdown .dropdown-top .dropdown-top-right {display: none !important;}
-                .video-share-popover .video-share-dropdown .dropdown-top .dropdown-top-left {padding-right: 0 !important;}`,
+                .video-share-popover .video-share-dropdown .dropdown-top .dropdown-top-left {padding-right: 0 !important;}
+            `,
+            // 净化分享按钮功能
+            itemFunc: () => {
+                // 监听shareBtn出现
+                const listener = () => {
+                    let counter = 0
+                    const id = setInterval(() => {
+                        counter++
+                        const shareBtn = document.getElementById('share-btn-outer')
+                        if (shareBtn) {
+                            // 新增click事件
+                            // 若replace element, 会在切换视频后无法更新视频分享数量, 故直接新增click事件覆盖剪贴板
+                            shareBtn.addEventListener('click', () => {
+                                let title = document.querySelector(
+                                    '.video-info-title .video-title, #viewbox_report > h1, .video-title-href',
+                                )?.textContent
+                                if (title && !title.match(/^[（【［《「＜｛〔〖〈『].*|.*[）】］》」＞｝〕〗〉』]$/)) {
+                                    title = `【${title}】`
+                                }
+                                // 匹配av号, BV号, 分P号
+                                const avbv = matchAvidBvid(location.href)
+                                let shareText = title
+                                    ? `${title} \nhttps://www.bilibili.com/video/${avbv}`
+                                    : `https://www.bilibili.com/video/${avbv}`
+                                const urlObj = new URL(location.href)
+                                const params = new URLSearchParams(urlObj.search)
+                                if (params.has('p')) {
+                                    shareText += `?p=${params.get('p')}`
+                                }
+                                navigator.clipboard.writeText(shareText)
+                            })
+                            clearInterval(id)
+                        } else if (counter > 50) {
+                            clearInterval(id)
+                        }
+                    }, 200)
+                }
+                document.readyState === 'complete'
+                    ? listener()
+                    : document.addEventListener('DOMContentLoaded', listener)
+            },
         }),
         // 顶栏 滚动页面后不再吸附顶部
         new CheckboxItem({
@@ -990,13 +879,85 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-sending-area',
             description: '非全屏下 关闭弹幕栏',
-            itemFunc: overridePlayerHeight,
-            // video page的player height由JS动态设定
-            itemCSS: `.bpx-player-sending-area {display: none !important;}
+            itemCSS: `
+                /* video page的player height由JS动态设定 */
+                .bpx-player-sending-area {display: none !important;}
+
                 /* 活动播放器直接去黑边 */
                 .page-main-content:has(.festival-video-player) .video-player-box {height: fit-content !important;}
                 .festival-video-player {height: fit-content !important;}
-                .festival-video-player #bilibili-player:not(.mode-webscreen) {height: calc(100% - 46px) !important;}`,
+                .festival-video-player #bilibili-player:not(.mode-webscreen) {height: calc(100% - 46px) !important;}
+            `,
+            // 隐藏弹幕栏时，强行调节播放器高度
+            itemFunc: () => {
+                // 念咒
+                const genSizeCSS = (): string => {
+                    const e = unsafeWindow.isWide
+                    const i = unsafeWindow.innerHeight
+                    const t = Math.max((document.body && document.body.clientWidth) || unsafeWindow.innerWidth, 1100)
+                    const n = 1680 < innerWidth ? 411 : 350
+                    const o = (16 * (i - (1690 < innerWidth ? 318 : 308))) / 9
+                    const r = t - 112 - n
+                    let d = r < o ? r : o
+                    if (d < 668) {
+                        d = 668
+                    }
+                    if (1694 < d) {
+                        d = 1694
+                    }
+                    let a = d + n
+                    if (unsafeWindow.isWide) {
+                        a -= 125
+                        d -= 100
+                    }
+                    let l
+                    if (unsafeWindow.hasBlackSide && !unsafeWindow.isWide) {
+                        l = Math.round((d - 14 + (e ? n : 0)) * 0.5625) + 96
+                    } else {
+                        l = Math.round((d + (e ? n : 0)) * 0.5625)
+                    }
+                    const s = `
+                        .video-container-v1 {width: auto;padding: 0 10px;}
+                        .left-container {width: ${a - n}px;}
+                        #bilibili-player {width: ${a - (e ? -30 : n)}px;height: ${l}px;position: ${e ? 'relative' : 'static'};}
+                        #oldfanfollowEntry {position: relative;top: ${e ? `${l + 10}px` : '0'};}
+                        #danmukuBox {margin-top: ${e ? `${l + 28}px` : '0'};}
+                        #playerWrap {height: ${l}px;}
+                        .video-discover {margin-left: ${(a - n) / 2}px;}
+                    `
+                    return s.replace(/\n\s*/g, '').trim()
+                }
+
+                // override CSS
+                // 插入新style覆盖(必须在原style出现后，appendChild在head尾部，权限更高)
+                const overrideCSS = () => {
+                    const overrideStyle = document.getElementById('overrideSetSizeStyle') as HTMLStyleElement
+                    if (!overrideStyle) {
+                        const newStyleNode = document.createElement('style')
+                        newStyleNode.id = 'overrideSetSizeStyle'
+                        newStyleNode.innerHTML = genSizeCSS()
+                        document.head.appendChild(newStyleNode)
+                        debug('override setSize OK')
+                    } else {
+                        overrideStyle.innerHTML = genSizeCSS()
+                        debug('refresh setSize OK')
+                    }
+                }
+
+                if (document.getElementById('setSizeStyle')) {
+                    overrideCSS()
+                }
+                // 监听官方style #setSizeStyle 出现
+                const observeStyle = new MutationObserver(() => {
+                    if (document.getElementById('setSizeStyle')) {
+                        overrideCSS()
+                        observeStyle.disconnect()
+                    }
+                })
+                document.head && observeStyle.observe(document.head, { childList: true })
+                // 宽屏模式
+                onIsWideChangeFuncArr.push(overrideCSS)
+            },
         }),
         // 全屏下 关闭弹幕输入框
         new CheckboxItem({
@@ -1031,7 +992,38 @@ if (isPageVideo() || isPagePlaylist()) {
         new CheckboxItem({
             itemID: 'video-page-coin-disable-auto-like',
             description: '投币时不自动点赞 (关闭需刷新)',
-            itemFunc: coinDisableAutoLike,
+            itemFunc: () => {
+                const disableAutoLike = () => {
+                    let counter = 0
+                    const timer = setInterval(() => {
+                        const checkbox = document.querySelector(
+                            'body > .bili-dialog-m .bili-dialog-bomb .like-checkbox input',
+                        ) as HTMLInputElement
+                        if (checkbox) {
+                            checkbox.checked && checkbox.click()
+                            clearInterval(timer)
+                        } else {
+                            counter++
+                            if (counter > 100) {
+                                clearInterval(timer)
+                            }
+                        }
+                    }, 20)
+                }
+                const coinBtn = document.querySelector(
+                    '#arc_toolbar_report .video-coin.video-toolbar-left-item',
+                ) as HTMLElement | null
+                if (coinBtn) {
+                    coinBtn.addEventListener('click', disableAutoLike)
+                } else {
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const coinBtn = document.querySelector(
+                            '#arc_toolbar_report .video-coin.video-toolbar-left-item',
+                        ) as HTMLElement | null
+                        coinBtn?.addEventListener('click', disableAutoLike)
+                    })
+                }
+            },
         }),
         // 隐藏 分享按钮弹出菜单, 默认开启
         new CheckboxItem({

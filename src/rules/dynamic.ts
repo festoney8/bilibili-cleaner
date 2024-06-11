@@ -4,20 +4,6 @@ import { isPageDynamic } from '../utils/page-type'
 import fontFaceRegular from './styles/fontFaceRegular.scss?inline'
 import fontFaceMedium from './styles/fontFaceMedium.scss?inline'
 
-// 自动展开 相同UP主被折叠的动态
-const dynamicUnfold = () => {
-    // 大量动态下，单次耗时10ms内
-    const unfold = () => {
-        const dynFoldNodes = document.querySelectorAll('main .bili-dyn-list__item .bili-dyn-item-fold')
-        if (dynFoldNodes.length) {
-            dynFoldNodes.forEach((e) => {
-                e instanceof HTMLDivElement && e.click()
-            })
-        }
-    }
-    setInterval(unfold, 500)
-}
-
 const dynamicGroupList: Group[] = []
 
 /**
@@ -319,7 +305,18 @@ if (isPageDynamic()) {
         new CheckboxItem({
             itemID: 'dynamic-page-unfold-dynamic',
             description: '自动展开 相同UP主被折叠的动态',
-            itemFunc: dynamicUnfold,
+            itemFunc: () => {
+                // 大量动态下，单次耗时10ms内
+                const unfold = () => {
+                    const dynFoldNodes = document.querySelectorAll('main .bili-dyn-list__item .bili-dyn-item-fold')
+                    if (dynFoldNodes.length) {
+                        dynFoldNodes.forEach((e) => {
+                            e instanceof HTMLDivElement && e.click()
+                        })
+                    }
+                }
+                setInterval(unfold, 500)
+            },
         }),
     ]
     dynamicGroupList.push(new Group('dynamic-center', '中栏 动态列表', centerItems))

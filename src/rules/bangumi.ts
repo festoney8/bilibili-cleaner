@@ -1,70 +1,10 @@
 import { GM_getValue, GM_setValue } from '$'
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
-import { debugRules as debug, error } from '../utils/logger'
+import { error } from '../utils/logger'
 import { isPageBangumi } from '../utils/page-type'
 
 const bangumiGroupList: Group[] = []
-
-/** 覆盖版权视频页分享按钮功能 (疑似firefox在bangumi page覆盖失败) */
-let isBangumiSimpleShareBtn = false
-const bangumiSimpleShare = () => {
-    if (isBangumiSimpleShareBtn) {
-        return
-    }
-    // 监听shareBtn出现
-    let shareBtn
-    let counter = 0
-    const checkElement = setInterval(() => {
-        counter++
-        shareBtn = document.getElementById('share-container-id')
-        if (shareBtn) {
-            isBangumiSimpleShareBtn = true
-            clearInterval(checkElement)
-            // 新增click事件覆盖剪贴板
-            shareBtn.addEventListener('click', () => {
-                const mainTitle = document.querySelector("[class^='mediainfo_mediaTitle']")?.textContent
-                const subTitle = document.getElementById('player-title')?.textContent
-                const shareText = `《${mainTitle}》${subTitle} \nhttps://www.bilibili.com${location.pathname}`
-                navigator.clipboard.writeText(shareText)
-            })
-            debug('bangumiSimpleShare complete')
-        } else if (counter > 50) {
-            clearInterval(checkElement)
-            debug('bangumiSimpleShare timeout')
-        }
-    }, 200)
-}
-
-/** 投币时取消自动点赞 */
-const coinDisableAutoLike = () => {
-    const disableAutoLike = () => {
-        let counter = 0
-        const timer = setInterval(() => {
-            const checkbox = document.querySelector(
-                '.main-container [class^="dialogcoin_like_checkbox"] input',
-            ) as HTMLInputElement
-            if (checkbox) {
-                checkbox.checked && checkbox.click()
-                clearInterval(timer)
-            } else {
-                counter++
-                if (counter > 100) {
-                    clearInterval(timer)
-                }
-            }
-        }, 20)
-    }
-    const coinBtn = document.querySelector('#ogv_weslie_tool_coin_info') as HTMLElement | null
-    if (coinBtn) {
-        coinBtn.addEventListener('click', disableAutoLike)
-    } else {
-        document.addEventListener('DOMContentLoaded', () => {
-            const coinBtn = document.querySelector('#ogv_weslie_tool_coin_info') as HTMLElement | null
-            coinBtn?.addEventListener('click', disableAutoLike)
-        })
-    }
-}
 
 const disableAdjustVolume = () => {}
 
@@ -81,11 +21,37 @@ if (isPageBangumi()) {
             itemID: 'video-page-simple-share',
             description: '净化分享功能',
             defaultStatus: true,
-            itemFunc: bangumiSimpleShare,
-            itemCSS: `#share-container-id [class^='Share_boxBottom'] {display: none !important;}
-                        #share-container-id [class^='Share_boxTop'] {padding: 15px !important;}
-                        #share-container-id [class^='Share_boxTopRight'] {display: none !important;}
-                        #share-container-id [class^='Share_boxTopLeft'] {padding: 0 !important;}`,
+            itemCSS: `
+                #share-container-id [class^='Share_boxBottom'] {display: none !important;}
+                #share-container-id [class^='Share_boxTop'] {padding: 15px !important;}
+                #share-container-id [class^='Share_boxTopRight'] {display: none !important;}
+                #share-container-id [class^='Share_boxTopLeft'] {padding: 0 !important;}
+            `,
+            itemFunc: () => {
+                // 监听shareBtn出现
+                const listener = () => {
+                    let counter = 0
+                    const id = setInterval(() => {
+                        counter++
+                        const shareBtn = document.getElementById('share-container-id')
+                        if (shareBtn) {
+                            clearInterval(id)
+                            // 新增click事件覆盖剪贴板
+                            shareBtn.addEventListener('click', () => {
+                                const mainTitle = document.querySelector("[class^='mediainfo_mediaTitle']")?.textContent
+                                const subTitle = document.getElementById('player-title')?.textContent
+                                const shareText = `《${mainTitle}》${subTitle} \nhttps://www.bilibili.com${location.pathname}`
+                                navigator.clipboard.writeText(shareText)
+                            })
+                        } else if (counter > 50) {
+                            clearInterval(id)
+                        }
+                    }, 200)
+                }
+                document.readyState === 'complete'
+                    ? listener()
+                    : document.addEventListener('DOMContentLoaded', listener)
+            },
         }),
         // 顶栏 滚动页面后不再吸附顶部
         new CheckboxItem({
@@ -503,7 +469,34 @@ if (isPageBangumi()) {
         new CheckboxItem({
             itemID: 'video-page-coin-disable-auto-like',
             description: '投币时不自动点赞 (关闭需刷新)',
-            itemFunc: coinDisableAutoLike,
+            itemFunc: () => {
+                const disableAutoLike = () => {
+                    let counter = 0
+                    const timer = setInterval(() => {
+                        const checkbox = document.querySelector(
+                            '.main-container [class^="dialogcoin_like_checkbox"] input',
+                        ) as HTMLInputElement
+                        if (checkbox) {
+                            checkbox.checked && checkbox.click()
+                            clearInterval(timer)
+                        } else {
+                            counter++
+                            if (counter > 100) {
+                                clearInterval(timer)
+                            }
+                        }
+                    }, 20)
+                }
+                const coinBtn = document.querySelector('#ogv_weslie_tool_coin_info') as HTMLElement | null
+                if (coinBtn) {
+                    coinBtn.addEventListener('click', disableAutoLike)
+                } else {
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const coinBtn = document.querySelector('#ogv_weslie_tool_coin_info') as HTMLElement | null
+                        coinBtn?.addEventListener('click', disableAutoLike)
+                    })
+                }
+            },
         }),
         // 隐藏 分享按钮弹出菜单, 默认开启
         new CheckboxItem({

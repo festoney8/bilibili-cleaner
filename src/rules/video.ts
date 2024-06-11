@@ -356,10 +356,10 @@ if (isPageVideo() || isPagePlaylist()) {
                 onIsWideChangeFuncArr.push(func)
             },
         }),
-        // 网页全屏时 可滚动页面
+        // 网页全屏时 页面可滚动
         new CheckboxItem({
             itemID: 'webscreen-scrollable',
-            description: '网页全屏时 页面可滚动 (实验功能)\n滚轮调节视频音量会失效',
+            description: '网页全屏时 页面可滚动 (Chrome实验功能)\n滚轮调节视频音量会失效',
             itemCSS: `
                 .webscreen-fix {
                     position: unset;

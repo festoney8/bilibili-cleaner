@@ -66,6 +66,8 @@ const coinDisableAutoLike = () => {
     }
 }
 
+const disableAdjustVolume = () => {}
+
 /**
  * 版权视频播放页规则
  * 尽可能与普通播放页video.ts共用itemID, 实现开关状态同步
@@ -90,6 +92,42 @@ if (isPageBangumi()) {
             itemID: 'video-page-hide-fixed-header',
             description: '顶栏 滚动页面后不再吸附顶部',
             itemCSS: `.fixed-header .bili-header__bar {position: relative !important;}`,
+        }),
+        // 网页全屏时 页面可滚动
+        new CheckboxItem({
+            itemID: 'webscreen-scrollable',
+            description: '网页全屏时 页面可滚动 (Chrome实验功能)\n滚轮调节视频音量会失效',
+            itemCSS: `
+                body:has(#bilibili-player-wrap[class^='video_playerFullScreen']) {
+                    overflow: auto !important;
+                    position: relative !important;
+                }
+                body:has(#bilibili-player-wrap[class^='video_playerFullScreen']) #bilibili-player-wrap {
+                    position: absolute !important;
+                    width: 100vw !important;
+                    height: 100vh !important;
+                }
+                body:has(#bilibili-player-wrap[class^='video_playerFullScreen']) .main-container {
+                    position: static !important;
+                    margin: 0 auto !important;
+                    padding-top: calc(100vh + 15px) !important;
+                }
+                body:has(#bilibili-player-wrap[class^='video_playerFullScreen']) .bpx-player-video-area {
+                    flex: unset !important;
+                }
+                body:has(#bilibili-player-wrap[class^='video_playerFullScreen'])::-webkit-scrollbar {
+                    display: none !important;
+                }
+                /* firefox */
+                @-moz-document url-prefix() {
+                    :is(html, body):has(#bilibili-player-wrap[class^='video_playerFullScreen']) {
+                        scrollbar-width: none !important;
+                    }
+                }
+            `,
+            // 在Chrome上可以神奇的禁用滚轮调节音量，Firefox不生效
+            itemFunc: () => document.addEventListener('wheel', disableAdjustVolume),
+            callback: () => document.removeEventListener('wheel', disableAdjustVolume),
         }),
     ]
     bangumiGroupList.push(new Group('bangumi-basic', '版权视频播放页 基本功能', basicItems))

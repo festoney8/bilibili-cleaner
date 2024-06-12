@@ -617,6 +617,12 @@ if (!isPageLiveHome()) {
             description: '隐藏 百大评选',
             itemCSS: `.bili-header__bar .left-entry li:has(>div>a[href*="bilibili.com/BPU20"]) {display: none !important;}`,
         }),
+        // 隐藏 BML
+        new CheckboxItem({
+            itemID: 'common-hide-nav-bml',
+            description: '隐藏 BML',
+            itemCSS: `.bili-header__bar .left-entry li:has(>div>a[href*="bml.bilibili.com"]) {display: none !important;}`,
+        }),
         // 隐藏 下载客户端, 默认开启
         new CheckboxItem({
             itemID: 'common-hide-nav-download-app',

@@ -188,7 +188,7 @@ if (isPageVideo() || isPagePlaylist()) {
                 .left-container, .playlist-container--left {
                     display: flex !important;
                     flex-direction: column !important;
-                    padding-top: 50px !important;
+                    padding-top: 35px !important;
                 }
                 .left-container > *, .playlist-container--left > * {
                     order: 1;
@@ -256,6 +256,18 @@ if (isPageVideo() || isPagePlaylist()) {
         new CheckboxItem({
             itemID: 'default-widescreen',
             description: '默认宽屏播放 刷新生效 (实验功能)',
+            itemCSS: `
+                /* 修复右栏底部吸附计算top时位置跳变 */
+                .video-container-v1 .right-container {
+                    display: flex;
+                }
+                .video-container-v1 .right-container .right-container-inner {
+                    position: sticky !important;
+                    top: unset !important;
+                    bottom: 0 !important;
+                    align-self: flex-end !important;
+                }
+            `,
             itemFunc: () => {
                 wideScreenLock = true
                 unsafeWindow.isWide = true
@@ -301,9 +313,13 @@ if (isPageVideo() || isPagePlaylist()) {
                         box-sizing: content-box;
                         position: relative;
                     }
+                    .webscreen-fix #danmukuBox {
+                        margin-top: 0 !important;
+                    }
                     .webscreen-fix :is(.left-container, .playlist-container--left) {
                         position: static !important;
-                        margin-top: 100vh;
+                        padding-top: 100vh;
+                        min-width: 56vw !important;
                     }
                     .webscreen-fix :is(.left-container, .playlist-container--left) .video-info-container {
                         height: fit-content;
@@ -327,7 +343,16 @@ if (isPageVideo() || isPagePlaylist()) {
                         padding-right: 0;
                     }
                     .webscreen-fix :is(.right-container, .playlist-container--right) {
-                        margin-top: 100vh;
+                        padding-top: 100vh;
+                    }
+                    /* 底部吸附 */
+                    .webscreen-fix .right-container {
+                        display: flex;
+                    }
+                    .webscreen-fix :is(.right-container-inner, .playlist-container--right) {
+                        position: sticky;
+                        bottom: 0;
+                        align-self: flex-end;
                     }
                     .webscreen-fix::-webkit-scrollbar {
                         display: none !important;

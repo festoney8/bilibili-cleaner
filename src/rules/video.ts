@@ -204,9 +204,9 @@ if (isPageVideo() || isPagePlaylist()) {
             itemFunc: () => {
                 wideScreenLock = true
                 unsafeWindow.isWide = true
-                // 监听宽屏按钮出现
                 const listener = () => {
-                    window.scrollTo(0, 64)
+                    window.scrollTo(0, 60)
+                    // 监听宽屏按钮出现
                     waitForEle(document.body, '.bpx-player-ctrl-wide', (node: Node): boolean => {
                         return (
                             node instanceof HTMLElement &&
@@ -340,6 +340,7 @@ if (isPageVideo() || isPagePlaylist()) {
                 }
                 body:not(.webscreen-fix) #playerWrap {
                     order: 0 !important;
+                    z-index: 1;
                 }
                 body:not(.webscreen-fix) .video-info-container {
                     height: auto !important;
@@ -349,10 +350,14 @@ if (isPageVideo() || isPagePlaylist()) {
                 }
                 /* fix #80 宽屏模式下播放器遮盖up主 */
                 body:not(.webscreen-fix) .up-panel-container {
-                    position: relative !important;
-                    margin-top: max(calc(100vh - 120px), 550px) !important;
+                    /* data-screen载入缓慢 */
+                    margin-top: 20px;
                 }
-                body:not(.webscreen-fix) #danmukuBox {
+                body:not(.webscreen-fix):has(.bpx-player-container[data-screen="wide"]) .up-panel-container {
+                    position: relative !important;
+                    margin-top: max(calc(100vh - 80px), 600px) !important;
+                }
+                body:not(.webscreen-fix):has(.bpx-player-container[data-screen="wide"]) #danmukuBox {
                     margin-top: 0 !important;
                 }
             `,

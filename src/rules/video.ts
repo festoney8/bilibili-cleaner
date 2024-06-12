@@ -188,7 +188,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 默认宽屏播放
         new CheckboxItem({
             itemID: 'default-widescreen',
-            description: '默认宽屏播放 刷新生效\n需禁用 普通播放宽度调节',
+            description: '默认宽屏播放 刷新生效\n需禁用 [普通播放 视频宽度调节]',
             itemCSS: `
                 /* 修复右栏底部吸附计算top时位置跳变 */
                 .video-container-v1 .right-container {
@@ -402,14 +402,24 @@ if (isPageVideo() || isPagePlaylist()) {
             disableValue: -1,
             unit: 'vw',
             itemCSS: `
-                body:has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"])) :is(
+                body:has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"], [data-screen="mini"])) :is(
+                    .bpx-player-video-area,
+                    .bpx-player-video-area video
+                ) {
+                    width: 100%;
+                    height: calc(???vw * 9 / 16);
+                    min-height: calc(???vw * 9 / 16);
+                    max-height: calc(???vw * 9 / 16);
+                }
+                body:has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"], [data-screen="mini"])) :is(
                     #playerWrap,
                     #bilibili-player,
                     #bilibili-player-placeholder
                 ) {
                     width: 100%;
-                    height: calc(???vw * 9 / 16);
+                    height: fit-content !important;
                 }
+                /* mini模式不改动宽度 */
                 body:has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"])) .left-container {
                     flex-basis: ???vw !important;
                 }

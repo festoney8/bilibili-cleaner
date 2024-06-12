@@ -330,67 +330,32 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-page-exchange-player-position',
             description: '播放器和视频信息 交换位置',
             itemCSS: `
-                .left-container, .playlist-container--left {
+                body:not(.webscreen-fix) .left-container, .playlist-container--left {
                     display: flex !important;
                     flex-direction: column !important;
                     padding-top: 35px !important;
                 }
-                .left-container > *, .playlist-container--left > * {
+                body:not(.webscreen-fix) .left-container > *, .playlist-container--left > * {
                     order: 1;
                 }
-                #playerWrap {
+                body:not(.webscreen-fix) #playerWrap {
                     order: 0 !important;
                 }
-                .video-info-container {
+                body:not(.webscreen-fix) .video-info-container {
                     height: auto !important;
                     padding-top: 16px !important;
                     /* 高权限消除展开标题的间距 */
                     margin-bottom: 0 !important;
                 }
-            `,
-            // fix #80 宽屏模式下播放器遮盖up主
-            itemFunc: () => {
-                const func = () => {
-                    if (unsafeWindow.isWide) {
-                        let cnt = 0
-                        const id = setInterval(() => {
-                            const player = document.querySelector(
-                                `.bpx-player-container[data-screen="wide"]`,
-                            ) as HTMLElement
-                            if (player) {
-                                const top = parseInt(getComputedStyle(player).height) + 50
-                                const danmakuBox = document.querySelector('#danmukuBox') as HTMLElement
-                                if (danmakuBox) {
-                                    danmakuBox.style.marginTop = `${top}px`
-                                }
-                                const upPanel = document.querySelector('.up-panel-container') as HTMLElement
-                                if (upPanel) {
-                                    upPanel.style.position = 'relative'
-                                    upPanel.style.top = `${top}px`
-                                }
-                                clearInterval(id)
-                            } else {
-                                cnt++
-                                if (cnt > 200) {
-                                    clearInterval(id)
-                                }
-                            }
-                        }, 10)
-                    } else {
-                        const upPanel = document.querySelector('.up-panel-container') as HTMLElement
-                        if (upPanel) {
-                            upPanel.style.position = 'static'
-                            upPanel.style.top = '0'
-                        }
-                        const danmakuBox = document.querySelector('#danmukuBox') as HTMLElement
-                        if (danmakuBox) {
-                            danmakuBox.style.marginTop = '0'
-                        }
-                    }
+                /* fix #80 宽屏模式下播放器遮盖up主 */
+                body:not(.webscreen-fix) .up-panel-container {
+                    position: relative !important;
+                    margin-top: max(calc(100vh - 120px), 550px) !important;
                 }
-                unsafeWindow.isWide && func()
-                onIsWideChangeFuncArr.push(func)
-            },
+                body:not(.webscreen-fix) #danmukuBox {
+                    margin-top: 0 !important;
+                }
+            `,
         }),
         // 普通播放 视频宽度调节
         new NumberItem({
@@ -426,75 +391,6 @@ if (isPageVideo() || isPagePlaylist()) {
             `,
             itemCSSPlaceholder: '???',
         }),
-        // // 全屏时 可滚动页面
-        // new CheckboxItem({
-        //     itemID: 'fullscreen-scrollable',
-        //     description: '全屏时 页面可滚动 (实验功能)',
-        //     itemCSS: `
-        // .webscreen-fix {
-        //     position: unset;
-        //     top: unset;
-        //     left: unset;
-        //     margin: unset;
-        //     padding: unset;
-        //     width: unset;
-        //     height: unset;
-        // }
-        // .webscreen-fix #biliMainHeader {
-        //     display: none;
-        // }
-        // .webscreen-fix #mirror-vdcon {
-        //     box-sizing: content-box;
-        //     position: relative;
-        // }
-        // .webscreen-fix :is(.left-container, .playlist-container--left) {
-        //     position: static !important;
-        //     margin-top: 100vh;
-        // }
-        // .webscreen-fix :is(.left-container, .playlist-container--left) .video-info-container {
-        //     height: fit-content;
-        // }
-        // .webscreen-fix :is(.left-container, .playlist-container--left) #bilibili-player.mode-webscreen {
-        //     position: static;
-        //     border-radius: unset;
-        //     z-index: unset;
-        //     left: unset;
-        //     top: unset;
-        //     width: 100%;
-        //     height: 100%;
-        // }
-        // .webscreen-fix :is(.left-container, .playlist-container--left) #playerWrap {
-        //     position: absolute;
-        //     left: 0;
-        //     right: 0;
-        //     top: 0;
-        //     height: 100vh;
-        //     width: 100vw;
-        //     padding-right: 0;
-        // }
-        // .webscreen-fix :is(.right-container, .playlist-container--right) {
-        //     margin-top: 100vh;
-        // }
-        // .webscreen-fix::-webkit-scrollbar {
-        //     display: none !important;
-        // }
-        // /* firefox */
-        // @-moz-document url-prefix() {
-        //     html:has(.webscreen-fix), body.webscreen-fix {
-        //         scrollbar-width: none !important;
-        //     }
-        // }
-        //     `,
-        //     itemFunc: () => {
-        //         document.addEventListener('wheel', disableAdjustVolume)
-        //         document.readyState === 'complete'
-        //             ? fullScreenScroll()
-        //             : document.addEventListener('DOMContentLoaded', fullScreenScroll)
-        //     },
-        //     callback: () => {
-        //         document.removeEventListener('wheel', disableAdjustVolume)
-        //     },
-        // }),
     ]
     videoGroupList.push(new Group('player-mode', '播放设定（实验功能）', playerInitItems))
 

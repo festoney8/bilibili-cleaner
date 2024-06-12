@@ -323,6 +323,19 @@ if (isPageDynamic()) {
 
     // 动态评论区, 尽可能同步video page
     const commentItems = [
+        // 隐藏 整个评论区
+        new CheckboxItem({
+            itemID: 'dynamic-page-hide-all-comment',
+            description: '隐藏 整个评论区',
+            itemCSS: `
+                /* .bili-dyn-item__panel {padding-bottom: 0 !important;} */
+                .bili-comment-container, .bili-tabs {display: none !important;}
+                .bili-opus-view {border-radius: 6px !important;}
+                .opus-detail {margin-bottom: 10px !important;}
+                #app .content .dyn-tabs {display: none !important;}
+                #app .content .card {padding-bottom: 30px!important;}
+            `,
+        }),
         // 隐藏 活动/notice, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-reply-notice',
@@ -636,7 +649,8 @@ if (isPageDynamic()) {
             itemID: 'hide-dynamic-page-sidebar-old-version',
             description: '隐藏 回到旧版',
             defaultStatus: true,
-            itemCSS: `.bili-dyn-sidebar .bili-dyn-sidebar__btn:first-child {visibility: hidden !important;}`,
+            itemCSS: `.bili-dyn-sidebar .bili-dyn-sidebar__btn:first-child {visibility: hidden !important;}
+            .opus-detail .side-toolbar__bottom .side-toolbar__btn:not(.backtop) {display: none !important;}`,
         }),
         // 隐藏 回顶部
         new CheckboxItem({

@@ -1173,12 +1173,6 @@ if (isPageVideo() || isPagePlaylist()) {
 
     // 右侧视频栏
     const rightItems = [
-        // 滚动页面时 右栏不再吸附页面底部
-        new CheckboxItem({
-            itemID: 'video-page-cancel-right-container-sticky-bottom',
-            description: '滚动页面时 右栏不再吸附页面底部',
-            itemCSS: `.right-container-inner.scroll-sticky {position: static !important;}`,
-        }),
         // 隐藏 广告, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-right-container-ad',

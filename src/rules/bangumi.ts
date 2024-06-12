@@ -549,12 +549,6 @@ if (isPageBangumi()) {
 
     // 右栏
     const rightItems = [
-        // 滚动页面时 右栏不再吸附页面底部
-        new CheckboxItem({
-            itemID: 'video-page-cancel-right-container-sticky-bottom',
-            description: '滚动页面时 右栏不再吸附页面底部',
-            itemCSS: `.main-container .plp-r.sticky {bottom: 100vh !important;}`,
-        }),
         // bangumi独有项：隐藏 大会员按钮, 默认开启
         new CheckboxItem({
             itemID: 'bangumi-page-hide-right-container-section-height',

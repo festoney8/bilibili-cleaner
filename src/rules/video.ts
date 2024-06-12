@@ -188,7 +188,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 默认宽屏播放
         new CheckboxItem({
             itemID: 'default-widescreen',
-            description: '默认宽屏播放 刷新生效',
+            description: '默认宽屏播放 刷新生效\n需禁用 普通播放宽度调节',
             itemCSS: `
                 /* 修复右栏底部吸附计算top时位置跳变 */
                 .video-container-v1 .right-container {
@@ -368,10 +368,10 @@ if (isPageVideo() || isPagePlaylist()) {
                 onIsWideChangeFuncArr.push(func)
             },
         }),
-        // 普通播放时 视频宽度
+        // 普通播放 视频宽度调节
         new NumberItem({
             itemID: 'normalscreen-width',
-            description: '普通播放时 视频宽度（-1禁用）',
+            description: '普通播放 视频宽度调节（-1禁用）',
             defaultValue: -1,
             minValue: -1,
             maxValue: 100,

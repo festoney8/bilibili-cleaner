@@ -621,7 +621,10 @@ if (!isPageLiveHome()) {
         new CheckboxItem({
             itemID: 'common-hide-nav-bml',
             description: '隐藏 BML',
-            itemCSS: `.bili-header__bar .left-entry li:has(>div>a[href*="bml.bilibili.com"]) {display: none !important;}`,
+            itemCSS: `
+                .bili-header__bar .left-entry li:has(>div>a[href*="bml.bilibili.com"]) {display: none !important;}
+                #internationalHeader li.nav-link-item:has(a[href*="bml.bilibili.com"]) {display: none !important;}
+            `,
         }),
         // 隐藏 下载客户端, 默认开启
         new CheckboxItem({

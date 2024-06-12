@@ -1,5 +1,5 @@
 import { Group } from '../components/group'
-import { CheckboxItem } from '../components/item'
+import { CheckboxItem, NumberItem } from '../components/item'
 import { debugRules as debug, error } from '../utils/logger'
 import { matchAvidBvid, matchBvid, waitForEle } from '../utils/tool'
 import { isPageFestival, isPagePlaylist, isPageVideo } from '../utils/page-type'
@@ -180,73 +180,6 @@ if (isPageVideo() || isPagePlaylist()) {
             description: '顶栏 滚动页面后不再吸附顶部',
             itemCSS: `.fixed-header .bili-header__bar {position: relative !important;}`,
         }),
-        // 播放器和视频信息 交换位置
-        new CheckboxItem({
-            itemID: 'video-page-exchange-player-position',
-            description: '播放器和视频信息 交换位置',
-            itemCSS: `
-                .left-container, .playlist-container--left {
-                    display: flex !important;
-                    flex-direction: column !important;
-                    padding-top: 35px !important;
-                }
-                .left-container > *, .playlist-container--left > * {
-                    order: 1;
-                }
-                #playerWrap {
-                    order: 0 !important;
-                }
-                .video-info-container {
-                    height: auto !important;
-                    padding-top: 16px !important;
-                    /* 高权限消除展开标题的间距 */
-                    margin-bottom: 0 !important;
-                }
-            `,
-            // fix #80 宽屏模式下播放器遮盖up主
-            itemFunc: () => {
-                const func = () => {
-                    if (unsafeWindow.isWide) {
-                        let cnt = 0
-                        const id = setInterval(() => {
-                            const player = document.querySelector(
-                                `.bpx-player-container[data-screen="wide"]`,
-                            ) as HTMLElement
-                            if (player) {
-                                const top = parseInt(getComputedStyle(player).height) + 50
-                                const danmakuBox = document.querySelector('#danmukuBox') as HTMLElement
-                                if (danmakuBox) {
-                                    danmakuBox.style.marginTop = `${top}px`
-                                }
-                                const upPanel = document.querySelector('.up-panel-container') as HTMLElement
-                                if (upPanel) {
-                                    upPanel.style.position = 'relative'
-                                    upPanel.style.top = `${top}px`
-                                }
-                                clearInterval(id)
-                            } else {
-                                cnt++
-                                if (cnt > 200) {
-                                    clearInterval(id)
-                                }
-                            }
-                        }, 10)
-                    } else {
-                        const upPanel = document.querySelector('.up-panel-container') as HTMLElement
-                        if (upPanel) {
-                            upPanel.style.position = 'static'
-                            upPanel.style.top = '0'
-                        }
-                        const danmakuBox = document.querySelector('#danmukuBox') as HTMLElement
-                        if (danmakuBox) {
-                            danmakuBox.style.marginTop = '0'
-                        }
-                    }
-                }
-                unsafeWindow.isWide && func()
-                onIsWideChangeFuncArr.push(func)
-            },
-        }),
     ]
     videoGroupList.push(new Group('video-basic', '播放页 基本功能', basicItems))
 
@@ -255,7 +188,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 默认宽屏播放
         new CheckboxItem({
             itemID: 'default-widescreen',
-            description: '默认宽屏播放 刷新生效 (实验功能)',
+            description: '默认宽屏播放 刷新生效',
             itemCSS: `
                 /* 修复右栏底部吸附计算top时位置跳变 */
                 .video-container-v1 .right-container {
@@ -295,7 +228,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 网页全屏时 页面可滚动
         new CheckboxItem({
             itemID: 'webscreen-scrollable',
-            description: '网页全屏时 页面可滚动 (Chrome实验功能)\n滚轮调节视频音量会失效',
+            description: '网页全屏时 页面可滚动 滚轮调音量失效\n（仅限 Chromium 浏览器）',
             itemCSS: `
                     .webscreen-fix {
                         position: unset;
@@ -368,6 +301,97 @@ if (isPageVideo() || isPagePlaylist()) {
             itemFunc: () => document.addEventListener('wheel', disableAdjustVolume),
             callback: () => document.removeEventListener('wheel', disableAdjustVolume),
         }),
+// 播放器和视频标题 交换位置
+        new CheckboxItem({
+            itemID: 'video-page-exchange-player-position',
+            description: '播放器和视频信息 交换位置',
+            itemCSS: `
+                .left-container, .playlist-container--left {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    padding-top: 35px !important;
+                }
+                .left-container > *, .playlist-container--left > * {
+                    order: 1;
+                }
+                #playerWrap {
+                    order: 0 !important;
+                }
+                .video-info-container {
+                    height: auto !important;
+                    padding-top: 16px !important;
+                    /* 高权限消除展开标题的间距 */
+                    margin-bottom: 0 !important;
+                }
+            `,
+            // fix #80 宽屏模式下播放器遮盖up主
+            itemFunc: () => {
+                const func = () => {
+                    if (unsafeWindow.isWide) {
+                        let cnt = 0
+                        const id = setInterval(() => {
+                            const player = document.querySelector(
+                                `.bpx-player-container[data-screen="wide"]`,
+                            ) as HTMLElement
+                            if (player) {
+                                const top = parseInt(getComputedStyle(player).height) + 50
+                                const danmakuBox = document.querySelector('#danmukuBox') as HTMLElement
+                                if (danmakuBox) {
+                                    danmakuBox.style.marginTop = `${top}px`
+                                }
+                                const upPanel = document.querySelector('.up-panel-container') as HTMLElement
+                                if (upPanel) {
+                                    upPanel.style.position = 'relative'
+                                    upPanel.style.top = `${top}px`
+                                }
+                                clearInterval(id)
+                            } else {
+                                cnt++
+                                if (cnt > 200) {
+                                    clearInterval(id)
+                                }
+                            }
+                        }, 10)
+                    } else {
+                        const upPanel = document.querySelector('.up-panel-container') as HTMLElement
+                        if (upPanel) {
+                            upPanel.style.position = 'static'
+                            upPanel.style.top = '0'
+                        }
+                        const danmakuBox = document.querySelector('#danmukuBox') as HTMLElement
+                        if (danmakuBox) {
+                            danmakuBox.style.marginTop = '0'
+                        }
+                    }
+                }
+                unsafeWindow.isWide && func()
+                onIsWideChangeFuncArr.push(func)
+            },
+        }),
+        // 普通播放时 视频宽度
+        new NumberItem({
+            itemID: 'normalscreen-width',
+            description: '普通播放时 视频宽度（-1禁用）',
+            defaultValue: -1,
+            minValue: -1,
+            maxValue: 100,
+            disableValue: -1,
+            unit: 'vw',
+            itemCSS: `
+                body:has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"])) :is(
+                    #playerWrap,
+                    #bilibili-player,
+                    #bilibili-player-placeholder
+                ) {
+                    width: 100%;
+                    height: calc(???vw * 9 / 16);
+                }
+                body:has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"])) .left-container {
+                    flex-basis: ???vw !important;
+                }
+            `,
+            itemCSSPlaceholder: '???',
+        }),
         // // 全屏时 可滚动页面
         // new CheckboxItem({
         //     itemID: 'fullscreen-scrollable',
@@ -438,7 +462,7 @@ if (isPageVideo() || isPagePlaylist()) {
         //     },
         // }),
     ]
-    videoGroupList.push(new Group('player-mode', '播放设定', playerInitItems))
+    videoGroupList.push(new Group('player-mode', '播放设定（实验功能）', playerInitItems))
 
     // 视频信息
     const infoItems = [

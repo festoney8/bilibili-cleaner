@@ -230,78 +230,102 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'webscreen-scrollable',
             description: '网页全屏时 页面可滚动 滚轮调音量失效\n（仅限 Chromium 浏览器）',
             itemCSS: `
-                    .webscreen-fix {
-                        position: unset;
-                        top: unset;
-                        left: unset;
-                        margin: unset;
-                        padding: unset;
-                        width: unset;
-                        height: unset;
+                .webscreen-fix {
+                    position: unset;
+                    top: unset;
+                    left: unset;
+                    margin: unset;
+                    padding: unset;
+                    width: unset;
+                    height: unset;
+                }
+                .webscreen-fix #biliMainHeader {
+                    display: none;
+                }
+                .webscreen-fix #mirror-vdcon {
+                    box-sizing: content-box;
+                    position: relative;
+                }
+                .webscreen-fix #danmukuBox {
+                    margin-top: 0 !important;
+                }
+                .webscreen-fix :is(.left-container, .playlist-container--left) {
+                    position: static !important;
+                    padding-top: 100vh;
+                    min-width: 56vw !important;
+                }
+                .webscreen-fix :is(.left-container, .playlist-container--left) .video-info-container {
+                    height: fit-content;
+                }
+                .webscreen-fix :is(.left-container, .playlist-container--left) #bilibili-player.mode-webscreen {
+                    position: static;
+                    border-radius: unset;
+                    z-index: unset;
+                    left: unset;
+                    top: unset;
+                    width: 100%;
+                    height: 100%;
+                }
+                .webscreen-fix :is(.left-container, .playlist-container--left) #playerWrap {
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    top: 0;
+                    height: 100vh;
+                    width: 100vw;
+                    padding-right: 0;
+                }
+                .webscreen-fix :is(.right-container, .playlist-container--right) {
+                    padding-top: 100vh;
+                }
+                /* 底部吸附 */
+                .webscreen-fix .right-container {
+                    display: flex;
+                }
+                .webscreen-fix :is(.right-container-inner, .playlist-container--right) {
+                    position: sticky;
+                    bottom: 0;
+                    align-self: flex-end;
+                }
+                .webscreen-fix::-webkit-scrollbar {
+                    display: none !important;
+                }
+                /* firefox */
+                @-moz-document url-prefix() {
+                    html:has(.webscreen-fix), body.webscreen-fix {
+                        scrollbar-width: none !important;
                     }
-                    .webscreen-fix #biliMainHeader {
-                        display: none;
-                    }
-                    .webscreen-fix #mirror-vdcon {
-                        box-sizing: content-box;
-                        position: relative;
-                    }
-                    .webscreen-fix #danmukuBox {
-                        margin-top: 0 !important;
-                    }
-                    .webscreen-fix :is(.left-container, .playlist-container--left) {
-                        position: static !important;
-                        padding-top: 100vh;
-                        min-width: 56vw !important;
-                    }
-                    .webscreen-fix :is(.left-container, .playlist-container--left) .video-info-container {
-                        height: fit-content;
-                    }
-                    .webscreen-fix :is(.left-container, .playlist-container--left) #bilibili-player.mode-webscreen {
-                        position: static;
-                        border-radius: unset;
-                        z-index: unset;
-                        left: unset;
-                        top: unset;
-                        width: 100%;
-                        height: 100%;
-                    }
-                    .webscreen-fix :is(.left-container, .playlist-container--left) #playerWrap {
-                        position: absolute;
-                        left: 0;
-                        right: 0;
-                        top: 0;
-                        height: 100vh;
-                        width: 100vw;
-                        padding-right: 0;
-                    }
-                    .webscreen-fix :is(.right-container, .playlist-container--right) {
-                        padding-top: 100vh;
-                    }
-                    /* 底部吸附 */
-                    .webscreen-fix .right-container {
-                        display: flex;
-                    }
-                    .webscreen-fix :is(.right-container-inner, .playlist-container--right) {
-                        position: sticky;
-                        bottom: 0;
-                        align-self: flex-end;
-                    }
-                    .webscreen-fix::-webkit-scrollbar {
-                        display: none !important;
-                    }
-                    /* firefox */
-                    @-moz-document url-prefix() {
-                        html:has(.webscreen-fix), body.webscreen-fix {
-                            scrollbar-width: none !important;
+                }
+            `,
+            itemFunc: () => {
+                // 在Chrome上可以神奇的禁用滚轮调节音量，Firefox不生效
+                document.addEventListener('wheel', disableAdjustVolume)
+
+                // 监听网页全屏按钮出现
+                const listener = () => {
+                    waitForEle(document, '.bpx-player-ctrl-web', (node: Node): boolean => {
+                        return (
+                            node instanceof HTMLElement &&
+                            (node as HTMLElement).className.includes('bpx-player-ctrl-web')
+                        )
+                    }).then((webBtn) => {
+                        if (webBtn) {
+                            webBtn.addEventListener('click', () => {
+                                if (webBtn.classList.contains('bpx-state-entered')) {
+                                    window.scrollTo(0, 0)
+                                }
+                            })
                         }
-                    }
-                `,
-            // 在Chrome上可以神奇的禁用滚轮调节音量，Firefox不生效
-            itemFunc: () => document.addEventListener('wheel', disableAdjustVolume),
+                    })
+                }
+                document.readyState === 'complete'
+                    ? listener()
+                    : document.addEventListener('DOMContentLoaded', listener)
+            },
+
             callback: () => document.removeEventListener('wheel', disableAdjustVolume),
         }),
-// 播放器和视频标题 交换位置
+        // 播放器和视频标题 交换位置
         new CheckboxItem({
             itemID: 'video-page-exchange-player-position',
             description: '播放器和视频信息 交换位置',

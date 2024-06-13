@@ -10,7 +10,7 @@ let _isWide = unsafeWindow.isWide
 // 宽屏模式锁, 宽屏按钮单击后释放
 let wideScreenLock = false
 // 修改unsafeWindow.isWide时执行的函数列表
-const onIsWideChangeFuncArr: (() => void)[] = []
+const onIsWideChangeFnArr: (() => void)[] = []
 if (isPageVideo() || isPagePlaylist()) {
     Object.defineProperty(unsafeWindow, 'isWide', {
         get() {
@@ -19,11 +19,19 @@ if (isPageVideo() || isPagePlaylist()) {
         set(value) {
             _isWide = value || wideScreenLock
             if (typeof _isWide === 'boolean') {
-                onIsWideChangeFuncArr.forEach((func) => func())
+                onIsWideChangeFnArr.forEach((func) => func())
             }
         },
         configurable: true,
         enumerable: true,
+    })
+    // 标记是否为宽屏模式，供播放设定功能的CSS使用
+    onIsWideChangeFnArr.push(() => {
+        if (unsafeWindow.isWide) {
+            document.documentElement?.setAttribute('bili-cleaner-is-wide', '')
+        } else {
+            document.documentElement?.removeAttribute('bili-cleaner-is-wide')
+        }
     })
 }
 
@@ -188,7 +196,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 默认宽屏播放
         new CheckboxItem({
             itemID: 'default-widescreen',
-            description: '默认宽屏播放 刷新生效\n需禁用 [普通播放 视频宽度调节]',
+            description: '默认宽屏播放 刷新生效',
             itemCSS: `
                 /* 修复右栏底部吸附计算top时位置跳变 */
                 .video-container-v1 .right-container {
@@ -330,12 +338,12 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-page-exchange-player-position',
             description: '播放器和视频信息 交换位置',
             itemCSS: `
-                body:not(.webscreen-fix) .left-container, .playlist-container--left {
+                body:not(.webscreen-fix) :is(.left-container, .playlist-container--left) {
                     display: flex !important;
                     flex-direction: column !important;
                     padding-top: 35px !important;
                 }
-                body:not(.webscreen-fix) .left-container > *, .playlist-container--left > * {
+                body:not(.webscreen-fix) :is(.left-container, .playlist-container--left) > * {
                     order: 1;
                 }
                 body:not(.webscreen-fix) #playerWrap {
@@ -349,21 +357,16 @@ if (isPageVideo() || isPagePlaylist()) {
                     margin-bottom: 0 !important;
                 }
                 /* fix #80 宽屏模式下播放器遮盖up主 */
-                body:not(.webscreen-fix) .up-panel-container {
-                    /* data-screen载入缓慢 */
-                    margin-top: 20px;
-                }
-                body:not(.webscreen-fix):has(.bpx-player-container[data-screen="wide"]) .up-panel-container {
+                html[bili-cleaner-is-wide] body:not(.webscreen-fix) .up-panel-container {
                     position: relative !important;
                     margin-top: max(calc(100vh - 80px), 600px) !important;
                 }
-                body:not(.webscreen-fix):has(.bpx-player-container[data-screen="wide"]) #danmukuBox {
+                html[bili-cleaner-is-wide] body:not(.webscreen-fix) #danmukuBox {
                     margin-top: 0 !important;
                 }
             `,
         }),
         // 普通播放 视频宽度调节
-        // bug: 宽屏模式使用mini播放器时 评论区宽度跳变
         new NumberItem({
             itemID: 'normalscreen-width',
             description: '普通播放 视频宽度调节（-1禁用）',
@@ -373,30 +376,41 @@ if (isPageVideo() || isPagePlaylist()) {
             disableValue: -1,
             unit: 'vw',
             itemCSS: `
+                /* 魔法, 勿动 */
                 :root {
                     --normal-width: min(calc(100vw - 400px), ???vw);
                     --normal-height: calc(min(calc(100vw - 400px), ???vw) * 9 / 16);
                 }
 
                 #bilibili-player-placeholder {
-                    visibility: hidden !important;
+                    display: none !important;
                 }
 
-                /* 需避免右侧视频预览 inline player 影响 */
-                .left-container:has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"], [data-screen="mini"])) :is(.left-container .bpx-player-video-area, .left-container video) {
+                /*
+                    需避免右侧视频预览 inline player 影响
+                    data-screen变化慢, 播放模式判断一律用:not(), 使用html元素的bili-cleaner-is-wide加快wide模式判断
+                */
+                html:not([bili-cleaner-is-wide]) :is(.left-container, .playlist-container--left):has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"], [data-screen="mini"])) :is(:is(.left-container, .playlist-container--left) .bpx-player-video-area, :is(.left-container, .playlist-container--left) video) {
                     width: 100%;
                     height: var(--normal-height);
                     min-height: var(--normal-height);
                     max-height: var(--normal-height);
                 }
-
-                .left-container:has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"], [data-screen="mini"])) :is(#playerWrap, #bilibili-player, #bilibili-player-placeholder) {
+                html:not([bili-cleaner-is-wide]) :is(.left-container, .playlist-container--left):has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"], [data-screen="mini"])) #bilibili-player {
                     width: 100%;
                     height: fit-content !important;
                 }
 
-                /* mini模式保持评论宽度 */
-                body:has(.left-container .bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"])) .left-container {
+                /* mini模式支撑主播放器高度 */
+                html:not([bili-cleaner-is-wide]) :is(.left-container, .playlist-container--left):has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"])) :is(#playerWrap, .bilibili-player) {
+                    background-color: black;
+                    width: var(--normal-width);
+                    height: var(--normal-height);
+                    min-height: var(--normal-height);
+                    max-height: var(--normal-height);
+                }
+
+                html:not([bili-cleaner-is-wide]) body:has(:is(.left-container, .playlist-container--left) .bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"])) :is(.left-container, .playlist-container--left) {
                     flex-basis: var(--normal-width);
                 }
 
@@ -993,7 +1007,7 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
                 })
                 document.head && observeStyle.observe(document.head, { childList: true })
                 // 宽屏模式
-                onIsWideChangeFuncArr.push(overrideCSS)
+                onIsWideChangeFnArr.push(overrideCSS)
             },
         }),
         // 全屏下 关闭弹幕输入框

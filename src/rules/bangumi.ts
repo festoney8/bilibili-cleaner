@@ -62,7 +62,7 @@ if (isPageBangumi()) {
         // 网页全屏时 页面可滚动
         new CheckboxItem({
             itemID: 'webscreen-scrollable',
-            description: '网页全屏时 页面可滚动 (Chrome实验功能)\n滚轮调节视频音量会失效',
+            description: '网页全屏时 页面可滚动 滚轮调音量失效\n（Firefox 不适用）',
             itemCSS: `
                 body:has(#bilibili-player-wrap[class^='video_playerFullScreen']) {
                     overflow: auto !important;

@@ -228,7 +228,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 网页全屏时 页面可滚动
         new CheckboxItem({
             itemID: 'webscreen-scrollable',
-            description: '网页全屏时 页面可滚动 滚轮调音量失效\n（仅限 Chromium 浏览器）',
+            description: '网页全屏时 页面可滚动 滚轮调音量失效\n（Firefox 不适用）',
             itemCSS: `
                 .webscreen-fix {
                     position: unset;
@@ -363,6 +363,7 @@ if (isPageVideo() || isPagePlaylist()) {
             `,
         }),
         // 普通播放 视频宽度调节
+        // bug: 宽屏模式使用mini播放器时 评论区宽度跳变
         new NumberItem({
             itemID: 'normalscreen-width',
             description: '普通播放 视频宽度调节（-1禁用）',
@@ -372,26 +373,43 @@ if (isPageVideo() || isPagePlaylist()) {
             disableValue: -1,
             unit: 'vw',
             itemCSS: `
-                body:has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"], [data-screen="mini"])) :is(
-                    .bpx-player-video-area,
-                    .bpx-player-video-area video
-                ) {
-                    width: 100%;
-                    height: calc(???vw * 9 / 16);
-                    min-height: calc(???vw * 9 / 16);
-                    max-height: calc(???vw * 9 / 16);
+                :root {
+                    --normal-width: min(calc(100vw - 400px), ???vw);
+                    --normal-height: calc(min(calc(100vw - 400px), ???vw) * 9 / 16);
                 }
-                body:has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"], [data-screen="mini"])) :is(
-                    #playerWrap,
-                    #bilibili-player,
-                    #bilibili-player-placeholder
-                ) {
+
+                #bilibili-player-placeholder {
+                    visibility: hidden !important;
+                }
+
+                /* 需避免右侧视频预览 inline player 影响 */
+                .left-container:has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"], [data-screen="mini"])) :is(.left-container .bpx-player-video-area, .left-container video) {
+                    width: 100%;
+                    height: var(--normal-height);
+                    min-height: var(--normal-height);
+                    max-height: var(--normal-height);
+                }
+
+                .left-container:has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"], [data-screen="mini"])) :is(#playerWrap, #bilibili-player, #bilibili-player-placeholder) {
                     width: 100%;
                     height: fit-content !important;
                 }
-                /* mini模式不改动宽度 */
-                body:has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"])) .left-container {
-                    flex-basis: ???vw !important;
+
+                /* mini模式保持评论宽度 */
+                body:has(.left-container .bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"])) .left-container {
+                    flex-basis: var(--normal-width);
+                }
+
+                /* 修复右栏底部吸附计算top时位置跳变 */
+                .video-container-v1 .right-container {
+                    display: flex;
+                }
+
+                .video-container-v1 .right-container .right-container-inner {
+                    position: sticky !important;
+                    top: unset !important;
+                    bottom: 0 !important;
+                    align-self: flex-end !important;
                 }
             `,
             itemCSSPlaceholder: '???',

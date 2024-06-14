@@ -12,6 +12,7 @@ import {
     isPageSearch,
     isPageVideo,
 } from '../utils/page-type'
+import URLCleanerInstance from '../utils/url-cleaner'
 
 // Grouplist
 const commonGroupList: Group[] = []
@@ -337,76 +338,79 @@ const basicItems = [
         itemID: 'url-cleaner',
         description: 'URL参数净化 (充电时需关闭)',
         defaultStatus: true,
-        isItemFuncReload: true,
         /**
          * URL净化，移除query string中的跟踪参数/无用参数
          * 净化掉vd_source参数会导致充电窗口载入失败
          */
         itemFunc: () => {
-            // 直播域名各种iframe页面（天选、抽奖）和活动页特殊处理
-            if (location.href.match(/live\.bilibili\.com\/(p\/html|activity|blackboard)/)) {
-                return
-            }
-            const keysToRemove = new Set([
-                'from_source',
-                'spm_id_from',
-                'search_source',
-                'vd_source',
-                'unique_k',
-                'is_story_h5',
-                'from_spmid',
-                'share_plat',
-                'share_medium',
-                'share_from',
-                'share_source',
-                'share_tag',
-                'up_id',
-                'timestamp',
-                'mid',
-                'live_from',
-                'launch_id',
-                'session_id',
-                'share_session_id',
-                'broadcast_type',
-                'is_room_feed',
-                'spmid',
-                'plat_id',
-                'goto',
-                'report_flow_data',
-                'trackid',
-                'live_form',
-                'track_id',
-                'from',
-                'visit_id',
-                'extra_jump_from',
-            ])
-            if (isPageSearch()) {
-                keysToRemove.add('vt')
-            }
-            if (isPageLiveRoom()) {
-                keysToRemove.add('bbid')
-                keysToRemove.add('ts')
-            }
-            const url = location.href
-            const urlObj = new URL(url)
-            const params = new URLSearchParams(urlObj.search)
+            const cleanParams = (url: string): string => {
+                try {
+                    // 直播域名各种iframe页面（天选、抽奖）和活动页特殊处理
+                    if (url.match(/live\.bilibili\.com\/(p\/html|activity|blackboard)/)) {
+                        return url
+                    }
+                    const keysToRemove = new Set([
+                        'from_source',
+                        'spm_id_from',
+                        'search_source',
+                        'vd_source',
+                        'unique_k',
+                        'is_story_h5',
+                        'from_spmid',
+                        'share_plat',
+                        'share_medium',
+                        'share_from',
+                        'share_source',
+                        'share_tag',
+                        'up_id',
+                        'timestamp',
+                        'mid',
+                        'live_from',
+                        'launch_id',
+                        'session_id',
+                        'share_session_id',
+                        'broadcast_type',
+                        'is_room_feed',
+                        'spmid',
+                        'plat_id',
+                        'goto',
+                        'report_flow_data',
+                        'trackid',
+                        'live_form',
+                        'track_id',
+                        'from',
+                        'visit_id',
+                        'extra_jump_from',
+                    ])
+                    if (isPageSearch()) {
+                        keysToRemove.add('vt')
+                    }
+                    if (isPageLiveRoom()) {
+                        keysToRemove.add('bbid')
+                        keysToRemove.add('ts')
+                    }
+                    const urlObj = new URL(url)
+                    const params = new URLSearchParams(urlObj.search)
 
-            const temp = []
-            for (const k of params.keys()) {
-                keysToRemove.has(k) && temp.push(k)
-            }
-            for (const k of temp) {
-                params.delete(k)
-            }
-            if (params.get('p') === '1') {
-                params.delete('p')
-            }
+                    const temp = []
+                    for (const k of params.keys()) {
+                        keysToRemove.has(k) && temp.push(k)
+                    }
+                    for (const k of temp) {
+                        params.delete(k)
+                    }
+                    if (params.get('p') === '1') {
+                        params.delete('p')
+                    }
 
-            urlObj.search = params.toString()
-            const newURL = urlObj.toString().replace(/\/$/, '')
-            if (newURL !== url) {
-                history.replaceState(null, '', newURL)
+                    urlObj.search = params.toString()
+                    return urlObj.toString()
+                } catch (err) {
+                    return url
+                }
             }
+            URLCleanerInstance.cleanFnArr.push(cleanParams)
+            URLCleanerInstance.clean()
         },
     }),
     // 隐藏页底 footer

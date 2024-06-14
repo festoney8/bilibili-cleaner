@@ -4,6 +4,7 @@ import { debugRules as debug, error } from '../utils/logger'
 import { matchAvidBvid, matchBvid, waitForEle } from '../utils/tool'
 import { isPageFestival, isPagePlaylist, isPageVideo } from '../utils/page-type'
 import { GM_getValue, GM_setValue, unsafeWindow } from '$'
+import URLCleanerInstance from '../utils/url-cleaner'
 
 /** 宽屏模式监听 */
 let _isWide = unsafeWindow.isWide
@@ -90,45 +91,51 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-page-bv2av',
             description: 'BV号转AV号',
             itemFunc: () => {
-                /**
-                 * algo by bilibili-API-collect
-                 * @see https://www.zhihu.com/question/381784377/answer/1099438784
-                 * @see https://github.com/SocialSisterYi/bilibili-API-collect/issues/740
-                 * @see https://socialsisteryi.github.io/bilibili-API-collect/docs/misc/bvid_desc.html
-                 * @param bvid 输入BV号
-                 * @returns 输出纯数字av号
-                 */
-                const XOR_CODE = 23442827791579n
-                const MASK_CODE = 2251799813685247n
-                const BASE = 58n
-                const data = 'FcwAPNKTMug3GV5Lj7EJnHpWsx4tb8haYeviqBz6rkCy12mUSDQX9RdoZf'
-                const dec = (bvid: string): number => {
-                    const bvidArr = Array.from<string>(bvid)
-                    ;[bvidArr[3], bvidArr[9]] = [bvidArr[9], bvidArr[3]]
-                    ;[bvidArr[4], bvidArr[7]] = [bvidArr[7], bvidArr[4]]
-                    bvidArr.splice(0, 3)
-                    const tmp = bvidArr.reduce((pre, bvidChar) => pre * BASE + BigInt(data.indexOf(bvidChar)), 0n)
-                    return Number((tmp & MASK_CODE) ^ XOR_CODE)
-                }
-
-                try {
-                    if (location.href.includes('bilibili.com/video/BV')) {
-                        const bvid = matchBvid(location.href)
-                        if (bvid) {
-                            // 保留query string中分P参数, anchor中reply定位
-                            let partNum = ''
-                            const params = new URLSearchParams(location.search)
-                            if (params.has('p')) {
-                                partNum += `?p=${params.get('p')}`
-                            }
-                            const aid = dec(bvid)
-                            const newURL = `https://www.bilibili.com/video/av${aid}${partNum}${location.hash}`
-                            history.replaceState(null, '', newURL)
-                        }
+                const bv2av = (url: string): string => {
+                    /**
+                     * algo by bilibili-API-collect
+                     * @see https://www.zhihu.com/question/381784377/answer/1099438784
+                     * @see https://github.com/SocialSisterYi/bilibili-API-collect/issues/740
+                     * @see https://socialsisteryi.github.io/bilibili-API-collect/docs/misc/bvid_desc.html
+                     * @param bvid 输入BV号
+                     * @returns 输出纯数字av号
+                     */
+                    const XOR_CODE = 23442827791579n
+                    const MASK_CODE = 2251799813685247n
+                    const BASE = 58n
+                    const data = 'FcwAPNKTMug3GV5Lj7EJnHpWsx4tb8haYeviqBz6rkCy12mUSDQX9RdoZf'
+                    const dec = (bvid: string): number => {
+                        const bvidArr = Array.from<string>(bvid)
+                        ;[bvidArr[3], bvidArr[9]] = [bvidArr[9], bvidArr[3]]
+                        ;[bvidArr[4], bvidArr[7]] = [bvidArr[7], bvidArr[4]]
+                        bvidArr.splice(0, 3)
+                        const tmp = bvidArr.reduce((pre, bvidChar) => pre * BASE + BigInt(data.indexOf(bvidChar)), 0n)
+                        return Number((tmp & MASK_CODE) ^ XOR_CODE)
                     }
-                } catch (err) {}
+
+                    try {
+                        if (url.includes('bilibili.com/video/BV')) {
+                            const bvid = matchBvid(url)
+                            if (bvid) {
+                                // 保留query string中分P参数, anchor中reply定位
+                                const urlObj = new URL(url)
+                                const params = new URLSearchParams(urlObj.search)
+                                let partNum = ''
+                                if (params.has('p')) {
+                                    partNum += `?p=${params.get('p')}`
+                                }
+                                const aid = dec(bvid)
+                                return `https://www.bilibili.com/video/av${aid}/${partNum}${urlObj.hash}`
+                            }
+                        }
+                        return url
+                    } catch (err) {
+                        return url
+                    }
+                }
+                URLCleanerInstance.cleanFnArr.push(bv2av)
+                URLCleanerInstance.clean()
             },
-            isItemFuncReload: true,
         }),
         // 净化分享, 默认开启, 关闭功能需刷新
         new CheckboxItem({

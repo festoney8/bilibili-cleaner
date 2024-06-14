@@ -364,46 +364,12 @@ if (isPageVideo() || isPagePlaylist()) {
                 /* fix #80 宽屏模式下播放器遮盖up主 */
                 html[bili-cleaner-is-wide] body:not(.webscreen-fix) .up-panel-container {
                     position: relative !important;
-                }
-                @media only screen and (max-width: 1229px) {
-                    html[bili-cleaner-is-wide] body:not(.webscreen-fix) .up-panel-container {
-                        margin-top: 597px !important;
-                    }
-                }
-                @media only screen and (min-width: 1230px) and (max-width: 1397px) {
-                    html[bili-cleaner-is-wide] body:not(.webscreen-fix) .up-panel-container {
-                        margin-top: 628px !important;
-                    }
-                }
-                @media only screen and (min-width: 1398px) and (max-width: 1536px) {
-                    html[bili-cleaner-is-wide] body:not(.webscreen-fix) .up-panel-container {
-                        margin-top: 699px !important;
-                    }
-                }
-                @media only screen and (min-width: 1537px) and (max-width: 1707px) {
-                    html[bili-cleaner-is-wide] body:not(.webscreen-fix) .up-panel-container {
-                        margin-top: 822px !important;
-                    }
-                }
-                @media only screen and (min-width: 1708px) and (max-width: 1920px) {
-                    html[bili-cleaner-is-wide] body:not(.webscreen-fix) .up-panel-container {
-                        margin-top: 931px !important;
-                    }
-                }
-                @media only screen and (min-width: 1921px) and (max-width: 2048px) {
-                    html[bili-cleaner-is-wide] body:not(.webscreen-fix) .up-panel-container {
-                        margin-top: 996px !important;
-                    }
-                }
-                @media only screen and (min-width: 2049px) and (max-width: 2304px) {
-                    html[bili-cleaner-is-wide] body:not(.webscreen-fix) .up-panel-container {
-                        margin-top: 1127px !important;
-                    }
-                }
-                @media only screen and (min-width: 2305px) {
-                    html[bili-cleaner-is-wide] body:not(.webscreen-fix) .up-panel-container {
-                        margin-top: 1219px !important;
-                    }
+                    /*
+                        拟合魔法，勿动
+                        videoWidth = innerWidth * 0.962339 - 359.514px
+                        videoHeight = max(min(calc(innerWidth * 0.962339 - 359.514px), 2010px), 923px) * 9/16 + 46px
+                    */
+                    margin-top: calc(max(min(calc(100vw * 0.962339 - 359.514px), 2010px), 923px) * 9 / 16 + 46px + 35px);
                 }
                 html[bili-cleaner-is-wide] body:not(.webscreen-fix) #danmukuBox {
                     margin-top: 0 !important;

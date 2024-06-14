@@ -554,7 +554,7 @@ if (isPageBangumi()) {
             itemID: 'bangumi-page-hide-right-container-section-height',
             description: '隐藏 大会员按钮 ★',
             defaultStatus: true,
-            itemCSS: `[class^='vipPaybar_'] {display: none !important;}`,
+            itemCSS: `.plp-r [class^='vipPaybar_'], .plp-r [class^='paybar_'] {display: none !important;}`,
         }),
         // 隐藏 弹幕列表, 默认开启
         new CheckboxItem({

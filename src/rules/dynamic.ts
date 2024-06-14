@@ -331,7 +331,7 @@ if (isPageDynamic()) {
                 /* .bili-dyn-item__panel {padding-bottom: 0 !important;} */
                 .bili-comment-container, .bili-tabs {display: none !important;}
                 .bili-opus-view {border-radius: 6px !important;}
-                .opus-detail {margin-bottom: 10px !important;}
+                .opus-detail {margin-bottom: 10px !important; min-height: unset !important;}
                 #app .content .dyn-tabs {display: none !important;}
                 #app .content .card {padding-bottom: 30px!important;}
             `,

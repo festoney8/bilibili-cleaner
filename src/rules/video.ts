@@ -198,6 +198,10 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'default-widescreen',
             description: '默认宽屏播放 刷新生效',
             itemCSS: `
+                /* 修复mini播放模式主播放器宽度支撑问题 */
+                html[bili-cleaner-is-wide] #playerWrap:has(.bpx-player-container[data-screen="mini"]) {
+                    width: fit-content;
+                }
                 /* 修复右栏底部吸附计算top时位置跳变 */
                 .video-container-v1 .right-container {
                     display: flex;
@@ -356,10 +360,50 @@ if (isPageVideo() || isPagePlaylist()) {
                     /* 高权限消除展开标题的间距 */
                     margin-bottom: 0 !important;
                 }
+
                 /* fix #80 宽屏模式下播放器遮盖up主 */
                 html[bili-cleaner-is-wide] body:not(.webscreen-fix) .up-panel-container {
                     position: relative !important;
-                    margin-top: max(calc(100vh - 80px), 600px) !important;
+                }
+                @media only screen and (max-width: 1229px) {
+                    html[bili-cleaner-is-wide] body:not(.webscreen-fix) .up-panel-container {
+                        margin-top: 597px !important;
+                    }
+                }
+                @media only screen and (min-width: 1230px) and (max-width: 1397px) {
+                    html[bili-cleaner-is-wide] body:not(.webscreen-fix) .up-panel-container {
+                        margin-top: 628px !important;
+                    }
+                }
+                @media only screen and (min-width: 1398px) and (max-width: 1536px) {
+                    html[bili-cleaner-is-wide] body:not(.webscreen-fix) .up-panel-container {
+                        margin-top: 699px !important;
+                    }
+                }
+                @media only screen and (min-width: 1537px) and (max-width: 1707px) {
+                    html[bili-cleaner-is-wide] body:not(.webscreen-fix) .up-panel-container {
+                        margin-top: 822px !important;
+                    }
+                }
+                @media only screen and (min-width: 1708px) and (max-width: 1920px) {
+                    html[bili-cleaner-is-wide] body:not(.webscreen-fix) .up-panel-container {
+                        margin-top: 931px !important;
+                    }
+                }
+                @media only screen and (min-width: 1921px) and (max-width: 2048px) {
+                    html[bili-cleaner-is-wide] body:not(.webscreen-fix) .up-panel-container {
+                        margin-top: 996px !important;
+                    }
+                }
+                @media only screen and (min-width: 2049px) and (max-width: 2304px) {
+                    html[bili-cleaner-is-wide] body:not(.webscreen-fix) .up-panel-container {
+                        margin-top: 1127px !important;
+                    }
+                }
+                @media only screen and (min-width: 2305px) {
+                    html[bili-cleaner-is-wide] body:not(.webscreen-fix) .up-panel-container {
+                        margin-top: 1219px !important;
+                    }
                 }
                 html[bili-cleaner-is-wide] body:not(.webscreen-fix) #danmukuBox {
                     margin-top: 0 !important;
@@ -383,42 +427,68 @@ if (isPageVideo() || isPagePlaylist()) {
                 }
 
                 #bilibili-player-placeholder {
-                    display: none !important;
+                    visibility: hidden !important;
                 }
 
                 /*
                     需避免右侧视频预览 inline player 影响
                     data-screen变化慢, 播放模式判断一律用:not(), 使用html元素的bili-cleaner-is-wide加快wide模式判断
                 */
-                html:not([bili-cleaner-is-wide]) :is(.left-container, .playlist-container--left):has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"], [data-screen="mini"])) :is(:is(.left-container, .playlist-container--left) .bpx-player-video-area, :is(.left-container, .playlist-container--left) video) {
-                    width: 100%;
-                    height: var(--normal-height);
-                    min-height: var(--normal-height);
-                    max-height: var(--normal-height);
-                }
-                html:not([bili-cleaner-is-wide]) :is(.left-container, .playlist-container--left):has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"], [data-screen="mini"])) #bilibili-player {
-                    width: 100%;
-                    height: fit-content !important;
-                }
-
-                /* mini模式支撑主播放器高度 */
-                html:not([bili-cleaner-is-wide]) :is(.left-container, .playlist-container--left):has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"])) :is(#playerWrap, .bilibili-player) {
-                    background-color: black;
-                    width: var(--normal-width);
-                    height: var(--normal-height);
-                    min-height: var(--normal-height);
-                    max-height: var(--normal-height);
-                }
-
-                html:not([bili-cleaner-is-wide]) body:has(:is(.left-container, .playlist-container--left) .bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"])) :is(.left-container, .playlist-container--left) {
+                /* 左列basis宽度 */
+                html:not([bili-cleaner-is-wide]) :is(.left-container, .playlist-container--left):has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"])) {
                     flex-basis: var(--normal-width);
+                }
+                /* 播放器长宽限制 */
+                html:not([bili-cleaner-is-wide]) :is(.left-container, .playlist-container--left):has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"], [data-screen="mini"])) :is(.bpx-player-video-area, video) {
+                    width: 100% !important;
+                    height: var(--normal-height) !important;
+                    min-height: var(--normal-height) !important;
+                    max-height: var(--normal-height) !important;
+                }
+                /* 播放器外层 */
+                html:not([bili-cleaner-is-wide]) :is(.left-container, .playlist-container--left):has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"], [data-screen="mini"])) :is(.bpx-player-primary-area, .bpx-player-container, .bpx-docker-major, #bilibili-player, #playerWrap) {
+                    width: var(--normal-width);
+                    height: fit-content;
+                    max-height: calc(var(--normal-height) + 56px);
+                }
+                /* 普通mini模式 主播放器支撑 */
+                html:not([bili-cleaner-is-wide]) #playerWrap:has(.bpx-player-container[data-screen="mini"]) {
+                    background-color: transparent;
+                    width: var(--normal-width);
+                    height: calc(var(--normal-height) + 46px);
+                    min-height: var(--normal-height);
+                    max-height: calc(var(--normal-height) + 56px);
+                    position: relative;
+                }
+                html:not([bili-cleaner-is-wide]) #playerWrap:has(.bpx-player-container[data-screen="mini"])::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: calc(100% - 46px);
+                    background-color: black;
+                }
+                /* 宽屏mini模式 主播放器支撑 */
+                html[bili-cleaner-is-wide] #playerWrap:has(.bpx-player-container[data-screen="mini"]) {
+                    background-color: transparent;
+                    width: fit-content;
+                    position: relative;
+                }
+                html[bili-cleaner-is-wide] #playerWrap:has(.bpx-player-container[data-screen="mini"])::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: calc(100% - 46px);
+                    background-color: black;
                 }
 
                 /* 修复右栏底部吸附计算top时位置跳变 */
                 .video-container-v1 .right-container {
                     display: flex;
                 }
-
                 .video-container-v1 .right-container .right-container-inner {
                     position: sticky !important;
                     top: unset !important;

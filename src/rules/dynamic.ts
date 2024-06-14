@@ -4,20 +4,6 @@ import { isPageDynamic } from '../utils/page-type'
 import fontFaceRegular from './styles/fontFaceRegular.scss?inline'
 import fontFaceMedium from './styles/fontFaceMedium.scss?inline'
 
-// 自动展开 相同UP主被折叠的动态
-const dynamicUnfold = () => {
-    // 大量动态下，单次耗时10ms内
-    const unfold = () => {
-        const dynFoldNodes = document.querySelectorAll('main .bili-dyn-list__item .bili-dyn-item-fold')
-        if (dynFoldNodes.length) {
-            dynFoldNodes.forEach((e) => {
-                e instanceof HTMLDivElement && e.click()
-            })
-        }
-    }
-    setInterval(unfold, 500)
-}
-
 const dynamicGroupList: Group[] = []
 
 /**
@@ -319,13 +305,37 @@ if (isPageDynamic()) {
         new CheckboxItem({
             itemID: 'dynamic-page-unfold-dynamic',
             description: '自动展开 相同UP主被折叠的动态',
-            itemFunc: dynamicUnfold,
+            itemFunc: () => {
+                // 大量动态下，单次耗时10ms内
+                const unfold = () => {
+                    const dynFoldNodes = document.querySelectorAll('main .bili-dyn-list__item .bili-dyn-item-fold')
+                    if (dynFoldNodes.length) {
+                        dynFoldNodes.forEach((e) => {
+                            e instanceof HTMLDivElement && e.click()
+                        })
+                    }
+                }
+                setInterval(unfold, 500)
+            },
         }),
     ]
     dynamicGroupList.push(new Group('dynamic-center', '中栏 动态列表', centerItems))
 
     // 动态评论区, 尽可能同步video page
     const commentItems = [
+        // 隐藏 整个评论区
+        new CheckboxItem({
+            itemID: 'dynamic-page-hide-all-comment',
+            description: '隐藏 整个评论区',
+            itemCSS: `
+                /* .bili-dyn-item__panel {padding-bottom: 0 !important;} */
+                .bili-comment-container, .bili-tabs {display: none !important;}
+                .bili-opus-view {border-radius: 6px !important;}
+                .opus-detail {margin-bottom: 10px !important; min-height: unset !important;}
+                #app .content .dyn-tabs {display: none !important;}
+                #app .content .card {padding-bottom: 30px!important;}
+            `,
+        }),
         // 隐藏 活动/notice, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-reply-notice',
@@ -639,7 +649,8 @@ if (isPageDynamic()) {
             itemID: 'hide-dynamic-page-sidebar-old-version',
             description: '隐藏 回到旧版',
             defaultStatus: true,
-            itemCSS: `.bili-dyn-sidebar .bili-dyn-sidebar__btn:first-child {visibility: hidden !important;}`,
+            itemCSS: `.bili-dyn-sidebar .bili-dyn-sidebar__btn:first-child {visibility: hidden !important;}
+            .opus-detail .side-toolbar__bottom .side-toolbar__btn:not(.backtop) {display: none !important;}`,
         }),
         // 隐藏 回顶部
         new CheckboxItem({

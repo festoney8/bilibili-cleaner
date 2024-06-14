@@ -3,11 +3,15 @@ const host = location.host
 const pathname = location.pathname
 
 const currPage = (): string => {
+    // 无效url
     if (
-        href.startsWith('https://www.bilibili.com/') &&
-        ['/index.html', '/'].includes(pathname) &&
-        !pathname.includes('/correspond/')
+        href.includes('www.bilibili.com/correspond/') ||
+        href.includes('live.bilibili.com/p/html/') ||
+        href.includes('live.bilibili.com/live-room-play-game-together')
     ) {
+        return 'invalid'
+    }
+    if (href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'].includes(pathname)) {
         return 'homepage'
     }
     if (href.includes('bilibili.com/video/')) {
@@ -62,6 +66,7 @@ const currPage = (): string => {
 
 const ans = currPage()
 
+export const isPageInvalid = () => ans === 'invalid'
 export const isPageHomepage = () => ans === 'homepage'
 export const isPageVideo = () => ans === 'video'
 export const isPagePopular = () => ans === 'popular'

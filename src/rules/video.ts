@@ -1,216 +1,83 @@
 import { Group } from '../components/group'
-import { CheckboxItem } from '../components/item'
+import { CheckboxItem, NumberItem } from '../components/item'
 import { debugRules as debug, error } from '../utils/logger'
-import { matchAvidBvid, matchBvid } from '../utils/tool'
+import { matchAvidBvid, matchBvid, waitForEle } from '../utils/tool'
 import { isPageFestival, isPagePlaylist, isPageVideo } from '../utils/page-type'
 import { GM_getValue, GM_setValue, unsafeWindow } from '$'
 
-/** BV号转AV号 */
-const bv2av = () => {
-    /**
-     * algo by bilibili-API-collect
-     * @see https://www.zhihu.com/question/381784377/answer/1099438784
-     * @see https://github.com/SocialSisterYi/bilibili-API-collect/issues/740
-     * @see https://socialsisteryi.github.io/bilibili-API-collect/docs/misc/bvid_desc.html
-     * @param bvid 输入BV号
-     * @returns 输出纯数字av号
-     */
-    const XOR_CODE = 23442827791579n
-    const MASK_CODE = 2251799813685247n
-    const BASE = 58n
-    const data = 'FcwAPNKTMug3GV5Lj7EJnHpWsx4tb8haYeviqBz6rkCy12mUSDQX9RdoZf'
-    const dec = (bvid: string): number => {
-        const bvidArr = Array.from<string>(bvid)
-        ;[bvidArr[3], bvidArr[9]] = [bvidArr[9], bvidArr[3]]
-        ;[bvidArr[4], bvidArr[7]] = [bvidArr[7], bvidArr[4]]
-        bvidArr.splice(0, 3)
-        const tmp = bvidArr.reduce((pre, bvidChar) => pre * BASE + BigInt(data.indexOf(bvidChar)), 0n)
-        return Number((tmp & MASK_CODE) ^ XOR_CODE)
-    }
-
-    try {
-        if (location.href.includes('bilibili.com/video/BV')) {
-            const bvid = matchBvid(location.href)
-            if (bvid) {
-                // 保留query string中分P参数, anchor中reply定位
-                let partNum = ''
-                const params = new URLSearchParams(location.search)
-                if (params.has('p')) {
-                    partNum += `?p=${params.get('p')}`
-                }
-                const aid = dec(bvid)
-                const newURL = `https://www.bilibili.com/video/av${aid}${partNum}${location.hash}`
-                history.replaceState(null, '', newURL)
-            }
-        }
-    } catch (err) {}
-}
-
-/** 净化分享按钮功能, 暂不支持从稍后再看列表、收藏夹列表分享 */
-let isSimpleShareBtn = false
-const simpleShare = () => {
-    if (isSimpleShareBtn) {
-        return
-    }
-    // 监听shareBtn出现
-    let shareBtn
-    let counter = 0
-    const checkElement = setInterval(() => {
-        counter++
-        shareBtn = document.getElementById('share-btn-outer')
-        if (shareBtn) {
-            isSimpleShareBtn = true
-            clearInterval(checkElement)
-            // 新增click事件
-            // 若replace element, 会在切换视频后无法更新视频分享数量, 故直接新增click事件覆盖剪贴板
-            shareBtn.addEventListener('click', () => {
-                let title = document.querySelector(
-                    '.video-info-title .video-title, #viewbox_report > h1, .video-title-href',
-                )?.textContent
-                if (title && !title.match(/^[（【［《「＜｛〔〖〈『].*|.*[）】］》」＞｝〕〗〉』]$/)) {
-                    title = `【${title}】`
-                }
-                // 匹配av号, BV号, 分P号
-                const avbv = matchAvidBvid(location.href)
-                let shareText = title
-                    ? `${title} \nhttps://www.bilibili.com/video/${avbv}`
-                    : `https://www.bilibili.com/video/${avbv}`
-                const urlObj = new URL(location.href)
-                const params = new URLSearchParams(urlObj.search)
-                if (params.has('p')) {
-                    shareText += `?p=${params.get('p')}`
-                }
-                navigator.clipboard.writeText(shareText)
-            })
-            debug('simpleShare complete')
-        } else if (counter > 50) {
-            clearInterval(checkElement)
-            debug('simpleShare timeout')
-        }
-    }, 200)
-}
-
 /** 宽屏模式监听 */
 let _isWide = unsafeWindow.isWide
+// 宽屏模式锁, 宽屏按钮单击后释放
+let wideScreenLock = false
 // 修改unsafeWindow.isWide时执行的函数列表
-const onIsWideChangeFuncArr: (() => void)[] = []
-Object.defineProperty(unsafeWindow, 'isWide', {
-    get() {
-        return _isWide
-    },
-    set(value) {
-        _isWide = value
-        if (typeof _isWide === 'boolean') {
-            onIsWideChangeFuncArr.forEach((func) => func())
-        }
-    },
-    configurable: true,
-    enumerable: true,
-})
-
-/** 隐藏弹幕栏时，强行调节播放器高度 */
-const overridePlayerHeight = () => {
-    // 念咒
-    const genSizeCSS = (): string => {
-        const e = unsafeWindow.isWide
-        const i = unsafeWindow.innerHeight
-        const t = Math.max((document.body && document.body.clientWidth) || unsafeWindow.innerWidth, 1100)
-        const n = 1680 < innerWidth ? 411 : 350
-        const o = (16 * (i - (1690 < innerWidth ? 318 : 308))) / 9
-        const r = t - 112 - n
-        let d = r < o ? r : o
-        if (d < 668) {
-            d = 668
-        }
-        if (1694 < d) {
-            d = 1694
-        }
-        let a = d + n
+const onIsWideChangeFnArr: (() => void)[] = []
+if (isPageVideo() || isPagePlaylist()) {
+    Object.defineProperty(unsafeWindow, 'isWide', {
+        get() {
+            return _isWide
+        },
+        set(value) {
+            _isWide = value || wideScreenLock
+            if (typeof _isWide === 'boolean') {
+                onIsWideChangeFnArr.forEach((func) => func())
+            }
+        },
+        configurable: true,
+        enumerable: true,
+    })
+    // 标记是否为宽屏模式，供播放设定功能的CSS使用
+    onIsWideChangeFnArr.push(() => {
         if (unsafeWindow.isWide) {
-            a -= 125
-            d -= 100
-        }
-        let l
-        if (unsafeWindow.hasBlackSide && !unsafeWindow.isWide) {
-            l = Math.round((d - 14 + (e ? n : 0)) * 0.5625) + 96
+            document.documentElement?.setAttribute('bili-cleaner-is-wide', '')
         } else {
-            l = Math.round((d + (e ? n : 0)) * 0.5625)
-        }
-        const s = `
-            .video-container-v1 {width: auto;padding: 0 10px;}
-            .left-container {width: ${a - n}px;}
-            #bilibili-player {width: ${a - (e ? -30 : n)}px;height: ${l}px;position: ${e ? 'relative' : 'static'};}
-            #oldfanfollowEntry {position: relative;top: ${e ? `${l + 10}px` : '0'};}
-            #danmukuBox {margin-top: ${e ? `${l + 28}px` : '0'};}
-            #playerWrap {height: ${l}px;}
-            .video-discover {margin-left: ${(a - n) / 2}px;}
-            `
-        return s.replace(/\n\s*/g, '').trim()
-    }
-
-    // override CSS
-    // 插入新style覆盖(必须在原style出现后，appendChild在head尾部，权限更高)
-    const overrideCSS = () => {
-        const overrideStyle = document.getElementById('overrideSetSizeStyle') as HTMLStyleElement
-        if (!overrideStyle) {
-            const newStyleNode = document.createElement('style')
-            newStyleNode.id = 'overrideSetSizeStyle'
-            newStyleNode.innerHTML = genSizeCSS()
-            document.head.appendChild(newStyleNode)
-            debug('override setSize OK')
-        } else {
-            overrideStyle.innerHTML = genSizeCSS()
-            debug('refresh setSize OK')
-        }
-    }
-
-    // 监听官方style #setSizeStyle 出现
-    const observeStyle = new MutationObserver(() => {
-        if (document.getElementById('setSizeStyle')) {
-            overrideCSS()
-            observeStyle.disconnect()
+            document.documentElement?.removeAttribute('bili-cleaner-is-wide')
         }
     })
-    if (document.head) {
-        observeStyle.observe(document.head, { childList: true })
-    }
-    // 宽屏模式
-    onIsWideChangeFuncArr.push(overrideCSS)
 }
 
-/** 投币时取消自动点赞 */
-const coinDisableAutoLike = () => {
-    const disableAutoLike = () => {
-        let counter = 0
-        const timer = setInterval(() => {
-            const checkbox = document.querySelector(
-                'body > .bili-dialog-m .bili-dialog-bomb .like-checkbox input',
-            ) as HTMLInputElement
-            if (checkbox) {
-                checkbox.checked && checkbox.click()
-                clearInterval(timer)
-            } else {
-                counter++
-                if (counter > 100) {
-                    clearInterval(timer)
-                }
-            }
-        }, 20)
-    }
-    const coinBtn = document.querySelector(
-        '#arc_toolbar_report .video-coin.video-toolbar-left-item',
-    ) as HTMLElement | null
-    if (coinBtn) {
-        coinBtn.addEventListener('click', disableAutoLike)
-    } else {
-        document.addEventListener('DOMContentLoaded', () => {
-            const coinBtn = document.querySelector(
-                '#arc_toolbar_report .video-coin.video-toolbar-left-item',
-            ) as HTMLElement | null
-            coinBtn?.addEventListener('click', disableAutoLike)
-        })
-    }
-}
+const disableAdjustVolume = () => {}
+/** 全屏时可滚动 */
+// const fullScreenScroll = () => {
+//     waitForEle(document.body, '.bpx-player-ctrl-web ~ .bpx-player-ctrl-full', (node: Node): boolean => {
+//         return node instanceof HTMLElement && (node as HTMLElement).className.includes('bpx-player-ctrl-full')
+//     }).then(() => {
+//         const isFull = () => {
+//             return (
+//                 document.fullscreenElement ||
+//                 (window.innerWidth === screen.width && window.innerHeight === screen.height)
+//             )
+//         }
+
+//         // 触发用户稀有事件，绕过浏览器API对requestFullscreen的限制
+//         // 取消播放器触发的全屏，用document.body触发全屏，置于top-layer
+//         // target必须赋予到变量，否则无法过检测
+//         const ele = document.body
+//         ele.addEventListener('touchend', () => ele.requestFullscreen().then().catch())
+
+//         // 修改全屏按钮动作，全屏可滚动 = 网页全屏滚动 + 浏览器全屏
+//         const webScreenBtn = document.querySelector<HTMLElement>('.bpx-player-ctrl-web')
+//         const fullScreenBtn = document.querySelector<HTMLElement>('.bpx-player-ctrl-full')
+//         if (webScreenBtn && fullScreenBtn) {
+//             const newBtn = fullScreenBtn.cloneNode(true) as HTMLElement
+//             fullScreenBtn.parentElement!.replaceChild(newBtn, fullScreenBtn)
+//             newBtn.onclick = async () => {
+//                 if (isFull() || (!isFull() && !document.querySelector('.webscreen-fix'))) {
+//                     webScreenBtn.click()
+//                 }
+//                 if (!isFull()) {
+//                     ele.dispatchEvent(new TouchEvent('touchend'))
+//                     webScreenBtn.style.display = 'none'
+//                 } else {
+//                     webScreenBtn.style.display = 'block'
+//                 }
+//             }
+//             document.addEventListener('fullscreenchange', () => {
+//                 if (isFull()) {
+//                 }
+//             })
+//         }
+//     })
+// }
 
 const videoGroupList: Group[] = []
 
@@ -222,7 +89,45 @@ if (isPageVideo() || isPagePlaylist()) {
         new CheckboxItem({
             itemID: 'video-page-bv2av',
             description: 'BV号转AV号',
-            itemFunc: bv2av,
+            itemFunc: () => {
+                /**
+                 * algo by bilibili-API-collect
+                 * @see https://www.zhihu.com/question/381784377/answer/1099438784
+                 * @see https://github.com/SocialSisterYi/bilibili-API-collect/issues/740
+                 * @see https://socialsisteryi.github.io/bilibili-API-collect/docs/misc/bvid_desc.html
+                 * @param bvid 输入BV号
+                 * @returns 输出纯数字av号
+                 */
+                const XOR_CODE = 23442827791579n
+                const MASK_CODE = 2251799813685247n
+                const BASE = 58n
+                const data = 'FcwAPNKTMug3GV5Lj7EJnHpWsx4tb8haYeviqBz6rkCy12mUSDQX9RdoZf'
+                const dec = (bvid: string): number => {
+                    const bvidArr = Array.from<string>(bvid)
+                    ;[bvidArr[3], bvidArr[9]] = [bvidArr[9], bvidArr[3]]
+                    ;[bvidArr[4], bvidArr[7]] = [bvidArr[7], bvidArr[4]]
+                    bvidArr.splice(0, 3)
+                    const tmp = bvidArr.reduce((pre, bvidChar) => pre * BASE + BigInt(data.indexOf(bvidChar)), 0n)
+                    return Number((tmp & MASK_CODE) ^ XOR_CODE)
+                }
+
+                try {
+                    if (location.href.includes('bilibili.com/video/BV')) {
+                        const bvid = matchBvid(location.href)
+                        if (bvid) {
+                            // 保留query string中分P参数, anchor中reply定位
+                            let partNum = ''
+                            const params = new URLSearchParams(location.search)
+                            if (params.has('p')) {
+                                partNum += `?p=${params.get('p')}`
+                            }
+                            const aid = dec(bvid)
+                            const newURL = `https://www.bilibili.com/video/av${aid}${partNum}${location.hash}`
+                            history.replaceState(null, '', newURL)
+                        }
+                    }
+                } catch (err) {}
+            },
             isItemFuncReload: true,
         }),
         // 净化分享, 默认开启, 关闭功能需刷新
@@ -230,11 +135,52 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-page-simple-share',
             description: '净化分享功能',
             defaultStatus: true,
-            itemFunc: simpleShare,
-            itemCSS: `.video-share-popover .video-share-dropdown .dropdown-bottom {display: none !important;}
+            itemCSS: `
+                .video-share-popover .video-share-dropdown .dropdown-bottom {display: none !important;}
                 .video-share-popover .video-share-dropdown .dropdown-top {padding: 15px !important;}
                 .video-share-popover .video-share-dropdown .dropdown-top .dropdown-top-right {display: none !important;}
-                .video-share-popover .video-share-dropdown .dropdown-top .dropdown-top-left {padding-right: 0 !important;}`,
+                .video-share-popover .video-share-dropdown .dropdown-top .dropdown-top-left {padding-right: 0 !important;}
+            `,
+            // 净化分享按钮功能
+            itemFunc: () => {
+                // 监听shareBtn出现
+                const listener = () => {
+                    let counter = 0
+                    const id = setInterval(() => {
+                        counter++
+                        const shareBtn = document.getElementById('share-btn-outer')
+                        if (shareBtn) {
+                            // 新增click事件
+                            // 若replace element, 会在切换视频后无法更新视频分享数量, 故直接新增click事件覆盖剪贴板
+                            shareBtn.addEventListener('click', () => {
+                                let title = document.querySelector(
+                                    '.video-info-title .video-title, #viewbox_report > h1, .video-title-href',
+                                )?.textContent
+                                if (title && !title.match(/^[（【［《「＜｛〔〖〈『].*|.*[）】］》」＞｝〕〗〉』]$/)) {
+                                    title = `【${title}】`
+                                }
+                                // 匹配av号, BV号, 分P号
+                                const avbv = matchAvidBvid(location.href)
+                                let shareText = title
+                                    ? `${title} \nhttps://www.bilibili.com/video/${avbv}`
+                                    : `https://www.bilibili.com/video/${avbv}`
+                                const urlObj = new URL(location.href)
+                                const params = new URLSearchParams(urlObj.search)
+                                if (params.has('p')) {
+                                    shareText += `?p=${params.get('p')}`
+                                }
+                                navigator.clipboard.writeText(shareText)
+                            })
+                            clearInterval(id)
+                        } else if (counter > 50) {
+                            clearInterval(id)
+                        }
+                    }, 200)
+                }
+                document.readyState === 'complete'
+                    ? listener()
+                    : document.addEventListener('DOMContentLoaded', listener)
+            },
         }),
         // 顶栏 滚动页面后不再吸附顶部
         new CheckboxItem({
@@ -242,75 +188,284 @@ if (isPageVideo() || isPagePlaylist()) {
             description: '顶栏 滚动页面后不再吸附顶部',
             itemCSS: `.fixed-header .bili-header__bar {position: relative !important;}`,
         }),
-        // 播放器和视频信息 交换位置
+    ]
+    videoGroupList.push(new Group('video-basic', '播放页 基本功能', basicItems))
+
+    // 播放设定
+    const playerInitItems = [
+        // 默认宽屏播放
+        new CheckboxItem({
+            itemID: 'default-widescreen',
+            description: '默认宽屏播放 刷新生效',
+            itemCSS: `
+                /* 修复mini播放模式主播放器宽度支撑问题 */
+                html[bili-cleaner-is-wide] #playerWrap:has(.bpx-player-container[data-screen="mini"]) {
+                    width: fit-content;
+                }
+                /* 修复右栏底部吸附计算top时位置跳变 */
+                .video-container-v1 .right-container {
+                    display: flex;
+                }
+                .video-container-v1 .right-container .right-container-inner {
+                    position: sticky !important;
+                    top: unset !important;
+                    bottom: 0 !important;
+                    align-self: flex-end !important;
+                }
+            `,
+            itemFunc: () => {
+                wideScreenLock = true
+                unsafeWindow.isWide = true
+                const listener = () => {
+                    window.scrollTo(0, 60)
+                    // 监听宽屏按钮出现
+                    waitForEle(document.body, '.bpx-player-ctrl-wide', (node: Node): boolean => {
+                        return (
+                            node instanceof HTMLElement &&
+                            (node as HTMLElement).className.includes('bpx-player-ctrl-wide')
+                        )
+                    }).then((wideBtn) => {
+                        if (wideBtn) {
+                            wideBtn.click()
+                            wideScreenLock = false
+                        }
+                    })
+                }
+                document.addEventListener('DOMContentLoaded', listener)
+            },
+            callback: () => {
+                wideScreenLock = false
+            },
+        }),
+        // 网页全屏时 页面可滚动
+        new CheckboxItem({
+            itemID: 'webscreen-scrollable',
+            description: '网页全屏时 页面可滚动 滚轮调音量失效\n（Firefox 不适用）',
+            itemCSS: `
+                .webscreen-fix {
+                    position: unset;
+                    top: unset;
+                    left: unset;
+                    margin: unset;
+                    padding: unset;
+                    width: unset;
+                    height: unset;
+                }
+                .webscreen-fix #biliMainHeader {
+                    display: none;
+                }
+                .webscreen-fix #mirror-vdcon {
+                    box-sizing: content-box;
+                    position: relative;
+                }
+                .webscreen-fix #danmukuBox {
+                    margin-top: 0 !important;
+                }
+                .webscreen-fix :is(.left-container, .playlist-container--left) {
+                    position: static !important;
+                    padding-top: 100vh;
+                    min-width: 56vw !important;
+                }
+                .webscreen-fix :is(.left-container, .playlist-container--left) .video-info-container {
+                    height: fit-content;
+                }
+                .webscreen-fix :is(.left-container, .playlist-container--left) #bilibili-player.mode-webscreen {
+                    position: static;
+                    border-radius: unset;
+                    z-index: unset;
+                    left: unset;
+                    top: unset;
+                    width: 100%;
+                    height: 100%;
+                }
+                .webscreen-fix :is(.left-container, .playlist-container--left) #playerWrap {
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    top: 0;
+                    height: 100vh;
+                    width: 100vw;
+                    padding-right: 0;
+                }
+                .webscreen-fix :is(.right-container, .playlist-container--right) {
+                    padding-top: 100vh;
+                }
+                /* 底部吸附 */
+                .webscreen-fix .right-container {
+                    display: flex;
+                }
+                .webscreen-fix :is(.right-container-inner, .playlist-container--right) {
+                    position: sticky;
+                    bottom: 0;
+                    align-self: flex-end;
+                }
+                .webscreen-fix::-webkit-scrollbar {
+                    display: none !important;
+                }
+                /* firefox */
+                @-moz-document url-prefix() {
+                    html:has(.webscreen-fix), body.webscreen-fix {
+                        scrollbar-width: none !important;
+                    }
+                }
+            `,
+            itemFunc: () => {
+                // 在Chrome上可以神奇的禁用滚轮调节音量，Firefox不生效
+                document.addEventListener('wheel', disableAdjustVolume)
+
+                // 监听网页全屏按钮出现
+                const listener = () => {
+                    waitForEle(document, '.bpx-player-ctrl-web', (node: Node): boolean => {
+                        return (
+                            node instanceof HTMLElement &&
+                            (node as HTMLElement).className.includes('bpx-player-ctrl-web')
+                        )
+                    }).then((webBtn) => {
+                        if (webBtn) {
+                            webBtn.addEventListener('click', () => {
+                                if (webBtn.classList.contains('bpx-state-entered')) {
+                                    window.scrollTo(0, 0)
+                                }
+                            })
+                        }
+                    })
+                }
+                document.readyState === 'complete'
+                    ? listener()
+                    : document.addEventListener('DOMContentLoaded', listener)
+            },
+
+            callback: () => document.removeEventListener('wheel', disableAdjustVolume),
+        }),
+        // 播放器和视频标题 交换位置
         new CheckboxItem({
             itemID: 'video-page-exchange-player-position',
             description: '播放器和视频信息 交换位置',
             itemCSS: `
-                .left-container, .playlist-container--left {
+                body:not(.webscreen-fix) :is(.left-container, .playlist-container--left) {
                     display: flex !important;
                     flex-direction: column !important;
-                    padding-top: 50px !important;
+                    padding-top: 35px !important;
                 }
-                .left-container > *, .playlist-container--left > * {
+                body:not(.webscreen-fix) :is(.left-container, .playlist-container--left) > * {
                     order: 1;
                 }
-                #playerWrap {
+                body:not(.webscreen-fix) #playerWrap {
                     order: 0 !important;
+                    z-index: 1;
                 }
-                .video-info-container {
+                body:not(.webscreen-fix) .video-info-container {
                     height: auto !important;
                     padding-top: 16px !important;
                     /* 高权限消除展开标题的间距 */
                     margin-bottom: 0 !important;
                 }
-            `,
-            // fix #80 宽屏模式下播放器遮盖up主
-            itemFunc: () => {
-                const func = () => {
-                    if (unsafeWindow.isWide) {
-                        let cnt = 0
-                        const id = setInterval(() => {
-                            const player = document.querySelector(
-                                `.bpx-player-container[data-screen="wide"]`,
-                            ) as HTMLElement
-                            if (player) {
-                                const top = parseInt(getComputedStyle(player).height) + 50
-                                const danmakuBox = document.querySelector('#danmukuBox') as HTMLElement
-                                if (danmakuBox) {
-                                    danmakuBox.style.marginTop = `${top}px`
-                                }
-                                const upPanel = document.querySelector('.up-panel-container') as HTMLElement
-                                if (upPanel) {
-                                    upPanel.style.position = 'relative'
-                                    upPanel.style.top = `${top}px`
-                                }
-                                clearInterval(id)
-                            } else {
-                                cnt++
-                                if (cnt > 200) {
-                                    clearInterval(id)
-                                }
-                            }
-                        }, 10)
-                    } else {
-                        const upPanel = document.querySelector('.up-panel-container') as HTMLElement
-                        if (upPanel) {
-                            upPanel.style.position = 'static'
-                            upPanel.style.top = '0'
-                        }
-                        const danmakuBox = document.querySelector('#danmukuBox') as HTMLElement
-                        if (danmakuBox) {
-                            danmakuBox.style.marginTop = '0'
-                        }
-                    }
+
+                /* fix #80 宽屏模式下播放器遮盖up主 */
+                html[bili-cleaner-is-wide] body:not(.webscreen-fix) .up-panel-container {
+                    position: relative !important;
+                    /*
+                        拟合魔法，勿动
+                        videoWidth = innerWidth * 0.962339 - 359.514px
+                        videoHeight = max(min(calc(innerWidth * 0.962339 - 359.514px), 2010px), 923px) * 9/16 + 46px
+                    */
+                    margin-top: calc(max(min(calc(100vw * 0.962339 - 359.514px), 2010px), 923px) * 9 / 16 + 46px + 35px);
                 }
-                unsafeWindow.isWide && func()
-                onIsWideChangeFuncArr.push(func)
-            },
+                html[bili-cleaner-is-wide] body:not(.webscreen-fix) #danmukuBox {
+                    margin-top: 0 !important;
+                }
+            `,
+        }),
+        // 普通播放 视频宽度调节
+        new NumberItem({
+            itemID: 'normalscreen-width',
+            description: '普通播放 视频宽度调节（-1禁用）',
+            defaultValue: -1,
+            minValue: -1,
+            maxValue: 100,
+            disableValue: -1,
+            unit: 'vw',
+            itemCSS: `
+                /* 魔法, 勿动 */
+                :root {
+                    --normal-width: min(calc(100vw - 400px), ???vw);
+                    --normal-height: calc(min(calc(100vw - 400px), ???vw) * 9 / 16);
+                }
+
+                #bilibili-player-placeholder {
+                    visibility: hidden !important;
+                }
+
+                /*
+                    需避免右侧视频预览 inline player 影响
+                    data-screen变化慢, 播放模式判断一律用:not(), 使用html元素的bili-cleaner-is-wide加快wide模式判断
+                */
+                /* 左列basis宽度 */
+                html:not([bili-cleaner-is-wide]) :is(.left-container, .playlist-container--left):has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"])) {
+                    flex-basis: var(--normal-width);
+                }
+                /* 播放器长宽限制 */
+                html:not([bili-cleaner-is-wide]) :is(.left-container, .playlist-container--left):has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"], [data-screen="mini"])) :is(.bpx-player-video-area, video) {
+                    width: 100% !important;
+                    height: var(--normal-height) !important;
+                    min-height: var(--normal-height) !important;
+                    max-height: var(--normal-height) !important;
+                }
+                /* 播放器外层 */
+                html:not([bili-cleaner-is-wide]) :is(.left-container, .playlist-container--left):has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"], [data-screen="mini"])) :is(.bpx-player-primary-area, .bpx-player-container, .bpx-docker-major, #bilibili-player, #playerWrap) {
+                    width: var(--normal-width);
+                    height: fit-content;
+                    max-height: calc(var(--normal-height) + 56px);
+                }
+                /* 普通mini模式 主播放器支撑 */
+                html:not([bili-cleaner-is-wide]) #playerWrap:has(.bpx-player-container[data-screen="mini"]) {
+                    background-color: transparent;
+                    width: var(--normal-width);
+                    height: calc(var(--normal-height) + 46px);
+                    min-height: var(--normal-height);
+                    max-height: calc(var(--normal-height) + 56px);
+                    position: relative;
+                }
+                html:not([bili-cleaner-is-wide]) #playerWrap:has(.bpx-player-container[data-screen="mini"])::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: calc(100% - 46px);
+                    background-color: black;
+                }
+                /* 宽屏mini模式 主播放器支撑 */
+                html[bili-cleaner-is-wide] #playerWrap:has(.bpx-player-container[data-screen="mini"]) {
+                    background-color: transparent;
+                    width: fit-content;
+                    position: relative;
+                }
+                html[bili-cleaner-is-wide] #playerWrap:has(.bpx-player-container[data-screen="mini"])::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: calc(100% - 46px);
+                    background-color: black;
+                }
+
+                /* 修复右栏底部吸附计算top时位置跳变 */
+                .video-container-v1 .right-container {
+                    display: flex;
+                }
+                .video-container-v1 .right-container .right-container-inner {
+                    position: sticky !important;
+                    top: unset !important;
+                    bottom: 0 !important;
+                    align-self: flex-end !important;
+                }
+            `,
+            itemCSSPlaceholder: '???',
         }),
     ]
-    videoGroupList.push(new Group('video-basic', '播放页 基本功能', basicItems))
+    videoGroupList.push(new Group('player-mode', '播放设定（实验功能）', playerInitItems))
 
     // 视频信息
     const infoItems = [
@@ -810,14 +965,86 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
         // 非全屏下 关闭弹幕栏
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-sending-area',
-            description: '非全屏下 关闭弹幕栏 (刷新去黑边)',
-            itemFunc: overridePlayerHeight,
-            // video page的player height由JS动态设定
-            itemCSS: `.bpx-player-sending-area {display: none !important;}
+            description: '非全屏下 关闭弹幕栏',
+            itemCSS: `
+                /* video page的player height由JS动态设定 */
+                .bpx-player-sending-area {display: none !important;}
+
                 /* 活动播放器直接去黑边 */
                 .page-main-content:has(.festival-video-player) .video-player-box {height: fit-content !important;}
                 .festival-video-player {height: fit-content !important;}
-                .festival-video-player #bilibili-player:not(.mode-webscreen) {height: calc(100% - 46px) !important;}`,
+                .festival-video-player #bilibili-player:not(.mode-webscreen) {height: calc(100% - 46px) !important;}
+            `,
+            // 隐藏弹幕栏时，强行调节播放器高度
+            itemFunc: () => {
+                // 念咒
+                const genSizeCSS = (): string => {
+                    const e = unsafeWindow.isWide
+                    const i = unsafeWindow.innerHeight
+                    const t = Math.max((document.body && document.body.clientWidth) || unsafeWindow.innerWidth, 1100)
+                    const n = 1680 < innerWidth ? 411 : 350
+                    const o = (16 * (i - (1690 < innerWidth ? 318 : 308))) / 9
+                    const r = t - 112 - n
+                    let d = r < o ? r : o
+                    if (d < 668) {
+                        d = 668
+                    }
+                    if (1694 < d) {
+                        d = 1694
+                    }
+                    let a = d + n
+                    if (unsafeWindow.isWide) {
+                        a -= 125
+                        d -= 100
+                    }
+                    let l
+                    if (unsafeWindow.hasBlackSide && !unsafeWindow.isWide) {
+                        l = Math.round((d - 14 + (e ? n : 0)) * 0.5625) + 96
+                    } else {
+                        l = Math.round((d + (e ? n : 0)) * 0.5625)
+                    }
+                    const s = `
+                        .video-container-v1 {width: auto;padding: 0 10px;}
+                        .left-container {width: ${a - n}px;}
+                        #bilibili-player {width: ${a - (e ? -30 : n)}px;height: ${l}px;position: ${e ? 'relative' : 'static'};}
+                        #oldfanfollowEntry {position: relative;top: ${e ? `${l + 10}px` : '0'};}
+                        #danmukuBox {margin-top: ${e ? `${l + 28}px` : '0'};}
+                        #playerWrap {height: ${l}px;}
+                        .video-discover {margin-left: ${(a - n) / 2}px;}
+                    `
+                    return s.replace(/\n\s*/g, '').trim()
+                }
+
+                // override CSS
+                // 插入新style覆盖(必须在原style出现后，appendChild在head尾部，权限更高)
+                const overrideCSS = () => {
+                    const overrideStyle = document.getElementById('overrideSetSizeStyle') as HTMLStyleElement
+                    if (!overrideStyle) {
+                        const newStyleNode = document.createElement('style')
+                        newStyleNode.id = 'overrideSetSizeStyle'
+                        newStyleNode.innerHTML = genSizeCSS()
+                        document.head.appendChild(newStyleNode)
+                        debug('override setSize OK')
+                    } else {
+                        overrideStyle.innerHTML = genSizeCSS()
+                        debug('refresh setSize OK')
+                    }
+                }
+
+                if (document.getElementById('setSizeStyle')) {
+                    overrideCSS()
+                }
+                // 监听官方style #setSizeStyle 出现
+                const observeStyle = new MutationObserver(() => {
+                    if (document.getElementById('setSizeStyle')) {
+                        overrideCSS()
+                        observeStyle.disconnect()
+                    }
+                })
+                document.head && observeStyle.observe(document.head, { childList: true })
+                // 宽屏模式
+                onIsWideChangeFnArr.push(overrideCSS)
+            },
         }),
         // 全屏下 关闭弹幕输入框
         new CheckboxItem({
@@ -852,7 +1079,38 @@ if (isPageVideo() || isPagePlaylist()) {
         new CheckboxItem({
             itemID: 'video-page-coin-disable-auto-like',
             description: '投币时不自动点赞 (关闭需刷新)',
-            itemFunc: coinDisableAutoLike,
+            itemFunc: () => {
+                const disableAutoLike = () => {
+                    let counter = 0
+                    const timer = setInterval(() => {
+                        const checkbox = document.querySelector(
+                            'body > .bili-dialog-m .bili-dialog-bomb .like-checkbox input',
+                        ) as HTMLInputElement
+                        if (checkbox) {
+                            checkbox.checked && checkbox.click()
+                            clearInterval(timer)
+                        } else {
+                            counter++
+                            if (counter > 100) {
+                                clearInterval(timer)
+                            }
+                        }
+                    }, 20)
+                }
+                const coinBtn = document.querySelector(
+                    '#arc_toolbar_report .video-coin.video-toolbar-left-item',
+                ) as HTMLElement | null
+                if (coinBtn) {
+                    coinBtn.addEventListener('click', disableAutoLike)
+                } else {
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const coinBtn = document.querySelector(
+                            '#arc_toolbar_report .video-coin.video-toolbar-left-item',
+                        ) as HTMLElement | null
+                        coinBtn?.addEventListener('click', disableAutoLike)
+                    })
+                }
+            },
         }),
         // 隐藏 分享按钮弹出菜单, 默认开启
         new CheckboxItem({

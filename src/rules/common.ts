@@ -1,6 +1,5 @@
 import { Group } from '../components/group'
 import { CheckboxItem, NumberItem, RadioItem } from '../components/item'
-import { debugRules as debug } from '../utils/logger'
 import {
     isPageBangumi,
     isPageChannel,
@@ -13,81 +12,6 @@ import {
     isPageSearch,
     isPageVideo,
 } from '../utils/page-type'
-
-/**
- * URL净化，移除query string中的跟踪参数/无用参数
- * 净化掉vd_source参数会导致充电窗口载入失败
- */
-const cleanURL = () => {
-    if (location.href.includes('www.bilibili.com/correspond/')) {
-        return
-    }
-    // 直播域名各种iframe页面（天选、抽奖）和活动页特殊处理
-    if (location.href.match(/live\.bilibili\.com\/(p\/html|activity|blackboard)/)) {
-        return
-    }
-    const keysToRemove = new Set([
-        'from_source',
-        'spm_id_from',
-        'search_source',
-        'vd_source',
-        'unique_k',
-        'is_story_h5',
-        'from_spmid',
-        'share_plat',
-        'share_medium',
-        'share_from',
-        'share_source',
-        'share_tag',
-        'up_id',
-        'timestamp',
-        'mid',
-        'live_from',
-        'launch_id',
-        'session_id',
-        'share_session_id',
-        'broadcast_type',
-        'is_room_feed',
-        'spmid',
-        'plat_id',
-        'goto',
-        'report_flow_data',
-        'trackid',
-        'live_form',
-        'track_id',
-        'from',
-        'visit_id',
-        'extra_jump_from',
-    ])
-    if (isPageSearch()) {
-        keysToRemove.add('vt')
-    }
-    if (isPageLiveRoom()) {
-        keysToRemove.add('bbid')
-        keysToRemove.add('ts')
-    }
-    const url = location.href
-    const urlObj = new URL(url)
-    const params = new URLSearchParams(urlObj.search)
-
-    const temp = []
-    for (const k of params.keys()) {
-        keysToRemove.has(k) && temp.push(k)
-    }
-    for (const k of temp) {
-        params.delete(k)
-    }
-    if (params.get('p') === '1') {
-        params.delete('p')
-    }
-
-    urlObj.search = params.toString()
-    const newURL = urlObj.toString().replace(/\/$/, '')
-    if (newURL !== url) {
-        history.replaceState(null, '', newURL)
-    }
-    debug('cleanURL complete')
-}
 
 // Grouplist
 const commonGroupList: Group[] = []
@@ -403,7 +327,7 @@ const basicItems = [
             @-moz-document url-prefix() {
                 * {
                     scrollbar-color: rgba(0, 0, 0, 0.6) transparent !important;
-                    scrollbar-width: thin !important;
+                    scrollbar-width: thin;
                 }
             }`,
     }),
@@ -413,8 +337,77 @@ const basicItems = [
         itemID: 'url-cleaner',
         description: 'URL参数净化 (充电时需关闭)',
         defaultStatus: true,
-        itemFunc: cleanURL,
         isItemFuncReload: true,
+        /**
+         * URL净化，移除query string中的跟踪参数/无用参数
+         * 净化掉vd_source参数会导致充电窗口载入失败
+         */
+        itemFunc: () => {
+            // 直播域名各种iframe页面（天选、抽奖）和活动页特殊处理
+            if (location.href.match(/live\.bilibili\.com\/(p\/html|activity|blackboard)/)) {
+                return
+            }
+            const keysToRemove = new Set([
+                'from_source',
+                'spm_id_from',
+                'search_source',
+                'vd_source',
+                'unique_k',
+                'is_story_h5',
+                'from_spmid',
+                'share_plat',
+                'share_medium',
+                'share_from',
+                'share_source',
+                'share_tag',
+                'up_id',
+                'timestamp',
+                'mid',
+                'live_from',
+                'launch_id',
+                'session_id',
+                'share_session_id',
+                'broadcast_type',
+                'is_room_feed',
+                'spmid',
+                'plat_id',
+                'goto',
+                'report_flow_data',
+                'trackid',
+                'live_form',
+                'track_id',
+                'from',
+                'visit_id',
+                'extra_jump_from',
+            ])
+            if (isPageSearch()) {
+                keysToRemove.add('vt')
+            }
+            if (isPageLiveRoom()) {
+                keysToRemove.add('bbid')
+                keysToRemove.add('ts')
+            }
+            const url = location.href
+            const urlObj = new URL(url)
+            const params = new URLSearchParams(urlObj.search)
+
+            const temp = []
+            for (const k of params.keys()) {
+                keysToRemove.has(k) && temp.push(k)
+            }
+            for (const k of temp) {
+                params.delete(k)
+            }
+            if (params.get('p') === '1') {
+                params.delete('p')
+            }
+
+            urlObj.search = params.toString()
+            const newURL = urlObj.toString().replace(/\/$/, '')
+            if (newURL !== url) {
+                history.replaceState(null, '', newURL)
+            }
+        },
     }),
     // 隐藏页底 footer
     new CheckboxItem({
@@ -623,6 +616,15 @@ if (!isPageLiveHome()) {
             itemID: 'common-hide-nav-bdu',
             description: '隐藏 百大评选',
             itemCSS: `.bili-header__bar .left-entry li:has(>div>a[href*="bilibili.com/BPU20"]) {display: none !important;}`,
+        }),
+        // 隐藏 BML
+        new CheckboxItem({
+            itemID: 'common-hide-nav-bml',
+            description: '隐藏 BML',
+            itemCSS: `
+                .bili-header__bar .left-entry li:has(>div>a[href*="bml.bilibili.com"]) {display: none !important;}
+                #internationalHeader li.nav-link-item:has(a[href*="bml.bilibili.com"]) {display: none !important;}
+            `,
         }),
         // 隐藏 下载客户端, 默认开启
         new CheckboxItem({

@@ -200,8 +200,7 @@
 ### 2. 与 [bilibili-app-recommend](https://greasyfork.org/zh-CN/scripts/443530) 的兼容性
 
 -   **兼容**，提供 **隐藏 视频tag / 隐藏 弹幕数 / 隐藏 点赞数** 功能，在首页功能菜单末尾
--   bilibili-app-recommend 自带 UP 主黑名单，无需使用本插件的视频过滤
--   标题关键词过滤、BV 号过滤暂不支持该插件的推荐列表
+-   bilibili-app-recommend 自带 UP 主黑名单、标题关键词过滤，在首页无需使用本插件的过滤功能
 
 ### 3. 与 [Bilibili 旧播放页](https://github.com/MotooriKashin/Bilibili-Old) 的兼容性
 

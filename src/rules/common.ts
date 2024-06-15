@@ -442,6 +442,10 @@ if (!isPageLiveHome()) {
                 }
                 #biliMainHeader .left-entry .v-popover-wrap a[href="https://www.bilibili.com/"]>svg {
                     display: none !important;
+                }
+                /* 番剧页 */
+                [class^="BiliHeaderV3_leftEntryTitle__"] > svg {
+                    display: none !important;
                 }`,
         }),
         // 隐藏 首页
@@ -469,6 +473,10 @@ if (!isPageLiveHome()) {
                 }
                 #biliMainHeader .bili-header .left-entry__title .mini-header__logo {
                     margin-right: 0 !important;
+                }
+                /* 番剧页 */
+                [class^="BiliHeaderV3_leftEntryTitle__"] > div {
+                    display: none !important;
                 }`,
         }),
         // 隐藏 分区弹出框
@@ -490,6 +498,10 @@ if (!isPageLiveHome()) {
                     display: none !important;
                 }
                 #biliMainHeader .left-entry .v-popover-wrap:has(>a[href*="bilibili.com/anime"]) {
+                    display: none !important;
+                }
+                /* 番剧页 */
+                [class^="BiliHeaderV3_leftEntry__"] li:has(a[href*="bilibili.com/anime"]){
                     display: none !important;
                 }`,
         }),
@@ -514,6 +526,10 @@ if (!isPageLiveHome()) {
                 }
                 #biliMainHeader .left-entry .v-popover-wrap:has(>a[href*="live.bilibili.com"]) {
                     display: none !important;
+                }
+                /* 番剧页 */
+                [class^="BiliHeaderV3_leftEntry__"] li:has(a[href*="live.bilibili.com"]){
+                    display: none !important;
                 }`,
         }),
         // 隐藏 直播弹出框
@@ -536,6 +552,10 @@ if (!isPageLiveHome()) {
                     display: none !important;
                 }
                 #biliMainHeader .left-entry .v-popover-wrap:has(>a[href*="game.bilibili.com"]) {
+                    display: none !important;
+                }
+                /* 番剧页 */
+                [class^="BiliHeaderV3_leftEntry__"] li:has(a[href*="game.bilibili.com"]){
                     display: none !important;
                 }`,
         }),
@@ -560,6 +580,10 @@ if (!isPageLiveHome()) {
                 }
                 #biliMainHeader .left-entry .v-popover-wrap:has(>a[href*="show.bilibili.com"]) {
                     display: none !important;
+                }
+                /* 番剧页 */
+                [class^="BiliHeaderV3_leftEntry__"] li:has(a[href*="show.bilibili.com"]){
+                    display: none !important;
                 }`,
         }),
         // 隐藏 漫画
@@ -574,6 +598,10 @@ if (!isPageLiveHome()) {
                     display: none !important;
                 }
                 #biliMainHeader .left-entry .v-popover-wrap:has(>a[href*="manga.bilibili.com"]) {
+                    display: none !important;
+                }
+                /* 番剧页 */
+                [class^="BiliHeaderV3_leftEntry__"] li:has(a[href*="manga.bilibili.com"]){
                     display: none !important;
                 }`,
         }),
@@ -597,6 +625,10 @@ if (!isPageLiveHome()) {
                     display: none !important;
                 }
                 #biliMainHeader .left-entry .v-popover-wrap:has(>a[href*="bilibili.com/match/"]) {
+                    display: none !important;
+                }
+                /* 番剧页 */
+                [class^="BiliHeaderV3_leftEntry__"] li:has(a[href*="www.bilibili.com/v/game/match"]){
                     display: none !important;
                 }`,
         }),
@@ -902,6 +934,10 @@ if (!isPageLiveHome()) {
                 /* 旧版header */
                 #internationalHeader .nav-user-center >div:has(.mini-upload) {
                     visibility: hidden !important;
+                }
+                /* 番剧页 */
+                [class^="BiliHeaderV3_headerUploadEntry"] {
+                    visibility: hidden !important;
                 }`,
         }),
     ]
@@ -917,7 +953,7 @@ if (!isPageLiveHome()) {
             maxValue: 2000,
             disableValue: -1,
             unit: 'px',
-            itemCSS: `.bili-header .bili-header__bar {padding-left: ???px !important;}`,
+            itemCSS: `.bili-header .bili-header__bar, [class^="BiliHeaderV3_biliHeaderBar___"] {padding-left: ???px !important;}`,
             itemCSSPlaceholder: '???',
         }),
         new NumberItem({
@@ -943,7 +979,7 @@ if (!isPageLiveHome()) {
             maxValue: 2000,
             disableValue: -1,
             unit: 'px',
-            itemCSS: `.bili-header .bili-header__bar {padding-right: ???px !important;}`,
+            itemCSS: `.bili-header .bili-header__bar, [class^="BiliHeaderV3_biliHeaderBar___"] {padding-right: ???px !important;}`,
             itemCSSPlaceholder: '???',
         }),
     ]

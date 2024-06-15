@@ -1,5 +1,5 @@
 import { Group } from '../components/group'
-import { CheckboxItem, NumberItem, RadioItem } from '../components/item'
+import { CheckboxItem, NumberItem } from '../components/item'
 import {
     isPageBangumi,
     isPageChannel,
@@ -811,91 +811,16 @@ if (!isPageLiveHome()) {
                     display: none !important;
                 }`,
         }),
-        // 收藏、稍后再看 相关 一组互斥选项
-        // 显示收藏 (官方默认), 默认开启
-        new RadioItem({
-            itemID: 'common-nav-favorite-watchlater-default',
-            description: '显示 收藏 (官方默认)\n新增稍后再看视频时，自动切换为稍后再看',
-            radioName: 'common-header-fav-option',
-            radioItemIDList: [
-                'common-nav-favorite-watchlater-default',
-                'common-hide-nav-favorite',
-                'common-hide-nav-favorite-keep-watchlater',
-                'common-nav-keep-watchlater',
-            ],
-            defaultStatus: true,
-        }),
-        // 隐藏 收藏, 隐藏 稍后再看
-        new RadioItem({
+        // 隐藏 收藏
+        new CheckboxItem({
             itemID: 'common-hide-nav-favorite',
-            description: '隐藏 收藏，隐藏 稍后再看',
-            radioName: 'common-header-fav-option',
-            radioItemIDList: [
-                'common-nav-favorite-watchlater-default',
-                'common-hide-nav-favorite',
-                'common-hide-nav-favorite-keep-watchlater',
-                'common-nav-keep-watchlater',
-            ],
-            itemCSS: `.right-entry .v-popover-wrap:has(.header-favorite-container, [data-idx="fav"]) {
+            description: '隐藏 收藏',
+            itemCSS: `.right-entry .v-popover-wrap:has(.right-entry__outside[href$="/favlist"]) {
                         display: none !important;
                     }
                     /* 旧版header */
                     #internationalHeader .nav-user-center .item:has(.mini-favorite) {
                         display: none !important;
-                    }`,
-        }),
-        // 隐藏 收藏, 显示 稍后再看
-        new RadioItem({
-            itemID: 'common-hide-nav-favorite-keep-watchlater',
-            description: '隐藏 收藏，显示 稍后再看',
-            radioName: 'common-header-fav-option',
-            radioItemIDList: [
-                'common-nav-favorite-watchlater-default',
-                'common-hide-nav-favorite',
-                'common-hide-nav-favorite-keep-watchlater',
-                'common-nav-keep-watchlater',
-            ],
-            itemCSS: `
-                    /* 移除加入稍后再看时的上翻动画 */
-                    .right-entry .v-popover-wrap .header-favorite-container-box {
-                        animation: unset !important;
-                    }
-                    .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__up {
-                        display: none !important;
-                    }
-                    .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__down {
-                        margin-top: 4px !important;
-                    }
-                    @media (max-width: 1279.9px) {
-                        .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__down {
-                            top: 10px;
-                        }
-                    }`,
-        }),
-        // 显示 收藏, 显示 稍后再看(实验性)
-        new RadioItem({
-            itemID: 'common-nav-keep-watchlater',
-            description: '显示 收藏，显示 稍后再看(实验性)',
-            radioName: 'common-header-fav-option',
-            radioItemIDList: [
-                'common-nav-favorite-watchlater-default',
-                'common-hide-nav-favorite',
-                'common-hide-nav-favorite-keep-watchlater',
-                'common-nav-keep-watchlater',
-            ],
-            itemCSS: `
-                    /* 移除加入稍后再看时的上翻动画 */
-                    .right-entry .v-popover-wrap .header-favorite-container-box {
-                        display: flex !important;
-                        animation: unset !important;
-                    }
-                    .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__down {
-                        margin-top: 0 !important;
-                    }
-                    @media (max-width: 1279.9px) {
-                        .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__down {
-                            top: 15px;
-                        }
                     }`,
         }),
         // 隐藏 历史

@@ -37,48 +37,6 @@ if (isPageVideo() || isPagePlaylist()) {
 }
 
 const disableAdjustVolume = () => {}
-/** 全屏时可滚动 */
-// const fullScreenScroll = () => {
-//     waitForEle(document.body, '.bpx-player-ctrl-web ~ .bpx-player-ctrl-full', (node: Node): boolean => {
-//         return node instanceof HTMLElement && (node as HTMLElement).className.includes('bpx-player-ctrl-full')
-//     }).then(() => {
-//         const isFull = () => {
-//             return (
-//                 document.fullscreenElement ||
-//                 (window.innerWidth === screen.width && window.innerHeight === screen.height)
-//             )
-//         }
-
-//         // 触发用户稀有事件，绕过浏览器API对requestFullscreen的限制
-//         // 取消播放器触发的全屏，用document.body触发全屏，置于top-layer
-//         // target必须赋予到变量，否则无法过检测
-//         const ele = document.body
-//         ele.addEventListener('touchend', () => ele.requestFullscreen().then().catch())
-
-//         // 修改全屏按钮动作，全屏可滚动 = 网页全屏滚动 + 浏览器全屏
-//         const webScreenBtn = document.querySelector<HTMLElement>('.bpx-player-ctrl-web')
-//         const fullScreenBtn = document.querySelector<HTMLElement>('.bpx-player-ctrl-full')
-//         if (webScreenBtn && fullScreenBtn) {
-//             const newBtn = fullScreenBtn.cloneNode(true) as HTMLElement
-//             fullScreenBtn.parentElement!.replaceChild(newBtn, fullScreenBtn)
-//             newBtn.onclick = async () => {
-//                 if (isFull() || (!isFull() && !document.querySelector('.webscreen-fix'))) {
-//                     webScreenBtn.click()
-//                 }
-//                 if (!isFull()) {
-//                     ele.dispatchEvent(new TouchEvent('touchend'))
-//                     webScreenBtn.style.display = 'none'
-//                 } else {
-//                     webScreenBtn.style.display = 'block'
-//                 }
-//             }
-//             document.addEventListener('fullscreenchange', () => {
-//                 if (isFull()) {
-//                 }
-//             })
-//         }
-//     })
-// }
 
 const videoGroupList: Group[] = []
 

@@ -143,8 +143,8 @@ if (isPageChannel()) {
     }
     try {
         // 监听视频列表出现
-        waitForEle(document, 'main.channel-layout', (node: Node): boolean => {
-            return node instanceof HTMLElement && (node as HTMLElement).className === 'channel-layout'
+        waitForEle(document, 'main.channel-layout', (node: HTMLElement): boolean => {
+            return node.className === 'channel-layout'
         }).then((ele) => {
             if (ele) {
                 videoListContainer = ele

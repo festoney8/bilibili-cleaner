@@ -14,7 +14,6 @@ import {
 } from '../utils/page-type'
 import URLCleanerInstance from '../utils/url-cleaner'
 
-// Grouplist
 const commonGroupList: Group[] = []
 
 // 通用 页面直角化，去除圆角，根据URL选取CSS
@@ -421,6 +420,7 @@ const basicItems = [
     }),
 ]
 commonGroupList.push(new Group('common-basic', '全站通用项 基本功能', basicItems))
+
 // 通用header净化，直播首页除外
 if (!isPageLiveHome()) {
     // 顶栏左侧

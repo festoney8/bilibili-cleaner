@@ -43,7 +43,7 @@ export const isEleHide = (ele: HTMLElement) => {
 export const waitForEle = async (
     watchEle: HTMLElement | Document,
     selector: string,
-    isTargetNode: (node: Node) => boolean,
+    isTargetNode: (node: HTMLElement) => boolean,
 ): Promise<HTMLElement | null> => {
     let ele = watchEle.querySelector(selector) as HTMLElement | null
     if (ele) {
@@ -54,7 +54,7 @@ export const waitForEle = async (
             mutationList.forEach((mutation) => {
                 if (mutation.addedNodes) {
                     mutation.addedNodes.forEach((node) => {
-                        if (isTargetNode(node)) {
+                        if (node instanceof HTMLElement && isTargetNode(node)) {
                             obverser.disconnect()
                             ele = watchEle.querySelector(selector) as HTMLElement | null
                             resolve(ele)

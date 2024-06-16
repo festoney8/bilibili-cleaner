@@ -83,7 +83,10 @@ if (isPageVideo() || isPagePlaylist()) {
                                     partNum += `?p=${params.get('p')}`
                                 }
                                 const aid = dec(bvid)
-                                return `https://www.bilibili.com/video/av${aid}/${partNum}${urlObj.hash}`
+                                if (partNum || urlObj.hash) {
+                                    return `https://www.bilibili.com/video/av${aid}/${partNum}${urlObj.hash}`
+                                }
+                                return `https://www.bilibili.com/video/av${aid}`
                             }
                         }
                         return url
@@ -184,11 +187,8 @@ if (isPageVideo() || isPagePlaylist()) {
                 const listener = () => {
                     window.scrollTo(0, 60)
                     // 监听宽屏按钮出现
-                    waitForEle(document.body, '.bpx-player-ctrl-wide', (node: Node): boolean => {
-                        return (
-                            node instanceof HTMLElement &&
-                            (node as HTMLElement).className.includes('bpx-player-ctrl-wide')
-                        )
+                    waitForEle(document.body, '.bpx-player-ctrl-wide', (node: HTMLElement): boolean => {
+                        return node.className?.includes('bpx-player-ctrl-wide')
                     }).then((wideBtn) => {
                         if (wideBtn) {
                             wideBtn.click()
@@ -280,11 +280,8 @@ if (isPageVideo() || isPagePlaylist()) {
 
                 // 监听网页全屏按钮出现
                 const listener = () => {
-                    waitForEle(document, '.bpx-player-ctrl-web', (node: Node): boolean => {
-                        return (
-                            node instanceof HTMLElement &&
-                            (node as HTMLElement).className.includes('bpx-player-ctrl-web')
-                        )
+                    waitForEle(document, '.bpx-player-ctrl-web', (node: HTMLElement): boolean => {
+                        return node.className?.includes('bpx-player-ctrl-web')
                     }).then((webBtn) => {
                         if (webBtn) {
                             webBtn.addEventListener('click', () => {

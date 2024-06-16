@@ -173,7 +173,7 @@ if (isPageDynamic()) {
             description: '淡化 UP 主列表 已查看项',
             itemCSS: `
                 .bili-dyn-up-list__item:not(.active):has(.bili-dyn-up-list__item__face .bili-dyn-up-list__item__face__img:only-child) {
-                    transition: opacity 0.2s linear;
+                    transition: opacity 0.2s ease-out;
                     opacity: 0.25;
                 }
                 .bili-dyn-up-list__item:hover {
@@ -186,14 +186,23 @@ if (isPageDynamic()) {
             itemID: 'dynamic-page-up-list-checked-item-hide',
             description: '隐藏 UP 主列表 已查看项',
             itemCSS: `
+                /* keyframes 不支持 display, 但chrome可正常处理, firefox不消失 */
                 @keyframes disappear {
-                    from { display: flex; }
-                    to { display: none; }
+                    0% {opacity: 1; width: 68px; margin-right: 6px;}
+                    99% {opacity: 0; width: 0; margin-right: 0;}
+                    100% {opacity: 0; width: 0; margin-right: 0; display: none;}
                 }
                 .bili-dyn-up-list__item:not(.active):has(.bili-dyn-up-list__item__face .bili-dyn-up-list__item__face__img:only-child) {
                     animation: disappear;
-                    animation-delay: 1.2s;
+                    animation-duration: .5s;
+                    animation-delay: 1s;
                     animation-fill-mode: forwards;
+                }
+                /* firefox无动画 */
+                @-moz-document url-prefix() {
+                    .bili-dyn-up-list__item:not(.active):has(.bili-dyn-up-list__item__face .bili-dyn-up-list__item__face__img:only-child) {
+                        display: none;
+                    }
                 }`,
         }),
         // 隐藏 动态发布框

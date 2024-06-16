@@ -188,7 +188,7 @@ if (isPageVideo() || isPagePlaylist()) {
                     window.scrollTo(0, 60)
                     // 监听宽屏按钮出现
                     waitForEle(document.body, '.bpx-player-ctrl-wide', (node: HTMLElement): boolean => {
-                        return node.className?.includes('bpx-player-ctrl-wide')
+                        return node.className.includes('bpx-player-ctrl-wide')
                     }).then((wideBtn) => {
                         if (wideBtn) {
                             wideBtn.click()
@@ -280,8 +280,8 @@ if (isPageVideo() || isPagePlaylist()) {
 
                 // 监听网页全屏按钮出现
                 const listener = () => {
-                    waitForEle(document, '.bpx-player-ctrl-web', (node: HTMLElement): boolean => {
-                        return node.className?.includes('bpx-player-ctrl-web')
+                    waitForEle(document.body, '.bpx-player-ctrl-web', (node: HTMLElement): boolean => {
+                        return node.className.includes('bpx-player-ctrl-web')
                     }).then((webBtn) => {
                         if (webBtn) {
                             webBtn.addEventListener('click', () => {

@@ -331,8 +331,7 @@ const basicItems = [
                 }
             }`,
     }),
-    // URL参数净化, 在urlchange时需重载, 默认开启, 关闭功能需刷新
-    // 以前会出现URL缺少参数导致充电窗口载入失败报错NaN的bug, 现无法复现, 猜测已修复
+    // URL参数净化, 默认开启
     new CheckboxItem({
         itemID: 'url-cleaner',
         description: 'URL参数净化 (充电时需关闭)',
@@ -398,11 +397,9 @@ const basicItems = [
                     for (const k of temp) {
                         params.delete(k)
                     }
-                    if (params.get('p') === '1') {
-                        params.delete('p')
-                    }
+                    params.get('p') === '1' && params.delete('p')
 
-                    urlObj.search = params.toString()
+                    urlObj.search = params.toString().replace(/\/$/, '')
                     return urlObj.toString()
                 } catch (err) {
                     return url
@@ -822,6 +819,46 @@ if (!isPageLiveHome()) {
                     #internationalHeader .nav-user-center .item:has(.mini-favorite) {
                         display: none !important;
                     }`,
+        }),
+        // 收藏弹出框 自动选中稍后再看
+        new CheckboxItem({
+            itemID: 'common-nav-favorite-select-watchlater',
+            description: '收藏弹出框 自动选中稍后再看',
+            itemFunc: () => {
+                const listener = () => {
+                    let cnt = 0
+                    const id = setInterval(() => {
+                        const ele = document.querySelector(
+                            `.right-entry .v-popover-wrap:has(.right-entry__outside[href$="/favlist"]),
+                            .nav-user-center .user-con .item:has(.mini-favorite)`,
+                        )
+                        if (ele) {
+                            clearInterval(id)
+                            ele.addEventListener('mouseenter', () => {
+                                let innerCnt = 0
+                                const watchLaterId = setInterval(() => {
+                                    const watchlater = document.querySelector(
+                                        `:is(.favorite-panel-popover, .vp-container .tabs-panel) .tab-item:nth-child(2)`,
+                                    ) as HTMLElement
+                                    if (watchlater) {
+                                        watchlater.click()
+                                        clearInterval(watchLaterId)
+                                    } else {
+                                        innerCnt++
+                                        innerCnt > 250 && clearInterval(watchLaterId)
+                                    }
+                                }, 20)
+                            })
+                        } else {
+                            cnt++
+                            cnt > 100 && clearInterval(id)
+                        }
+                    }, 200)
+                }
+                document.readyState === 'complete'
+                    ? listener()
+                    : document.addEventListener('DOMContentLoaded', listener)
+            },
         }),
         // 隐藏 历史
         new CheckboxItem({

@@ -45,6 +45,9 @@ export const waitForEle = async (
     selector: string,
     isTargetNode: (node: HTMLElement) => boolean,
 ): Promise<HTMLElement | null> => {
+    if (!selector) {
+        return null
+    }
     let ele = watchEle.querySelector(selector) as HTMLElement | null
     if (ele) {
         return ele

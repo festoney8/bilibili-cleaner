@@ -170,8 +170,8 @@ if (isPageDynamic()) {
             (node: HTMLElement): boolean => {
                 return (
                     node.className === 'bili-dyn-home--member' ||
-                    node.className?.includes('bili-comment-container') ||
-                    node.className?.includes('bili-comment') ||
+                    node.className.includes('bili-comment-container') ||
+                    node.className.includes('bili-comment') ||
                     node.id === 'app'
                 )
             },

@@ -915,7 +915,12 @@ if (!isPageLiveHome()) {
             maxValue: 2000,
             disableValue: -1,
             unit: 'px',
-            itemCSS: `.bili-header .bili-header__bar, [class^="BiliHeaderV3_biliHeaderBar___"] {padding-left: ???px !important;}`,
+            itemCSS: `
+                .bili-header .bili-header__bar,
+                .mini-header__content,
+                [class^="BiliHeaderV3_biliHeaderBar___"] {
+                    padding-left: ???px !important;
+                }`,
             itemCSSPlaceholder: '???',
         }),
         new NumberItem({
@@ -926,11 +931,14 @@ if (!isPageLiveHome()) {
             maxValue: 2000,
             disableValue: -1,
             unit: 'px',
-            itemCSS: `.bili-header .center-search-container .center-search__bar {
-                width: ???px !important;
-                max-width: ???px !important;
-                min-width: 0px !important;
-            }`,
+            itemCSS: `
+                .bili-header .center-search-container .center-search__bar,
+                .bili-header-m .nav-search-box,
+                .international-header .nav-search-box {
+                    width: ???px !important;
+                    max-width: ???px !important;
+                    min-width: 0px !important;
+                }`,
             itemCSSPlaceholder: '???',
         }),
         new NumberItem({
@@ -941,7 +949,12 @@ if (!isPageLiveHome()) {
             maxValue: 2000,
             disableValue: -1,
             unit: 'px',
-            itemCSS: `.bili-header .bili-header__bar, [class^="BiliHeaderV3_biliHeaderBar___"] {padding-right: ???px !important;}`,
+            itemCSS: `
+                .bili-header .bili-header__bar,
+                .mini-header__content,
+                [class^="BiliHeaderV3_biliHeaderBar___"] {
+                    padding-right: ???px !important;
+                }`,
             itemCSSPlaceholder: '???',
         }),
     ]

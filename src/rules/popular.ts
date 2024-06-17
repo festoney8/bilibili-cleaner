@@ -13,7 +13,8 @@ if (isPagePopular()) {
         new CheckboxItem({
             itemID: 'homepage-hide-banner',
             description: '隐藏 横幅banner',
-            itemCSS: `.header-banner__inner, .bili-header__banner {
+            itemCSS: `
+                .header-banner__inner, .bili-header__banner {
                     display: none !important;
                 }
                 .bili-header .bili-header__bar:not(.slide-down) {
@@ -45,7 +46,17 @@ if (isPagePopular()) {
                 }
                 /* header高度 */
                 #biliMainHeader {min-height: unset !important;}
-                `,
+
+                /* 旧版banner */
+                #internationalHeader .bili-banner {display: none;}
+                .mini-header__content {box-shadow: 0 2px 4px #00000014;}
+                .bili-icon_dingdao_zhuzhan:before {color: #00AEEC;}
+                .mini-header__content .nav-link .nav-link-ul .nav-link-item .link {color: black; text-shadow: unset;}
+                .mini-header__content .nav-search-box {border: 1px solid #E3E5E7;}
+                #nav_searchform {background-color: #F2F3F4 !important;}
+                .bili-header-m .nav-search .nav-search-btn, .international-header .nav-search .nav-search-btn {background-color: #F2F3F4;}
+                .mini-header__content .nav-user-center .user-con .item .name {color: black; text-shadow: unset;}
+            `,
         }),
         // 隐藏 滚动页面时 顶部吸附顶栏, 同步首页设定
         new CheckboxItem({

@@ -245,6 +245,11 @@ if (isPageVideo() || isPagePlaylist()) {
                 .webscreen-fix :is(.right-container, .playlist-container--right) {
                     padding-top: 100vh;
                 }
+                /* 隐藏小窗 */
+                .webscreen-fix .float-nav-exp .nav-menu .item.mini,
+                .webscreen-fix .fixed-sidenav-storage .mini-player-window {
+                    display: none !important;
+                }
                 /* 滚动条 */
                 .webscreen-fix::-webkit-scrollbar {
                     display: none !important;

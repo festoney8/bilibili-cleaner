@@ -170,16 +170,6 @@ if (isPageVideo() || isPagePlaylist()) {
                 html[bili-cleaner-is-wide] #playerWrap:has(.bpx-player-container[data-screen="mini"]) {
                     width: fit-content;
                 }
-                /* 修复右栏底部吸附计算top时位置跳变 */
-                .video-container-v1 .right-container {
-                    display: flex;
-                }
-                .video-container-v1 .right-container .right-container-inner {
-                    position: sticky !important;
-                    top: unset !important;
-                    bottom: 0 !important;
-                    align-self: flex-end !important;
-                }
             `,
             itemFunc: () => {
                 wideScreenLock = true
@@ -255,19 +245,11 @@ if (isPageVideo() || isPagePlaylist()) {
                 .webscreen-fix :is(.right-container, .playlist-container--right) {
                     padding-top: 100vh;
                 }
-                /* 底部吸附 */
-                .webscreen-fix .right-container {
-                    display: flex;
-                }
-                .webscreen-fix :is(.right-container-inner, .playlist-container--right) {
-                    position: sticky;
-                    bottom: 0;
-                    align-self: flex-end;
-                }
+                /* 滚动条 */
                 .webscreen-fix::-webkit-scrollbar {
                     display: none !important;
                 }
-                /* firefox */
+                /* firefox滚动条 */
                 @-moz-document url-prefix() {
                     html:has(.webscreen-fix), body.webscreen-fix {
                         scrollbar-width: none !important;
@@ -411,17 +393,6 @@ if (isPageVideo() || isPagePlaylist()) {
                     width: 100%;
                     height: calc(100% - 46px);
                     background-color: black;
-                }
-
-                /* 修复右栏底部吸附计算top时位置跳变 */
-                .video-container-v1 .right-container {
-                    display: flex;
-                }
-                .video-container-v1 .right-container .right-container-inner {
-                    position: sticky !important;
-                    top: unset !important;
-                    bottom: 0 !important;
-                    align-self: flex-end !important;
                 }
             `,
             itemCSSPlaceholder: '???',
@@ -751,6 +722,70 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
                 document.querySelector(`style[bili-cleaner-css=video-page-bpx-player-mini-mode-wheel-adjust]`)?.remove()
             },
         }),
+        // // 小窗播放器 记录小窗位置
+        // new CheckboxItem({
+        //     itemID: 'video-page-bpx-player-mini-mode-position-record',
+        //     description: '小窗播放器 记录小窗位置',
+        //     itemFunc: () => {
+        //         let isListening = false
+        //         const listener = () => {
+        //             waitForEle(document.body, '#bilibili-player .bpx-player-container', (node: HTMLElement) => {
+        //                 return node.className.startsWith('bpx-player-container')
+        //             }).then((player) => {
+        //                 if (player) {
+        //                     const observer = new MutationObserver((mutationsList) => {
+        //                         console.log('fired')
+        //                         for (const mutation of mutationsList) {
+        //                             if (mutation.attributeName === 'data-screen') {
+        //                                 const target = mutation.target as HTMLElement
+        //                                 if (
+        //                                     target instanceof HTMLElement &&
+        //                                     target.getAttribute('data-screen') === 'mini'
+        //                                 ) {
+        //                                     const right = GM_getValue(
+        //                                         'BILICLEANER_video-page-bpx-player-mini-mode-position-record-right',
+        //                                     )
+        //                                     const bottom = GM_getValue(
+        //                                         'BILICLEANER_video-page-bpx-player-mini-mode-position-record-bottom',
+        //                                     )
+        //                                     if (right !== undefined && bottom !== undefined) {
+        //                                         target.style.right = `${right}px`
+        //                                         target.style.bottom = `${bottom}px`
+        //                                     }
+        //                                     // 监听小窗移动
+        //                                     if (!isListening) {
+        //                                         isListening = true
+        //                                         player.addEventListener('mouseleave', () => {
+        //                                             if (player.getAttribute('data-screen') !== 'mini') {
+        //                                                 return
+        //                                             }
+        //                                             GM_setValue(
+        //                                                 'BILICLEANER_video-page-bpx-player-mini-mode-position-record-right',
+        //                                                 parseInt(player.style.right),
+        //                                             )
+        //                                             GM_setValue(
+        //                                                 'BILICLEANER_video-page-bpx-player-mini-mode-position-record-bottom',
+        //                                                 parseInt(player.style.bottom),
+        //                                             )
+        //                                         })
+        //                                     }
+        //                                     break
+        //                                 }
+        //                             }
+        //                         }
+        //                     })
+        //                     observer.observe(player, { attributes: true, subtree: false })
+        //                 }
+        //             })
+        //         }
+        //         document.readyState === 'complete'
+        //             ? listener()
+        //             : document.addEventListener('DOMContentLoaded', listener)
+        //     },
+        //     callback: () => {
+        //         document.querySelector(`style[bili-cleaner-css=video-page-bpx-player-mini-mode-wheel-adjust]`)?.remove()
+        //     },
+        // }),
     ]
     videoGroupList.push(new Group('video-player', '播放器', playerItems))
 
@@ -1187,6 +1222,38 @@ if (isPageVideo() || isPagePlaylist()) {
 
     // 右侧视频栏
     const rightItems = [
+        // 优化 右栏底部吸附 实验功能
+        new CheckboxItem({
+            itemID: 'video-page-right-container-sticky-optimize',
+            description: '优化 右栏底部吸附 (实验功能)',
+            itemCSS: `
+                /* 修复右栏底部吸附计算top时位置跳变 */
+                .video-container-v1 .right-container {
+                    display: flex !important;
+                }
+                .video-container-v1 .right-container .right-container-inner {
+                    position: sticky !important;
+                    top: unset !important;
+                    align-self: flex-end !important;
+                    /* fix #87, #84 */
+                    max-width: 100% !important;
+                    padding-bottom: 0 !important;
+                }
+                /* 小窗播放器挡住下方视频 #87 */
+                body:has(.mini-player-window.on) .video-container-v1 .right-container .right-container-inner {
+                    bottom: 240px !important;
+                }
+                body:has(.mini-player-window:not(.on)) .video-container-v1 .right-container .right-container-inner {
+                    bottom: 10px !important;
+                }
+            `,
+        }),
+        // 禁用 滚动页面时右栏底部吸附
+        new CheckboxItem({
+            itemID: 'video-page-right-container-sticky-disable',
+            description: '禁用 右栏底部吸附',
+            itemCSS: `.right-container .right-container-inner {position: static !important;}`,
+        }),
         // 隐藏 广告, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-right-container-ad',
@@ -1358,16 +1425,34 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-page-hide-right-container-right-bottom-banner',
             description: '隐藏 活动banner',
             defaultStatus: true,
-            itemCSS: `#right-bottom-banner {display: none !important;}
-                    .video-container-v1 .right-container .right-container-inner {padding-bottom: 15px !important;}`,
+            itemCSS: `
+                    #right-bottom-banner {
+                        display: none !important;
+                    }
+                    /* 小窗视频防挡 #87 */
+                    body:has(.mini-player-window.on) .video-container-v1 .right-container .right-container-inner {
+                        padding-bottom: 240px;
+                    }
+                    body:has(.mini-player-window:not(.on)) .video-container-v1 .right-container .right-container-inner {
+                        padding-bottom: 10px;
+                    }
+                `,
         }),
         // 隐藏 直播间推荐, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-right-container-live',
             description: '隐藏 直播间推荐',
             defaultStatus: true,
-            itemCSS: `.right-container .pop-live-small-mode {display: none !important;}
-                    .video-container-v1 .right-container .right-container-inner {padding-bottom: 15px !important;}`,
+            itemCSS: `
+                    .right-container .pop-live-small-mode {display: none !important;}
+                    /* 小窗视频防挡 #87 */
+                    body:has(.mini-player-window.on) .video-container-v1 .right-container .right-container-inner {
+                        padding-bottom: 240px;
+                    }
+                    body:has(.mini-player-window:not(.on)) .video-container-v1 .right-container .right-container-inner {
+                        padding-bottom: 10px;
+                    }
+                `,
         }),
     ]
     videoGroupList.push(new Group('video-right', '右侧 视频栏', rightItems))

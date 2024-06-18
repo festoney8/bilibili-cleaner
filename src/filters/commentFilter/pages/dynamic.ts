@@ -167,16 +167,13 @@ if (isPageDynamic()) {
         waitForEle(
             document,
             '.bili-dyn-home--member, .bili-comment-container, .bili-comment, #app',
-            (node: Node): boolean => {
-                if (node instanceof HTMLElement) {
-                    return (
-                        (node as HTMLElement).className === 'bili-dyn-home--member' ||
-                        (node as HTMLElement).className.includes('bili-comment-container') ||
-                        (node as HTMLElement).className.includes('bili-comment') ||
-                        (node as HTMLElement).id === 'app'
-                    )
-                }
-                return false
+            (node: HTMLElement): boolean => {
+                return (
+                    node.className === 'bili-dyn-home--member' ||
+                    node.className.includes('bili-comment-container') ||
+                    node.className.includes('bili-comment') ||
+                    node.id === 'app'
+                )
             },
         ).then((ele) => {
             if (ele) {

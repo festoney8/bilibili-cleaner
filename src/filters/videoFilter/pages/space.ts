@@ -107,8 +107,8 @@ if (isPageSpace()) {
     }
     try {
         // 监听视频列表出现
-        waitForEle(document, '#app', (node: Node): boolean => {
-            return node instanceof HTMLElement && (node as HTMLElement).id === 'app'
+        waitForEle(document, '#app', (node: HTMLElement): boolean => {
+            return node.id === 'app'
         }).then((ele) => {
             if (ele) {
                 videoListContainer = ele

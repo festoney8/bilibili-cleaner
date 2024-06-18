@@ -1,8 +1,9 @@
 import { GM_getValue, GM_setValue } from '$'
 import { Group } from '../components/group'
-import { CheckboxItem } from '../components/item'
+import { CheckboxItem, NumberItem } from '../components/item'
 import { error } from '../utils/logger'
 import { isPageBangumi } from '../utils/page-type'
+import { waitForEle } from '../utils/tool'
 
 const bangumiGroupList: Group[] = []
 
@@ -59,44 +60,81 @@ if (isPageBangumi()) {
             description: '顶栏 滚动页面后不再吸附顶部',
             itemCSS: `.fixed-header .bili-header__bar {position: relative !important;}`,
         }),
+    ]
+    bangumiGroupList.push(new Group('bangumi-basic', '版权视频播放页 基本功能', basicItems))
+
+    // 播放设定
+    const playerInitItems = [
         // 网页全屏时 页面可滚动
         new CheckboxItem({
             itemID: 'webscreen-scrollable',
             description: '网页全屏时 页面可滚动 滚轮调音量失效\n（Firefox 不适用）',
             itemCSS: `
-                body:has(#bilibili-player-wrap[class^='video_playerFullScreen']) {
+                body:has(#bilibili-player-wrap[class*='video_playerFullScreen']) {
                     overflow: auto !important;
                     position: relative !important;
                 }
-                body:has(#bilibili-player-wrap[class^='video_playerFullScreen']) #bilibili-player-wrap {
+                body:has(#bilibili-player-wrap[class*='video_playerFullScreen']) #bilibili-player-wrap {
                     position: absolute !important;
                     width: 100vw !important;
                     height: 100vh !important;
                 }
-                body:has(#bilibili-player-wrap[class^='video_playerFullScreen']) .main-container {
+                body:has(#bilibili-player-wrap[class*='video_playerFullScreen']) .main-container {
                     position: static !important;
                     margin: 0 auto !important;
                     padding-top: calc(100vh + 15px) !important;
                 }
-                body:has(#bilibili-player-wrap[class^='video_playerFullScreen']) .bpx-player-video-area {
+                body:has(#bilibili-player-wrap[class*='video_playerFullScreen']) .bpx-player-video-area {
                     flex: unset !important;
                 }
-                body:has(#bilibili-player-wrap[class^='video_playerFullScreen'])::-webkit-scrollbar {
+                body:has(#bilibili-player-wrap[class*='video_playerFullScreen'])::-webkit-scrollbar {
                     display: none !important;
                 }
                 /* firefox */
                 @-moz-document url-prefix() {
-                    :is(html, body):has(#bilibili-player-wrap[class^='video_playerFullScreen']) {
+                    :is(html, body):has(#bilibili-player-wrap[class*='video_playerFullScreen']) {
                         scrollbar-width: none !important;
                     }
                 }
             `,
-            // 在Chrome上可以神奇的禁用滚轮调节音量，Firefox不生效
-            itemFunc: () => document.addEventListener('wheel', disableAdjustVolume),
+            itemFunc: () => {
+                // 在Chrome上可以神奇的禁用滚轮调节音量，Firefox不生效
+                document.addEventListener('wheel', disableAdjustVolume)
+                // 监听网页全屏按钮出现
+                const listener = () => {
+                    waitForEle(document.body, '.bpx-player-ctrl-web', (node: HTMLElement): boolean => {
+                        return node.className.includes('bpx-player-ctrl-web')
+                    }).then((webBtn) => {
+                        if (webBtn) {
+                            webBtn.addEventListener('click', () => {
+                                if (webBtn.classList.contains('bpx-state-entered')) {
+                                    window.scrollTo(0, 0)
+                                }
+                            })
+                        }
+                    })
+                }
+                document.readyState === 'complete'
+                    ? listener()
+                    : document.addEventListener('DOMContentLoaded', listener)
+            },
             callback: () => document.removeEventListener('wheel', disableAdjustVolume),
         }),
+        // 普通播放 视频宽度调节
+        new NumberItem({
+            itemID: 'normalscreen-width',
+            description: '普通播放 视频宽度调节（-1禁用）',
+            defaultValue: -1,
+            minValue: -1,
+            maxValue: 100,
+            disableValue: -1,
+            unit: 'vw',
+            // 官方样式写的棒真是太好了
+            itemCSS: `.home-container:not(.wide) {--video-width: ???vw;}`,
+            itemCSSPlaceholder: '???',
+        }),
     ]
-    bangumiGroupList.push(new Group('bangumi-basic', '版权视频播放页 基本功能', basicItems))
+    bangumiGroupList.push(new Group('player-mode', '播放设定（实验功能）', playerInitItems))
 
     // 播放器
     const playerItems = [

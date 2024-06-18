@@ -177,8 +177,8 @@ if (isPageHomepage()) {
 
     try {
         // 监听视频列表出现
-        waitForEle(document, '.container.is-version8', (node: Node): boolean => {
-            return node instanceof HTMLElement && (node as HTMLElement).className === 'container is-version8'
+        waitForEle(document, '.container.is-version8', (node: HTMLElement): boolean => {
+            return node.className === 'container is-version8'
         }).then((ele) => {
             if (ele) {
                 videoListContainer = ele

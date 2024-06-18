@@ -194,12 +194,8 @@ if (isPageVideo() || isPagePlaylist()) {
 
     try {
         // 监听视频列表出现
-        waitForEle(document, '#reco_list, .recommend-list-container', (node: Node): boolean => {
-            return (
-                node instanceof HTMLElement &&
-                ((node as HTMLElement).id === 'reco_list' ||
-                    (node as HTMLElement).className === 'recommend-list-container')
-            )
+        waitForEle(document, '#reco_list, .recommend-list-container', (node: HTMLElement): boolean => {
+            return node.id === 'reco_list' || node.className === 'recommend-list-container'
         }).then((ele) => {
             if (ele) {
                 videoListContainer = ele

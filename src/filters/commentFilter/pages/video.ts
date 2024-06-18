@@ -159,12 +159,8 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
     }
 
     try {
-        waitForEle(document, '#comment, #comment-body, .playlist-comment', (node: Node): boolean => {
-            return (
-                node instanceof HTMLElement &&
-                (['comment', 'comment-body'].includes((node as HTMLElement).id) ||
-                    (node as HTMLElement).className === 'playlist-comment')
-            )
+        waitForEle(document, '#comment, #comment-body, .playlist-comment', (node: HTMLElement): boolean => {
+            return ['comment', 'comment-body'].includes(node.id) || node.className === 'playlist-comment'
         }).then((ele) => {
             if (ele) {
                 commentListContainer = ele

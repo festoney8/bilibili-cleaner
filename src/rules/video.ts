@@ -4,6 +4,7 @@ import { debugRules as debug, error } from '../utils/logger'
 import { matchAvidBvid, matchBvid, waitForEle } from '../utils/tool'
 import { isPageFestival, isPagePlaylist, isPageVideo } from '../utils/page-type'
 import { GM_getValue, GM_setValue, unsafeWindow } from '$'
+import URLCleanerInstance from '../utils/url-cleaner'
 
 /** 宽屏模式监听 */
 let _isWide = unsafeWindow.isWide
@@ -36,48 +37,6 @@ if (isPageVideo() || isPagePlaylist()) {
 }
 
 const disableAdjustVolume = () => {}
-/** 全屏时可滚动 */
-// const fullScreenScroll = () => {
-//     waitForEle(document.body, '.bpx-player-ctrl-web ~ .bpx-player-ctrl-full', (node: Node): boolean => {
-//         return node instanceof HTMLElement && (node as HTMLElement).className.includes('bpx-player-ctrl-full')
-//     }).then(() => {
-//         const isFull = () => {
-//             return (
-//                 document.fullscreenElement ||
-//                 (window.innerWidth === screen.width && window.innerHeight === screen.height)
-//             )
-//         }
-
-//         // 触发用户稀有事件，绕过浏览器API对requestFullscreen的限制
-//         // 取消播放器触发的全屏，用document.body触发全屏，置于top-layer
-//         // target必须赋予到变量，否则无法过检测
-//         const ele = document.body
-//         ele.addEventListener('touchend', () => ele.requestFullscreen().then().catch())
-
-//         // 修改全屏按钮动作，全屏可滚动 = 网页全屏滚动 + 浏览器全屏
-//         const webScreenBtn = document.querySelector<HTMLElement>('.bpx-player-ctrl-web')
-//         const fullScreenBtn = document.querySelector<HTMLElement>('.bpx-player-ctrl-full')
-//         if (webScreenBtn && fullScreenBtn) {
-//             const newBtn = fullScreenBtn.cloneNode(true) as HTMLElement
-//             fullScreenBtn.parentElement!.replaceChild(newBtn, fullScreenBtn)
-//             newBtn.onclick = async () => {
-//                 if (isFull() || (!isFull() && !document.querySelector('.webscreen-fix'))) {
-//                     webScreenBtn.click()
-//                 }
-//                 if (!isFull()) {
-//                     ele.dispatchEvent(new TouchEvent('touchend'))
-//                     webScreenBtn.style.display = 'none'
-//                 } else {
-//                     webScreenBtn.style.display = 'block'
-//                 }
-//             }
-//             document.addEventListener('fullscreenchange', () => {
-//                 if (isFull()) {
-//                 }
-//             })
-//         }
-//     })
-// }
 
 const videoGroupList: Group[] = []
 
@@ -90,45 +49,54 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-page-bv2av',
             description: 'BV号转AV号',
             itemFunc: () => {
-                /**
-                 * algo by bilibili-API-collect
-                 * @see https://www.zhihu.com/question/381784377/answer/1099438784
-                 * @see https://github.com/SocialSisterYi/bilibili-API-collect/issues/740
-                 * @see https://socialsisteryi.github.io/bilibili-API-collect/docs/misc/bvid_desc.html
-                 * @param bvid 输入BV号
-                 * @returns 输出纯数字av号
-                 */
-                const XOR_CODE = 23442827791579n
-                const MASK_CODE = 2251799813685247n
-                const BASE = 58n
-                const data = 'FcwAPNKTMug3GV5Lj7EJnHpWsx4tb8haYeviqBz6rkCy12mUSDQX9RdoZf'
-                const dec = (bvid: string): number => {
-                    const bvidArr = Array.from<string>(bvid)
-                    ;[bvidArr[3], bvidArr[9]] = [bvidArr[9], bvidArr[3]]
-                    ;[bvidArr[4], bvidArr[7]] = [bvidArr[7], bvidArr[4]]
-                    bvidArr.splice(0, 3)
-                    const tmp = bvidArr.reduce((pre, bvidChar) => pre * BASE + BigInt(data.indexOf(bvidChar)), 0n)
-                    return Number((tmp & MASK_CODE) ^ XOR_CODE)
-                }
-
-                try {
-                    if (location.href.includes('bilibili.com/video/BV')) {
-                        const bvid = matchBvid(location.href)
-                        if (bvid) {
-                            // 保留query string中分P参数, anchor中reply定位
-                            let partNum = ''
-                            const params = new URLSearchParams(location.search)
-                            if (params.has('p')) {
-                                partNum += `?p=${params.get('p')}`
-                            }
-                            const aid = dec(bvid)
-                            const newURL = `https://www.bilibili.com/video/av${aid}${partNum}${location.hash}`
-                            history.replaceState(null, '', newURL)
-                        }
+                const bv2av = (url: string): string => {
+                    /**
+                     * algo by bilibili-API-collect
+                     * @see https://www.zhihu.com/question/381784377/answer/1099438784
+                     * @see https://github.com/SocialSisterYi/bilibili-API-collect/issues/740
+                     * @see https://socialsisteryi.github.io/bilibili-API-collect/docs/misc/bvid_desc.html
+                     * @param bvid 输入BV号
+                     * @returns 输出纯数字av号
+                     */
+                    const XOR_CODE = 23442827791579n
+                    const MASK_CODE = 2251799813685247n
+                    const BASE = 58n
+                    const data = 'FcwAPNKTMug3GV5Lj7EJnHpWsx4tb8haYeviqBz6rkCy12mUSDQX9RdoZf'
+                    const dec = (bvid: string): number => {
+                        const bvidArr = Array.from<string>(bvid)
+                        ;[bvidArr[3], bvidArr[9]] = [bvidArr[9], bvidArr[3]]
+                        ;[bvidArr[4], bvidArr[7]] = [bvidArr[7], bvidArr[4]]
+                        bvidArr.splice(0, 3)
+                        const tmp = bvidArr.reduce((pre, bvidChar) => pre * BASE + BigInt(data.indexOf(bvidChar)), 0n)
+                        return Number((tmp & MASK_CODE) ^ XOR_CODE)
                     }
-                } catch (err) {}
+
+                    try {
+                        if (url.includes('bilibili.com/video/BV')) {
+                            const bvid = matchBvid(url)
+                            if (bvid) {
+                                // 保留query string中分P参数, anchor中reply定位
+                                const urlObj = new URL(url)
+                                const params = new URLSearchParams(urlObj.search)
+                                let partNum = ''
+                                if (params.has('p')) {
+                                    partNum += `?p=${params.get('p')}`
+                                }
+                                const aid = dec(bvid)
+                                if (partNum || urlObj.hash) {
+                                    return `https://www.bilibili.com/video/av${aid}/${partNum}${urlObj.hash}`
+                                }
+                                return `https://www.bilibili.com/video/av${aid}`
+                            }
+                        }
+                        return url
+                    } catch (err) {
+                        return url
+                    }
+                }
+                URLCleanerInstance.cleanFnArr.push(bv2av)
+                URLCleanerInstance.clean()
             },
-            isItemFuncReload: true,
         }),
         // 净化分享, 默认开启, 关闭功能需刷新
         new CheckboxItem({
@@ -202,16 +170,6 @@ if (isPageVideo() || isPagePlaylist()) {
                 html[bili-cleaner-is-wide] #playerWrap:has(.bpx-player-container[data-screen="mini"]) {
                     width: fit-content;
                 }
-                /* 修复右栏底部吸附计算top时位置跳变 */
-                .video-container-v1 .right-container {
-                    display: flex;
-                }
-                .video-container-v1 .right-container .right-container-inner {
-                    position: sticky !important;
-                    top: unset !important;
-                    bottom: 0 !important;
-                    align-self: flex-end !important;
-                }
             `,
             itemFunc: () => {
                 wideScreenLock = true
@@ -219,11 +177,8 @@ if (isPageVideo() || isPagePlaylist()) {
                 const listener = () => {
                     window.scrollTo(0, 60)
                     // 监听宽屏按钮出现
-                    waitForEle(document.body, '.bpx-player-ctrl-wide', (node: Node): boolean => {
-                        return (
-                            node instanceof HTMLElement &&
-                            (node as HTMLElement).className.includes('bpx-player-ctrl-wide')
-                        )
+                    waitForEle(document.body, '.bpx-player-ctrl-wide', (node: HTMLElement): boolean => {
+                        return node.className.includes('bpx-player-ctrl-wide')
                     }).then((wideBtn) => {
                         if (wideBtn) {
                             wideBtn.click()
@@ -290,19 +245,11 @@ if (isPageVideo() || isPagePlaylist()) {
                 .webscreen-fix :is(.right-container, .playlist-container--right) {
                     padding-top: 100vh;
                 }
-                /* 底部吸附 */
-                .webscreen-fix .right-container {
-                    display: flex;
-                }
-                .webscreen-fix :is(.right-container-inner, .playlist-container--right) {
-                    position: sticky;
-                    bottom: 0;
-                    align-self: flex-end;
-                }
+                /* 滚动条 */
                 .webscreen-fix::-webkit-scrollbar {
                     display: none !important;
                 }
-                /* firefox */
+                /* firefox滚动条 */
                 @-moz-document url-prefix() {
                     html:has(.webscreen-fix), body.webscreen-fix {
                         scrollbar-width: none !important;
@@ -315,11 +262,8 @@ if (isPageVideo() || isPagePlaylist()) {
 
                 // 监听网页全屏按钮出现
                 const listener = () => {
-                    waitForEle(document, '.bpx-player-ctrl-web', (node: Node): boolean => {
-                        return (
-                            node instanceof HTMLElement &&
-                            (node as HTMLElement).className.includes('bpx-player-ctrl-web')
-                        )
+                    waitForEle(document.body, '.bpx-player-ctrl-web', (node: HTMLElement): boolean => {
+                        return node.className.includes('bpx-player-ctrl-web')
                     }).then((webBtn) => {
                         if (webBtn) {
                             webBtn.addEventListener('click', () => {
@@ -449,17 +393,6 @@ if (isPageVideo() || isPagePlaylist()) {
                     width: 100%;
                     height: calc(100% - 46px);
                     background-color: black;
-                }
-
-                /* 修复右栏底部吸附计算top时位置跳变 */
-                .video-container-v1 .right-container {
-                    display: flex;
-                }
-                .video-container-v1 .right-container .right-container-inner {
-                    position: sticky !important;
-                    top: unset !important;
-                    bottom: 0 !important;
-                    align-self: flex-end !important;
                 }
             `,
             itemCSSPlaceholder: '???',
@@ -789,6 +722,70 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
                 document.querySelector(`style[bili-cleaner-css=video-page-bpx-player-mini-mode-wheel-adjust]`)?.remove()
             },
         }),
+        // // 小窗播放器 记录小窗位置
+        // new CheckboxItem({
+        //     itemID: 'video-page-bpx-player-mini-mode-position-record',
+        //     description: '小窗播放器 记录小窗位置',
+        //     itemFunc: () => {
+        //         let isListening = false
+        //         const listener = () => {
+        //             waitForEle(document.body, '#bilibili-player .bpx-player-container', (node: HTMLElement) => {
+        //                 return node.className.startsWith('bpx-player-container')
+        //             }).then((player) => {
+        //                 if (player) {
+        //                     const observer = new MutationObserver((mutationsList) => {
+        //                         console.log('fired')
+        //                         for (const mutation of mutationsList) {
+        //                             if (mutation.attributeName === 'data-screen') {
+        //                                 const target = mutation.target as HTMLElement
+        //                                 if (
+        //                                     target instanceof HTMLElement &&
+        //                                     target.getAttribute('data-screen') === 'mini'
+        //                                 ) {
+        //                                     const right = GM_getValue(
+        //                                         'BILICLEANER_video-page-bpx-player-mini-mode-position-record-right',
+        //                                     )
+        //                                     const bottom = GM_getValue(
+        //                                         'BILICLEANER_video-page-bpx-player-mini-mode-position-record-bottom',
+        //                                     )
+        //                                     if (right !== undefined && bottom !== undefined) {
+        //                                         target.style.right = `${right}px`
+        //                                         target.style.bottom = `${bottom}px`
+        //                                     }
+        //                                     // 监听小窗移动
+        //                                     if (!isListening) {
+        //                                         isListening = true
+        //                                         player.addEventListener('mouseleave', () => {
+        //                                             if (player.getAttribute('data-screen') !== 'mini') {
+        //                                                 return
+        //                                             }
+        //                                             GM_setValue(
+        //                                                 'BILICLEANER_video-page-bpx-player-mini-mode-position-record-right',
+        //                                                 parseInt(player.style.right),
+        //                                             )
+        //                                             GM_setValue(
+        //                                                 'BILICLEANER_video-page-bpx-player-mini-mode-position-record-bottom',
+        //                                                 parseInt(player.style.bottom),
+        //                                             )
+        //                                         })
+        //                                     }
+        //                                     break
+        //                                 }
+        //                             }
+        //                         }
+        //                     })
+        //                     observer.observe(player, { attributes: true, subtree: false })
+        //                 }
+        //             })
+        //         }
+        //         document.readyState === 'complete'
+        //             ? listener()
+        //             : document.addEventListener('DOMContentLoaded', listener)
+        //     },
+        //     callback: () => {
+        //         document.querySelector(`style[bili-cleaner-css=video-page-bpx-player-mini-mode-wheel-adjust]`)?.remove()
+        //     },
+        // }),
     ]
     videoGroupList.push(new Group('video-player', '播放器', playerItems))
 
@@ -1225,6 +1222,38 @@ if (isPageVideo() || isPagePlaylist()) {
 
     // 右侧视频栏
     const rightItems = [
+        // 优化 右栏底部吸附 实验功能
+        new CheckboxItem({
+            itemID: 'video-page-right-container-sticky-optimize',
+            description: '优化 右栏底部吸附 (实验功能)',
+            itemCSS: `
+                /* 修复右栏底部吸附计算top时位置跳变 */
+                .video-container-v1 .right-container {
+                    display: flex !important;
+                }
+                .video-container-v1 .right-container .right-container-inner {
+                    position: sticky !important;
+                    top: unset !important;
+                    align-self: flex-end !important;
+                    /* fix #87, #84 */
+                    max-width: 100% !important;
+                    padding-bottom: 0 !important;
+                }
+                /* 小窗播放器挡住下方视频 #87 */
+                body:has(.mini-player-window.on) .video-container-v1 .right-container .right-container-inner {
+                    bottom: 240px !important;
+                }
+                body:has(.mini-player-window:not(.on)) .video-container-v1 .right-container .right-container-inner {
+                    bottom: 10px !important;
+                }
+            `,
+        }),
+        // 禁用 滚动页面时右栏底部吸附
+        new CheckboxItem({
+            itemID: 'video-page-right-container-sticky-disable',
+            description: '禁用 右栏底部吸附',
+            itemCSS: `.right-container .right-container-inner {position: static !important;}`,
+        }),
         // 隐藏 广告, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-right-container-ad',
@@ -1396,16 +1425,34 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-page-hide-right-container-right-bottom-banner',
             description: '隐藏 活动banner',
             defaultStatus: true,
-            itemCSS: `#right-bottom-banner {display: none !important;}
-                    .video-container-v1 .right-container .right-container-inner {padding-bottom: 15px !important;}`,
+            itemCSS: `
+                    #right-bottom-banner {
+                        display: none !important;
+                    }
+                    /* 小窗视频防挡 #87 */
+                    body:has(.mini-player-window.on) .video-container-v1 .right-container .right-container-inner {
+                        padding-bottom: 240px;
+                    }
+                    body:has(.mini-player-window:not(.on)) .video-container-v1 .right-container .right-container-inner {
+                        padding-bottom: 10px;
+                    }
+                `,
         }),
         // 隐藏 直播间推荐, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-right-container-live',
             description: '隐藏 直播间推荐',
             defaultStatus: true,
-            itemCSS: `.right-container .pop-live-small-mode {display: none !important;}
-                    .video-container-v1 .right-container .right-container-inner {padding-bottom: 15px !important;}`,
+            itemCSS: `
+                    .right-container .pop-live-small-mode {display: none !important;}
+                    /* 小窗视频防挡 #87 */
+                    body:has(.mini-player-window.on) .video-container-v1 .right-container .right-container-inner {
+                        padding-bottom: 240px;
+                    }
+                    body:has(.mini-player-window:not(.on)) .video-container-v1 .right-container .right-container-inner {
+                        padding-bottom: 10px;
+                    }
+                `,
         }),
     ]
     videoGroupList.push(new Group('video-right', '右侧 视频栏', rightItems))

@@ -69,16 +69,6 @@ const main = async () => {
     const COMMENT_FILTER_GROUPS = [...videoPageCommentFilterGroupList, ...dynamicPageCommentFilterGroupList]
     COMMENT_FILTER_GROUPS.forEach((e) => e.enableGroup())
 
-    // 监听各种形式的URL变化 (普通监听无法检测到切换视频)
-    let lastURL = location.href
-    setInterval(() => {
-        const currURL = location.href
-        if (currURL !== lastURL) {
-            RULE_GROUPS.forEach((e) => e.reloadGroup())
-            lastURL = currURL
-        }
-    }, 500)
-
     // 全局启动/关闭快捷键 chrome: Alt+B，firefox: Ctrl+Alt+B
     let isGroupEnable = true
     document.addEventListener('keydown', (event) => {

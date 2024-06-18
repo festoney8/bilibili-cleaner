@@ -146,8 +146,8 @@ if (isPageSearch()) {
 
     try {
         // 监听视频列表出现
-        waitForEle(document, '.search-content', (node: Node): boolean => {
-            return node instanceof HTMLElement && (node as HTMLElement).className?.includes('search-content')
+        waitForEle(document, '.search-content', (node: HTMLElement): boolean => {
+            return node.className.includes('search-content')
         }).then((ele) => {
             if (ele) {
                 videoListContainer = ele

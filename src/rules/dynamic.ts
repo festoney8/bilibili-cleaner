@@ -125,8 +125,8 @@ if (isPageDynamic()) {
     ]
     dynamicGroupList.push(new Group('dynamic-right', '右栏 热门话题', rightItems))
 
-    // 中栏
-    const centerItems = [
+    // 中栏顶部
+    const centerTopItems = [
         // 扩增 中栏宽度
         new CheckboxItem({
             itemID: 'expand-dynamic-page-bili-dyn-width',
@@ -167,12 +167,50 @@ if (isPageDynamic()) {
                 }
             `,
         }),
+        // 淡化 UP 主列表 已查看项
+        new CheckboxItem({
+            itemID: 'dynamic-page-up-list-checked-item-opacity',
+            description: '淡化 UP 主列表 已查看项',
+            itemCSS: `
+                .bili-dyn-up-list__item:not(.active):has(.bili-dyn-up-list__item__face .bili-dyn-up-list__item__face__img:only-child) {
+                    transition: opacity 0.2s ease-out;
+                    opacity: 0.25;
+                }
+                .bili-dyn-up-list__item:hover {
+                    transition: opacity 0.1s linear !important;
+                    opacity: 1 !important;
+                }`,
+        }),
+        // 隐藏 UP 主列表 已查看项
+        new CheckboxItem({
+            itemID: 'dynamic-page-up-list-checked-item-hide',
+            description: '隐藏 UP 主列表 已查看项',
+            itemCSS: `
+                /* keyframes 不支持 display, 但chrome可正常处理, firefox不消失 */
+                @keyframes disappear {
+                    0% {opacity: 1; width: 68px; margin-right: 6px;}
+                    99% {opacity: 0; width: 0; margin-right: 0;}
+                    100% {opacity: 0; width: 0; margin-right: 0; display: none;}
+                }
+                .bili-dyn-up-list__item:not(.active):has(.bili-dyn-up-list__item__face .bili-dyn-up-list__item__face__img:only-child) {
+                    animation: disappear;
+                    animation-duration: .5s;
+                    animation-delay: 1s;
+                    animation-fill-mode: forwards;
+                }
+                /* firefox无动画 */
+                @-moz-document url-prefix() {
+                    .bili-dyn-up-list__item:not(.active):has(.bili-dyn-up-list__item__face .bili-dyn-up-list__item__face__img:only-child) {
+                        display: none;
+                    }
+                }`,
+        }),
         // 隐藏 动态发布框
         new CheckboxItem({
             itemID: 'hide-dynamic-page-bili-dyn-publishing',
             description: '隐藏 动态发布框',
             itemCSS: `.bili-dyn-publishing {display: none !important;}
-                main section:nth-child(1) {margin-bottom: 0 !important;}`,
+                        main section:nth-child(1) {margin-bottom: 0 !important;}`,
         }),
         // 隐藏 动态分类Tab bar
         new CheckboxItem({
@@ -180,6 +218,11 @@ if (isPageDynamic()) {
             description: '隐藏 动态分类Tab bar',
             itemCSS: `.bili-dyn-list-tabs {display: none !important;}`,
         }),
+    ]
+    dynamicGroupList.push(new Group('dynamic-center-top', '中栏 顶部功能', centerTopItems))
+
+    // 中栏 动态列表
+    const centerDynItems = [
         // 隐藏 头像框
         new CheckboxItem({
             itemID: 'hide-dynamic-page-bili-dyn-avatar-pendent',
@@ -319,7 +362,7 @@ if (isPageDynamic()) {
             },
         }),
     ]
-    dynamicGroupList.push(new Group('dynamic-center', '中栏 动态列表', centerItems))
+    dynamicGroupList.push(new Group('dynamic-center-dyn', '中栏 动态列表', centerDynItems))
 
     // 动态评论区, 尽可能同步video page
     const commentItems = [

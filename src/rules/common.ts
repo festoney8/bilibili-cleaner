@@ -1,5 +1,5 @@
 import { Group } from '../components/group'
-import { CheckboxItem, NumberItem, RadioItem } from '../components/item'
+import { CheckboxItem, NumberItem } from '../components/item'
 import {
     isPageBangumi,
     isPageChannel,
@@ -12,8 +12,8 @@ import {
     isPageSearch,
     isPageVideo,
 } from '../utils/page-type'
+import URLCleanerInstance from '../utils/url-cleaner'
 
-// Grouplist
 const commonGroupList: Group[] = []
 
 // 通用 页面直角化，去除圆角，根据URL选取CSS
@@ -331,82 +331,82 @@ const basicItems = [
                 }
             }`,
     }),
-    // URL参数净化, 在urlchange时需重载, 默认开启, 关闭功能需刷新
-    // 以前会出现URL缺少参数导致充电窗口载入失败报错NaN的bug, 现无法复现, 猜测已修复
+    // URL参数净化, 默认开启
     new CheckboxItem({
         itemID: 'url-cleaner',
         description: 'URL参数净化 (充电时需关闭)',
         defaultStatus: true,
-        isItemFuncReload: true,
         /**
          * URL净化，移除query string中的跟踪参数/无用参数
          * 净化掉vd_source参数会导致充电窗口载入失败
          */
         itemFunc: () => {
-            // 直播域名各种iframe页面（天选、抽奖）和活动页特殊处理
-            if (location.href.match(/live\.bilibili\.com\/(p\/html|activity|blackboard)/)) {
-                return
-            }
-            const keysToRemove = new Set([
-                'from_source',
-                'spm_id_from',
-                'search_source',
-                'vd_source',
-                'unique_k',
-                'is_story_h5',
-                'from_spmid',
-                'share_plat',
-                'share_medium',
-                'share_from',
-                'share_source',
-                'share_tag',
-                'up_id',
-                'timestamp',
-                'mid',
-                'live_from',
-                'launch_id',
-                'session_id',
-                'share_session_id',
-                'broadcast_type',
-                'is_room_feed',
-                'spmid',
-                'plat_id',
-                'goto',
-                'report_flow_data',
-                'trackid',
-                'live_form',
-                'track_id',
-                'from',
-                'visit_id',
-                'extra_jump_from',
-            ])
-            if (isPageSearch()) {
-                keysToRemove.add('vt')
-            }
-            if (isPageLiveRoom()) {
-                keysToRemove.add('bbid')
-                keysToRemove.add('ts')
-            }
-            const url = location.href
-            const urlObj = new URL(url)
-            const params = new URLSearchParams(urlObj.search)
+            const cleanParams = (url: string): string => {
+                try {
+                    // 直播域名各种iframe页面（天选、抽奖）和活动页特殊处理
+                    if (url.match(/live\.bilibili\.com\/(p\/html|activity|blackboard)/)) {
+                        return url
+                    }
+                    const keysToRemove = new Set([
+                        'from_source',
+                        'spm_id_from',
+                        'search_source',
+                        'vd_source',
+                        'unique_k',
+                        'is_story_h5',
+                        'from_spmid',
+                        'share_plat',
+                        'share_medium',
+                        'share_from',
+                        'share_source',
+                        'share_tag',
+                        'up_id',
+                        'timestamp',
+                        'mid',
+                        'live_from',
+                        'launch_id',
+                        'session_id',
+                        'share_session_id',
+                        'broadcast_type',
+                        'is_room_feed',
+                        'spmid',
+                        'plat_id',
+                        'goto',
+                        'report_flow_data',
+                        'trackid',
+                        'live_form',
+                        'track_id',
+                        'from',
+                        'visit_id',
+                        'extra_jump_from',
+                    ])
+                    if (isPageSearch()) {
+                        keysToRemove.add('vt')
+                    }
+                    if (isPageLiveRoom()) {
+                        keysToRemove.add('bbid')
+                        keysToRemove.add('ts')
+                    }
+                    const urlObj = new URL(url)
+                    const params = new URLSearchParams(urlObj.search)
 
-            const temp = []
-            for (const k of params.keys()) {
-                keysToRemove.has(k) && temp.push(k)
-            }
-            for (const k of temp) {
-                params.delete(k)
-            }
-            if (params.get('p') === '1') {
-                params.delete('p')
-            }
+                    const temp = []
+                    for (const k of params.keys()) {
+                        keysToRemove.has(k) && temp.push(k)
+                    }
+                    for (const k of temp) {
+                        params.delete(k)
+                    }
+                    params.get('p') === '1' && params.delete('p')
 
-            urlObj.search = params.toString()
-            const newURL = urlObj.toString().replace(/\/$/, '')
-            if (newURL !== url) {
-                history.replaceState(null, '', newURL)
+                    urlObj.search = params.toString().replace(/\/$/, '')
+                    return urlObj.toString()
+                } catch (err) {
+                    return url
+                }
             }
+            URLCleanerInstance.cleanFnArr.push(cleanParams)
+            URLCleanerInstance.clean()
         },
     }),
     // 隐藏页底 footer
@@ -417,6 +417,7 @@ const basicItems = [
     }),
 ]
 commonGroupList.push(new Group('common-basic', '全站通用项 基本功能', basicItems))
+
 // 通用header净化，直播首页除外
 if (!isPageLiveHome()) {
     // 顶栏左侧
@@ -437,6 +438,10 @@ if (!isPageLiveHome()) {
                     display: none !important;
                 }
                 #biliMainHeader .left-entry .v-popover-wrap a[href="https://www.bilibili.com/"]>svg {
+                    display: none !important;
+                }
+                /* 番剧页 */
+                [class^="BiliHeaderV3_leftEntryTitle__"] > svg {
                     display: none !important;
                 }`,
         }),
@@ -465,6 +470,10 @@ if (!isPageLiveHome()) {
                 }
                 #biliMainHeader .bili-header .left-entry__title .mini-header__logo {
                     margin-right: 0 !important;
+                }
+                /* 番剧页 */
+                [class^="BiliHeaderV3_leftEntryTitle__"] > div {
+                    display: none !important;
                 }`,
         }),
         // 隐藏 分区弹出框
@@ -486,6 +495,10 @@ if (!isPageLiveHome()) {
                     display: none !important;
                 }
                 #biliMainHeader .left-entry .v-popover-wrap:has(>a[href*="bilibili.com/anime"]) {
+                    display: none !important;
+                }
+                /* 番剧页 */
+                [class^="BiliHeaderV3_leftEntry__"] li:has(a[href*="bilibili.com/anime"]){
                     display: none !important;
                 }`,
         }),
@@ -510,6 +523,10 @@ if (!isPageLiveHome()) {
                 }
                 #biliMainHeader .left-entry .v-popover-wrap:has(>a[href*="live.bilibili.com"]) {
                     display: none !important;
+                }
+                /* 番剧页 */
+                [class^="BiliHeaderV3_leftEntry__"] li:has(a[href*="live.bilibili.com"]){
+                    display: none !important;
                 }`,
         }),
         // 隐藏 直播弹出框
@@ -532,6 +549,10 @@ if (!isPageLiveHome()) {
                     display: none !important;
                 }
                 #biliMainHeader .left-entry .v-popover-wrap:has(>a[href*="game.bilibili.com"]) {
+                    display: none !important;
+                }
+                /* 番剧页 */
+                [class^="BiliHeaderV3_leftEntry__"] li:has(a[href*="game.bilibili.com"]){
                     display: none !important;
                 }`,
         }),
@@ -556,6 +577,10 @@ if (!isPageLiveHome()) {
                 }
                 #biliMainHeader .left-entry .v-popover-wrap:has(>a[href*="show.bilibili.com"]) {
                     display: none !important;
+                }
+                /* 番剧页 */
+                [class^="BiliHeaderV3_leftEntry__"] li:has(a[href*="show.bilibili.com"]){
+                    display: none !important;
                 }`,
         }),
         // 隐藏 漫画
@@ -570,6 +595,10 @@ if (!isPageLiveHome()) {
                     display: none !important;
                 }
                 #biliMainHeader .left-entry .v-popover-wrap:has(>a[href*="manga.bilibili.com"]) {
+                    display: none !important;
+                }
+                /* 番剧页 */
+                [class^="BiliHeaderV3_leftEntry__"] li:has(a[href*="manga.bilibili.com"]){
                     display: none !important;
                 }`,
         }),
@@ -593,6 +622,10 @@ if (!isPageLiveHome()) {
                     display: none !important;
                 }
                 #biliMainHeader .left-entry .v-popover-wrap:has(>a[href*="bilibili.com/match/"]) {
+                    display: none !important;
+                }
+                /* 番剧页 */
+                [class^="BiliHeaderV3_leftEntry__"] li:has(a[href*="www.bilibili.com/v/game/match"]){
                     display: none !important;
                 }`,
         }),
@@ -775,32 +808,11 @@ if (!isPageLiveHome()) {
                     display: none !important;
                 }`,
         }),
-        // 收藏、稍后再看 相关 一组互斥选项
-        // 显示收藏 (官方默认), 默认开启
-        new RadioItem({
-            itemID: 'common-nav-favorite-watchlater-default',
-            description: '显示 收藏 (官方默认)\n新增稍后再看视频时，自动切换为稍后再看',
-            radioName: 'common-header-fav-option',
-            radioItemIDList: [
-                'common-nav-favorite-watchlater-default',
-                'common-hide-nav-favorite',
-                'common-hide-nav-favorite-keep-watchlater',
-                'common-nav-keep-watchlater',
-            ],
-            defaultStatus: true,
-        }),
-        // 隐藏 收藏, 隐藏 稍后再看
-        new RadioItem({
+        // 隐藏 收藏
+        new CheckboxItem({
             itemID: 'common-hide-nav-favorite',
-            description: '隐藏 收藏，隐藏 稍后再看',
-            radioName: 'common-header-fav-option',
-            radioItemIDList: [
-                'common-nav-favorite-watchlater-default',
-                'common-hide-nav-favorite',
-                'common-hide-nav-favorite-keep-watchlater',
-                'common-nav-keep-watchlater',
-            ],
-            itemCSS: `.right-entry .v-popover-wrap:has(.header-favorite-container, [data-idx="fav"]) {
+            description: '隐藏 收藏',
+            itemCSS: `.right-entry .v-popover-wrap:has(.right-entry__outside[href$="/favlist"]) {
                         display: none !important;
                     }
                     /* 旧版header */
@@ -808,59 +820,45 @@ if (!isPageLiveHome()) {
                         display: none !important;
                     }`,
         }),
-        // 隐藏 收藏, 显示 稍后再看
-        new RadioItem({
-            itemID: 'common-hide-nav-favorite-keep-watchlater',
-            description: '隐藏 收藏，显示 稍后再看',
-            radioName: 'common-header-fav-option',
-            radioItemIDList: [
-                'common-nav-favorite-watchlater-default',
-                'common-hide-nav-favorite',
-                'common-hide-nav-favorite-keep-watchlater',
-                'common-nav-keep-watchlater',
-            ],
-            itemCSS: `
-                    /* 移除加入稍后再看时的上翻动画 */
-                    .right-entry .v-popover-wrap .header-favorite-container-box {
-                        animation: unset !important;
-                    }
-                    .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__up {
-                        display: none !important;
-                    }
-                    .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__down {
-                        margin-top: 4px !important;
-                    }
-                    @media (max-width: 1279.9px) {
-                        .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__down {
-                            top: 10px;
+        // 收藏弹出框 自动选中稍后再看
+        new CheckboxItem({
+            itemID: 'common-nav-favorite-select-watchlater',
+            description: '收藏弹出框 自动选中稍后再看',
+            itemFunc: () => {
+                const listener = () => {
+                    let cnt = 0
+                    const id = setInterval(() => {
+                        const ele = document.querySelector(
+                            `.right-entry .v-popover-wrap:has(.right-entry__outside[href$="/favlist"]),
+                            .nav-user-center .user-con .item:has(.mini-favorite)`,
+                        )
+                        if (ele) {
+                            clearInterval(id)
+                            ele.addEventListener('mouseenter', () => {
+                                let innerCnt = 0
+                                const watchLaterId = setInterval(() => {
+                                    const watchlater = document.querySelector(
+                                        `:is(.favorite-panel-popover, .vp-container .tabs-panel) .tab-item:nth-child(2)`,
+                                    ) as HTMLElement
+                                    if (watchlater) {
+                                        watchlater.click()
+                                        clearInterval(watchLaterId)
+                                    } else {
+                                        innerCnt++
+                                        innerCnt > 250 && clearInterval(watchLaterId)
+                                    }
+                                }, 20)
+                            })
+                        } else {
+                            cnt++
+                            cnt > 100 && clearInterval(id)
                         }
-                    }`,
-        }),
-        // 显示 收藏, 显示 稍后再看(实验性)
-        new RadioItem({
-            itemID: 'common-nav-keep-watchlater',
-            description: '显示 收藏，显示 稍后再看(实验性)',
-            radioName: 'common-header-fav-option',
-            radioItemIDList: [
-                'common-nav-favorite-watchlater-default',
-                'common-hide-nav-favorite',
-                'common-hide-nav-favorite-keep-watchlater',
-                'common-nav-keep-watchlater',
-            ],
-            itemCSS: `
-                    /* 移除加入稍后再看时的上翻动画 */
-                    .right-entry .v-popover-wrap .header-favorite-container-box {
-                        display: flex !important;
-                        animation: unset !important;
-                    }
-                    .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__down {
-                        margin-top: 0 !important;
-                    }
-                    @media (max-width: 1279.9px) {
-                        .right-entry .v-popover-wrap .header-favorite-container-box .header-favorite-container__down {
-                            top: 15px;
-                        }
-                    }`,
+                    }, 200)
+                }
+                document.readyState === 'complete'
+                    ? listener()
+                    : document.addEventListener('DOMContentLoaded', listener)
+            },
         }),
         // 隐藏 历史
         new CheckboxItem({
@@ -898,6 +896,10 @@ if (!isPageLiveHome()) {
                 /* 旧版header */
                 #internationalHeader .nav-user-center >div:has(.mini-upload) {
                     visibility: hidden !important;
+                }
+                /* 番剧页 */
+                [class^="BiliHeaderV3_headerUploadEntry"] {
+                    visibility: hidden !important;
                 }`,
         }),
     ]
@@ -913,7 +915,12 @@ if (!isPageLiveHome()) {
             maxValue: 2000,
             disableValue: -1,
             unit: 'px',
-            itemCSS: `.bili-header .bili-header__bar {padding-left: ???px !important;}`,
+            itemCSS: `
+                .bili-header .bili-header__bar,
+                .mini-header__content,
+                [class^="BiliHeaderV3_biliHeaderBar___"] {
+                    padding-left: ???px !important;
+                }`,
             itemCSSPlaceholder: '???',
         }),
         new NumberItem({
@@ -924,11 +931,14 @@ if (!isPageLiveHome()) {
             maxValue: 2000,
             disableValue: -1,
             unit: 'px',
-            itemCSS: `.bili-header .center-search-container .center-search__bar {
-                width: ???px !important;
-                max-width: ???px !important;
-                min-width: 0px !important;
-            }`,
+            itemCSS: `
+                .bili-header .center-search-container .center-search__bar,
+                .bili-header-m .nav-search-box,
+                .international-header .nav-search-box {
+                    width: ???px !important;
+                    max-width: ???px !important;
+                    min-width: 0px !important;
+                }`,
             itemCSSPlaceholder: '???',
         }),
         new NumberItem({
@@ -939,7 +949,12 @@ if (!isPageLiveHome()) {
             maxValue: 2000,
             disableValue: -1,
             unit: 'px',
-            itemCSS: `.bili-header .bili-header__bar {padding-right: ???px !important;}`,
+            itemCSS: `
+                .bili-header .bili-header__bar,
+                .mini-header__content,
+                [class^="BiliHeaderV3_biliHeaderBar___"] {
+                    padding-right: ???px !important;
+                }`,
             itemCSSPlaceholder: '???',
         }),
     ]

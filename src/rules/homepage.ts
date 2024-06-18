@@ -41,7 +41,15 @@ if (isPageHomepage()) {
                 }
                 #i_cecream .bili-header__bar:not(.slide-down) {
                     transition: background-color 0.3s ease-out !important;
-                }`,
+                }
+                /* 分区菜单 第一排按钮的二级菜单下置  */
+                .v-popover.is-top {padding-top: 5px; padding-bottom: unset !important; bottom: unset !important;}
+                @media (min-width: 2200px) {.v-popover.is-top {top:32px;}}
+                @media (min-width: 1701px) and (max-width: 2199.9px) {.v-popover.is-top {top:32px;}}
+                @media (min-width: 1367px) and (max-width: 1700.9px) {.v-popover.is-top {top:28px;}}
+                @media (min-width: 1100px) and (max-width: 1366.9px) {.v-popover.is-top {top:28px;}}
+                @media (max-width: 1099.9px) {.v-popover.is-top {top:24px;}}
+            `,
         }),
         // 隐藏 大图活动轮播, 默认开启
         new CheckboxItem({

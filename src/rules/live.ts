@@ -124,6 +124,24 @@ if (isPageLiveRoom()) {
             }
             `,
         }),
+        // 活动直播页 自动跳转普通直播
+        new CheckboxItem({
+            itemID: 'activity-live-auto-jump',
+            description: '活动直播页 自动跳转普通直播 (实验功能)',
+            itemFunc: () => {
+                const jump = () => {
+                    if (document.querySelector('#internationalHeader')) {
+                        if (!location.href.includes('/blanc/')) {
+                            window.location.href = location.href.replace(
+                                'live.bilibili.com/',
+                                'live.bilibili.com/blanc/',
+                            )
+                        }
+                    }
+                }
+                document.readyState === 'complete' ? jump() : document.addEventListener('DOMContentLoaded', jump)
+            },
+        }),
     ]
     liveGroupList.push(new Group('live-basic', '直播页 基本功能', basicItems))
 

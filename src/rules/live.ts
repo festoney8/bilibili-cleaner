@@ -415,22 +415,32 @@ if (isPageLiveRoom()) {
                 /* 弹幕栏高度 */
                 .chat-history-panel .chat-history-list.with-brush-prompt {height: 100% !important;}`,
         }),
-        // 隐藏 互动框(他们都在说)
+        // 隐藏 互动框 (倒计时互动), 默认开启
+        new CheckboxItem({
+            itemID: 'live-page-combo-card-countdown',
+            description: '隐藏 互动框 (倒计时互动)',
+            defaultStatus: true,
+            itemCSS: `#combo-card:has(.countDownBtn) {display: none !important;}
+                    .chat-history-panel.new {padding-bottom: 0 !important;}`,
+        }),
+        // 隐藏 互动框 (他们都在说), 默认开启
         new CheckboxItem({
             itemID: 'live-page-combo-card',
-            description: '隐藏 互动框(他们都在说)',
+            description: '隐藏 互动框 (他们都在说)',
+            defaultStatus: true,
             itemCSS: `#combo-card:has(.combo-tips) {display: none !important;}`,
         }),
-        // 隐藏 互动框(找TA玩)
+        // 隐藏 互动框 (找TA玩), 默认开启
         new CheckboxItem({
             itemID: 'live-page-service-card-container',
-            description: '隐藏 互动框(找TA玩)',
+            description: '隐藏 互动框 (找TA玩)',
+            defaultStatus: true,
             itemCSS: `.play-together-service-card-container {display: none !important;}`,
         }),
-        // 弹幕栏 使弹幕列表紧凑, 默认开启
+        // 使弹幕列表紧凑, 默认开启
         new CheckboxItem({
             itemID: 'live-page-compact-danmaku',
-            description: '弹幕栏 使弹幕列表紧凑',
+            description: '使弹幕列表紧凑',
             defaultStatus: true,
             itemCSS: `.chat-history-panel .chat-history-list .chat-item.danmaku-item.chat-colorful-bubble {margin: 2px 0 !important;}
                 .chat-history-panel .chat-history-list .chat-item {padding: 3px 5px !important; font-size: 1.2rem !important;}
@@ -438,32 +448,39 @@ if (isPageLiveRoom()) {
                 .chat-history-panel .chat-history-list .chat-item.danmaku-item .reply-uname {font-size: 1.2rem !important;}
                 .chat-history-panel .chat-history-list .chat-item.danmaku-item .reply-uname .common-nickname-wrapper {font-size: 1.2rem !important;}`,
         }),
-        // 隐藏 弹幕控制按钮 左侧
+        // 隐藏 左侧功能按钮
         new CheckboxItem({
             itemID: 'live-page-control-panel-icon-row-left',
-            description: '隐藏 弹幕控制按钮 左侧',
+            description: '隐藏 左侧功能按钮',
             itemCSS: `#chat-control-panel-vm .control-panel-icon-row .icon-left-part {display: none !important;}`,
         }),
-        // 隐藏 弹幕控制按钮 右侧
+        // 隐藏 右侧功能按钮
         new CheckboxItem({
             itemID: 'live-page-control-panel-icon-row-right',
-            description: '隐藏 弹幕控制按钮 右侧',
+            description: '隐藏 右侧功能按钮',
             itemCSS: `#chat-control-panel-vm .control-panel-icon-row .icon-right-part {display: none !important;}`,
         }),
-        // 隐藏 弹幕发送框
+        // 隐藏 发送框 粉丝勋章
+        new CheckboxItem({
+            itemID: 'live-page-chat-input-ctnr-medal-section',
+            description: '隐藏 发送框 粉丝勋章',
+            itemCSS: `.medal-section {display: none !important;}`,
+        }),
+        // 隐藏 发送框
         new CheckboxItem({
             itemID: 'live-page-chat-input-ctnr',
-            description: '隐藏 弹幕发送框',
+            description: '隐藏 发送框',
             itemCSS: `#chat-control-panel-vm .chat-input-ctnr, #chat-control-panel-vm .bottom-actions {display: none !important;}
                 .chat-control-panel {height: unset !important;}
                 .chat-history-panel {height: calc(100% - 45px) !important; padding-top: 8px;}
                 .chat-history-panel .danmaku-at-prompt {bottom: 50px !important;}`,
         }),
-        // 隐藏 关闭全部互动框和控制栏
+        // 隐藏 弹幕栏底部全部功能
         new CheckboxItem({
             itemID: 'live-page-chat-control-panel',
-            description: '隐藏 关闭全部互动框和控制栏',
+            description: '隐藏 弹幕栏底部全部功能',
             itemCSS: `#chat-control-panel-vm {display: none !important;}
+                .chat-history-panel .danmaku-at-prompt {bottom: 25px !important;}
                 /* 高权限调高度 */
                 #aside-area-vm .chat-history-panel {height: 100% !important;}`,
         }),

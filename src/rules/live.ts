@@ -346,9 +346,22 @@ if (isPageLiveRoom()) {
         new CheckboxItem({
             itemID: 'live-page-rank-list-vm',
             description: '隐藏 高能榜/大航海 (需刷新)',
-            itemCSS: `#rank-list-vm {display: none !important;}
-                #aside-area-vm {overflow: hidden;}
-                .chat-history-panel {height: calc(100% - 145px) !important; padding-top: 8px;}`,
+            // calc中强调单位，必须使用0px否则fallback
+            itemCSS: `
+                #rank-list-vm {
+                    display: none !important;
+                }
+                .chat-history-panel {
+                    --rank-list-height: 0px;
+                    height: calc(100% - var(--rank-list-height, 178px) - var(--chat-control-panel-height, 145px)) !important;
+                }
+                #chat-control-panel-vm {
+                    height: var(--chat-control-panel-height, 145px) !important;
+                }
+                #aside-area-vm {
+                    overflow: hidden;
+                }
+            `,
         }),
         // 隐藏 系统提示, 默认开启
         new CheckboxItem({
@@ -466,23 +479,85 @@ if (isPageLiveRoom()) {
             description: '隐藏 发送框 粉丝勋章',
             itemCSS: `.medal-section {display: none !important;}`,
         }),
+        // 隐藏 发送框 发送按钮
+        new CheckboxItem({
+            itemID: 'live-page-chat-input-ctnr-send-btn',
+            description: '隐藏 发送框 发送按钮 (回车发送)',
+            itemCSS: `
+                :root {
+                    --ctrlh1: calc(145px - 36px);
+                    --chat-control-panel-height: min(min(var(--ctrlh1, 145px), var(--ctrlh2, 145px)), var(--ctrlh3, 145px));
+                }
+                .bottom-actions {
+                    display: none !important;
+                }
+                .chat-history-panel {
+                    height: calc(100% - var(--rank-list-height, 178px) - var(--chat-control-panel-height, 145px)) !important;
+                }
+                #chat-control-panel-vm {
+                    height: var(--chat-control-panel-height, 145px) !important;
+                }
+                #aside-area-vm {
+                    overflow: hidden;
+                }
+                .chat-history-panel .danmaku-at-prompt {
+                    bottom: calc(var(--chat-control-panel-height) + 3px);
+                }
+            `,
+        }),
         // 隐藏 发送框
         new CheckboxItem({
             itemID: 'live-page-chat-input-ctnr',
             description: '隐藏 发送框',
-            itemCSS: `#chat-control-panel-vm .chat-input-ctnr, #chat-control-panel-vm .bottom-actions {display: none !important;}
-                .chat-control-panel {height: unset !important;}
-                .chat-history-panel {height: calc(100% - 45px) !important; padding-top: 8px;}
-                .chat-history-panel .danmaku-at-prompt {bottom: 50px !important;}`,
+            itemCSS: `
+                :root {
+                    --ctrlh2: calc(145px - 105px);
+                    --chat-control-panel-height: min(min(var(--ctrlh1, 145px), var(--ctrlh2, 145px)), var(--ctrlh3, 145px));
+                }
+                #chat-control-panel-vm .chat-input-ctnr,
+                #chat-control-panel-vm .bottom-actions {
+                    display: none !important;
+                }
+                .chat-history-panel {
+                    height: calc(100% - var(--rank-list-height, 178px) - var(--chat-control-panel-height, 145px)) !important;
+                }
+                #chat-control-panel-vm {
+                    height: var(--chat-control-panel-height) !important;
+                }
+                #aside-area-vm {
+                    overflow: hidden;
+                }
+                .chat-history-panel .danmaku-at-prompt {
+                    bottom: calc(var(--chat-control-panel-height) + 3px);
+                }
+            `,
         }),
         // 隐藏 弹幕栏底部全部功能
         new CheckboxItem({
             itemID: 'live-page-chat-control-panel',
             description: '隐藏 弹幕栏底部全部功能',
-            itemCSS: `#chat-control-panel-vm {display: none !important;}
-                .chat-history-panel .danmaku-at-prompt {bottom: 25px !important;}
-                /* 高权限调高度 */
-                #aside-area-vm .chat-history-panel {height: 100% !important;}`,
+            itemCSS: `
+                :root {
+                    --ctrlh3: 0px;
+                    --chat-control-panel-height: min(min(var(--ctrlh1, 145px), var(--ctrlh2, 145px)), var(--ctrlh3, 145px));
+                }
+                #chat-control-panel-vm {
+                    display: none !important;
+                }
+                .chat-history-panel {
+                    height: calc(100% - var(--rank-list-height, 178px) - var(--chat-control-panel-height, 145px)) !important;
+                    padding-bottom: 8px;
+                }
+                #chat-control-panel-vm {
+                    height: var(--chat-control-panel-height, 145px) !important;
+                }
+                #aside-area-vm {
+                    overflow: hidden;
+                }
+                .chat-history-panel .danmaku-at-prompt {
+                    bottom: calc(var(--chat-control-panel-height) + 3px);
+                }
+            `,
         }),
     ]
     liveGroupList.push(new Group('live-right-container', '右栏 高能榜/弹幕列表', rightContainerItems))

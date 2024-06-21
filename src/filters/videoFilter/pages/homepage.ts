@@ -144,7 +144,7 @@ if (isPageHomepage()) {
         'global-uploader-whitelist-filter-value',
         checkVideoList,
     )
-    const homepageTitleKeyworldWhitelistAction = new TitleKeywordWhitelistAction(
+    const homepageTitleKeywordWhitelistAction = new TitleKeywordWhitelistAction(
         'homepage-title-keyword-whitelist-filter-status',
         'global-title-keyword-whitelist-filter-value',
         checkVideoList,
@@ -165,12 +165,12 @@ if (isPageHomepage()) {
         }
         if (videoListContainer) {
             // 初次全站检测
-            check(true)
-            const videoObverser = new MutationObserver(() => {
+            check(true).then().catch()
+            const videoObserver = new MutationObserver(() => {
                 // 增量检测
-                check(false)
+                check(false).then().catch()
             })
-            videoObverser.observe(videoListContainer, { childList: true })
+            videoObserver.observe(videoListContainer, { childList: true })
             debug('watchVideoListContainer OK')
         }
     }
@@ -242,7 +242,7 @@ if (isPageHomepage()) {
                                 homepageBvidAction.add(bvid)
                             })
                             menu.registerMenu(`◎ 复制视频链接`, () => {
-                                navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`)
+                                navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).then().catch()
                             })
                             menu.show(e.clientX, e.clientY)
                         }
@@ -447,13 +447,13 @@ if (isPageHomepage()) {
         }),
         // 启用 首页标题关键词白名单
         new CheckboxItem({
-            itemID: homepageTitleKeyworldWhitelistAction.statusKey,
+            itemID: homepageTitleKeywordWhitelistAction.statusKey,
             description: '启用 标题关键词白名单',
             itemFunc: () => {
-                homepageTitleKeyworldWhitelistAction.enable()
+                homepageTitleKeywordWhitelistAction.enable()
             },
             callback: () => {
-                homepageTitleKeyworldWhitelistAction.disable()
+                homepageTitleKeywordWhitelistAction.disable()
             },
         }),
         // 编辑 关键词白名单
@@ -463,7 +463,7 @@ if (isPageHomepage()) {
             name: '编辑',
             // 按钮功能：显示白名单编辑器
             itemFunc: () => {
-                homepageTitleKeyworldWhitelistAction.whitelist.show()
+                homepageTitleKeywordWhitelistAction.whitelist.show()
             },
         }),
     ]

@@ -134,12 +134,12 @@ if (isPageVideo() || isPagePlaylist()) {
             }
         }
         if (videoListContainer) {
-            check(true)
-            const videoObverser = new MutationObserver(() => {
+            check(true).then().catch()
+            const videoObserver = new MutationObserver(() => {
                 // 播放页右栏载入慢, 始终做全站检测
-                check(true)
+                check(true).then().catch()
             })
-            videoObverser.observe(videoListContainer, { childList: true, subtree: true })
+            videoObserver.observe(videoListContainer, { childList: true, subtree: true })
             debug('watchVideoListContainer OK')
         }
     }
@@ -249,7 +249,7 @@ if (isPageVideo() || isPagePlaylist()) {
                             const matches = url.match(/space\.bilibili\.com\/\d+/g)
                             matches &&
                                 menu.registerMenu(`◎ 复制主页链接`, () => {
-                                    navigator.clipboard.writeText(`https://${matches[0]}`)
+                                    navigator.clipboard.writeText(`https://${matches[0]}`).then().catch()
                                 })
                         }
                         menu.show(e.clientX, e.clientY)
@@ -265,7 +265,7 @@ if (isPageVideo() || isPagePlaylist()) {
                                 videoBvidAction.add(bvid)
                             })
                             menu.registerMenu(`◎ 复制视频链接`, () => {
-                                navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`)
+                                navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).then().catch()
                             })
                             menu.show(e.clientX, e.clientY)
                         }

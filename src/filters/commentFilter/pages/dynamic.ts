@@ -154,12 +154,12 @@ if (isPageDynamic()) {
         }
         if (commentListContainer) {
             // 初次全站检测
-            check(true)
-            const commentObverser = new MutationObserver(() => {
+            check(true).then().catch()
+            const commentObserver = new MutationObserver(() => {
                 // 增量检测
-                check(false)
+                check(false).then().catch()
             })
-            commentObverser.observe(commentListContainer, { childList: true, subtree: true })
+            commentObserver.observe(commentListContainer, { childList: true, subtree: true })
         }
     }
 

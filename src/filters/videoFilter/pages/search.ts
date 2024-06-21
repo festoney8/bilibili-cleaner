@@ -115,7 +115,7 @@ if (isPageSearch()) {
         'global-uploader-whitelist-filter-value',
         checkVideoList,
     )
-    const searchTitleKeyworldWhitelistAction = new TitleKeywordWhitelistAction(
+    const searchTitleKeywordWhitelistAction = new TitleKeywordWhitelistAction(
         'search-title-keyword-whitelist-filter-status',
         'global-title-keyword-whitelist-filter-value',
         checkVideoList,
@@ -135,11 +135,11 @@ if (isPageSearch()) {
             }
         }
         if (videoListContainer) {
-            check(true)
-            const videoObverser = new MutationObserver(() => {
-                check(true)
+            check(true).then().catch()
+            const videoObserver = new MutationObserver(() => {
+                check(true).then().catch()
             })
-            videoObverser.observe(videoListContainer, { childList: true, subtree: true })
+            videoObserver.observe(videoListContainer, { childList: true, subtree: true })
             debug('watchVideoListContainer OK')
         }
     }
@@ -210,7 +210,7 @@ if (isPageSearch()) {
                                 searchBvidAction.add(bvid)
                             })
                             menu.registerMenu(`◎ 复制视频链接`, () => {
-                                navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`)
+                                navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).then().catch()
                             })
                             menu.show(e.clientX, e.clientY)
                         }
@@ -397,13 +397,13 @@ if (isPageSearch()) {
             },
         }),
         new CheckboxItem({
-            itemID: searchTitleKeyworldWhitelistAction.statusKey,
+            itemID: searchTitleKeywordWhitelistAction.statusKey,
             description: '启用 标题关键词白名单',
             itemFunc: () => {
-                searchTitleKeyworldWhitelistAction.enable()
+                searchTitleKeywordWhitelistAction.enable()
             },
             callback: () => {
-                searchTitleKeyworldWhitelistAction.disable()
+                searchTitleKeywordWhitelistAction.disable()
             },
         }),
         new ButtonItem({
@@ -412,7 +412,7 @@ if (isPageSearch()) {
             name: '编辑',
             // 按钮功能：显示白名单编辑器
             itemFunc: () => {
-                searchTitleKeyworldWhitelistAction.whitelist.show()
+                searchTitleKeywordWhitelistAction.whitelist.show()
             },
         }),
     ]

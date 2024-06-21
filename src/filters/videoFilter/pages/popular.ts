@@ -39,13 +39,12 @@ if (isPagePopular()) {
     // hook fetch
     let apiResp: Response | undefined = undefined
     const origFetch = unsafeWindow.fetch
-    unsafeWindow.fetch = (input, init?) => {
+    unsafeWindow.fetch = async (input, init?) => {
         if (typeof input === 'string' && input.includes('api.bilibili.com') && init?.method?.toUpperCase() === 'GET') {
             if (input.match(/web-interface\/(ranking|popular\/series\/one|popular\?ps)/)) {
-                return origFetch(input, init).then((resp: Response) => {
-                    apiResp = resp.clone()
-                    return resp
-                })
+                const resp = await origFetch(input, init)
+                apiResp = resp.clone()
+                return resp
             }
         }
         return origFetch(input, init)
@@ -242,18 +241,18 @@ if (isPagePopular()) {
                 if (location.pathname.match(/\/v\/popular\/(?:all|rank|weekly)/)) {
                     popularDurationAction.status || popularQualityAction.status || popularDimensionAction.status
                         ? await parseResp()
-                        : parseResp()
+                        : parseResp().then().catch()
                 }
                 checkVideoList(fullSite)
             }
         }
 
         if (videoListContainer) {
-            check(true)
-            const videoObverser = new MutationObserver(async () => {
-                check(true)
+            check(true).then().catch()
+            const videoObserver = new MutationObserver(async () => {
+                check(true).then().catch()
             })
-            videoObverser.observe(videoListContainer, { childList: true, subtree: true })
+            videoObserver.observe(videoListContainer, { childList: true, subtree: true })
             debug('watchVideoListContainer OK')
         }
     }
@@ -265,7 +264,7 @@ if (isPagePopular()) {
         }).then((ele) => {
             if (ele) {
                 videoListContainer = ele
-                watchVideoListContainer()
+                watchVideoListContainer().then().catch()
             }
         })
     } catch (err) {

@@ -186,7 +186,6 @@ export class DimensionAction implements VideoFilterAction {
     /**
      * 视频横竖屏过滤操作
      * @param statusKey 是否启用的GM key
-     * @param valueKey 存储数据的GM key
      * @param checkVideoList 检测视频列表函数
      */
     constructor(statusKey: string, checkVideoList: (fullSite: boolean) => void) {

@@ -137,7 +137,7 @@ if (isPageVideo() || isPagePlaylist()) {
                                 if (params.has('p')) {
                                     shareText += `?p=${params.get('p')}`
                                 }
-                                navigator.clipboard.writeText(shareText)
+                                navigator.clipboard.writeText(shareText).then().catch()
                             })
                             clearInterval(id)
                         } else if (counter > 50) {

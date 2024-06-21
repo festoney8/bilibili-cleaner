@@ -117,7 +117,7 @@ export class CheckboxItem implements IItem {
             }
         }
     }
-    /** 监听item chekbox开关 */
+    /** 监听item checkbox开关 */
     watchItem() {
         try {
             this.itemEle = document.querySelector(`#${this.option.itemID} input`) as HTMLInputElement

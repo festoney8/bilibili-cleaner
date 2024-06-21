@@ -149,12 +149,12 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             if (usernameAction.status || contentAction.status) {
                 checkCommentList(true)
             }
-            const commentObverser = new MutationObserver(() => {
+            const commentObserver = new MutationObserver(() => {
                 if (usernameAction.status || contentAction.status) {
                     checkCommentList(false)
                 }
             })
-            commentObverser.observe(commentListContainer, { childList: true, subtree: true })
+            commentObserver.observe(commentListContainer, { childList: true, subtree: true })
         }
     }
 

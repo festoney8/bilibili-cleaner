@@ -53,12 +53,12 @@ export const waitForEle = async (
         return ele
     }
     return await new Promise<HTMLElement | null>((resolve) => {
-        const obverser = new MutationObserver((mutationList) => {
+        const observer = new MutationObserver((mutationList) => {
             mutationList.forEach((mutation) => {
                 if (mutation.addedNodes) {
                     mutation.addedNodes.forEach((node) => {
                         if (node instanceof HTMLElement && isTargetNode(node)) {
-                            obverser.disconnect()
+                            observer.disconnect()
                             ele = watchEle.querySelector(selector) as HTMLElement | null
                             resolve(ele)
                         }
@@ -66,6 +66,6 @@ export const waitForEle = async (
                 }
             })
         })
-        obverser.observe(watchEle, { childList: true, subtree: true })
+        observer.observe(watchEle, { childList: true, subtree: true })
     })
 }

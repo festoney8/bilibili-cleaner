@@ -111,7 +111,7 @@ if (isPageChannel()) {
         'global-uploader-whitelist-filter-value',
         checkVideoList,
     )
-    const channelTitleKeyworldWhitelistAction = new TitleKeywordWhitelistAction(
+    const channelTitleKeywordWhitelistAction = new TitleKeywordWhitelistAction(
         'channel-title-keyword-whitelist-filter-status',
         'global-title-keyword-whitelist-filter-value',
         checkVideoList,
@@ -132,12 +132,12 @@ if (isPageChannel()) {
         }
         if (videoListContainer) {
             // 初次全站检测
-            check(true)
-            const videoObverser = new MutationObserver(() => {
+            check(true).then().catch()
+            const videoObserver = new MutationObserver(() => {
                 // 增量检测
-                check(false)
+                check(false).then().catch()
             })
-            videoObverser.observe(videoListContainer, { childList: true, subtree: true })
+            videoObserver.observe(videoListContainer, { childList: true, subtree: true })
             debug('watchVideoListContainer OK')
         }
     }
@@ -208,7 +208,7 @@ if (isPageChannel()) {
                                 channelBvidAction.add(bvid)
                             })
                             menu.registerMenu(`◎ 复制视频链接`, () => {
-                                navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`)
+                                navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).then().catch()
                             })
                             menu.show(e.clientX, e.clientY)
                         }
@@ -400,13 +400,13 @@ if (isPageChannel()) {
         }),
         // 启用 频道页标题关键词白名单
         new CheckboxItem({
-            itemID: channelTitleKeyworldWhitelistAction.statusKey,
+            itemID: channelTitleKeywordWhitelistAction.statusKey,
             description: '启用 标题关键词白名单',
             itemFunc: () => {
-                channelTitleKeyworldWhitelistAction.enable()
+                channelTitleKeywordWhitelistAction.enable()
             },
             callback: () => {
-                channelTitleKeyworldWhitelistAction.disable()
+                channelTitleKeywordWhitelistAction.disable()
             },
         }),
         // 编辑 关键词白名单
@@ -416,7 +416,7 @@ if (isPageChannel()) {
             name: '编辑',
             // 按钮功能：显示白名单编辑器
             itemFunc: () => {
-                channelTitleKeyworldWhitelistAction.whitelist.show()
+                channelTitleKeywordWhitelistAction.whitelist.show()
             },
         }),
     ]

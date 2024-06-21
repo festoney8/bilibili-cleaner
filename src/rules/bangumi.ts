@@ -42,7 +42,7 @@ if (isPageBangumi()) {
                                 const mainTitle = document.querySelector("[class^='mediainfo_mediaTitle']")?.textContent
                                 const subTitle = document.getElementById('player-title')?.textContent
                                 const shareText = `《${mainTitle}》${subTitle} \nhttps://www.bilibili.com${location.pathname}`
-                                navigator.clipboard.writeText(shareText)
+                                navigator.clipboard.writeText(shareText).then().catch()
                             })
                         } else if (counter > 50) {
                             clearInterval(id)

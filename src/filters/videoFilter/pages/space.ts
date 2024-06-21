@@ -82,7 +82,7 @@ if (isPageSpace()) {
         'global-title-keyword-filter-value',
         checkVideoList,
     )
-    const spaceTitleKeyworldWhitelistAction = new TitleKeywordWhitelistAction(
+    const spaceTitleKeywordWhitelistAction = new TitleKeywordWhitelistAction(
         'space-title-keyword-whitelist-filter-status',
         'global-title-keyword-whitelist-filter-value',
         checkVideoList,
@@ -96,12 +96,12 @@ if (isPageSpace()) {
             }
         }
         if (videoListContainer) {
-            check(true)
-            const videoObverser = new MutationObserver(() => {
+            check(true).then().catch()
+            const videoObserver = new MutationObserver(() => {
                 // 全量检测
-                check(true)
+                check(true).then().catch()
             })
-            videoObverser.observe(videoListContainer, { childList: true, subtree: true })
+            videoObserver.observe(videoListContainer, { childList: true, subtree: true })
             debug('watchVideoListContainer OK')
         }
     }
@@ -147,7 +147,7 @@ if (isPageSpace()) {
                                 spaceBvidAction.add(bvid)
                             })
                             menu.registerMenu(`◎ 复制视频链接`, () => {
-                                navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`)
+                                navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).then().catch()
                             })
                             menu.show(e.clientX, e.clientY)
                         }
@@ -273,13 +273,13 @@ if (isPageSpace()) {
     const whitelistItems = [
         // 启用 空间页标题关键词白名单
         new CheckboxItem({
-            itemID: spaceTitleKeyworldWhitelistAction.statusKey,
+            itemID: spaceTitleKeywordWhitelistAction.statusKey,
             description: '启用 标题关键词白名单',
             itemFunc: () => {
-                spaceTitleKeyworldWhitelistAction.enable()
+                spaceTitleKeywordWhitelistAction.enable()
             },
             callback: () => {
-                spaceTitleKeyworldWhitelistAction.disable()
+                spaceTitleKeywordWhitelistAction.disable()
             },
         }),
         // 编辑 标题关键词白名单
@@ -288,7 +288,7 @@ if (isPageSpace()) {
             description: '编辑 标题关键词白名单（支持正则）',
             name: '编辑',
             itemFunc: () => {
-                spaceTitleKeyworldWhitelistAction.whitelist.show()
+                spaceTitleKeywordWhitelistAction.whitelist.show()
             },
         }),
     ]

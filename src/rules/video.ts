@@ -748,7 +748,6 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
                         if (player.getAttribute('data-screen') !== 'mini') {
                             return
                         }
-                        console.log('store new position', player.style.right, player.style.bottom)
                         GM_setValue(
                             'BILICLEANER_video-page-bpx-player-mini-mode-position-record-right',
                             parseInt(player.style.right),

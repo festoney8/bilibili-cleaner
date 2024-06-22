@@ -28,31 +28,27 @@ if (isPageBangumi()) {
                 #share-container-id [class^='Share_boxTopRight'] {display: none !important;}
                 #share-container-id [class^='Share_boxTopLeft'] {padding: 0 !important;}
             `,
-            itemFunc: () => {
+            enableFunc: async () => {
                 // 监听shareBtn出现
-                const listener = () => {
-                    let counter = 0
-                    const id = setInterval(() => {
-                        counter++
-                        const shareBtn = document.getElementById('share-container-id')
-                        if (shareBtn) {
-                            clearInterval(id)
-                            // 新增click事件覆盖剪贴板
-                            shareBtn.addEventListener('click', () => {
-                                const mainTitle = document.querySelector("[class^='mediainfo_mediaTitle']")?.textContent
-                                const subTitle = document.getElementById('player-title')?.textContent
-                                const shareText = `《${mainTitle}》${subTitle} \nhttps://www.bilibili.com${location.pathname}`
-                                navigator.clipboard.writeText(shareText).then().catch()
-                            })
-                        } else if (counter > 50) {
-                            clearInterval(id)
-                        }
-                    }, 200)
-                }
-                document.readyState === 'complete'
-                    ? listener()
-                    : document.addEventListener('DOMContentLoaded', listener)
+                let counter = 0
+                const id = setInterval(() => {
+                    counter++
+                    const shareBtn = document.getElementById('share-container-id')
+                    if (shareBtn) {
+                        clearInterval(id)
+                        // 新增click事件覆盖剪贴板
+                        shareBtn.addEventListener('click', () => {
+                            const mainTitle = document.querySelector("[class^='mediainfo_mediaTitle']")?.textContent
+                            const subTitle = document.getElementById('player-title')?.textContent
+                            const shareText = `《${mainTitle}》${subTitle} \nhttps://www.bilibili.com${location.pathname}`
+                            navigator.clipboard.writeText(shareText).then().catch()
+                        })
+                    } else if (counter > 50) {
+                        clearInterval(id)
+                    }
+                }, 200)
             },
+            enableFuncRunAt: 'document-end',
         }),
         // 顶栏 滚动页面后不再吸附顶部
         new CheckboxItem({
@@ -97,28 +93,24 @@ if (isPageBangumi()) {
                     }
                 }
             `,
-            itemFunc: () => {
+            enableFunc: async () => {
                 // 在Chrome上可以神奇的禁用滚轮调节音量，Firefox不生效
                 document.addEventListener('wheel', disableAdjustVolume)
                 // 监听网页全屏按钮出现
-                const listener = () => {
-                    waitForEle(document.body, '.bpx-player-ctrl-web', (node: HTMLElement): boolean => {
-                        return node.className.includes('bpx-player-ctrl-web')
-                    }).then((webBtn) => {
-                        if (webBtn) {
-                            webBtn.addEventListener('click', () => {
-                                if (webBtn.classList.contains('bpx-state-entered')) {
-                                    window.scrollTo(0, 0)
-                                }
-                            })
-                        }
-                    })
-                }
-                document.readyState === 'complete'
-                    ? listener()
-                    : document.addEventListener('DOMContentLoaded', listener)
+                waitForEle(document.body, '.bpx-player-ctrl-web', (node: HTMLElement): boolean => {
+                    return node.className.includes('bpx-player-ctrl-web')
+                }).then((webBtn) => {
+                    if (webBtn) {
+                        webBtn.addEventListener('click', () => {
+                            if (webBtn.classList.contains('bpx-state-entered')) {
+                                window.scrollTo(0, 0)
+                            }
+                        })
+                    }
+                })
             },
-            callback: () => document.removeEventListener('wheel', disableAdjustVolume),
+            enableFuncRunAt: 'document-end',
+            disableFunc: async () => document.removeEventListener('wheel', disableAdjustVolume),
         }),
         // 普通播放 视频宽度调节
         new NumberItem({
@@ -222,95 +214,91 @@ if (isPageBangumi()) {
         new CheckboxItem({
             itemID: 'video-page-bpx-player-mini-mode-wheel-adjust',
             description: '滚轮调节大小',
-            itemFunc: () => {
-                const adjust = async () => {
-                    try {
-                        const insertCSS = (zoom: number) => {
-                            const cssText = `
-                                    .bpx-player-container[data-screen=mini] {
-                                        height: calc(225px * ${zoom}) !important;
-                                        width: calc(400px * ${zoom}) !important;
+            enableFunc: async () => {
+                try {
+                    const insertCSS = (zoom: number) => {
+                        const cssText = `
+                            .bpx-player-container[data-screen=mini] {
+                                height: calc(225px * ${zoom}) !important;
+                                width: calc(400px * ${zoom}) !important;
+                            }
+                            .bpx-player-container[data-revision="1"][data-screen=mini],
+                            .bpx-player-container[data-revision="2"][data-screen=mini] {
+                                height: calc(180px * ${zoom}) !important;
+                                width: calc(320px * ${zoom}) !important;
+                            }
+                            @media screen and (min-width:1681px) {
+                                .bpx-player-container[data-revision="1"][data-screen=mini],
+                                .bpx-player-container[data-revision="2"][data-screen=mini] {
+                                    height: calc(203px * ${zoom}) !important;
+                                    width: calc(360px * ${zoom}) !important;
+                                }
+                            }`
+                            .replace(/\n\s*/g, '')
+                            .trim()
+                        const node = document.querySelector(
+                            `html>style[bili-cleaner-css=video-page-bpx-player-mini-mode-wheel-adjust]`,
+                        )
+                        if (node) {
+                            node.innerHTML = cssText
+                        } else {
+                            const style = document.createElement('style')
+                            style.innerHTML = cssText
+                            style.setAttribute('bili-cleaner-css', 'video-page-bpx-player-mini-mode-wheel-adjust')
+                            document.documentElement.appendChild(style)
+                        }
+                    }
+                    // 载入上次缩放
+                    const oldZoom: number | undefined = GM_getValue('BILICLEANER_video-page-bpx-player-mini-mode-zoom')
+                    oldZoom && insertCSS(oldZoom)
+
+                    // 等player出现
+                    let cnt = 0
+                    const interval = setInterval(() => {
+                        const player = document.querySelector('.bpx-player-container') as HTMLElement | null
+                        if (player) {
+                            clearInterval(interval)
+                            // 判断鼠标位置，消除大播放器内下拉页面影响小窗大小的bug
+                            let flag = false
+                            player.addEventListener('mouseenter', () => {
+                                if (player.getAttribute('data-screen') === 'mini') {
+                                    flag = true
+                                }
+                            })
+                            player.addEventListener('mouseleave', () => {
+                                flag = false
+                            })
+                            let lastZoom = oldZoom || 1
+                            // 监听滚轮
+                            player.addEventListener('wheel', (e) => {
+                                if (flag) {
+                                    e.stopPropagation()
+                                    e.preventDefault()
+                                    const scaleSpeed = 5
+                                    let zoom = lastZoom - (Math.sign(e.deltaY) * scaleSpeed) / 100
+                                    zoom = zoom < 0.5 ? 0.5 : zoom
+                                    zoom = zoom > 3 ? 3 : zoom
+                                    if (zoom !== lastZoom) {
+                                        lastZoom = zoom
+                                        insertCSS(zoom)
+                                        GM_setValue('BILICLEANER_video-page-bpx-player-mini-mode-zoom', zoom)
                                     }
-                                    .bpx-player-container[data-revision="1"][data-screen=mini],
-                                    .bpx-player-container[data-revision="2"][data-screen=mini] {
-                                        height: calc(180px * ${zoom}) !important;
-                                        width: calc(320px * ${zoom}) !important;
-                                    }
-                                    @media screen and (min-width:1681px) {
-                                        .bpx-player-container[data-revision="1"][data-screen=mini],
-                                        .bpx-player-container[data-revision="2"][data-screen=mini] {
-                                            height: calc(203px * ${zoom}) !important;
-                                            width: calc(360px * ${zoom}) !important;
-                                        }
-                                    }`
-                                .replace(/\n\s*/g, '')
-                                .trim()
-                            const node = document.querySelector(
-                                `html>style[bili-cleaner-css=video-page-bpx-player-mini-mode-wheel-adjust]`,
-                            )
-                            if (node) {
-                                node.innerHTML = cssText
-                            } else {
-                                const style = document.createElement('style')
-                                style.innerHTML = cssText
-                                style.setAttribute('bili-cleaner-css', 'video-page-bpx-player-mini-mode-wheel-adjust')
-                                document.documentElement.appendChild(style)
+                                }
+                            })
+                        } else {
+                            cnt++
+                            if (cnt > 20) {
+                                clearInterval(interval)
                             }
                         }
-                        // 载入上次缩放
-                        const oldZoom: number | undefined = GM_getValue(
-                            'BILICLEANER_video-page-bpx-player-mini-mode-zoom',
-                        )
-                        oldZoom && insertCSS(oldZoom)
-
-                        // 等player出现
-                        let cnt = 0
-                        const interval = setInterval(() => {
-                            const player = document.querySelector('.bpx-player-container') as HTMLElement | null
-                            if (player) {
-                                clearInterval(interval)
-                                // 判断鼠标位置，消除大播放器内下拉页面影响小窗大小的bug
-                                let flag = false
-                                player.addEventListener('mouseenter', () => {
-                                    if (player.getAttribute('data-screen') === 'mini') {
-                                        flag = true
-                                    }
-                                })
-                                player.addEventListener('mouseleave', () => {
-                                    flag = false
-                                })
-                                let lastZoom = oldZoom || 1
-                                // 监听滚轮
-                                player.addEventListener('wheel', (e) => {
-                                    if (flag) {
-                                        e.stopPropagation()
-                                        e.preventDefault()
-                                        const scaleSpeed = 5
-                                        let zoom = lastZoom - (Math.sign(e.deltaY) * scaleSpeed) / 100
-                                        zoom = zoom < 0.5 ? 0.5 : zoom
-                                        zoom = zoom > 3 ? 3 : zoom
-                                        if (zoom !== lastZoom) {
-                                            lastZoom = zoom
-                                            insertCSS(zoom)
-                                            GM_setValue('BILICLEANER_video-page-bpx-player-mini-mode-zoom', zoom)
-                                        }
-                                    }
-                                })
-                            } else {
-                                cnt++
-                                if (cnt > 20) {
-                                    clearInterval(interval)
-                                }
-                            }
-                        }, 500)
-                    } catch (err) {
-                        error('adjust mini player size error')
-                        error(err)
-                    }
+                    }, 500)
+                } catch (err) {
+                    error('adjust mini player size error')
+                    error(err)
                 }
-                document.readyState === 'complete' ? adjust() : document.addEventListener('DOMContentLoaded', adjust)
             },
-            callback: () => {
+            enableFuncRunAt: 'document-end',
+            disableFunc: async () => {
                 document.querySelector(`style[bili-cleaner-css=video-page-bpx-player-mini-mode-wheel-adjust]`)?.remove()
             },
         }),
@@ -318,7 +306,7 @@ if (isPageBangumi()) {
         new CheckboxItem({
             itemID: 'video-page-bpx-player-mini-mode-position-record',
             description: '记录小窗位置',
-            itemFunc: () => {
+            enableFunc: async () => {
                 let player: HTMLElement
 
                 // 监听mini播放器移动
@@ -352,23 +340,19 @@ if (isPageBangumi()) {
                     }
                 }
 
-                const listener = () => {
-                    waitForEle(document.body, `#bilibili-player [class^="bpx-player-video"]`, (node: HTMLElement) => {
-                        return node.className.startsWith('bpx-player-video')
-                    }).then(() => {
-                        player = document.querySelector('#bilibili-player .bpx-player-container') as HTMLElement
-                        try {
-                            setMiniPlayerState()
-                            addMiniPlayerMoveListener()
-                        } catch {
-                            // err
-                        }
-                    })
-                }
-                document.readyState === 'complete'
-                    ? listener()
-                    : document.addEventListener('DOMContentLoaded', listener)
+                waitForEle(document.body, `#bilibili-player [class^="bpx-player-video"]`, (node: HTMLElement) => {
+                    return node.className.startsWith('bpx-player-video')
+                }).then(() => {
+                    player = document.querySelector('#bilibili-player .bpx-player-container') as HTMLElement
+                    try {
+                        setMiniPlayerState()
+                        addMiniPlayerMoveListener()
+                    } catch {
+                        // err
+                    }
+                })
             },
+            enableFuncRunAt: 'document-end',
         }),
     ]
     bangumiGroupList.push(new Group('bangumi-mini-player', '小窗播放器', miniPlayerItems))
@@ -568,7 +552,7 @@ if (isPageBangumi()) {
         new CheckboxItem({
             itemID: 'video-page-coin-disable-auto-like',
             description: '投币时不自动点赞 (关闭需刷新)',
-            itemFunc: () => {
+            enableFunc: async () => {
                 const disableAutoLike = () => {
                     let counter = 0
                     const timer = setInterval(() => {

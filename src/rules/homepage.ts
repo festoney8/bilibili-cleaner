@@ -491,7 +491,7 @@ if (isPageHomepage()) {
             .floor-single-card:has(.skeleton, .skeleton-item) {
                 display: none;
             }`,
-            itemFunc: () => {
+            enableFunc: async () => {
                 // hook fetch
                 const origFetch = unsafeWindow.fetch
                 unsafeWindow.fetch = (input, init?) => {

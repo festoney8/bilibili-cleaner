@@ -231,10 +231,10 @@ if (isPageSearch()) {
         new CheckboxItem({
             itemID: searchDurationAction.statusKey,
             description: '启用 时长过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 searchDurationAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 searchDurationAction.disable()
             },
         }),
@@ -246,7 +246,7 @@ if (isPageSearch()) {
             maxValue: 300,
             disableValue: 0,
             unit: '秒',
-            callback: (value: number) => {
+            callback: async (value: number) => {
                 searchDurationAction.change(value)
             },
         }),
@@ -258,13 +258,13 @@ if (isPageSearch()) {
         new CheckboxItem({
             itemID: searchUploaderAction.statusKey,
             description: '启用 UP主过滤 (右键单击UP主)',
-            itemFunc: () => {
+            enableFunc: async () => {
                 // 启用右键功能
                 isContextMenuUploaderEnable = true
                 contextMenuFunc()
                 searchUploaderAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 // 禁用右键功能
                 isContextMenuUploaderEnable = false
                 searchUploaderAction.disable()
@@ -276,7 +276,7 @@ if (isPageSearch()) {
             description: '编辑 UP主黑名单',
             name: '编辑',
             // 按钮功能
-            itemFunc: () => {
+            itemFunc: async () => {
                 searchUploaderAction.blacklist.show()
             },
         }),
@@ -284,10 +284,10 @@ if (isPageSearch()) {
         new CheckboxItem({
             itemID: searchUploaderKeywordAction.statusKey,
             description: '启用 UP主昵称关键词过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 searchUploaderKeywordAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 searchUploaderKeywordAction.disable()
             },
         }),
@@ -296,7 +296,7 @@ if (isPageSearch()) {
             itemID: 'search-uploader-keyword-edit-button',
             description: '编辑 UP主昵称关键词黑名单',
             name: '编辑',
-            itemFunc: () => {
+            itemFunc: async () => {
                 searchUploaderKeywordAction.blacklist.show()
             },
         }),
@@ -308,10 +308,10 @@ if (isPageSearch()) {
         new CheckboxItem({
             itemID: searchTitleKeywordAction.statusKey,
             description: '启用 标题关键词过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 searchTitleKeywordAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 searchTitleKeywordAction.disable()
             },
         }),
@@ -321,7 +321,7 @@ if (isPageSearch()) {
             description: '编辑 标题关键词黑名单（支持正则）',
             name: '编辑',
             // 按钮功能
-            itemFunc: () => {
+            itemFunc: async () => {
                 searchTitleKeywordAction.blacklist.show()
             },
         }),
@@ -335,13 +335,13 @@ if (isPageSearch()) {
         new CheckboxItem({
             itemID: searchBvidAction.statusKey,
             description: '启用 BV号过滤 (右键单击标题)',
-            itemFunc: () => {
+            enableFunc: async () => {
                 // 启用右键功能
                 isContextMenuBvidEnable = true
                 contextMenuFunc()
                 searchBvidAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 // 禁用右键功能
                 isContextMenuBvidEnable = false
                 searchBvidAction.disable()
@@ -353,7 +353,7 @@ if (isPageSearch()) {
             description: '编辑 BV号黑名单',
             name: '编辑',
             // 按钮功能
-            itemFunc: () => {
+            itemFunc: async () => {
                 searchBvidAction.blacklist.show()
             },
         }),
@@ -367,12 +367,12 @@ if (isPageSearch()) {
             itemID: 'search-top-uploader-whitelist-filter-status',
             description: '搜索结果顶部UP主视频免过滤',
             defaultStatus: true,
-            itemFunc: () => {
+            enableFunc: async () => {
                 isTopUploaderWhitelistEnable = true
                 // 触发全站检测
                 checkVideoList(true)
             },
-            callback: () => {
+            disableFunc: async () => {
                 isTopUploaderWhitelistEnable = false
                 checkVideoList(true)
             },
@@ -380,10 +380,10 @@ if (isPageSearch()) {
         new CheckboxItem({
             itemID: searchUploaderWhitelistAction.statusKey,
             description: '启用 UP主白名单',
-            itemFunc: () => {
+            enableFunc: async () => {
                 searchUploaderWhitelistAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 searchUploaderWhitelistAction.disable()
             },
         }),
@@ -392,17 +392,17 @@ if (isPageSearch()) {
             description: '编辑 UP主白名单',
             name: '编辑',
             // 按钮功能：显示白名单编辑器
-            itemFunc: () => {
+            itemFunc: async () => {
                 searchUploaderWhitelistAction.whitelist.show()
             },
         }),
         new CheckboxItem({
             itemID: searchTitleKeywordWhitelistAction.statusKey,
             description: '启用 标题关键词白名单',
-            itemFunc: () => {
+            enableFunc: async () => {
                 searchTitleKeywordWhitelistAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 searchTitleKeywordWhitelistAction.disable()
             },
         }),
@@ -411,7 +411,7 @@ if (isPageSearch()) {
             description: '编辑 标题关键词白名单（支持正则）',
             name: '编辑',
             // 按钮功能：显示白名单编辑器
-            itemFunc: () => {
+            itemFunc: async () => {
                 searchTitleKeywordWhitelistAction.whitelist.show()
             },
         }),

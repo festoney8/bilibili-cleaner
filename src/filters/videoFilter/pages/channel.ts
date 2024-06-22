@@ -240,10 +240,10 @@ if (isPageChannel()) {
              *
              * 可以在传递方法时使用箭头函数来保持 this 的上下文
              */
-            itemFunc: () => {
+            enableFunc: async () => {
                 channelDurationAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 channelDurationAction.disable()
             },
         }),
@@ -256,7 +256,7 @@ if (isPageChannel()) {
             maxValue: 300,
             disableValue: 0,
             unit: '秒',
-            callback: (value: number) => {
+            callback: async (value: number) => {
                 channelDurationAction.change(value)
             },
         }),
@@ -269,13 +269,13 @@ if (isPageChannel()) {
         new CheckboxItem({
             itemID: channelUploaderAction.statusKey,
             description: '启用 UP主过滤 (右键单击UP主)',
-            itemFunc: () => {
+            enableFunc: async () => {
                 // 启用右键功能
                 isContextMenuUploaderEnable = true
                 contextMenuFunc()
                 channelUploaderAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 // 禁用右键功能
                 isContextMenuUploaderEnable = false
                 channelUploaderAction.disable()
@@ -287,7 +287,7 @@ if (isPageChannel()) {
             description: '编辑 UP主黑名单',
             name: '编辑',
             // 按钮功能
-            itemFunc: () => {
+            itemFunc: async () => {
                 channelUploaderAction.blacklist.show()
             },
         }),
@@ -295,10 +295,10 @@ if (isPageChannel()) {
         new CheckboxItem({
             itemID: channelUploaderKeywordAction.statusKey,
             description: '启用 UP主昵称关键词过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 channelUploaderKeywordAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 channelUploaderKeywordAction.disable()
             },
         }),
@@ -307,7 +307,7 @@ if (isPageChannel()) {
             itemID: 'channel-uploader-keyword-edit-button',
             description: '编辑 UP主昵称关键词黑名单',
             name: '编辑',
-            itemFunc: () => {
+            itemFunc: async () => {
                 channelUploaderKeywordAction.blacklist.show()
             },
         }),
@@ -320,10 +320,10 @@ if (isPageChannel()) {
         new CheckboxItem({
             itemID: channelTitleKeywordAction.statusKey,
             description: '启用 标题关键词过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 channelTitleKeywordAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 channelTitleKeywordAction.disable()
             },
         }),
@@ -333,7 +333,7 @@ if (isPageChannel()) {
             description: '编辑 标题关键词黑名单（支持正则）',
             name: '编辑',
             // 按钮功能
-            itemFunc: () => {
+            itemFunc: async () => {
                 channelTitleKeywordAction.blacklist.show()
             },
         }),
@@ -348,13 +348,13 @@ if (isPageChannel()) {
         new CheckboxItem({
             itemID: channelBvidAction.statusKey,
             description: '启用 BV号过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 // 启用右键功能
                 isContextMenuBvidEnable = true
                 contextMenuFunc()
                 channelBvidAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 // 禁用右键功能
                 isContextMenuBvidEnable = false
                 channelBvidAction.disable()
@@ -366,7 +366,7 @@ if (isPageChannel()) {
             description: '编辑 BV号黑名单',
             name: '编辑',
             // 按钮功能
-            itemFunc: () => {
+            itemFunc: async () => {
                 channelBvidAction.blacklist.show()
             },
         }),
@@ -381,10 +381,10 @@ if (isPageChannel()) {
         new CheckboxItem({
             itemID: channelUploaderWhitelistAction.statusKey,
             description: '启用 UP主白名单 (右键单击UP主)',
-            itemFunc: () => {
+            enableFunc: async () => {
                 channelUploaderWhitelistAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 channelUploaderWhitelistAction.disable()
             },
         }),
@@ -394,7 +394,7 @@ if (isPageChannel()) {
             description: '编辑 UP主白名单',
             name: '编辑',
             // 按钮功能：显示白名单编辑器
-            itemFunc: () => {
+            itemFunc: async () => {
                 channelUploaderWhitelistAction.whitelist.show()
             },
         }),
@@ -402,10 +402,10 @@ if (isPageChannel()) {
         new CheckboxItem({
             itemID: channelTitleKeywordWhitelistAction.statusKey,
             description: '启用 标题关键词白名单',
-            itemFunc: () => {
+            enableFunc: async () => {
                 channelTitleKeywordWhitelistAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 channelTitleKeywordWhitelistAction.disable()
             },
         }),
@@ -415,7 +415,7 @@ if (isPageChannel()) {
             description: '编辑 标题关键词白名单（支持正则）',
             name: '编辑',
             // 按钮功能：显示白名单编辑器
-            itemFunc: () => {
+            itemFunc: async () => {
                 channelTitleKeywordWhitelistAction.whitelist.show()
             },
         }),

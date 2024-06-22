@@ -184,10 +184,10 @@ if (isPageSpace()) {
         new CheckboxItem({
             itemID: spaceDurationAction.statusKey,
             description: '启用 时长过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 spaceDurationAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 spaceDurationAction.disable()
             },
             itemCSS: patchCSS,
@@ -201,7 +201,7 @@ if (isPageSpace()) {
             maxValue: 300,
             disableValue: 0,
             unit: '秒',
-            callback: (value: number) => {
+            callback: async (value: number) => {
                 spaceDurationAction.change(value)
             },
         }),
@@ -214,10 +214,10 @@ if (isPageSpace()) {
         new CheckboxItem({
             itemID: spaceTitleKeywordAction.statusKey,
             description: '启用 标题关键词过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 spaceTitleKeywordAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 spaceTitleKeywordAction.disable()
             },
             itemCSS: patchCSS,
@@ -227,7 +227,7 @@ if (isPageSpace()) {
             itemID: 'space-title-keyword-edit-button',
             description: '编辑 标题关键词黑名单（支持正则）',
             name: '编辑',
-            itemFunc: () => {
+            itemFunc: async () => {
                 spaceTitleKeywordAction.blacklist.show()
             },
         }),
@@ -242,13 +242,13 @@ if (isPageSpace()) {
         new CheckboxItem({
             itemID: spaceBvidAction.statusKey,
             description: '启用 BV号过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 // 启用右键功能
                 isContextMenuBvidEnable = true
                 contextMenuFunc()
                 spaceBvidAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 // 禁用右键功能
                 isContextMenuBvidEnable = false
                 spaceBvidAction.disable()
@@ -260,7 +260,7 @@ if (isPageSpace()) {
             itemID: 'space-bvid-edit-button',
             description: '编辑 BV号黑名单',
             name: '编辑',
-            itemFunc: () => {
+            itemFunc: async () => {
                 spaceBvidAction.blacklist.show()
             },
         }),
@@ -275,10 +275,10 @@ if (isPageSpace()) {
         new CheckboxItem({
             itemID: spaceTitleKeywordWhitelistAction.statusKey,
             description: '启用 标题关键词白名单',
-            itemFunc: () => {
+            enableFunc: async () => {
                 spaceTitleKeywordWhitelistAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 spaceTitleKeywordWhitelistAction.disable()
             },
         }),
@@ -287,7 +287,7 @@ if (isPageSpace()) {
             itemID: 'space-title-keyword-whitelist-edit-button',
             description: '编辑 标题关键词白名单（支持正则）',
             name: '编辑',
-            itemFunc: () => {
+            itemFunc: async () => {
                 spaceTitleKeywordWhitelistAction.whitelist.show()
             },
         }),

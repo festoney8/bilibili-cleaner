@@ -23,9 +23,11 @@ interface ICheckboxItemOption {
     itemID: string
     description: string
     defaultStatus?: boolean
-    itemFunc?: () => void
+    enableFunc?: () => Promise<void>
+    // 分别对应：立即执行，DOMContentLoaded, load
+    enableFuncRunAt?: 'document-start' | 'document-end' | 'document-idle'
+    disableFunc?: () => Promise<void>
     itemCSS?: string
-    callback?: () => void
 }
 
 /** 普通开关 */
@@ -123,16 +125,11 @@ export class CheckboxItem implements IItem {
                 if ((<HTMLInputElement>event.target).checked) {
                     this.setStatus(true)
                     this.insertItemCSS()
-                    if (this.option.itemFunc !== undefined) {
-                        this.option.itemFunc()
-                    }
+                    this.option.enableFunc && this.option.enableFunc().then().catch()
                 } else {
                     this.setStatus(false)
                     this.removeItemCSS()
-                    // 回调
-                    if (typeof this.option.callback === 'function') {
-                        this.option.callback()
-                    }
+                    this.option.disableFunc && this.option.disableFunc().then().catch()
                 }
             })
             debug(`watchItem ${this.option.itemID} OK`)
@@ -150,8 +147,28 @@ export class CheckboxItem implements IItem {
         if (this.isEnable) {
             try {
                 this.insertItemCSS()
-                if (enableFunc && this.option.itemFunc instanceof Function) {
-                    this.option.itemFunc()
+                if (enableFunc && this.option.enableFunc) {
+                    switch (this.option.enableFuncRunAt) {
+                        case 'document-start':
+                            this.option.enableFunc().then().catch()
+                            break
+                        case 'document-end':
+                            if (['complete', 'interactive'].includes(document.readyState)) {
+                                this.option.enableFunc().then().catch()
+                            } else {
+                                document.addEventListener('DOMContentLoaded', this.option.enableFunc)
+                            }
+                            break
+                        case 'document-idle':
+                            if (document.readyState === 'complete') {
+                                this.option.enableFunc().then().catch()
+                            } else {
+                                document.addEventListener('load', this.option.enableFunc)
+                            }
+                            break
+                        default:
+                            this.option.enableFunc().then().catch()
+                    }
                 }
                 debug(`enableItem ${this.option.itemID} OK`)
             } catch (err) {
@@ -177,7 +194,7 @@ interface IRadioItemOption {
     radioName: string
     radioItemIDList: string[]
     defaultStatus?: boolean
-    itemFunc?: () => void
+    itemFunc?: () => Promise<void>
     itemCSS?: string
 }
 
@@ -282,9 +299,7 @@ export class RadioItem implements IItem {
                     debug(`radioItem ${this.option.itemID} checked`)
                     this.setStatus(true)
                     this.insertItemCSS()
-                    if (this.option.itemFunc !== undefined) {
-                        this.option.itemFunc()
-                    }
+                    this.option.itemFunc && this.option.itemFunc().then().catch()
                     // 相同name的其他option自动置为uncheck, 但这一行为无法被监听, 需传入itemID逐一修改
                     this.option.radioItemIDList.forEach((targetID) => {
                         if (targetID !== this.option.itemID) {
@@ -317,8 +332,8 @@ export class RadioItem implements IItem {
         if (this.isEnable) {
             try {
                 this.insertItemCSS()
-                if (enableFunc && this.option.itemFunc instanceof Function) {
-                    this.option.itemFunc()
+                if (enableFunc && this.option.itemFunc) {
+                    this.option.itemFunc().then().catch()
                 }
                 debug(`enableItem ${this.option.itemID} OK`)
             } catch (err) {
@@ -352,7 +367,7 @@ interface INumberItemOption {
     itemCSS?: string
     // CSS中待替换为数值的占位符
     itemCSSPlaceholder?: string
-    callback?: (value: number) => void
+    callback?: (value: number) => Promise<void>
 }
 
 /** 数值设定 */
@@ -466,10 +481,7 @@ export class NumberItem implements IItem {
                 debug(`${this.option.itemID} currValue ${itemEle.value}`)
                 // reload
                 this.reloadItem()
-                // 调用回调函数
-                if (this.option.callback && typeof this.option.callback === 'function') {
-                    this.option.callback(parseInt(itemEle.value))
-                }
+                this.option.callback && this.option.callback(parseInt(itemEle.value)).then().catch()
             })
             debug(`watchItem ${this.option.itemID} OK`)
         } catch (err) {
@@ -517,7 +529,7 @@ interface IButtonItemOption {
     itemID: string
     description: string
     name: string
-    itemFunc: () => void
+    itemFunc: () => Promise<void>
 }
 
 /** 普通按钮 */
@@ -552,7 +564,7 @@ export class ButtonItem implements IItem {
             const itemEle = document.querySelector(`#${this.option.itemID} button`) as HTMLButtonElement
             itemEle.addEventListener('click', () => {
                 debug(`button ${this.option.itemID} click`)
-                this.option.itemFunc()
+                this.option.itemFunc().then().catch()
             })
             debug(`watchItem ${this.option.itemID} OK`)
         } catch (err) {

@@ -128,19 +128,14 @@ if (isPageLiveRoom()) {
         new CheckboxItem({
             itemID: 'activity-live-auto-jump',
             description: '活动直播页 自动跳转普通直播 (实验功能)',
-            itemFunc: () => {
-                const jump = () => {
-                    if (document.querySelector('#internationalHeader')) {
-                        if (!location.href.includes('/blanc/')) {
-                            window.location.href = location.href.replace(
-                                'live.bilibili.com/',
-                                'live.bilibili.com/blanc/',
-                            )
-                        }
+            enableFunc: async () => {
+                if (document.querySelector('#internationalHeader')) {
+                    if (!location.href.includes('/blanc/')) {
+                        window.location.href = location.href.replace('live.bilibili.com/', 'live.bilibili.com/blanc/')
                     }
                 }
-                document.readyState === 'complete' ? jump() : document.addEventListener('DOMContentLoaded', jump)
             },
+            enableFuncRunAt: 'document-end',
         }),
     ]
     liveGroupList.push(new Group('live-basic', '直播页 基本功能', basicItems))
@@ -287,7 +282,7 @@ if (isPageLiveRoom()) {
         new CheckboxItem({
             itemID: 'live-page-clean-counter-danmaku',
             description: '隐藏 计数结尾弹幕，如 ???? x24',
-            itemFunc: () => {
+            enableFunc: async () => {
                 enableCleanCounter = true
                 cleanLiveDanmaku()
             },
@@ -296,7 +291,7 @@ if (isPageLiveRoom()) {
         new CheckboxItem({
             itemID: 'live-page-clean-redundant-text-danmaku',
             description: '隐藏 文字重复多遍的弹幕 (n≥5)\n如 prprprprpr, 88888888',
-            itemFunc: () => {
+            enableFunc: async () => {
                 enableCleanRedundant = true
                 cleanLiveDanmaku()
             },

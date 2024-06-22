@@ -340,7 +340,7 @@ const basicItems = [
          * URL净化，移除query string中的跟踪参数/无用参数
          * 净化掉vd_source参数会导致充电窗口载入失败
          */
-        itemFunc: () => {
+        enableFunc: async () => {
             const cleanParams = (url: string): string => {
                 try {
                     // 直播域名各种iframe页面（天选、抽奖）和活动页特殊处理
@@ -387,6 +387,7 @@ const basicItems = [
                         keysToRemove.add('bbid')
                         keysToRemove.add('ts')
                         keysToRemove.add('hotRank')
+                        keysToRemove.add('popular_rank')
                     }
                     const urlObj = new URL(url)
                     const params = new URLSearchParams(urlObj.search)
@@ -825,41 +826,37 @@ if (!isPageLiveHome()) {
         new CheckboxItem({
             itemID: 'common-nav-favorite-select-watchlater',
             description: '收藏弹出框 自动选中稍后再看',
-            itemFunc: () => {
-                const listener = () => {
-                    let cnt = 0
-                    const id = setInterval(() => {
-                        const ele = document.querySelector(
-                            `.right-entry .v-popover-wrap:has(.right-entry__outside[href$="/favlist"]),
+            enableFunc: async () => {
+                let cnt = 0
+                const id = setInterval(() => {
+                    const ele = document.querySelector(
+                        `.right-entry .v-popover-wrap:has(.right-entry__outside[href$="/favlist"]),
                             .nav-user-center .user-con .item:has(.mini-favorite)`,
-                        )
-                        if (ele) {
-                            clearInterval(id)
-                            ele.addEventListener('mouseenter', () => {
-                                let innerCnt = 0
-                                const watchLaterId = setInterval(() => {
-                                    const watchlater = document.querySelector(
-                                        `:is(.favorite-panel-popover, .vp-container .tabs-panel) .tab-item:nth-child(2)`,
-                                    ) as HTMLElement
-                                    if (watchlater) {
-                                        watchlater.click()
-                                        clearInterval(watchLaterId)
-                                    } else {
-                                        innerCnt++
-                                        innerCnt > 250 && clearInterval(watchLaterId)
-                                    }
-                                }, 20)
-                            })
-                        } else {
-                            cnt++
-                            cnt > 100 && clearInterval(id)
-                        }
-                    }, 200)
-                }
-                document.readyState === 'complete'
-                    ? listener()
-                    : document.addEventListener('DOMContentLoaded', listener)
+                    )
+                    if (ele) {
+                        clearInterval(id)
+                        ele.addEventListener('mouseenter', () => {
+                            let innerCnt = 0
+                            const watchLaterId = setInterval(() => {
+                                const watchlater = document.querySelector(
+                                    `:is(.favorite-panel-popover, .vp-container .tabs-panel) .tab-item:nth-child(2)`,
+                                ) as HTMLElement
+                                if (watchlater) {
+                                    watchlater.click()
+                                    clearInterval(watchLaterId)
+                                } else {
+                                    innerCnt++
+                                    innerCnt > 250 && clearInterval(watchLaterId)
+                                }
+                            }, 20)
+                        })
+                    } else {
+                        cnt++
+                        cnt > 100 && clearInterval(id)
+                    }
+                }, 200)
             },
+            enableFuncRunAt: 'document-end',
         }),
         // 隐藏 历史
         new CheckboxItem({

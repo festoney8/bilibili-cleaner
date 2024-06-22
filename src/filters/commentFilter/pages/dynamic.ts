@@ -229,13 +229,13 @@ if (isPageDynamic()) {
         new CheckboxItem({
             itemID: usernameAction.statusKey,
             description: '启用 评论区 用户名过滤\n(右键单击用户名)',
-            itemFunc: () => {
+            enableFunc: async () => {
                 // 启用右键菜单功能
                 isContextMenuUsernameEnable = true
                 contextMenuFunc()
                 usernameAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 // 禁用右键菜单功能
                 isContextMenuUsernameEnable = false
                 usernameAction.disable()
@@ -246,7 +246,7 @@ if (isPageDynamic()) {
             itemID: 'comment-username-edit-button',
             description: '编辑 用户名黑名单',
             name: '编辑',
-            itemFunc: () => {
+            itemFunc: async () => {
                 usernameAction.blacklist.show()
             },
         }),
@@ -261,10 +261,10 @@ if (isPageDynamic()) {
         new CheckboxItem({
             itemID: contentAction.statusKey,
             description: '启用 评论区 关键词过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 contentAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 contentAction.disable()
             },
         }),
@@ -273,7 +273,7 @@ if (isPageDynamic()) {
             itemID: 'comment-content-edit-button',
             description: '编辑 评论关键词黑名单（支持正则）',
             name: '编辑',
-            itemFunc: () => {
+            itemFunc: async () => {
                 contentAction.blacklist.show()
             },
         }),
@@ -286,11 +286,11 @@ if (isPageDynamic()) {
         new CheckboxItem({
             itemID: 'dynamic-comment-root-whitelist-status',
             description: '一级评论(主评论) 免过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 isRootCommentWhitelistEnable = true
                 checkCommentList(true)
             },
-            callback: () => {
+            disableFunc: async () => {
                 isRootCommentWhitelistEnable = false
                 checkCommentList(true)
             },
@@ -299,11 +299,11 @@ if (isPageDynamic()) {
         new CheckboxItem({
             itemID: 'dynamic-comment-sub-whitelist-status',
             description: '二级评论(回复) 免过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 isSubCommentWhitelistEnable = true
                 checkCommentList(true)
             },
-            callback: () => {
+            disableFunc: async () => {
                 isSubCommentWhitelistEnable = false
                 checkCommentList(true)
             },
@@ -313,11 +313,11 @@ if (isPageDynamic()) {
             itemID: 'dynamic-comment-uploader-whitelist-status',
             description: 'UP主的评论 免过滤',
             defaultStatus: true,
-            itemFunc: () => {
+            enableFunc: async () => {
                 isUploaderCommentWhitelistEnable = true
                 checkCommentList(true)
             },
-            callback: () => {
+            disableFunc: async () => {
                 isUploaderCommentWhitelistEnable = false
                 checkCommentList(true)
             },
@@ -327,11 +327,11 @@ if (isPageDynamic()) {
             itemID: 'dynamic-comment-pinned-whitelist-status',
             description: '置顶评论 免过滤',
             defaultStatus: true,
-            itemFunc: () => {
+            enableFunc: async () => {
                 isPinnedCommentWhitelistEnable = true
                 checkCommentList(true)
             },
-            callback: () => {
+            disableFunc: async () => {
                 isPinnedCommentWhitelistEnable = false
                 checkCommentList(true)
             },
@@ -341,11 +341,11 @@ if (isPageDynamic()) {
             itemID: 'dynamic-comment-note-whitelist-status',
             description: '笔记/图片评论 免过滤',
             defaultStatus: true,
-            itemFunc: () => {
+            enableFunc: async () => {
                 isNoteCommentWhitelistEnable = true
                 checkCommentList(true)
             },
-            callback: () => {
+            disableFunc: async () => {
                 isNoteCommentWhitelistEnable = false
                 checkCommentList(true)
             },
@@ -355,11 +355,11 @@ if (isPageDynamic()) {
             itemID: 'dynamic-comment-link-whitelist-status',
             description: '含超链接的评论 免过滤\n（站内视频/URL/播放时间跳转）',
             defaultStatus: true,
-            itemFunc: () => {
+            enableFunc: async () => {
                 isLinkCommentWhitelistEnable = true
                 checkCommentList(true)
             },
-            callback: () => {
+            disableFunc: async () => {
                 isLinkCommentWhitelistEnable = false
                 checkCommentList(true)
             },

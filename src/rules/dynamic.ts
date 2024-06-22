@@ -348,7 +348,7 @@ if (isPageDynamic()) {
         new CheckboxItem({
             itemID: 'dynamic-page-unfold-dynamic',
             description: '自动展开 相同UP主被折叠的动态',
-            itemFunc: () => {
+            enableFunc: async () => {
                 // 大量动态下，单次耗时10ms内
                 const unfold = () => {
                     const dynFoldNodes = document.querySelectorAll('main .bili-dyn-list__item .bili-dyn-item-fold')

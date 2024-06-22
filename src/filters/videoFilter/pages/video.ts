@@ -287,10 +287,10 @@ if (isPageVideo() || isPagePlaylist()) {
         new CheckboxItem({
             itemID: videoDurationAction.statusKey,
             description: '启用 时长过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 videoDurationAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 videoDurationAction.disable()
             },
         }),
@@ -303,7 +303,7 @@ if (isPageVideo() || isPagePlaylist()) {
             maxValue: 300,
             disableValue: 0,
             unit: '秒',
-            callback: (value: number) => {
+            callback: async (value: number) => {
                 videoDurationAction.change(value)
             },
         }),
@@ -316,13 +316,13 @@ if (isPageVideo() || isPagePlaylist()) {
         new CheckboxItem({
             itemID: videoUploaderAction.statusKey,
             description: '启用 UP主过滤 (右键单击UP主)',
-            itemFunc: () => {
+            enableFunc: async () => {
                 // 启用右键菜单功能
                 isContextMenuUploaderEnable = true
                 contextMenuFunc()
                 videoUploaderAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 // 禁用右键菜单功能
                 isContextMenuUploaderEnable = false
                 videoUploaderAction.disable()
@@ -334,7 +334,7 @@ if (isPageVideo() || isPagePlaylist()) {
             description: '编辑 UP主黑名单',
             name: '编辑',
             // 按钮功能：打开编辑器
-            itemFunc: () => {
+            itemFunc: async () => {
                 videoUploaderAction.blacklist.show()
             },
         }),
@@ -342,10 +342,10 @@ if (isPageVideo() || isPagePlaylist()) {
         new CheckboxItem({
             itemID: videoUploaderKeywordAction.statusKey,
             description: '启用 UP主昵称关键词过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 videoUploaderKeywordAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 videoUploaderKeywordAction.disable()
             },
         }),
@@ -354,7 +354,7 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-uploader-keyword-edit-button',
             description: '编辑 UP主昵称关键词黑名单',
             name: '编辑',
-            itemFunc: () => {
+            itemFunc: async () => {
                 videoUploaderKeywordAction.blacklist.show()
             },
         }),
@@ -367,10 +367,10 @@ if (isPageVideo() || isPagePlaylist()) {
         new CheckboxItem({
             itemID: videoTitleKeywordAction.statusKey,
             description: '启用 标题关键词过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 videoTitleKeywordAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 videoTitleKeywordAction.disable()
             },
         }),
@@ -380,7 +380,7 @@ if (isPageVideo() || isPagePlaylist()) {
             description: '编辑 标题关键词黑名单（支持正则）',
             name: '编辑',
             // 按钮功能：打开编辑器
-            itemFunc: () => {
+            itemFunc: async () => {
                 videoTitleKeywordAction.blacklist.show()
             },
         }),
@@ -395,13 +395,13 @@ if (isPageVideo() || isPagePlaylist()) {
         new CheckboxItem({
             itemID: videoBvidAction.statusKey,
             description: '启用 BV号过滤 (右键单击标题)',
-            itemFunc: () => {
+            enableFunc: async () => {
                 // 启用 右键功能
                 isContextMenuBvidEnable = true
                 contextMenuFunc()
                 videoBvidAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 // 禁用 右键功能
                 isContextMenuBvidEnable = false
                 videoBvidAction.disable()
@@ -413,7 +413,7 @@ if (isPageVideo() || isPagePlaylist()) {
             description: '编辑 BV号黑名单',
             name: '编辑',
             // 按钮功能：打开编辑器
-            itemFunc: () => {
+            itemFunc: async () => {
                 videoBvidAction.blacklist.show()
             },
         }),
@@ -427,11 +427,11 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-next-play-whitelist-filter-status',
             description: '接下来播放 免过滤',
             defaultStatus: true,
-            itemFunc: () => {
+            enableFunc: async () => {
                 isNextPlayWhitelistEnable = true
                 checkVideoList(true)
             },
-            callback: () => {
+            disableFunc: async () => {
                 isNextPlayWhitelistEnable = false
                 checkVideoList(true)
             },
@@ -441,13 +441,13 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-ending-whitelist-filter-status',
             description: '视频播放结束推荐 免过滤',
             defaultStatus: true,
-            itemFunc: () => {
+            enableFunc: async () => {
                 isEndingWhitelistEnable = true
                 document
                     .querySelectorAll<HTMLElement>('.bpx-player-ending-related-item')
                     .forEach((e: HTMLElement) => showEle(e))
             },
-            callback: () => {
+            disableFunc: async () => {
                 isEndingWhitelistEnable = false
                 watchPlayerEnding()
             },
@@ -456,10 +456,10 @@ if (isPageVideo() || isPagePlaylist()) {
         new CheckboxItem({
             itemID: videoUploaderWhitelistAction.statusKey,
             description: '启用 UP主白名单',
-            itemFunc: () => {
+            enableFunc: async () => {
                 videoUploaderWhitelistAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 videoUploaderWhitelistAction.disable()
             },
         }),
@@ -469,7 +469,7 @@ if (isPageVideo() || isPagePlaylist()) {
             description: '编辑 UP主白名单',
             name: '编辑',
             // 按钮功能：打开编辑器
-            itemFunc: () => {
+            itemFunc: async () => {
                 videoUploaderWhitelistAction.whitelist.show()
             },
         }),
@@ -477,10 +477,10 @@ if (isPageVideo() || isPagePlaylist()) {
         new CheckboxItem({
             itemID: videoTitleKeywordWhitelistAction.statusKey,
             description: '启用 标题关键词白名单',
-            itemFunc: () => {
+            enableFunc: async () => {
                 videoTitleKeywordWhitelistAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 videoTitleKeywordWhitelistAction.disable()
             },
         }),
@@ -490,7 +490,7 @@ if (isPageVideo() || isPagePlaylist()) {
             description: '编辑 标题关键词白名单（支持正则）',
             name: '编辑',
             // 按钮功能：打开编辑器
-            itemFunc: () => {
+            itemFunc: async () => {
                 videoTitleKeywordWhitelistAction.whitelist.show()
             },
         }),

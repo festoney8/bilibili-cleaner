@@ -1,6 +1,18 @@
-const bvidPattern = /(BV[1-9A-HJ-NP-Za-km-z]+)/
+// export const debounce = <T extends (...args: any[]) => void>(
+//     func: T,
+//     wait: number,
+// ): ((...args: Parameters<T>) => void) => {
+//     let timeout: ReturnType<typeof setTimeout>
+//     return (...args: Parameters<T>): void => {
+//         clearTimeout(timeout)
+//         timeout = setTimeout(() => {
+//             func(...args)
+//         }, wait)
+//     }
+// }
 
 // 匹配BV号
+const bvidPattern = /(BV[1-9A-HJ-NP-Za-km-z]+)/
 export const matchBvid = (s: string): string | null => {
     const match = bvidPattern.exec(s)
     if (match && match.length >= 2) {

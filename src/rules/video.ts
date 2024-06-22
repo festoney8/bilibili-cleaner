@@ -618,23 +618,28 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
                     -ms-text-stroke: 3px transparent;
                 }`,
         }),
-        // 小窗播放器 隐藏底边进度
+    ]
+    videoGroupList.push(new Group('video-player', '播放器', playerItems))
+
+    // 小窗播放器
+    const miniPlayerItems = [
+        // 隐藏底边进度
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-mini-mode-process',
-            description: '小窗播放器 隐藏底边进度',
+            description: '隐藏底边进度',
             defaultStatus: true,
             itemCSS: `.bpx-player-container[data-screen=mini]:not(:hover) .bpx-player-mini-progress {display: none;}`,
         }),
-        // 小窗播放器 隐藏弹幕
+        // 隐藏弹幕
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-mini-mode-danmaku',
-            description: '小窗播放器 隐藏弹幕',
+            description: '隐藏弹幕',
             itemCSS: `.bpx-player-container[data-screen=mini] .bpx-player-row-dm-wrap {visibility: hidden !important;}`,
         }),
-        // 小窗播放器 滚轮调节大小
+        // 滚轮调节大小
         new CheckboxItem({
             itemID: 'video-page-bpx-player-mini-mode-wheel-adjust',
-            description: '小窗播放器 滚轮调节大小',
+            description: '滚轮调节大小',
             itemFunc: () => {
                 const adjust = async () => {
                     try {
@@ -727,72 +732,67 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
                 document.querySelector(`style[bili-cleaner-css=video-page-bpx-player-mini-mode-wheel-adjust]`)?.remove()
             },
         }),
-        // // 小窗播放器 记录小窗位置
-        // new CheckboxItem({
-        //     itemID: 'video-page-bpx-player-mini-mode-position-record',
-        //     description: '小窗播放器 记录小窗位置',
-        //     itemFunc: () => {
-        //         let isListening = false
-        //         const listener = () => {
-        //             waitForEle(document.body, '#bilibili-player .bpx-player-container', (node: HTMLElement) => {
-        //                 return node.className.startsWith('bpx-player-container')
-        //             }).then((player) => {
-        //                 if (player) {
-        //                     const observer = new MutationObserver((mutationsList) => {
-        //                         console.log('fired')
-        //                         for (const mutation of mutationsList) {
-        //                             if (mutation.attributeName === 'data-screen') {
-        //                                 const target = mutation.target as HTMLElement
-        //                                 if (
-        //                                     target instanceof HTMLElement &&
-        //                                     target.getAttribute('data-screen') === 'mini'
-        //                                 ) {
-        //                                     const right = GM_getValue(
-        //                                         'BILICLEANER_video-page-bpx-player-mini-mode-position-record-right',
-        //                                     )
-        //                                     const bottom = GM_getValue(
-        //                                         'BILICLEANER_video-page-bpx-player-mini-mode-position-record-bottom',
-        //                                     )
-        //                                     if (right !== undefined && bottom !== undefined) {
-        //                                         target.style.right = `${right}px`
-        //                                         target.style.bottom = `${bottom}px`
-        //                                     }
-        //                                     // 监听小窗移动
-        //                                     if (!isListening) {
-        //                                         isListening = true
-        //                                         player.addEventListener('mouseleave', () => {
-        //                                             if (player.getAttribute('data-screen') !== 'mini') {
-        //                                                 return
-        //                                             }
-        //                                             GM_setValue(
-        //                                                 'BILICLEANER_video-page-bpx-player-mini-mode-position-record-right',
-        //                                                 parseInt(player.style.right),
-        //                                             )
-        //                                             GM_setValue(
-        //                                                 'BILICLEANER_video-page-bpx-player-mini-mode-position-record-bottom',
-        //                                                 parseInt(player.style.bottom),
-        //                                             )
-        //                                         })
-        //                                     }
-        //                                     break
-        //                                 }
-        //                             }
-        //                         }
-        //                     })
-        //                     observer.observe(player, { attributes: true, subtree: false })
-        //                 }
-        //             })
-        //         }
-        //         document.readyState === 'complete'
-        //             ? listener()
-        //             : document.addEventListener('DOMContentLoaded', listener)
-        //     },
-        //     callback: () => {
-        //         document.querySelector(`style[bili-cleaner-css=video-page-bpx-player-mini-mode-wheel-adjust]`)?.remove()
-        //     },
-        // }),
+        // 记录小窗位置
+        new CheckboxItem({
+            itemID: 'video-page-bpx-player-mini-mode-position-record',
+            description: '记录小窗位置',
+            itemFunc: () => {
+                let player: HTMLElement
+
+                // 监听mini播放器移动
+                const addMiniPlayerMoveListener = () => {
+                    if (!player) {
+                        return
+                    }
+                    player.addEventListener('mouseup', () => {
+                        if (player.getAttribute('data-screen') !== 'mini') {
+                            return
+                        }
+                        console.log('store new position', player.style.right, player.style.bottom)
+                        GM_setValue(
+                            'BILICLEANER_video-page-bpx-player-mini-mode-position-record-right',
+                            parseInt(player.style.right),
+                        )
+                        GM_setValue(
+                            'BILICLEANER_video-page-bpx-player-mini-mode-position-record-bottom',
+                            parseInt(player.style.bottom),
+                        )
+                    })
+                }
+                // 设置player API内小窗播放器position初始值
+                const setMiniPlayerState = () => {
+                    const right = GM_getValue('BILICLEANER_video-page-bpx-player-mini-mode-position-record-right')
+                    const bottom = GM_getValue('BILICLEANER_video-page-bpx-player-mini-mode-position-record-bottom')
+                    if (typeof right === 'number' && typeof bottom === 'number') {
+                        if (unsafeWindow.player) {
+                            unsafeWindow.player.__core().uiStore.state.miniScreenRight = right
+                            unsafeWindow.player.__core().uiStore.state.miniScreenBottom = bottom
+                        }
+                    }
+                }
+
+                const listener = () => {
+                    waitForEle(document.body, '#bilibili-player .bpx-player-container', (node: HTMLElement) => {
+                        return node.className.startsWith('bpx-player-container')
+                    }).then((ele) => {
+                        if (ele) {
+                            player = ele
+                            try {
+                                setMiniPlayerState()
+                                addMiniPlayerMoveListener()
+                            } catch {
+                                // err
+                            }
+                        }
+                    })
+                }
+                document.readyState === 'complete'
+                    ? listener()
+                    : document.addEventListener('DOMContentLoaded', listener)
+            },
+        }),
     ]
-    videoGroupList.push(new Group('video-player', '播放器', playerItems))
+    videoGroupList.push(new Group('video-mini-player', '小窗播放器', miniPlayerItems))
 
     // 播放控制
     const playerControlItems = [

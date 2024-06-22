@@ -9,7 +9,6 @@ interface IItem {
     removeItemCSS?(): void
     watchItem?(): void
     enableItem?(): void
-    reloadItem?(): void
 }
 
 /**
@@ -17,7 +16,6 @@ interface IItem {
  * description item的功能介绍, 显示在panel内, \n可用来换行
  * defaultStatus item默认开启状态, 第一次安装时使用, 对于所有用户均开启的项目给true
  * itemFunc 功能函数
- * isItemFuncReload 功能函数是否在URL变动时重新运行
  * itemCSS item的CSS
  * callback 回调函数, 用于在关掉开关时触发外部事务
  */
@@ -26,7 +24,6 @@ interface ICheckboxItemOption {
     description: string
     defaultStatus?: boolean
     itemFunc?: () => void
-    isItemFuncReload?: boolean
     itemCSS?: string
     callback?: () => void
 }
@@ -163,21 +160,6 @@ export class CheckboxItem implements IItem {
             }
         }
     }
-    /**
-     * 重载item, 用于非页面刷新但URL变动情况, 此时已注入CSS只重新运行func, 如: 非刷新式切换视频
-     */
-    reloadItem() {
-        // this.getStatus()
-        if (this.option.isItemFuncReload && this.isEnable && this.option.itemFunc instanceof Function) {
-            try {
-                this.option.itemFunc()
-                debug(`reloadItem ${this.option.itemID} OK`)
-            } catch (err) {
-                error(`reloadItem ${this.option.itemID} Error`)
-                error(err)
-            }
-        }
-    }
 }
 
 /**
@@ -187,7 +169,6 @@ export class CheckboxItem implements IItem {
  * radioItemIDList 当前item所在互斥组的ID列表, 用于修改其他item状态
  * defaultStatus item默认开启状态, 第一次安装时使用, 对于所有用户均开启的项目默认给true
  * itemFunc 功能函数
- * isItemFuncReload 功能函数是否在URL变动时重新运行
  * itemCSS item的CSS
  */
 interface IRadioItemOption {
@@ -197,7 +178,6 @@ interface IRadioItemOption {
     radioItemIDList: string[]
     defaultStatus?: boolean
     itemFunc?: () => void
-    isItemFuncReload?: boolean
     itemCSS?: string
 }
 
@@ -343,22 +323,6 @@ export class RadioItem implements IItem {
                 debug(`enableItem ${this.option.itemID} OK`)
             } catch (err) {
                 error(`enableItem ${this.option.itemID} Error`)
-                error(err)
-            }
-        }
-    }
-    /**
-     * 重载item, 用于非页面刷新但URL变动情况, 此时已注入CSS只重新运行func, 如: 非刷新式切换视频
-     */
-    reloadItem() {
-        // 存在其他item修改当前item状态的情况
-        this.getStatus()
-        if (this.option.isItemFuncReload && this.isEnable && this.option.itemFunc instanceof Function) {
-            try {
-                this.option.itemFunc()
-                debug(`reloadItem ${this.option.itemID} OK`)
-            } catch (err) {
-                error(`reloadItem ${this.option.itemID} Error`)
                 error(err)
             }
         }

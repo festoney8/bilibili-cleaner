@@ -67,20 +67,6 @@ export class Group {
             error(err)
         }
     }
-    /** 在URL变动时, 重载group内需要重载的项目 */
-    reloadGroup() {
-        try {
-            this.items.forEach((e) => {
-                if (e instanceof CheckboxItem || e instanceof RadioItem || e instanceof NumberItem) {
-                    e.reloadItem()
-                }
-            })
-            debug(`reloadGroup ${this.groupID} OK`)
-        } catch (err) {
-            error(`reloadGroup ${this.groupID} err`)
-            error(err)
-        }
-    }
     /** 禁用Group, 临时使用, 移除全部CSS, 监听函数保持不变 */
     disableGroup() {
         try {

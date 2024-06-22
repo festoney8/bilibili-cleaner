@@ -8,7 +8,7 @@ export default defineConfig({
             userscript: {
                 name: 'bilibili 页面净化大师',
                 namespace: 'http://tampermonkey.net/',
-                version: '3.7.2',
+                version: '3.7.3',
                 description:
                     '净化 B站/哔哩哔哩 页面，支持「精简功能、播放器净化、过滤视频、过滤评论、全站黑白名单」，提供 300+ 功能，定制自己的 B 站',
                 author: 'festoney8',

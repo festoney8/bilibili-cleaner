@@ -149,12 +149,12 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             if (usernameAction.status || contentAction.status) {
                 checkCommentList(true)
             }
-            const commentObverser = new MutationObserver(() => {
+            const commentObserver = new MutationObserver(() => {
                 if (usernameAction.status || contentAction.status) {
                     checkCommentList(false)
                 }
             })
-            commentObverser.observe(commentListContainer, { childList: true, subtree: true })
+            commentObserver.observe(commentListContainer, { childList: true, subtree: true })
         }
     }
 
@@ -215,13 +215,13 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         new CheckboxItem({
             itemID: usernameAction.statusKey,
             description: '启用 评论区 用户名过滤\n(右键单击用户名)',
-            itemFunc: () => {
+            enableFunc: async () => {
                 // 启用右键菜单功能
                 isContextMenuUsernameEnable = true
                 contextMenuFunc()
                 usernameAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 // 禁用右键菜单功能
                 isContextMenuUsernameEnable = false
                 usernameAction.disable()
@@ -232,7 +232,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             itemID: 'comment-username-edit-button',
             description: '编辑 用户名黑名单',
             name: '编辑',
-            itemFunc: () => {
+            itemFunc: async () => {
                 usernameAction.blacklist.show()
             },
         }),
@@ -247,10 +247,10 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         new CheckboxItem({
             itemID: contentAction.statusKey,
             description: '启用 评论区 关键词过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 contentAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 contentAction.disable()
             },
         }),
@@ -259,7 +259,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             itemID: 'comment-content-edit-button',
             description: '编辑 评论关键词黑名单（支持正则）',
             name: '编辑',
-            itemFunc: () => {
+            itemFunc: async () => {
                 contentAction.blacklist.show()
             },
         }),
@@ -272,11 +272,11 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         new CheckboxItem({
             itemID: 'video-comment-root-whitelist-status',
             description: '一级评论(主评论) 免过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 isRootCommentWhitelistEnable = true
                 checkCommentList(true)
             },
-            callback: () => {
+            disableFunc: async () => {
                 isRootCommentWhitelistEnable = false
                 checkCommentList(true)
             },
@@ -285,11 +285,11 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         new CheckboxItem({
             itemID: 'video-comment-sub-whitelist-status',
             description: '二级评论(回复) 免过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 isSubCommentWhitelistEnable = true
                 checkCommentList(true)
             },
-            callback: () => {
+            disableFunc: async () => {
                 isSubCommentWhitelistEnable = false
                 checkCommentList(true)
             },
@@ -299,11 +299,11 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             itemID: 'video-comment-uploader-whitelist-status',
             description: 'UP主的评论 免过滤',
             defaultStatus: true,
-            itemFunc: () => {
+            enableFunc: async () => {
                 isUploaderCommentWhitelistEnable = true
                 checkCommentList(true)
             },
-            callback: () => {
+            disableFunc: async () => {
                 isUploaderCommentWhitelistEnable = false
                 checkCommentList(true)
             },
@@ -313,11 +313,11 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             itemID: 'video-comment-pinned-whitelist-status',
             description: '置顶评论 免过滤',
             defaultStatus: true,
-            itemFunc: () => {
+            enableFunc: async () => {
                 isPinnedCommentWhitelistEnable = true
                 checkCommentList(true)
             },
-            callback: () => {
+            disableFunc: async () => {
                 isPinnedCommentWhitelistEnable = false
                 checkCommentList(true)
             },
@@ -327,11 +327,11 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             itemID: 'video-comment-note-whitelist-status',
             description: '笔记/图片评论 免过滤',
             defaultStatus: true,
-            itemFunc: () => {
+            enableFunc: async () => {
                 isNoteCommentWhitelistEnable = true
                 checkCommentList(true)
             },
-            callback: () => {
+            disableFunc: async () => {
                 isNoteCommentWhitelistEnable = false
                 checkCommentList(true)
             },
@@ -341,11 +341,11 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             itemID: 'video-comment-link-whitelist-status',
             description: '含超链接的评论 免过滤\n（站内视频/URL/播放时间跳转）',
             defaultStatus: true,
-            itemFunc: () => {
+            enableFunc: async () => {
                 isLinkCommentWhitelistEnable = true
                 checkCommentList(true)
             },
-            callback: () => {
+            disableFunc: async () => {
                 isLinkCommentWhitelistEnable = false
                 checkCommentList(true)
             },

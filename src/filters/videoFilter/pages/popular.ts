@@ -39,13 +39,12 @@ if (isPagePopular()) {
     // hook fetch
     let apiResp: Response | undefined = undefined
     const origFetch = unsafeWindow.fetch
-    unsafeWindow.fetch = (input, init?) => {
+    unsafeWindow.fetch = async (input, init?) => {
         if (typeof input === 'string' && input.includes('api.bilibili.com') && init?.method?.toUpperCase() === 'GET') {
             if (input.match(/web-interface\/(ranking|popular\/series\/one|popular\?ps)/)) {
-                return origFetch(input, init).then((resp: Response) => {
-                    apiResp = resp.clone()
-                    return resp
-                })
+                const resp = await origFetch(input, init)
+                apiResp = resp.clone()
+                return resp
             }
         }
         return origFetch(input, init)
@@ -242,18 +241,18 @@ if (isPagePopular()) {
                 if (location.pathname.match(/\/v\/popular\/(?:all|rank|weekly)/)) {
                     popularDurationAction.status || popularQualityAction.status || popularDimensionAction.status
                         ? await parseResp()
-                        : parseResp()
+                        : parseResp().then().catch()
                 }
                 checkVideoList(fullSite)
             }
         }
 
         if (videoListContainer) {
-            check(true)
-            const videoObverser = new MutationObserver(async () => {
-                check(true)
+            check(true).then().catch()
+            const videoObserver = new MutationObserver(async () => {
+                check(true).then().catch()
             })
-            videoObverser.observe(videoListContainer, { childList: true, subtree: true })
+            videoObserver.observe(videoListContainer, { childList: true, subtree: true })
             debug('watchVideoListContainer OK')
         }
     }
@@ -265,7 +264,7 @@ if (isPagePopular()) {
         }).then((ele) => {
             if (ele) {
                 videoListContainer = ele
-                watchVideoListContainer()
+                watchVideoListContainer().then().catch()
             }
         })
     } catch (err) {
@@ -346,10 +345,10 @@ if (isPagePopular()) {
         new CheckboxItem({
             itemID: popularDurationAction.statusKey,
             description: '启用 时长过滤 (刷新)',
-            itemFunc: () => {
+            enableFunc: async () => {
                 popularDurationAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 popularDurationAction.disable()
             },
         }),
@@ -361,7 +360,7 @@ if (isPagePopular()) {
             maxValue: 300,
             disableValue: 0,
             unit: '秒',
-            callback: (value: number) => {
+            callback: async (value: number) => {
                 popularDurationAction.change(value)
             },
         }),
@@ -373,20 +372,20 @@ if (isPagePopular()) {
         new CheckboxItem({
             itemID: popularDimensionAction.statusKey,
             description: '启用 竖屏视频过滤 (刷新)',
-            itemFunc: () => {
+            enableFunc: async () => {
                 popularDimensionAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 popularDimensionAction.disable()
             },
         }),
         new CheckboxItem({
             itemID: popularQualityAction.statusKey,
             description: '启用 劣质视频过滤 (刷新)',
-            itemFunc: () => {
+            enableFunc: async () => {
                 popularQualityAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 popularQualityAction.disable()
             },
         }),
@@ -398,7 +397,7 @@ if (isPagePopular()) {
             maxValue: 80,
             disableValue: 0,
             unit: '%',
-            callback: (value: number) => {
+            callback: async (value: number) => {
                 popularQualityAction.change(value)
             },
         }),
@@ -413,13 +412,13 @@ if (isPagePopular()) {
         new CheckboxItem({
             itemID: popularUploaderAction.statusKey,
             description: '启用 UP主过滤 (右键单击UP主)',
-            itemFunc: () => {
+            enableFunc: async () => {
                 // 启用右键功能
                 isContextMenuUploaderEnable = true
                 contextMenuFunc()
                 popularUploaderAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 // 禁用右键功能
                 isContextMenuUploaderEnable = false
                 popularUploaderAction.disable()
@@ -431,7 +430,7 @@ if (isPagePopular()) {
             description: '编辑 UP主黑名单',
             name: '编辑',
             // 按钮功能
-            itemFunc: () => {
+            itemFunc: async () => {
                 popularUploaderAction.blacklist.show()
             },
         }),
@@ -439,10 +438,10 @@ if (isPagePopular()) {
         new CheckboxItem({
             itemID: popularUploaderKeywordAction.statusKey,
             description: '启用 UP主昵称关键词过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 popularUploaderKeywordAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 popularUploaderKeywordAction.disable()
             },
         }),
@@ -451,7 +450,7 @@ if (isPagePopular()) {
             itemID: 'popular-uploader-keyword-edit-button',
             description: '编辑 UP主昵称关键词黑名单',
             name: '编辑',
-            itemFunc: () => {
+            itemFunc: async () => {
                 popularUploaderKeywordAction.blacklist.show()
             },
         }),
@@ -464,10 +463,10 @@ if (isPagePopular()) {
         new CheckboxItem({
             itemID: popularTitleKeywordAction.statusKey,
             description: '启用 标题关键词过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 popularTitleKeywordAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 popularTitleKeywordAction.disable()
             },
         }),
@@ -477,7 +476,7 @@ if (isPagePopular()) {
             description: '编辑 标题关键词黑名单（支持正则）',
             name: '编辑',
             // 按钮功能
-            itemFunc: () => {
+            itemFunc: async () => {
                 popularTitleKeywordAction.blacklist.show()
             },
         }),
@@ -492,13 +491,13 @@ if (isPagePopular()) {
         new CheckboxItem({
             itemID: popularBvidAction.statusKey,
             description: '启用 BV号过滤 (右键单击标题)',
-            itemFunc: () => {
+            enableFunc: async () => {
                 // 启用右键功能
                 isContextMenuBvidEnable = true
                 contextMenuFunc()
                 popularBvidAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 // 禁用右键功能
                 isContextMenuBvidEnable = false
                 popularBvidAction.disable()
@@ -510,7 +509,7 @@ if (isPagePopular()) {
             description: '编辑 BV号黑名单',
             name: '编辑',
             // 按钮功能
-            itemFunc: () => {
+            itemFunc: async () => {
                 popularBvidAction.blacklist.show()
             },
         }),
@@ -523,10 +522,10 @@ if (isPagePopular()) {
         new CheckboxItem({
             itemID: popularUploaderWhitelistAction.statusKey,
             description: '启用 UP主白名单 (右键单击UP主)',
-            itemFunc: () => {
+            enableFunc: async () => {
                 popularUploaderWhitelistAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 popularUploaderWhitelistAction.disable()
             },
         }),
@@ -536,7 +535,7 @@ if (isPagePopular()) {
             description: '编辑 UP主白名单',
             name: '编辑',
             // 按钮功能：显示白名单编辑器
-            itemFunc: () => {
+            itemFunc: async () => {
                 popularUploaderWhitelistAction.whitelist.show()
             },
         }),
@@ -544,10 +543,10 @@ if (isPagePopular()) {
         new CheckboxItem({
             itemID: popularTitleKeywordWhitelistAction.statusKey,
             description: '启用 标题关键词白名单',
-            itemFunc: () => {
+            enableFunc: async () => {
                 popularTitleKeywordWhitelistAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 popularTitleKeywordWhitelistAction.disable()
             },
         }),
@@ -557,7 +556,7 @@ if (isPagePopular()) {
             description: '编辑 标题关键词白名单（支持正则）',
             name: '编辑',
             // 按钮功能：显示白名单编辑器
-            itemFunc: () => {
+            itemFunc: async () => {
                 popularTitleKeywordWhitelistAction.whitelist.show()
             },
         }),

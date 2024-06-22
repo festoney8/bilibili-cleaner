@@ -128,19 +128,14 @@ if (isPageLiveRoom()) {
         new CheckboxItem({
             itemID: 'activity-live-auto-jump',
             description: '活动直播页 自动跳转普通直播 (实验功能)',
-            itemFunc: () => {
-                const jump = () => {
-                    if (document.querySelector('#internationalHeader')) {
-                        if (!location.href.includes('/blanc/')) {
-                            window.location.href = location.href.replace(
-                                'live.bilibili.com/',
-                                'live.bilibili.com/blanc/',
-                            )
-                        }
+            enableFunc: async () => {
+                if (document.querySelector('#internationalHeader')) {
+                    if (!location.href.includes('/blanc/')) {
+                        window.location.href = location.href.replace('live.bilibili.com/', 'live.bilibili.com/blanc/')
                     }
                 }
-                document.readyState === 'complete' ? jump() : document.addEventListener('DOMContentLoaded', jump)
             },
+            enableFuncRunAt: 'document-end',
         }),
     ]
     liveGroupList.push(new Group('live-basic', '直播页 基本功能', basicItems))
@@ -287,7 +282,7 @@ if (isPageLiveRoom()) {
         new CheckboxItem({
             itemID: 'live-page-clean-counter-danmaku',
             description: '隐藏 计数结尾弹幕，如 ???? x24',
-            itemFunc: () => {
+            enableFunc: async () => {
                 enableCleanCounter = true
                 cleanLiveDanmaku()
             },
@@ -296,7 +291,7 @@ if (isPageLiveRoom()) {
         new CheckboxItem({
             itemID: 'live-page-clean-redundant-text-danmaku',
             description: '隐藏 文字重复多遍的弹幕 (n≥5)\n如 prprprprpr, 88888888',
-            itemFunc: () => {
+            enableFunc: async () => {
                 enableCleanRedundant = true
                 cleanLiveDanmaku()
             },
@@ -340,15 +335,39 @@ if (isPageLiveRoom()) {
     ]
     liveGroupList.push(new Group('live-player', '播放器', playerItems))
 
-    // 右栏
+    // 右栏 弹幕列表
     const rightContainerItems = [
-        // 隐藏 高能榜/大航海 (需刷新)
+        // 隐藏 高能榜/大航海
         new CheckboxItem({
             itemID: 'live-page-rank-list-vm',
-            description: '隐藏 高能榜/大航海 (需刷新)',
-            itemCSS: `#rank-list-vm {display: none !important;}
-                #aside-area-vm {overflow: hidden;}
-                .chat-history-panel {height: calc(100% - 145px) !important; padding-top: 8px;}`,
+            description: '隐藏 高能榜/大航海',
+            // calc中强调单位，var变量必须添加单位，否则fallback
+            itemCSS: `
+                #rank-list-vm {
+                    display: none !important;
+                }
+                .chat-history-panel {
+                    --rank-list-height: 0px;
+                    height: calc(100% - var(--rank-list-height, 178px) - var(--chat-control-panel-height, 145px)) !important;
+                }
+                #chat-control-panel-vm {
+                    height: var(--chat-control-panel-height, 145px) !important;
+                }
+                #aside-area-vm {
+                    overflow: hidden;
+                }
+            `,
+        }),
+        // 使弹幕列表紧凑, 默认开启
+        new CheckboxItem({
+            itemID: 'live-page-compact-danmaku',
+            description: '使弹幕列表紧凑',
+            defaultStatus: true,
+            itemCSS: `.chat-history-panel .chat-history-list .chat-item.danmaku-item.chat-colorful-bubble {margin: 2px 0 !important;}
+                .chat-history-panel .chat-history-list .chat-item {padding: 3px 5px !important; font-size: 1.2rem !important;}
+                .chat-history-panel .chat-history-list .chat-item.danmaku-item .user-name {font-size: 1.2rem !important;}
+                .chat-history-panel .chat-history-list .chat-item.danmaku-item .reply-uname {font-size: 1.2rem !important;}
+                .chat-history-panel .chat-history-list .chat-item.danmaku-item .reply-uname .common-nickname-wrapper {font-size: 1.2rem !important;}`,
         }),
         // 隐藏 系统提示, 默认开启
         new CheckboxItem({
@@ -388,10 +407,10 @@ if (isPageLiveRoom()) {
             description: '隐藏 粉丝牌',
             itemCSS: `.chat-item .fans-medal-item-ctnr {display: none !important;}`,
         }),
-        // 隐藏 弹幕的高亮底色
+        // 隐藏 弹幕高亮底色
         new CheckboxItem({
             itemID: 'live-page-chat-item-background-color',
-            description: '隐藏 弹幕的高亮底色',
+            description: '隐藏 弹幕高亮底色',
             itemCSS: `.chat-item {background-color: unset !important; border-image-source: unset !important;}`,
         }),
         // 隐藏 礼物弹幕
@@ -415,60 +434,130 @@ if (isPageLiveRoom()) {
                 /* 弹幕栏高度 */
                 .chat-history-panel .chat-history-list.with-brush-prompt {height: 100% !important;}`,
         }),
-        // 隐藏 互动框(他们都在说)
+        // 隐藏 互动框 (倒计时互动), 默认开启
+        new CheckboxItem({
+            itemID: 'live-page-combo-card-countdown',
+            description: '隐藏 互动框 (倒计时互动)',
+            defaultStatus: true,
+            itemCSS: `#combo-card:has(.countDownBtn) {display: none !important;}
+                    .chat-history-panel.new {padding-bottom: 0 !important;}`,
+        }),
+        // 隐藏 互动框 (他们都在说), 默认开启
         new CheckboxItem({
             itemID: 'live-page-combo-card',
-            description: '隐藏 互动框(他们都在说)',
+            description: '隐藏 互动框 (他们都在说)',
+            defaultStatus: true,
             itemCSS: `#combo-card:has(.combo-tips) {display: none !important;}`,
         }),
-        // 隐藏 互动框(找TA玩)
+        // 隐藏 互动框 (找TA玩), 默认开启
         new CheckboxItem({
             itemID: 'live-page-service-card-container',
-            description: '隐藏 互动框(找TA玩)',
+            description: '隐藏 互动框 (找TA玩)',
+            defaultStatus: true,
             itemCSS: `.play-together-service-card-container {display: none !important;}`,
         }),
-        // 弹幕栏 使弹幕列表紧凑, 默认开启
-        new CheckboxItem({
-            itemID: 'live-page-compact-danmaku',
-            description: '弹幕栏 使弹幕列表紧凑',
-            defaultStatus: true,
-            itemCSS: `.chat-history-panel .chat-history-list .chat-item.danmaku-item.chat-colorful-bubble {margin: 2px 0 !important;}
-                .chat-history-panel .chat-history-list .chat-item {padding: 3px 5px !important; font-size: 1.2rem !important;}
-                .chat-history-panel .chat-history-list .chat-item.danmaku-item .user-name {font-size: 1.2rem !important;}
-                .chat-history-panel .chat-history-list .chat-item.danmaku-item .reply-uname {font-size: 1.2rem !important;}
-                .chat-history-panel .chat-history-list .chat-item.danmaku-item .reply-uname .common-nickname-wrapper {font-size: 1.2rem !important;}`,
-        }),
-        // 隐藏 弹幕控制按钮 左侧
+        // 隐藏 发送框 左侧功能按钮
         new CheckboxItem({
             itemID: 'live-page-control-panel-icon-row-left',
-            description: '隐藏 弹幕控制按钮 左侧',
+            description: '隐藏 发送框 左侧功能按钮',
             itemCSS: `#chat-control-panel-vm .control-panel-icon-row .icon-left-part {display: none !important;}`,
         }),
-        // 隐藏 弹幕控制按钮 右侧
+        // 隐藏 发送框 右侧功能按钮
         new CheckboxItem({
             itemID: 'live-page-control-panel-icon-row-right',
-            description: '隐藏 弹幕控制按钮 右侧',
+            description: '隐藏 发送框 右侧功能按钮',
             itemCSS: `#chat-control-panel-vm .control-panel-icon-row .icon-right-part {display: none !important;}`,
         }),
-        // 隐藏 弹幕发送框
+        // 隐藏 发送框 粉丝勋章
+        new CheckboxItem({
+            itemID: 'live-page-chat-input-ctnr-medal-section',
+            description: '隐藏 发送框 粉丝勋章',
+            itemCSS: `.medal-section {display: none !important;}`,
+        }),
+        // 隐藏 发送框 发送按钮
+        new CheckboxItem({
+            itemID: 'live-page-chat-input-ctnr-send-btn',
+            description: '隐藏 发送框 发送按钮 (回车发送)',
+            itemCSS: `
+                :root {
+                    --ctrlh1: calc(145px - 36px);
+                    --chat-control-panel-height: min(min(var(--ctrlh1, 145px), var(--ctrlh2, 145px)), var(--ctrlh3, 145px));
+                }
+                .bottom-actions {
+                    display: none !important;
+                }
+                .chat-history-panel {
+                    height: calc(100% - var(--rank-list-height, 178px) - var(--chat-control-panel-height, 145px)) !important;
+                }
+                #chat-control-panel-vm {
+                    height: var(--chat-control-panel-height, 145px) !important;
+                }
+                #aside-area-vm {
+                    overflow: hidden;
+                }
+                .chat-history-panel .danmaku-at-prompt {
+                    bottom: calc(var(--chat-control-panel-height) + 3px);
+                }
+            `,
+        }),
+        // 隐藏 发送框
         new CheckboxItem({
             itemID: 'live-page-chat-input-ctnr',
-            description: '隐藏 弹幕发送框',
-            itemCSS: `#chat-control-panel-vm .chat-input-ctnr, #chat-control-panel-vm .bottom-actions {display: none !important;}
-                .chat-control-panel {height: unset !important;}
-                .chat-history-panel {height: calc(100% - 45px) !important; padding-top: 8px;}
-                .chat-history-panel .danmaku-at-prompt {bottom: 50px !important;}`,
+            description: '隐藏 发送框',
+            itemCSS: `
+                :root {
+                    --ctrlh2: calc(145px - 105px);
+                    --chat-control-panel-height: min(min(var(--ctrlh1, 145px), var(--ctrlh2, 145px)), var(--ctrlh3, 145px));
+                }
+                #chat-control-panel-vm .chat-input-ctnr,
+                #chat-control-panel-vm .bottom-actions {
+                    display: none !important;
+                }
+                .chat-history-panel {
+                    height: calc(100% - var(--rank-list-height, 178px) - var(--chat-control-panel-height, 145px)) !important;
+                }
+                #chat-control-panel-vm {
+                    height: var(--chat-control-panel-height) !important;
+                }
+                #aside-area-vm {
+                    overflow: hidden;
+                }
+                .chat-history-panel .danmaku-at-prompt {
+                    bottom: calc(var(--chat-control-panel-height) + 10px);
+                }
+            `,
         }),
-        // 隐藏 关闭全部互动框和控制栏
+        // 隐藏 弹幕栏底部全部功能
         new CheckboxItem({
             itemID: 'live-page-chat-control-panel',
-            description: '隐藏 关闭全部互动框和控制栏',
-            itemCSS: `#chat-control-panel-vm {display: none !important;}
-                /* 高权限调高度 */
-                #aside-area-vm .chat-history-panel {height: 100% !important;}`,
+            description: '隐藏 弹幕栏底部全部功能',
+            itemCSS: `
+                :root {
+                    --ctrlh3: 0px;
+                    --chat-control-panel-height: min(min(var(--ctrlh1, 145px), var(--ctrlh2, 145px)), var(--ctrlh3, 145px));
+                }
+                #chat-control-panel-vm {
+                    display: none !important;
+                }
+                .chat-history-panel, .chat-history-panel.new {
+                    height: calc(100% - var(--rank-list-height, 178px) - var(--chat-control-panel-height, 145px)) !important;
+                }
+                .chat-history-panel .chat-history-list {
+                    padding: 10px !important;
+                }
+                #chat-control-panel-vm {
+                    height: var(--chat-control-panel-height, 145px) !important;
+                }
+                #aside-area-vm {
+                    overflow: hidden;
+                }
+                .chat-history-panel .danmaku-at-prompt {
+                    bottom: calc(var(--chat-control-panel-height) + 30px);
+                }
+            `,
         }),
     ]
-    liveGroupList.push(new Group('live-right-container', '右栏 高能榜/弹幕列表', rightContainerItems))
+    liveGroupList.push(new Group('live-right-container', '右栏 弹幕列表', rightContainerItems))
 
     // 视频下方页面
     const belowItems = [
@@ -674,7 +763,7 @@ if (isPageLiveHome() || isPageLiveRoom()) {
         // 隐藏 更多, 默认开启
         new CheckboxItem({
             itemID: 'live-page-header-showmore-link',
-            description: '隐藏 顶栏-更多',
+            description: '隐藏 更多',
             defaultStatus: true,
             itemCSS: `
                 #main-ctnr .showmore-link {display: none !important;}

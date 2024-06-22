@@ -9,7 +9,7 @@ export class WordList {
     <div id="bili-cleaner-wordlist">
         <div class="wordlist-header"></div>
         <div class="wordlist-description"></div>
-        <textarea class="wordlist-body" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
+        <textarea class="wordlist-body" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
         <div class="wordlist-footer">
             <button class="wordlist-save-button">保存</button>
             <button class="wordlist-close-button">关闭</button>
@@ -60,24 +60,24 @@ export class WordList {
         }
     }
 
-    /** 添加多个值到列表 */
-    addValues(values: string[]) {
-        try {
-            this.getValue()
-            values.forEach((value) => {
-                value = value.trim()
-                if (value && !this.wordSet.has(value)) {
-                    this.wordArr.push(value)
-                    this.wordSet.add(value)
-                }
-            })
-            this.setValue()
-            debug(`list ${this.listID} add ${values.length} lines, OK`)
-        } catch (err) {
-            error(err)
-            error(`list ${this.listID} add ${values.length} lines, ERROR`)
-        }
-    }
+    // /** 添加多个值到列表 */
+    // addValues(values: string[]) {
+    //     try {
+    //         this.getValue()
+    //         values.forEach((value) => {
+    //             value = value.trim()
+    //             if (value && !this.wordSet.has(value)) {
+    //                 this.wordArr.push(value)
+    //                 this.wordSet.add(value)
+    //             }
+    //         })
+    //         this.setValue()
+    //         debug(`list ${this.listID} add ${values.length} lines, OK`)
+    //     } catch (err) {
+    //         error(err)
+    //         error(`list ${this.listID} add ${values.length} lines, ERROR`)
+    //     }
+    // }
 
     /**
      * 编辑整个列表

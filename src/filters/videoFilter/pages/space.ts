@@ -82,7 +82,7 @@ if (isPageSpace()) {
         'global-title-keyword-filter-value',
         checkVideoList,
     )
-    const spaceTitleKeyworldWhitelistAction = new TitleKeywordWhitelistAction(
+    const spaceTitleKeywordWhitelistAction = new TitleKeywordWhitelistAction(
         'space-title-keyword-whitelist-filter-status',
         'global-title-keyword-whitelist-filter-value',
         checkVideoList,
@@ -96,12 +96,12 @@ if (isPageSpace()) {
             }
         }
         if (videoListContainer) {
-            check(true)
-            const videoObverser = new MutationObserver(() => {
+            check(true).then().catch()
+            const videoObserver = new MutationObserver(() => {
                 // 全量检测
-                check(true)
+                check(true).then().catch()
             })
-            videoObverser.observe(videoListContainer, { childList: true, subtree: true })
+            videoObserver.observe(videoListContainer, { childList: true, subtree: true })
             debug('watchVideoListContainer OK')
         }
     }
@@ -147,7 +147,7 @@ if (isPageSpace()) {
                                 spaceBvidAction.add(bvid)
                             })
                             menu.registerMenu(`◎ 复制视频链接`, () => {
-                                navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`)
+                                navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).then().catch()
                             })
                             menu.show(e.clientX, e.clientY)
                         }
@@ -184,10 +184,10 @@ if (isPageSpace()) {
         new CheckboxItem({
             itemID: spaceDurationAction.statusKey,
             description: '启用 时长过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 spaceDurationAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 spaceDurationAction.disable()
             },
             itemCSS: patchCSS,
@@ -201,7 +201,7 @@ if (isPageSpace()) {
             maxValue: 300,
             disableValue: 0,
             unit: '秒',
-            callback: (value: number) => {
+            callback: async (value: number) => {
                 spaceDurationAction.change(value)
             },
         }),
@@ -214,10 +214,10 @@ if (isPageSpace()) {
         new CheckboxItem({
             itemID: spaceTitleKeywordAction.statusKey,
             description: '启用 标题关键词过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 spaceTitleKeywordAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 spaceTitleKeywordAction.disable()
             },
             itemCSS: patchCSS,
@@ -227,7 +227,7 @@ if (isPageSpace()) {
             itemID: 'space-title-keyword-edit-button',
             description: '编辑 标题关键词黑名单（支持正则）',
             name: '编辑',
-            itemFunc: () => {
+            itemFunc: async () => {
                 spaceTitleKeywordAction.blacklist.show()
             },
         }),
@@ -242,13 +242,13 @@ if (isPageSpace()) {
         new CheckboxItem({
             itemID: spaceBvidAction.statusKey,
             description: '启用 BV号过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 // 启用右键功能
                 isContextMenuBvidEnable = true
                 contextMenuFunc()
                 spaceBvidAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 // 禁用右键功能
                 isContextMenuBvidEnable = false
                 spaceBvidAction.disable()
@@ -260,7 +260,7 @@ if (isPageSpace()) {
             itemID: 'space-bvid-edit-button',
             description: '编辑 BV号黑名单',
             name: '编辑',
-            itemFunc: () => {
+            itemFunc: async () => {
                 spaceBvidAction.blacklist.show()
             },
         }),
@@ -273,13 +273,13 @@ if (isPageSpace()) {
     const whitelistItems = [
         // 启用 空间页标题关键词白名单
         new CheckboxItem({
-            itemID: spaceTitleKeyworldWhitelistAction.statusKey,
+            itemID: spaceTitleKeywordWhitelistAction.statusKey,
             description: '启用 标题关键词白名单',
-            itemFunc: () => {
-                spaceTitleKeyworldWhitelistAction.enable()
+            enableFunc: async () => {
+                spaceTitleKeywordWhitelistAction.enable()
             },
-            callback: () => {
-                spaceTitleKeyworldWhitelistAction.disable()
+            disableFunc: async () => {
+                spaceTitleKeywordWhitelistAction.disable()
             },
         }),
         // 编辑 标题关键词白名单
@@ -287,8 +287,8 @@ if (isPageSpace()) {
             itemID: 'space-title-keyword-whitelist-edit-button',
             description: '编辑 标题关键词白名单（支持正则）',
             name: '编辑',
-            itemFunc: () => {
-                spaceTitleKeyworldWhitelistAction.whitelist.show()
+            itemFunc: async () => {
+                spaceTitleKeywordWhitelistAction.whitelist.show()
             },
         }),
     ]

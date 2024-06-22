@@ -465,6 +465,9 @@ if (isPageHomepage()) {
                 }
                 .skeleton .skeleton-item {
                     animation: none !important;
+                }
+                .floor-skeleton .skeleton-item {
+                    animation: none !important;
                 }`,
         }),
         // 隐藏 视频载入 骨架(skeleton)
@@ -488,7 +491,7 @@ if (isPageHomepage()) {
             .floor-single-card:has(.skeleton, .skeleton-item) {
                 display: none;
             }`,
-            itemFunc: () => {
+            enableFunc: async () => {
                 // hook fetch
                 const origFetch = unsafeWindow.fetch
                 unsafeWindow.fetch = (input, init?) => {

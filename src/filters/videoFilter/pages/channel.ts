@@ -111,7 +111,7 @@ if (isPageChannel()) {
         'global-uploader-whitelist-filter-value',
         checkVideoList,
     )
-    const channelTitleKeyworldWhitelistAction = new TitleKeywordWhitelistAction(
+    const channelTitleKeywordWhitelistAction = new TitleKeywordWhitelistAction(
         'channel-title-keyword-whitelist-filter-status',
         'global-title-keyword-whitelist-filter-value',
         checkVideoList,
@@ -132,12 +132,12 @@ if (isPageChannel()) {
         }
         if (videoListContainer) {
             // 初次全站检测
-            check(true)
-            const videoObverser = new MutationObserver(() => {
+            check(true).then().catch()
+            const videoObserver = new MutationObserver(() => {
                 // 增量检测
-                check(false)
+                check(false).then().catch()
             })
-            videoObverser.observe(videoListContainer, { childList: true, subtree: true })
+            videoObserver.observe(videoListContainer, { childList: true, subtree: true })
             debug('watchVideoListContainer OK')
         }
     }
@@ -208,7 +208,7 @@ if (isPageChannel()) {
                                 channelBvidAction.add(bvid)
                             })
                             menu.registerMenu(`◎ 复制视频链接`, () => {
-                                navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`)
+                                navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).then().catch()
                             })
                             menu.show(e.clientX, e.clientY)
                         }
@@ -240,10 +240,10 @@ if (isPageChannel()) {
              *
              * 可以在传递方法时使用箭头函数来保持 this 的上下文
              */
-            itemFunc: () => {
+            enableFunc: async () => {
                 channelDurationAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 channelDurationAction.disable()
             },
         }),
@@ -256,7 +256,7 @@ if (isPageChannel()) {
             maxValue: 300,
             disableValue: 0,
             unit: '秒',
-            callback: (value: number) => {
+            callback: async (value: number) => {
                 channelDurationAction.change(value)
             },
         }),
@@ -269,13 +269,13 @@ if (isPageChannel()) {
         new CheckboxItem({
             itemID: channelUploaderAction.statusKey,
             description: '启用 UP主过滤 (右键单击UP主)',
-            itemFunc: () => {
+            enableFunc: async () => {
                 // 启用右键功能
                 isContextMenuUploaderEnable = true
                 contextMenuFunc()
                 channelUploaderAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 // 禁用右键功能
                 isContextMenuUploaderEnable = false
                 channelUploaderAction.disable()
@@ -287,7 +287,7 @@ if (isPageChannel()) {
             description: '编辑 UP主黑名单',
             name: '编辑',
             // 按钮功能
-            itemFunc: () => {
+            itemFunc: async () => {
                 channelUploaderAction.blacklist.show()
             },
         }),
@@ -295,10 +295,10 @@ if (isPageChannel()) {
         new CheckboxItem({
             itemID: channelUploaderKeywordAction.statusKey,
             description: '启用 UP主昵称关键词过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 channelUploaderKeywordAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 channelUploaderKeywordAction.disable()
             },
         }),
@@ -307,7 +307,7 @@ if (isPageChannel()) {
             itemID: 'channel-uploader-keyword-edit-button',
             description: '编辑 UP主昵称关键词黑名单',
             name: '编辑',
-            itemFunc: () => {
+            itemFunc: async () => {
                 channelUploaderKeywordAction.blacklist.show()
             },
         }),
@@ -320,10 +320,10 @@ if (isPageChannel()) {
         new CheckboxItem({
             itemID: channelTitleKeywordAction.statusKey,
             description: '启用 标题关键词过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 channelTitleKeywordAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 channelTitleKeywordAction.disable()
             },
         }),
@@ -333,7 +333,7 @@ if (isPageChannel()) {
             description: '编辑 标题关键词黑名单（支持正则）',
             name: '编辑',
             // 按钮功能
-            itemFunc: () => {
+            itemFunc: async () => {
                 channelTitleKeywordAction.blacklist.show()
             },
         }),
@@ -348,13 +348,13 @@ if (isPageChannel()) {
         new CheckboxItem({
             itemID: channelBvidAction.statusKey,
             description: '启用 BV号过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 // 启用右键功能
                 isContextMenuBvidEnable = true
                 contextMenuFunc()
                 channelBvidAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 // 禁用右键功能
                 isContextMenuBvidEnable = false
                 channelBvidAction.disable()
@@ -366,7 +366,7 @@ if (isPageChannel()) {
             description: '编辑 BV号黑名单',
             name: '编辑',
             // 按钮功能
-            itemFunc: () => {
+            itemFunc: async () => {
                 channelBvidAction.blacklist.show()
             },
         }),
@@ -381,10 +381,10 @@ if (isPageChannel()) {
         new CheckboxItem({
             itemID: channelUploaderWhitelistAction.statusKey,
             description: '启用 UP主白名单 (右键单击UP主)',
-            itemFunc: () => {
+            enableFunc: async () => {
                 channelUploaderWhitelistAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 channelUploaderWhitelistAction.disable()
             },
         }),
@@ -394,19 +394,19 @@ if (isPageChannel()) {
             description: '编辑 UP主白名单',
             name: '编辑',
             // 按钮功能：显示白名单编辑器
-            itemFunc: () => {
+            itemFunc: async () => {
                 channelUploaderWhitelistAction.whitelist.show()
             },
         }),
         // 启用 频道页标题关键词白名单
         new CheckboxItem({
-            itemID: channelTitleKeyworldWhitelistAction.statusKey,
+            itemID: channelTitleKeywordWhitelistAction.statusKey,
             description: '启用 标题关键词白名单',
-            itemFunc: () => {
-                channelTitleKeyworldWhitelistAction.enable()
+            enableFunc: async () => {
+                channelTitleKeywordWhitelistAction.enable()
             },
-            callback: () => {
-                channelTitleKeyworldWhitelistAction.disable()
+            disableFunc: async () => {
+                channelTitleKeywordWhitelistAction.disable()
             },
         }),
         // 编辑 关键词白名单
@@ -415,8 +415,8 @@ if (isPageChannel()) {
             description: '编辑 标题关键词白名单（支持正则）',
             name: '编辑',
             // 按钮功能：显示白名单编辑器
-            itemFunc: () => {
-                channelTitleKeyworldWhitelistAction.whitelist.show()
+            itemFunc: async () => {
+                channelTitleKeywordWhitelistAction.whitelist.show()
             },
         }),
     ]

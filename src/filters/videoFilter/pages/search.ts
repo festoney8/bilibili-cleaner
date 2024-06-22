@@ -115,7 +115,7 @@ if (isPageSearch()) {
         'global-uploader-whitelist-filter-value',
         checkVideoList,
     )
-    const searchTitleKeyworldWhitelistAction = new TitleKeywordWhitelistAction(
+    const searchTitleKeywordWhitelistAction = new TitleKeywordWhitelistAction(
         'search-title-keyword-whitelist-filter-status',
         'global-title-keyword-whitelist-filter-value',
         checkVideoList,
@@ -135,11 +135,11 @@ if (isPageSearch()) {
             }
         }
         if (videoListContainer) {
-            check(true)
-            const videoObverser = new MutationObserver(() => {
-                check(true)
+            check(true).then().catch()
+            const videoObserver = new MutationObserver(() => {
+                check(true).then().catch()
             })
-            videoObverser.observe(videoListContainer, { childList: true, subtree: true })
+            videoObserver.observe(videoListContainer, { childList: true, subtree: true })
             debug('watchVideoListContainer OK')
         }
     }
@@ -210,7 +210,7 @@ if (isPageSearch()) {
                                 searchBvidAction.add(bvid)
                             })
                             menu.registerMenu(`◎ 复制视频链接`, () => {
-                                navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`)
+                                navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).then().catch()
                             })
                             menu.show(e.clientX, e.clientY)
                         }
@@ -231,10 +231,10 @@ if (isPageSearch()) {
         new CheckboxItem({
             itemID: searchDurationAction.statusKey,
             description: '启用 时长过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 searchDurationAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 searchDurationAction.disable()
             },
         }),
@@ -246,7 +246,7 @@ if (isPageSearch()) {
             maxValue: 300,
             disableValue: 0,
             unit: '秒',
-            callback: (value: number) => {
+            callback: async (value: number) => {
                 searchDurationAction.change(value)
             },
         }),
@@ -258,13 +258,13 @@ if (isPageSearch()) {
         new CheckboxItem({
             itemID: searchUploaderAction.statusKey,
             description: '启用 UP主过滤 (右键单击UP主)',
-            itemFunc: () => {
+            enableFunc: async () => {
                 // 启用右键功能
                 isContextMenuUploaderEnable = true
                 contextMenuFunc()
                 searchUploaderAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 // 禁用右键功能
                 isContextMenuUploaderEnable = false
                 searchUploaderAction.disable()
@@ -276,7 +276,7 @@ if (isPageSearch()) {
             description: '编辑 UP主黑名单',
             name: '编辑',
             // 按钮功能
-            itemFunc: () => {
+            itemFunc: async () => {
                 searchUploaderAction.blacklist.show()
             },
         }),
@@ -284,10 +284,10 @@ if (isPageSearch()) {
         new CheckboxItem({
             itemID: searchUploaderKeywordAction.statusKey,
             description: '启用 UP主昵称关键词过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 searchUploaderKeywordAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 searchUploaderKeywordAction.disable()
             },
         }),
@@ -296,7 +296,7 @@ if (isPageSearch()) {
             itemID: 'search-uploader-keyword-edit-button',
             description: '编辑 UP主昵称关键词黑名单',
             name: '编辑',
-            itemFunc: () => {
+            itemFunc: async () => {
                 searchUploaderKeywordAction.blacklist.show()
             },
         }),
@@ -308,10 +308,10 @@ if (isPageSearch()) {
         new CheckboxItem({
             itemID: searchTitleKeywordAction.statusKey,
             description: '启用 标题关键词过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 searchTitleKeywordAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 searchTitleKeywordAction.disable()
             },
         }),
@@ -321,7 +321,7 @@ if (isPageSearch()) {
             description: '编辑 标题关键词黑名单（支持正则）',
             name: '编辑',
             // 按钮功能
-            itemFunc: () => {
+            itemFunc: async () => {
                 searchTitleKeywordAction.blacklist.show()
             },
         }),
@@ -335,13 +335,13 @@ if (isPageSearch()) {
         new CheckboxItem({
             itemID: searchBvidAction.statusKey,
             description: '启用 BV号过滤 (右键单击标题)',
-            itemFunc: () => {
+            enableFunc: async () => {
                 // 启用右键功能
                 isContextMenuBvidEnable = true
                 contextMenuFunc()
                 searchBvidAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 // 禁用右键功能
                 isContextMenuBvidEnable = false
                 searchBvidAction.disable()
@@ -353,7 +353,7 @@ if (isPageSearch()) {
             description: '编辑 BV号黑名单',
             name: '编辑',
             // 按钮功能
-            itemFunc: () => {
+            itemFunc: async () => {
                 searchBvidAction.blacklist.show()
             },
         }),
@@ -367,12 +367,12 @@ if (isPageSearch()) {
             itemID: 'search-top-uploader-whitelist-filter-status',
             description: '搜索结果顶部UP主视频免过滤',
             defaultStatus: true,
-            itemFunc: () => {
+            enableFunc: async () => {
                 isTopUploaderWhitelistEnable = true
                 // 触发全站检测
                 checkVideoList(true)
             },
-            callback: () => {
+            disableFunc: async () => {
                 isTopUploaderWhitelistEnable = false
                 checkVideoList(true)
             },
@@ -380,10 +380,10 @@ if (isPageSearch()) {
         new CheckboxItem({
             itemID: searchUploaderWhitelistAction.statusKey,
             description: '启用 UP主白名单',
-            itemFunc: () => {
+            enableFunc: async () => {
                 searchUploaderWhitelistAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 searchUploaderWhitelistAction.disable()
             },
         }),
@@ -392,18 +392,18 @@ if (isPageSearch()) {
             description: '编辑 UP主白名单',
             name: '编辑',
             // 按钮功能：显示白名单编辑器
-            itemFunc: () => {
+            itemFunc: async () => {
                 searchUploaderWhitelistAction.whitelist.show()
             },
         }),
         new CheckboxItem({
-            itemID: searchTitleKeyworldWhitelistAction.statusKey,
+            itemID: searchTitleKeywordWhitelistAction.statusKey,
             description: '启用 标题关键词白名单',
-            itemFunc: () => {
-                searchTitleKeyworldWhitelistAction.enable()
+            enableFunc: async () => {
+                searchTitleKeywordWhitelistAction.enable()
             },
-            callback: () => {
-                searchTitleKeyworldWhitelistAction.disable()
+            disableFunc: async () => {
+                searchTitleKeywordWhitelistAction.disable()
             },
         }),
         new ButtonItem({
@@ -411,8 +411,8 @@ if (isPageSearch()) {
             description: '编辑 标题关键词白名单（支持正则）',
             name: '编辑',
             // 按钮功能：显示白名单编辑器
-            itemFunc: () => {
-                searchTitleKeyworldWhitelistAction.whitelist.show()
+            itemFunc: async () => {
+                searchTitleKeywordWhitelistAction.whitelist.show()
             },
         }),
     ]

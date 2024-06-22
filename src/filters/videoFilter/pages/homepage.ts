@@ -144,7 +144,7 @@ if (isPageHomepage()) {
         'global-uploader-whitelist-filter-value',
         checkVideoList,
     )
-    const homepageTitleKeyworldWhitelistAction = new TitleKeywordWhitelistAction(
+    const homepageTitleKeywordWhitelistAction = new TitleKeywordWhitelistAction(
         'homepage-title-keyword-whitelist-filter-status',
         'global-title-keyword-whitelist-filter-value',
         checkVideoList,
@@ -165,12 +165,12 @@ if (isPageHomepage()) {
         }
         if (videoListContainer) {
             // 初次全站检测
-            check(true)
-            const videoObverser = new MutationObserver(() => {
+            check(true).then().catch()
+            const videoObserver = new MutationObserver(() => {
                 // 增量检测
-                check(false)
+                check(false).then().catch()
             })
-            videoObverser.observe(videoListContainer, { childList: true })
+            videoObserver.observe(videoListContainer, { childList: true })
             debug('watchVideoListContainer OK')
         }
     }
@@ -242,7 +242,7 @@ if (isPageHomepage()) {
                                 homepageBvidAction.add(bvid)
                             })
                             menu.registerMenu(`◎ 复制视频链接`, () => {
-                                navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`)
+                                navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).then().catch()
                             })
                             menu.show(e.clientX, e.clientY)
                         }
@@ -274,10 +274,10 @@ if (isPageHomepage()) {
              *
              * 可以在传递方法时使用箭头函数来保持 this 的上下文
              */
-            itemFunc: () => {
+            enableFunc: async () => {
                 homepageDurationAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 homepageDurationAction.disable()
             },
         }),
@@ -290,7 +290,7 @@ if (isPageHomepage()) {
             maxValue: 300,
             disableValue: 0,
             unit: '秒',
-            callback: (value: number) => {
+            callback: async (value: number) => {
                 homepageDurationAction.change(value)
             },
         }),
@@ -303,13 +303,13 @@ if (isPageHomepage()) {
         new CheckboxItem({
             itemID: homepageUploaderAction.statusKey,
             description: '启用 UP主过滤 (右键单击UP主)',
-            itemFunc: () => {
+            enableFunc: async () => {
                 // 启用右键功能
                 isContextMenuUploaderEnable = true
                 contextMenuFunc()
                 homepageUploaderAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 // 禁用右键功能
                 isContextMenuUploaderEnable = false
                 homepageUploaderAction.disable()
@@ -321,7 +321,7 @@ if (isPageHomepage()) {
             description: '编辑 UP主黑名单',
             name: '编辑',
             // 按钮功能
-            itemFunc: () => {
+            itemFunc: async () => {
                 homepageUploaderAction.blacklist.show()
             },
         }),
@@ -329,10 +329,10 @@ if (isPageHomepage()) {
         new CheckboxItem({
             itemID: homepageUploaderKeywordAction.statusKey,
             description: '启用 UP主昵称关键词过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 homepageUploaderKeywordAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 homepageUploaderKeywordAction.disable()
             },
         }),
@@ -341,7 +341,7 @@ if (isPageHomepage()) {
             itemID: 'homepage-uploader-keyword-edit-button',
             description: '编辑 UP主昵称关键词黑名单',
             name: '编辑',
-            itemFunc: () => {
+            itemFunc: async () => {
                 homepageUploaderKeywordAction.blacklist.show()
             },
         }),
@@ -354,10 +354,10 @@ if (isPageHomepage()) {
         new CheckboxItem({
             itemID: homepageTitleKeywordAction.statusKey,
             description: '启用 标题关键词过滤',
-            itemFunc: () => {
+            enableFunc: async () => {
                 homepageTitleKeywordAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 homepageTitleKeywordAction.disable()
             },
         }),
@@ -367,7 +367,7 @@ if (isPageHomepage()) {
             description: '编辑 标题关键词黑名单（支持正则）',
             name: '编辑',
             // 按钮功能
-            itemFunc: () => {
+            itemFunc: async () => {
                 homepageTitleKeywordAction.blacklist.show()
             },
         }),
@@ -382,13 +382,13 @@ if (isPageHomepage()) {
         new CheckboxItem({
             itemID: homepageBvidAction.statusKey,
             description: '启用 BV号过滤 (右键单击标题)',
-            itemFunc: () => {
+            enableFunc: async () => {
                 // 启用右键功能
                 isContextMenuBvidEnable = true
                 contextMenuFunc()
                 homepageBvidAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 // 禁用右键功能
                 isContextMenuBvidEnable = false
                 homepageBvidAction.disable()
@@ -400,7 +400,7 @@ if (isPageHomepage()) {
             description: '编辑 BV号黑名单',
             name: '编辑',
             // 按钮功能
-            itemFunc: () => {
+            itemFunc: async () => {
                 homepageBvidAction.blacklist.show()
             },
         }),
@@ -414,12 +414,12 @@ if (isPageHomepage()) {
             itemID: 'homepage-following-whitelist-filter-status',
             description: '标有 [已关注] 的视频免过滤',
             defaultStatus: true,
-            itemFunc: () => {
+            enableFunc: async () => {
                 isFollowingWhitelistEnable = true
                 // 触发全站检测
                 checkVideoList(true)
             },
-            callback: () => {
+            disableFunc: async () => {
                 isFollowingWhitelistEnable = false
                 checkVideoList(true)
             },
@@ -428,10 +428,10 @@ if (isPageHomepage()) {
         new CheckboxItem({
             itemID: homepageUploaderWhitelistAction.statusKey,
             description: '启用 UP主白名单 (右键单击UP主)',
-            itemFunc: () => {
+            enableFunc: async () => {
                 homepageUploaderWhitelistAction.enable()
             },
-            callback: () => {
+            disableFunc: async () => {
                 homepageUploaderWhitelistAction.disable()
             },
         }),
@@ -441,19 +441,19 @@ if (isPageHomepage()) {
             description: '编辑 UP主白名单',
             name: '编辑',
             // 按钮功能：显示白名单编辑器
-            itemFunc: () => {
+            itemFunc: async () => {
                 homepageUploaderWhitelistAction.whitelist.show()
             },
         }),
         // 启用 首页标题关键词白名单
         new CheckboxItem({
-            itemID: homepageTitleKeyworldWhitelistAction.statusKey,
+            itemID: homepageTitleKeywordWhitelistAction.statusKey,
             description: '启用 标题关键词白名单',
-            itemFunc: () => {
-                homepageTitleKeyworldWhitelistAction.enable()
+            enableFunc: async () => {
+                homepageTitleKeywordWhitelistAction.enable()
             },
-            callback: () => {
-                homepageTitleKeyworldWhitelistAction.disable()
+            disableFunc: async () => {
+                homepageTitleKeywordWhitelistAction.disable()
             },
         }),
         // 编辑 关键词白名单
@@ -462,8 +462,8 @@ if (isPageHomepage()) {
             description: '编辑 标题关键词白名单（支持正则）',
             name: '编辑',
             // 按钮功能：显示白名单编辑器
-            itemFunc: () => {
-                homepageTitleKeyworldWhitelistAction.whitelist.show()
+            itemFunc: async () => {
+                homepageTitleKeywordWhitelistAction.whitelist.show()
             },
         }),
     ]

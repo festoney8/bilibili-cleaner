@@ -386,6 +386,7 @@ const basicItems = [
                     if (isPageLiveRoom()) {
                         keysToRemove.add('bbid')
                         keysToRemove.add('ts')
+                        keysToRemove.add('hotRank')
                     }
                     const urlObj = new URL(url)
                     const params = new URLSearchParams(urlObj.search)

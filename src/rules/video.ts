@@ -171,7 +171,7 @@ if (isPageVideo() || isPagePlaylist()) {
                 wideScreenLock = true
                 unsafeWindow.isWide = true
                 const listener = () => {
-                    window.scrollTo(0, 60)
+                    window.scrollTo(0, 64)
                     // 监听宽屏按钮出现
                     waitForEle(document.body, '.bpx-player-ctrl-wide', (node: HTMLElement): boolean => {
                         return node.className.includes('bpx-player-ctrl-wide')

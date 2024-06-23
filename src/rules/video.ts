@@ -259,6 +259,7 @@ if (isPageVideo() || isPagePlaylist()) {
             `,
             enableFunc: async () => {
                 // 在Chrome上可以神奇的禁用滚轮调节音量，Firefox不生效
+                document.removeEventListener('wheel', disableAdjustVolume)
                 document.addEventListener('wheel', disableAdjustVolume)
 
                 // 监听网页全屏按钮出现
@@ -273,6 +274,148 @@ if (isPageVideo() || isPagePlaylist()) {
                         })
                     }
                 })
+            },
+            enableFuncRunAt: 'document-end',
+            disableFunc: async () => document.removeEventListener('wheel', disableAdjustVolume),
+        }),
+        // 全屏时 页面可滚动
+        new CheckboxItem({
+            itemID: 'fullscreen-scrollable',
+            description: '全屏时 页面可滚动 滚轮调音量失效\n（实验功能，Firefox 不适用）',
+            itemCSS: `
+                .webscreen-fix {
+                    position: unset;
+                    top: unset;
+                    left: unset;
+                    margin: unset;
+                    padding: unset;
+                    width: unset;
+                    height: unset;
+                }
+                .webscreen-fix #biliMainHeader {
+                    display: none;
+                }
+                .webscreen-fix #mirror-vdcon {
+                    box-sizing: content-box;
+                    position: relative;
+                }
+                .webscreen-fix #danmukuBox {
+                    margin-top: 0 !important;
+                }
+                .webscreen-fix :is(.left-container, .playlist-container--left) {
+                    position: static !important;
+                    padding-top: 100vh;
+                    min-width: 56vw !important;
+                }
+                .webscreen-fix :is(.left-container, .playlist-container--left) .video-info-container {
+                    height: fit-content;
+                }
+                .webscreen-fix :is(.left-container, .playlist-container--left) #bilibili-player.mode-webscreen {
+                    position: static;
+                    border-radius: unset;
+                    z-index: unset;
+                    left: unset;
+                    top: unset;
+                    width: 100%;
+                    height: 100%;
+                }
+                .webscreen-fix :is(.left-container, .playlist-container--left) #playerWrap {
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    top: 0;
+                    height: 100vh;
+                    width: 100vw;
+                    padding-right: 0;
+                }
+                .webscreen-fix :is(.right-container, .playlist-container--right) {
+                    padding-top: 100vh;
+                }
+                /* 隐藏小窗 */
+                .webscreen-fix .float-nav-exp .nav-menu .item.mini,
+                .webscreen-fix .fixed-sidenav-storage .mini-player-window {
+                    display: none !important;
+                }
+                /* 滚动条 */
+                .webscreen-fix::-webkit-scrollbar {
+                    display: none !important;
+                }
+                /* firefox滚动条 */
+                @-moz-document url-prefix() {
+                    html:has(.webscreen-fix), body.webscreen-fix {
+                        scrollbar-width: none !important;
+                    }
+                }
+            `,
+            enableFunc: async () => {
+                // 在Chrome上可以神奇的禁用滚轮调节音量，Firefox不生效
+                document.removeEventListener('wheel', disableAdjustVolume)
+                document.addEventListener('wheel', disableAdjustVolume)
+
+                let cnt = 0
+                const id = setInterval(() => {
+                    const webBtn = document.body.querySelector(
+                        '.bpx-player-ctrl-btn.bpx-player-ctrl-web',
+                    ) as HTMLElement
+                    const fullBtn = document.body.querySelector(
+                        '.bpx-player-ctrl-btn.bpx-player-ctrl-full',
+                    ) as HTMLElement
+                    if (webBtn && fullBtn) {
+                        clearInterval(id)
+
+                        const isFullScreen = (): 'ele' | 'f11' | 'not' => {
+                            if (document.fullscreenElement) {
+                                // 由元素申请的全屏
+                                return 'ele'
+                            } else if (window.innerWidth === screen.width && window.innerHeight === screen.height) {
+                                // 用户F11的全屏
+                                return 'f11'
+                            } else {
+                                // 非全屏
+                                return 'not'
+                            }
+                        }
+
+                        const isWebScreen = (): boolean => {
+                            return webBtn.classList.contains('bpx-state-entered')
+                        }
+
+                        // 全屏可滚动 = 网页全屏功能 + html/body元素申请全屏
+                        const newFullBtn = fullBtn.cloneNode(true)
+                        newFullBtn.addEventListener('click', () => {
+                            switch (isFullScreen()) {
+                                case 'ele':
+                                    if (isWebScreen()) {
+                                        // 退出网页全屏，自动退出全屏
+                                        webBtn.click()
+                                    } else {
+                                        document.exitFullscreen().then().catch()
+                                    }
+                                    break
+                                case 'f11':
+                                    // f11全屏模式
+                                    if (isWebScreen()) {
+                                        webBtn.click()
+                                    } else {
+                                        webBtn.click()
+                                    }
+                                    break
+                                case 'not':
+                                    // 申请可滚动全屏
+                                    document.body.requestFullscreen().then().catch()
+                                    if (!isWebScreen()) {
+                                        webBtn.click()
+                                    }
+                                    window.scrollTo(0, 0)
+                                    break
+                            }
+                        })
+                        fullBtn.parentElement?.replaceChild(newFullBtn, fullBtn)
+                    } else {
+                        cnt++
+                        cnt > 100 && clearInterval(id)
+                    }
+                }, 100)
             },
             enableFuncRunAt: 'document-end',
             disableFunc: async () => document.removeEventListener('wheel', disableAdjustVolume),

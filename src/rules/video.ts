@@ -258,7 +258,7 @@ if (isPageVideo() || isPagePlaylist()) {
                 }
             `,
             enableFunc: async () => {
-                // 在Chrome上可以神奇的禁用滚轮调节音量，Firefox不生效
+                // 禁用滚动调音量, firefox不生效
                 document.removeEventListener('wheel', disableAdjustVolume)
                 document.addEventListener('wheel', disableAdjustVolume)
 
@@ -348,7 +348,10 @@ if (isPageVideo() || isPagePlaylist()) {
                 }
             `,
             enableFunc: async () => {
-                // 在Chrome上可以神奇的禁用滚轮调节音量，Firefox不生效
+                if (!navigator.userAgent.toLocaleLowerCase().includes('chrome')) {
+                    return
+                }
+                // 禁用滚动调音量
                 document.removeEventListener('wheel', disableAdjustVolume)
                 document.addEventListener('wheel', disableAdjustVolume)
 

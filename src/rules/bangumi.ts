@@ -94,8 +94,10 @@ if (isPageBangumi()) {
                 }
             `,
             enableFunc: async () => {
-                // 在Chrome上可以神奇的禁用滚轮调节音量，Firefox不生效
+                // 禁用滚动调音量
+                document.removeEventListener('wheel', disableAdjustVolume)
                 document.addEventListener('wheel', disableAdjustVolume)
+
                 // 监听网页全屏按钮出现
                 waitForEle(document.body, '.bpx-player-ctrl-web', (node: HTMLElement): boolean => {
                     return node.className.includes('bpx-player-ctrl-web')
@@ -148,7 +150,11 @@ if (isPageBangumi()) {
                 }
             `,
             enableFunc: async () => {
-                // 在Chrome上可以神奇的禁用滚轮调节音量，Firefox不生效
+                if (!navigator.userAgent.toLocaleLowerCase().includes('chrome')) {
+                    return
+                }
+
+                // 禁用滚动调音量
                 document.removeEventListener('wheel', disableAdjustVolume)
                 document.addEventListener('wheel', disableAdjustVolume)
 

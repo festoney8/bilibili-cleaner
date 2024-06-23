@@ -80,7 +80,7 @@ if (isPageWatchlater()) {
         // 修复字体
         new CheckboxItem({
             itemID: 'font-patch',
-            description: '修复字体 (实验功能)',
+            description: '修复字体',
             itemCSS: `
                 ${fontFaceRegular}
                 ${fontFaceMedium}

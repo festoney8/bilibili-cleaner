@@ -708,12 +708,6 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
             description: '隐藏 高赞弹幕前点赞按钮',
             itemCSS: `.bili-dm .bili-high-icon {display: none !important}`,
         }),
-        // 隐藏 爆炸特效弹幕
-        new CheckboxItem({
-            itemID: 'video-page-bpx-player-bili-dm-boom',
-            description: '隐藏 爆炸特效弹幕',
-            itemCSS: `.bili-boom {display: none !important}`,
-        }),
         // 彩色渐变弹幕 变成白色
         new CheckboxItem({
             itemID: 'video-page-bpx-player-bili-dm-vip-white',

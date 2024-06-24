@@ -345,7 +345,7 @@ if (isPageHomepage()) {
                     background-color: unset !important;
                     border-radius: unset !important;
                     margin: 0 2px 0 0 !important;
-                    font-size: unset !important;
+                    font-size: 0 !important;
                     line-height: unset !important;
                     padding: unset !important;
                     user-select: none !important;

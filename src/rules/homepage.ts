@@ -485,7 +485,7 @@ if (isPageHomepage()) {
         // 增大 视频载入 视频数量
         new CheckboxItem({
             itemID: 'homepage-increase-rcmd-load-size',
-            description: '增大 视频载入 视频数量 (实验性)',
+            description: '增大 视频载入 视频数量 (实验功能)',
             itemCSS: `
             /* 扩增载入后会产生奇怪的骨架空位 */
             .floor-single-card:has(.skeleton, .skeleton-item) {
@@ -506,6 +506,25 @@ if (isPageHomepage()) {
                     return origFetch(input, init)
                 }
             },
+        }),
+        // 自动补全 视频列表空位
+        new CheckboxItem({
+            itemID: 'homepage-rcmd-video-auto-complete',
+            description: '自动补全 视频列表空位 (实验功能)',
+            itemCSS: `
+                /* 隐藏anchor前的骨架, 保持anchor在未载入骨架首位 */
+                .bili-video-card:has(.bili-video-card__skeleton:not(.hide)):has(~ .load-more-anchor) {
+                    display: none;
+                }
+            `,
+            enableFunc: async () => {
+                const simulateScroll = () => window.dispatchEvent(new Event('scroll'))
+                simulateScroll()
+                window.addEventListener('wheel', (e: WheelEvent) => {
+                    e.deltaY > 0 && simulateScroll()
+                })
+            },
+            enableFuncRunAt: 'document-end',
         }),
     ]
     homepageGroupList.push(new Group('homepage-rcmd-list', '视频列表', rcmdListItems))

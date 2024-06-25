@@ -2,6 +2,7 @@ import { unsafeWindow } from '$'
 import { Group } from '../components/group'
 import { CheckboxItem, NumberItem, RadioItem } from '../components/item'
 import { isPageHomepage } from '../utils/page-type'
+import { debounce, waitForEle } from '../utils/tool'
 
 const homepageGroupList: Group[] = []
 
@@ -488,7 +489,7 @@ if (isPageHomepage()) {
             description: '增大 视频载入 视频数量 (实验功能)',
             itemCSS: `
             /* 扩增载入后会产生奇怪的骨架空位 */
-            :not(.load-more-anchor) .floor-single-card:has(.skeleton, .skeleton-item) {
+            .container.is-version8 > .floor-single-card:has(.skeleton, .skeleton-item, .floor-skeleton) {
                 display: none;
             }`,
             enableFunc: async () => {
@@ -507,28 +508,65 @@ if (isPageHomepage()) {
                 }
             },
         }),
-        // 自动补全 视频列表空位
+        // 启用 预加载下一屏
         new CheckboxItem({
-            itemID: 'homepage-rcmd-video-auto-complete',
-            description: '自动补全 视频列表空位 (实验功能)',
+            itemID: 'homepage-rcmd-video-preload',
+            description: '启用 预加载下一屏 (实验功能)',
             itemCSS: `
-                /* 隐藏anchor前的骨架, 保持anchor在未载入骨架首位 */
-                .bili-video-card:has(.bili-video-card__skeleton:not(.hide)):has(~ .load-more-anchor) {
-                    display: none;
+                .load-more-anchor.preload {
+                    position: fixed;
+                    z-index: -99999;
+                    visibility: hidden;
+                    opacity: 0;
+                    top: 0;
+                    left: 0;
                 }
             `,
             enableFunc: async () => {
-                const simulateScroll = () => window.dispatchEvent(new Event('scroll'))
-                simulateScroll()
-                window.addEventListener('wheel', (e: WheelEvent) => {
-                    if (e.deltaY > 0) {
-                        let cnt = 0
-                        const id = setInterval(() => {
-                            simulateScroll()
-                            cnt++
-                            cnt > 3 && clearInterval(id)
-                        }, 50)
+                waitForEle(document.body, '.load-more-anchor', (node: HTMLElement) => {
+                    return node.className === 'load-more-anchor'
+                }).then((anchor) => {
+                    if (!anchor) {
+                        return
                     }
+                    const fireRcmdLoad = () => {
+                        if (anchor.getBoundingClientRect().top > innerHeight * 2) {
+                            return
+                        }
+
+                        anchor.classList.add('preload')
+                        new Promise<void>((resolve) => {
+                            const id = setInterval(() => {
+                                const firstSkeleton = document.querySelector(
+                                    '.bili-video-card:has(.bili-video-card__skeleton:not(.hide)):has(~ .load-more-anchor)',
+                                ) as HTMLElement
+                                if (!firstSkeleton) {
+                                    clearInterval(id)
+                                    resolve()
+                                }
+
+                                if (firstSkeleton.getBoundingClientRect().top < innerHeight * 2) {
+                                    new Promise((resolve) => setTimeout(resolve, 20)).then(() => {
+                                        window.dispatchEvent(new Event('scroll'))
+                                    })
+                                } else {
+                                    clearInterval(id)
+                                    resolve()
+                                }
+                            }, 200)
+                        }).then(() => {
+                            anchor.classList.remove('preload')
+                        })
+                    }
+
+                    fireRcmdLoad()
+
+                    const debounceFireRcmdLoad = debounce(fireRcmdLoad, 250, true)
+                    window.addEventListener('wheel', (e: WheelEvent) => {
+                        if (e.deltaY > 0) {
+                            debounceFireRcmdLoad()
+                        }
+                    })
                 })
             },
             enableFuncRunAt: 'document-end',

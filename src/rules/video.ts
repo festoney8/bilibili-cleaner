@@ -540,7 +540,7 @@ if (isPageVideo() || isPagePlaylist()) {
             itemCSSPlaceholder: '???',
         }),
     ]
-    videoGroupList.push(new Group('player-mode', '播放设定（实验功能）', playerInitItems))
+    videoGroupList.push(new Group('player-mode', '播放设定', playerInitItems))
 
     // 视频信息
     const infoItems = [

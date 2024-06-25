@@ -488,7 +488,7 @@ if (isPageHomepage()) {
             description: '增大 视频载入 视频数量 (实验功能)',
             itemCSS: `
             /* 扩增载入后会产生奇怪的骨架空位 */
-            .floor-single-card:has(.skeleton, .skeleton-item) {
+            :not(.load-more-anchor) .floor-single-card:has(.skeleton, .skeleton-item) {
                 display: none;
             }`,
             enableFunc: async () => {
@@ -521,7 +521,14 @@ if (isPageHomepage()) {
                 const simulateScroll = () => window.dispatchEvent(new Event('scroll'))
                 simulateScroll()
                 window.addEventListener('wheel', (e: WheelEvent) => {
-                    e.deltaY > 0 && simulateScroll()
+                    if (e.deltaY > 0) {
+                        let cnt = 0
+                        const id = setInterval(() => {
+                            simulateScroll()
+                            cnt++
+                            cnt > 3 && clearInterval(id)
+                        }, 50)
+                    }
                 })
             },
             enableFuncRunAt: 'document-end',

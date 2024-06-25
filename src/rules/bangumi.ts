@@ -240,7 +240,7 @@ if (isPageBangumi()) {
             itemCSSPlaceholder: '???',
         }),
     ]
-    bangumiGroupList.push(new Group('player-mode', '播放设定（实验功能）', playerInitItems))
+    bangumiGroupList.push(new Group('player-mode', '播放设定', playerInitItems))
 
     // 播放器
     const playerItems = [

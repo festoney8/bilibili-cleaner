@@ -15,7 +15,6 @@ import {
     UploaderKeywordAction,
     UploaderWhitelistAction,
 } from './actions/action'
-import { GM_getValue } from '$'
 
 const homepagePageVideoFilterGroupList: Group[] = []
 
@@ -24,7 +23,7 @@ let isContextMenuFuncRunning = false
 let isContextMenuUploaderEnable = false
 let isContextMenuBvidEnable = false
 // 带已关注tag的视频不被过滤
-let isFollowingWhitelistEnable: boolean = GM_getValue('BILICLEANER_homepage-following-whitelist-filter-status', true)
+let isFollowingWhitelistEnable = true
 
 if (isPageHomepage()) {
     let videoListContainer: HTMLElement

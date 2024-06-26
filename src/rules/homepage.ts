@@ -2,6 +2,7 @@ import { unsafeWindow } from '$'
 import { Group } from '../components/group'
 import { CheckboxItem, NumberItem, RadioItem } from '../components/item'
 import { isPageHomepage } from '../utils/page-type'
+import { debounce, waitForEle } from '../utils/tool'
 
 const homepageGroupList: Group[] = []
 
@@ -345,7 +346,7 @@ if (isPageHomepage()) {
                     background-color: unset !important;
                     border-radius: unset !important;
                     margin: 0 2px 0 0 !important;
-                    font-size: unset !important;
+                    font-size: 0 !important;
                     line-height: unset !important;
                     padding: unset !important;
                     user-select: none !important;
@@ -485,10 +486,10 @@ if (isPageHomepage()) {
         // 增大 视频载入 视频数量
         new CheckboxItem({
             itemID: 'homepage-increase-rcmd-load-size',
-            description: '增大 视频载入 视频数量 (实验性)',
+            description: '增大 视频载入 视频数量 (实验功能)',
             itemCSS: `
             /* 扩增载入后会产生奇怪的骨架空位 */
-            .floor-single-card:has(.skeleton, .skeleton-item) {
+            .container.is-version8 > .floor-single-card:has(.skeleton, .skeleton-item, .floor-skeleton) {
                 display: none;
             }`,
             enableFunc: async () => {
@@ -506,6 +507,72 @@ if (isPageHomepage()) {
                     return origFetch(input, init)
                 }
             },
+        }),
+        // 启用 预加载下一屏
+        new CheckboxItem({
+            itemID: 'homepage-rcmd-video-preload',
+            description: '启用 预加载下一屏 (实验功能)\n需开启 隐藏分区视频推荐',
+            itemCSS: `
+                .load-more-anchor.preload {
+                    position: fixed;
+                    z-index: -99999;
+                    visibility: hidden;
+                    opacity: 0;
+                    top: 0;
+                    left: 0;
+                }
+            `,
+            enableFunc: async () => {
+                waitForEle(document.body, '.load-more-anchor', (node: HTMLElement) => {
+                    return node.className === 'load-more-anchor'
+                }).then((anchor) => {
+                    if (!anchor) {
+                        return
+                    }
+                    const fireRcmdLoad = () => {
+                        const firstSkeleton = document.querySelector(
+                            '.bili-video-card:has(.bili-video-card__skeleton:not(.hide)):has(~ .load-more-anchor)',
+                        ) as HTMLElement
+                        if (!firstSkeleton || firstSkeleton.getBoundingClientRect().top > innerHeight * 2) {
+                            return
+                        }
+
+                        anchor.classList.add('preload')
+                        new Promise<void>((resolve) => {
+                            const id = setInterval(() => {
+                                const firstSkeleton = document.querySelector(
+                                    '.bili-video-card:has(.bili-video-card__skeleton:not(.hide)):has(~ .load-more-anchor)',
+                                ) as HTMLElement
+                                if (!firstSkeleton) {
+                                    clearInterval(id)
+                                    resolve()
+                                }
+
+                                if (firstSkeleton.getBoundingClientRect().top < innerHeight * 2) {
+                                    new Promise((resolve) => setTimeout(resolve, 20)).then(() => {
+                                        window.dispatchEvent(new Event('scroll'))
+                                    })
+                                } else {
+                                    clearInterval(id)
+                                    resolve()
+                                }
+                            }, 200)
+                        }).then(() => {
+                            anchor.classList.remove('preload')
+                        })
+                    }
+
+                    fireRcmdLoad()
+
+                    const debounceFireRcmdLoad = debounce(fireRcmdLoad, 250, true)
+                    window.addEventListener('wheel', (e: WheelEvent) => {
+                        if (e.deltaY > 0) {
+                            debounceFireRcmdLoad()
+                        }
+                    })
+                })
+            },
+            enableFuncRunAt: 'document-end',
         }),
     ]
     homepageGroupList.push(new Group('homepage-rcmd-list', '视频列表', rcmdListItems))

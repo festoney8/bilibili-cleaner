@@ -1,15 +1,14 @@
-// export const debounce = <T extends (...args: any[]) => void>(
-//     func: T,
-//     wait: number,
-// ): ((...args: Parameters<T>) => void) => {
-//     let timeout: ReturnType<typeof setTimeout>
-//     return (...args: Parameters<T>): void => {
-//         clearTimeout(timeout)
-//         timeout = setTimeout(() => {
-//             func(...args)
-//         }, wait)
-//     }
-// }
+export const debounce = (fn: (...params: any[]) => any, wait: number, immed: boolean = false) => {
+    let timer: number | undefined = undefined
+    return function (this: any, ...args: any[]) {
+        if (timer === undefined && immed) {
+            fn.apply(this, args)
+        }
+        clearTimeout(timer)
+        timer = setTimeout(() => fn.apply(this, args), wait)
+        return timer
+    }
+}
 
 // 匹配BV号
 const bvidPattern = /(BV[1-9A-HJ-NP-Za-km-z]+)/

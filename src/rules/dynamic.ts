@@ -61,7 +61,7 @@ if (isPageDynamic()) {
         // 修复字体
         new CheckboxItem({
             itemID: 'font-patch',
-            description: '修复字体 (实验功能)',
+            description: '修复字体',
             itemCSS: fontPatchCSS,
         }),
     ]
@@ -243,7 +243,7 @@ if (isPageDynamic()) {
         new CheckboxItem({
             itemID: 'hide-dynamic-page-bili-dyn-ornament',
             description: '隐藏 动态右侧饰品',
-            itemCSS: `.bili-dyn-ornament {display: none !important;}`,
+            itemCSS: `.bili-dyn-ornament, .bili-dyn-item__ornament {display: none !important;}`,
         }),
         // 隐藏 动态内容中 警告notice, 默认开启
         new CheckboxItem({

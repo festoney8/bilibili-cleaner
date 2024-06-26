@@ -511,7 +511,7 @@ if (isPageHomepage()) {
         // 启用 预加载下一屏
         new CheckboxItem({
             itemID: 'homepage-rcmd-video-preload',
-            description: '启用 预加载下一屏 (实验功能)',
+            description: '启用 预加载下一屏 (实验功能)\n需开启 隐藏分区视频推荐',
             itemCSS: `
                 .load-more-anchor.preload {
                     position: fixed;
@@ -530,7 +530,10 @@ if (isPageHomepage()) {
                         return
                     }
                     const fireRcmdLoad = () => {
-                        if (anchor.getBoundingClientRect().top > innerHeight * 2) {
+                        const firstSkeleton = document.querySelector(
+                            '.bili-video-card:has(.bili-video-card__skeleton:not(.hide)):has(~ .load-more-anchor)',
+                        ) as HTMLElement
+                        if (!firstSkeleton || firstSkeleton.getBoundingClientRect().top > innerHeight * 2) {
                             return
                         }
 

@@ -1010,13 +1010,19 @@ if (isPageBangumi()) {
             itemID: 'video-page-hide-root-reply-dislike-reply-btn',
             description: '一级评论 踩/回复 只在hover时显示',
             defaultStatus: true,
-            itemCSS: `.reply-info:not(:has(i.disliked)) .reply-btn,
-                .reply-info:not(:has(i.disliked)) .reply-dislike {
-                    visibility: hidden;
+            itemCSS: `
+                .reply-item:not(:has(i.disliked)) :is(.reply-btn, .reply-dislike) {
+                    opacity: 0;
                 }
-                .reply-item:hover .reply-info .reply-btn,
-                .reply-item:hover .reply-info .reply-dislike {
-                    visibility: visible !important;
+                @keyframes appear {
+                    0% {opacity: 0;}
+                    100% {opacity: 1;}
+                }
+                .reply-item:hover :is(.reply-btn, .reply-dislike) {
+                    animation: appear;
+                    animation-duration: 0.2s;
+                    animation-delay: 0.3s;
+                    animation-fill-mode: forwards;
                 }`,
         }),
         // 二级评论 踩/回复 只在hover时显示, 默认开启
@@ -1024,13 +1030,19 @@ if (isPageBangumi()) {
             itemID: 'video-page-hide-sub-reply-dislike-reply-btn',
             description: '二级评论 踩/回复 只在hover时显示',
             defaultStatus: true,
-            itemCSS: `.sub-reply-container .sub-reply-item:not(:has(i.disliked)) .sub-reply-btn,
-                .sub-reply-container .sub-reply-item:not(:has(i.disliked)) .sub-reply-dislike {
-                    visibility: hidden;
+            itemCSS: `
+                .sub-reply-item:not(:has(i.disliked)) :is(.sub-reply-btn, .sub-reply-dislike) {
+                    opacity: 0;
                 }
-                .sub-reply-container .sub-reply-item:hover .sub-reply-btn,
-                .sub-reply-container .sub-reply-item:hover .sub-reply-dislike {
-                    visibility: visible !important;
+                @keyframes appear {
+                    0% {opacity: 0;}
+                    100% {opacity: 1;}
+                }
+                .sub-reply-item:hover :is(.sub-reply-btn, .sub-reply-dislike) {
+                    animation: appear;
+                    animation-duration: 0.2s;
+                    animation-delay: 0.3s;
+                    animation-fill-mode: forwards;
                 }`,
         }),
         // 隐藏 大表情

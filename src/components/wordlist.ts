@@ -36,9 +36,7 @@ export class WordList {
         GM_setValue(`BILICLEANER_${this.listID}`, this.wordArr)
     }
     private getValue() {
-        debug(`key`, `BILICLEANER_${this.listID}`)
         this.wordArr = GM_getValue(`BILICLEANER_${this.listID}`, [])
-        debug(`list ${this.listID} getValue ${this.wordArr.length} lines`)
         this.wordSet = new Set(this.wordArr)
     }
 
@@ -59,25 +57,6 @@ export class WordList {
             error(`list ${this.listID} add value ${value}, ERROR`)
         }
     }
-
-    // /** 添加多个值到列表 */
-    // addValues(values: string[]) {
-    //     try {
-    //         this.getValue()
-    //         values.forEach((value) => {
-    //             value = value.trim()
-    //             if (value && !this.wordSet.has(value)) {
-    //                 this.wordArr.push(value)
-    //                 this.wordSet.add(value)
-    //             }
-    //         })
-    //         this.setValue()
-    //         debug(`list ${this.listID} add ${values.length} lines, OK`)
-    //     } catch (err) {
-    //         error(err)
-    //         error(`list ${this.listID} add ${values.length} lines, ERROR`)
-    //     }
-    // }
 
     /**
      * 编辑整个列表

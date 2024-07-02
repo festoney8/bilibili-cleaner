@@ -34,3 +34,4 @@ export const debugComponents = wrapper(console.log, settings.enableDebugComponen
 export const debugRules = wrapper(console.log, settings.enableDebugRules)
 export const debugVideoFilter = wrapper(console.log, settings.enableDebugVideoFilter)
 export const debugCommentFilter = wrapper(console.log, settings.enableDebugCommentFilter)
+export const debugDynFilter = wrapper(console.log, settings.enableDebugDynFilter)

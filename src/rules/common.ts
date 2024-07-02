@@ -11,8 +11,8 @@ import {
     isPagePopular,
     isPageSearch,
     isPageVideo,
-} from '../utils/page-type'
-import URLCleanerInstance from '../utils/url-cleaner'
+} from '../utils/pageType'
+import URLCleanerInstance from '../utils/urlCleaner'
 
 const commonGroupList: Group[] = []
 

@@ -3,7 +3,7 @@ import { ButtonItem, CheckboxItem, NumberItem } from '../../../components/item'
 import { Group } from '../../../components/group'
 import coreFilterInstance, { VideoSelectorFunc } from '../filters/core'
 import settings from '../../../settings'
-import { isPageHomepage } from '../../../utils/page-type'
+import { isPageHomepage } from '../../../utils/pageType'
 import { ContextMenu } from '../../../components/contextmenu'
 import { matchBvid, showEle, waitForEle } from '../../../utils/tool'
 import {

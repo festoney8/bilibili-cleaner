@@ -2,7 +2,7 @@ import { GM_getValue, GM_setValue, unsafeWindow } from '$'
 import { Group } from '../components/group'
 import { CheckboxItem, NumberItem } from '../components/item'
 import { error } from '../utils/logger'
-import { isPageBangumi } from '../utils/page-type'
+import { isPageBangumi } from '../utils/pageType'
 import { waitForEle } from '../utils/tool'
 
 const bangumiGroupList: Group[] = []

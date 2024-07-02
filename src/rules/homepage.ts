@@ -1,7 +1,7 @@
 import { unsafeWindow } from '$'
 import { Group } from '../components/group'
 import { CheckboxItem, NumberItem, RadioItem } from '../components/item'
-import { isPageHomepage } from '../utils/page-type'
+import { isPageHomepage } from '../utils/pageType'
 import { debounce, waitForEle } from '../utils/tool'
 
 const homepageGroupList: Group[] = []

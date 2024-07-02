@@ -2,9 +2,9 @@ import { Group } from '../components/group'
 import { CheckboxItem, NumberItem } from '../components/item'
 import { debugRules as debug, error } from '../utils/logger'
 import { matchAvidBvid, matchBvid, waitForEle } from '../utils/tool'
-import { isPageFestival, isPagePlaylist, isPageVideo } from '../utils/page-type'
+import { isPageFestival, isPagePlaylist, isPageVideo } from '../utils/pageType'
 import { GM_getValue, GM_setValue, unsafeWindow } from '$'
-import URLCleanerInstance from '../utils/url-cleaner'
+import URLCleanerInstance from '../utils/urlCleaner'
 
 /** 宽屏模式监听 */
 let _isWide = unsafeWindow.isWide

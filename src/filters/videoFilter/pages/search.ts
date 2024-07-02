@@ -2,7 +2,7 @@ import { debugVideoFilter as debug, error } from '../../../utils/logger'
 import { ButtonItem, CheckboxItem, NumberItem } from '../../../components/item'
 import { Group } from '../../../components/group'
 import coreFilterInstance, { VideoSelectorFunc } from '../filters/core'
-import { isPageSearch } from '../../../utils/page-type'
+import { isPageSearch } from '../../../utils/pageType'
 import { ContextMenu } from '../../../components/contextmenu'
 import { matchBvid, showEle, waitForEle } from '../../../utils/tool'
 import {
@@ -14,7 +14,6 @@ import {
     UploaderKeywordAction,
     UploaderWhitelistAction,
 } from './actions/action'
-import { GM_getValue } from '$'
 
 const searchPageVideoFilterGroupList: Group[] = []
 
@@ -23,7 +22,7 @@ let isContextMenuFuncRunning = false
 let isContextMenuUploaderEnable = false
 let isContextMenuBvidEnable = false
 // 推荐位UP主视频的不被过滤，默认开启
-let isTopUploaderWhitelistEnable: boolean = GM_getValue('BILICLEANER_search-top-uploader-whitelist-filter-status', true)
+let isTopUploaderWhitelistEnable = true
 
 if (isPageSearch()) {
     let videoListContainer: HTMLElement

@@ -1,6 +1,6 @@
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
-import { isPageDynamic } from '../utils/page-type'
+import { isPageDynamic } from '../utils/pageType'
 import fontFaceRegular from './styles/fontFaceRegular.scss?inline'
 import fontFaceMedium from './styles/fontFaceMedium.scss?inline'
 
@@ -410,7 +410,7 @@ if (isPageDynamic()) {
             itemID: 'video-page-hide-reply-box-textarea-placeholder',
             description: '隐藏 评论编辑器内占位文字',
             defaultStatus: true,
-            itemCSS: `.reply-box-textarea::placeholder {color: transparent !important;}`,
+            itemCSS: `:not(.reply-item) .reply-box-textarea::placeholder {color: transparent !important;}`,
         }),
         // 隐藏 评论区用户卡片
         new CheckboxItem({

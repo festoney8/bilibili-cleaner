@@ -1,6 +1,6 @@
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
-import { isPageWatchlater } from '../utils/page-type'
+import { isPageWatchlater } from '../utils/pageType'
 import fontFaceRegular from './styles/fontFaceRegular.scss?inline'
 import fontFaceMedium from './styles/fontFaceMedium.scss?inline'
 

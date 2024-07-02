@@ -1,7 +1,7 @@
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
 import { debugRules as debug } from '../utils/logger'
-import { isPageLiveHome, isPageLiveRoom } from '../utils/page-type'
+import { isPageLiveHome, isPageLiveRoom } from '../utils/pageType'
 import fontFaceRegular from './styles/fontFaceRegular.scss?inline'
 
 let isCleanLiveDanmakuRunning = false

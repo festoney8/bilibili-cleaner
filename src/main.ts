@@ -25,7 +25,7 @@ import {
     isPageSearch,
     isPageSpace,
     isPageVideo,
-} from './utils/page-type'
+} from './utils/pageType'
 import { homepagePageVideoFilterGroupList } from './filters/videoFilter/pages/homepage'
 import { videoPageVideoFilterGroupList } from './filters/videoFilter/pages/video'
 import { popularPageVideoFilterGroupList } from './filters/videoFilter/pages/popular'

@@ -2,7 +2,7 @@ import { debugVideoFilter as debug, error } from '../../../utils/logger'
 import coreFilterInstance, { VideoSelectorFunc } from '../filters/core'
 import { ButtonItem, CheckboxItem, NumberItem } from '../../../components/item'
 import { Group } from '../../../components/group'
-import { isPagePlaylist, isPageVideo } from '../../../utils/page-type'
+import { isPagePlaylist, isPageVideo } from '../../../utils/pageType'
 import { hideEle, isEleHide, matchBvid, showEle, waitForEle } from '../../../utils/tool'
 import {
     BvidAction,
@@ -13,7 +13,6 @@ import {
     UploaderKeywordAction,
     UploaderWhitelistAction,
 } from './actions/action'
-import { GM_getValue } from '$'
 import { ContextMenu } from '../../../components/contextmenu'
 
 const videoPageVideoFilterGroupList: Group[] = []
@@ -23,9 +22,9 @@ let isContextMenuFuncRunning = false
 let isContextMenuUploaderEnable = false
 let isContextMenuBvidEnable = false
 // 接下来播放是否免过滤
-let isNextPlayWhitelistEnable: boolean = GM_getValue('BILICLEANER_video-next-play-whitelist-filter-status', true)
+let isNextPlayWhitelistEnable = true
 // 视频结束后播放器内推荐是否免过滤
-let isEndingWhitelistEnable: boolean = GM_getValue('BILICLEANER_video-ending-whitelist-filter-status', true)
+let isEndingWhitelistEnable = true
 if (isPageVideo() || isPagePlaylist()) {
     let videoListContainer: HTMLElement
     // 构建SelectorFunc

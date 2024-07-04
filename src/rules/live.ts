@@ -109,6 +109,22 @@ if (isPageLiveRoom()) {
                 }
                 `,
         }),
+        // 禁用 直播背景
+        new CheckboxItem({
+            itemID: 'live-page-remove-wallpaper',
+            description: '禁用 直播背景',
+            itemCSS: `
+                .room-bg {
+                    background-image: unset !important;
+                }
+                #player-ctnr {
+                    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+                    border-radius: 12px;
+                }
+                #aside-area-vm {
+                    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+                }`,
+        }),
         // 修复字体
         new CheckboxItem({
             itemID: 'font-patch',

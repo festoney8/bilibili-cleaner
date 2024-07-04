@@ -62,10 +62,10 @@ if (isPageLiveRoom()) {
             defaultStatus: true,
             itemCSS: `#sidebar-vm {display: none !important;}`,
         }),
-        // 播放器皮肤 恢复默认配色
+        // 禁用 播放器皮肤
         new CheckboxItem({
             itemID: 'live-page-default-skin',
-            description: '播放器皮肤 恢复默认配色',
+            description: '禁用 播放器皮肤',
             itemCSS: `#head-info-vm {
                     background-image: unset !important;
                     /* color不加important, 适配Evolved黑暗模式 */
@@ -212,7 +212,7 @@ if (isPageLiveRoom()) {
         // 隐藏 全部直播信息栏
         new CheckboxItem({
             itemID: 'live-page-head-info-vm',
-            description: '隐藏 关闭整个信息栏',
+            description: '隐藏 整个信息栏',
             itemCSS: `#head-info-vm {display: none !important;}
                 /* 补齐圆角, 不可important */
                 #player-ctnr {
@@ -348,6 +348,9 @@ if (isPageLiveRoom()) {
                     max-height: 32px;
                     transition: max-height 0.3s linear;
                     overflow: hidden;
+                }
+                .player-full-win #rank-list-vm {
+                    border-radius: 0;
                 }
                 #rank-list-vm:hover {
                     max-height: 178px;

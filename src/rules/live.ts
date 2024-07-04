@@ -186,7 +186,8 @@ if (isPageLiveRoom()) {
             description: '隐藏 分享',
             defaultStatus: true,
             itemCSS: `
-            #head-info-vm .upper-row .right-ctnr div:has(.icon-share, [src*="img/share"]) {display: none !important;}`,
+            #head-info-vm .upper-row .right-ctnr div:has(.icon-share, [src*="img/share"]) {display: none !important;}
+            #head-info-vm .header-info-ctnr .rows-ctnr .upper-row .more {display: none !important;}`,
         }),
         // 隐藏 人气榜, 默认开启
         new CheckboxItem({
@@ -337,10 +338,37 @@ if (isPageLiveRoom()) {
 
     // 右栏 弹幕列表
     const rightContainerItems = [
-        // 隐藏 高能榜/大航海
+        // 折叠 房间观众/大航海
+        new CheckboxItem({
+            itemID: 'live-page-rank-list-vm-fold',
+            description: '折叠 房间观众/大航海',
+            // calc中强调单位，var变量必须添加单位，否则fallback
+            itemCSS: `
+                #rank-list-vm {
+                    max-height: 32px;
+                    transition: max-height 0.3s linear;
+                    overflow: hidden;
+                }
+                #rank-list-vm:hover {
+                    max-height: 178px;
+                    overflow: unset;
+                }
+                .chat-history-panel {
+                    --rank-list-height: 32px;
+                    height: calc(100% - var(--rank-list-height, 178px) - var(--chat-control-panel-height, 145px)) !important;
+                }
+                #chat-control-panel-vm {
+                    height: var(--chat-control-panel-height, 145px) !important;
+                }
+                #aside-area-vm {
+                    overflow: hidden;
+                }
+            `,
+        }),
+        // 隐藏 房间观众/大航海
         new CheckboxItem({
             itemID: 'live-page-rank-list-vm',
-            description: '隐藏 高能榜/大航海',
+            description: '隐藏 房间观众/大航海',
             // calc中强调单位，var变量必须添加单位，否则fallback
             itemCSS: `
                 #rank-list-vm {

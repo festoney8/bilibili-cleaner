@@ -2,9 +2,9 @@ import { Group } from '../components/group'
 import { CheckboxItem, NumberItem } from '../components/item'
 import { debugRules as debug, error } from '../utils/logger'
 import { matchAvidBvid, matchBvid, waitForEle } from '../utils/tool'
-import { isPageFestival, isPagePlaylist, isPageVideo } from '../utils/page-type'
+import { isPageFestival, isPagePlaylist, isPageVideo } from '../utils/pageType'
 import { GM_getValue, GM_setValue, unsafeWindow } from '$'
-import URLCleanerInstance from '../utils/url-cleaner'
+import URLCleanerInstance from '../utils/urlCleaner'
 
 /** 宽屏模式监听 */
 let _isWide = unsafeWindow.isWide
@@ -1352,7 +1352,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 优化 右栏底部吸附 实验功能
         new CheckboxItem({
             itemID: 'video-page-right-container-sticky-optimize',
-            description: '优化 右栏底部吸附 (实验功能)',
+            description: '优化 右栏底部吸附 (实验功能)\n搭配“全屏时页面可滚动”使用',
             itemCSS: `
                 /* 修复右栏底部吸附计算top时位置跳变 */
                 .video-container-v1 .right-container {
@@ -1830,13 +1830,19 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-page-hide-root-reply-dislike-reply-btn',
             description: '一级评论 踩/回复 只在hover时显示',
             defaultStatus: true,
-            itemCSS: `.reply-info:not(:has(i.disliked)) .reply-btn,
-                .comment-container .reply-info:not(:has(i.disliked)) .reply-dislike {
-                    visibility: hidden;
+            itemCSS: `
+                .reply-item:not(:has(i.disliked)) :is(.reply-btn, .reply-dislike) {
+                    opacity: 0;
                 }
-                .comment-container .reply-item:hover .reply-btn,
-                .comment-container .reply-item:hover .reply-dislike {
-                    visibility: visible !important;
+                @keyframes appear {
+                    0% {opacity: 0;}
+                    100% {opacity: 1;}
+                }
+                .reply-item:hover :is(.reply-btn, .reply-dislike) {
+                    animation: appear;
+                    animation-duration: 0.2s;
+                    animation-delay: 0.3s;
+                    animation-fill-mode: forwards;
                 }`,
         }),
         // 二级评论 踩/回复 只在hover时显示, 默认开启
@@ -1844,13 +1850,19 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-page-hide-sub-reply-dislike-reply-btn',
             description: '二级评论 踩/回复 只在hover时显示',
             defaultStatus: true,
-            itemCSS: `.sub-reply-item:not(:has(i.disliked)) .sub-reply-btn,
-                .comment-container .sub-reply-item:not(:has(i.disliked)) .sub-reply-dislike {
-                    visibility: hidden;
+            itemCSS: `
+                .sub-reply-item:not(:has(i.disliked)) :is(.sub-reply-btn, .sub-reply-dislike) {
+                    opacity: 0;
                 }
-                .comment-container .sub-reply-item:hover .sub-reply-btn,
-                .comment-container .sub-reply-item:hover .sub-reply-dislike {
-                    visibility: visible !important;
+                @keyframes appear {
+                    0% {opacity: 0;}
+                    100% {opacity: 1;}
+                }
+                .sub-reply-item:hover :is(.sub-reply-btn, .sub-reply-dislike) {
+                    animation: appear;
+                    animation-duration: 0.2s;
+                    animation-delay: 0.3s;
+                    animation-fill-mode: forwards;
                 }`,
         }),
         // 隐藏 大表情

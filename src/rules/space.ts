@@ -1,6 +1,6 @@
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
-import { isPageSpace } from '../utils/page-type'
+import { isPageSpace } from '../utils/pageType'
 import fontFaceRegular from './styles/fontFaceRegular.scss?inline'
 
 const spaceGroupList: Group[] = []

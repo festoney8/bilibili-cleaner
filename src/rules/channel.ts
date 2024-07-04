@@ -1,6 +1,6 @@
 import { Group } from '../components/group'
 import { CheckboxItem, NumberItem } from '../components/item'
-import { isPageChannel } from '../utils/page-type'
+import { isPageChannel } from '../utils/pageType'
 
 const channelGroupList: Group[] = []
 

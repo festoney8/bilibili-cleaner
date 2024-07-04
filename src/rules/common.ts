@@ -11,8 +11,8 @@ import {
     isPagePopular,
     isPageSearch,
     isPageVideo,
-} from '../utils/page-type'
-import URLCleanerInstance from '../utils/url-cleaner'
+} from '../utils/pageType'
+import URLCleanerInstance from '../utils/urlCleaner'
 
 const commonGroupList: Group[] = []
 
@@ -635,10 +635,14 @@ if (!isPageLiveHome()) {
         new CheckboxItem({
             itemID: 'common-hide-nav-moveclip',
             description: '隐藏 活动/活动直播',
-            itemCSS: `.bili-header__bar li:has(.loc-mc-box) {
+            itemCSS: `
+                .bili-header__bar li:has(.loc-mc-box) {
                     display: none !important;
                 }
-                .bili-header__bar .left-entry li:not(:has(.v-popover)):has([href^="https://live.bilibili.com/"]) {
+                .bili-header__bar .left-entry li.left-loc-entry:not(:has(.v-popover)):has([href^="https://live.bilibili.com/"]) {
+                    display: none !important;
+                }
+                .bili-header__bar .left-entry li:not(:has(.v-popover)):has([href^="https://www.bilibili.com/bangumi/play/ss"]) {
                     display: none !important;
                 }
                 /* 旧版header */
@@ -681,7 +685,11 @@ if (!isPageLiveHome()) {
         new CheckboxItem({
             itemID: 'common-hide-nav-blackboard',
             description: '隐藏 所有官方活动(强制)',
-            itemCSS: `.bili-header__bar .left-entry li:has(>a[href*="bilibili.com/blackboard"]) {
+            itemCSS: `
+                .bili-header__bar .left-entry .v-popover-wrap.left-loc-entry {
+                    display: none !important;
+                }
+                .bili-header__bar .left-entry li:has(>a[href*="bilibili.com/blackboard"]) {
                     display: none !important;
                 }
                 .bili-header__bar .left-entry li:has(>div>a[href*="bilibili.com/blackboard"]) {
@@ -703,6 +711,17 @@ if (!isPageLiveHome()) {
 
     // 顶栏中间
     const headerCenterItems = [
+        // 修复 搜索框居中
+        new CheckboxItem({
+            itemID: 'common-nav-search-middle-justify',
+            description: '修复 搜索框居中',
+            itemCSS: `
+                @media (min-width: 1100px) and (max-width: 1366.9px) {
+                    .mini-header .center-search-container .center-search__bar {
+                        margin: 0 auto;
+                    }
+                }`,
+        }),
         // 隐藏 推荐搜索
         new CheckboxItem({
             itemID: 'common-hide-nav-search-rcmd',
@@ -936,6 +955,11 @@ if (!isPageLiveHome()) {
                     width: ???px !important;
                     max-width: ???px !important;
                     min-width: 0px !important;
+                }
+                @media (min-width: 1100px) and (max-width: 1366.9px) {
+                    .mini-header .center-search-container .center-search__bar {
+                        margin: 0 auto;
+                    }
                 }`,
             itemCSSPlaceholder: '???',
         }),

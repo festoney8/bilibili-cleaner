@@ -158,7 +158,7 @@ class CoreVideoFilter {
                     .catch((_result) => {
                         // 命中黑名单
                         // debug(_result)
-                        if (whiteTasks) {
+                        if (whiteTasks.length) {
                             Promise.all(whiteTasks)
                                 .then((_result) => {
                                     // 命中黑名单，未命中白名单

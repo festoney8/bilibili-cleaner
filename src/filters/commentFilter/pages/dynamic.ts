@@ -1,8 +1,7 @@
-import { GM_getValue } from '$'
 import { Group } from '../../../components/group'
 import { CheckboxItem, ButtonItem } from '../../../components/item'
 import { debugCommentFilter as debug, error } from '../../../utils/logger'
-import { isPageDynamic } from '../../../utils/page-type'
+import { isPageDynamic } from '../../../utils/pageType'
 import { showEle, waitForEle } from '../../../utils/tool'
 import { ContentAction, UsernameAction } from './actions/action'
 import coreCommentFilterInstance, { CommentSelectorFunc } from '../filters/core'
@@ -16,15 +15,12 @@ let isContextMenuFuncRunning = false
 let isContextMenuUsernameEnable = false
 
 // 白名单功能开关
-let isRootCommentWhitelistEnable: boolean = GM_getValue('BILICLEANER_dynamic-comment-root-whitelist-status', false)
-let isSubCommentWhitelistEnable: boolean = GM_getValue('BILICLEANER_dynamic-comment-sub-whitelist-status', false)
-let isUploaderCommentWhitelistEnable: boolean = GM_getValue(
-    'BILICLEANER_dynamic-comment-uploader-whitelist-status',
-    true,
-)
-let isPinnedCommentWhitelistEnable: boolean = GM_getValue('BILICLEANER_dynamic-comment-pinned-whitelist-status', true)
-let isNoteCommentWhitelistEnable: boolean = GM_getValue('BILICLEANER_dynamic-comment-note-whitelist-status', true)
-let isLinkCommentWhitelistEnable: boolean = GM_getValue('BILICLEANER_dynamic-comment-link-whitelist-status', true)
+let isRootCommentWhitelistEnable = false
+let isSubCommentWhitelistEnable = false
+let isUploaderCommentWhitelistEnable = true
+let isPinnedCommentWhitelistEnable = true
+let isNoteCommentWhitelistEnable = true
+let isLinkCommentWhitelistEnable = true
 
 if (isPageDynamic()) {
     let commentListContainer: HTMLElement

@@ -3,7 +3,7 @@ import { ButtonItem, CheckboxItem, NumberItem } from '../../../components/item'
 import { Group } from '../../../components/group'
 import coreFilterInstance, { VideoSelectorFunc } from '../filters/core'
 import settings from '../../../settings'
-import { isPageChannel } from '../../../utils/page-type'
+import { isPageChannel } from '../../../utils/pageType'
 import { matchBvid, waitForEle } from '../../../utils/tool'
 import {
     BvidAction,

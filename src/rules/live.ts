@@ -1,7 +1,7 @@
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
 import { debugRules as debug } from '../utils/logger'
-import { isPageLiveHome, isPageLiveRoom } from '../utils/page-type'
+import { isPageLiveHome, isPageLiveRoom } from '../utils/pageType'
 import fontFaceRegular from './styles/fontFaceRegular.scss?inline'
 
 let isCleanLiveDanmakuRunning = false
@@ -62,11 +62,12 @@ if (isPageLiveRoom()) {
             defaultStatus: true,
             itemCSS: `#sidebar-vm {display: none !important;}`,
         }),
-        // 播放器皮肤 恢复默认配色
+        // 禁用 播放器皮肤
         new CheckboxItem({
             itemID: 'live-page-default-skin',
-            description: '播放器皮肤 恢复默认配色',
-            itemCSS: `#head-info-vm {
+            description: '禁用 播放器皮肤',
+            itemCSS: `
+                #head-info-vm {
                     background-image: unset !important;
                     /* color不加important, 适配Evolved黑暗模式 */
                     background-color: white;
@@ -90,6 +91,17 @@ if (isPageLiveRoom()) {
                     background-image: unset !important;
                 }
                 /* 右侧弹幕框背景 */
+                #rank-list-vm, #rank-list-ctnr-box {
+                    background-image: unset !important;
+                    background-color: #efefef;
+                }
+                #rank-list-ctnr-box *:not(.fans-medal-content),
+                #rank-list-ctnr-box .tabs .pilot .hasOne .text-style,
+                #rank-list-ctnr-box .tabs .pilot .hasNot .text-style,
+                #rank-list-ctnr-box .live-skin-coloration-area .live-skin-main-text,
+                #rank-list-ctnr-box .guard-skin .nameBox a {
+                    color: black !important;
+                }
                 #chat-control-panel-vm .live-skin-coloration-area .live-skin-main-text {
                     color: #C9CCD0 !important;
                     fill: #C9CCD0 !important;
@@ -107,7 +119,23 @@ if (isPageLiveRoom()) {
                 #chat-control-panel-vm .icon-left-part>div:hover svg>path {
                     fill: #00AEEC;
                 }
-                `,
+            `,
+        }),
+        // 禁用 直播背景
+        new CheckboxItem({
+            itemID: 'live-page-remove-wallpaper',
+            description: '禁用 直播背景',
+            itemCSS: `
+                .room-bg {
+                    background-image: unset !important;
+                }
+                #player-ctnr {
+                    box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+                    border-radius: 12px;
+                }
+                #aside-area-vm {
+                    box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+                }`,
         }),
         // 修复字体
         new CheckboxItem({
@@ -129,7 +157,7 @@ if (isPageLiveRoom()) {
             itemID: 'activity-live-auto-jump',
             description: '活动直播页 自动跳转普通直播 (实验功能)',
             enableFunc: async () => {
-                if (document.querySelector('#internationalHeader')) {
+                if (document.querySelector('.rendererRoot')) {
                     if (!location.href.includes('/blanc/')) {
                         window.location.href = location.href.replace('live.bilibili.com/', 'live.bilibili.com/blanc/')
                     }
@@ -186,7 +214,8 @@ if (isPageLiveRoom()) {
             description: '隐藏 分享',
             defaultStatus: true,
             itemCSS: `
-            #head-info-vm .upper-row .right-ctnr div:has(.icon-share, [src*="img/share"]) {display: none !important;}`,
+            #head-info-vm .upper-row .right-ctnr div:has(.icon-share, [src*="img/share"]) {display: none !important;}
+            #head-info-vm .header-info-ctnr .rows-ctnr .upper-row .more {display: none !important;}`,
         }),
         // 隐藏 人气榜, 默认开启
         new CheckboxItem({
@@ -211,7 +240,7 @@ if (isPageLiveRoom()) {
         // 隐藏 全部直播信息栏
         new CheckboxItem({
             itemID: 'live-page-head-info-vm',
-            description: '隐藏 关闭整个信息栏',
+            description: '隐藏 整个信息栏',
             itemCSS: `#head-info-vm {display: none !important;}
                 /* 补齐圆角, 不可important */
                 #player-ctnr {
@@ -337,10 +366,40 @@ if (isPageLiveRoom()) {
 
     // 右栏 弹幕列表
     const rightContainerItems = [
-        // 隐藏 高能榜/大航海
+        // 折叠 排行榜/大航海
+        new CheckboxItem({
+            itemID: 'live-page-rank-list-vm-fold',
+            description: '折叠 排行榜/大航海',
+            // calc中强调单位，var变量必须添加单位，否则fallback
+            itemCSS: `
+                #rank-list-vm {
+                    max-height: 32px;
+                    transition: max-height 0.3s linear;
+                    overflow: hidden;
+                }
+                .player-full-win #rank-list-vm {
+                    border-radius: 0;
+                }
+                #rank-list-vm:hover {
+                    max-height: 178px;
+                    overflow: unset;
+                }
+                .chat-history-panel {
+                    --rank-list-height: 32px;
+                    height: calc(100% - var(--rank-list-height, 178px) - var(--chat-control-panel-height, 145px)) !important;
+                }
+                #chat-control-panel-vm {
+                    height: var(--chat-control-panel-height, 145px) !important;
+                }
+                #aside-area-vm {
+                    overflow: hidden;
+                }
+            `,
+        }),
+        // 隐藏 排行榜/大航海
         new CheckboxItem({
             itemID: 'live-page-rank-list-vm',
-            description: '隐藏 高能榜/大航海',
+            description: '隐藏 排行榜/大航海',
             // calc中强调单位，var变量必须添加单位，否则fallback
             itemCSS: `
                 #rank-list-vm {

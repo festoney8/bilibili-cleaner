@@ -25,7 +25,7 @@ import {
     isPageSearch,
     isPageSpace,
     isPageVideo,
-} from './utils/page-type'
+} from './utils/pageType'
 import { homepagePageVideoFilterGroupList } from './filters/videoFilter/pages/homepage'
 import { videoPageVideoFilterGroupList } from './filters/videoFilter/pages/video'
 import { popularPageVideoFilterGroupList } from './filters/videoFilter/pages/popular'
@@ -36,6 +36,7 @@ import { spacePageVideoFilterGroupList } from './filters/videoFilter/pages/space
 import { dynamicPageCommentFilterGroupList } from './filters/commentFilter/pages/dynamic'
 import { watchlaterGroupList } from './rules/watchlater'
 import { spaceGroupList } from './rules/space'
+import { dynamicPageDynFilterGroupList } from './filters/dynFilter/pages/dynamic'
 
 const main = async () => {
     // 载入元素屏蔽规则
@@ -68,6 +69,10 @@ const main = async () => {
     // 载入评论过滤器
     const COMMENT_FILTER_GROUPS = [...videoPageCommentFilterGroupList, ...dynamicPageCommentFilterGroupList]
     COMMENT_FILTER_GROUPS.forEach((e) => e.enableGroup())
+
+    // 载入动态过滤器
+    const DYN_FILTER_GROUPS = [...dynamicPageDynFilterGroupList]
+    DYN_FILTER_GROUPS.forEach((e) => e.enableGroup())
 
     // 全局启动/关闭快捷键 chrome: Alt+B，firefox: Ctrl+Alt+B
     let isGroupEnable = true
@@ -121,7 +126,8 @@ const main = async () => {
         regIDs.splice(0, regIDs.length)
     }
     const register = () => {
-        regIDs.push(GM_registerMenuCommand('✅页面净化设置', () => createPanelWithMode('rule', RULE_GROUPS)))
+        regIDs.push(GM_registerMenuCommand('✅页面净化优化', () => createPanelWithMode('rule', RULE_GROUPS)))
+
         if (
             isPageHomepage() ||
             isPageVideo() ||
@@ -135,6 +141,13 @@ const main = async () => {
                 GM_registerMenuCommand('✅视频过滤设置', () => createPanelWithMode('videoFilter', VIDEO_FILTER_GROUPS)),
             )
         }
+
+        if (isPageDynamic()) {
+            regIDs.push(
+                GM_registerMenuCommand('✅动态过滤设置', () => createPanelWithMode('dynFilter', DYN_FILTER_GROUPS)),
+            )
+        }
+
         if (isPageVideo() || isPageBangumi() || isPagePlaylist() || isPageDynamic()) {
             regIDs.push(
                 GM_registerMenuCommand('✅评论过滤设置', () =>

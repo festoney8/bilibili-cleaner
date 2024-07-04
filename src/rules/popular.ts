@@ -1,6 +1,6 @@
 import { Group } from '../components/group'
 import { CheckboxItem, RadioItem } from '../components/item'
-import { isPagePopular } from '../utils/page-type'
+import { isPagePopular } from '../utils/pageType'
 import fontFaceRegular from './styles/fontFaceRegular.scss?inline'
 import fontFaceMedium from './styles/fontFaceMedium.scss?inline'
 

@@ -126,7 +126,7 @@ const main = async () => {
         regIDs.splice(0, regIDs.length)
     }
     const register = () => {
-        regIDs.push(GM_registerMenuCommand('✅页面净化设置', () => createPanelWithMode('rule', RULE_GROUPS)))
+        regIDs.push(GM_registerMenuCommand('✅页面净化优化', () => createPanelWithMode('rule', RULE_GROUPS)))
 
         if (
             isPageHomepage() ||

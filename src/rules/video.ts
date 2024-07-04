@@ -1352,7 +1352,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 优化 右栏底部吸附 实验功能
         new CheckboxItem({
             itemID: 'video-page-right-container-sticky-optimize',
-            description: '优化 右栏底部吸附 (实验功能)',
+            description: '优化 右栏底部吸附 (实验功能)\n搭配“全屏时页面可滚动”使用',
             itemCSS: `
                 /* 修复右栏底部吸附计算top时位置跳变 */
                 .video-container-v1 .right-container {

@@ -151,6 +151,9 @@ class CoreVideoFilter {
                         // 未命中黑名单
                         // debug(_result)
                         showEle(video)
+                        Promise.all(whiteTasks)
+                            .then((_result) => {})
+                            .catch((_result) => {})
                     })
                     .catch((_result) => {
                         // 命中黑名单

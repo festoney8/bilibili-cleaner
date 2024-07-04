@@ -1,9 +1,9 @@
 import { Group } from '../../../components/group'
-import { CheckboxItem, ButtonItem } from '../../../components/item'
+import { CheckboxItem, ButtonItem, NumberItem } from '../../../components/item'
 import { debugDynFilter as debug, error } from '../../../utils/logger'
 import { isPageDynamic } from '../../../utils/pageType'
 import { waitForEle } from '../../../utils/tool'
-import { DynUploaderAction } from './actions/action'
+import { DynDurationAction, DynTitleKeywordAction, DynUploaderAction } from './actions/action'
 import coreDynFilterInstance, { DynSelectorFunc } from '../filters/core'
 import settings from '../../../settings'
 import { ContextMenu } from '../../../components/contextmenu'
@@ -17,10 +17,24 @@ let isContextMenuDynUploaderEnable = false
 if (isPageDynamic()) {
     let dynListContainer: HTMLElement
 
+    let isAllDyn = true // 是否为全部动态
     const dynSelectorFunc: DynSelectorFunc = {
         dynUploader: (dyn: Element): string | null => {
+            if (!isAllDyn) {
+                return null
+            }
             const dynUploader = dyn.querySelector('.bili-dyn-title__text')?.textContent?.trim()
             return dynUploader ? dynUploader : null
+        },
+        dynDuration: (dyn: Element): string | null => {
+            const dynDuration = dyn
+                .querySelector('.bili-dyn-card-video__cover-shadow .duration-time')
+                ?.textContent?.trim()
+            return dynDuration ? dynDuration : null
+        },
+        dynTitle: (dyn: Element): string | null => {
+            const dynTitle = dyn.querySelector('.bili-dyn-card-video__title')?.textContent?.trim()
+            return dynTitle ? dynTitle : null
         },
     }
 
@@ -30,10 +44,9 @@ if (isPageDynamic()) {
             debug(`checkDynList dynListContainer not exist`)
             return
         }
-        // 排除查看指定用户动态的情况
-        if (!dynListContainer.querySelector('.bili-dyn-list-tabs')) {
-            return
-        }
+
+        isAllDyn = !!dynListContainer.querySelector('.bili-dyn-list-tabs')
+
         try {
             let dyns
             if (fullSite) {
@@ -53,8 +66,18 @@ if (isPageDynamic()) {
 
     // 配置 行为实例
     const dynUploaderAction = new DynUploaderAction(
-        'dynamic-dyn-uploader-filter-status',
-        'dynamic-dyn-uploader-filter-value',
+        'dyn-uploader-filter-status',
+        'dyn-uploader-filter-value',
+        checkDynList,
+    )
+    const dynDurationAction = new DynDurationAction(
+        'dyn-duration-filter-status',
+        'global-duration-filter-value',
+        checkDynList,
+    )
+    const dynTitleKeywordAction = new DynTitleKeywordAction(
+        'dyn-title-keyword-filter-status',
+        'global-title-keyword-filter-value',
         checkDynList,
     )
 
@@ -133,7 +156,7 @@ if (isPageDynamic()) {
         // 启用 用户名过滤
         new CheckboxItem({
             itemID: dynUploaderAction.statusKey,
-            description: '启用 用户名过滤 (右键单击用户名)\n不取关用户，仅隐藏他的动态',
+            description: '启用 用户名过滤 (右键单击用户名)\n仅对“全部动态”列表生效',
             enableFunc: async () => {
                 // 启用右键菜单功能
                 isContextMenuDynUploaderEnable = true
@@ -156,7 +179,61 @@ if (isPageDynamic()) {
             },
         }),
     ]
-    dynamicPageDynFilterGroupList.push(new Group('dyn-dynUploader-filter-group', '动态页 用户过滤', dynUploaderItems))
+    dynamicPageDynFilterGroupList.push(new Group('dyn-uploader-filter-group', '动态页 用户过滤', dynUploaderItems))
+
+    // UI组件, 时长过滤part
+    const durationItems = [
+        // 启用 动态页时长过滤
+        new CheckboxItem({
+            itemID: dynDurationAction.statusKey,
+            description: '启用 时长过滤',
+            enableFunc: async () => {
+                dynDurationAction.enable()
+            },
+            disableFunc: async () => {
+                dynDurationAction.disable()
+            },
+        }),
+        // 设定最低时长
+        new NumberItem({
+            itemID: dynDurationAction.valueKey,
+            description: '设定最低时长 (0~300s)',
+            defaultValue: 60,
+            minValue: 0,
+            maxValue: 300,
+            disableValue: 0,
+            unit: '秒',
+            callback: async (value: number) => {
+                dynDurationAction.change(value)
+            },
+        }),
+    ]
+    dynamicPageDynFilterGroupList.push(new Group('dyn-duration-filter-group', '动态页 时长过滤', durationItems))
+    // UI组件, 标题关键词过滤part
+    const titleKeywordItems = [
+        // 启用 动态页关键词过滤
+        new CheckboxItem({
+            itemID: dynTitleKeywordAction.statusKey,
+            description: '启用 标题关键词过滤',
+            enableFunc: async () => {
+                dynTitleKeywordAction.enable()
+            },
+            disableFunc: async () => {
+                dynTitleKeywordAction.disable()
+            },
+        }),
+        // 编辑 关键词黑名单
+        new ButtonItem({
+            itemID: 'dyn-title-keyword-edit-button',
+            description: '编辑 标题关键词黑名单（支持正则）',
+            name: '编辑',
+            // 按钮功能：打开编辑器
+            itemFunc: async () => {
+                dynTitleKeywordAction.blacklist.show()
+            },
+        }),
+    ]
+    dynamicPageDynFilterGroupList.push(new Group('dyn-title-filter-group', '动态页 标题关键词过滤', titleKeywordItems))
 }
 
 export { dynamicPageDynFilterGroupList }

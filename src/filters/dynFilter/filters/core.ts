@@ -1,22 +1,28 @@
 import settings from '../../../settings'
 import { debugDynFilter as debug, error, log } from '../../../utils/logger'
 import { hideEle, isEleHide, showEle } from '../../../utils/tool'
+import dynDurationFilterInstance from './subfilters/dynDuration'
+import dynTitleFilterInstance from './subfilters/dynTitle'
 import dynUploaderFilterInstance from './subfilters/dynUploader'
 
 export interface IDynSubFilter {
     isEnable: boolean
     setStatus(status: boolean): void
-    setParams(value: string[]): void
+    setParams?(value: string[] | number): void
     addParam?(value: string): void
     check(value: string): Promise<string>
 }
 
 export type DynSelectorFunc = {
     dynUploader?: (dyn: HTMLElement) => string | null
+    dynDuration?: (dyn: HTMLElement) => string | null
+    dynTitle?: (dyn: HTMLElement) => string | null
 }
 
 interface DynInfo {
     dynUploader?: string | undefined
+    dynDuration?: string | undefined
+    dynTitle?: string | undefined
 }
 
 class CoreDynFilter {
@@ -29,8 +35,10 @@ class CoreDynFilter {
     checkAll(dyns: HTMLElement[], sign = true, selectorFunc: DynSelectorFunc) {
         try {
             const checkDynUploader = dynUploaderFilterInstance.isEnable && selectorFunc.dynUploader !== undefined
+            const checkDynDuration = dynDurationFilterInstance.isEnable && selectorFunc.dynDuration !== undefined
+            const checkDynTitle = dynTitleFilterInstance.isEnable && selectorFunc.dynTitle !== undefined
 
-            if (!checkDynUploader) {
+            if (!checkDynUploader && !checkDynDuration && !checkDynTitle) {
                 // 黑名单全部关闭时 恢复全部动态
                 dyns.forEach((dyn) => showEle(dyn))
                 return
@@ -50,6 +58,20 @@ class CoreDynFilter {
                         info.dynUploader = dynUploader
                     }
                 }
+                if (checkDynDuration) {
+                    const dynDuration = selectorFunc.dynDuration!(dyn)
+                    if (dynDuration) {
+                        blackTasks.push(dynDurationFilterInstance.check(dynDuration))
+                        info.dynDuration = dynDuration
+                    }
+                }
+                if (checkDynTitle) {
+                    const dynTitle = selectorFunc.dynTitle!(dyn)
+                    if (dynTitle) {
+                        blackTasks.push(dynTitleFilterInstance.check(dynTitle))
+                        info.dynTitle = dynTitle
+                    }
+                }
 
                 // 执行检测
                 Promise.all(blackTasks)
@@ -67,7 +89,10 @@ class CoreDynFilter {
                                     // 命中黑名单，未命中白名单
                                     // debug(_result)
                                     if (!isEleHide(dyn)) {
-                                        log(`hide dyn\ndynUploader: ${info.dynUploader}`)
+                                        log(`hide dyn
+                                            dynUploader: ${info.dynUploader}
+                                            dynDuration: ${info.dynDuration}
+                                            dynTitle: ${info.dynTitle}`)
                                     }
                                     hideEle(dyn)
                                 })
@@ -78,7 +103,10 @@ class CoreDynFilter {
                                 })
                         } else {
                             if (!isEleHide(dyn)) {
-                                log(`hide dyn\ndynUploader: ${info.dynUploader}`)
+                                log(`hide dyn
+                                    dynUploader: ${info.dynUploader}
+                                    dynDuration: ${info.dynDuration}
+                                    dynTitle: ${info.dynTitle}`)
                             }
                             hideEle(dyn)
                         }

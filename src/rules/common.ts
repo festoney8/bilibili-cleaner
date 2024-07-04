@@ -639,7 +639,7 @@ if (!isPageLiveHome()) {
                 .bili-header__bar li:has(.loc-mc-box) {
                     display: none !important;
                 }
-                .bili-header__bar .left-entry li:not(:has(.v-popover)):has([href^="https://live.bilibili.com/"]) {
+                .bili-header__bar .left-entry li.left-loc-entry:not(:has(.v-popover)):has([href^="https://live.bilibili.com/"]) {
                     display: none !important;
                 }
                 .bili-header__bar .left-entry li:not(:has(.v-popover)):has([href^="https://www.bilibili.com/bangumi/play/ss"]) {

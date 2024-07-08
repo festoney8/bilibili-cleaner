@@ -544,10 +544,10 @@ if (isPageVideo() || isPagePlaylist()) {
 
     // 视频信息
     const infoItems = [
-        // 展开 完整视频标题
+        // 展开 多行视频标题
         new CheckboxItem({
             itemID: 'video-page-unfold-video-info-title',
-            description: '展开 完整视频标题(多行)',
+            description: '展开 多行视频标题',
             itemCSS: `
                 .video-info-container:has(.show-more) {
                     height: fit-content !important;
@@ -604,16 +604,16 @@ if (isPageVideo() || isPagePlaylist()) {
 if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
     // 播放器
     const playerItems = [
-        // 隐藏 一键三连弹窗
+        // 隐藏 一键三连
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-guide-all',
-            description: '隐藏 一键三连弹窗',
+            description: '隐藏 一键三连',
             itemCSS: `.bpx-player-video-area .bili-guide, .bpx-player-video-area .bili-guide-all {display: none !important;}`,
         }),
-        // 隐藏 投票弹窗
+        // 隐藏 投票
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-vote',
-            description: '隐藏 投票弹窗',
+            description: '隐藏 投票',
             itemCSS: `.bpx-player-video-area .bili-vote, .bpx-player-video-area .bili-cmd-shrink {display: none !important;}`,
         }),
         // 隐藏 播放效果调查, 默认开启
@@ -623,40 +623,40 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
             defaultStatus: true,
             itemCSS: `.bpx-player-video-area .bili-qoeFeedback {display: none !important;}`,
         }),
-        // 隐藏 评分弹窗
+        // 隐藏 评分
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-score',
-            description: '隐藏 评分弹窗',
+            description: '隐藏 评分',
             itemCSS: `.bpx-player-video-area .bili-score {display: none !important;}`,
         }),
-        // 隐藏 评分总结弹窗
+        // 隐藏 评分总结
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-score-sum',
-            description: '隐藏 评分总结弹窗',
+            description: '隐藏 评分总结',
             itemCSS: `.bpx-player-video-area .bili-scoreSum {display: none !important;}`,
         }),
-        // 隐藏 打卡弹窗
+        // 隐藏 打卡
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-clock',
-            description: '隐藏 打卡弹窗',
+            description: '隐藏 打卡',
             itemCSS: `.bpx-player-video-area .bili-clock {display: none !important;}`,
         }),
-        // 隐藏 视频预告弹窗
+        // 隐藏 视频预告
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-reserve',
-            description: '隐藏 视频预告弹窗',
+            description: '隐藏 视频预告',
             itemCSS: `.bpx-player-video-area .bili-reserve {display: none !important;}`,
         }),
-        // 隐藏 视频链接弹窗
+        // 隐藏 视频链接
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-link',
-            description: '隐藏 视频链接弹窗(稍后再看)',
+            description: '隐藏 视频链接(稍后再看)',
             itemCSS: `.bpx-player-video-area .bili-link {display: none !important;}`,
         }),
-        // 隐藏 左上角 播放器内标题
+        // 隐藏 播放器内标题
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-top-left-title',
-            description: '隐藏 左上角 播放器内标题',
+            description: '隐藏 播放器内标题',
             itemCSS: `.bpx-player-top-title {display: none !important;}
                 .bpx-player-top-left-title {display: none !important;}
                 /* 播放器上方阴影渐变 */
@@ -665,7 +665,7 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
         // 隐藏 左上角 视频音乐链接
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-top-left-music',
-            description: '隐藏 左上角 视频音乐链接',
+            description: '隐藏 视频音乐链接',
             itemCSS: `.bpx-player-top-left-music {display: none !important;}`,
         }),
         // 隐藏 左上角 关注UP主, 默认开启
@@ -1302,17 +1302,17 @@ if (isPageVideo() || isPagePlaylist()) {
 
     // up主信息
     const upInfoItems = [
-        // 隐藏 给UP发消息, 默认开启
+        // 隐藏 发消息, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-up-sendmsg',
-            description: '隐藏 给UP发消息',
+            description: '隐藏 发消息',
             defaultStatus: true,
             itemCSS: `.up-detail .send-msg {display: none !important;}`,
         }),
-        // 隐藏 UP简介
+        // 隐藏 UP主简介
         new CheckboxItem({
             itemID: 'video-page-hide-up-description',
-            description: '隐藏 UP简介',
+            description: '隐藏 UP主简介',
             itemCSS: `.up-detail .up-description {display: none !important;}`,
         }),
         // 隐藏 充电
@@ -1615,20 +1615,13 @@ if (isPageVideo() || isPagePlaylist()) {
             defaultStatus: true,
             itemCSS: `.reply-header .reply-notice {display: none !important;}`,
         }),
-        // 隐藏 整个评论框
+        // 隐藏 评论编辑器
         new CheckboxItem({
             itemID: 'video-page-hide-main-reply-box',
-            description: '隐藏 整个评论框',
+            description: '隐藏 评论编辑器',
             // 不可使用display: none, 会使底部吸附评论框宽度变化
             itemCSS: `.main-reply-box {height: 0 !important; visibility: hidden !important;}
                 .comment-container .reply-list {margin-top: -20px !important;}`,
-        }),
-        // 隐藏 页面底部 吸附评论框, 默认开启
-        new CheckboxItem({
-            itemID: 'video-page-hide-fixed-reply-box',
-            description: '隐藏 页面底部 吸附评论框',
-            defaultStatus: true,
-            itemCSS: `.fixed-reply-box {display: none !important;}`,
         }),
         // 隐藏 评论编辑器内占位文字, 默认开启
         new CheckboxItem({
@@ -1638,22 +1631,29 @@ if (isPageVideo() || isPagePlaylist()) {
             itemCSS: `.main-reply-box .reply-box-textarea::placeholder {color: transparent !important;}
                 .fixed-reply-box .reply-box-textarea::placeholder {color: transparent !important;}`,
         }),
-        // 隐藏 评论区用户卡片
+        // 隐藏 页面底部 吸附评论框, 默认开启
+        new CheckboxItem({
+            itemID: 'video-page-hide-fixed-reply-box',
+            description: '隐藏 页面底部 吸附评论框',
+            defaultStatus: true,
+            itemCSS: `.fixed-reply-box {display: none !important;}`,
+        }),
+        // 隐藏 用户卡片
         new CheckboxItem({
             itemID: 'video-page-hide-comment-user-card',
-            description: '隐藏 评论区用户卡片\n鼠标放在用户名上时不显示卡片',
+            description: '隐藏 用户卡片\n鼠标放在用户名上时不显示卡片',
             itemCSS: `.user-card {display: none!important;}`,
         }),
-        // 隐藏 评论内容右侧装饰
+        // 隐藏 评论右侧装饰
         new CheckboxItem({
             itemID: 'video-page-hide-reply-decorate',
-            description: '隐藏 评论内容右侧装饰',
+            description: '隐藏 评论右侧装饰',
             itemCSS: `.reply-decorate {display: none !important;}`,
         }),
-        // 隐藏 ID后粉丝牌
+        // 隐藏 粉丝牌
         new CheckboxItem({
             itemID: 'video-page-hide-fan-badge',
-            description: '隐藏 ID后粉丝牌',
+            description: '隐藏 粉丝牌',
             itemCSS: `.fan-badge {display: none !important;}`,
         }),
         // 隐藏 老粉、原始粉丝Tag
@@ -1674,17 +1674,17 @@ if (isPageVideo() || isPagePlaylist()) {
             description: '隐藏 二级评论用户等级',
             itemCSS: `.sub-user-level {display: none !important;}`,
         }),
-        // 隐藏 用户头像外圈饰品
+        // 隐藏 用户头像饰品
         new CheckboxItem({
             itemID: 'video-page-hide-bili-avatar-pendent-dom',
-            description: '隐藏 用户头像外圈饰品',
+            description: '隐藏 用户头像饰品',
             itemCSS: `.root-reply-avatar .bili-avatar-pendent-dom {display: none !important;}
             .comment-container .root-reply-avatar .bili-avatar {width: 48px !important; height:48px !important;}`,
         }),
-        // 隐藏 用户头像右下小icon
+        // 隐藏 用户头像徽章
         new CheckboxItem({
             itemID: 'video-page-hide-bili-avatar-nft-icon',
-            description: '隐藏 用户头像右下小icon',
+            description: '隐藏 用户头像徽章',
             itemCSS: `.bili-avatar-nft-icon {display: none !important;}
                 .comment-container .bili-avatar-icon {display: none !important;}`,
         }),
@@ -1694,10 +1694,10 @@ if (isPageVideo() || isPagePlaylist()) {
             description: '隐藏 用户投票 (红方/蓝方)',
             itemCSS: `.vote-info {display: none !important;}`,
         }),
-        // 隐藏 评论内容下tag(UP觉得很赞)
+        // 隐藏 评论内容下Tag(UP觉得很赞)
         new CheckboxItem({
             itemID: 'video-page-hide-reply-tag-list',
-            description: '隐藏 评论内容下tag(UP觉得很赞)',
+            description: '隐藏 评论内容下Tag(UP觉得很赞)',
             itemCSS: `.reply-tag-list {display: none !important;}`,
         }),
         // 隐藏 笔记评论前的小Logo, 默认开启
@@ -1707,19 +1707,19 @@ if (isPageVideo() || isPagePlaylist()) {
             defaultStatus: true,
             itemCSS: `.note-prefix {display: none !important;}`,
         }),
-        // 隐藏 评论内容搜索关键词高亮, 默认开启
+        // 禁用 评论内容搜索关键词高亮, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-jump-link-search-word',
-            description: '隐藏 评论内容搜索关键词高亮',
+            description: '禁用 评论内容搜索关键词高亮',
             defaultStatus: true,
             itemCSS: `.reply-content .jump-link.search-word {color: inherit !important;}
                 .comment-container .reply-content .jump-link.search-word:hover {color: #008AC5 !important;}
                 .comment-container .reply-content .icon.search-word {display: none !important;}`,
         }),
-        // 隐藏 二级评论中的@高亮
+        // 禁用 二级评论中的@高亮
         new CheckboxItem({
             itemID: 'video-page-hide-reply-content-user-highlight',
-            description: '隐藏 二级评论中的@高亮',
+            description: '禁用 二级评论中的@高亮',
             itemCSS: `.sub-reply-container .reply-content .jump-link.user {color: inherit !important;}
                 .comment-container .sub-reply-container .reply-content .jump-link.user:hover {color: #40C5F1 !important;}`,
         }),

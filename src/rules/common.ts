@@ -478,13 +478,6 @@ if (!isPageLiveHome()) {
                     display: none !important;
                 }`,
         }),
-        // 隐藏 分区弹出框
-        new CheckboxItem({
-            itemID: 'common-hide-nav-channel-panel-popover',
-            description: '隐藏 分区弹出框',
-            itemCSS: `.bili-header .left-entry .bili-header-channel-panel {display: none !important;}
-                    .bili-header .left-entry .mini-header__title .mini-header__arrow {display: none !important;}`,
-        }),
         // 隐藏 番剧
         new CheckboxItem({
             itemID: 'common-hide-nav-anime',
@@ -503,14 +496,6 @@ if (!isPageLiveHome()) {
                 [class^="BiliHeaderV3_leftEntry__"] li:has(a[href*="bilibili.com/anime"]){
                     display: none !important;
                 }`,
-        }),
-        // 隐藏 番剧弹出框
-        new CheckboxItem({
-            itemID: 'common-hide-nav-anime-popover',
-            description: '隐藏 番剧弹出框',
-            itemCSS: `.bili-header__bar .left-entry .default-entry[href*="//www.bilibili.com/anime/"] + .v-popover {
-                display: none !important;
-            }`,
         }),
         // 隐藏 直播
         new CheckboxItem({
@@ -531,14 +516,6 @@ if (!isPageLiveHome()) {
                     display: none !important;
                 }`,
         }),
-        // 隐藏 直播弹出框
-        new CheckboxItem({
-            itemID: 'common-hide-nav-live-popover',
-            description: '隐藏 直播弹出框',
-            itemCSS: `.bili-header__bar .left-entry :is(.default-entry[href*="//live.bilibili.com"]) + .v-popover {
-                    display: none !important;
-                }`,
-        }),
         // 隐藏 游戏中心
         new CheckboxItem({
             itemID: 'common-hide-nav-game',
@@ -555,14 +532,6 @@ if (!isPageLiveHome()) {
                 }
                 /* 番剧页 */
                 [class^="BiliHeaderV3_leftEntry__"] li:has(a[href*="game.bilibili.com"]){
-                    display: none !important;
-                }`,
-        }),
-        // 隐藏 游戏中心弹出框
-        new CheckboxItem({
-            itemID: 'common-hide-nav-game-popover',
-            description: '隐藏 游戏中心弹出框',
-            itemCSS: `.bili-header__bar .left-entry .default-entry[href*="//game.bilibili.com"] + .v-popover {
                     display: none !important;
                 }`,
         }),
@@ -601,14 +570,6 @@ if (!isPageLiveHome()) {
                 }
                 /* 番剧页 */
                 [class^="BiliHeaderV3_leftEntry__"] li:has(a[href*="manga.bilibili.com"]){
-                    display: none !important;
-                }`,
-        }),
-        // 隐藏 漫画弹出框
-        new CheckboxItem({
-            itemID: 'common-hide-nav-manga-popover',
-            description: '隐藏 漫画弹出框',
-            itemCSS: `.bili-header__bar .left-entry .default-entry[href*="//manga.bilibili.com"] + .v-popover {
                     display: none !important;
                 }`,
         }),
@@ -681,7 +642,7 @@ if (!isPageLiveHome()) {
                     display: none !important;
                 }`,
         }),
-        // 隐藏 所有官方活动(blackboard)
+        // 隐藏 所有官方活动
         new CheckboxItem({
             itemID: 'common-hide-nav-blackboard',
             description: '隐藏 所有官方活动(强制)',
@@ -706,22 +667,50 @@ if (!isPageLiveHome()) {
                     display: none !important;
                 }`,
         }),
+        // 隐藏 首页弹出框
+        new CheckboxItem({
+            itemID: 'common-hide-nav-channel-panel-popover',
+            description: '隐藏 首页弹出框',
+            itemCSS: `.bili-header .left-entry .bili-header-channel-panel {display: none !important;}
+                    .bili-header .left-entry .mini-header__title .mini-header__arrow {display: none !important;}`,
+        }),
+        // 隐藏 番剧弹出框
+        new CheckboxItem({
+            itemID: 'common-hide-nav-anime-popover',
+            description: '隐藏 番剧弹出框',
+            itemCSS: `.bili-header__bar .left-entry .default-entry[href*="//www.bilibili.com/anime/"] + .v-popover {
+                display: none !important;
+            }`,
+        }),
+        // 隐藏 直播弹出框
+        new CheckboxItem({
+            itemID: 'common-hide-nav-live-popover',
+            description: '隐藏 直播弹出框',
+            itemCSS: `.bili-header__bar .left-entry :is(.default-entry[href*="//live.bilibili.com"]) + .v-popover {
+                    display: none !important;
+                }`,
+        }),
+        // 隐藏 游戏中心弹出框
+        new CheckboxItem({
+            itemID: 'common-hide-nav-game-popover',
+            description: '隐藏 游戏中心弹出框',
+            itemCSS: `.bili-header__bar .left-entry .default-entry[href*="//game.bilibili.com"] + .v-popover {
+                    display: none !important;
+                }`,
+        }),
+        // 隐藏 漫画弹出框
+        new CheckboxItem({
+            itemID: 'common-hide-nav-manga-popover',
+            description: '隐藏 漫画弹出框',
+            itemCSS: `.bili-header__bar .left-entry .default-entry[href*="//manga.bilibili.com"] + .v-popover {
+                    display: none !important;
+                }`,
+        }),
     ]
     commonGroupList.push(new Group('common-header-left', '全站通用项 顶栏 左侧', headerLeftItems))
 
     // 顶栏中间
     const headerCenterItems = [
-        // 修复 搜索框居中
-        new CheckboxItem({
-            itemID: 'common-nav-search-middle-justify',
-            description: '修复 搜索框居中',
-            itemCSS: `
-                @media (min-width: 1100px) and (max-width: 1366.9px) {
-                    .mini-header .center-search-container .center-search__bar {
-                        margin: 0 auto;
-                    }
-                }`,
-        }),
         // 隐藏 推荐搜索
         new CheckboxItem({
             itemID: 'common-hide-nav-search-rcmd',
@@ -748,6 +737,17 @@ if (!isPageLiveHome()) {
             itemCSS: `.search-panel .trending {display: none;}
                 /* 旧版header */
                 #internationalHeader .nav-search-box .trending {display: none !important;}`,
+        }),
+        // 修复 搜索框居中
+        new CheckboxItem({
+            itemID: 'common-nav-search-middle-justify',
+            description: '修复 搜索框居中',
+            itemCSS: `
+                @media (min-width: 1100px) and (max-width: 1366.9px) {
+                    .mini-header .center-search-container .center-search__bar {
+                        margin: 0 auto;
+                    }
+                }`,
         }),
     ]
     commonGroupList.push(new Group('common-header-center', '全站通用项 顶栏 搜索框', headerCenterItems))

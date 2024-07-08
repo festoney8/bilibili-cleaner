@@ -258,10 +258,10 @@ if (isPageHomepage()) {
             ],
             defaultStatus: true,
         }),
-        // 强制使用 4 列布局
+        // 使用 4 列布局
         new RadioItem({
             itemID: 'homepage-layout-4-column',
-            description: '强制使用 4 列布局',
+            description: '使用 4 列布局',
             radioName: 'homepage-layout-option',
             radioItemIDList: [
                 'homepage-layout-default',
@@ -273,10 +273,10 @@ if (isPageHomepage()) {
                     grid-template-columns: repeat(4,1fr) !important;
                 }`,
         }),
-        // 强制使用 5 列布局
+        // 使用 5 列布局
         new RadioItem({
             itemID: 'homepage-layout-5-column',
-            description: '强制使用 5 列布局\n建议开启 增大视频信息字号',
+            description: '使用 5 列布局\n建议开启 增大视频信息字号',
             radioName: 'homepage-layout-option',
             radioItemIDList: [
                 'homepage-layout-default',
@@ -288,10 +288,10 @@ if (isPageHomepage()) {
                     grid-template-columns: repeat(5,1fr) !important;
                 }`,
         }),
-        // 强制使用 6 列布局
+        // 使用 6 列布局
         new RadioItem({
             itemID: 'homepage-layout-6-column',
-            description: '强制使用 6 列布局\n建议 隐藏发布时间，可选 显示活动轮播',
+            description: '使用 6 列布局\n建议 隐藏发布时间，可选 显示活动轮播',
             radioName: 'homepage-layout-option',
             radioItemIDList: [
                 'homepage-layout-default',

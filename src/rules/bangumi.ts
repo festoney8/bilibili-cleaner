@@ -200,15 +200,11 @@ if (isPageBangumi()) {
                                     break
                                 case 'f11':
                                     // f11全屏模式
-                                    if (isWebScreen()) {
-                                        webBtn.click()
-                                    } else {
-                                        webBtn.click()
-                                    }
+                                    webBtn.click()
                                     break
                                 case 'not':
                                     // 申请可滚动全屏
-                                    document.body.requestFullscreen().then().catch()
+                                    document.documentElement.requestFullscreen().then().catch()
                                     if (!isWebScreen()) {
                                         webBtn.click()
                                     }
@@ -219,9 +215,9 @@ if (isPageBangumi()) {
                         fullBtn.parentElement?.replaceChild(newFullBtn, fullBtn)
                     } else {
                         cnt++
-                        cnt > 100 && clearInterval(id)
+                        cnt > 50 && clearInterval(id)
                     }
-                }, 100)
+                }, 200)
             },
             enableFuncRunAt: 'document-end',
             disableFunc: async () => document.removeEventListener('wheel', disableAdjustVolume),

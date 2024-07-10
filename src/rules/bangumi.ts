@@ -200,15 +200,11 @@ if (isPageBangumi()) {
                                     break
                                 case 'f11':
                                     // f11全屏模式
-                                    if (isWebScreen()) {
-                                        webBtn.click()
-                                    } else {
-                                        webBtn.click()
-                                    }
+                                    webBtn.click()
                                     break
                                 case 'not':
                                     // 申请可滚动全屏
-                                    document.body.requestFullscreen().then().catch()
+                                    document.documentElement.requestFullscreen().then().catch()
                                     if (!isWebScreen()) {
                                         webBtn.click()
                                     }
@@ -219,9 +215,9 @@ if (isPageBangumi()) {
                         fullBtn.parentElement?.replaceChild(newFullBtn, fullBtn)
                     } else {
                         cnt++
-                        cnt > 100 && clearInterval(id)
+                        cnt > 50 && clearInterval(id)
                     }
-                }, 100)
+                }, 200)
             },
             enableFuncRunAt: 'document-end',
             disableFunc: async () => document.removeEventListener('wheel', disableAdjustVolume),
@@ -786,19 +782,12 @@ if (isPageBangumi()) {
             defaultStatus: true,
             itemCSS: `.reply-header .reply-notice {display: none !important;}`,
         }),
-        // 隐藏 整个评论框
+        // 隐藏 评论编辑器
         new CheckboxItem({
             itemID: 'video-page-hide-main-reply-box',
-            description: '隐藏 整个评论框',
+            description: '隐藏 评论编辑器',
             itemCSS: `.main-reply-box {height: 0 !important; visibility: hidden !important;}
                 .reply-list {margin-top: -20px !important;}`,
-        }),
-        // 隐藏 页面底部 吸附评论框, 默认开启
-        new CheckboxItem({
-            itemID: 'video-page-hide-fixed-reply-box',
-            description: '隐藏 页面底部 吸附评论框',
-            defaultStatus: true,
-            itemCSS: `.fixed-reply-box {display: none !important;}`,
         }),
         // 隐藏 评论编辑器内占位文字, 默认开启
         new CheckboxItem({
@@ -808,22 +797,29 @@ if (isPageBangumi()) {
             itemCSS: `.main-reply-box .reply-box-textarea::placeholder {color: transparent !important;}
                 .fixed-reply-box .reply-box-textarea::placeholder {color: transparent !important;}`,
         }),
+        // 隐藏 页面底部 吸附评论框, 默认开启
+        new CheckboxItem({
+            itemID: 'video-page-hide-fixed-reply-box',
+            description: '隐藏 页面底部 吸附评论框',
+            defaultStatus: true,
+            itemCSS: `.fixed-reply-box {display: none !important;}`,
+        }),
         // 隐藏 评论区用户卡片
         new CheckboxItem({
             itemID: 'video-page-hide-comment-user-card',
             description: '隐藏 评论区用户卡片\n鼠标放在用户名上时不显示卡片',
             itemCSS: `.user-card {display: none!important;}`,
         }),
-        // 隐藏 评论内容右侧装饰
+        // 隐藏 评论右侧装饰
         new CheckboxItem({
             itemID: 'video-page-hide-reply-decorate',
-            description: '隐藏 评论内容右侧装饰',
+            description: '隐藏 评论右侧装饰',
             itemCSS: `.reply-decorate {display: none !important;}`,
         }),
-        // 隐藏 ID后粉丝牌
+        // 隐藏 粉丝牌
         new CheckboxItem({
             itemID: 'video-page-hide-fan-badge',
-            description: '隐藏 ID后粉丝牌',
+            description: '隐藏 粉丝牌',
             itemCSS: `.fan-badge {display: none !important;}`,
         }),
         // 隐藏 一级评论用户等级
@@ -838,24 +834,24 @@ if (isPageBangumi()) {
             description: '隐藏 二级评论用户等级',
             itemCSS: `.sub-user-level {display: none !important;}`,
         }),
-        // 隐藏 用户头像外圈饰品
+        // 隐藏 用户头像饰品
         new CheckboxItem({
             itemID: 'video-page-hide-bili-avatar-pendent-dom',
-            description: '隐藏 用户头像外圈饰品',
+            description: '隐藏 用户头像饰品',
             itemCSS: `.root-reply-avatar .bili-avatar-pendent-dom {display: none !important;}
             .root-reply-avatar .bili-avatar {width: 48px !important; height:48px !important;}`,
         }),
-        // 隐藏 用户头像右下小icon
+        // 隐藏 用户头像徽章
         new CheckboxItem({
             itemID: 'video-page-hide-bili-avatar-nft-icon',
-            description: '隐藏 用户头像右下小icon',
+            description: '隐藏 用户头像徽章',
             itemCSS: `.bili-avatar-nft-icon {display: none !important;}
                 .bili-avatar-icon {display: none !important;}`,
         }),
-        // 隐藏 评论内容下tag(热评)
+        // 隐藏 评论内容下Tag(热评)
         new CheckboxItem({
             itemID: 'video-page-hide-reply-tag-list',
-            description: '隐藏 评论内容下tag(热评)',
+            description: '隐藏 评论内容下Tag(热评)',
             itemCSS: `.reply-tag-list {display: none !important;}`,
         }),
         // 隐藏 笔记评论前的小Logo, 默认开启
@@ -865,19 +861,19 @@ if (isPageBangumi()) {
             defaultStatus: true,
             itemCSS: `.note-prefix {display: none !important;}`,
         }),
-        // 隐藏 评论内容搜索关键词高亮, 默认开启
+        // 禁用 评论内容搜索关键词高亮, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-jump-link-search-word',
-            description: '隐藏 评论内容搜索关键词高亮',
+            description: '禁用 评论内容搜索关键词高亮',
             defaultStatus: true,
             itemCSS: `.reply-content .jump-link.search-word {color: inherit !important;}
                 .reply-content .jump-link.search-word:hover {color: #008AC5 !important;}
                 .reply-content .icon.search-word {display: none !important;}`,
         }),
-        // 隐藏 二级评论中的@高亮
+        // 禁用 二级评论中的@高亮
         new CheckboxItem({
             itemID: 'video-page-hide-reply-content-user-highlight',
-            description: '隐藏 二级评论中的@高亮',
+            description: '禁用 二级评论中的@高亮',
             itemCSS: `.sub-reply-container .reply-content .jump-link.user {color: inherit !important;}
                 .sub-reply-container .reply-content .jump-link.user:hover {color: #40C5F1 !important;}`,
         }),

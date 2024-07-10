@@ -245,32 +245,32 @@ if (isPageDynamic()) {
             description: '隐藏 动态右侧饰品',
             itemCSS: `.bili-dyn-ornament, .bili-dyn-item__ornament {display: none !important;}`,
         }),
-        // 隐藏 动态内容中 警告notice, 默认开启
+        // 隐藏 警告notice, 默认开启
         new CheckboxItem({
             itemID: 'hide-dynamic-page-bili-dyn-dispute',
-            description: '隐藏 动态内容中 警告notice',
+            description: '隐藏 警告notice',
             defaultStatus: true,
             itemCSS: `.bili-dyn-content__dispute {display: none !important;}`,
         }),
-        // 隐藏 动态内容中 稍后再看按钮
+        // 隐藏 稍后再看按钮
         new CheckboxItem({
             itemID: 'hide-dynamic-page-bili-dyn-watchlater',
-            description: '隐藏 动态内容中 稍后再看按钮',
+            description: '隐藏 稍后再看按钮',
             itemCSS: `.bili-dyn-card-video__mark {display: none !important;}`,
         }),
-        // 隐藏 动态内容中 官方话题Tag
+        // 隐藏 官方话题Tag
         new CheckboxItem({
             itemID: 'hide-dynamic-page-bili-dyn-official-topic',
-            description: '隐藏 动态内容中 官方话题Tag',
+            description: '隐藏 官方话题Tag',
             // 不得隐藏普通tag .bili-rich-text-topic
             itemCSS: `.bili-dyn-content__orig__topic, .bili-dyn-content__forw__topic {
                 display: none !important;
             }`,
         }),
-        // 动态内容中 普通Tag 去除高亮
+        // 禁用 普通话题#Tag#高亮
         new CheckboxItem({
             itemID: 'hide-dynamic-page-bili-dyn-text-topic',
-            description: '动态内容中 普通Tag 去除高亮',
+            description: '禁用 普通话题#Tag#高亮',
             itemCSS: `.bili-rich-text-topic {color: inherit !important;}
                 .bili-rich-text-topic:hover {color: var(--brand_blue) !important;}`,
         }),
@@ -392,18 +392,11 @@ if (isPageDynamic()) {
             description: '隐藏 投票',
             itemCSS: `.comment-container .top-vote-card {display: none !important;}`,
         }),
-        // 隐藏 整个评论框
+        // 隐藏 评论编辑器
         new CheckboxItem({
             itemID: 'video-page-hide-main-reply-box',
-            description: '隐藏 整个评论框',
+            description: '隐藏 评论编辑器',
             itemCSS: `.main-reply-box, .comment-container .fixed-reply-box {display: none !important;}`,
-        }),
-        // 隐藏 页面底部 吸附评论框, 默认开启
-        new CheckboxItem({
-            itemID: 'video-page-hide-fixed-reply-box',
-            description: '隐藏 页面底部 吸附评论框',
-            defaultStatus: true,
-            itemCSS: `.fixed-reply-box {display: none !important;}`,
         }),
         // 隐藏 评论编辑器内占位文字, 默认开启
         new CheckboxItem({
@@ -412,10 +405,17 @@ if (isPageDynamic()) {
             defaultStatus: true,
             itemCSS: `:not(.reply-item) .reply-box-textarea::placeholder {color: transparent !important;}`,
         }),
-        // 隐藏 评论区用户卡片
+        // 隐藏 页面底部 吸附评论框, 默认开启
+        new CheckboxItem({
+            itemID: 'video-page-hide-fixed-reply-box',
+            description: '隐藏 页面底部 吸附评论框',
+            defaultStatus: true,
+            itemCSS: `.fixed-reply-box {display: none !important;}`,
+        }),
+        // 隐藏 用户卡片
         new CheckboxItem({
             itemID: 'video-page-hide-comment-user-card',
-            description: '隐藏 评论区用户卡片\n鼠标放在用户名上时不显示卡片',
+            description: '隐藏 用户卡片\n鼠标放在用户名上时不显示卡片',
             itemCSS: `.user-card {display: none!important;}`,
         }),
         // 隐藏 评论右侧装饰
@@ -424,10 +424,10 @@ if (isPageDynamic()) {
             description: '隐藏 评论右侧装饰',
             itemCSS: `.reply-decorate {display: none !important;}`,
         }),
-        // 隐藏 ID后粉丝牌
+        // 隐藏 粉丝牌
         new CheckboxItem({
             itemID: 'video-page-hide-fan-badge',
-            description: '隐藏 ID后粉丝牌',
+            description: '隐藏 粉丝牌',
             itemCSS: `.fan-badge {display: none !important;}`,
         }),
         // 隐藏 老粉、原始粉丝Tag
@@ -448,16 +448,16 @@ if (isPageDynamic()) {
             description: '隐藏 二级评论用户等级',
             itemCSS: `.sub-user-level {display: none !important;}`,
         }),
-        // 隐藏 用户头像外圈饰品
+        // 隐藏 用户头像饰品
         new CheckboxItem({
             itemID: 'video-page-hide-bili-avatar-pendent-dom',
-            description: '隐藏 用户头像外圈饰品',
+            description: '隐藏 用户头像饰品',
             itemCSS: `.bili-avatar-pendent-dom {display: none !important;}`,
         }),
-        // 隐藏 用户头像右下小icon
+        // 隐藏 用户头像徽章
         new CheckboxItem({
             itemID: 'video-page-hide-bili-avatar-nft-icon',
-            description: '隐藏 用户头像右下小icon',
+            description: '隐藏 用户头像徽章',
             itemCSS: `.bili-avatar-nft-icon {display: none !important;}
                 .comment-container .bili-avatar-icon {display: none !important;}`,
         }),
@@ -467,10 +467,10 @@ if (isPageDynamic()) {
             description: '隐藏 用户投票 (红方/蓝方)',
             itemCSS: `.comment-container .vote-info {display: none !important;}`,
         }),
-        // 隐藏 评论内容下tag(UP觉得很赞)
+        // 隐藏 评论内容下Tag(UP觉得很赞)
         new CheckboxItem({
             itemID: 'video-page-hide-reply-tag-list',
-            description: '隐藏 评论内容下tag(UP觉得很赞)',
+            description: '隐藏 评论内容下Tag(UP觉得很赞)',
             itemCSS: `.reply-tag-list {display: none !important;}`,
         }),
         // 隐藏 笔记评论前的小Logo, 默认开启
@@ -480,18 +480,18 @@ if (isPageDynamic()) {
             defaultStatus: true,
             itemCSS: `.note-prefix {display: none !important;}`,
         }),
-        // 隐藏 评论内容搜索关键词高亮, 默认开启
+        // 禁用 评论内容搜索关键词高亮, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-jump-link-search-word',
-            description: '隐藏 评论内容搜索关键词高亮',
+            description: '禁用 评论内容搜索关键词高亮',
             defaultStatus: true,
             itemCSS: `.reply-content .jump-link.search-word {color: inherit !important;}
                 .comment-container .reply-content .icon.search-word {display: none !important;}`,
         }),
-        // 隐藏 二级评论中的@高亮
+        // 禁用 二级评论中的@高亮
         new CheckboxItem({
             itemID: 'video-page-hide-reply-content-user-highlight',
-            description: '隐藏 二级评论中的@高亮',
+            description: '禁用 二级评论中的@高亮',
             itemCSS: `.sub-reply-container .reply-content .jump-link.user {color: inherit !important;}
                 .comment-container .sub-reply-container .reply-content .jump-link.user:hover {color: #40C5F1 !important;}`,
         }),

@@ -92,10 +92,9 @@ class CoreDynFilter {
                                     // 命中黑名单，未命中白名单
                                     // debug(_result)
                                     if (!isEleHide(dyn)) {
-                                        log(`hide dyn
-                                            dynUploader: ${info.dynUploader}
-                                            dynDuration: ${info.dynDuration}
-                                            dynTitle: ${info.dynTitle}`)
+                                        log(
+                                            `hide dyn\ndynUploader: ${info.dynUploader}\ndynDuration: ${info.dynDuration}\ndynTitle: ${info.dynTitle}`,
+                                        )
                                     }
                                     hideEle(dyn)
                                 })
@@ -106,10 +105,9 @@ class CoreDynFilter {
                                 })
                         } else {
                             if (!isEleHide(dyn)) {
-                                log(`hide dyn
-                                    dynUploader: ${info.dynUploader}
-                                    dynDuration: ${info.dynDuration}
-                                    dynTitle: ${info.dynTitle}`)
+                                log(
+                                    `hide dyn\ndynUploader: ${info.dynUploader}\ndynDuration: ${info.dynDuration}\ndynTitle: ${info.dynTitle}`,
+                                )
                             }
                             hideEle(dyn)
                         }

@@ -512,7 +512,7 @@ if (isPageLiveRoom()) {
             description: '隐藏 互动框 (倒计时互动)',
             defaultStatus: true,
             itemCSS: `#combo-card:has(.countDownBtn) {display: none !important;}
-                    .chat-history-panel.new {padding-bottom: 0 !important;}`,
+                    .chat-history-panel {padding-bottom: 0 !important;}`,
         }),
         // 隐藏 互动框 (他们都在说), 默认开启
         new CheckboxItem({
@@ -611,7 +611,7 @@ if (isPageLiveRoom()) {
                 #chat-control-panel-vm {
                     display: none !important;
                 }
-                .chat-history-panel, .chat-history-panel.new {
+                .chat-history-panel {
                     height: calc(100% - var(--rank-list-height, 178px) - var(--chat-control-panel-height, 145px)) !important;
                 }
                 .chat-history-panel .chat-history-list {

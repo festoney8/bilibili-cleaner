@@ -160,14 +160,14 @@ if (isPageLiveRoom()) {
                 let cnt = 0
                 const id = setInterval(() => {
                     if (document.querySelector('.rendererRoot, #internationalHeader')) {
-                    if (!location.href.includes('/blanc/')) {
+                        if (!location.href.includes('/blanc/')) {
                             window.location.href = location.href.replace(
                                 'live.bilibili.com/',
                                 'live.bilibili.com/blanc/',
                             )
                             clearInterval(id)
+                        }
                     }
-                }
                     cnt++
                     cnt > 50 && clearInterval(id)
                 }, 200)
@@ -527,6 +527,13 @@ if (isPageLiveRoom()) {
             description: '隐藏 互动框 (找TA玩)',
             defaultStatus: true,
             itemCSS: `.play-together-service-card-container {display: none !important;}`,
+        }),
+        // 隐藏 互动框 投票, 默认开启
+        new CheckboxItem({
+            itemID: 'live-page-vote-card',
+            description: '隐藏 互动框 投票',
+            defaultStatus: true,
+            itemCSS: `.vote-card {display: none !important;}`,
         }),
         // 隐藏 发送框 左侧功能按钮
         new CheckboxItem({

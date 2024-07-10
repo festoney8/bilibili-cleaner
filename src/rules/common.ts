@@ -663,7 +663,10 @@ if (!isPageLiveHome()) {
                     display: none !important;
                 }
                 /* 旧版header */
-                #internationalHeader li.nav-link-item:has(.loc-mc-box, span>a[href*="bilibili.com/blackboard"]) {
+                #internationalHeader .nav-link-item:has(.loc-mc-box, span>a[href*="bilibili.com/blackboard"]) {
+                    display: none !important;
+                }
+                #internationalHeader .nav-link-item:has(.loc-mc-box, span>a[href*="www.bilibili.com/bangumi/play/ss"]) {
                     display: none !important;
                 }`,
         }),

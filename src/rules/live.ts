@@ -157,11 +157,20 @@ if (isPageLiveRoom()) {
             itemID: 'activity-live-auto-jump',
             description: '活动直播页 自动跳转普通直播 (实验功能)',
             enableFunc: async () => {
-                if (document.querySelector('.rendererRoot')) {
+                let cnt = 0
+                const id = setInterval(() => {
+                    if (document.querySelector('.rendererRoot, #internationalHeader')) {
                     if (!location.href.includes('/blanc/')) {
-                        window.location.href = location.href.replace('live.bilibili.com/', 'live.bilibili.com/blanc/')
+                            window.location.href = location.href.replace(
+                                'live.bilibili.com/',
+                                'live.bilibili.com/blanc/',
+                            )
+                            clearInterval(id)
                     }
                 }
+                    cnt++
+                    cnt > 50 && clearInterval(id)
+                }, 200)
             },
             enableFuncRunAt: 'document-end',
         }),

@@ -22,8 +22,8 @@ const homepagePageVideoFilterGroupList: Group[] = []
 let isContextMenuFuncRunning = false
 let isContextMenuUploaderEnable = false
 let isContextMenuBvidEnable = false
-// 带已关注tag的视频不被过滤
-let isFollowingWhitelistEnable = true
+// 带已关注tag的视频是否免过滤
+let isFollowingWhitelistEnable = false
 
 if (isPageHomepage()) {
     let videoListContainer: HTMLElement

@@ -21,8 +21,8 @@ const searchPageVideoFilterGroupList: Group[] = []
 let isContextMenuFuncRunning = false
 let isContextMenuUploaderEnable = false
 let isContextMenuBvidEnable = false
-// 推荐位UP主视频的不被过滤，默认开启
-let isTopUploaderWhitelistEnable = true
+// 推荐位UP主视频是否免过滤
+let isTopUploaderWhitelistEnable = false
 
 if (isPageSearch()) {
     let videoListContainer: HTMLElement

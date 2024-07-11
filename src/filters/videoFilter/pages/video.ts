@@ -22,9 +22,10 @@ let isContextMenuFuncRunning = false
 let isContextMenuUploaderEnable = false
 let isContextMenuBvidEnable = false
 // 接下来播放是否免过滤
-let isNextPlayWhitelistEnable = true
+let isNextPlayWhitelistEnable = false
 // 视频结束后播放器内推荐是否免过滤
-let isEndingWhitelistEnable = true
+let isEndingWhitelistEnable = false
+
 if (isPageVideo() || isPagePlaylist()) {
     let videoListContainer: HTMLElement
     // 构建SelectorFunc

@@ -157,11 +157,20 @@ if (isPageLiveRoom()) {
             itemID: 'activity-live-auto-jump',
             description: '活动直播页 自动跳转普通直播 (实验功能)',
             enableFunc: async () => {
-                if (document.querySelector('.rendererRoot')) {
-                    if (!location.href.includes('/blanc/')) {
-                        window.location.href = location.href.replace('live.bilibili.com/', 'live.bilibili.com/blanc/')
+                let cnt = 0
+                const id = setInterval(() => {
+                    if (document.querySelector('.rendererRoot, #internationalHeader')) {
+                        if (!location.href.includes('/blanc/')) {
+                            window.location.href = location.href.replace(
+                                'live.bilibili.com/',
+                                'live.bilibili.com/blanc/',
+                            )
+                            clearInterval(id)
+                        }
                     }
-                }
+                    cnt++
+                    cnt > 50 && clearInterval(id)
+                }, 200)
             },
             enableFuncRunAt: 'document-end',
         }),
@@ -503,7 +512,7 @@ if (isPageLiveRoom()) {
             description: '隐藏 互动框 (倒计时互动)',
             defaultStatus: true,
             itemCSS: `#combo-card:has(.countDownBtn) {display: none !important;}
-                    .chat-history-panel.new {padding-bottom: 0 !important;}`,
+                    .chat-history-panel {padding-bottom: 0 !important;}`,
         }),
         // 隐藏 互动框 (他们都在说), 默认开启
         new CheckboxItem({
@@ -518,6 +527,13 @@ if (isPageLiveRoom()) {
             description: '隐藏 互动框 (找TA玩)',
             defaultStatus: true,
             itemCSS: `.play-together-service-card-container {display: none !important;}`,
+        }),
+        // 隐藏 互动框 投票, 默认开启
+        new CheckboxItem({
+            itemID: 'live-page-vote-card',
+            description: '隐藏 互动框 投票',
+            defaultStatus: true,
+            itemCSS: `.vote-card {display: none !important;}`,
         }),
         // 隐藏 发送框 左侧功能按钮
         new CheckboxItem({
@@ -602,7 +618,7 @@ if (isPageLiveRoom()) {
                 #chat-control-panel-vm {
                     display: none !important;
                 }
-                .chat-history-panel, .chat-history-panel.new {
+                .chat-history-panel {
                     height: calc(100% - var(--rank-list-height, 178px) - var(--chat-control-panel-height, 145px)) !important;
                 }
                 .chat-history-panel .chat-history-list {

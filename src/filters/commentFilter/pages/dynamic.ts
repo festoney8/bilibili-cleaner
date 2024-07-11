@@ -17,10 +17,10 @@ let isContextMenuUsernameEnable = false
 // 白名单功能开关
 let isRootCommentWhitelistEnable = false
 let isSubCommentWhitelistEnable = false
-let isUploaderCommentWhitelistEnable = true
-let isPinnedCommentWhitelistEnable = true
-let isNoteCommentWhitelistEnable = true
-let isLinkCommentWhitelistEnable = true
+let isUploaderCommentWhitelistEnable = false
+let isPinnedCommentWhitelistEnable = false
+let isNoteCommentWhitelistEnable = false
+let isLinkCommentWhitelistEnable = false
 
 if (isPageDynamic()) {
     let commentListContainer: HTMLElement

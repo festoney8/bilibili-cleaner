@@ -604,13 +604,15 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-guide-all',
             description: '隐藏 一键三连',
-            itemCSS: `.bpx-player-video-area .bili-guide, .bpx-player-video-area .bili-guide-all {display: none !important;}`,
+            itemCSS: `.bpx-player-video-area :is(.bili-guide-all, .bili-guide, .bili-follow-to-electric, .bili-guide-followed) {
+                        display: none !important;
+                    }`,
         }),
         // 隐藏 投票
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-vote',
             description: '隐藏 投票',
-            itemCSS: `.bpx-player-video-area .bili-vote, .bpx-player-video-area .bili-cmd-shrink {display: none !important;}`,
+            itemCSS: `.bpx-player-video-area :is(.bili-vote, .bili-cmd-shrink) {display: none !important;}`,
         }),
         // 隐藏 播放效果调查, 默认开启
         new CheckboxItem({
@@ -1588,7 +1590,7 @@ if (isPageVideo() || isPagePlaylist()) {
             description: '禁用 新版评论区灰测 (临时功能)\n评论区功能失效时 开启本项并刷新',
             enableFunc: async () => {
                 let origValue = unsafeWindow.__INITIAL_STATE__
-                if (origValue?.abtest?.comment_next_version) {
+                if (origValue?.abtest) {
                     origValue.abtest.comment_next_version = 'DEFAULT'
                 }
                 Object.defineProperty(unsafeWindow, '__INITIAL_STATE__', {

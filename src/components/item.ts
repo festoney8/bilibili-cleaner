@@ -23,10 +23,10 @@ interface ICheckboxItemOption {
     itemID: string
     description: string
     defaultStatus?: boolean
-    enableFunc?: () => Promise<void>
+    enableFunc?: () => Promise<void> | void
     // 分别对应：立即执行，DOMContentLoaded, load
     enableFuncRunAt?: 'document-start' | 'document-end' | 'document-idle'
-    disableFunc?: () => Promise<void>
+    disableFunc?: () => Promise<void> | void
     itemCSS?: string
 }
 
@@ -125,11 +125,11 @@ export class CheckboxItem implements IItem {
                 if ((<HTMLInputElement>event.target).checked) {
                     this.setStatus(true)
                     this.insertItemCSS()
-                    this.option.enableFunc && this.option.enableFunc().then().catch()
+                    this.option.enableFunc && this.option.enableFunc()?.then().catch()
                 } else {
                     this.setStatus(false)
                     this.removeItemCSS()
-                    this.option.disableFunc && this.option.disableFunc().then().catch()
+                    this.option.disableFunc && this.option.disableFunc()?.then().catch()
                 }
             })
             debug(`watchItem ${this.option.itemID} OK`)
@@ -194,7 +194,7 @@ interface IRadioItemOption {
     radioName: string
     radioItemIDList: string[]
     defaultStatus?: boolean
-    itemFunc?: () => Promise<void>
+    itemFunc?: () => Promise<void> | void
     itemCSS?: string
 }
 
@@ -299,7 +299,7 @@ export class RadioItem implements IItem {
                     debug(`radioItem ${this.option.itemID} checked`)
                     this.setStatus(true)
                     this.insertItemCSS()
-                    this.option.itemFunc && this.option.itemFunc().then().catch()
+                    this.option.itemFunc && this.option.itemFunc()?.then().catch()
                     // 相同name的其他option自动置为uncheck, 但这一行为无法被监听, 需传入itemID逐一修改
                     this.option.radioItemIDList.forEach((targetID) => {
                         if (targetID !== this.option.itemID) {
@@ -333,7 +333,7 @@ export class RadioItem implements IItem {
             try {
                 this.insertItemCSS()
                 if (enableFunc && this.option.itemFunc) {
-                    this.option.itemFunc().then().catch()
+                    this.option.itemFunc()?.then().catch()
                 }
                 debug(`enableItem ${this.option.itemID} OK`)
             } catch (err) {
@@ -529,7 +529,7 @@ interface IButtonItemOption {
     itemID: string
     description: string
     name: string
-    itemFunc: () => Promise<void>
+    itemFunc: () => Promise<void> | void
 }
 
 /** 普通按钮 */
@@ -564,7 +564,7 @@ export class ButtonItem implements IItem {
             const itemEle = document.querySelector(`#${this.option.itemID} button`) as HTMLButtonElement
             itemEle.addEventListener('click', () => {
                 debug(`button ${this.option.itemID} click`)
-                this.option.itemFunc().then().catch()
+                this.option.itemFunc()?.then().catch()
             })
             debug(`watchItem ${this.option.itemID} OK`)
         } catch (err) {

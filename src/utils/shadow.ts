@@ -1,3 +1,5 @@
+import { error } from './logger'
+
 type shadowCSS = {
     // tagName: string
     css: string
@@ -6,22 +8,27 @@ type shadowCSS = {
 
 export class Shadow {
     // shadowRoot节点列表
-    private shadowRootMap = new Map<string, ShadowRoot[]>()
+    shadowRootMap = new Map<string, ShadowRoot[]>()
     // shadowRoot内注入style列表
-    private shadowStyleMap = new Map<string, shadowCSS[]>()
+    shadowStyleMap = new Map<string, shadowCSS[]>()
     // 需记录shadowRoot的tag名单
-    private tagSet: Set<string>
+    tagSet: Set<string>
 
     /**
      * @param tagArr 需记录shadowRoot元素的tagName列表
      */
     constructor(tagArr: string[]) {
-        this.tagSet = new Set(tagArr.map((v) => v.toUpperCase()))
         try {
             this.hook()
-        } catch {}
+        } catch (err) {
+            error('shadow hook error')
+        }
+        this.tagSet = new Set(tagArr.map((v) => v.toUpperCase()))
     }
 
+    /**
+     * hook attachShadow函数，创建shadowRoot时注入自定义规则
+     */
     hook() {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
@@ -29,35 +36,53 @@ export class Shadow {
 
         Element.prototype.attachShadow = function (init) {
             const shadowRoot = origAttachShadow.call(this, init)
-            // console.log(this.tagName, this.id, this.className)
             if (!self.tagSet.has(this.tagName)) {
                 return shadowRoot
             }
 
+            // 注入样式
+            const styles = self.shadowStyleMap.get(this.tagName)
+            styles?.forEach((v) => {
+                const style = document.createElement('style')
+                style.textContent = v.css
+                style.setAttribute('bili-cleaner-css', v.className)
+                shadowRoot.appendChild(style)
+            })
+
+            // 官方初始化节点有时会用shadowRoot.innerHTML破坏自定义style
+            let cnt = 0
+            const id = setInterval(() => {
+                if (shadowRoot.querySelector('style[bili-cleaner-css]')) {
+                    clearInterval(id)
+                }
+                styles?.forEach((v) => {
+                    const style = document.createElement('style')
+                    style.textContent = v.css
+                    style.setAttribute('bili-cleaner-css', v.className)
+                    shadowRoot.appendChild(style)
+                })
+                cnt++
+                cnt > 10 && clearInterval(id)
+            }, 100)
             // 记录节点
             if (self.shadowRootMap.has(this.tagName)) {
                 self.shadowRootMap.get(this.tagName)?.push(shadowRoot)
             } else {
                 self.shadowRootMap.set(this.tagName, [shadowRoot])
             }
-
-            // 注入样式
-            const styles = self.shadowStyleMap.get(this.tagName)
-            styles?.forEach((shadow) => {
-                const style = document.createElement('style')
-                style.textContent = shadow.css
-                style.className = shadow.className
-                shadowRoot.appendChild(style)
-            })
             return shadowRoot
         }
-        console.log('hook')
-        console.log(this.shadowRootMap)
-        console.log(this.shadowStyleMap)
     }
 
+    /**
+     * 注册css规则
+     * @param tagName shadowRoot父节点Tag名
+     * @param cssClassName css类名
+     * @param css 样式
+     */
     register(tagName: string, cssClassName: string, css: string) {
         tagName = tagName.toUpperCase()
+        css = css.replace(/\n\s*/g, '').trim()
 
         if (this.shadowStyleMap.has(tagName)) {
             this.shadowStyleMap.get(tagName)?.push({
@@ -75,14 +100,16 @@ export class Shadow {
         this.shadowRootMap.get(tagName)?.forEach((root) => {
             const style = document.createElement('style')
             style.textContent = css
-            style.className = cssClassName
+            style.setAttribute('bili-cleaner-css', cssClassName)
             root.appendChild(style)
         })
-        console.log('register')
-        console.log(this.shadowRootMap)
-        console.log(this.shadowStyleMap)
     }
 
+    /**
+     * 移除css规则
+     * @param tagName shadowRoot父节点tag名
+     * @param cssClassName css类名
+     */
     unregister(tagName: string, cssClassName: string) {
         tagName = tagName.toUpperCase()
 
@@ -90,10 +117,7 @@ export class Shadow {
         result && this.shadowStyleMap.set(tagName, result)
 
         this.shadowRootMap.get(tagName)?.forEach((root) => {
-            root.querySelector(`style.${cssClassName}`)?.remove()
+            root.querySelector(`style[bili-cleaner-css=${cssClassName}]`)?.remove()
         })
-        console.log('unregister')
-        console.log(this.shadowRootMap)
-        console.log(this.shadowStyleMap)
     }
 }

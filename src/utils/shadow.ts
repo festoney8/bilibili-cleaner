@@ -49,21 +49,6 @@ export class Shadow {
                 shadowRoot.appendChild(style)
             })
 
-            // 官方初始化节点有时会用shadowRoot.innerHTML破坏自定义style
-            let cnt = 0
-            const id = setInterval(() => {
-                if (shadowRoot.querySelector('style[bili-cleaner-css]')) {
-                    clearInterval(id)
-                }
-                styles?.forEach((v) => {
-                    const style = document.createElement('style')
-                    style.textContent = v.css
-                    style.setAttribute('bili-cleaner-css', v.className)
-                    shadowRoot.appendChild(style)
-                })
-                cnt++
-                cnt > 10 && clearInterval(id)
-            }, 100)
             // 记录节点
             if (self.shadowRootMap.has(this.tagName)) {
                 self.shadowRootMap.get(this.tagName)?.push(shadowRoot)
@@ -72,6 +57,24 @@ export class Shadow {
             }
             return shadowRoot
         }
+
+        // 官方初始化节点有时会用shadowRoot.innerHTML破坏自定义style（如BILI-RICH-TEXT, BILI-AVATAR）
+        const origShadowInnerHTML = Object.getOwnPropertyDescriptor(ShadowRoot.prototype, 'innerHTML')
+        Object.defineProperty(ShadowRoot.prototype, 'innerHTML', {
+            get() {
+                return origShadowInnerHTML!.get!.call(this)
+            },
+            set(value) {
+                const tagName = this.host.tagName
+                if (tagName && self.shadowStyleMap.has(tagName)) {
+                    const shadowStyles = self.shadowStyleMap.get(tagName)
+                    shadowStyles?.forEach((v) => {
+                        value += `\n<style bili-cleaner-css="${v.className}">${v.css}</style>`
+                    })
+                }
+                origShadowInnerHTML!.set!.call(this, value)
+            },
+        })
     }
 
     /**

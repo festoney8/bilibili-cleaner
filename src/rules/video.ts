@@ -1310,12 +1310,6 @@ if (isPageVideo() || isPagePlaylist()) {
             defaultStatus: true,
             itemCSS: `#bannerAd {display: none !important;}`,
         }),
-        // 隐藏 投票
-        new CheckboxItem({
-            itemID: 'video-page-hide-top-vote-card',
-            description: '隐藏 投票',
-            itemCSS: `.top-vote-card {display: none !important;}`,
-        }),
     ]
     videoGroupList.push(new Group('video-toolbar', '视频下方 三连/简介/Tag', toolbarItems))
 
@@ -1627,6 +1621,23 @@ if (isPageVideo() || isPagePlaylist()) {
                 })
             },
         }),
+        // 隐藏 投票栏 (红方/蓝方)
+        // 测试视频：https://www.bilibili.com/video/av1805762267
+        new CheckboxItem({
+            itemID: 'video-page-hide-top-vote-card',
+            description: '隐藏 投票栏 (红方/蓝方)',
+            itemCSS: `.top-vote-card {display: none !important;}`,
+            enableFunc: () => {
+                shadow.register(
+                    'bili-comments-header-renderer',
+                    'video-page-hide-top-vote-card',
+                    `#vote {display: none !important;}`,
+                )
+            },
+            disableFunc: () => {
+                shadow.unregister('bili-comments-header-renderer', 'video-page-hide-top-vote-card')
+            },
+        }),
         // 隐藏 活动/notice, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-reply-notice',
@@ -1747,7 +1758,7 @@ if (isPageVideo() || isPagePlaylist()) {
             },
         }),
         // 隐藏 老粉、原始粉丝Tag
-        // 测试视频 https://www.bilibili.com/video/av479061422
+        // 测试视频：https://www.bilibili.com/video/av479061422
         new CheckboxItem({
             itemID: 'video-page-hide-contractor-box',
             description: '隐藏 老粉、原始粉丝Tag',
@@ -1784,16 +1795,6 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-page-hide-sub-user-level',
             description: '隐藏 二级评论用户等级',
             itemCSS: `.sub-user-level {display: none !important;}`,
-            enableFunc: () => {
-                shadow.register(
-                    'bili-comment-user-info',
-                    'video-page-hide-sub-user-level',
-                    `#user-level {display: none !important;}`,
-                )
-            },
-            disableFunc: () => {
-                shadow.unregister('bili-comment-user-info', 'video-page-hide-sub-user-level')
-            },
         }),
         // 隐藏 用户头像饰品
         new CheckboxItem({
@@ -1830,19 +1831,20 @@ if (isPageVideo() || isPagePlaylist()) {
             },
         }),
         // 隐藏 用户投票 (红方/蓝方)
+        // 测试视频：https://www.bilibili.com/video/av1805762267
         new CheckboxItem({
             itemID: 'video-page-hide-vote-info',
             description: '隐藏 用户投票 (红方/蓝方)',
             itemCSS: `.vote-info {display: none !important;}`,
             enableFunc: () => {
                 shadow.register(
-                    'XXXXXXXXXXXXXXXXXX',
+                    'bili-comment-renderer',
                     'video-page-hide-vote-info',
-                    `xxxxxxxxx {display: none !important;}`,
+                    `bili-comment-vote-option {display: none !important;}`,
                 )
             },
             disableFunc: () => {
-                shadow.unregister('XXXXXXXXXXXXXXXXXX', 'video-page-hide-vote-info')
+                shadow.unregister('bili-comment-renderer', 'video-page-hide-vote-info')
             },
         }),
         // 隐藏 评论内容下Tag(UP觉得很赞)

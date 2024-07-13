@@ -7,6 +7,7 @@ import { ContentAction, UsernameAction } from './actions/action'
 import coreCommentFilterInstance, { CommentSelectorFunc } from '../filters/core'
 import settings from '../../../settings'
 import { ContextMenu } from '../../../components/contextmenu'
+import { unsafeWindow } from '$'
 
 const videoPageCommentFilterGroupList: Group[] = []
 
@@ -26,11 +27,11 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
     let commentListContainer: HTMLElement
     // 一级评论
     const rootCommentSelectorFunc: CommentSelectorFunc = {
-        username: (comment: Element): string | null => {
+        username: (comment: HTMLElement): string | null => {
             const username = comment.querySelector('.root-reply-container .user-name')?.textContent?.trim()
             return username ? username : null
         },
-        content: (comment: Element): string | null => {
+        content: (comment: HTMLElement): string | null => {
             let content = comment.querySelector('.root-reply-container .reply-content')?.textContent?.trim()
             const atUsers = comment.querySelectorAll('.root-reply-container .jump-link.user')
             if (atUsers.length) {
@@ -46,11 +47,11 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
     }
     // 二级评论
     const subCommentSelectorFunc: CommentSelectorFunc = {
-        username: (comment: Element): string | null => {
+        username: (comment: HTMLElement): string | null => {
             const username = comment.querySelector('.sub-user-name')?.textContent?.trim()
             return username ? username : null
         },
-        content: (comment: Element): string | null => {
+        content: (comment: HTMLElement): string | null => {
             let content = comment.querySelector('.reply-content')?.textContent?.trim()
             const atUsers = comment.querySelectorAll('.reply-content .jump-link.user')
             if (atUsers.length && content) {
@@ -65,65 +66,150 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             return content ? content : null
         },
     }
+
+    // 新版评论区 一级评论
+    const rootCommentSelectorFuncV2: CommentSelectorFunc = {
+        username: (comment: HTMLElement): string | null => {
+            const username =
+                (comment as any).__data?.member?.uname ||
+                comment.shadowRoot
+                    ?.querySelector('bili-comment-renderer')
+                    ?.shadowRoot?.querySelector('bili-comment-user-info')
+                    ?.shadowRoot?.querySelector('#user-name')
+                    ?.textContent?.trim()
+            console.log('root username', username)
+            return username ? username : null
+        },
+        content: (comment: HTMLElement): string | null => {
+            const content =
+                (comment as any).__data?.content?.message?.trim() ||
+                comment.shadowRoot
+                    ?.querySelector('bili-comment-renderer')
+                    ?.shadowRoot?.querySelector('bili-rich-text')
+                    ?.shadowRoot?.querySelector('#contents')?.textContent
+            console.log('root content', content)
+            return content ? content : null
+        },
+    }
+    // 新版评论区 二级评论
+    const subCommentSelectorFuncV2: CommentSelectorFunc = {
+        username: (comment: HTMLElement): string | null => {
+            const username =
+                (comment as any).__data?.member?.uname ||
+                comment.shadowRoot
+                    ?.querySelector('bili-comment-user-info')
+                    ?.shadowRoot?.querySelector('#user-name a')
+                    ?.textContent?.trim()
+            console.log('sub username', username)
+            return username ? username : null
+        },
+        content: (comment: HTMLElement): string | null => {
+            const contentNode = comment.shadowRoot?.querySelector('bili-rich-text')?.shadowRoot
+            let content =
+                (comment as any).__data?.content?.message?.trim() ||
+                contentNode?.querySelector('#contents')?.textContent?.trim()
+            // 忽略二级回复中@多用户情况
+            content = content.replace(/^回复 @[^@ ]+? :/, '').trim()
+            console.log('sub content', content)
+            return content ? content : null
+        },
+    }
+
     // 检测评论列表
+    let isCommentNextVersion = false
     const checkCommentList = (fullSite: boolean) => {
         if (!commentListContainer) {
             debug(`checkCommentList commentListContainer not exist`)
             return
         }
         try {
-            // 一级评论
-            let rootComments, subComments
-            if (fullSite) {
-                rootComments = commentListContainer.querySelectorAll<HTMLElement>(`.reply-item`)
-                subComments = commentListContainer.querySelectorAll<HTMLElement>(`.sub-reply-item:not(.jump-link.user)`)
+            if (isCommentNextVersion || unsafeWindow.__INITIAL_STATE__?.abtest?.comment_next_version === 'ELEMENTS') {
+                isCommentNextVersion = true
+                // shadow DOM 版评论区
+                let rootComments: HTMLElement[] = []
+                let subComments: HTMLElement[] = []
+
+                // 默认 full 模式，二级评论翻页时会复用元素，标记已过滤无意义
+                const shadowRoot = commentListContainer.querySelector('bili-comments')?.shadowRoot
+                if (!shadowRoot) {
+                    return
+                }
+                rootComments = Array.from(shadowRoot.querySelectorAll<HTMLElement>('bili-comment-thread-renderer'))
+
+                rootComments.forEach((c) => {
+                    const replys = c.shadowRoot
+                        ?.querySelector('bili-comment-replies-renderer')
+                        ?.shadowRoot?.querySelectorAll<HTMLElement>('bili-comment-reply-renderer')
+                    if (replys?.length) {
+                        subComments = subComments.concat(Array.from(replys))
+                    }
+                })
+                console.log('full模式', 'root', rootComments.length, 'sub', subComments.length)
+
+                // Todo: 白名单过滤
+
+                rootComments.length &&
+                    coreCommentFilterInstance.checkAll(rootComments, false, rootCommentSelectorFuncV2)
+                debug(`check ${rootComments.length} V2 root comments`)
+                subComments.length && coreCommentFilterInstance.checkAll(subComments, false, subCommentSelectorFuncV2)
+                debug(`check ${subComments.length} V2 sub comments`)
             } else {
-                rootComments = commentListContainer.querySelectorAll<HTMLElement>(
-                    `.reply-item:not([${settings.filterSign}])`,
-                )
-                subComments = commentListContainer.querySelectorAll<HTMLElement>(
-                    `.sub-reply-item:not(.jump-link.user):not([${settings.filterSign}])`,
-                )
+                // 一级评论
+                let rootComments, subComments
+                if (fullSite) {
+                    rootComments = commentListContainer.querySelectorAll<HTMLElement>(`.reply-item`)
+                    subComments = commentListContainer.querySelectorAll<HTMLElement>(
+                        `.sub-reply-item:not(.jump-link.user)`,
+                    )
+                } else {
+                    rootComments = commentListContainer.querySelectorAll<HTMLElement>(
+                        `.reply-item:not([${settings.filterSign}])`,
+                    )
+                    subComments = commentListContainer.querySelectorAll<HTMLElement>(
+                        `.sub-reply-item:not(.jump-link.user):not([${settings.filterSign}])`,
+                    )
+                }
+
+                // 白名单过滤
+                rootComments = Array.from(rootComments).filter((e) => {
+                    const isWhite =
+                        isRootCommentWhitelistEnable ||
+                        (isUploaderCommentWhitelistEnable && e.querySelector('.root-reply-container .up-icon')) ||
+                        (isNoteCommentWhitelistEnable && e.querySelector('.root-reply-container .note-prefix')) ||
+                        (isPinnedCommentWhitelistEnable && e.querySelector('.root-reply-container .top-icon')) ||
+                        (isLinkCommentWhitelistEnable &&
+                            e.querySelector(
+                                `.root-reply-container .jump-link.video-time,
+                                .root-reply-container .jump-link.normal,
+                                .root-reply-container .jump-link.video`,
+                            ))
+                    if (isWhite) {
+                        showEle(e)
+                    }
+                    return !isWhite
+                })
+                subComments = Array.from(subComments).filter((e) => {
+                    const isWhite =
+                        isSubCommentWhitelistEnable ||
+                        (isUploaderCommentWhitelistEnable && e.querySelector('.sub-up-icon')) ||
+                        (isLinkCommentWhitelistEnable &&
+                            e.querySelector(
+                                `.jump-link.video-time,
+                                .jump-link.normal,
+                                .jump-link.video`,
+                            ))
+
+                    if (isWhite) {
+                        showEle(e)
+                    }
+                    return !isWhite
+                })
+                rootComments.length &&
+                    coreCommentFilterInstance.checkAll([...rootComments], true, rootCommentSelectorFunc)
+                debug(`check ${rootComments.length} root comments`)
+                subComments.length && coreCommentFilterInstance.checkAll([...subComments], true, subCommentSelectorFunc)
+                debug(`check ${subComments.length} sub comments`)
             }
-
-            // 白名单过滤
-            rootComments = Array.from(rootComments).filter((e) => {
-                const isWhite =
-                    isRootCommentWhitelistEnable ||
-                    (isUploaderCommentWhitelistEnable && e.querySelector('.root-reply-container .up-icon')) ||
-                    (isNoteCommentWhitelistEnable && e.querySelector('.root-reply-container .note-prefix')) ||
-                    (isPinnedCommentWhitelistEnable && e.querySelector('.root-reply-container .top-icon')) ||
-                    (isLinkCommentWhitelistEnable &&
-                        e.querySelector(
-                            `.root-reply-container .jump-link.video-time,
-                            .root-reply-container .jump-link.normal,
-                            .root-reply-container .jump-link.video`,
-                        ))
-                if (isWhite) {
-                    showEle(e)
-                }
-                return !isWhite
-            })
-            subComments = Array.from(subComments).filter((e) => {
-                const isWhite =
-                    isSubCommentWhitelistEnable ||
-                    (isUploaderCommentWhitelistEnable && e.querySelector('.sub-up-icon')) ||
-                    (isLinkCommentWhitelistEnable &&
-                        e.querySelector(
-                            `.jump-link.video-time,
-                            .jump-link.normal,
-                            .jump-link.video`,
-                        ))
-
-                if (isWhite) {
-                    showEle(e)
-                }
-                return !isWhite
-            })
-            rootComments.length && coreCommentFilterInstance.checkAll([...rootComments], true, rootCommentSelectorFunc)
-            debug(`check ${rootComments.length} root comments`)
-            subComments.length && coreCommentFilterInstance.checkAll([...subComments], true, subCommentSelectorFunc)
-            debug(`check ${subComments.length} sub comments`)
         } catch (err) {
             error(err)
             error('checkCommentList error')
@@ -154,6 +240,13 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 }
             })
             commentObserver.observe(commentListContainer, { childList: true, subtree: true })
+
+            // 新版 shadow DOM 评论区
+            setInterval(() => {
+                if (usernameAction.status || contentAction.status) {
+                    checkCommentList(true)
+                }
+            }, 2000)
         }
     }
 

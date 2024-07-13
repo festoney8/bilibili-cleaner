@@ -2231,6 +2231,7 @@ if (isPageVideo() || isPagePlaylist()) {
                     'bili-photoswipe',
                     'video-page-reply-view-image-optimize',
                     `#wrap:has(#thumb:empty) :is(#prev, #next) {display: none !important;}
+                    #prev, #next {zoom: 1.3;}
                     #thumb {display: none !important;}`,
                 )
             },

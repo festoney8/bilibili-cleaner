@@ -2100,7 +2100,7 @@ if (isPageVideo() || isPagePlaylist()) {
                 shadow.register(
                     'bili-rich-text',
                     'video-page-hide-emoji-large',
-                    `#contents img {display: none !important;}`,
+                    `#contents img:is(.emoji-large, [style^="width:50px"]) {display: none !important;}`,
                 )
             },
             disableFunc: () => {
@@ -2117,7 +2117,7 @@ if (isPageVideo() || isPagePlaylist()) {
                 shadow.register(
                     'bili-rich-text',
                     'video-page-hide-emoji-large-zoom',
-                    `#contents img {zoom: 0.5 !important;}`,
+                    `#contents img:is(.emoji-large, [style^="width:50px"]) {zoom: 0.5 !important;}`,
                 )
             },
             disableFunc: () => {

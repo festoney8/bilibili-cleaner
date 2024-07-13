@@ -1625,7 +1625,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 测试视频：https://www.bilibili.com/video/av1805762267
         new CheckboxItem({
             itemID: 'video-page-hide-top-vote-card',
-            description: '隐藏 投票栏 (红方/蓝方)',
+            description: '隐藏 投票栏 (红方/蓝方) ★',
             itemCSS: `.top-vote-card {display: none !important;}`,
             enableFunc: () => {
                 shadow.register(
@@ -1641,7 +1641,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 隐藏 活动/notice, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-reply-notice',
-            description: '隐藏 活动/notice',
+            description: '隐藏 活动/notice ★',
             defaultStatus: true,
             itemCSS: `.reply-header .reply-notice {display: none !important;}`,
             enableFunc: () => {
@@ -1658,7 +1658,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 隐藏 评论编辑器
         new CheckboxItem({
             itemID: 'video-page-hide-main-reply-box',
-            description: '隐藏 评论编辑器',
+            description: '隐藏 评论编辑器 ★',
             // 不可使用display: none, 会使底部吸附评论框宽度变化
             itemCSS: `.main-reply-box {height: 0 !important; visibility: hidden !important;}
                 .comment-container .reply-list {margin-top: -20px !important;}`,
@@ -1677,7 +1677,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 隐藏 评论编辑器内占位文字, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-reply-box-textarea-placeholder',
-            description: '隐藏 评论编辑器内占位文字',
+            description: '隐藏 评论编辑器内占位文字 ★',
             defaultStatus: true,
             itemCSS: `.main-reply-box .reply-box-textarea::placeholder {color: transparent !important; user-select: none;}
                 .fixed-reply-box .reply-box-textarea::placeholder {color: transparent !important; user-select: none;}`,
@@ -1695,7 +1695,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 隐藏 页面底部 吸附评论框, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-fixed-reply-box',
-            description: '隐藏 页面底部 吸附评论框',
+            description: '隐藏 页面底部 吸附评论框 ★',
             defaultStatus: true,
             itemCSS: `.fixed-reply-box {display: none !important;}`,
             enableFunc: () => {
@@ -1712,7 +1712,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 隐藏 用户卡片
         new CheckboxItem({
             itemID: 'video-page-hide-comment-user-card',
-            description: '隐藏 用户卡片\n鼠标放在用户名上时不显示卡片',
+            description: '隐藏 用户卡片\n鼠标放在用户名上时不显示卡片 ★',
             itemCSS: `.user-card {display: none!important;}`,
             enableFunc: () => {
                 shadow.register(
@@ -1728,7 +1728,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 隐藏 评论右侧装饰
         new CheckboxItem({
             itemID: 'video-page-hide-reply-decorate',
-            description: '隐藏 评论右侧装饰',
+            description: '隐藏 评论右侧装饰 ★',
             itemCSS: `.reply-decorate {display: none !important;}`,
             enableFunc: () => {
                 shadow.register(
@@ -1744,7 +1744,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 隐藏 粉丝牌
         new CheckboxItem({
             itemID: 'video-page-hide-fan-badge',
-            description: '隐藏 粉丝牌',
+            description: '隐藏 粉丝牌 ★',
             itemCSS: `.fan-badge {display: none !important;}`,
             enableFunc: () => {
                 shadow.register(
@@ -1761,7 +1761,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 测试视频：https://www.bilibili.com/video/av479061422
         new CheckboxItem({
             itemID: 'video-page-hide-contractor-box',
-            description: '隐藏 老粉、原始粉丝Tag',
+            description: '隐藏 老粉、原始粉丝Tag ★',
             itemCSS: `.contractor-box {display: none !important;}`,
             enableFunc: () => {
                 shadow.register(
@@ -1777,13 +1777,14 @@ if (isPageVideo() || isPagePlaylist()) {
         // 隐藏 一级评论用户等级
         new CheckboxItem({
             itemID: 'video-page-hide-user-level',
-            description: '隐藏 一级评论用户等级',
+            description: '隐藏 一级评论用户等级 ★',
             itemCSS: `.user-level {display: none !important;}`,
             enableFunc: () => {
                 shadow.register(
                     'bili-comment-user-info',
                     'video-page-hide-user-level',
-                    `#user-level {display: none !important;}`,
+                    `#user-level {display: none !important;}
+                    #user-name {margin-right: 5px;}`,
                 )
             },
             disableFunc: () => {
@@ -1799,7 +1800,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 隐藏 用户头像饰品
         new CheckboxItem({
             itemID: 'video-page-hide-bili-avatar-pendent-dom',
-            description: '隐藏 用户头像饰品',
+            description: '隐藏 用户头像饰品 ★',
             itemCSS: `.root-reply-avatar .bili-avatar-pendent-dom {display: none !important;}
             .comment-container .root-reply-avatar .bili-avatar {width: 48px !important; height:48px !important;}`,
             enableFunc: () => {
@@ -1816,7 +1817,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 隐藏 用户头像徽章
         new CheckboxItem({
             itemID: 'video-page-hide-bili-avatar-nft-icon',
-            description: '隐藏 用户头像徽章',
+            description: '隐藏 用户头像徽章 ★',
             itemCSS: `.bili-avatar-nft-icon {display: none !important;}
                 .comment-container .bili-avatar-icon {display: none !important;}`,
             enableFunc: () => {
@@ -1834,7 +1835,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 测试视频：https://www.bilibili.com/video/av1805762267
         new CheckboxItem({
             itemID: 'video-page-hide-vote-info',
-            description: '隐藏 用户投票 (红方/蓝方)',
+            description: '隐藏 用户投票 (红方/蓝方) ★',
             itemCSS: `.vote-info {display: none !important;}`,
             enableFunc: () => {
                 shadow.register(
@@ -1850,7 +1851,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 隐藏 评论内容下Tag(UP觉得很赞)
         new CheckboxItem({
             itemID: 'video-page-hide-reply-tag-list',
-            description: '隐藏 评论内容下Tag(UP觉得很赞)',
+            description: '隐藏 评论内容下Tag(UP觉得很赞) ★',
             itemCSS: `.reply-tag-list {display: none !important;}`,
             enableFunc: () => {
                 shadow.register(
@@ -1866,7 +1867,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 隐藏 笔记评论前的小Logo, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-note-prefix',
-            description: '隐藏 笔记评论前的小Logo',
+            description: '隐藏 笔记评论前的小Logo ★',
             defaultStatus: true,
             itemCSS: `.note-prefix {display: none !important;}`,
             enableFunc: () => {
@@ -1884,7 +1885,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 测试视频：https://www.bilibili.com/video/av1406084552
         new CheckboxItem({
             itemID: 'video-page-hide-jump-link-search-word',
-            description: '禁用 评论内容搜索关键词高亮',
+            description: '禁用 评论内容搜索关键词高亮 ★',
             defaultStatus: true,
             itemCSS: `.reply-content .jump-link.search-word {color: inherit !important;}
                 .comment-container .reply-content .jump-link.search-word:hover {color: #008AC5 !important;}
@@ -1906,15 +1907,15 @@ if (isPageVideo() || isPagePlaylist()) {
         // 禁用 二级评论中的@高亮
         new CheckboxItem({
             itemID: 'video-page-hide-reply-content-user-highlight',
-            description: '禁用 二级评论中的@高亮',
+            description: '禁用 二级评论中的@高亮 ★',
             itemCSS: `.sub-reply-container .reply-content .jump-link.user {color: inherit !important;}
                 .comment-container .sub-reply-container .reply-content .jump-link.user:hover {color: #40C5F1 !important;}`,
             enableFunc: () => {
                 shadow.register(
                     'bili-rich-text',
                     'video-page-hide-reply-content-user-highlight',
-                    `#contents a[href*="search.bilibili.com"] {color: inherit !important;}
-                    #contents a[href*="search.bilibili.com"]:hover {color: #008AC5 !important;}
+                    `#contents a[href*="space.bilibili.com"] {color: inherit !important;}
+                    #contents a[href*="space.bilibili.com"]:hover {color: #008AC5 !important;}
                     `,
                 )
             },
@@ -1947,25 +1948,27 @@ if (isPageVideo() || isPagePlaylist()) {
                 // 91394217 @AI全文总结
                 // 473018527 @AI视频总结
                 // 3546639035795567 @AI总结视频
-                `.reply-item:has(.jump-link.user[data-user-id="8455326"]),
-                .reply-item:has(.jump-link.user[data-user-id="234978716"]),
-                .reply-item:has(.jump-link.user[data-user-id="1141159409"]),
-                .reply-item:has(.jump-link.user[data-user-id="437175450"]),
-                .reply-item:has(.jump-link.user[data-user-id="1692825065"]),
-                .reply-item:has(.jump-link.user[data-user-id="690155730"]),
-                .reply-item:has(.jump-link.user[data-user-id="689670224"]),
-                .reply-item:has(.jump-link.user[data-user-id="3494380876859618"]),
-                .reply-item:has(.jump-link.user[data-user-id="1168527940"]),
-                .reply-item:has(.jump-link.user[data-user-id="439438614"]),
-                .reply-item:has(.jump-link.user[data-user-id="1358327273"]),
-                .reply-item:has(.jump-link.user[data-user-id="3546376048741135"]),
-                .reply-item:has(.jump-link.user[data-user-id="1835753760"]),
-                .reply-item:has(.jump-link.user[data-user-id="9868463"]),
-                .reply-item:has(.jump-link.user[data-user-id="358243654"]),
-                .reply-item:has(.jump-link.user[data-user-id="393788832"]),
-                .reply-item:has(.jump-link.user[data-user-id="91394217"]),
-                .reply-item:has(.jump-link.user[data-user-id="473018527"]),
-                .reply-item:has(.jump-link.user[data-user-id="3546639035795567"]) {
+                `.reply-item:has(.jump-link.user:is(
+                    [data-user-id="8455326"],
+                    [data-user-id="234978716"],
+                    [data-user-id="1141159409"],
+                    [data-user-id="437175450"],
+                    [data-user-id="1692825065"],
+                    [data-user-id="690155730"],
+                    [data-user-id="689670224"],
+                    [data-user-id="3494380876859618"],
+                    [data-user-id="1168527940"],
+                    [data-user-id="439438614"],
+                    [data-user-id="1358327273"],
+                    [data-user-id="3546376048741135"],
+                    [data-user-id="1835753760"],
+                    [data-user-id="9868463"],
+                    [data-user-id="358243654"],
+                    [data-user-id="393788832"],
+                    [data-user-id="91394217"],
+                    [data-user-id="473018527"],
+                    [data-user-id="3546639035795567"]
+                )) {
                     display: none !important;
                 }`,
         }),
@@ -1987,32 +1990,33 @@ if (isPageVideo() || isPagePlaylist()) {
                 // 439438614 @木几萌Moe
                 // 1358327273 @星崽丨StarZai
                 // 3546376048741135 @AI沈阳美食家
-                // 1835753760 @AI识片酱
                 // 9868463 @AI头脑风暴
                 // 358243654 @GPT_5
                 // 393788832 @Juice_AI
                 // 91394217 @AI全文总结
                 // 473018527 @AI视频总结
                 // 3546639035795567 @AI总结视频
-                `.reply-item:has(.root-reply-container .user-name[data-user-id="8455326"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="234978716"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="1141159409"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="437175450"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="1692825065"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="690155730"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="689670224"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="3494380876859618"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="1168527940"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="439438614"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="1358327273"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="3546376048741135"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="1835753760"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="9868463"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="358243654"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="393788832"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="91394217"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="473018527"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="3546639035795567"]) {
+                // 普通视频页不隐藏 1835753760 @AI识片酱 发布的评论
+                `.reply-item:has(.root-reply-container .user-name:is(
+                    [data-user-id="8455326"],
+                    [data-user-id="234978716"],
+                    [data-user-id="1141159409"],
+                    [data-user-id="437175450"],
+                    [data-user-id="1692825065"],
+                    [data-user-id="690155730"],
+                    [data-user-id="689670224"],
+                    [data-user-id="3494380876859618"],
+                    [data-user-id="1168527940"],
+                    [data-user-id="439438614"],
+                    [data-user-id="1358327273"],
+                    [data-user-id="3546376048741135"],
+                    [data-user-id="9868463"],
+                    [data-user-id="358243654"],
+                    [data-user-id="393788832"],
+                    [data-user-id="91394217"],
+                    [data-user-id="473018527"],
+                    [data-user-id="3546639035795567"]
+                )) {
                     display: none !important;
                 }`,
         }),
@@ -2090,7 +2094,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 测试视频：https://www.bilibili.com/video/av1406211916
         new CheckboxItem({
             itemID: 'video-page-hide-emoji-large',
-            description: '隐藏 大表情',
+            description: '隐藏 大表情 ★',
             itemCSS: `.emoji-large {display: none !important;}`,
             enableFunc: () => {
                 shadow.register(
@@ -2107,7 +2111,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 测试视频：https://www.bilibili.com/video/av1406211916
         new CheckboxItem({
             itemID: 'video-page-hide-emoji-large-zoom',
-            description: '大表情变成小表情',
+            description: '大表情变成小表情 ★',
             itemCSS: `.emoji-large {zoom: 0.5;}`,
             enableFunc: () => {
                 shadow.register(
@@ -2123,7 +2127,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 用户名 全部大会员色
         new CheckboxItem({
             itemID: 'video-page-reply-user-name-color-pink',
-            description: '用户名 全部大会员色',
+            description: '用户名 全部大会员色 ★',
             itemCSS: `.reply-item .user-name, .comment-container .reply-item .sub-user-name {color: #FB7299 !important;}`,
             enableFunc: () => {
                 shadow.register(
@@ -2140,7 +2144,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 用户名 全部恢复默认色
         new CheckboxItem({
             itemID: 'video-page-reply-user-name-color-default',
-            description: '用户名 全部恢复默认色',
+            description: '用户名 全部恢复默认色 ★',
             itemCSS: `.reply-item .user-name, .comment-container .reply-item .sub-user-name {color: #61666d !important;}`,
             enableFunc: () => {
                 shadow.register(
@@ -2158,7 +2162,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 测试视频：https://www.bilibili.com/video/av34205337
         new CheckboxItem({
             itemID: 'video-page-reply-view-image-optimize',
-            description: '笔记图片 查看大图优化',
+            description: '笔记图片 查看大图优化 ★',
             defaultStatus: true,
             // 单图模式隐藏底部图片列表, 多图模式淡化列表, hover复原, 左右按钮增大
             itemCSS: `.reply-view-image .last-image, .reply-view-image .next-image {zoom: 1.4;}
@@ -2180,11 +2184,11 @@ if (isPageVideo() || isPagePlaylist()) {
         // 隐藏 整个评论区 #42
         new CheckboxItem({
             itemID: 'video-page-hide-comment',
-            description: '隐藏 整个评论区',
+            description: '隐藏 整个评论区 ★',
             itemCSS: `#comment, #comment-module {display: none;}`,
         }),
     ]
-    videoGroupList.push(new Group('video-comment', '评论区', commentItems))
+    videoGroupList.push(new Group('video-comment', '评论区 (标★已适配新版评论区)', commentItems))
 
     // 右下角
     const sidebarItems = [

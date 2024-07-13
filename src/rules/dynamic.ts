@@ -520,25 +520,27 @@ if (isPageDynamic()) {
                 // 91394217 @AI全文总结
                 // 473018527 @AI视频总结
                 // 3546639035795567 @AI总结视频
-                `.reply-item:has(.jump-link.user[data-user-id="8455326"]),
-                .reply-item:has(.jump-link.user[data-user-id="234978716"]),
-                .reply-item:has(.jump-link.user[data-user-id="1141159409"]),
-                .reply-item:has(.jump-link.user[data-user-id="437175450"]),
-                .reply-item:has(.jump-link.user[data-user-id="1692825065"]),
-                .reply-item:has(.jump-link.user[data-user-id="690155730"]),
-                .reply-item:has(.jump-link.user[data-user-id="689670224"]),
-                .reply-item:has(.jump-link.user[data-user-id="3494380876859618"]),
-                .reply-item:has(.jump-link.user[data-user-id="1168527940"]),
-                .reply-item:has(.jump-link.user[data-user-id="439438614"]),
-                .reply-item:has(.jump-link.user[data-user-id="1358327273"]),
-                .reply-item:has(.jump-link.user[data-user-id="3546376048741135"]),
-                .reply-item:has(.jump-link.user[data-user-id="1835753760"]),
-                .reply-item:has(.jump-link.user[data-user-id="9868463"]),
-                .reply-item:has(.jump-link.user[data-user-id="358243654"]),
-                .reply-item:has(.jump-link.user[data-user-id="393788832"]),
-                .reply-item:has(.jump-link.user[data-user-id="91394217"]),
-                .reply-item:has(.jump-link.user[data-user-id="473018527"]),
-                .reply-item:has(.jump-link.user[data-user-id="3546639035795567"]) {
+                `.reply-item:has(.jump-link.user:is(
+                    [data-user-id="8455326"],
+                    [data-user-id="234978716"],
+                    [data-user-id="1141159409"],
+                    [data-user-id="437175450"],
+                    [data-user-id="1692825065"],
+                    [data-user-id="690155730"],
+                    [data-user-id="689670224"],
+                    [data-user-id="3494380876859618"],
+                    [data-user-id="1168527940"],
+                    [data-user-id="439438614"],
+                    [data-user-id="1358327273"],
+                    [data-user-id="3546376048741135"],
+                    [data-user-id="1835753760"],
+                    [data-user-id="9868463"],
+                    [data-user-id="358243654"],
+                    [data-user-id="393788832"],
+                    [data-user-id="91394217"],
+                    [data-user-id="473018527"],
+                    [data-user-id="3546639035795567"]
+                )) {
                     display: none !important;
                 }`,
         }),
@@ -567,25 +569,27 @@ if (isPageDynamic()) {
                 // 91394217 @AI全文总结
                 // 473018527 @AI视频总结
                 // 3546639035795567 @AI总结视频
-                `.reply-item:has(.root-reply-container .user-name[data-user-id="8455326"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="234978716"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="1141159409"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="437175450"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="1692825065"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="690155730"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="689670224"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="3494380876859618"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="1168527940"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="439438614"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="1358327273"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="3546376048741135"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="1835753760"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="9868463"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="358243654"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="393788832"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="91394217"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="473018527"]),
-                .reply-item:has(.root-reply-container .user-name[data-user-id="3546639035795567"]) {
+                `.reply-item:has(.root-reply-container .user-name:is(
+                    [data-user-id="8455326"],
+                    [data-user-id="234978716"],
+                    [data-user-id="1141159409"],
+                    [data-user-id="437175450"],
+                    [data-user-id="1692825065"],
+                    [data-user-id="690155730"],
+                    [data-user-id="689670224"],
+                    [data-user-id="3494380876859618"],
+                    [data-user-id="1168527940"],
+                    [data-user-id="439438614"],
+                    [data-user-id="1358327273"],
+                    [data-user-id="3546376048741135"],
+                    [data-user-id="1835753760"],
+                    [data-user-id="9868463"],
+                    [data-user-id="358243654"],
+                    [data-user-id="393788832"],
+                    [data-user-id="91394217"],
+                    [data-user-id="473018527"],
+                    [data-user-id="3546639035795567"]
+                )) {
                     display: none !important;
                 }`,
         }),

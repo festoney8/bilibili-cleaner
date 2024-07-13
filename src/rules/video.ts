@@ -48,12 +48,13 @@ const shadow = new Shadow([
     'bili-photoswipe', // 全屏图片查看(笔记图片)
     'bili-user-profile', // 用户卡片
     'bili-comment-user-medal', // 昵称后勋章
+    'bili-comment-action-buttons-renderer', // 赞踩回复按钮区域
+    'bili-comment-reply-renderer', // 单个二级评论
     // 'bili-comments', // 评论区板块
     // 'bili-comments-notice', // 活动通知notice
     // 'bili-comment-box', // 主编辑器、底部编辑器
     // 'bili-comment-thread-renderer', // 评论（含回复）
     // 'bili-comment-replies-renderer', // 多个二级评论
-    // 'bili-comment-reply-renderer', // 单个二级评论
     // 'bili-comment-user-sailing-card', // 一级评论右侧饰品
 ])
 
@@ -2053,7 +2054,7 @@ if (isPageVideo() || isPagePlaylist()) {
         // 一级评论 踩/回复 只在hover时显示, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-root-reply-dislike-reply-btn',
-            description: '一级评论 踩/回复 只在hover时显示',
+            description: '一级评论 踩/回复 只在hover时显示 ★',
             defaultStatus: true,
             itemCSS: `
                 .reply-item:not(:has(i.disliked)) :is(.reply-btn, .reply-dislike) {
@@ -2069,11 +2070,40 @@ if (isPageVideo() || isPagePlaylist()) {
                     animation-delay: 0.3s;
                     animation-fill-mode: forwards;
                 }`,
+            enableFunc: () => {
+                /* 借用more button的display样式，改为传透明度值 */
+                shadow.register(
+                    'bili-comment-renderer',
+                    'video-page-hide-root-reply-dislike-reply-btn',
+                    `#body {
+                        --bili-comment-hover-more-display: 0 !important;
+                    }
+                    #body:hover {
+                        --bili-comment-hover-more-display: 1 !important;
+                    }`,
+                )
+                shadow.register(
+                    'bili-comment-action-buttons-renderer',
+                    'video-page-hide-root-reply-dislike-reply-btn',
+                    `#dislike button, #reply button, #more button {
+                        display: block !important;
+                        opacity: var(--bili-comment-action-buttons-more-display);
+                        transition: opacity 0.2s 0.3s;
+                    }`,
+                )
+            },
+            disableFunc: () => {
+                shadow.unregister('bili-comment-renderer', 'video-page-hide-root-reply-dislike-reply-btn')
+                shadow.unregister(
+                    'bili-comment-action-buttons-renderer',
+                    'video-page-hide-root-reply-dislike-reply-btn',
+                )
+            },
         }),
         // 二级评论 踩/回复 只在hover时显示, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-sub-reply-dislike-reply-btn',
-            description: '二级评论 踩/回复 只在hover时显示',
+            description: '二级评论 踩/回复 只在hover时显示 ★',
             defaultStatus: true,
             itemCSS: `
                 .sub-reply-item:not(:has(i.disliked)) :is(.sub-reply-btn, .sub-reply-dislike) {
@@ -2089,6 +2119,33 @@ if (isPageVideo() || isPagePlaylist()) {
                     animation-delay: 0.3s;
                     animation-fill-mode: forwards;
                 }`,
+            enableFunc: () => {
+                /* 借用more button的display样式，改为传透明度值 */
+                shadow.register(
+                    'bili-comment-reply-renderer',
+                    'video-page-hide-sub-reply-dislike-reply-btn',
+                    `
+                    #body {
+                        --bili-comment-hover-more-display: 0 !important;
+                    }
+                    #body:hover {
+                        --bili-comment-hover-more-display: 1 !important;
+                    }`,
+                )
+                shadow.register(
+                    'bili-comment-action-buttons-renderer',
+                    'video-page-hide-sub-reply-dislike-reply-btn',
+                    `#dislike button, #reply button, #more button {
+                        display: block !important;
+                        opacity: var(--bili-comment-action-buttons-more-display);
+                        transition: opacity 0.2s 0.3s;
+                    }`,
+                )
+            },
+            disableFunc: () => {
+                shadow.unregister('bili-comment-reply-renderer', 'video-page-hide-sub-reply-dislike-reply-btn')
+                shadow.unregister('bili-comment-action-buttons-renderer', 'video-page-hide-sub-reply-dislike-reply-btn')
+            },
         }),
         // 隐藏 大表情
         // 测试视频：https://www.bilibili.com/video/av1406211916

@@ -1686,7 +1686,7 @@ if (isPageVideo() || isPagePlaylist()) {
                 shadow.register(
                     'bili-comment-textarea',
                     'video-page-hide-reply-box-textarea-placeholder',
-                    `textarea::placeholder {color: transparent !important; user-select: none;}`,
+                    `textarea:not([placeholder^="回复"])::placeholder {color: transparent !important; user-select: none;}`,
                 )
             },
             disableFunc: () => {

@@ -495,7 +495,7 @@ if (isPageHomepage()) {
             enableFunc: async () => {
                 // hook fetch
                 const origFetch = unsafeWindow.fetch
-                unsafeWindow.fetch = (input, init?) => {
+                unsafeWindow.fetch = async (input, init?) => {
                     if (
                         typeof input === 'string' &&
                         input.includes('api.bilibili.com') &&

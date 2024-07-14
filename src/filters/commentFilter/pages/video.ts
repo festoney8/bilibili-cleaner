@@ -1,6 +1,6 @@
 import { Group } from '../../../components/group'
 import { CheckboxItem, ButtonItem } from '../../../components/item'
-import { debugCommentFilter as debug, error, log } from '../../../utils/logger'
+import { debugCommentFilter as debug, error } from '../../../utils/logger'
 import { isPageBangumi, isPagePlaylist, isPageVideo } from '../../../utils/pageType'
 import { showEle, waitForEle } from '../../../utils/tool'
 import { ContentAction, UsernameAction } from './actions/action'
@@ -10,6 +10,14 @@ import { ContextMenu } from '../../../components/contextmenu'
 import { unsafeWindow } from '$'
 
 const videoPageCommentFilterGroupList: Group[] = []
+
+let isV2 = false
+const isCommentV2 = () => {
+    if (!isV2) {
+        isV2 = unsafeWindow.__INITIAL_STATE__?.abtest?.comment_next_version === 'ELEMENTS'
+    }
+    return isV2
+}
 
 // 右键菜单功能
 let isContextMenuFuncRunning = false
@@ -112,15 +120,13 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
     }
 
     // 检测评论列表
-    let isCommentNextVersion = false
     const checkCommentList = (fullSite: boolean) => {
         if (!commentListContainer) {
             debug(`checkCommentList commentListContainer not exist`)
             return
         }
         try {
-            if (isCommentNextVersion || unsafeWindow.__INITIAL_STATE__?.abtest?.comment_next_version === 'ELEMENTS') {
-                isCommentNextVersion = true
+            if (isCommentV2()) {
                 // shadow DOM 版评论区
                 let rootComments: HTMLElement[] = []
                 let subComments: HTMLElement[] = []
@@ -140,7 +146,14 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                         subComments = subComments.concat(Array.from(replys))
                     }
                 })
-                log('full模式', 'root', rootComments.length, 'sub', subComments.length)
+                // console.log(
+                //     performance.now().toFixed(0),
+                //     'full模式',
+                //     'root',
+                //     rootComments.length,
+                //     'sub',
+                //     subComments.length,
+                // )
 
                 // Todo: 白名单过滤
 
@@ -212,6 +225,39 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         }
     }
 
+    const checkV2 = () => {
+        if (usernameAction.status || contentAction.status) {
+            checkCommentList(true)
+        }
+    }
+    /**
+     * hook fetch, 获取评论相关API时触发检测
+     * 多层 Shadow DOM 套娃对MutationObserver不友好
+     * 切换视频会导致observe对象被替换
+     * 使用监听一级二级评论载入方法触发评论区检测
+     */
+    // Todo: 统一全站fetch hook
+    const origFetch = unsafeWindow.fetch
+    unsafeWindow.fetch = async (input, init?) => {
+        if (isCommentV2()) {
+            if (
+                typeof input === 'string' &&
+                init?.method?.toUpperCase() === 'GET' &&
+                input.includes('api.bilibili.com') &&
+                (input.includes('/v2/reply/reply') || input.includes('/v2/reply/wbi/main'))
+            ) {
+                const resp = await origFetch(input, init)
+                setTimeout(checkV2, 100)
+                setTimeout(checkV2, 200)
+                setTimeout(checkV2, 500)
+                setTimeout(checkV2, 1000)
+                setTimeout(checkV2, 2000)
+                return resp
+            }
+        }
+        return origFetch(input, init)
+    }
+
     // 配置 行为实例
     const usernameAction = new UsernameAction(
         'video-comment-username-filter-status',
@@ -226,7 +272,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
 
     // 监听评论列表内部变化, 有变化时检测评论列表
     const watchCommentListContainer = () => {
-        if (commentListContainer) {
+        if (commentListContainer && !isCommentV2()) {
             if (usernameAction.status || contentAction.status) {
                 checkCommentList(true)
             }
@@ -236,44 +282,6 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 }
             })
             commentObserver.observe(commentListContainer, { childList: true, subtree: true })
-
-            // 新版评论区 监听button click
-            commentListContainer.addEventListener('click', (e) => {
-                if (usernameAction.status || contentAction.status) {
-                    if (e.target instanceof HTMLElement) {
-                        const target = e.composedPath()[0] as HTMLElement
-                        if (target && target.tagName === 'BUTTON' && target.className.trim().includes('button')) {
-                            log('check btn')
-                            let cnt = 0
-                            const id = setInterval(() => {
-                                checkCommentList(true)
-                                cnt++
-                                cnt >= 10 && clearInterval(id)
-                            }, 200)
-                        }
-                    }
-                }
-            })
-            let feedCnt = 0
-            const id = setInterval(() => {
-                const feed = commentListContainer.querySelector('bili-comments')?.shadowRoot?.querySelector('#feed')
-                if (feed) {
-                    if (usernameAction.status || contentAction.status) {
-                        log('check feed')
-                        checkCommentList(true)
-                    }
-                    const commentObserver = new MutationObserver(() => {
-                        if (usernameAction.status || contentAction.status) {
-                            log('check feed')
-                            checkCommentList(true)
-                        }
-                    })
-                    commentObserver.observe(feed, { childList: true })
-                    clearInterval(id)
-                }
-                feedCnt++
-                feedCnt > 20 && clearInterval(id)
-            }, 500)
         }
     }
 

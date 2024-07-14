@@ -131,21 +131,37 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 let rootComments: HTMLElement[] = []
                 let subComments: HTMLElement[] = []
 
-                // 默认 full 模式，二级评论翻页时会复用元素，标记已过滤无意义
                 const shadowRoot = commentListContainer.querySelector('bili-comments')?.shadowRoot
                 if (!shadowRoot) {
                     return
                 }
-                rootComments = Array.from(shadowRoot.querySelectorAll<HTMLElement>('bili-comment-thread-renderer'))
-
-                rootComments.forEach((c) => {
-                    const replys = c.shadowRoot
-                        ?.querySelector('bili-comment-replies-renderer')
-                        ?.shadowRoot?.querySelectorAll<HTMLElement>('bili-comment-reply-renderer')
-                    if (replys?.length) {
-                        subComments = subComments.concat(Array.from(replys))
-                    }
-                })
+                if (fullSite) {
+                    rootComments = Array.from(shadowRoot.querySelectorAll<HTMLElement>('bili-comment-thread-renderer'))
+                    rootComments.forEach((c) => {
+                        const replys = c.shadowRoot
+                            ?.querySelector('bili-comment-replies-renderer')
+                            ?.shadowRoot?.querySelectorAll<HTMLElement>('bili-comment-reply-renderer')
+                        if (replys?.length) {
+                            subComments = subComments.concat(Array.from(replys))
+                        }
+                    })
+                } else {
+                    rootComments = Array.from(
+                        shadowRoot.querySelectorAll<HTMLElement>(
+                            `bili-comment-thread-renderer:not([${settings.filterSign}])`,
+                        ),
+                    )
+                    rootComments.forEach((c) => {
+                        const replys = c.shadowRoot
+                            ?.querySelector('bili-comment-replies-renderer')
+                            ?.shadowRoot?.querySelectorAll<HTMLElement>(
+                                `bili-comment-reply-renderer:not([${settings.filterSign}])`,
+                            )
+                        if (replys?.length) {
+                            subComments = subComments.concat(Array.from(replys))
+                        }
+                    })
+                }
 
                 // 白名单过滤
                 // 测试视频：https://b23.tv/av1855797296 https://b23.tv/av1706101190 https://b23.tv/av1705573085
@@ -166,7 +182,6 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                     }
                     return !isWhite
                 })
-
                 subComments = subComments.filter((e) => {
                     const sub = e.shadowRoot
                     const isWhite =
@@ -182,30 +197,32 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                     }
                     return !isWhite
                 })
-                rootComments.length &&
-                    coreCommentFilterInstance.checkAll(rootComments, false, rootCommentSelectorFuncV2)
-                debug(`check ${rootComments.length} V2 root comments`)
-                subComments.length && coreCommentFilterInstance.checkAll(subComments, false, subCommentSelectorFuncV2)
-                debug(`check ${subComments.length} V2 sub comments`)
+
+                rootComments.length && coreCommentFilterInstance.checkAll(rootComments, true, rootCommentSelectorFuncV2)
+                subComments.length && coreCommentFilterInstance.checkAll(subComments, true, subCommentSelectorFuncV2)
+                debug(`check ${rootComments.length} V2 root, ${subComments.length} V2 sub comments`)
             } else {
-                // 一级评论
-                let rootComments, subComments
+                let rootComments: HTMLElement[] = []
+                let subComments: HTMLElement[] = []
+
                 if (fullSite) {
-                    rootComments = commentListContainer.querySelectorAll<HTMLElement>(`.reply-item`)
-                    subComments = commentListContainer.querySelectorAll<HTMLElement>(
-                        `.sub-reply-item:not(.jump-link.user)`,
+                    rootComments = Array.from(commentListContainer.querySelectorAll<HTMLElement>(`.reply-item`))
+                    subComments = Array.from(
+                        commentListContainer.querySelectorAll<HTMLElement>(`.sub-reply-item:not(.jump-link.user)`),
                     )
                 } else {
-                    rootComments = commentListContainer.querySelectorAll<HTMLElement>(
-                        `.reply-item:not([${settings.filterSign}])`,
+                    rootComments = Array.from(
+                        commentListContainer.querySelectorAll<HTMLElement>(`.reply-item:not([${settings.filterSign}])`),
                     )
-                    subComments = commentListContainer.querySelectorAll<HTMLElement>(
-                        `.sub-reply-item:not(.jump-link.user):not([${settings.filterSign}])`,
+                    subComments = Array.from(
+                        commentListContainer.querySelectorAll<HTMLElement>(
+                            `.sub-reply-item:not(.jump-link.user):not([${settings.filterSign}])`,
+                        ),
                     )
                 }
 
                 // 白名单过滤
-                rootComments = Array.from(rootComments).filter((e) => {
+                rootComments = rootComments.filter((e) => {
                     const isWhite =
                         isRootCommentWhitelistEnable ||
                         (isUploaderCommentWhitelistEnable && e.querySelector('.root-reply-container .up-icon')) ||
@@ -222,7 +239,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                     }
                     return !isWhite
                 })
-                subComments = Array.from(subComments).filter((e) => {
+                subComments = subComments.filter((e) => {
                     const isWhite =
                         isSubCommentWhitelistEnable ||
                         (isUploaderCommentWhitelistEnable && e.querySelector('.sub-up-icon')) ||
@@ -238,21 +255,19 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                     }
                     return !isWhite
                 })
-                rootComments.length &&
-                    coreCommentFilterInstance.checkAll([...rootComments], true, rootCommentSelectorFunc)
-                debug(`check ${rootComments.length} root comments`)
-                subComments.length && coreCommentFilterInstance.checkAll([...subComments], true, subCommentSelectorFunc)
-                debug(`check ${subComments.length} sub comments`)
+
+                rootComments.length && coreCommentFilterInstance.checkAll(rootComments, true, rootCommentSelectorFunc)
+                subComments.length && coreCommentFilterInstance.checkAll(subComments, true, subCommentSelectorFunc)
+                debug(`check ${rootComments.length} root, ${subComments.length} sub comments`)
             }
         } catch (err) {
-            error(err)
-            error('checkCommentList error')
+            error('checkCommentList error', err)
         }
     }
 
-    const checkV2 = () => {
+    const checkV2 = (fullSite: boolean) => {
         if (usernameAction.status || contentAction.status) {
-            checkCommentList(true)
+            checkCommentList(fullSite)
         }
     }
     /**
@@ -268,16 +283,29 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             if (
                 typeof input === 'string' &&
                 init?.method?.toUpperCase() === 'GET' &&
-                input.includes('api.bilibili.com') &&
-                (input.includes('/v2/reply/reply') || input.includes('/v2/reply/wbi/main'))
+                input.includes('api.bilibili.com')
             ) {
-                const resp = await origFetch(input, init)
-                setTimeout(checkV2, 100)
-                setTimeout(checkV2, 200)
-                setTimeout(checkV2, 500)
-                setTimeout(checkV2, 1000)
-                setTimeout(checkV2, 2000)
-                return resp
+                // 主评论载入
+                if (input.includes('/v2/reply/wbi/main')) {
+                    const resp = await origFetch(input, init)
+                    setTimeout(() => checkV2(false), 100)
+                    setTimeout(() => checkV2(false), 200)
+                    setTimeout(() => checkV2(false), 500)
+                    setTimeout(() => checkV2(false), 1000)
+                    setTimeout(() => checkV2(false), 2000)
+                    setTimeout(() => checkV2(false), 3000)
+                    return resp
+                }
+                // 二级评论翻页
+                if (input.includes('/v2/reply/reply')) {
+                    const resp = await origFetch(input, init)
+                    setTimeout(() => checkV2(true), 100)
+                    setTimeout(() => checkV2(true), 200)
+                    setTimeout(() => checkV2(true), 500)
+                    setTimeout(() => checkV2(true), 1000)
+                    setTimeout(() => checkV2(true), 2000)
+                    return resp
+                }
             }
         }
         return origFetch(input, init)

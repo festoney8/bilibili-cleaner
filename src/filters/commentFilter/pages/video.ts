@@ -1,6 +1,6 @@
 import { Group } from '../../../components/group'
 import { CheckboxItem, ButtonItem } from '../../../components/item'
-import { debugCommentFilter as debug, error } from '../../../utils/logger'
+import { debugCommentFilter as debug, error, log } from '../../../utils/logger'
 import { isPageBangumi, isPagePlaylist, isPageVideo } from '../../../utils/pageType'
 import { showEle, waitForEle } from '../../../utils/tool'
 import { ContentAction, UsernameAction } from './actions/action'
@@ -77,7 +77,6 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                     ?.shadowRoot?.querySelector('bili-comment-user-info')
                     ?.shadowRoot?.querySelector('#user-name')
                     ?.textContent?.trim()
-            console.log('root username', username)
             return username ? username : null
         },
         content: (comment: HTMLElement): string | null => {
@@ -87,7 +86,6 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                     ?.querySelector('bili-comment-renderer')
                     ?.shadowRoot?.querySelector('bili-rich-text')
                     ?.shadowRoot?.querySelector('#contents')?.textContent
-            console.log('root content', content)
             return content ? content : null
         },
     }
@@ -100,7 +98,6 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                     ?.querySelector('bili-comment-user-info')
                     ?.shadowRoot?.querySelector('#user-name a')
                     ?.textContent?.trim()
-            console.log('sub username', username)
             return username ? username : null
         },
         content: (comment: HTMLElement): string | null => {
@@ -110,7 +107,6 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 contentNode?.querySelector('#contents')?.textContent?.trim()
             // 忽略二级回复中@多用户情况
             content = content.replace(/^回复 @[^@ ]+? :/, '').trim()
-            console.log('sub content', content)
             return content ? content : null
         },
     }
@@ -144,7 +140,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                         subComments = subComments.concat(Array.from(replys))
                     }
                 })
-                console.log('full模式', 'root', rootComments.length, 'sub', subComments.length)
+                log('full模式', 'root', rootComments.length, 'sub', subComments.length)
 
                 // Todo: 白名单过滤
 
@@ -241,12 +237,43 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             })
             commentObserver.observe(commentListContainer, { childList: true, subtree: true })
 
-            // 新版 shadow DOM 评论区
-            setInterval(() => {
+            // 新版评论区 监听button click
+            commentListContainer.addEventListener('click', (e) => {
                 if (usernameAction.status || contentAction.status) {
-                    checkCommentList(true)
+                    if (e.target instanceof HTMLElement) {
+                        const target = e.composedPath()[0] as HTMLElement
+                        if (target && target.tagName === 'BUTTON' && target.className.trim().includes('button')) {
+                            log('check btn')
+                            let cnt = 0
+                            const id = setInterval(() => {
+                                checkCommentList(true)
+                                cnt++
+                                cnt >= 10 && clearInterval(id)
+                            }, 200)
+                        }
+                    }
                 }
-            }, 2000)
+            })
+            let feedCnt = 0
+            const id = setInterval(() => {
+                const feed = commentListContainer.querySelector('bili-comments')?.shadowRoot?.querySelector('#feed')
+                if (feed) {
+                    if (usernameAction.status || contentAction.status) {
+                        log('check feed')
+                        checkCommentList(true)
+                    }
+                    const commentObserver = new MutationObserver(() => {
+                        if (usernameAction.status || contentAction.status) {
+                            log('check feed')
+                            checkCommentList(true)
+                        }
+                    })
+                    commentObserver.observe(feed, { childList: true })
+                    clearInterval(id)
+                }
+                feedCnt++
+                feedCnt > 20 && clearInterval(id)
+            }, 500)
         }
     }
 
@@ -275,27 +302,33 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         const menu = new ContextMenu()
         document.addEventListener('contextmenu', (e) => {
             menu.hide()
-            if (e.target instanceof HTMLElement) {
-                const target = e.target
-                if (
-                    isContextMenuUsernameEnable &&
-                    (target.classList.contains('user-name') || target.classList.contains('sub-user-name'))
-                ) {
-                    // 命中用户
-                    const username = target.textContent?.trim()
-                    if (username) {
-                        e.preventDefault()
-                        menu.registerMenu(`屏蔽用户：${username}`, () => {
-                            usernameAction.add(username)
-                        })
-                        menu.show(e.clientX, e.clientY)
+            try {
+                if (e.target instanceof HTMLElement) {
+                    const target = e.composedPath()[0] as HTMLElement
+                    if (
+                        target &&
+                        isContextMenuUsernameEnable &&
+                        (target.parentElement?.id === 'user-name' ||
+                            target.classList.contains('user-name') ||
+                            target.classList.contains('sub-user-name'))
+                    ) {
+                        // 命中用户
+                        const username = target.textContent?.trim()
+                        if (username) {
+                            e.preventDefault()
+                            menu.registerMenu(`屏蔽用户：${username}`, () => {
+                                usernameAction.add(username)
+                            })
+                            menu.show(e.clientX, e.clientY)
+                        }
+                    } else {
+                        menu.hide()
                     }
-                } else {
-                    menu.hide()
                 }
+            } catch (err) {
+                error('contextmenu error', err)
             }
         })
-        debug('contextMenuFunc listen contextmenu')
     }
 
     //=======================================================================================

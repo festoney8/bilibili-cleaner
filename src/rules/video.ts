@@ -1600,10 +1600,10 @@ if (isPageVideo() || isPagePlaylist()) {
 
     // 评论区
     const commentItems = [
-        // 禁用 新版评论区灰测
+        // 禁用 新版评论区
         new CheckboxItem({
             itemID: 'video-page-disable-next-comment-abtest',
-            description: '禁用 新版评论区灰测 (临时功能)\n评论区功能失效时 开启本项并刷新',
+            description: '禁用 新版评论区, 恢复旧版 (临时功能)',
             enableFunc: async () => {
                 let origValue = unsafeWindow.__INITIAL_STATE__
                 if (origValue?.abtest) {

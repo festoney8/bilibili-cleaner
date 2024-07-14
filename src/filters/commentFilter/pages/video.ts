@@ -146,17 +146,42 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                         subComments = subComments.concat(Array.from(replys))
                     }
                 })
-                // console.log(
-                //     performance.now().toFixed(0),
-                //     'full模式',
-                //     'root',
-                //     rootComments.length,
-                //     'sub',
-                //     subComments.length,
-                // )
 
-                // Todo: 白名单过滤
+                // 白名单过滤
+                // 测试视频：https://b23.tv/av1855797296 https://b23.tv/av1706101190 https://b23.tv/av1705573085
+                rootComments = rootComments.filter((e) => {
+                    const root = e.shadowRoot?.querySelector('bili-comment-renderer')?.shadowRoot
+                    const isWhite =
+                        isRootCommentWhitelistEnable ||
+                        (isNoteCommentWhitelistEnable && root?.querySelector('i#note')) ||
+                        (isPinnedCommentWhitelistEnable && root?.querySelector('i#top')) ||
+                        (isUploaderCommentWhitelistEnable &&
+                            root?.querySelector('bili-comment-user-info')?.shadowRoot?.querySelector('#user-up')) ||
+                        (isLinkCommentWhitelistEnable &&
+                            root
+                                ?.querySelector('bili-rich-text')
+                                ?.shadowRoot?.querySelector(`a:not([href*="space.bilibili.com"])`))
+                    if (isWhite) {
+                        showEle(e)
+                    }
+                    return !isWhite
+                })
 
+                subComments = subComments.filter((e) => {
+                    const sub = e.shadowRoot
+                    const isWhite =
+                        isSubCommentWhitelistEnable ||
+                        (isUploaderCommentWhitelistEnable &&
+                            sub?.querySelector('bili-comment-user-info')?.shadowRoot?.querySelector('#user-up')) ||
+                        (isLinkCommentWhitelistEnable &&
+                            sub
+                                ?.querySelector('bili-rich-text')
+                                ?.shadowRoot?.querySelector(`a:not([href*="space.bilibili.com"])`))
+                    if (isWhite) {
+                        showEle(e)
+                    }
+                    return !isWhite
+                })
                 rootComments.length &&
                     coreCommentFilterInstance.checkAll(rootComments, false, rootCommentSelectorFuncV2)
                 debug(`check ${rootComments.length} V2 root comments`)

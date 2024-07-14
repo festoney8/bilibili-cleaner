@@ -1,0 +1,32 @@
+#bili-cleaner-context-menu-container {
+    position: fixed;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    overflow: hidden;
+    z-index: 99999;
+}
+#bili-cleaner-context-menu-container ul {
+    -webkit-margin-before: 0;
+    margin-block-start: 0;
+    -webkit-margin-after: 0;
+    margin-block-end: 0;
+    -webkit-margin-start: 0px;
+    margin-inline-start: 0px;
+    -webkit-margin-end: 0px;
+    margin-inline-end: 0px;
+    -webkit-padding-start: 0;
+    padding-inline-start: 0;
+}
+#bili-cleaner-context-menu-container li {
+    padding: 5px 10px;
+    font-size: 1rem;
+}
+#bili-cleaner-context-menu-container li:hover {
+    background: #fb7299;
+    font-weight: 500;
+    color: #fff;
+}

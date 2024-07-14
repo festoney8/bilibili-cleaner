@@ -408,10 +408,11 @@ if (isPagePopular()) {
 
     // UI组件, UP主过滤part
     const uploaderItems = [
-        // 启用 热门页 UP主过滤
+        // 启用 热门页 UP主过滤, 默认开启
         new CheckboxItem({
             itemID: popularUploaderAction.statusKey,
             description: '启用 UP主过滤 (右键单击UP主)',
+            defaultStatus: true,
             enableFunc: async () => {
                 // 启用右键功能
                 isContextMenuUploaderEnable = true

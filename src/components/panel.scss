@@ -15,7 +15,7 @@ $theme-color: rgb(0, 174, 236);
     // disable scroll chaining, #33
     overscroll-behavior: contain;
 
-    & #bili-cleaner-bar {
+    #bili-cleaner-bar {
         width: max(32vw, 300px);
         height: 6vh;
         background: $theme-color;
@@ -24,7 +24,7 @@ $theme-color: rgb(0, 174, 236);
         cursor: move;
         user-select: none;
 
-        & #bili-cleaner-title {
+        #bili-cleaner-title {
             width: max(32vw, 300px);
             height: 6vh;
             display: flex;
@@ -33,12 +33,12 @@ $theme-color: rgb(0, 174, 236);
             color: white;
             font-weight: bold;
             font-size: 22px;
-            & span {
+            span {
                 text-align: center;
             }
         }
 
-        & #bili-cleaner-close {
+        #bili-cleaner-close {
             position: absolute;
             top: 0;
             right: 0;
@@ -52,12 +52,12 @@ $theme-color: rgb(0, 174, 236);
             &:hover {
                 background: rgba(255, 255, 255, 0.2);
             }
-            & svg {
+            svg {
                 text-align: center;
             }
         }
     }
-    & #bili-cleaner-group-list {
+    #bili-cleaner-group-list {
         height: 84vh;
         overflow: auto;
         scrollbar-width: none !important;
@@ -66,40 +66,40 @@ $theme-color: rgb(0, 174, 236);
         &::-webkit-scrollbar {
             display: none;
         }
-        & .bili-cleaner-group {
+        .bili-cleaner-group {
             margin: 14px;
             background: white;
             border-radius: 6px;
             padding: 8px 16px;
             border: 1px solid #ddd;
             user-select: none;
-            & hr {
+            hr {
                 border: 1px solid #eee;
                 margin: 5px 0 10px 0;
             }
 
-            & .bili-cleaner-group-title {
+            .bili-cleaner-group-title {
                 font-size: 20px;
                 font-weight: bold;
                 padding: 2px;
                 color: black;
                 letter-spacing: 1px;
             }
-            & .bili-cleaner-item-list {
-                & label {
+            .bili-cleaner-item-list {
+                label {
                     display: flex;
                     align-items: center;
                     margin: 6px 0 6px 10px;
                     font-size: 16px;
                     color: black;
                 }
-                & hr {
+                hr {
                     border: 1px solid #eee;
                     margin: 15px 20px;
                 }
             }
             // 开关项样式
-            & .bili-cleaner-item-checkbox {
+            .bili-cleaner-item-checkbox {
                 width: 50px;
                 min-width: 50px;
                 height: 27px;
@@ -133,7 +133,7 @@ $theme-color: rgb(0, 174, 236);
                 }
             }
             // 数值设定项样式
-            & .bili-cleaner-item-number {
+            .bili-cleaner-item-number {
                 width: 50px;
                 min-width: 50px;
                 height: 27px;
@@ -155,7 +155,7 @@ $theme-color: rgb(0, 174, 236);
                 }
             }
             // 按钮项样式
-            & .bili-cleaner-item-button {
+            .bili-cleaner-item-button {
                 width: 50px;
                 background-color: #ffffff;
                 border: 1px solid #666;
@@ -203,7 +203,7 @@ $theme-color: rgb(0, 174, 236);
     z-index: 2147483641;
     overscroll-behavior: contain;
 
-    & .wordlist-header {
+    .wordlist-header {
         background-color: $theme-color;
         color: #fff;
         font-size: 22px;
@@ -215,13 +215,13 @@ $theme-color: rgb(0, 174, 236);
         text-align: center;
         user-select: none;
     }
-    & .wordlist-description {
+    .wordlist-description {
         font-size: 16px;
         margin: 6px auto;
         line-height: 18px;
         text-align: center;
     }
-    & textarea.wordlist-body {
+    textarea.wordlist-body {
         width: 400px;
         height: 500px;
         margin: 0 12px;
@@ -239,14 +239,14 @@ $theme-color: rgb(0, 174, 236);
         }
     }
 
-    & .wordlist-footer {
+    .wordlist-footer {
         height: 50px;
         display: flex;
         justify-content: space-evenly;
         padding: 0 10px;
         align-items: center;
 
-        & button {
+        button {
             width: 100px;
             height: 30px;
             border-radius: 5px;

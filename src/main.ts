@@ -33,7 +33,7 @@ import { searchPageVideoFilterGroupList } from './filters/videoFilter/pages/sear
 import { channelPageVideoFilterGroupList } from './filters/videoFilter/pages/channel'
 import { videoPageCommentFilterGroupList } from './filters/commentFilter/pages/video'
 import { spacePageVideoFilterGroupList } from './filters/videoFilter/pages/space'
-import { dynamicPageCommentFilterGroupList } from './filters/commentFilter/pages/dynamic'
+import { dynamicPageCommentFilterGroupList } from './filters/commentFilter/pages/dynamicAndSpace'
 import { watchlaterGroupList } from './rules/watchlater'
 import { spaceGroupList } from './rules/space'
 import { dynamicPageDynFilterGroupList } from './filters/dynFilter/pages/dynamic'
@@ -148,7 +148,7 @@ const main = async () => {
             )
         }
 
-        if (isPageVideo() || isPageBangumi() || isPagePlaylist() || isPageDynamic()) {
+        if (isPageVideo() || isPageBangumi() || isPagePlaylist() || isPageDynamic() || isPageSpace()) {
             regIDs.push(
                 GM_registerMenuCommand('✅评论过滤设置', () =>
                     createPanelWithMode('commentFilter', COMMENT_FILTER_GROUPS),
@@ -188,7 +188,7 @@ const main = async () => {
                 )
             }
         }
-        if (isPageVideo() || isPageBangumi() || isPagePlaylist() || isPageDynamic()) {
+        if (isPageVideo() || isPageBangumi() || isPagePlaylist() || isPageDynamic() || isPageSpace()) {
             const commentFilterSideBtnID = 'comment-filter-side-btn'
             const sideBtn = new SideBtn(commentFilterSideBtnID, '评论过滤', () => {
                 panel.isShowing ? panel.hide() : createPanelWithMode('commentFilter', COMMENT_FILTER_GROUPS)

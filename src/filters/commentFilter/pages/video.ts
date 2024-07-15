@@ -8,6 +8,7 @@ import coreCommentFilterInstance, { CommentSelectorFunc } from '../filters/core'
 import settings from '../../../settings'
 import { ContextMenu } from '../../../components/contextmenu'
 import { unsafeWindow } from '$'
+import fetchHook from '../../../utils/fetch'
 
 const videoPageCommentFilterGroupList: Group[] = []
 
@@ -271,14 +272,13 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         }
     }
     /**
-     * hook fetch, 获取评论相关API时触发检测
+     * 新版评论区过滤
+     * 在获取评论相关API时触发检测
      * 多层 Shadow DOM 套娃对MutationObserver不友好
      * 切换视频会导致observe对象被替换
      * 使用监听一级二级评论载入方法触发评论区检测
      */
-    // Todo: 统一全站fetch hook
-    const origFetch = unsafeWindow.fetch
-    unsafeWindow.fetch = async (input, init?) => {
+    fetchHook.addPostFn((input: RequestInfo | URL, init: RequestInit | undefined, _resp?: Response) => {
         if (isCommentV2()) {
             if (
                 typeof input === 'string' &&
@@ -287,29 +287,24 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             ) {
                 // 主评论载入
                 if (input.includes('/v2/reply/wbi/main')) {
-                    const resp = await origFetch(input, init)
                     setTimeout(() => checkV2(false), 100)
                     setTimeout(() => checkV2(false), 200)
                     setTimeout(() => checkV2(false), 500)
                     setTimeout(() => checkV2(false), 1000)
                     setTimeout(() => checkV2(false), 2000)
                     setTimeout(() => checkV2(false), 3000)
-                    return resp
                 }
                 // 二级评论翻页
                 if (input.includes('/v2/reply/reply')) {
-                    const resp = await origFetch(input, init)
                     setTimeout(() => checkV2(true), 100)
                     setTimeout(() => checkV2(true), 200)
                     setTimeout(() => checkV2(true), 500)
                     setTimeout(() => checkV2(true), 1000)
                     setTimeout(() => checkV2(true), 2000)
-                    return resp
                 }
             }
         }
-        return origFetch(input, init)
-    }
+    })
 
     // 配置 行为实例
     const usernameAction = new UsernameAction(
@@ -339,6 +334,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
     }
 
     try {
+        // 旧版评论区过滤
         waitForEle(document, '#comment, #comment-body, .playlist-comment', (node: HTMLElement): boolean => {
             return ['comment', 'comment-body'].includes(node.id) || node.className === 'playlist-comment'
         }).then((ele) => {

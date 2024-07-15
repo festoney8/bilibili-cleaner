@@ -17,7 +17,7 @@ import {
     UploaderKeywordAction,
     UploaderWhitelistAction,
 } from './actions/action'
-import { unsafeWindow } from '$'
+import fetchHook from '../../../utils/fetch'
 
 const popularPageVideoFilterGroupList: Group[] = []
 
@@ -36,19 +36,19 @@ if (isPagePopular()) {
     // 存储API中的视频数据, key为bvid
     const videoInfoMap = new Map<string, VInfo>()
 
-    // hook fetch
+    // 获取api resp
     let apiResp: Response | undefined = undefined
-    const origFetch = unsafeWindow.fetch
-    unsafeWindow.fetch = async (input, init?) => {
-        if (typeof input === 'string' && input.includes('api.bilibili.com') && init?.method?.toUpperCase() === 'GET') {
-            if (input.match(/web-interface\/(ranking|popular\/series\/one|popular\?ps)/)) {
-                const resp = await origFetch(input, init)
-                apiResp = resp.clone()
-                return resp
-            }
+    fetchHook.addPostFn((input: RequestInfo | URL, init: RequestInit | undefined, resp?: Response) => {
+        if (
+            typeof input === 'string' &&
+            input.includes('api.bilibili.com') &&
+            input.match(/web-interface\/(ranking|popular\/series\/one|popular\?ps)/) &&
+            init?.method?.toUpperCase() === 'GET' &&
+            resp
+        ) {
+            apiResp = resp.clone()
         }
-        return origFetch(input, init)
-    }
+    })
 
     // 解析API数据，存入map
     const parseResp = async () => {

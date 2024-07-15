@@ -1,6 +1,6 @@
-import { unsafeWindow } from '$'
 import { Group } from '../components/group'
 import { CheckboxItem, NumberItem, RadioItem } from '../components/item'
+import fetchHook from '../utils/fetch'
 import { isPageHomepage } from '../utils/pageType'
 import { debounce, waitForEle } from '../utils/tool'
 
@@ -492,10 +492,8 @@ if (isPageHomepage()) {
             .container.is-version8 > .floor-single-card:has(.skeleton, .skeleton-item, .floor-skeleton) {
                 display: none;
             }`,
-            enableFunc: async () => {
-                // hook fetch
-                const origFetch = unsafeWindow.fetch
-                unsafeWindow.fetch = async (input, init?) => {
+            enableFunc: () => {
+                fetchHook.addPreFn((input: RequestInfo | URL, init: RequestInit | undefined): RequestInfo | URL => {
                     if (
                         typeof input === 'string' &&
                         input.includes('api.bilibili.com') &&
@@ -504,8 +502,8 @@ if (isPageHomepage()) {
                     ) {
                         input = input.replace('&ps=12&', '&ps=24&')
                     }
-                    return origFetch(input, init)
-                }
+                    return input
+                })
             },
         }),
         // 启用 预加载下一屏

@@ -1,22 +1,34 @@
 import { unsafeWindow } from '$'
 import { error } from './logger'
+import { isPageInvalid } from './pageType'
 
 class URLCleaner {
-    origReplaceState = unsafeWindow.history.replaceState
-    origPushState = unsafeWindow.history.pushState
+    private static instance: URLCleaner
+
+    private origReplaceState = unsafeWindow.history.replaceState
+    private origPushState = unsafeWindow.history.pushState
 
     // URL清理函数
     cleanFnArr: ((url: string) => string)[] = []
 
-    constructor() {
+    private constructor() {
         try {
-            this.hijack()
+            if (!isPageInvalid()) {
+                this.hijack()
+            }
         } catch (err) {
             error('init URLCleaner error', err)
         }
     }
 
-    hijack() {
+    static getInstance() {
+        if (!URLCleaner.instance) {
+            URLCleaner.instance = new URLCleaner()
+        }
+        return URLCleaner.instance
+    }
+
+    private hijack() {
         unsafeWindow.history.replaceState = (data: any, unused: string, url?: string | URL | null): void => {
             try {
                 if (typeof url === 'string') {
@@ -68,6 +80,5 @@ class URLCleaner {
     }
 }
 
-// 单例
-const URLCleanerInstance = new URLCleaner()
+const URLCleanerInstance = URLCleaner.getInstance()
 export default URLCleanerInstance

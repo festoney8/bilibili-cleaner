@@ -1,7 +1,7 @@
 import { Group } from '../../../components/group'
 import { CheckboxItem, ButtonItem } from '../../../components/item'
 import { debugCommentFilter as debug, error } from '../../../utils/logger'
-import { isPageDynamic } from '../../../utils/pageType'
+import { isPageDynamic, isPageSpace } from '../../../utils/pageType'
 import { showEle, waitForEle } from '../../../utils/tool'
 import { ContentAction, UsernameAction } from './actions/action'
 import coreCommentFilterInstance, { CommentSelectorFunc } from '../filters/core'
@@ -22,7 +22,7 @@ let isPinnedCommentWhitelistEnable = false
 let isNoteCommentWhitelistEnable = false
 let isLinkCommentWhitelistEnable = false
 
-if (isPageDynamic()) {
+if (isPageDynamic() || isPageSpace()) {
     let commentListContainer: HTMLElement
     // 一级评论
     const rootCommentSelectorFunc: CommentSelectorFunc = {

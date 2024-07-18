@@ -626,52 +626,88 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-guide-all',
             description: '隐藏 一键三连',
-            itemCSS: `.bpx-player-video-area :is(.bili-guide-all, .bili-guide, .bili-follow-to-electric, .bili-guide-followed) {
-                        display: none !important;
-                    }`,
+            itemCSS: `
+                .bili-follow-to-electric,
+                .bili-guide,
+                .bili-guide-all,
+                .bili-guide-animate,
+                .bili-guide-cyc,
+                .bili-guide-electric,
+                .bili-guide-follow,
+                .bili-guide-init-three,
+                .bili-guide-three,
+                .bili-guide-followed {
+                    display: none !important;
+                }`,
         }),
         // 隐藏 投票
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-vote',
             description: '隐藏 投票',
-            itemCSS: `.bpx-player-video-area :is(.bili-vote, .bili-cmd-shrink) {display: none !important;}`,
+            itemCSS: `
+                .bili-vote,
+                .bili-vote-lottie,
+                .bili-vote-question,
+                .bili-vote-an,
+                .bili-cmd-shrink {
+                    display: none !important;
+                }`,
         }),
         // 隐藏 播放效果调查, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-qoe-feedback',
             description: '隐藏 播放效果调查',
             defaultStatus: true,
-            itemCSS: `.bpx-player-video-area .bili-qoeFeedback {display: none !important;}`,
+            itemCSS: `
+                .bili-qoeFeedback,
+                .bili-qoeFeedback-score,
+                .bili-qoeFeedback-vote {
+                    display: none !important;
+                }`,
         }),
         // 隐藏 评分
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-score',
             description: '隐藏 评分',
-            itemCSS: `.bpx-player-video-area .bili-score {display: none !important;}`,
+            itemCSS: `
+                .bili-score,
+                .bili-score-area,
+                .bili-score-area-item,
+                .bili-score-count,
+                .bili-score-result,
+                .bili-score-title {
+                    display: none !important;
+                }`,
         }),
         // 隐藏 评分总结
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-score-sum',
             description: '隐藏 评分总结',
-            itemCSS: `.bpx-player-video-area .bili-scoreSum {display: none !important;}`,
+            itemCSS: `.bili-scoreSum {display: none !important;}`,
         }),
         // 隐藏 打卡
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-clock',
             description: '隐藏 打卡',
-            itemCSS: `.bpx-player-video-area .bili-clock {display: none !important;}`,
+            itemCSS: `.bili-clock {display: none !important;}`,
         }),
         // 隐藏 视频预告
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-reserve',
             description: '隐藏 视频预告',
-            itemCSS: `.bpx-player-video-area .bili-reserve {display: none !important;}`,
+            itemCSS: `.bili-reserve {display: none !important;}`,
         }),
         // 隐藏 视频链接
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-link',
-            description: '隐藏 视频链接(稍后再看)',
-            itemCSS: `.bpx-player-video-area .bili-link {display: none !important;}`,
+            description: '隐藏 视频链接 (稍后再看)',
+            itemCSS: `.bili-link {display: none !important;}`,
+        }),
+        // 隐藏 播放器内所有弹窗 (强制)
+        new CheckboxItem({
+            itemID: 'video-page-hide-bpx-player-cmd-dm-inside',
+            description: '隐藏 播放器内所有弹窗 (强制)',
+            itemCSS: `.bpx-player-cmd-dm-inside {display: none !important;}`,
         }),
         // 隐藏 播放器内标题
         new CheckboxItem({

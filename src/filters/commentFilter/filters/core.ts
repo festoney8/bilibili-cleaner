@@ -1,13 +1,16 @@
 import settings from '../../../settings'
 import { error, log } from '../../../utils/logger'
 import { hideEle, isEleHide, showEle } from '../../../utils/tool'
+import botFilterInstance from './subfilters/bot'
+import callBotFilterInstance from './subfilters/callBot'
+import callUserFilterInstance from './subfilters/callUser'
 import contentFilterInstance from './subfilters/content'
 import usernameFilterInstance from './subfilters/username'
 
 export interface ICommentSubFilter {
     isEnable: boolean
     setStatus(status: boolean): void
-    setParams(value: string[]): void
+    setParams?(value: string[]): void
     addParam?(value: string): void
     check(value: string): Promise<string>
 }
@@ -15,11 +18,13 @@ export interface ICommentSubFilter {
 export type CommentSelectorFunc = {
     username?: (comment: HTMLElement) => string | null
     content?: (comment: HTMLElement) => string | null
+    callUser?: (comment: HTMLElement) => string | null
 }
 
 interface CommentInfo {
     username?: string | undefined
     content?: string | undefined
+    callUser?: string | undefined
 }
 
 class CoreCommentFilter {
@@ -34,8 +39,11 @@ class CoreCommentFilter {
         try {
             const checkContent = contentFilterInstance.isEnable && selectorFunc.content !== undefined
             const checkUsername = usernameFilterInstance.isEnable && selectorFunc.username !== undefined
+            const checkBot = botFilterInstance.isEnable && selectorFunc.username !== undefined
+            const checkCallBot = callBotFilterInstance.isEnable && selectorFunc.callUser !== undefined
+            const checkCallUser = callUserFilterInstance.isEnable && selectorFunc.callUser !== undefined
 
-            if (!checkContent && !checkUsername) {
+            if (!checkContent && !checkUsername && !checkBot && !checkCallBot && !checkCallUser) {
                 // 黑名单全部关闭时 恢复全部评论
                 comments.forEach((comment) => showEle(comment))
                 return
@@ -59,6 +67,27 @@ class CoreCommentFilter {
                     if (username) {
                         blackTasks.push(usernameFilterInstance.check(username))
                         info.username = username
+                    }
+                }
+                if (checkBot) {
+                    const username = selectorFunc.username!(comment)
+                    if (username) {
+                        blackTasks.push(botFilterInstance.check(username))
+                        info.username = username
+                    }
+                }
+                if (checkCallBot) {
+                    const callUser = selectorFunc.callUser!(comment)
+                    if (callUser) {
+                        blackTasks.push(callBotFilterInstance.check(callUser))
+                        info.callUser = callUser
+                    }
+                }
+                if (checkCallUser) {
+                    const callUser = selectorFunc.callUser!(comment)
+                    if (callUser) {
+                        blackTasks.push(callUserFilterInstance.check(callUser))
+                        info.callUser = callUser
                     }
                 }
 

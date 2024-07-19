@@ -7,9 +7,9 @@ import usernameFilterInstance from '../../filters/subfilters/username'
 // 定义各种黑名单功能、白名单功能的属性和行为
 interface CommentFilterAction {
     statusKey: string
-    valueKey: string
     status: boolean
-    value: number | string | string[]
+    valueKey?: string
+    value?: number | string | string[]
     // 检测评论列表的函数
     checkCommentList(fullSite: boolean): void
     blacklist?: WordList
@@ -137,5 +137,95 @@ export class ContentAction implements CommentFilterAction {
     edit(values: string[]) {
         commentFilterAgencyInstance.notifyContent('edit', values)
         this.checkCommentList(true)
+    }
+}
+
+export class BotAction implements CommentFilterAction {
+    statusKey: string
+    status: boolean
+    checkCommentList: (fullSite: boolean) => void
+
+    /**
+     * 屏蔽AI发布的评论
+     * @param statusKey 是否启用的GM key
+     * @param checkCommentList 检测评论列表函数
+     */
+    constructor(statusKey: string, checkCommentList: (fullSite: boolean) => void) {
+        this.statusKey = statusKey
+        this.status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
+        this.checkCommentList = checkCommentList
+
+        contentFilterInstance.setStatus(this.status)
+    }
+
+    enable() {
+        commentFilterAgencyInstance.notifyBot('enable')
+        this.checkCommentList(true)
+        this.status = true
+    }
+    disable() {
+        commentFilterAgencyInstance.notifyBot('disable')
+        this.checkCommentList(true)
+        this.status = false
+    }
+}
+
+export class CallBotAction implements CommentFilterAction {
+    statusKey: string
+    status: boolean
+    checkCommentList: (fullSite: boolean) => void
+
+    /**
+     * 过滤召唤AI的评论
+     * @param statusKey 是否启用的GM key
+     * @param checkCommentList 检测评论列表函数
+     */
+    constructor(statusKey: string, checkCommentList: (fullSite: boolean) => void) {
+        this.statusKey = statusKey
+        this.status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
+        this.checkCommentList = checkCommentList
+
+        contentFilterInstance.setStatus(this.status)
+    }
+
+    enable() {
+        commentFilterAgencyInstance.notifyCallBot('enable')
+        this.checkCommentList(true)
+        this.status = true
+    }
+    disable() {
+        commentFilterAgencyInstance.notifyCallBot('disable')
+        this.checkCommentList(true)
+        this.status = false
+    }
+}
+
+export class CallUserAction implements CommentFilterAction {
+    statusKey: string
+    status: boolean
+    checkCommentList: (fullSite: boolean) => void
+
+    /**
+     * 过滤AT其他用户的评论
+     * @param statusKey 是否启用的GM key
+     * @param checkCommentList 检测评论列表函数
+     */
+    constructor(statusKey: string, checkCommentList: (fullSite: boolean) => void) {
+        this.statusKey = statusKey
+        this.status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
+        this.checkCommentList = checkCommentList
+
+        contentFilterInstance.setStatus(this.status)
+    }
+
+    enable() {
+        commentFilterAgencyInstance.notifyCallUser('enable')
+        this.checkCommentList(true)
+        this.status = true
+    }
+    disable() {
+        commentFilterAgencyInstance.notifyCallUser('disable')
+        this.checkCommentList(true)
+        this.status = false
     }
 }

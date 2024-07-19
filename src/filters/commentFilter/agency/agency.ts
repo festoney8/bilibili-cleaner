@@ -1,3 +1,6 @@
+import botFilterInstance from '../filters/subfilters/bot'
+import callBotFilterInstance from '../filters/subfilters/callBot'
+import callUserFilterInstance from '../filters/subfilters/callUser'
 import contentFilterInstance from '../filters/subfilters/content'
 import usernameFilterInstance from '../filters/subfilters/username'
 
@@ -42,6 +45,36 @@ class CommentFilterAgency {
                 if (Array.isArray(value)) {
                     contentFilterInstance.setParams(value.map((v) => v.trim()).filter((v) => v))
                 }
+                break
+        }
+    }
+    notifyBot(event: string) {
+        switch (event) {
+            case 'disable':
+                botFilterInstance.setStatus(false)
+                break
+            case 'enable':
+                botFilterInstance.setStatus(true)
+                break
+        }
+    }
+    notifyCallBot(event: string) {
+        switch (event) {
+            case 'disable':
+                callBotFilterInstance.setStatus(false)
+                break
+            case 'enable':
+                callBotFilterInstance.setStatus(true)
+                break
+        }
+    }
+    notifyCallUser(event: string) {
+        switch (event) {
+            case 'disable':
+                callUserFilterInstance.setStatus(false)
+                break
+            case 'enable':
+                callUserFilterInstance.setStatus(true)
                 break
         }
     }

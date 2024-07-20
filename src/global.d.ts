@@ -22,5 +22,27 @@ export declare global {
                 comment_next_version?: 'ELEMENTS' | 'DEFAULT'
             }
         }
+        EmbedPlayer?: {
+            instance?: {
+                getPlayerInfo: () => {
+                    quality?: string
+                    qualityCandidates?: {
+                        qn?: string
+                        desc?: string
+                    }[]
+                }
+                switchQuality?: function
+            }
+        }
+        livePlayer?: {
+            getPlayerInfo: () => {
+                quality?: string
+                qualityCandidates?: {
+                    qn?: string
+                    desc?: string
+                }[]
+            }
+            switchQuality?: function
+        }
     }
 }

@@ -2,6 +2,7 @@ import { GM_getValue } from '$'
 import { WordList } from '../../../../components/wordlist'
 import commentFilterAgencyInstance from '../../agency/agency'
 import contentFilterInstance from '../../filters/subfilters/content'
+import levelFilterInstance from '../../filters/subfilters/level'
 import usernameFilterInstance from '../../filters/subfilters/username'
 
 // 定义各种黑名单功能、白名单功能的属性和行为
@@ -227,5 +228,44 @@ export class CallUserAction implements CommentFilterAction {
         commentFilterAgencyInstance.notifyCallUser('disable')
         this.checkCommentList(true)
         this.status = false
+    }
+}
+
+export class LevelAction implements CommentFilterAction {
+    statusKey: string
+    valueKey: string
+    checkCommentList: (fullSite: boolean) => void
+    status: boolean
+    value: number
+
+    /**
+     * 等级过滤操作
+     * @param statusKey 是否启用的GM key
+     * @param valueKey 存储数据的GM key
+     * @param checkCommentList 检测评论列表函数
+     */
+    constructor(statusKey: string, valueKey: string, checkCommentList: (fullSite: boolean) => void) {
+        this.statusKey = statusKey
+        this.valueKey = valueKey
+        this.checkCommentList = checkCommentList
+        this.status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
+        this.value = GM_getValue(`BILICLEANER_${this.valueKey}`, 60)
+        // 配置子过滤器
+        levelFilterInstance.setStatus(this.status)
+        levelFilterInstance.setParams(this.value)
+    }
+    enable() {
+        commentFilterAgencyInstance.notifyLevel('enable')
+        this.checkCommentList(true)
+        this.status = true
+    }
+    disable() {
+        commentFilterAgencyInstance.notifyLevel('disable')
+        this.checkCommentList(true)
+        this.status = false
+    }
+    change(value: number) {
+        commentFilterAgencyInstance.notifyLevel('change', value)
+        this.checkCommentList(true)
     }
 }

@@ -1,9 +1,9 @@
 import { Group } from '../../../components/group'
-import { CheckboxItem, ButtonItem } from '../../../components/item'
+import { CheckboxItem, ButtonItem, NumberItem } from '../../../components/item'
 import { debugCommentFilter as debug, error } from '../../../utils/logger'
 import { isPageBangumi, isPagePlaylist, isPageVideo } from '../../../utils/pageType'
 import { showEle } from '../../../utils/tool'
-import { BotAction, CallBotAction, CallUserAction, ContentAction, UsernameAction } from './actions/action'
+import { BotAction, CallBotAction, CallUserAction, ContentAction, LevelAction, UsernameAction } from './actions/action'
 import coreCommentFilterInstance, { CommentSelectorFunc } from '../filters/core'
 import settings from '../../../settings'
 import { ContextMenu } from '../../../components/contextmenu'
@@ -33,6 +33,23 @@ let isNoteCommentWhitelistEnable = false
 let isLinkCommentWhitelistEnable = false
 
 if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
+    const lvMap = new Map([
+        ['level_h.svg', 6.5],
+        ['level_6.svg', 6],
+        ['level_5.svg', 5],
+        ['level_4.svg', 4],
+        ['level_3.svg', 3],
+        ['level_2.svg', 2],
+        ['level_1.svg', 1],
+
+        ['level-h', 6.5],
+        ['level-6', 6],
+        ['level-5', 5],
+        ['level-4', 4],
+        ['level-3', 3],
+        ['level-2', 2],
+        ['level-1', 1],
+    ])
     // 一级评论
     const rootCommentSelectorFunc: CommentSelectorFunc = {
         username: (comment: HTMLElement): string | null => {
@@ -79,6 +96,37 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                     ?.shadowRoot?.querySelector('bili-rich-text')?.shadowRoot
                 const uname = contentNode?.querySelector('a[data-user-profile-id]')?.textContent?.replace('@', '')
                 return uname ? uname : null
+            }
+            return null
+        },
+        level: (comment: HTMLElement): number | null => {
+            if (isCommentV2()) {
+                const url = comment.shadowRoot
+                    ?.querySelector('bili-comment-renderer')
+                    ?.shadowRoot?.querySelector('bili-comment-user-info')
+                    ?.shadowRoot?.querySelector('#user-level img')
+                    ?.getAttribute('src')
+                if (url) {
+                    const lvMap = new Map([
+                        ['level_h.svg', 6.5],
+                        ['level_6.svg', 6],
+                        ['level_5.svg', 5],
+                        ['level_4.svg', 4],
+                        ['level_3.svg', 3],
+                        ['level_2.svg', 2],
+                        ['level_1.svg', 1],
+                    ])
+                    const arr = url.split('/')
+                    const lv = lvMap.get(arr[arr.length - 1])
+                    return lv ? lv : null
+                }
+                return null
+            }
+            const c = comment.querySelector('.root-reply-container .user-level')?.className
+            const matchLv = c && c.match(/level-([1-6]|h)/)
+            if (matchLv && matchLv.length) {
+                const lv = lvMap.get(matchLv[0])
+                return lv ? lv : null
             }
             return null
         },
@@ -145,6 +193,27 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
 
             return null
         },
+        level: (comment: HTMLElement): number | null => {
+            if (isCommentV2()) {
+                const url = comment.shadowRoot
+                    ?.querySelector('bili-comment-user-info')
+                    ?.shadowRoot?.querySelector('#user-level img')
+                    ?.getAttribute('src')
+                if (url) {
+                    const arr = url.split('/')
+                    const lv = lvMap.get(arr[arr.length - 1])
+                    return lv ? lv : null
+                }
+                return null
+            }
+            const c = comment.querySelector('.sub-user-info .sub-user-level')?.className
+            const matchLv = c && c.match(/level-([1-6]|h)/)
+            if (matchLv && matchLv.length) {
+                const lv = lvMap.get(matchLv[0])
+                return lv ? lv : null
+            }
+            return null
+        },
     }
 
     // 检测评论列表
@@ -199,7 +268,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                             root
                                 ?.querySelector('bili-rich-text')
                                 ?.shadowRoot?.querySelector(
-                                    `a:not([href*="space.bilibili.com"]):not([data-video-time])`,
+                                    `a:not([href*="space.bilibili.com"], [href*="search.bilibili.com"], [data-video-time])`,
                                 ))
                     if (isWhite) {
                         showEle(e)
@@ -340,6 +409,11 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
     const botAction = new BotAction('video-comment-bot-filter-status', checkCommentList)
     const callBotAction = new CallBotAction('video-comment-call-bot-filter-status', checkCommentList)
     const callUserAction = new CallUserAction('video-comment-call-user-filter-status', checkCommentList)
+    const levelAction = new LevelAction(
+        'video-comment-level-filter-status',
+        'global-comment-level-filter-value',
+        checkCommentList,
+    )
 
     //=======================================================================================
 
@@ -478,6 +552,37 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         }),
     ]
     videoPageCommentFilterGroupList.push(new Group('comment-content-filter-group', '评论区 关键词过滤', contentItems))
+
+    // UI组件, 等级过滤part
+    const levelItems = [
+        // 启用 播放页等级过滤
+        new CheckboxItem({
+            itemID: levelAction.statusKey,
+            description: '启用 用户等级过滤',
+            enableFunc: async () => {
+                levelAction.enable()
+            },
+            disableFunc: async () => {
+                levelAction.disable()
+            },
+        }),
+        // 设定最低等级
+        new NumberItem({
+            itemID: levelAction.valueKey,
+            description: '设定最低等级 (0~6)',
+            defaultValue: 3,
+            minValue: 0,
+            maxValue: 6,
+            disableValue: 0,
+            unit: '',
+            callback: async (value: number) => {
+                levelAction.change(value)
+            },
+        }),
+    ]
+    videoPageCommentFilterGroupList.push(
+        new Group('comment-level-filter-whitelist-group', '评论区 等级过滤', levelItems),
+    )
 
     // UI组件, 白名单part
     const whitelistItems = [

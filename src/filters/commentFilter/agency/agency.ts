@@ -2,6 +2,7 @@ import botFilterInstance from '../filters/subfilters/bot'
 import callBotFilterInstance from '../filters/subfilters/callBot'
 import callUserFilterInstance from '../filters/subfilters/callUser'
 import contentFilterInstance from '../filters/subfilters/content'
+import levelFilterInstance from '../filters/subfilters/level'
 import usernameFilterInstance from '../filters/subfilters/username'
 
 // 代理, 接收页面操作通知, 更新子过滤器的参数
@@ -75,6 +76,21 @@ class CommentFilterAgency {
                 break
             case 'enable':
                 callUserFilterInstance.setStatus(true)
+                break
+        }
+    }
+    notifyLevel(event: string, value?: number) {
+        switch (event) {
+            case 'disable':
+                levelFilterInstance.setStatus(false)
+                break
+            case 'enable':
+                levelFilterInstance.setStatus(true)
+                break
+            case 'change':
+                if (typeof value === 'number') {
+                    levelFilterInstance.setParams(value)
+                }
                 break
         }
     }

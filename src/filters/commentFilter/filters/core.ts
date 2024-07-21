@@ -23,7 +23,7 @@ export type CommentSelectorFunc = {
     level?: (comment: HTMLElement) => number | null
 }
 
-interface CommentInfo {
+type CommentInfo = {
     username?: string | undefined
     content?: string | undefined
     callUser?: string | undefined

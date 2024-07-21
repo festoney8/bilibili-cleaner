@@ -33,186 +33,107 @@ let isNoteCommentWhitelistEnable = false
 let isLinkCommentWhitelistEnable = false
 
 if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
-    const lvMap = new Map([
-        ['level_h.svg', 6.5],
-        ['level_6.svg', 6],
-        ['level_5.svg', 5],
-        ['level_4.svg', 4],
-        ['level_3.svg', 3],
-        ['level_2.svg', 2],
-        ['level_1.svg', 1],
-
-        ['level-h', 6.5],
-        ['level-6', 6],
-        ['level-5', 5],
-        ['level-4', 4],
-        ['level-3', 3],
-        ['level-2', 2],
-        ['level-1', 1],
-    ])
     // 一级评论
     const rootCommentSelectorFunc: CommentSelectorFunc = {
         username: (comment: HTMLElement): string | null => {
             if (isCommentV2()) {
-                const uname =
-                    (comment as any).__data?.member?.uname ||
-                    comment.shadowRoot
-                        ?.querySelector('bili-comment-renderer')
-                        ?.shadowRoot?.querySelector('bili-comment-user-info')
-                        ?.shadowRoot?.querySelector('#user-name')
-                        ?.textContent?.trim()
+                const uname = (comment as any).__data?.member?.uname?.trim()
                 return uname ? uname : null
             }
-
             const uname = comment.querySelector('.root-reply-container .user-name')?.textContent?.trim()
             return uname ? uname : null
         },
         content: (comment: HTMLElement): string | null => {
             if (isCommentV2()) {
-                const content =
-                    (comment as any).__data?.content?.message?.trim() ||
-                    comment.shadowRoot
-                        ?.querySelector('bili-comment-renderer')
-                        ?.shadowRoot?.querySelector('bili-rich-text')
-                        ?.shadowRoot?.querySelector('#contents')?.textContent
+                const content = (comment as any).__data?.content?.message?.replace(/@[^@ ]+?( |$)/g, '').trim()
                 return content ? content : null
             }
-            let content = comment.querySelector('.root-reply-container .reply-content')?.textContent?.trim()
-            const atUsers = comment.querySelectorAll('.root-reply-container .jump-link.user')
-            if (atUsers.length) {
-                atUsers.forEach((e) => {
-                    const username = e.textContent?.trim()
-                    if (content && username) {
-                        content = content.replace(username, '')
-                    }
-                })
-            }
+            const content = comment
+                .querySelector('.root-reply-container .reply-content')
+                ?.textContent?.trim()
+                .replace(/@[^@ ]+?( |$)/g, '')
+                .trim()
             return content ? content : null
         },
         callUser: (comment: HTMLElement): string | null => {
             if (isCommentV2()) {
-                const contentNode = comment.shadowRoot
-                    ?.querySelector('bili-comment-renderer')
-                    ?.shadowRoot?.querySelector('bili-rich-text')?.shadowRoot
-                const uname = contentNode?.querySelector('a[data-user-profile-id]')?.textContent?.replace('@', '')
+                const uname = (comment as any).__data?.content?.members[0]?.uname
                 return uname ? uname : null
             }
-            return null
+            const uname = comment
+                .querySelector('.root-reply-container .reply-content .jump-link.user')
+                ?.textContent?.replace('@', '')
+                .trim()
+            return uname ? uname : null
         },
         level: (comment: HTMLElement): number | null => {
             if (isCommentV2()) {
-                const url = comment.shadowRoot
-                    ?.querySelector('bili-comment-renderer')
-                    ?.shadowRoot?.querySelector('bili-comment-user-info')
-                    ?.shadowRoot?.querySelector('#user-level img')
-                    ?.getAttribute('src')
-                if (url) {
-                    const lvMap = new Map([
-                        ['level_h.svg', 6.5],
-                        ['level_6.svg', 6],
-                        ['level_5.svg', 5],
-                        ['level_4.svg', 4],
-                        ['level_3.svg', 3],
-                        ['level_2.svg', 2],
-                        ['level_1.svg', 1],
-                    ])
-                    const arr = url.split('/')
-                    const lv = lvMap.get(arr[arr.length - 1])
-                    return lv ? lv : null
-                }
-                return null
-            }
-            const c = comment.querySelector('.root-reply-container .user-level')?.className
-            const matchLv = c && c.match(/level-([1-6]|h)/)
-            if (matchLv && matchLv.length) {
-                const lv = lvMap.get(matchLv[0])
+                const lv = (comment as any).__data?.member?.level_info?.current_level
                 return lv ? lv : null
             }
-            return null
+            const c = comment.querySelector('.root-reply-container .user-level')?.className
+            const lv = c?.match(/level-([1-6])/)?.[1] // 忽略level-hardcore
+            return lv ? parseInt(lv) : null
         },
     }
     // 二级评论
     const subCommentSelectorFunc: CommentSelectorFunc = {
         username: (comment: HTMLElement): string | null => {
             if (isCommentV2()) {
-                const username =
-                    (comment as any).__data?.member?.uname ||
-                    comment.shadowRoot
-                        ?.querySelector('bili-comment-user-info')
-                        ?.shadowRoot?.querySelector('#user-name a')
-                        ?.textContent?.trim()
-                return username ? username : null
+                const uname = (comment as any).__data?.member?.uname?.trim()
+                return uname ? uname : null
             }
-            const username = comment.querySelector('.sub-user-name')?.textContent?.trim()
-            return username ? username : null
+            const uname = comment.querySelector('.sub-user-name')?.textContent?.trim()
+            return uname ? uname : null
         },
         content: (comment: HTMLElement): string | null => {
             if (isCommentV2()) {
-                const contentNode = comment.shadowRoot?.querySelector('bili-rich-text')?.shadowRoot
-                let content =
-                    (comment as any).__data?.content?.message?.trim() ||
-                    contentNode?.querySelector('#contents')?.textContent?.trim()
-                // 忽略二级回复中@多用户情况
-                content = content.replace(/^回复 @[^@ ]+? :/, '').trim()
+                const content = (comment as any).__data?.content?.message
+                    ?.trim()
+                    ?.replace(/@[^@ ]+?( |$)/g, '')
+                    .replace(/^回复 *:?/, '')
+                    .trim()
                 return content ? content : null
             }
 
-            let content = comment.querySelector('.reply-content')?.textContent?.trim()
-            const atUsers = comment.querySelectorAll('.reply-content .jump-link.user')
-            if (atUsers.length && content) {
-                content = content.replace('回复 ', '')
-                atUsers.forEach((e) => {
-                    const username = e.textContent?.trim()
-                    if (content && username) {
-                        content = content.replace(username, '')
-                    }
-                })
-            }
+            const content = comment
+                .querySelector('.reply-content')
+                ?.textContent?.trim()
+                ?.replace(/@[^@ ]+?( |$)/g, '')
+                .replace(/^回复 *:?/, '')
+                .trim()
             return content ? content : null
         },
         callUser: (comment: HTMLElement): string | null => {
             if (isCommentV2()) {
-                const contentNode = comment.shadowRoot?.querySelector('bili-rich-text')?.shadowRoot
-                const content =
-                    (comment as any).__data?.content?.message?.trim() ||
-                    contentNode?.querySelector('#contents')?.textContent?.trim()
-                let uname
-                if (!content) {
-                    uname = null
-                } else {
-                    if ((content as string).startsWith('回复 @')) {
-                        uname = contentNode
-                            ?.querySelector('a[data-user-profile-id]:nth-of-type(2)')
-                            ?.textContent?.replace('@', '')
-                    } else {
-                        uname = contentNode?.querySelector('a[data-user-profile-id]')?.textContent?.replace('@', '')
-                    }
-                }
+                const uname = (comment as any).__data?.content?.message
+                    ?.trim()
+                    .replace(/^回复 ?@[^@ ]+? :/, '')
+                    .trim()
+                    ?.match(/@[^@ ]+( |$)/)?.[0]
+                    .replace('@', '')
+                    .trim()
                 return uname ? uname : null
             }
 
-            return null
+            const uname = comment
+                .querySelector('.reply-content')
+                ?.textContent?.trim()
+                .replace(/^回复 ?@[^@ ]+? :/, '')
+                .trim()
+                ?.match(/@[^@ ]+( |$)/)?.[0]
+                .replace('@', '')
+                .trim()
+            return uname ? uname : null
         },
         level: (comment: HTMLElement): number | null => {
             if (isCommentV2()) {
-                const url = comment.shadowRoot
-                    ?.querySelector('bili-comment-user-info')
-                    ?.shadowRoot?.querySelector('#user-level img')
-                    ?.getAttribute('src')
-                if (url) {
-                    const arr = url.split('/')
-                    const lv = lvMap.get(arr[arr.length - 1])
-                    return lv ? lv : null
-                }
-                return null
-            }
-            const c = comment.querySelector('.sub-user-info .sub-user-level')?.className
-            const matchLv = c && c.match(/level-([1-6]|h)/)
-            if (matchLv && matchLv.length) {
-                const lv = lvMap.get(matchLv[0])
+                const lv = (comment as any).__data?.member?.level_info?.current_level
                 return lv ? lv : null
             }
-            return null
+            const c = comment.querySelector('.sub-user-info .sub-user-level')?.className
+            const lv = c?.match(/level-([1-6])/)?.[1] // 忽略level-hardcore
+            return lv ? parseInt(lv) : null
         },
     }
 
@@ -229,11 +150,11 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 if (fullSite) {
                     rootComments = Array.from(shadowRoot.querySelectorAll<HTMLElement>('bili-comment-thread-renderer'))
                     rootComments.forEach((c) => {
-                        const replys = c.shadowRoot
+                        const replies = c.shadowRoot
                             ?.querySelector('bili-comment-replies-renderer')
                             ?.shadowRoot?.querySelectorAll<HTMLElement>('bili-comment-reply-renderer')
-                        if (replys?.length) {
-                            subComments = subComments.concat(Array.from(replys))
+                        if (replies?.length) {
+                            subComments = subComments.concat(Array.from(replies))
                         }
                     })
                 } else {
@@ -243,13 +164,13 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                         ),
                     )
                     rootComments.forEach((c) => {
-                        const replys = c.shadowRoot
+                        const replies = c.shadowRoot
                             ?.querySelector('bili-comment-replies-renderer')
                             ?.shadowRoot?.querySelectorAll<HTMLElement>(
                                 `bili-comment-reply-renderer:not([${settings.filterSign}])`,
                             )
-                        if (replys?.length) {
-                            subComments = subComments.concat(Array.from(replys))
+                        if (replies?.length) {
+                            subComments = subComments.concat(Array.from(replies))
                         }
                     })
                 }

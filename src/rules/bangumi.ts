@@ -285,13 +285,13 @@ if (isPageBangumi()) {
         new CheckboxItem({
             itemID: 'video-page-bpx-player-bili-high-icon',
             description: '隐藏 高赞弹幕前点赞按钮',
-            itemCSS: `.bili-high-icon {display: none !important}`,
+            itemCSS: `.bili-high-icon, .bili-danmaku-x-high-icon {display: none !important}`,
         }),
         // 彩色渐变弹幕 变成白色
         new CheckboxItem({
             itemID: 'video-page-bpx-player-bili-dm-vip-white',
             description: '彩色渐变弹幕 变成白色',
-            itemCSS: `#bilibili-player .bili-dm>.bili-dm-vip {
+            itemCSS: `.bili-dm>.bili-dm-vip, .bili-danmaku-x-dm-vip {
                 background: unset !important;
                 background-size: unset !important;
                 /* 父元素未指定 var(--textShadow), 默认重墨描边凑合用 */

@@ -681,6 +681,12 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
             description: '隐藏 打卡',
             itemCSS: `.bili-clock, .bili-danmaku-x-clock {display: none !important;}`,
         }),
+        // 隐藏 心动
+        new CheckboxItem({
+            itemID: 'video-page-hide-bpx-player-bili-cmtime',
+            description: '隐藏 心动',
+            itemCSS: `.bili-cmtime, .bili-danmaku-x-cmtime {display: none !important;}`,
+        }),
         // 隐藏 视频预告
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-reserve',
@@ -695,9 +701,9 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
         }),
         // 隐藏 播放器内所有弹窗 (强制)
         new CheckboxItem({
-            itemID: 'video-page-hide-bpx-player-cmd-dm-inside',
+            itemID: 'video-page-hide-bpx-player-cmd-dm-wrap',
             description: '隐藏 播放器内所有弹窗 (强制)',
-            itemCSS: `.bpx-player-cmd-dm-inside {display: none !important;}`,
+            itemCSS: `.bpx-player-cmd-dm-wrap {display: none !important;}`,
         }),
         // 隐藏 播放器内标题
         new CheckboxItem({
@@ -758,7 +764,7 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
         new CheckboxItem({
             itemID: 'video-page-bpx-player-bili-dm-vip-white',
             description: '彩色渐变弹幕 变成白色',
-            itemCSS: `#bilibili-player .bili-dm>.bili-dm-vip, .bili-danmaku-x-dm-vip, .bili-danmaku-x-colorful {
+            itemCSS: `.bili-dm>.bili-dm-vip, .bili-danmaku-x-dm-vip {
                     background: unset !important;
                     background-image: unset !important;
                     background-size: unset !important;

@@ -447,7 +447,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             },
         }),
     ]
-    videoPageCommentFilterGroupList.push(new Group('comment-type-filter-group', '播放页 评论区 按类型过滤', typeItems))
+    videoPageCommentFilterGroupList.push(new Group('comment-type-filter-group', '评论区 按类型过滤', typeItems))
 
     // UI组件, 评论内容过滤part
     const contentItems = [

@@ -3,7 +3,7 @@ import { CheckboxItem, ButtonItem, NumberItem } from '../../../components/item'
 import { debugCommentFilter as debug, error } from '../../../utils/logger'
 import { isPageDynamic, isPageSpace } from '../../../utils/pageType'
 import { showEle, waitForEle } from '../../../utils/tool'
-import { ContentAction, LevelAction, UsernameAction } from './actions/action'
+import { BotAction, CallBotAction, CallUserAction, ContentAction, LevelAction, UsernameAction } from './actions/action'
 import coreCommentFilterInstance, { CommentSelectorFunc } from '../filters/core'
 import settings from '../../../settings'
 import { ContextMenu } from '../../../components/contextmenu'
@@ -25,71 +25,62 @@ let isLinkCommentWhitelistEnable = false
 if (isPageDynamic() || isPageSpace()) {
     let commentListContainer: HTMLElement
     // 一级评论
-    const lvMap = new Map([
-        ['level-h', 6.5],
-        ['level-6', 6],
-        ['level-5', 5],
-        ['level-4', 4],
-        ['level-3', 3],
-        ['level-2', 2],
-        ['level-1', 1],
-    ])
     const rootCommentSelectorFunc: CommentSelectorFunc = {
-        username: (comment: Element): string | null => {
-            const username = comment.querySelector('.root-reply-container .user-name')?.textContent?.trim()
-            return username ? username : null
+        username: (comment: HTMLElement): string | null => {
+            const uname = comment.querySelector('.root-reply-container .user-name')?.textContent?.trim()
+            return uname ? uname : null
         },
-        content: (comment: Element): string | null => {
-            let content = comment.querySelector('.root-reply-container .reply-content')?.textContent?.trim()
-            const atUsers = comment.querySelectorAll('.root-reply-container .jump-link.user')
-            if (atUsers.length) {
-                atUsers.forEach((e) => {
-                    const username = e.textContent?.trim()
-                    if (content && username) {
-                        content = content.replace(username, '')
-                    }
-                })
-            }
+        content: (comment: HTMLElement): string | null => {
+            const content = comment
+                .querySelector('.root-reply-container .reply-content')
+                ?.textContent?.trim()
+                .replace(/@[^@ ]+?( |$)/g, '')
+                .trim()
             return content ? content : null
+        },
+        callUser: (comment: HTMLElement): string | null => {
+            const uname = comment
+                .querySelector('.root-reply-container .reply-content .jump-link.user')
+                ?.textContent?.replace('@', '')
+                .trim()
+            return uname ? uname : null
         },
         level: (comment: HTMLElement): number | null => {
             const c = comment.querySelector('.root-reply-container .user-level')?.className
-            const matchLv = c && c.match(/level-([1-6]|h)/)
-            if (matchLv && matchLv.length) {
-                const lv = lvMap.get(matchLv[0])
-                return lv ? lv : null
-            }
-            return null
+            const lv = c?.match(/level-([1-6])/)?.[1] // 忽略level-hardcore
+            return lv ? parseInt(lv) : null
         },
     }
     // 二级评论
     const subCommentSelectorFunc: CommentSelectorFunc = {
-        username: (comment: Element): string | null => {
-            const username = comment.querySelector('.sub-user-name')?.textContent?.trim()
-            return username ? username : null
+        username: (comment: HTMLElement): string | null => {
+            const uname = comment.querySelector('.sub-user-name')?.textContent?.trim()
+            return uname ? uname : null
         },
-        content: (comment: Element): string | null => {
-            let content = comment.querySelector('.reply-content')?.textContent?.trim()
-            const atUsers = comment.querySelectorAll('.reply-content .jump-link.user')
-            if (atUsers.length && content) {
-                content = content.replace('回复 ', '')
-                atUsers.forEach((e) => {
-                    const username = e.textContent?.trim()
-                    if (content && username) {
-                        content = content.replace(username, '')
-                    }
-                })
-            }
+        content: (comment: HTMLElement): string | null => {
+            const content = comment
+                .querySelector('.reply-content')
+                ?.textContent?.trim()
+                ?.replace(/@[^@ ]+?( |$)/g, '')
+                .replace(/^回复 *:?/, '')
+                .trim()
             return content ? content : null
+        },
+        callUser: (comment: HTMLElement): string | null => {
+            const uname = comment
+                .querySelector('.reply-content')
+                ?.textContent?.trim()
+                .replace(/^回复 ?@[^@ ]+? :/, '')
+                .trim()
+                ?.match(/@[^@ ]+( |$)/)?.[0]
+                .replace('@', '')
+                .trim()
+            return uname ? uname : null
         },
         level: (comment: HTMLElement): number | null => {
             const c = comment.querySelector('.sub-user-info .sub-user-level')?.className
-            const matchLv = c && c.match(/level-([1-6]|h)/)
-            if (matchLv && matchLv.length) {
-                const lv = lvMap.get(matchLv[0])
-                return lv ? lv : null
-            }
-            return null
+            const lv = c?.match(/level-([1-6])/)?.[1] // 忽略level-hardcore
+            return lv ? parseInt(lv) : null
         },
     }
     // 检测评论列表
@@ -172,6 +163,9 @@ if (isPageDynamic() || isPageSpace()) {
         'global-comment-level-filter-value',
         checkCommentList,
     )
+    const botAction = new BotAction('dynamic-comment-bot-filter-status', checkCommentList)
+    const callBotAction = new CallBotAction('dynamic-comment-call-bot-filter-status', checkCommentList)
+    const callUserAction = new CallUserAction('dynamic-comment-call-user-filter-status', checkCommentList)
 
     // 监听评论列表内部变化, 有变化时检测评论列表
     const watchCommentListContainer = () => {
@@ -282,6 +276,44 @@ if (isPageDynamic() || isPageSpace()) {
     dynamicPageCommentFilterGroupList.push(
         new Group('comment-username-filter-group', '动态页 评论区 用户过滤', usernameItems),
     )
+
+    // UI组件, 按类型过滤part
+    const typeItems = [
+        // 过滤 召唤AI的评论
+        new CheckboxItem({
+            itemID: callBotAction.statusKey,
+            description: '过滤 召唤AI的评论',
+            enableFunc: async () => {
+                callBotAction.enable()
+            },
+            disableFunc: async () => {
+                callBotAction.disable()
+            },
+        }),
+        // 过滤 AI发布的评论
+        new CheckboxItem({
+            itemID: botAction.statusKey,
+            description: '过滤 AI发布的评论',
+            enableFunc: async () => {
+                botAction.enable()
+            },
+            disableFunc: async () => {
+                botAction.disable()
+            },
+        }),
+        // 过滤 @其他用户的评论
+        new CheckboxItem({
+            itemID: callUserAction.statusKey,
+            description: '过滤 @其他用户的评论',
+            enableFunc: async () => {
+                callUserAction.enable()
+            },
+            disableFunc: async () => {
+                callUserAction.disable()
+            },
+        }),
+    ]
+    dynamicPageCommentFilterGroupList.push(new Group('comment-type-filter-group', '评论区 按类型过滤', typeItems))
 
     // UI组件, 评论内容过滤part
     const contentItems = [

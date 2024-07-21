@@ -102,7 +102,7 @@ class CoreCommentFilter {
                     }
                 }
 
-                // debug(info)
+                // console.log([info.content, info.username, info.callUser, info.level].join('\n'))
 
                 // 执行检测
                 Promise.all(blackTasks)

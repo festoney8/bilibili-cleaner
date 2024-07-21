@@ -249,7 +249,7 @@ export class LevelAction implements CommentFilterAction {
         this.valueKey = valueKey
         this.checkCommentList = checkCommentList
         this.status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
-        this.value = GM_getValue(`BILICLEANER_${this.valueKey}`, 60)
+        this.value = GM_getValue(`BILICLEANER_${this.valueKey}`, 3)
         // 配置子过滤器
         levelFilterInstance.setStatus(this.status)
         levelFilterInstance.setParams(this.value)

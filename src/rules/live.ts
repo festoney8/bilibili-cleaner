@@ -1,6 +1,7 @@
+import { unsafeWindow } from '$'
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
-import { debugRules as debug } from '../utils/logger'
+import { debugRules as debug, error } from '../utils/logger'
 import { isPageLiveHome, isPageLiveRoom } from '../utils/pageType'
 import fontFaceRegular from './styles/fontFaceRegular.scss?inline'
 
@@ -159,7 +160,7 @@ if (isPageLiveRoom()) {
             enableFunc: async () => {
                 let cnt = 0
                 const id = setInterval(() => {
-                    if (document.querySelector('.rendererRoot, #internationalHeader')) {
+                    if (document.querySelector('.rendererRoot, #main.live-activity-full-main, #internationalHeader')) {
                         if (!location.href.includes('/blanc/')) {
                             window.location.href = location.href.replace(
                                 'live.bilibili.com/',
@@ -173,6 +174,40 @@ if (isPageLiveRoom()) {
                 }, 200)
             },
             enableFuncRunAt: 'document-end',
+        }),
+        // 自动切换最高画质
+        new CheckboxItem({
+            itemID: 'auto-best-quality',
+            description: '自动切换最高画质 (实验功能)',
+            enableFunc: async () => {
+                const qualityFn = () => {
+                    const player = unsafeWindow.EmbedPlayer?.instance || unsafeWindow.livePlayer
+                    if (player) {
+                        try {
+                            const info = player?.getPlayerInfo()
+                            const arr = player?.getPlayerInfo().qualityCandidates
+                            if (info && arr && arr.length) {
+                                let maxQn = 0
+                                arr.forEach((v) => {
+                                    if (v.qn && parseInt(v.qn) > maxQn) {
+                                        maxQn = parseInt(v.qn)
+                                    }
+                                })
+                                if (maxQn && info.quality && maxQn > parseInt(info.quality)) {
+                                    player.switchQuality(`${maxQn}`)
+                                }
+                            }
+                        } catch (err) {
+                            error('auto-best-quality error', err)
+                        }
+                    }
+                }
+                setTimeout(qualityFn, 2000)
+                setTimeout(qualityFn, 4000)
+                setTimeout(qualityFn, 6000)
+                setTimeout(qualityFn, 8000)
+            },
+            enableFuncRunAt: 'document-idle',
         }),
     ]
     liveGroupList.push(new Group('live-basic', '直播页 基本功能', basicItems))
@@ -283,7 +318,7 @@ if (isPageLiveRoom()) {
         new CheckboxItem({
             itemID: 'live-page-head-web-player-awesome-pk-vm',
             description: '隐藏 直播PK特效',
-            itemCSS: `#pk-vm, #awesome-pk-vm {display: none !important;}`,
+            itemCSS: `#pk-vm, #awesome-pk-vm, #universal-pk-vm {display: none !important;}`,
         }),
         // 隐藏 滚动礼物通告
         new CheckboxItem({

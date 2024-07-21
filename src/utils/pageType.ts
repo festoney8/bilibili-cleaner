@@ -32,7 +32,7 @@ const currPage = (): string => {
     }
     if (host === 'live.bilibili.com') {
         // 匹配blanc页（赛事直播or活动直播用），用于对iframe内直播生效
-        if (pathname.match(/^\/(?:blanc\/)?\d+/)) {
+        if (pathname.match(/^\/(?:blanc\/)?\d+(#\/)?/)) {
             return 'liveRoom'
         }
         // 匹配各种直播页iframe、直播活动, 不做处理

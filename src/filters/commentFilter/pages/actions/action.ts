@@ -2,14 +2,15 @@ import { GM_getValue } from '$'
 import { WordList } from '../../../../components/wordlist'
 import commentFilterAgencyInstance from '../../agency/agency'
 import contentFilterInstance from '../../filters/subfilters/content'
+import levelFilterInstance from '../../filters/subfilters/level'
 import usernameFilterInstance from '../../filters/subfilters/username'
 
 // 定义各种黑名单功能、白名单功能的属性和行为
 interface CommentFilterAction {
     statusKey: string
-    valueKey: string
     status: boolean
-    value: number | string | string[]
+    valueKey?: string
+    value?: number | string | string[]
     // 检测评论列表的函数
     checkCommentList(fullSite: boolean): void
     blacklist?: WordList
@@ -136,6 +137,135 @@ export class ContentAction implements CommentFilterAction {
     }
     edit(values: string[]) {
         commentFilterAgencyInstance.notifyContent('edit', values)
+        this.checkCommentList(true)
+    }
+}
+
+export class BotAction implements CommentFilterAction {
+    statusKey: string
+    status: boolean
+    checkCommentList: (fullSite: boolean) => void
+
+    /**
+     * 屏蔽AI发布的评论
+     * @param statusKey 是否启用的GM key
+     * @param checkCommentList 检测评论列表函数
+     */
+    constructor(statusKey: string, checkCommentList: (fullSite: boolean) => void) {
+        this.statusKey = statusKey
+        this.status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
+        this.checkCommentList = checkCommentList
+
+        contentFilterInstance.setStatus(this.status)
+    }
+
+    enable() {
+        commentFilterAgencyInstance.notifyBot('enable')
+        this.checkCommentList(true)
+        this.status = true
+    }
+    disable() {
+        commentFilterAgencyInstance.notifyBot('disable')
+        this.checkCommentList(true)
+        this.status = false
+    }
+}
+
+export class CallBotAction implements CommentFilterAction {
+    statusKey: string
+    status: boolean
+    checkCommentList: (fullSite: boolean) => void
+
+    /**
+     * 过滤召唤AI的评论
+     * @param statusKey 是否启用的GM key
+     * @param checkCommentList 检测评论列表函数
+     */
+    constructor(statusKey: string, checkCommentList: (fullSite: boolean) => void) {
+        this.statusKey = statusKey
+        this.status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
+        this.checkCommentList = checkCommentList
+
+        contentFilterInstance.setStatus(this.status)
+    }
+
+    enable() {
+        commentFilterAgencyInstance.notifyCallBot('enable')
+        this.checkCommentList(true)
+        this.status = true
+    }
+    disable() {
+        commentFilterAgencyInstance.notifyCallBot('disable')
+        this.checkCommentList(true)
+        this.status = false
+    }
+}
+
+export class CallUserAction implements CommentFilterAction {
+    statusKey: string
+    status: boolean
+    checkCommentList: (fullSite: boolean) => void
+
+    /**
+     * 过滤AT其他用户的评论
+     * @param statusKey 是否启用的GM key
+     * @param checkCommentList 检测评论列表函数
+     */
+    constructor(statusKey: string, checkCommentList: (fullSite: boolean) => void) {
+        this.statusKey = statusKey
+        this.status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
+        this.checkCommentList = checkCommentList
+
+        contentFilterInstance.setStatus(this.status)
+    }
+
+    enable() {
+        commentFilterAgencyInstance.notifyCallUser('enable')
+        this.checkCommentList(true)
+        this.status = true
+    }
+    disable() {
+        commentFilterAgencyInstance.notifyCallUser('disable')
+        this.checkCommentList(true)
+        this.status = false
+    }
+}
+
+export class LevelAction implements CommentFilterAction {
+    statusKey: string
+    valueKey: string
+    checkCommentList: (fullSite: boolean) => void
+    status: boolean
+    value: number
+
+    /**
+     * 等级过滤操作
+     * @param statusKey 是否启用的GM key
+     * @param valueKey 存储数据的GM key
+     * @param checkCommentList 检测评论列表函数
+     */
+    constructor(statusKey: string, valueKey: string, checkCommentList: (fullSite: boolean) => void) {
+        this.statusKey = statusKey
+        this.valueKey = valueKey
+        this.checkCommentList = checkCommentList
+        this.status = GM_getValue(`BILICLEANER_${this.statusKey}`, false)
+        this.value = GM_getValue(`BILICLEANER_${this.valueKey}`, 3)
+        // 配置子过滤器
+        levelFilterInstance.setStatus(this.status)
+        levelFilterInstance.setParams(this.value)
+    }
+    enable() {
+        commentFilterAgencyInstance.notifyLevel('enable')
+        this.checkCommentList(true)
+        this.status = true
+    }
+    disable() {
+        commentFilterAgencyInstance.notifyLevel('disable')
+        this.checkCommentList(true)
+        this.status = false
+    }
+    change(value: number) {
+        commentFilterAgencyInstance.notifyLevel('change', value)
         this.checkCommentList(true)
     }
 }

@@ -156,14 +156,18 @@ export class CheckboxItem implements IItem {
                             if (['complete', 'interactive'].includes(document.readyState)) {
                                 this.option.enableFunc()?.then().catch()
                             } else {
-                                document.addEventListener('DOMContentLoaded', this.option.enableFunc)
+                                document.addEventListener('DOMContentLoaded', () => {
+                                    this.option.enableFunc && this.option.enableFunc()?.then().catch()
+                                })
                             }
                             break
                         case 'document-idle':
                             if (document.readyState === 'complete') {
                                 this.option.enableFunc()?.then().catch()
                             } else {
-                                document.addEventListener('load', this.option.enableFunc)
+                                window.addEventListener('load', () => {
+                                    this.option.enableFunc && this.option.enableFunc()?.then().catch()
+                                })
                             }
                             break
                         default:

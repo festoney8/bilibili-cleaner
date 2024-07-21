@@ -1,9 +1,9 @@
 import { Group } from '../../../components/group'
-import { CheckboxItem, ButtonItem } from '../../../components/item'
+import { CheckboxItem, ButtonItem, NumberItem } from '../../../components/item'
 import { debugCommentFilter as debug, error } from '../../../utils/logger'
 import { isPageDynamic, isPageSpace } from '../../../utils/pageType'
 import { showEle, waitForEle } from '../../../utils/tool'
-import { ContentAction, UsernameAction } from './actions/action'
+import { ContentAction, LevelAction, UsernameAction } from './actions/action'
 import coreCommentFilterInstance, { CommentSelectorFunc } from '../filters/core'
 import settings from '../../../settings'
 import { ContextMenu } from '../../../components/contextmenu'
@@ -25,6 +25,15 @@ let isLinkCommentWhitelistEnable = false
 if (isPageDynamic() || isPageSpace()) {
     let commentListContainer: HTMLElement
     // 一级评论
+    const lvMap = new Map([
+        ['level-h', 6.5],
+        ['level-6', 6],
+        ['level-5', 5],
+        ['level-4', 4],
+        ['level-3', 3],
+        ['level-2', 2],
+        ['level-1', 1],
+    ])
     const rootCommentSelectorFunc: CommentSelectorFunc = {
         username: (comment: Element): string | null => {
             const username = comment.querySelector('.root-reply-container .user-name')?.textContent?.trim()
@@ -42,6 +51,15 @@ if (isPageDynamic() || isPageSpace()) {
                 })
             }
             return content ? content : null
+        },
+        level: (comment: HTMLElement): number | null => {
+            const c = comment.querySelector('.root-reply-container .user-level')?.className
+            const matchLv = c && c.match(/level-([1-6]|h)/)
+            if (matchLv && matchLv.length) {
+                const lv = lvMap.get(matchLv[0])
+                return lv ? lv : null
+            }
+            return null
         },
     }
     // 二级评论
@@ -63,6 +81,15 @@ if (isPageDynamic() || isPageSpace()) {
                 })
             }
             return content ? content : null
+        },
+        level: (comment: HTMLElement): number | null => {
+            const c = comment.querySelector('.sub-user-info .sub-user-level')?.className
+            const matchLv = c && c.match(/level-([1-6]|h)/)
+            if (matchLv && matchLv.length) {
+                const lv = lvMap.get(matchLv[0])
+                return lv ? lv : null
+            }
+            return null
         },
     }
     // 检测评论列表
@@ -138,6 +165,11 @@ if (isPageDynamic() || isPageSpace()) {
     const contentAction = new ContentAction(
         'dynamic-comment-content-filter-status',
         'global-comment-content-filter-value',
+        checkCommentList,
+    )
+    const levelAction = new LevelAction(
+        'dynamic-comment-level-filter-status',
+        'global-comment-level-filter-value',
         checkCommentList,
     )
 
@@ -275,6 +307,37 @@ if (isPageDynamic() || isPageSpace()) {
         }),
     ]
     dynamicPageCommentFilterGroupList.push(new Group('comment-content-filter-group', '评论区 关键词过滤', contentItems))
+
+    // UI组件, 等级过滤part
+    const levelItems = [
+        // 启用 播放页等级过滤
+        new CheckboxItem({
+            itemID: levelAction.statusKey,
+            description: '启用 用户等级过滤',
+            enableFunc: async () => {
+                levelAction.enable()
+            },
+            disableFunc: async () => {
+                levelAction.disable()
+            },
+        }),
+        // 设定最低等级
+        new NumberItem({
+            itemID: levelAction.valueKey,
+            description: '设定最低等级 (0~6)',
+            defaultValue: 3,
+            minValue: 0,
+            maxValue: 6,
+            disableValue: 0,
+            unit: '',
+            callback: async (value: number) => {
+                levelAction.change(value)
+            },
+        }),
+    ]
+    dynamicPageCommentFilterGroupList.push(
+        new Group('comment-level-filter-whitelist-group', '评论区 等级过滤', levelItems),
+    )
 
     // UI组件, 白名单part
     const whitelistItems = [

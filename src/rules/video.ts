@@ -634,9 +634,11 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
                 .bili-guide-cyc,
                 .bili-guide-electric,
                 .bili-guide-follow,
-                .bili-guide-init-three,
-                .bili-guide-three,
-                .bili-guide-followed {
+                .bili-guide-followed,
+                .bili-danmaku-x-guide,
+                .bili-danmaku-x-guide-all,
+                .bili-danmaku-x-guide-follow,
+                .bili-danmaku-x-guide-gray {
                     display: none !important;
                 }`,
         }),
@@ -644,14 +646,7 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-vote',
             description: '隐藏 投票',
-            itemCSS: `
-                .bili-vote,
-                .bili-vote-lottie,
-                .bili-vote-question,
-                .bili-vote-an,
-                .bili-cmd-shrink {
-                    display: none !important;
-                }`,
+            itemCSS: `.bili-vote, .bili-danmaku-x-vote {display: none !important;}`,
         }),
         // 隐藏 播放效果调查, 默认开启
         new CheckboxItem({
@@ -670,12 +665,7 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
             itemID: 'video-page-hide-bpx-player-bili-score',
             description: '隐藏 评分',
             itemCSS: `
-                .bili-score,
-                .bili-score-area,
-                .bili-score-area-item,
-                .bili-score-count,
-                .bili-score-result,
-                .bili-score-title {
+                .bili-score, .bili-danmaku-x-score, .bili-danmaku-x-superRating {
                     display: none !important;
                 }`,
         }),
@@ -683,31 +673,37 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-score-sum',
             description: '隐藏 评分总结',
-            itemCSS: `.bili-scoreSum {display: none !important;}`,
+            itemCSS: `.bili-scoreSum, .bili-danmaku-x-scoreSum {display: none !important;}`,
         }),
         // 隐藏 打卡
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-clock',
             description: '隐藏 打卡',
-            itemCSS: `.bili-clock {display: none !important;}`,
+            itemCSS: `.bili-clock, .bili-danmaku-x-clock {display: none !important;}`,
+        }),
+        // 隐藏 心动
+        new CheckboxItem({
+            itemID: 'video-page-hide-bpx-player-bili-cmtime',
+            description: '隐藏 心动',
+            itemCSS: `.bili-cmtime, .bili-danmaku-x-cmtime {display: none !important;}`,
         }),
         // 隐藏 视频预告
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-reserve',
             description: '隐藏 视频预告',
-            itemCSS: `.bili-reserve {display: none !important;}`,
+            itemCSS: `.bili-reserve, .bili-danmaku-x-reserve {display: none !important;}`,
         }),
         // 隐藏 视频链接
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-link',
             description: '隐藏 视频链接 (稍后再看)',
-            itemCSS: `.bili-link {display: none !important;}`,
+            itemCSS: `.bili-link, .bili-danmaku-x-link {display: none !important;}`,
         }),
         // 隐藏 播放器内所有弹窗 (强制)
         new CheckboxItem({
-            itemID: 'video-page-hide-bpx-player-cmd-dm-inside',
+            itemID: 'video-page-hide-bpx-player-cmd-dm-wrap',
             description: '隐藏 播放器内所有弹窗 (强制)',
-            itemCSS: `.bpx-player-cmd-dm-inside {display: none !important;}`,
+            itemCSS: `.bpx-player-cmd-dm-wrap {display: none !important;}`,
         }),
         // 隐藏 播放器内标题
         new CheckboxItem({
@@ -762,14 +758,15 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
         new CheckboxItem({
             itemID: 'video-page-bpx-player-bili-high-icon',
             description: '隐藏 高赞弹幕前点赞按钮',
-            itemCSS: `.bili-dm .bili-high-icon {display: none !important}`,
+            itemCSS: `.bili-dm .bili-high-icon, .bili-danmaku-x-high-icon {display: none !important}`,
         }),
         // 彩色渐变弹幕 变成白色
         new CheckboxItem({
             itemID: 'video-page-bpx-player-bili-dm-vip-white',
             description: '彩色渐变弹幕 变成白色',
-            itemCSS: `#bilibili-player .bili-dm>.bili-dm-vip {
+            itemCSS: `.bili-dm>.bili-dm-vip, .bili-danmaku-x-dm-vip {
                     background: unset !important;
+                    background-image: unset !important;
                     background-size: unset !important;
                     /* 父元素未指定 var(--textShadow), 默认重墨描边凑合用 */
                     text-shadow: 1px 0 1px #000000,0 1px 1px #000000,0 -1px 1px #000000,-1px 0 1px #000000 !important;

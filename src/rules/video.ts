@@ -687,6 +687,12 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
             description: '隐藏 心动',
             itemCSS: `.bili-cmtime, .bili-danmaku-x-cmtime {display: none !important;}`,
         }),
+        // 隐藏 迷你弹窗
+        new CheckboxItem({
+            itemID: 'video-page-hide-bpx-player-bili-cmd-shrink',
+            description: '隐藏 迷你弹窗',
+            itemCSS: `.bili-cmd-shrink, .bili-danmaku-x-cmd-shrink {display: none !important;}`,
+        }),
         // 隐藏 视频预告
         new CheckboxItem({
             itemID: 'video-page-hide-bpx-player-bili-reserve',

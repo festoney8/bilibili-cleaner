@@ -13,21 +13,31 @@ export const debounce = (fn: (...params: any[]) => any, wait: number, immed: boo
 // 匹配BV号
 const bvidPattern = /(BV[1-9A-HJ-NP-Za-km-z]+)/
 export const matchBvid = (s: string): string | null => {
-    const match = bvidPattern.exec(s)
-    if (match && match.length >= 2) {
-        return match[1]
-    }
-    return null
+    return bvidPattern.exec(s)?.[1] ?? null
 }
 
 // 匹配AVBV号
 const avidbvidPattern = /(av\d+|BV[1-9A-HJ-NP-Za-km-z]+)/
 export const matchAvidBvid = (s: string): string | null => {
-    const match = avidbvidPattern.exec(s)
-    if (match && match.length >= 2) {
-        return match[1]
+    return avidbvidPattern.exec(s)?.[1] ?? null
+}
+
+/**
+ * 时间转换成秒
+ * @param timeStr 时间字符串 hh:mm:ss 或 mm:ss
+ * @returns 秒数
+ */
+export const convertTimeToSec = (timeStr: string): number => {
+    timeStr = timeStr.trim()
+    if (/^\d+:\d\d:\d\d$/.test(timeStr)) {
+        const parts = timeStr.split(':')
+        return parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2])
     }
-    return null
+    if (/^\d\d:\d\d$/.test(timeStr)) {
+        const parts = timeStr.split(':')
+        return parseInt(parts[0]) * 60 + parseInt(parts[1])
+    }
+    return Infinity
 }
 
 // 隐藏元素

@@ -15,8 +15,6 @@ export class ContextMenu {
     private node: HTMLDivElement | undefined
     private isShowing = false
 
-    constructor() {}
-
     /** 向document.head中添加CSS */
     insertContextMenuCSS() {
         try {

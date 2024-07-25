@@ -31,12 +31,12 @@ import { videoPageVideoFilterGroupList } from './filters/videoFilter/pages/video
 import { popularPageVideoFilterGroupList } from './filters/videoFilter/pages/popular'
 import { searchPageVideoFilterGroupList } from './filters/videoFilter/pages/search'
 import { channelPageVideoFilterGroupList } from './filters/videoFilter/pages/channel'
-import { videoPageCommentFilterGroupList } from './filters/commentFilter/pages/video'
 import { spacePageVideoFilterGroupList } from './filters/videoFilter/pages/space'
-import { dynamicPageCommentFilterGroupList } from './filters/commentFilter/pages/dynamicAndSpace'
 import { watchlaterGroupList } from './rules/watchlater'
 import { spaceGroupList } from './rules/space'
 import { dynamicPageDynFilterGroupList } from './filters/dynFilter/pages/dynamic'
+import { videoPageCommentFilterGroupList } from './newFilters/comment/video'
+import { dynamicPageCommentFilterGroupList } from './newFilters/comment/dynAndSpace'
 
 const main = async () => {
     // 载入元素屏蔽规则

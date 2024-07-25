@@ -1,13 +1,13 @@
 import settings from '../../settings'
-import { error, log } from '../../utils/logger'
-import { hideEle, isEleHide, showEle } from '../../utils/tool'
+import { error } from '../../utils/logger'
+import { hideEle, showEle } from '../../utils/tool'
 import { BooleanFilter } from './subFilters/booleanFilter'
 import { KeywordFilter } from './subFilters/keywordFilter'
 import { NumberFilter } from './subFilters/numberFilter'
 import { StringFilter } from './subFilters/stringFilter'
 
-type SelectorResult = string | boolean | number | undefined
-type SubFilterType = BooleanFilter | StringFilter | KeywordFilter | NumberFilter
+export type SelectorResult = string | boolean | number | undefined
+export type SubFilterType = BooleanFilter | StringFilter | KeywordFilter | NumberFilter
 export type SelectorFn = (el: HTMLElement) => SelectorResult
 
 export interface ISubFilter {
@@ -19,7 +19,7 @@ export interface ISubFilter {
     check(el: HTMLElement, selectorFn: SelectorFn): Promise<void>
 }
 
-type SubFilterPair = [SubFilterType, SelectorFn]
+export type SubFilterPair = [SubFilterType, SelectorFn]
 
 /**
  * 检测元素列表中每个元素是否合法, 隐藏不合法的元素
@@ -41,7 +41,7 @@ export const coreCheck = async (
         for (const pair of blackPairs) {
             if (pair[0].isEnable) {
                 isAllDisable = false
-                return
+                break
             }
         }
         if (isAllDisable) {
@@ -50,13 +50,13 @@ export const coreCheck = async (
         }
 
         // 构建黑白名单检测任务
-        elements.forEach((el) => {
+        elements.forEach(async (el) => {
             const blackTasks: Promise<void>[] = []
             blackPairs.forEach((pair) => {
                 blackTasks.push(pair[0].check(el, pair[1]))
             })
 
-            Promise.all(blackTasks)
+            await Promise.all(blackTasks)
                 .then(() => {
                     // 未命中黑名单
                     showEle(el)

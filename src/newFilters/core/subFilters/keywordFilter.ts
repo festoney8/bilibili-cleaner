@@ -10,6 +10,10 @@ export class KeywordFilter implements ISubFilter {
     disable(): void {
         this.isEnable = false
     }
+    addParam(value: string): void {
+        value = value.trim()
+        value && this.keywordSet.add(value)
+    }
     setParam(value: string[]): void {
         this.keywordSet = new Set(value.map((v) => v.trim()).filter((v) => v))
     }

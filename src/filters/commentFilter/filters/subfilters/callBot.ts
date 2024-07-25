@@ -26,7 +26,7 @@ class CallBotFilter implements ICommentSubFilter {
         '机器工具人',
         '有趣的程序员',
         'AI视频小助理',
-        'AI视频小助理总结一下 (误伤)',
+        'AI视频小助理总结一下',
         'AI笔记侠',
         'AI视频助手',
         '哔哩哔理点赞姬',

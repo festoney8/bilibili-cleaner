@@ -1,11 +1,14 @@
-import { unsafeWindow } from '$'
+import { GM_getValue, GM_setValue, unsafeWindow } from '$'
 import { ContextMenu } from '../../components/contextmenu'
 import { Group } from '../../components/group'
 import { ButtonItem, CheckboxItem, NumberItem } from '../../components/item'
 import { WordList } from '../../components/wordlist'
-import callBotFilterInstance from '../../filters/commentFilter/filters/subfilters/callBot'
+import settings from '../../settings'
 import fetchHook from '../../utils/fetch'
 import { error } from '../../utils/logger'
+import { isPageBangumi, isPagePlaylist, isPageVideo } from '../../utils/pageType'
+import { showEle } from '../../utils/tool'
+import { coreCheck, SelectorResult, SubFilterPair } from '../core/core'
 import {
     CommentBotFilter,
     CommentCallBotFilter,
@@ -15,6 +18,24 @@ import {
     CommentUsernameFilter,
 } from './subFilters/black'
 import { CommentIsLinkFilter, CommentIsNoteFilter, CommentIsPinFilter, CommentIsUpFilter } from './subFilters/white'
+
+const videoPageCommentFilterGroupList: Group[] = []
+
+// 右键菜单功能
+let isContextMenuFuncRunning = false
+let isContextMenuUsernameEnable = false
+
+// 一二级评论是否检测
+let isRootWhite = false
+let isSubWhite = false
+
+let isV2 = false
+const isCommentV2 = () => {
+    if (!isV2) {
+        isV2 = unsafeWindow.__INITIAL_STATE__?.abtest?.comment_next_version === 'ELEMENTS'
+    }
+    return isV2
+}
 
 const GM_KEYS = {
     black: {
@@ -62,132 +83,213 @@ const GM_KEYS = {
     },
 }
 
-const videoPageCommentFilterGroupList: Group[] = []
-
-// 右键菜单功能
-let isContextMenuFuncRunning = false
-let isContextMenuUsernameEnable = false
-
-// 一二级评论
-let isRootCommentWhitelistEnable = false
-let isSubCommentWhitelistEnable = false
-
-let isV2 = false
-const isCommentV2 = () => {
-    if (!isV2) {
-        isV2 = unsafeWindow.__INITIAL_STATE__?.abtest?.comment_next_version === 'ELEMENTS'
-    }
-    return isV2
-}
-
 if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
-    // 一级评论
-    const rootCommentSelectorFunc: CommentSelectorFunc = {
-        username: (comment: HTMLElement): string | null => {
-            if (isCommentV2()) {
-                const uname = (comment as any).__data?.member?.uname?.trim()
-                return uname ? uname : null
-            }
-            const uname = comment.querySelector('.root-reply-container .user-name')?.textContent?.trim()
-            return uname ? uname : null
+    // 初始化黑名单
+    const bots = [
+        // 8455326 @机器工具人
+        // 234978716 @有趣的程序员
+        // 1141159409 @AI视频小助理
+        // 437175450 @AI视频小助理总结一下 (误伤)
+        // 1692825065 @AI笔记侠
+        // 690155730 @AI视频助手
+        // 689670224 @哔哩哔理点赞姬
+        // 3494380876859618 @课代表猫
+        // 1168527940 @AI课代表呀
+        // 439438614 @木几萌Moe
+        // 1358327273 @星崽丨StarZai
+        // 3546376048741135 @AI沈阳美食家
+        // 1835753760 @AI识片酱
+        // 9868463 @AI头脑风暴
+        // 358243654 @GPT_5
+        // 393788832 @Juice_AI
+        // 91394217 @AI全文总结
+        // 473018527 @AI视频总结
+        // 3546639035795567 @AI总结视频
+        '机器工具人',
+        '有趣的程序员',
+        'AI视频小助理',
+        'AI视频小助理总结一下',
+        'AI笔记侠',
+        'AI视频助手',
+        '哔哩哔理点赞姬',
+        '课代表猫',
+        'AI课代表呀',
+        '木几萌Moe',
+        '星崽丨StarZai',
+        'AI沈阳美食家',
+        'AI识片酱',
+        'AI头脑风暴',
+        'GPT_5',
+        'Juice_AI',
+        'AI全文总结',
+        'AI视频总结',
+        'AI总结视频',
+    ]
+    const commentUsernameFilter = new CommentUsernameFilter()
+    commentUsernameFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.username.valueKey}`))
+
+    const commentContentFilter = new CommentContentFilter()
+    commentContentFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.content.valueKey}`))
+
+    const commentLevelFilter = new CommentLevelFilter()
+    commentLevelFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.level.valueKey}`))
+
+    const commentBotFilter = new CommentBotFilter()
+    commentBotFilter.setParam(bots)
+
+    const commentCallBotFilter = new CommentCallBotFilter()
+    commentCallBotFilter.setParam(bots)
+
+    const commentCallUserFilter = new CommentCallUserFilter()
+    commentCallUserFilter.addParam(`/./`)
+
+    // 初始化白名单
+    const commentIsUpFilter = new CommentIsUpFilter()
+    const commentIsPinFilter = new CommentIsPinFilter()
+    const commentIsNoteFilter = new CommentIsNoteFilter()
+    const commentIsLinkFilter = new CommentIsLinkFilter()
+
+    // 一二级评论信息提取
+    const selectorFns = {
+        // 测试视频：
+        // https://b23.tv/av810872
+        // https://b23.tv/av1855797296
+        // https://b23.tv/av1706101190
+        // https://b23.tv/av1705573085
+        // https://b23.tv/av1350214762
+        root: {
+            username: (comment: HTMLElement): SelectorResult => {
+                if (isCommentV2()) {
+                    return (comment as any).__data?.member?.uname?.trim()
+                }
+                return comment.querySelector('.root-reply-container .user-name')?.textContent?.trim()
+            },
+            content: (comment: HTMLElement): SelectorResult => {
+                if (isCommentV2()) {
+                    return (comment as any).__data?.content?.message?.replace(/@[^@ ]+?( |$)/g, '').trim()
+                }
+                return comment
+                    .querySelector('.root-reply-container .reply-content')
+                    ?.textContent?.trim()
+                    .replace(/@[^@ ]+?( |$)/g, '')
+                    .trim()
+            },
+            callUser: (comment: HTMLElement): SelectorResult => {
+                if (isCommentV2()) {
+                    return (comment as any).__data?.content?.members[0]?.uname
+                }
+                return comment
+                    .querySelector('.root-reply-container .reply-content .jump-link.user')
+                    ?.textContent?.replace('@', '')
+                    .trim()
+            },
+            level: (comment: HTMLElement): SelectorResult => {
+                if (isCommentV2()) {
+                    return (comment as any).__data?.member?.level_info?.current_level
+                }
+                const c = comment.querySelector('.root-reply-container .user-level')?.className
+                const lv = c?.match(/level-([1-6])/)?.[1] // 忽略level-hardcore
+                return lv ? parseInt(lv) : undefined
+            },
+            isUp: (comment: HTMLElement): SelectorResult => {
+                if (isCommentV2()) {
+                    const mid = (comment as any).__data?.mid
+                    const upMid = (comment as any).__upMid
+                    return typeof mid === 'number' && mid === upMid
+                }
+                return !!comment.querySelector('.root-reply-container .up-icon')
+            },
+            isPin: (comment: HTMLElement): SelectorResult => {
+                if (isCommentV2()) {
+                    return !!(comment as any).__data?.reply_control?.is_up_top
+                }
+                return !!comment.querySelector('.root-reply-container .top-icon')
+            },
+            isNote: (comment: HTMLElement): SelectorResult => {
+                if (isCommentV2()) {
+                    return !!(comment as any).__data?.reply_control?.is_note_v2
+                }
+                return !!comment.querySelector('.root-reply-container .note-prefix')
+            },
+            isLink: (comment: HTMLElement): SelectorResult => {
+                if (isCommentV2()) {
+                    const urls = (comment as any).__data?.content?.jump_url
+                    return urls ? Object.keys(urls).length > 0 : undefined
+                }
+                return !!comment.querySelector('.root-reply-container .jump-link:is(.normal, .video)')
+            },
         },
-        content: (comment: HTMLElement): string | null => {
-            if (isCommentV2()) {
-                const content = (comment as any).__data?.content?.message?.replace(/@[^@ ]+?( |$)/g, '').trim()
-                return content ? content : null
-            }
-            const content = comment
-                .querySelector('.root-reply-container .reply-content')
-                ?.textContent?.trim()
-                .replace(/@[^@ ]+?( |$)/g, '')
-                .trim()
-            return content ? content : null
-        },
-        callUser: (comment: HTMLElement): string | null => {
-            if (isCommentV2()) {
-                const uname = (comment as any).__data?.content?.members[0]?.uname
-                return uname ? uname : null
-            }
-            const uname = comment
-                .querySelector('.root-reply-container .reply-content .jump-link.user')
-                ?.textContent?.replace('@', '')
-                .trim()
-            return uname ? uname : null
-        },
-        level: (comment: HTMLElement): number | null => {
-            if (isCommentV2()) {
-                const lv = (comment as any).__data?.member?.level_info?.current_level
-                return lv ? lv : null
-            }
-            const c = comment.querySelector('.root-reply-container .user-level')?.className
-            const lv = c?.match(/level-([1-6])/)?.[1] // 忽略level-hardcore
-            return lv ? parseInt(lv) : null
-        },
-    }
-    // 二级评论
-    const subCommentSelectorFunc: CommentSelectorFunc = {
-        username: (comment: HTMLElement): string | null => {
-            if (isCommentV2()) {
-                const uname = (comment as any).__data?.member?.uname?.trim()
-                return uname ? uname : null
-            }
-            const uname = comment.querySelector('.sub-user-name')?.textContent?.trim()
-            return uname ? uname : null
-        },
-        content: (comment: HTMLElement): string | null => {
-            if (isCommentV2()) {
-                const content = (comment as any).__data?.content?.message
-                    ?.trim()
+        sub: {
+            username: (comment: HTMLElement): SelectorResult => {
+                if (isCommentV2()) {
+                    return (comment as any).__data?.member?.uname?.trim()
+                }
+                return comment.querySelector('.sub-user-name')?.textContent?.trim()
+            },
+            content: (comment: HTMLElement): SelectorResult => {
+                if (isCommentV2()) {
+                    return (comment as any).__data?.content?.message
+                        ?.trim()
+                        ?.replace(/@[^@ ]+?( |$)/g, '')
+                        .replace(/^回复 *:?/, '')
+                        .trim()
+                }
+                return comment
+                    .querySelector('.reply-content')
+                    ?.textContent?.trim()
                     ?.replace(/@[^@ ]+?( |$)/g, '')
                     .replace(/^回复 *:?/, '')
                     .trim()
-                return content ? content : null
-            }
-
-            const content = comment
-                .querySelector('.reply-content')
-                ?.textContent?.trim()
-                ?.replace(/@[^@ ]+?( |$)/g, '')
-                .replace(/^回复 *:?/, '')
-                .trim()
-            return content ? content : null
-        },
-        callUser: (comment: HTMLElement): string | null => {
-            if (isCommentV2()) {
-                const uname = (comment as any).__data?.content?.message
-                    ?.trim()
-                    .replace(/^回复 ?@[^@ ]+? :/, '')
+            },
+            callUser: (comment: HTMLElement): SelectorResult => {
+                if (isCommentV2()) {
+                    return (comment as any).__data?.content?.message
+                        ?.trim()
+                        .replace(/^回复 ?@[^@ ]+? ?:/, '')
+                        .trim()
+                        ?.match(/@[^@ ]+( |$)/)?.[0]
+                        .replace('@', '')
+                        .trim()
+                }
+                return comment
+                    .querySelector('.reply-content')
+                    ?.textContent?.trim()
+                    .replace(/^回复 ?@[^@ ]+? ?:/, '')
                     .trim()
                     ?.match(/@[^@ ]+( |$)/)?.[0]
                     .replace('@', '')
                     .trim()
-                return uname ? uname : null
-            }
-
-            const uname = comment
-                .querySelector('.reply-content')
-                ?.textContent?.trim()
-                .replace(/^回复 ?@[^@ ]+? :/, '')
-                .trim()
-                ?.match(/@[^@ ]+( |$)/)?.[0]
-                .replace('@', '')
-                .trim()
-            return uname ? uname : null
-        },
-        level: (comment: HTMLElement): number | null => {
-            if (isCommentV2()) {
-                const lv = (comment as any).__data?.member?.level_info?.current_level
-                return lv ? lv : null
-            }
-            const c = comment.querySelector('.sub-user-info .sub-user-level')?.className
-            const lv = c?.match(/level-([1-6])/)?.[1] // 忽略level-hardcore
-            return lv ? parseInt(lv) : null
+            },
+            level: (comment: HTMLElement): SelectorResult => {
+                if (isCommentV2()) {
+                    return (comment as any).__data?.member?.level_info?.current_level
+                }
+                const c = comment.querySelector('.sub-user-level')?.className
+                const lv = c?.match(/level-([1-6])/)?.[1] // 忽略level-hardcore
+                return lv ? parseInt(lv) : undefined
+            },
+            isUp: (comment: HTMLElement): SelectorResult => {
+                if (isCommentV2()) {
+                    const mid = (comment as any).__data?.mid
+                    const upMid = (comment as any).__upMid
+                    return typeof mid === 'number' && mid === upMid
+                }
+                return !!comment.querySelector('.sub-up-icon')
+            },
+            isLink: (comment: HTMLElement): SelectorResult => {
+                if (isCommentV2()) {
+                    const urls = (comment as any).__data?.content?.jump_url
+                    return urls ? Object.keys(urls).length > 0 : undefined
+                }
+                return !!comment.querySelector('.sub-reply-content .jump-link:is(.normal, .video)')
+            },
         },
     }
 
     // 检测评论列表
     const checkCommentList = (fullSite: boolean) => {
         try {
+            // 提取元素：一级评论、二级评论
             let rootComments: HTMLElement[] = []
             let subComments: HTMLElement[] = []
             if (isCommentV2()) {
@@ -222,47 +324,6 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                         }
                     })
                 }
-
-                // 白名单过滤
-                // 测试视频：https://b23.tv/av1855797296 https://b23.tv/av1706101190 https://b23.tv/av1705573085
-                rootComments = rootComments.filter((e) => {
-                    const root = e.shadowRoot?.querySelector('bili-comment-renderer')?.shadowRoot
-                    const isWhite =
-                        isRootCommentWhitelistEnable ||
-                        (isNoteCommentWhitelistEnable && root?.querySelector('i#note')) ||
-                        (isPinnedCommentWhitelistEnable && root?.querySelector('i#top')) ||
-                        (isUploaderCommentWhitelistEnable &&
-                            root?.querySelector('bili-comment-user-info')?.shadowRoot?.querySelector('#user-up')) ||
-                        (isLinkCommentWhitelistEnable &&
-                            root
-                                ?.querySelector('bili-rich-text')
-                                ?.shadowRoot?.querySelector(
-                                    `a:not([href*="space.bilibili.com"], [href*="search.bilibili.com"], [data-video-time])`,
-                                ))
-                    if (isWhite) {
-                        showEle(e)
-                    }
-                    return !isWhite
-                })
-                subComments = subComments.filter((e) => {
-                    const sub = e.shadowRoot
-                    const isWhite =
-                        isSubCommentWhitelistEnable ||
-                        (isUploaderCommentWhitelistEnable &&
-                            sub?.querySelector('bili-comment-user-info')?.shadowRoot?.querySelector('#user-up')) ||
-                        (isLinkCommentWhitelistEnable &&
-                            sub
-                                ?.querySelector('bili-rich-text')
-                                ?.shadowRoot?.querySelector(`a:not([href*="space.bilibili.com"])`))
-                    if (isWhite) {
-                        showEle(e)
-                    }
-                    return !isWhite
-                })
-
-                rootComments.length && coreCommentFilterInstance.checkAll(rootComments, true, rootCommentSelectorFunc)
-                subComments.length && coreCommentFilterInstance.checkAll(subComments, true, subCommentSelectorFunc)
-                debug(`check ${rootComments.length} V2 root, ${subComments.length} V2 sub comments`)
             } else {
                 if (fullSite) {
                     rootComments = Array.from(document.querySelectorAll<HTMLElement>(`.reply-item`))
@@ -279,106 +340,86 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                         ),
                     )
                 }
-
-                // 白名单过滤
-                rootComments = rootComments.filter((e) => {
-                    const isWhite =
-                        isRootCommentWhitelistEnable ||
-                        (isUploaderCommentWhitelistEnable && e.querySelector('.root-reply-container .up-icon')) ||
-                        (isNoteCommentWhitelistEnable && e.querySelector('.root-reply-container .note-prefix')) ||
-                        (isPinnedCommentWhitelistEnable && e.querySelector('.root-reply-container .top-icon')) ||
-                        (isLinkCommentWhitelistEnable &&
-                            e.querySelector(
-                                `.root-reply-container .jump-link.video-time,
-                                .root-reply-container .jump-link.normal,
-                                .root-reply-container .jump-link.video`,
-                            ))
-                    if (isWhite) {
-                        showEle(e)
-                    }
-                    return !isWhite
-                })
-                subComments = subComments.filter((e) => {
-                    const isWhite =
-                        isSubCommentWhitelistEnable ||
-                        (isUploaderCommentWhitelistEnable && e.querySelector('.sub-up-icon')) ||
-                        (isLinkCommentWhitelistEnable &&
-                            e.querySelector(
-                                `.jump-link.video-time,
-                                .jump-link.normal,
-                                .jump-link.video`,
-                            ))
-
-                    if (isWhite) {
-                        showEle(e)
-                    }
-                    return !isWhite
-                })
-
-                rootComments.length && coreCommentFilterInstance.checkAll(rootComments, true, rootCommentSelectorFunc)
-                subComments.length && coreCommentFilterInstance.checkAll(subComments, true, subCommentSelectorFunc)
-                debug(`check ${rootComments.length} root, ${subComments.length} sub comments`)
             }
+
+            // 构建黑白检测任务
+            if (!isRootWhite && rootComments.length) {
+                const blackPairs: SubFilterPair[] = []
+                commentUsernameFilter.isEnable && blackPairs.push([commentUsernameFilter, selectorFns.root.username])
+                commentContentFilter.isEnable && blackPairs.push([commentContentFilter, selectorFns.root.content])
+                commentLevelFilter.isEnable && blackPairs.push([commentLevelFilter, selectorFns.root.level])
+                commentBotFilter.isEnable && blackPairs.push([commentBotFilter, selectorFns.root.username])
+                commentCallBotFilter.isEnable && blackPairs.push([commentCallBotFilter, selectorFns.root.callUser])
+                commentCallUserFilter.isEnable && blackPairs.push([commentCallUserFilter, selectorFns.root.callUser])
+
+                const whitePairs: SubFilterPair[] = []
+                commentIsUpFilter.isEnable && whitePairs.push([commentIsUpFilter, selectorFns.root.isUp])
+                commentIsPinFilter.isEnable && whitePairs.push([commentIsPinFilter, selectorFns.root.isPin])
+                commentIsNoteFilter.isEnable && whitePairs.push([commentIsNoteFilter, selectorFns.root.isNote])
+                commentIsLinkFilter.isEnable && whitePairs.push([commentIsLinkFilter, selectorFns.root.isLink])
+
+                coreCheck(rootComments, true, blackPairs, whitePairs)
+            } else {
+                rootComments.forEach((el) => showEle(el))
+            }
+            if (!isSubWhite && subComments.length) {
+                const blackPairs: SubFilterPair[] = []
+                commentUsernameFilter.isEnable && blackPairs.push([commentUsernameFilter, selectorFns.sub.username])
+                commentContentFilter.isEnable && blackPairs.push([commentContentFilter, selectorFns.sub.content])
+                commentLevelFilter.isEnable && blackPairs.push([commentLevelFilter, selectorFns.sub.level])
+                commentBotFilter.isEnable && blackPairs.push([commentBotFilter, selectorFns.sub.username])
+                commentCallBotFilter.isEnable && blackPairs.push([commentCallBotFilter, selectorFns.sub.callUser])
+                commentCallUserFilter.isEnable && blackPairs.push([commentCallUserFilter, selectorFns.sub.callUser])
+
+                const whitePairs: SubFilterPair[] = []
+                commentIsUpFilter.isEnable && whitePairs.push([commentIsUpFilter, selectorFns.sub.isUp])
+                commentIsLinkFilter.isEnable && whitePairs.push([commentIsLinkFilter, selectorFns.sub.isLink])
+
+                coreCheck(subComments, true, blackPairs, whitePairs)
+            } else {
+                subComments.forEach((el) => showEle(el))
+            }
+            console.log(`check ${rootComments.length} root, ${subComments.length} sub comments`)
         } catch (err) {
             error('checkCommentList error', err)
         }
     }
 
-    /**
-     * 评论区过滤，新旧通用
-     * 在获取评论相关API时触发检测
-     * 多层 Shadow DOM 套娃对MutationObserver不友好
-     * 切换视频会导致observe对象被替换
-     * 使用监听一级二级评论载入方法触发评论区检测
-     */
-    const startCheck = (fullSite: boolean) => {
-        ;(usernameAction.status || contentAction.status) && checkCommentList(fullSite)
-    }
+    // 评论区过滤，新旧通用，在获取评论相关API后触发检测
     fetchHook.addPostFn((input: RequestInfo | URL, init: RequestInit | undefined, _resp?: Response) => {
         if (typeof input === 'string' && init?.method?.toUpperCase() === 'GET' && input.includes('api.bilibili.com')) {
             // 主评论载入
             if (input.includes('/v2/reply/wbi/main')) {
-                setTimeout(() => startCheck(false), 100)
-                setTimeout(() => startCheck(false), 200)
-                setTimeout(() => startCheck(false), 500)
-                setTimeout(() => startCheck(false), 1000)
-                setTimeout(() => startCheck(false), 2000)
-                setTimeout(() => startCheck(false), 3000)
+                let cnt = 0
+                const id = setInterval(() => {
+                    checkCommentList(false)
+                    ++cnt > 20 && clearInterval(id)
+                }, 150)
             }
             // 二级评论翻页
             if (input.includes('/v2/reply/reply')) {
                 if (isCommentV2()) {
-                    setTimeout(() => startCheck(true), 100)
-                    setTimeout(() => startCheck(true), 200)
-                    setTimeout(() => startCheck(true), 500)
-                    setTimeout(() => startCheck(true), 1000)
-                    setTimeout(() => startCheck(true), 2000)
+                    let cnt = 0
+                    const id = setInterval(() => {
+                        const orig = isRootWhite
+                        isRootWhite = true
+                        checkCommentList(true)
+                        isRootWhite = orig
+                        ++cnt > 6 && clearInterval(id)
+                    }, 500)
                 } else {
-                    setTimeout(() => startCheck(false), 100)
-                    setTimeout(() => startCheck(false), 200)
-                    setTimeout(() => startCheck(false), 500)
-                    setTimeout(() => startCheck(false), 1000)
-                    setTimeout(() => startCheck(false), 2000)
+                    let cnt = 0
+                    const id = setInterval(() => {
+                        const orig = isRootWhite
+                        isRootWhite = true
+                        checkCommentList(false)
+                        isRootWhite = orig
+                        ++cnt > 20 && clearInterval(id)
+                    }, 150)
                 }
             }
         }
     })
-
-    //=======================================================================================
-
-    /////////////////////////////////////////////////////////////////////////////////////////////
-
-    const commentUsernameFilter = new CommentUsernameFilter()
-    const commentContentFilter = new CommentContentFilter()
-    const commentLevelFilter = new CommentLevelFilter()
-    const commentBotFilter = new CommentBotFilter()
-    const commentCallBotFilter = new CommentCallBotFilter()
-    const commentCallUserFilter = new CommentCallUserFilter()
-
-    const commentIsUpFilter = new CommentIsUpFilter()
-    const commentIsPinFilter = new CommentIsPinFilter()
-    const commentIsNoteFilter = new CommentIsNoteFilter()
-    const commentIsLinkFilter = new CommentIsLinkFilter()
 
     // 右键监听函数, 屏蔽评论用户
     const contextMenuFunc = () => {
@@ -405,6 +446,19 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                             e.preventDefault()
                             menu.registerMenu(`屏蔽用户：${username}`, () => {
                                 commentUsernameFilter.addParam(username)
+                                checkCommentList(true)
+                                try {
+                                    const names: string[] = GM_getValue(
+                                        `BILICLEANER_${GM_KEYS.black.username.valueKey}`,
+                                    )
+                                    const nameSet = new Set(names)
+                                    if (!nameSet.has(username)) {
+                                        names.unshift(username)
+                                        GM_setValue(`BILICLEANER_${GM_KEYS.black.username.valueKey}`, names)
+                                    }
+                                } catch (err) {
+                                    error('contextMenuFunc addParam error', err)
+                                }
                             })
                             menu.show(e.clientX, e.clientY)
                         }
@@ -418,9 +472,6 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         })
     }
 
-    //=======================================================================================
-    // 构建UI菜单
-
     // UI组件, 用户名过滤
     const usernameItems = [
         // 启用 评论区 用户名过滤
@@ -431,10 +482,12 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 isContextMenuUsernameEnable = true
                 contextMenuFunc()
                 commentUsernameFilter.enable()
+                checkCommentList(true)
             },
             disableFunc: () => {
                 isContextMenuUsernameEnable = false
                 commentUsernameFilter.disable()
+                checkCommentList(true)
             },
         }),
         // 编辑 用户名黑名单
@@ -449,6 +502,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                     '每行一个用户名，保存时自动去重',
                     (values: string[]) => {
                         commentUsernameFilter.setParam(values)
+                        checkCommentList(true)
                     },
                 ).show()
             },
@@ -466,9 +520,11 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             description: '启用 评论区 关键词过滤',
             enableFunc: () => {
                 commentContentFilter.enable()
+                checkCommentList(true)
             },
             disableFunc: () => {
                 commentContentFilter.disable()
+                checkCommentList(true)
             },
         }),
         // 编辑 关键词黑名单
@@ -483,6 +539,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                     `每行一个关键词或正则，不区分大小写\n正则默认iv模式无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         commentContentFilter.setParam(values)
+                        checkCommentList(true)
                     },
                 ).show()
             },
@@ -496,11 +553,14 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         new CheckboxItem({
             itemID: GM_KEYS.black.callBot.statusKey,
             description: '过滤 召唤AI的评论',
+            defaultStatus: true,
             enableFunc: () => {
                 commentCallBotFilter.enable()
+                checkCommentList(true)
             },
             disableFunc: () => {
                 commentCallBotFilter.disable()
+                checkCommentList(true)
             },
         }),
         // 过滤 AI发布的评论
@@ -509,9 +569,11 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             description: '过滤 AI发布的评论',
             enableFunc: () => {
                 commentBotFilter.enable()
+                checkCommentList(true)
             },
             disableFunc: () => {
                 commentBotFilter.disable()
+                checkCommentList(true)
             },
         }),
         // 过滤 @其他用户的评论
@@ -520,9 +582,11 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             description: '过滤 @其他用户的评论',
             enableFunc: () => {
                 commentCallUserFilter.enable()
+                checkCommentList(true)
             },
             disableFunc: () => {
                 commentCallUserFilter.disable()
+                checkCommentList(true)
             },
         }),
     ]
@@ -536,9 +600,11 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             description: '启用 用户等级过滤',
             enableFunc: () => {
                 commentLevelFilter.enable()
+                checkCommentList(true)
             },
             disableFunc: () => {
                 commentLevelFilter.disable()
+                checkCommentList(true)
             },
         }),
         // 设定最低等级
@@ -552,6 +618,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             unit: '',
             callback: async (value: number) => {
                 commentLevelFilter.setParam(value)
+                checkCommentList(true)
             },
         }),
     ]
@@ -566,11 +633,11 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             itemID: GM_KEYS.white.root.statusKey,
             description: '一级评论(主评论) 免过滤',
             enableFunc: () => {
-                isRootCommentWhitelistEnable = true
+                isRootWhite = true
                 checkCommentList(true)
             },
             disableFunc: () => {
-                isRootCommentWhitelistEnable = false
+                isRootWhite = false
                 checkCommentList(true)
             },
         }),
@@ -579,11 +646,11 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             itemID: GM_KEYS.white.sub.statusKey,
             description: '二级评论(回复) 免过滤',
             enableFunc: () => {
-                isSubCommentWhitelistEnable = true
+                isSubWhite = true
                 checkCommentList(true)
             },
             disableFunc: () => {
-                isSubCommentWhitelistEnable = false
+                isSubWhite = false
                 checkCommentList(true)
             },
         }),

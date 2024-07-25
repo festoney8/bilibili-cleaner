@@ -34,7 +34,7 @@ import { channelPageVideoFilterGroupList } from './filters/videoFilter/pages/cha
 import { spacePageVideoFilterGroupList } from './filters/videoFilter/pages/space'
 import { watchlaterGroupList } from './rules/watchlater'
 import { spaceGroupList } from './rules/space'
-import { dynamicPageDynFilterGroupList } from './filters/dynFilter/pages/dynamic'
+import { dynamicPageDynFilterGroupList } from './newFilters/dyn/dyn'
 import { videoPageCommentFilterGroupList } from './newFilters/comment/video'
 import { dynamicPageCommentFilterGroupList } from './newFilters/comment/dynAndSpace'
 

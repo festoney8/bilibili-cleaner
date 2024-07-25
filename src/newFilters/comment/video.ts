@@ -126,13 +126,13 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         'AI总结视频',
     ]
     const commentUsernameFilter = new CommentUsernameFilter()
-    commentUsernameFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.username.valueKey}`))
+    commentUsernameFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.username.valueKey}`, []))
 
     const commentContentFilter = new CommentContentFilter()
-    commentContentFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.content.valueKey}`))
+    commentContentFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.content.valueKey}`, []))
 
     const commentLevelFilter = new CommentLevelFilter()
-    commentLevelFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.level.valueKey}`))
+    commentLevelFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.level.valueKey}`, 0))
 
     const commentBotFilter = new CommentBotFilter()
     commentBotFilter.setParam(bots)

@@ -448,13 +448,13 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                                 commentUsernameFilter.addParam(username)
                                 checkCommentList(true)
                                 try {
-                                    const names: string[] = GM_getValue(
+                                    const arr: string[] = GM_getValue(
                                         `BILICLEANER_${GM_KEYS.black.username.valueKey}`,
+                                        [],
                                     )
-                                    const nameSet = new Set(names)
-                                    if (!nameSet.has(username)) {
-                                        names.unshift(username)
-                                        GM_setValue(`BILICLEANER_${GM_KEYS.black.username.valueKey}`, names)
+                                    if (!arr.includes(username)) {
+                                        arr.unshift(username)
+                                        GM_setValue(`BILICLEANER_${GM_KEYS.black.username.valueKey}`, arr)
                                     }
                                 } catch (err) {
                                     error('contextMenuFunc addParam error', err)

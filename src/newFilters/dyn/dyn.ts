@@ -81,13 +81,13 @@ if (isPageDynamic() || isPageSpace()) {
                                 dynUploaderFilter.addParam(uploader)
                                 checkDynList(true)
                                 try {
-                                    const names: string[] = GM_getValue(
+                                    const arr: string[] = GM_getValue(
                                         `BILICLEANER_${GM_KEYS.black.uploader.valueKey}`,
+                                        [],
                                     )
-                                    const nameSet = new Set(names)
-                                    if (!nameSet.has(uploader)) {
-                                        names.unshift(uploader)
-                                        GM_setValue(`BILICLEANER_${GM_KEYS.black.uploader.valueKey}`, names)
+                                    if (!arr.includes(uploader)) {
+                                        arr.unshift(uploader)
+                                        GM_setValue(`BILICLEANER_${GM_KEYS.black.uploader.valueKey}`, arr)
                                     }
                                 } catch (err) {
                                     error('contextMenuFunc addParam error', err)

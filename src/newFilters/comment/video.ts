@@ -117,7 +117,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         '木几萌Moe',
         '星崽丨StarZai',
         'AI沈阳美食家',
-        'AI识片酱',
+        // 'AI识片酱', // 听歌识曲，免除过滤
         'AI头脑风暴',
         'GPT_5',
         'Juice_AI',

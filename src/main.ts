@@ -27,7 +27,6 @@ import {
     isPageVideo,
 } from './utils/pageType'
 import { homepagePageVideoFilterGroupList } from './filters/videoFilter/pages/homepage'
-import { videoPageVideoFilterGroupList } from './filters/videoFilter/pages/video'
 import { popularPageVideoFilterGroupList } from './filters/videoFilter/pages/popular'
 import { searchPageVideoFilterGroupList } from './filters/videoFilter/pages/search'
 import { channelPageVideoFilterGroupList } from './filters/videoFilter/pages/channel'
@@ -37,6 +36,7 @@ import { spaceGroupList } from './rules/space'
 import { dynamicPageDynFilterGroupList } from './newFilters/dyn/dyn'
 import { videoPageCommentFilterGroupList } from './newFilters/comment/video'
 import { dynamicPageCommentFilterGroupList } from './newFilters/comment/dynAndSpace'
+import { videoPageVideoFilterGroupList } from './newFilters/video/video'
 
 const main = async () => {
     // 载入元素屏蔽规则

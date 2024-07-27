@@ -385,6 +385,19 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         }
     }
 
+    const check = (fullSite: boolean) => {
+        if (
+            commentUsernameFilter.isEnable ||
+            commentContentFilter.isEnable ||
+            commentLevelFilter.isEnable ||
+            commentBotFilter.isEnable ||
+            commentCallBotFilter.isEnable ||
+            commentCallUserFilter.isEnable
+        ) {
+            checkCommentList(fullSite)
+        }
+    }
+
     // 评论区过滤，新旧通用，在获取评论相关API后触发检测
     fetchHook.addPostFn((input: RequestInfo | URL, init: RequestInit | undefined, _resp?: Response) => {
         if (typeof input === 'string' && init?.method?.toUpperCase() === 'GET' && input.includes('api.bilibili.com')) {
@@ -392,7 +405,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             if (input.includes('/v2/reply/wbi/main')) {
                 let cnt = 0
                 const id = setInterval(() => {
-                    checkCommentList(false)
+                    check(false)
                     ++cnt > 20 && clearInterval(id)
                 }, 150)
             }
@@ -403,7 +416,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                     const id = setInterval(() => {
                         const orig = isRootWhite
                         isRootWhite = true
-                        checkCommentList(true)
+                        check(true)
                         isRootWhite = orig
                         ++cnt > 6 && clearInterval(id)
                     }, 500)
@@ -412,7 +425,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                     const id = setInterval(() => {
                         const orig = isRootWhite
                         isRootWhite = true
-                        checkCommentList(false)
+                        check(false)
                         isRootWhite = orig
                         ++cnt > 20 && clearInterval(id)
                     }, 150)
@@ -536,7 +549,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 new WordList(
                     GM_KEYS.black.content.valueKey,
                     '评论关键词 黑名单',
-                    `每行一个关键词或正则，不区分大小写\n正则默认iv模式无需flag，语法：/abc|\\d+/`,
+                    `每行一个关键词或正则，不区分大小写\n正则默认iv模式，无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         commentContentFilter.setParam(values)
                         checkCommentList(true)

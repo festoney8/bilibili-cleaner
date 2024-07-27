@@ -85,20 +85,20 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
 
     // 视频列表信息提取
     const selectorFns = {
-        duration: (video: Element): SelectorResult => {
+        duration: (video: HTMLElement): SelectorResult => {
             const duration = video.querySelector('.pic-box span.duration')?.textContent
             return duration ? convertTimeToSec(duration) : undefined
         },
-        title: (video: Element): SelectorResult => {
+        title: (video: HTMLElement): SelectorResult => {
             return video.querySelector('.info > a p')?.textContent?.trim()
         },
-        bvid: (video: Element): SelectorResult => {
+        bvid: (video: HTMLElement): SelectorResult => {
             const href =
                 video.querySelector('.info > a')?.getAttribute('href') ||
                 video.querySelector('.pic-box .framepreview-box > a')?.getAttribute('href')
             return (href && matchBvid(href)) ?? undefined
         },
-        uploader: (video: Element): SelectorResult => {
+        uploader: (video: HTMLElement): SelectorResult => {
             return video.querySelector('.info > .upname .name')?.textContent?.trim()
         },
     }
@@ -297,10 +297,21 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         }).then((ele) => {
             if (ele) {
                 videoListContainer = ele
-                checkVideoList(true)
+                const check = (fullSite: boolean) => {
+                    if (
+                        videoBvidFilter.isEnable ||
+                        videoDurationFilter.isEnable ||
+                        videoTitleFilter.isEnable ||
+                        videoUploaderFilter.isEnable ||
+                        videoUploaderKeywordFilter.isEnable
+                    ) {
+                        checkVideoList(fullSite)
+                    }
+                }
+                check(true)
                 // 监听视频列表变化
                 new MutationObserver(() => {
-                    checkVideoList(true)
+                    check(true)
                 }).observe(videoListContainer, { childList: true, subtree: true })
             }
         })
@@ -402,7 +413,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 new WordList(
                     GM_KEYS.black.uploaderKeyword.valueKey,
                     'UP主昵称关键词 黑名单',
-                    `每行一个关键词或正则，不区分大小写\n正则默认iv模式无需flag，语法：/abc|\\d+/`,
+                    `每行一个关键词或正则，不区分大小写\n正则默认iv模式，无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         videoUploaderKeywordFilter.setParam(values)
                         checkVideoList(true)
@@ -414,7 +425,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
     videoPageVideoFilterGroupList.push(new Group('video-uploader-filter-group', '播放页 UP主过滤', uploaderItems))
 
     // UI组件, 标题关键词过滤
-    const titleKeywordItems = [
+    const titleItems = [
         // 启用 播放页关键词过滤
         new CheckboxItem({
             itemID: GM_KEYS.black.title.statusKey,
@@ -438,7 +449,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 new WordList(
                     GM_KEYS.black.title.valueKey,
                     '标题关键词 黑名单',
-                    `每行一个关键词或正则，不区分大小写\n正则默认iv模式无需flag，语法：/abc|\\d+/`,
+                    `每行一个关键词或正则，不区分大小写\n正则默认iv模式，无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         videoTitleFilter.setParam(values)
                         checkVideoList(true)
@@ -448,7 +459,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         }),
     ]
     videoPageVideoFilterGroupList.push(
-        new Group('video-title-keyword-filter-group', '播放页 标题关键词过滤', titleKeywordItems),
+        new Group('video-title-keyword-filter-group', '播放页 标题关键词过滤', titleItems),
     )
 
     // UI组件, bvid过滤
@@ -580,7 +591,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 new WordList(
                     GM_KEYS.white.title.valueKey,
                     '标题关键词 白名单',
-                    `每行一个关键词或正则，不区分大小写\n正则默认iv模式无需flag，语法：/abc|\\d+/`,
+                    `每行一个关键词或正则，不区分大小写\n正则默认iv模式，无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         videoTitleWhiteFilter.setParam(values)
                         checkVideoList(true)

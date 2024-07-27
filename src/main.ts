@@ -26,17 +26,17 @@ import {
     isPageSpace,
     isPageVideo,
 } from './utils/pageType'
-import { homepagePageVideoFilterGroupList } from './filters/videoFilter/pages/homepage'
-import { popularPageVideoFilterGroupList } from './filters/videoFilter/pages/popular'
-import { searchPageVideoFilterGroupList } from './filters/videoFilter/pages/search'
-import { channelPageVideoFilterGroupList } from './filters/videoFilter/pages/channel'
-import { spacePageVideoFilterGroupList } from './filters/videoFilter/pages/space'
+import { homepagePageVideoFilterGroupList } from './newFilters/video/homepage'
+import { popularPageVideoFilterGroupList } from './newFilters/video/popular'
+import { spacePageVideoFilterGroupList } from './newFilters/video/space'
 import { watchlaterGroupList } from './rules/watchlater'
 import { spaceGroupList } from './rules/space'
 import { dynamicPageDynFilterGroupList } from './newFilters/dyn/dyn'
 import { videoPageCommentFilterGroupList } from './newFilters/comment/video'
 import { dynamicPageCommentFilterGroupList } from './newFilters/comment/dynAndSpace'
 import { videoPageVideoFilterGroupList } from './newFilters/video/video'
+import { channelPageVideoFilterGroupList } from './newFilters/video/channel'
+import { searchPageVideoFilterGroupList } from './newFilters/video/search'
 
 const main = async () => {
     // 载入元素屏蔽规则

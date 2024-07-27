@@ -43,17 +43,17 @@ if (isPageDynamic() || isPageSpace()) {
 
     // 动态信息提取
     const selectorFns = {
-        uploader: (dyn: Element): SelectorResult => {
+        uploader: (dyn: HTMLElement): SelectorResult => {
             if (!isAllDyn) {
                 return undefined
             }
             return dyn.querySelector('.bili-dyn-title__text')?.textContent?.trim()
         },
-        duration: (dyn: Element): SelectorResult => {
+        duration: (dyn: HTMLElement): SelectorResult => {
             const time = dyn.querySelector('.bili-dyn-card-video__cover-shadow .duration-time')?.textContent?.trim()
             return time ? convertTimeToSec(time) : undefined
         },
-        title: (dyn: Element): SelectorResult => {
+        title: (dyn: HTMLElement): SelectorResult => {
             return dyn.querySelector('.bili-dyn-card-video__title')?.textContent?.trim()
         },
     }
@@ -148,10 +148,15 @@ if (isPageDynamic() || isPageSpace()) {
         ).then((ele) => {
             if (ele) {
                 dynListContainer = ele
+                const check = (fullSite: boolean) => {
+                    if (dynUploaderFilter.isEnable || dynDurationFilter.isEnable || dynVideoTitleFilter.isEnable) {
+                        checkDynList(fullSite)
+                    }
+                }
                 // 监听动态列表内部变化
-                checkDynList(true)
+                check(true)
                 new MutationObserver(() => {
-                    checkDynList(false)
+                    check(false)
                 }).observe(dynListContainer, { childList: true, subtree: true })
             }
         })
@@ -253,7 +258,7 @@ if (isPageDynamic() || isPageSpace()) {
                 new WordList(
                     GM_KEYS.black.title.valueKey,
                     '标题关键词 黑名单',
-                    `每行一个关键词或正则，不区分大小写\n正则默认iv模式无需flag，语法：/abc|\\d+/`,
+                    `每行一个关键词或正则，不区分大小写\n正则默认iv模式，无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         dynVideoTitleFilter.setParam(values)
                         checkDynList(true)

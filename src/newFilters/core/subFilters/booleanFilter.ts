@@ -15,6 +15,7 @@ export class BooleanFilter implements ISubFilter {
                 resolve()
                 return
             }
+            console.log('booleanFilter', selectorFn(el))
             if (selectorFn(el) === true) {
                 reject()
                 return

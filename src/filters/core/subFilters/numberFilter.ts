@@ -20,7 +20,6 @@ export class NumberFilter implements ISubFilter {
                 return
             }
             const value = selectorFn(el)
-            console.log('numberFilter', value, 'threshold', this.threshold)
             if (typeof value === 'number' && value < this.threshold) {
                 reject()
                 return

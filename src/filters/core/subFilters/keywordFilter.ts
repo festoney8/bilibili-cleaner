@@ -52,7 +52,6 @@ export class KeywordFilter implements ISubFilter {
                 resolve()
                 return
             }
-            console.log('keywordFilter', value, this.mergedRegExp)
             this.mergedRegExp.test(value.trim()) ? reject() : resolve()
         })
     }

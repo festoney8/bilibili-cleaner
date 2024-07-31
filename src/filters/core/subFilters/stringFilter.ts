@@ -24,7 +24,6 @@ export class StringFilter implements ISubFilter {
                 return
             }
             const value = selectorFn(el)
-            console.log('stringFilter', value, this.strSet)
             if (typeof value === 'string' && this.strSet.has(value.trim())) {
                 reject()
                 return

@@ -4,9 +4,9 @@ import { Group } from '../../components/group'
 import { ButtonItem, CheckboxItem, NumberItem } from '../../components/item'
 import { WordList } from '../../components/wordlist'
 import settings from '../../settings'
-import { error } from '../../utils/logger'
+import { debugDynFilter as debug, error } from '../../utils/logger'
 import { isPageDynamic, isPageSpace } from '../../utils/pageType'
-import { convertTimeToSec, showEle, waitForEle } from '../../utils/tool'
+import { convertTimeToSec, waitForEle } from '../../utils/tool'
 import { coreCheck, SelectorResult, SubFilterPair } from '../core/core'
 import { DynDurationFilter, DynUploaderFilter, DynVideoTitleFilter } from './subFilters/black'
 
@@ -77,7 +77,7 @@ if (isPageDynamic() || isPageSpace()) {
                         const uploader = target.textContent?.trim()
                         if (uploader) {
                             e.preventDefault()
-                            menu.registerMenu(`隐藏用户：${uploader}`, () => {
+                            menu.registerMenu(`隐藏用户动态：${uploader}`, () => {
                                 dynUploaderFilter.addParam(uploader)
                                 checkDynList(true)
                                 try {
@@ -104,7 +104,7 @@ if (isPageDynamic() || isPageSpace()) {
     }
 
     // 检测动态列表
-    const checkDynList = (fullSite: boolean) => {
+    const checkDynList = async (fullSite: boolean) => {
         if (!dynListContainer) {
             return
         }
@@ -124,6 +124,18 @@ if (isPageDynamic() || isPageSpace()) {
                     ),
                 )
             }
+
+            // dyns.forEach((dyn) => {
+            //     debug(
+            //         [
+            //             ``,
+            //             `uploader: ${selectorFns.uploader(dyn)}`,
+            //             `title: ${selectorFns.title(dyn)}`,
+            //             `duration: ${selectorFns.duration(dyn)}`,
+            //         ].join('\n'),
+            //     )
+            // })
+
             // 构建黑白检测任务
             if (dyns.length) {
                 const blackPairs: SubFilterPair[] = []
@@ -131,10 +143,8 @@ if (isPageDynamic() || isPageSpace()) {
                 dynDurationFilter.isEnable && blackPairs.push([dynDurationFilter, selectorFns.duration])
                 dynVideoTitleFilter.isEnable && blackPairs.push([dynVideoTitleFilter, selectorFns.title])
                 coreCheck(dyns, true, blackPairs, [])
-            } else {
-                dyns.forEach((el) => showEle(el))
+                debug(`check ${dyns.length} dyns`)
             }
-            console.log(`check ${dyns.length} dyns`)
         } catch (err) {
             error('checkDynList error', err)
         }

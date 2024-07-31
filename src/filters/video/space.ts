@@ -3,7 +3,7 @@ import { ContextMenu } from '../../components/contextmenu'
 import { Group } from '../../components/group'
 import { CheckboxItem, NumberItem, ButtonItem } from '../../components/item'
 import { WordList } from '../../components/wordlist'
-import { error } from '../../utils/logger'
+import { debugVideoFilter as debug, error } from '../../utils/logger'
 import { isPageSpace } from '../../utils/pageType'
 import { convertTimeToSec, matchBvid, waitForEle } from '../../utils/tool'
 import { SelectorResult, SubFilterPair, coreCheck } from '../core/core'
@@ -68,7 +68,7 @@ if (isPageSpace()) {
     let vlc: HTMLElement // video list container
 
     // 检测视频列表
-    const checkVideoList = (_fullSite: boolean) => {
+    const checkVideoList = async (_fullSite: boolean) => {
         if (!vlc) {
             return
         }
@@ -76,32 +76,45 @@ if (isPageSpace()) {
             // 提取元素
             let videos: HTMLElement[] = []
             // 主页视频
-            if (location.pathname.match(/^\/\d+$/)) {
+            if (/^\/\d+$/.test(location.pathname)) {
                 videos = Array.from(vlc.querySelectorAll<HTMLElement>(`#page-index .small-item`))
             }
             // 投稿视频
-            if (location.pathname.match(/^\/\d+\/video$/)) {
+            if (/^\/\d+\/video$/.test(location.pathname)) {
                 videos = Array.from(vlc.querySelectorAll<HTMLElement>(`#submit-video :is(.small-item,.list-item)`))
             }
             // 视频合集、视频系列
-            if (location.pathname.match(/^\/\d+\/channel\/(collectiondetail|seriesdetail)/)) {
+            if (/^\/\d+\/channel\/(collectiondetail|seriesdetail)/.test(location.pathname)) {
                 videos = Array.from(
                     vlc.querySelectorAll<HTMLElement>(`:is(#page-collection-detail,#page-series-detail) li.small-item`),
                 )
             }
 
-            // 构建黑白检测任务
-            const blackPairs: SubFilterPair[] = []
-            videoBvidFilter.isEnable && blackPairs.push([videoBvidFilter, selectorFns.bvid])
-            videoDurationFilter.isEnable && blackPairs.push([videoDurationFilter, selectorFns.duration])
-            videoTitleFilter.isEnable && blackPairs.push([videoTitleFilter, selectorFns.title])
+            // videos.forEach((v) => {
+            //     debug(
+            //         [
+            //             ``,
+            //             `bvid: ${selectorFns.bvid(v)}`,
+            //             `duration: ${selectorFns.duration(v)}`,
+            //             `title: ${selectorFns.title(v)}`,
+            //         ].join('\n'),
+            //     )
+            // })
 
-            const whitePairs: SubFilterPair[] = []
-            videoTitleWhiteFilter.isEnable && whitePairs.push([videoTitleWhiteFilter, selectorFns.title])
+            if (videos.length) {
+                // 构建黑白检测任务
+                const blackPairs: SubFilterPair[] = []
+                videoBvidFilter.isEnable && blackPairs.push([videoBvidFilter, selectorFns.bvid])
+                videoDurationFilter.isEnable && blackPairs.push([videoDurationFilter, selectorFns.duration])
+                videoTitleFilter.isEnable && blackPairs.push([videoTitleFilter, selectorFns.title])
 
-            // 检测
-            videos.length && coreCheck(videos, true, blackPairs, whitePairs)
-            console.log(`check ${videos.length} videos`)
+                const whitePairs: SubFilterPair[] = []
+                videoTitleWhiteFilter.isEnable && whitePairs.push([videoTitleWhiteFilter, selectorFns.title])
+
+                // 检测
+                coreCheck(videos, true, blackPairs, whitePairs)
+                debug(`check ${videos.length} videos`)
+            }
         } catch (err) {
             error('checkVideoList error', err)
         }

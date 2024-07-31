@@ -5,7 +5,7 @@ import { CheckboxItem, NumberItem, ButtonItem } from '../../components/item'
 import { WordList } from '../../components/wordlist'
 import settings from '../../settings'
 import fetchHook from '../../utils/fetch'
-import { error } from '../../utils/logger'
+import { debugVideoFilter as debug, error } from '../../utils/logger'
 import { isPagePopular } from '../../utils/pageType'
 import { calcQuality, matchBvid, waitForEle } from '../../utils/tool'
 import { SelectorResult, SubFilterPair, coreCheck } from '../core/core'
@@ -129,13 +129,12 @@ if (isPagePopular()) {
                     if (bvid && !videoInfoMap.has(bvid)) {
                         videoInfoMap.set(bvid, {
                             duration: v.duration,
-                            dimension: v.dimension.width > v.dimension.height,
+                            dimension: v.dimension.width < v.dimension.height,
                             like: v.stat.like,
                             coin: v.stat.coin,
                         })
                     }
                 })
-                // debug('parse json complete, videoInfoMap size', videoInfoMap.size)
             })
             .catch((err) => {
                 error('Error parsing JSON:', err)
@@ -193,6 +192,7 @@ if (isPagePopular()) {
             }
             return undefined
         },
+        // true竖屏, false横屏
         dimension: (video: HTMLElement): SelectorResult => {
             const href =
                 video.querySelector('.video-card__content > a')?.getAttribute('href') ||
@@ -200,7 +200,7 @@ if (isPagePopular()) {
             if (href) {
                 const bvid = matchBvid(href)
                 if (bvid) {
-                    return !!videoInfoMap.get(bvid)?.dimension
+                    return videoInfoMap.get(bvid)?.dimension
                 }
             }
             return false
@@ -210,30 +210,44 @@ if (isPagePopular()) {
     let vlc: HTMLElement // video list container
 
     // 检测视频列表
-    const checkVideoList = (fullSite: boolean) => {
+    const checkVideoList = async (fullSite: boolean) => {
         if (!vlc) {
             return
         }
         try {
             // 提取元素
-            let hotVideos: HTMLElement[] = [] // 热门视频
-            let weeklyVideos: HTMLElement[] = [] // 每周必看
-            let rankVideos: HTMLElement[] = [] // 排行榜
-            if (!fullSite) {
-                hotVideos = Array.from(
-                    vlc.querySelectorAll<HTMLElement>(`.card-list .video-card:not([${settings.filterSign}])`),
-                )
-                weeklyVideos = Array.from(
-                    vlc.querySelectorAll<HTMLElement>(`.video-list .video-card:not([${settings.filterSign}])`),
-                )
-                rankVideos = Array.from(
-                    vlc.querySelectorAll<HTMLElement>(`.rank-list .rank-item:not([${settings.filterSign}])`),
-                )
-            } else {
-                hotVideos = Array.from(vlc.querySelectorAll<HTMLElement>(`.card-list .video-card`))
-                weeklyVideos = Array.from(vlc.querySelectorAll<HTMLElement>(`.video-list .video-card`))
-                rankVideos = Array.from(vlc.querySelectorAll<HTMLElement>(`.rank-list .rank-item`))
+            let videos: HTMLElement[] = []
+            let selector = ''
+            // 热门视频
+            if (location.pathname.includes('/v/popular/all')) {
+                selector = fullSite ? `.card-list .video-card` : `.card-list .video-card:not([${settings.filterSign}])`
             }
+            // 每周必看
+            if (location.pathname.includes('/v/popular/weekly')) {
+                selector = fullSite
+                    ? `.video-list .video-card`
+                    : `.video-list .video-card:not([${settings.filterSign}])`
+            }
+            // 排行榜
+            if (location.pathname.includes('/v/popular/rank/all')) {
+                selector = fullSite ? `.rank-list .rank-item` : `.rank-list .rank-item:not([${settings.filterSign}])`
+            }
+
+            videos = Array.from(vlc.querySelectorAll<HTMLElement>(selector))
+
+            // videos.forEach((v) => {
+            //     debug(
+            //         [
+            //             ``,
+            //             `bvid: ${selectorFns.bvid(v)}`,
+            //             `duration: ${selectorFns.duration(v)}`,
+            //             `title: ${selectorFns.title(v)}`,
+            //             `uploader: ${selectorFns.uploader(v)}`,
+            //             `dimension: ${selectorFns.dimension(v)}`,
+            //             `quality: ${selectorFns.quality(v)}`,
+            //         ].join('\n'),
+            //     )
+            // })
 
             // 构建黑白检测任务
             const blackPairs: SubFilterPair[] = []
@@ -250,10 +264,8 @@ if (isPagePopular()) {
             videoTitleWhiteFilter.isEnable && whitePairs.push([videoTitleWhiteFilter, selectorFns.title])
 
             // 检测
-            hotVideos.length && coreCheck(hotVideos, true, blackPairs, whitePairs)
-            weeklyVideos.length && coreCheck(weeklyVideos, true, blackPairs, whitePairs)
-            rankVideos.length && coreCheck(rankVideos, true, blackPairs, whitePairs)
-            console.log(`check ${hotVideos.length} hot, ${weeklyVideos.length} weekly, ${rankVideos.length} rank`)
+            videos.length && coreCheck(videos, true, blackPairs, whitePairs)
+            debug(`check ${videos.length} videos`)
         } catch (err) {
             error('checkVideoList error', err)
         }
@@ -278,7 +290,7 @@ if (isPagePopular()) {
                     (target.classList.contains('up-name__text') || target.classList.contains('up-name'))
                 ) {
                     // 命中UP主
-                    const uploader = target.textContent
+                    const uploader = target.textContent?.trim()
                     if (uploader) {
                         e.preventDefault()
                         menu.registerMenu(`◎ 屏蔽UP主：${uploader}`, () => {

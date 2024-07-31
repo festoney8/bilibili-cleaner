@@ -3,7 +3,7 @@ import { ContextMenu } from '../../components/contextmenu'
 import { Group } from '../../components/group'
 import { CheckboxItem, NumberItem, ButtonItem } from '../../components/item'
 import { WordList } from '../../components/wordlist'
-import { error } from '../../utils/logger'
+import { debugVideoFilter as debug, error } from '../../utils/logger'
 import { isPageSearch } from '../../utils/pageType'
 import { convertTimeToSec, matchBvid, showEle, waitForEle } from '../../utils/tool'
 import { SelectorResult, SubFilterPair, coreCheck } from '../core/core'
@@ -103,8 +103,8 @@ if (isPageSearch()) {
     let vlc: HTMLElement // video list container
 
     // 检测视频列表
-    let isTopWhite = true
-    const checkVideoList = (_fullSite: boolean) => {
+    let isTopWhite = false
+    const checkVideoList = async (_fullSite: boolean) => {
         if (!vlc) {
             return
         }
@@ -120,6 +120,29 @@ if (isPageSearch()) {
                     `.video.search-all-list .video-list > div, .search-page-video .video-list > div`,
                 ),
             )
+
+            // topVideos.forEach((v) => {
+            //     debug(
+            //         [
+            //             `topVideos`,
+            //             `bvid: ${selectorFns.bvid(v)}`,
+            //             `duration: ${selectorFns.duration(v)}`,
+            //             `title: ${selectorFns.title(v)}`,
+            //             `uploader: ${selectorFns.uploader(v)}`,
+            //         ].join('\n'),
+            //     )
+            // })
+            // contentVideos.forEach((v) => {
+            //     debug(
+            //         [
+            //             `contentVideos`,
+            //             `bvid: ${selectorFns.bvid(v)}`,
+            //             `duration: ${selectorFns.duration(v)}`,
+            //             `title: ${selectorFns.title(v)}`,
+            //             `uploader: ${selectorFns.uploader(v)}`,
+            //         ].join('\n'),
+            //     )
+            // })
 
             // 构建黑白检测任务
             const blackPairs: SubFilterPair[] = []
@@ -140,7 +163,7 @@ if (isPageSearch()) {
                 topVideos.forEach((el) => showEle(el))
             }
             contentVideos.length && coreCheck(contentVideos, false, blackPairs, whitePairs)
-            console.log(`check ${topVideos.length} topVideos, ${contentVideos.length} contentVideos`)
+            debug(`check ${topVideos.length} topVideos, ${contentVideos.length} contentVideos`)
         } catch (err) {
             error('checkVideoList error', err)
         }
@@ -164,7 +187,7 @@ if (isPageSearch()) {
                     const node = e.target
                         .closest('.bili-video-card__info--owner')
                         ?.querySelector('.bili-video-card__info--author')
-                    const uploader = node?.textContent
+                    const uploader = node?.textContent?.trim()
                     if (uploader) {
                         e.preventDefault()
                         menu.registerMenu(`◎ 屏蔽UP主：${uploader}`, () => {
@@ -194,7 +217,7 @@ if (isPageSearch()) {
                             }
                         })
                         menu.registerMenu(`◎ 复制主页链接`, () => {
-                            const url = node.closest('.bili-video-card__info--owner')?.getAttribute('href')
+                            const url = node?.closest('.bili-video-card__info--owner')?.getAttribute('href')
                             if (url) {
                                 const matches = url.match(/space\.bilibili\.com\/\d+/g)
                                 matches && navigator.clipboard.writeText(`https://${matches[0]}`)

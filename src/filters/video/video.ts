@@ -3,7 +3,7 @@ import { ContextMenu } from '../../components/contextmenu'
 import { Group } from '../../components/group'
 import { CheckboxItem, NumberItem, ButtonItem } from '../../components/item'
 import { WordList } from '../../components/wordlist'
-import { error } from '../../utils/logger'
+import { debugVideoFilter as debug, error } from '../../utils/logger'
 import { isPageVideo, isPageBangumi, isPagePlaylist } from '../../utils/pageType'
 import { convertTimeToSec, hideEle, isEleHide, matchBvid, showEle, waitForEle } from '../../utils/tool'
 import { SelectorResult, SubFilterPair, coreCheck } from '../core/core'
@@ -106,8 +106,8 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
     let videoListContainer: HTMLElement
 
     // 检测视频列表
-    let isNextPlayWhitelistEnable = true
-    const checkVideoList = (_fullSite: boolean) => {
+    let isNextPlayWhitelistEnable = false
+    const checkVideoList = async (_fullSite: boolean) => {
         if (!videoListContainer) {
             return
         }
@@ -123,6 +123,30 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                     `.rec-list :is(.video-page-card-small, .video-page-operator-card-small), .recommend-video-card`,
                 ),
             )
+
+            // nextVideos.forEach((v) => {
+            //     debug(
+            //         [
+            //             `nextVideos`,
+            //             `bvid: ${selectorFns.bvid(v)}`,
+            //             `duration: ${selectorFns.duration(v)}`,
+            //             `title: ${selectorFns.title(v)}`,
+            //             `uploader: ${selectorFns.uploader(v)}`,
+            //         ].join('\n'),
+            //     )
+            // })
+            // rcmdVideos.forEach((v) => {
+            //     debug(
+            //         [
+            //             `rcmdVideos`,
+            //             `bvid: ${selectorFns.bvid(v)}`,
+            //             `duration: ${selectorFns.duration(v)}`,
+            //             `title: ${selectorFns.title(v)}`,
+            //             `uploader: ${selectorFns.uploader(v)}`,
+            //         ].join('\n'),
+            //     )
+            // })
+
             // 构建黑白检测任务
             const blackPairs: SubFilterPair[] = []
             videoBvidFilter.isEnable && blackPairs.push([videoBvidFilter, selectorFns.bvid])
@@ -141,12 +165,8 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             } else {
                 nextVideos.forEach((el) => showEle(el))
             }
-            if (rcmdVideos.length) {
-                coreCheck(rcmdVideos, true, blackPairs, whitePairs)
-            } else {
-                rcmdVideos.forEach((el) => showEle(el))
-            }
-            console.log(`check ${nextVideos.length} next, ${rcmdVideos.length} rcmd comments`)
+            rcmdVideos.length && coreCheck(rcmdVideos, true, blackPairs, whitePairs)
+            debug(`check ${nextVideos.length} next, ${rcmdVideos.length} rcmd videos`)
         } catch (err) {
             error('checkVideoList error', err)
         }

@@ -5,7 +5,7 @@ import { ButtonItem, CheckboxItem, NumberItem } from '../../components/item'
 import { WordList } from '../../components/wordlist'
 import settings from '../../settings'
 import fetchHook from '../../utils/fetch'
-import { error } from '../../utils/logger'
+import { debugCommentFilter as debug, error } from '../../utils/logger'
 import { isPageDynamic, isPageSpace } from '../../utils/pageType'
 import { showEle } from '../../utils/tool'
 import { coreCheck, SelectorResult, SubFilterPair } from '../core/core'
@@ -221,7 +221,10 @@ if (isPageDynamic() || isPageSpace()) {
     }
 
     // 检测评论列表
-    const checkCommentList = (fullSite: boolean) => {
+    const checkCommentList = async (fullSite: boolean) => {
+        if (location.host === 'space.bilibili.com' && !location.pathname.includes('/dynamic')) {
+            return
+        }
         try {
             // 提取元素：一级评论、二级评论
             let rootComments: HTMLElement[] = []
@@ -239,6 +242,35 @@ if (isPageDynamic() || isPageSpace()) {
                     ),
                 )
             }
+
+            // rootComments.forEach((v) => {
+            //     debug(
+            //         [
+            //             `rootComments`,
+            //             `username: ${selectorFns.root.username(v)}`,
+            //             `content: ${selectorFns.root.content(v)}`,
+            //             `callUser: ${selectorFns.root.callUser(v)}`,
+            //             `level: ${selectorFns.root.level(v)}`,
+            //             `isUp: ${selectorFns.root.isUp(v)}`,
+            //             `isPin: ${selectorFns.root.isPin(v)}`,
+            //             `isNote: ${selectorFns.root.isNote(v)}`,
+            //             `isLink: ${selectorFns.root.isLink(v)}`,
+            //         ].join('\n'),
+            //     )
+            // })
+            // subComments.forEach((v) => {
+            //     debug(
+            //         [
+            //             `subComments`,
+            //             `username: ${selectorFns.sub.username(v)}`,
+            //             `content: ${selectorFns.sub.content(v)}`,
+            //             `callUser: ${selectorFns.sub.callUser(v)}`,
+            //             `level: ${selectorFns.sub.level(v)}`,
+            //             `isUp: ${selectorFns.sub.isUp(v)}`,
+            //             `isLink: ${selectorFns.sub.isLink(v)}`,
+            //         ].join('\n'),
+            //     )
+            // })
 
             // 构建黑白检测任务
             if (!isRootWhite && rootComments.length) {
@@ -277,7 +309,7 @@ if (isPageDynamic() || isPageSpace()) {
             } else {
                 subComments.forEach((el) => showEle(el))
             }
-            console.log(`check ${rootComments.length} root, ${subComments.length} sub comments`)
+            debug(`check ${rootComments.length} root, ${subComments.length} sub comments`)
         } catch (err) {
             error('checkCommentList error', err)
         }
@@ -304,16 +336,16 @@ if (isPageDynamic() || isPageSpace()) {
                 let cnt = 0
                 const id = setInterval(() => {
                     check(false)
-                    ++cnt > 20 && clearInterval(id)
-                }, 150)
+                    ++cnt > 30 && clearInterval(id)
+                }, 100)
             }
             // 二级评论翻页
             if (input.includes('/v2/reply/reply')) {
                 let cnt = 0
                 const id = setInterval(() => {
                     check(false)
-                    ++cnt > 10 && clearInterval(id)
-                }, 300)
+                    ++cnt > 15 && clearInterval(id)
+                }, 200)
             }
         }
     })

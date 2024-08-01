@@ -1,12 +1,12 @@
 import { KeywordFilter } from '../../core/subFilters/keywordFilter'
-import { NumberFilter } from '../../core/subFilters/numberFilter'
+import { NumberMinFilter } from '../../core/subFilters/numberMinFilter'
 import { StringFilter } from '../../core/subFilters/stringFilter'
 
 export class CommentUsernameFilter extends StringFilter {}
 
 export class CommentContentFilter extends KeywordFilter {}
 
-export class CommentLevelFilter extends NumberFilter {}
+export class CommentLevelFilter extends NumberMinFilter {}
 
 export class CommentBotFilter extends StringFilter {}
 

@@ -5,7 +5,7 @@ import { ButtonItem, CheckboxItem, NumberItem } from '../../components/item'
 import { WordList } from '../../components/wordlist'
 import settings from '../../settings'
 import fetchHook from '../../utils/fetch'
-import { error } from '../../utils/logger'
+import { debugCommentFilter as debug, error } from '../../utils/logger'
 import { isPageBangumi, isPagePlaylist, isPageVideo } from '../../utils/pageType'
 import { showEle } from '../../utils/tool'
 import { coreCheck, SelectorResult, SubFilterPair } from '../core/core'
@@ -287,7 +287,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
     }
 
     // 检测评论列表
-    const checkCommentList = (fullSite: boolean) => {
+    const checkCommentList = async (fullSite: boolean) => {
         try {
             // 提取元素：一级评论、二级评论
             let rootComments: HTMLElement[] = []
@@ -342,6 +342,35 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 }
             }
 
+            // rootComments.forEach((v) => {
+            //     debug(
+            //         [
+            //             `rootComments`,
+            //             `username: ${selectorFns.root.username(v)}`,
+            //             `content: ${selectorFns.root.content(v)}`,
+            //             `callUser: ${selectorFns.root.callUser(v)}`,
+            //             `level: ${selectorFns.root.level(v)}`,
+            //             `isUp: ${selectorFns.root.isUp(v)}`,
+            //             `isPin: ${selectorFns.root.isPin(v)}`,
+            //             `isNote: ${selectorFns.root.isNote(v)}`,
+            //             `isLink: ${selectorFns.root.isLink(v)}`,
+            //         ].join('\n'),
+            //     )
+            // })
+            // subComments.forEach((v) => {
+            //     debug(
+            //         [
+            //             `subComments`,
+            //             `username: ${selectorFns.sub.username(v)}`,
+            //             `content: ${selectorFns.sub.content(v)}`,
+            //             `callUser: ${selectorFns.sub.callUser(v)}`,
+            //             `level: ${selectorFns.sub.level(v)}`,
+            //             `isUp: ${selectorFns.sub.isUp(v)}`,
+            //             `isLink: ${selectorFns.sub.isLink(v)}`,
+            //         ].join('\n'),
+            //     )
+            // })
+
             // 构建黑白检测任务
             if (!isRootWhite && rootComments.length) {
                 const blackPairs: SubFilterPair[] = []
@@ -379,7 +408,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             } else {
                 subComments.forEach((el) => showEle(el))
             }
-            console.log(`check ${rootComments.length} root, ${subComments.length} sub comments`)
+            debug(`check ${rootComments.length} root, ${subComments.length} sub comments`)
         } catch (err) {
             error('checkCommentList error', err)
         }
@@ -406,27 +435,21 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 let cnt = 0
                 const id = setInterval(() => {
                     check(false)
-                    ++cnt > 20 && clearInterval(id)
-                }, 150)
+                    ++cnt > 30 && clearInterval(id)
+                }, 100)
             }
             // 二级评论翻页
             if (input.includes('/v2/reply/reply')) {
                 if (isCommentV2()) {
                     let cnt = 0
                     const id = setInterval(() => {
-                        const orig = isRootWhite
-                        isRootWhite = true
                         check(true)
-                        isRootWhite = orig
-                        ++cnt > 6 && clearInterval(id)
-                    }, 500)
+                        ++cnt > 12 && clearInterval(id)
+                    }, 250)
                 } else {
                     let cnt = 0
                     const id = setInterval(() => {
-                        const orig = isRootWhite
-                        isRootWhite = true
                         check(false)
-                        isRootWhite = orig
                         ++cnt > 20 && clearInterval(id)
                     }, 150)
                 }

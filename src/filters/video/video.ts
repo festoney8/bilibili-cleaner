@@ -161,11 +161,11 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
 
             // 检测
             if (!isNextPlayWhitelistEnable && nextVideos.length) {
-                coreCheck(nextVideos, true, blackPairs, whitePairs)
+                coreCheck(nextVideos, false, blackPairs, whitePairs)
             } else {
                 nextVideos.forEach((el) => showEle(el))
             }
-            rcmdVideos.length && coreCheck(rcmdVideos, true, blackPairs, whitePairs)
+            rcmdVideos.length && coreCheck(rcmdVideos, false, blackPairs, whitePairs)
             debug(`check ${nextVideos.length} next, ${rcmdVideos.length} rcmd videos`)
         } catch (err) {
             error('checkVideoList error', err)

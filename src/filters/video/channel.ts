@@ -4,13 +4,14 @@ import { Group } from '../../components/group'
 import { CheckboxItem, NumberItem, ButtonItem } from '../../components/item'
 import { WordList } from '../../components/wordlist'
 import settings from '../../settings'
-import { error } from '../../utils/logger'
+import { debugVideoFilter as debug, error } from '../../utils/logger'
 import { isPageChannel } from '../../utils/pageType'
-import { convertTimeToSec, matchBvid, waitForEle } from '../../utils/tool'
+import { convertDateToDays, convertTimeToSec, matchBvid, waitForEle } from '../../utils/tool'
 import { SelectorResult, SubFilterPair, coreCheck } from '../core/core'
 import {
     VideoBvidFilter,
     VideoDurationFilter,
+    VideoPubdateFilter,
     VideoTitleFilter,
     VideoUploaderFilter,
     VideoUploaderKeywordFilter,
@@ -36,6 +37,10 @@ const GM_KEYS = {
         bvid: {
             statusKey: 'channel-bvid-filter-status',
             valueKey: 'global-bvid-filter-value',
+        },
+        pubdate: {
+            statusKey: 'channel-pubdate-filter-status',
+            valueKey: 'global-pubdate-filter-value',
         },
         title: {
             statusKey: 'channel-title-keyword-filter-status',
@@ -65,6 +70,9 @@ if (isPageChannel()) {
     const videoTitleFilter = new VideoTitleFilter()
     videoTitleFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.title.valueKey}`, []))
 
+    const videoPubdateFilter = new VideoPubdateFilter()
+    videoPubdateFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.pubdate.valueKey}`, 0))
+
     const videoUploaderFilter = new VideoUploaderFilter()
     videoUploaderFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.uploader.valueKey}`, []))
 
@@ -87,6 +95,10 @@ if (isPageChannel()) {
         title: (video: HTMLElement): SelectorResult => {
             return video.querySelector('.bili-video-card__info--tit a')?.textContent?.trim()
         },
+        pubdate: (video: HTMLElement): SelectorResult => {
+            const pubdate = video.querySelector('.bili-video-card__info--date')?.textContent?.trim()
+            return pubdate && convertDateToDays(pubdate)
+        },
         bvid: (video: HTMLElement): SelectorResult => {
             const href =
                 video.querySelector('.bili-video-card__info--tit a')?.getAttribute('href') ||
@@ -101,36 +113,38 @@ if (isPageChannel()) {
     let vlc: HTMLElement // video list container
 
     // 检测视频列表
-    const checkVideoList = (fullSite: boolean) => {
+    const checkVideoList = async (fullSite: boolean) => {
         if (!vlc) {
             return
         }
         try {
             // 提取元素
-            let feedVideos: HTMLElement[] = []
+            let videos: HTMLElement[] = []
             if (!fullSite) {
-                // 选取增量
-                feedVideos = Array.from(
-                    vlc.querySelectorAll<HTMLElement>(
-                        `.bili-grid .video-card-body .bili-video-card:not([${settings.filterSign}]),
-                        .feed-card-body .bili-video-card:not([${settings.filterSign}])`,
-                    ),
-                )
+                videos = Array.from(vlc.querySelectorAll<HTMLElement>(`.bili-video-card:not([${settings.filterSign}])`))
             } else {
-                // 选取全站, 含已过滤
-                feedVideos = Array.from(
-                    vlc.querySelectorAll<HTMLElement>(
-                        `.bili-grid .video-card-body .bili-video-card,
-                        .feed-card-body .bili-video-card`,
-                    ),
-                )
+                videos = Array.from(vlc.querySelectorAll<HTMLElement>(`.bili-video-card`))
             }
+
+            // videos.forEach((v) => {
+            //     debug(
+            //         [
+            //             `videos`,
+            //             `bvid: ${selectorFns.bvid(v)}`,
+            //             `duration: ${selectorFns.duration(v)}`,
+            //             `title: ${selectorFns.title(v)}`,
+            //             `uploader: ${selectorFns.uploader(v)}`,
+            //             `pubdate: ${selectorFns.pubdate(v)}`,
+            //         ].join('\n'),
+            //     )
+            // })
 
             // 构建黑白检测任务
             const blackPairs: SubFilterPair[] = []
             videoBvidFilter.isEnable && blackPairs.push([videoBvidFilter, selectorFns.bvid])
             videoDurationFilter.isEnable && blackPairs.push([videoDurationFilter, selectorFns.duration])
             videoTitleFilter.isEnable && blackPairs.push([videoTitleFilter, selectorFns.title])
+            videoPubdateFilter.isEnable && blackPairs.push([videoPubdateFilter, selectorFns.pubdate])
             videoUploaderFilter.isEnable && blackPairs.push([videoUploaderFilter, selectorFns.uploader])
             videoUploaderKeywordFilter.isEnable && blackPairs.push([videoUploaderKeywordFilter, selectorFns.uploader])
 
@@ -139,8 +153,8 @@ if (isPageChannel()) {
             videoTitleWhiteFilter.isEnable && whitePairs.push([videoTitleWhiteFilter, selectorFns.title])
 
             // 检测
-            feedVideos.length && coreCheck(feedVideos, true, blackPairs, whitePairs)
-            console.log(`check ${feedVideos.length} feedVideos`)
+            videos.length && coreCheck(videos, true, blackPairs, whitePairs)
+            debug(`check ${videos.length} videos`)
         } catch (err) {
             error('checkVideoList error', err)
         }
@@ -165,7 +179,7 @@ if (isPageChannel()) {
                     const node = e.target
                         .closest('.bili-video-card__info--owner')
                         ?.querySelector('.bili-video-card__info--author')
-                    const uploader = node?.textContent
+                    const uploader = node?.textContent?.trim()
                     if (uploader) {
                         e.preventDefault()
                         menu.registerMenu(`◎ 屏蔽UP主：${uploader}`, () => {
@@ -195,7 +209,7 @@ if (isPageChannel()) {
                             }
                         })
                         menu.registerMenu(`◎ 复制主页链接`, () => {
-                            const url = node.closest('.bili-video-card__info--owner')?.getAttribute('href')
+                            const url = node?.closest('.bili-video-card__info--owner')?.getAttribute('href')
                             if (url) {
                                 const matches = url.match(/space\.bilibili\.com\/\d+/g)
                                 matches && navigator.clipboard.writeText(`https://${matches[0]}`)
@@ -449,6 +463,38 @@ if (isPageChannel()) {
         }),
     ]
     channelPageVideoFilterGroupList.push(new Group('channel-bvid-filter-group', '频道页 BV号过滤', bvidItems))
+
+    // UI组件, 发布日期过滤
+    const pubdateItems = [
+        // 启用 发布日期过滤
+        new CheckboxItem({
+            itemID: GM_KEYS.black.pubdate.statusKey,
+            description: '启用 发布日期过滤',
+            enableFunc: () => {
+                videoPubdateFilter.enable()
+                checkVideoList(true)
+            },
+            disableFunc: () => {
+                videoPubdateFilter.disable()
+                checkVideoList(true)
+            },
+        }),
+        // 设定发布日期阈值
+        new NumberItem({
+            itemID: GM_KEYS.black.pubdate.valueKey,
+            description: '视频发布日 距今不超过',
+            defaultValue: 60,
+            minValue: 1,
+            maxValue: 365,
+            disableValue: 1,
+            unit: '天',
+            callback: async (value: number) => {
+                videoPubdateFilter.setParam(value)
+                checkVideoList(true)
+            },
+        }),
+    ]
+    channelPageVideoFilterGroupList.push(new Group('channel-pubdate-filter-group', '频道页 发布日期过滤', pubdateItems))
 
     // UI组件, 免过滤和白名单
     const whitelistItems = [

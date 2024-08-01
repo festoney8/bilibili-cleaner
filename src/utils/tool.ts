@@ -40,6 +40,35 @@ export const convertTimeToSec = (timeStr: string): number => {
     return Infinity
 }
 
+/**
+ * 发布日期转换成距今天数
+ * @param dateStr 发布时间字符串 'xx小时前' 或 'm-dd'
+ * @returns 天数
+ */
+export const convertDateToDays = (dateStr: string): number => {
+    if (dateStr.includes('小时前')) {
+        return 0
+    }
+    dateStr = dateStr.replace('·', '').trim()
+    if (/^\d{1,2}-\d{1,2}$/.test(dateStr)) {
+        const [month, day] = dateStr.split('-').map(Number)
+        let target = new Date(new Date().getFullYear(), month - 1, day).getTime()
+        const today = new Date().getTime()
+        if (target > today) {
+            target = new Date(new Date().getFullYear() - 1, month - 1, day).getTime()
+        }
+        return (today - target) / 86400000
+    }
+
+    if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(dateStr)) {
+        const [year, month, day] = dateStr.split('-').map(Number)
+        const target = new Date(year, month - 1, day).getTime()
+        const today = new Date().getTime()
+        return (today - target) / 86400000
+    }
+    return 0
+}
+
 /*
     根据coinLikeRatio计算视频质量
     对爬虫数据中投币点赞比在热门视频中所在排名进行拟合（百分制，4PL Formula）

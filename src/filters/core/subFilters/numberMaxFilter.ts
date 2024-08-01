@@ -1,6 +1,6 @@
 import { ISubFilter, SelectorFn } from '../core'
 
-export class NumberFilter implements ISubFilter {
+export class NumberMaxFilter implements ISubFilter {
     isEnable = false
     private threshold = 0
 
@@ -20,7 +20,7 @@ export class NumberFilter implements ISubFilter {
                 return
             }
             const value = selectorFn(el)
-            if (typeof value === 'number' && value < this.threshold) {
+            if (typeof value === 'number' && value > this.threshold) {
                 reject()
                 return
             }

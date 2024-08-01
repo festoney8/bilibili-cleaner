@@ -112,7 +112,7 @@ if (isPageSpace()) {
                 videoTitleWhiteFilter.isEnable && whitePairs.push([videoTitleWhiteFilter, selectorFns.title])
 
                 // 检测
-                coreCheck(videos, true, blackPairs, whitePairs)
+                coreCheck(videos, false, blackPairs, whitePairs)
                 debug(`check ${videos.length} videos`)
             }
         } catch (err) {

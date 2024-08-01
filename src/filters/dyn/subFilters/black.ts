@@ -1,9 +1,9 @@
 import { KeywordFilter } from '../../core/subFilters/keywordFilter'
-import { NumberFilter } from '../../core/subFilters/numberFilter'
+import { NumberMinFilter } from '../../core/subFilters/numberMinFilter'
 import { StringFilter } from '../../core/subFilters/stringFilter'
 
 export class DynUploaderFilter extends StringFilter {}
 
-export class DynDurationFilter extends NumberFilter {}
+export class DynDurationFilter extends NumberMinFilter {}
 
 export class DynVideoTitleFilter extends KeywordFilter {}

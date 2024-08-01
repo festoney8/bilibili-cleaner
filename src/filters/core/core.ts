@@ -3,11 +3,12 @@ import { error } from '../../utils/logger'
 import { hideEle, showEle } from '../../utils/tool'
 import { BooleanFilter } from './subFilters/booleanFilter'
 import { KeywordFilter } from './subFilters/keywordFilter'
-import { NumberFilter } from './subFilters/numberFilter'
+import { NumberMaxFilter } from './subFilters/numberMaxFilter'
+import { NumberMinFilter } from './subFilters/numberMinFilter'
 import { StringFilter } from './subFilters/stringFilter'
 
 export type SelectorResult = string | boolean | number | undefined
-export type SubFilterType = BooleanFilter | StringFilter | KeywordFilter | NumberFilter
+export type SubFilterType = BooleanFilter | StringFilter | KeywordFilter | NumberMinFilter | NumberMaxFilter
 export type SelectorFn = (el: HTMLElement) => SelectorResult
 
 export interface ISubFilter {

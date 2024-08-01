@@ -26,17 +26,17 @@ import {
     isPageSpace,
     isPageVideo,
 } from './utils/pageType'
-import { homepagePageVideoFilterGroupList } from './filters/videoFilter/pages/homepage'
-import { videoPageVideoFilterGroupList } from './filters/videoFilter/pages/video'
-import { popularPageVideoFilterGroupList } from './filters/videoFilter/pages/popular'
-import { searchPageVideoFilterGroupList } from './filters/videoFilter/pages/search'
-import { channelPageVideoFilterGroupList } from './filters/videoFilter/pages/channel'
-import { videoPageCommentFilterGroupList } from './filters/commentFilter/pages/video'
-import { spacePageVideoFilterGroupList } from './filters/videoFilter/pages/space'
-import { dynamicPageCommentFilterGroupList } from './filters/commentFilter/pages/dynamicAndSpace'
+import { homepagePageVideoFilterGroupList } from './filters/video/homepage'
+import { popularPageVideoFilterGroupList } from './filters/video/popular'
+import { spacePageVideoFilterGroupList } from './filters/video/space'
 import { watchlaterGroupList } from './rules/watchlater'
 import { spaceGroupList } from './rules/space'
-import { dynamicPageDynFilterGroupList } from './filters/dynFilter/pages/dynamic'
+import { dynamicPageDynFilterGroupList } from './filters/dyn/dyn'
+import { videoPageCommentFilterGroupList } from './filters/comment/video'
+import { dynamicPageCommentFilterGroupList } from './filters/comment/dynAndSpace'
+import { videoPageVideoFilterGroupList } from './filters/video/video'
+import { channelPageVideoFilterGroupList } from './filters/video/channel'
+import { searchPageVideoFilterGroupList } from './filters/video/search'
 
 const main = async () => {
     // 载入元素屏蔽规则

@@ -21,8 +21,6 @@ export class Panel {
 
     isShowing = false
 
-    constructor() {}
-
     /** 向document.head中添加panel CSS */
     insertPanelCSS() {
         try {

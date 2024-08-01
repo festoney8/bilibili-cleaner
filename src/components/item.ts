@@ -495,11 +495,12 @@ export class NumberItem implements IItem {
     }
 
     /** 启用，设定带自定义数值的CSS, 数值为disableValue时禁用 */
-    enableItem(_enableFunc = false) {
+    enableItem(enableFunc = false) {
         this.getValue()
         if (this.itemValue !== this.option.disableValue) {
             try {
                 this.insertItemCSS()
+                enableFunc && this.option.callback?.(this.itemValue).then().catch()
                 debug(`enableItem ${this.option.itemID} OK`)
             } catch (err) {
                 error(`enableItem ${this.option.itemID} Error`)

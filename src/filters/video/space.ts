@@ -112,11 +112,17 @@ if (isPageSpace()) {
                 videoTitleWhiteFilter.isEnable && whitePairs.push([videoTitleWhiteFilter, selectorFns.title])
 
                 // 检测
-                coreCheck(videos, false, blackPairs, whitePairs)
+                await coreCheck(videos, false, blackPairs, whitePairs)
                 debug(`check ${videos.length} videos`)
             }
         } catch (err) {
             error('checkVideoList error', err)
+        }
+    }
+
+    const check = (fullSite: boolean) => {
+        if (videoBvidFilter.isEnable || videoDurationFilter.isEnable || videoTitleFilter.isEnable) {
+            checkVideoList(fullSite).then().catch()
         }
     }
 
@@ -142,7 +148,7 @@ if (isPageSpace()) {
                             e.preventDefault()
                             menu.registerMenu(`◎ 屏蔽视频 ${bvid}`, () => {
                                 videoBvidFilter.addParam(bvid)
-                                checkVideoList(true)
+                                check(true)
                                 try {
                                     const arr: string[] = GM_getValue(`BILICLEANER_${GM_KEYS.black.bvid.valueKey}`, [])
                                     if (!arr.includes(bvid)) {
@@ -172,11 +178,6 @@ if (isPageSpace()) {
         }).then((ele) => {
             if (ele) {
                 vlc = ele
-                const check = (fullSite: boolean) => {
-                    if (videoBvidFilter.isEnable || videoDurationFilter.isEnable || videoTitleFilter.isEnable) {
-                        checkVideoList(fullSite)
-                    }
-                }
                 check(true)
                 // 监听视频列表变化
                 new MutationObserver(() => {
@@ -196,11 +197,11 @@ if (isPageSpace()) {
             description: '启用 时长过滤',
             enableFunc: () => {
                 videoDurationFilter.enable()
-                checkVideoList(true)
+                check(true)
             },
             disableFunc: () => {
                 videoDurationFilter.disable()
-                checkVideoList(true)
+                check(true)
             },
         }),
         // 设定最低时长
@@ -214,7 +215,7 @@ if (isPageSpace()) {
             unit: '秒',
             callback: async (value: number) => {
                 videoDurationFilter.setParam(value)
-                checkVideoList(true)
+                check(true)
             },
         }),
     ]
@@ -228,11 +229,11 @@ if (isPageSpace()) {
             description: '启用 标题关键词过滤',
             enableFunc: () => {
                 videoTitleFilter.enable()
-                checkVideoList(true)
+                check(true)
             },
             disableFunc: () => {
                 videoTitleFilter.disable()
-                checkVideoList(true)
+                check(true)
             },
         }),
         // 编辑 关键词黑名单
@@ -248,7 +249,7 @@ if (isPageSpace()) {
                     `每行一个关键词或正则，不区分大小写\n正则默认iv模式，无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         videoTitleFilter.setParam(values)
-                        checkVideoList(true)
+                        check(true)
                     },
                 ).show()
             },
@@ -269,13 +270,13 @@ if (isPageSpace()) {
                 isContextMenuBvidEnable = true
                 contextMenuFunc()
                 videoBvidFilter.enable()
-                checkVideoList(true)
+                check(true)
             },
             disableFunc: () => {
                 // 禁用 右键功能
                 isContextMenuBvidEnable = false
                 videoBvidFilter.disable()
-                checkVideoList(true)
+                check(true)
             },
         }),
         // 编辑 BV号黑名单
@@ -291,7 +292,7 @@ if (isPageSpace()) {
                     `每行一个BV号，保存时自动去重`,
                     (values: string[]) => {
                         videoBvidFilter.setParam(values)
-                        checkVideoList(true)
+                        check(true)
                     },
                 ).show()
             },
@@ -307,11 +308,11 @@ if (isPageSpace()) {
             description: '启用 标题关键词白名单',
             enableFunc: () => {
                 videoTitleWhiteFilter.enable()
-                checkVideoList(true)
+                check(true)
             },
             disableFunc: () => {
                 videoTitleWhiteFilter.disable()
-                checkVideoList(true)
+                check(true)
             },
         }),
         // 编辑 关键词白名单
@@ -327,7 +328,7 @@ if (isPageSpace()) {
                     `每行一个关键词或正则，不区分大小写\n正则默认iv模式，无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         videoTitleWhiteFilter.setParam(values)
-                        checkVideoList(true)
+                        check(true)
                     },
                 ).show()
             },

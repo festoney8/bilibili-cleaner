@@ -227,8 +227,8 @@ if (isPageDynamic() || isPageSpace()) {
         }
         try {
             // 提取元素：一级评论、二级评论
-            let rootComments: HTMLElement[] = []
-            let subComments: HTMLElement[] = []
+            let rootComments: HTMLElement[]
+            let subComments: HTMLElement[]
             if (fullSite) {
                 rootComments = Array.from(document.querySelectorAll<HTMLElement>(`.reply-item`))
                 subComments = Array.from(document.querySelectorAll<HTMLElement>(`.sub-reply-item:not(.jump-link.user)`))
@@ -288,7 +288,7 @@ if (isPageDynamic() || isPageSpace()) {
                 commentIsNoteFilter.isEnable && whitePairs.push([commentIsNoteFilter, selectorFns.root.isNote])
                 commentIsLinkFilter.isEnable && whitePairs.push([commentIsLinkFilter, selectorFns.root.isLink])
 
-                coreCheck(rootComments, true, blackPairs, whitePairs)
+                await coreCheck(rootComments, true, blackPairs, whitePairs)
             } else {
                 rootComments.forEach((el) => showEle(el))
             }
@@ -305,7 +305,7 @@ if (isPageDynamic() || isPageSpace()) {
                 commentIsUpFilter.isEnable && whitePairs.push([commentIsUpFilter, selectorFns.sub.isUp])
                 commentIsLinkFilter.isEnable && whitePairs.push([commentIsLinkFilter, selectorFns.sub.isLink])
 
-                coreCheck(subComments, true, blackPairs, whitePairs)
+                await coreCheck(subComments, true, blackPairs, whitePairs)
             } else {
                 subComments.forEach((el) => showEle(el))
             }
@@ -324,7 +324,7 @@ if (isPageDynamic() || isPageSpace()) {
             commentCallBotFilter.isEnable ||
             commentCallUserFilter.isEnable
         ) {
-            checkCommentList(fullSite)
+            checkCommentList(fullSite).then().catch()
         }
     }
 
@@ -375,7 +375,7 @@ if (isPageDynamic() || isPageSpace()) {
                             e.preventDefault()
                             menu.registerMenu(`屏蔽用户：${username}`, () => {
                                 commentUsernameFilter.addParam(username)
-                                checkCommentList(true)
+                                check(true)
                                 try {
                                     const arr: string[] = GM_getValue(
                                         `BILICLEANER_${GM_KEYS.black.username.valueKey}`,
@@ -411,12 +411,12 @@ if (isPageDynamic() || isPageSpace()) {
                 isContextMenuUsernameEnable = true
                 contextMenuFunc()
                 commentUsernameFilter.enable()
-                checkCommentList(true)
+                check(true)
             },
             disableFunc: () => {
                 isContextMenuUsernameEnable = false
                 commentUsernameFilter.disable()
-                checkCommentList(true)
+                check(true)
             },
         }),
         // 编辑 用户名黑名单
@@ -431,7 +431,7 @@ if (isPageDynamic() || isPageSpace()) {
                     '每行一个用户名，保存时自动去重',
                     (values: string[]) => {
                         commentUsernameFilter.setParam(values)
-                        checkCommentList(true)
+                        check(true)
                     },
                 ).show()
             },
@@ -449,11 +449,11 @@ if (isPageDynamic() || isPageSpace()) {
             description: '启用 评论区 关键词过滤',
             enableFunc: () => {
                 commentContentFilter.enable()
-                checkCommentList(true)
+                check(true)
             },
             disableFunc: () => {
                 commentContentFilter.disable()
-                checkCommentList(true)
+                check(true)
             },
         }),
         // 编辑 关键词黑名单
@@ -468,7 +468,7 @@ if (isPageDynamic() || isPageSpace()) {
                     `每行一个关键词或正则，不区分大小写\n正则默认iv模式，无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         commentContentFilter.setParam(values)
-                        checkCommentList(true)
+                        check(true)
                     },
                 ).show()
             },
@@ -485,11 +485,11 @@ if (isPageDynamic() || isPageSpace()) {
             defaultStatus: true,
             enableFunc: () => {
                 commentCallBotFilter.enable()
-                checkCommentList(true)
+                check(true)
             },
             disableFunc: () => {
                 commentCallBotFilter.disable()
-                checkCommentList(true)
+                check(true)
             },
         }),
         // 过滤 AI发布的评论
@@ -498,11 +498,11 @@ if (isPageDynamic() || isPageSpace()) {
             description: '过滤 AI发布的评论',
             enableFunc: () => {
                 commentBotFilter.enable()
-                checkCommentList(true)
+                check(true)
             },
             disableFunc: () => {
                 commentBotFilter.disable()
-                checkCommentList(true)
+                check(true)
             },
         }),
         // 过滤 @其他用户的评论
@@ -511,11 +511,11 @@ if (isPageDynamic() || isPageSpace()) {
             description: '过滤 @其他用户的评论',
             enableFunc: () => {
                 commentCallUserFilter.enable()
-                checkCommentList(true)
+                check(true)
             },
             disableFunc: () => {
                 commentCallUserFilter.disable()
-                checkCommentList(true)
+                check(true)
             },
         }),
     ]
@@ -529,11 +529,11 @@ if (isPageDynamic() || isPageSpace()) {
             description: '启用 用户等级过滤',
             enableFunc: () => {
                 commentLevelFilter.enable()
-                checkCommentList(true)
+                check(true)
             },
             disableFunc: () => {
                 commentLevelFilter.disable()
-                checkCommentList(true)
+                check(true)
             },
         }),
         // 设定最低等级
@@ -547,7 +547,7 @@ if (isPageDynamic() || isPageSpace()) {
             unit: '',
             callback: async (value: number) => {
                 commentLevelFilter.setParam(value)
-                checkCommentList(true)
+                check(true)
             },
         }),
     ]
@@ -563,11 +563,11 @@ if (isPageDynamic() || isPageSpace()) {
             description: '一级评论(主评论) 免过滤',
             enableFunc: () => {
                 isRootWhite = true
-                checkCommentList(true)
+                check(true)
             },
             disableFunc: () => {
                 isRootWhite = false
-                checkCommentList(true)
+                check(true)
             },
         }),
         // 二级评论 免过滤
@@ -576,11 +576,11 @@ if (isPageDynamic() || isPageSpace()) {
             description: '二级评论(回复) 免过滤',
             enableFunc: () => {
                 isSubWhite = true
-                checkCommentList(true)
+                check(true)
             },
             disableFunc: () => {
                 isSubWhite = false
-                checkCommentList(true)
+                check(true)
             },
         }),
         // UP主的评论 免过滤, 默认开启
@@ -590,11 +590,11 @@ if (isPageDynamic() || isPageSpace()) {
             defaultStatus: true,
             enableFunc: () => {
                 commentIsUpFilter.enable()
-                checkCommentList(true)
+                check(true)
             },
             disableFunc: () => {
                 commentIsUpFilter.disable()
-                checkCommentList(true)
+                check(true)
             },
         }),
         // 置顶评论 免过滤, 默认开启
@@ -604,11 +604,11 @@ if (isPageDynamic() || isPageSpace()) {
             defaultStatus: true,
             enableFunc: () => {
                 commentIsPinFilter.enable()
-                checkCommentList(true)
+                check(true)
             },
             disableFunc: () => {
                 commentIsPinFilter.disable()
-                checkCommentList(true)
+                check(true)
             },
         }),
         // 笔记评论 免过滤, 默认开启
@@ -618,11 +618,11 @@ if (isPageDynamic() || isPageSpace()) {
             defaultStatus: true,
             enableFunc: () => {
                 commentIsNoteFilter.enable()
-                checkCommentList(true)
+                check(true)
             },
             disableFunc: () => {
                 commentIsNoteFilter.disable()
-                checkCommentList(true)
+                check(true)
             },
         }),
         // 含超链接的评论 免过滤, 默认开启
@@ -632,11 +632,11 @@ if (isPageDynamic() || isPageSpace()) {
             defaultStatus: true,
             enableFunc: () => {
                 commentIsLinkFilter.enable()
-                checkCommentList(true)
+                check(true)
             },
             disableFunc: () => {
                 commentIsLinkFilter.disable()
-                checkCommentList(true)
+                check(true)
             },
         }),
     ]

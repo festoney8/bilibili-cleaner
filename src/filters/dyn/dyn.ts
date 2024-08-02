@@ -79,7 +79,7 @@ if (isPageDynamic() || isPageSpace()) {
                             e.preventDefault()
                             menu.registerMenu(`隐藏用户动态：${uploader}`, () => {
                                 dynUploaderFilter.addParam(uploader)
-                                checkDynList(true)
+                                check(true)
                                 try {
                                     const arr: string[] = GM_getValue(
                                         `BILICLEANER_${GM_KEYS.black.uploader.valueKey}`,
@@ -142,11 +142,17 @@ if (isPageDynamic() || isPageSpace()) {
                 dynUploaderFilter.isEnable && blackPairs.push([dynUploaderFilter, selectorFns.uploader])
                 dynDurationFilter.isEnable && blackPairs.push([dynDurationFilter, selectorFns.duration])
                 dynVideoTitleFilter.isEnable && blackPairs.push([dynVideoTitleFilter, selectorFns.title])
-                coreCheck(dyns, true, blackPairs, [])
+                await coreCheck(dyns, true, blackPairs, [])
                 debug(`check ${dyns.length} dyns`)
             }
         } catch (err) {
             error('checkDynList error', err)
+        }
+    }
+
+    const check = (fullSite: boolean) => {
+        if (dynUploaderFilter.isEnable || dynDurationFilter.isEnable || dynVideoTitleFilter.isEnable) {
+            checkDynList(fullSite).then().catch()
         }
     }
 
@@ -158,11 +164,6 @@ if (isPageDynamic() || isPageSpace()) {
         ).then((ele) => {
             if (ele) {
                 dynListContainer = ele
-                const check = (fullSite: boolean) => {
-                    if (dynUploaderFilter.isEnable || dynDurationFilter.isEnable || dynVideoTitleFilter.isEnable) {
-                        checkDynList(fullSite)
-                    }
-                }
                 // 监听动态列表内部变化
                 check(true)
                 new MutationObserver(() => {
@@ -184,12 +185,12 @@ if (isPageDynamic() || isPageSpace()) {
                 isContextMenuUploaderEnable = true
                 contextMenuFunc()
                 dynUploaderFilter.enable()
-                checkDynList(true)
+                check(true)
             },
             disableFunc: () => {
                 isContextMenuUploaderEnable = false
                 dynUploaderFilter.disable()
-                checkDynList(true)
+                check(true)
             },
         }),
         // 编辑 用户名列表
@@ -204,7 +205,7 @@ if (isPageDynamic() || isPageSpace()) {
                     '每行一个用户名，保存时自动去重',
                     (values: string[]) => {
                         dynUploaderFilter.setParam(values)
-                        checkDynList(true)
+                        check(true)
                     },
                 ).show()
             },
@@ -220,11 +221,11 @@ if (isPageDynamic() || isPageSpace()) {
             description: '启用 时长过滤',
             enableFunc: () => {
                 dynDurationFilter.enable()
-                checkDynList(true)
+                check(true)
             },
             disableFunc: () => {
                 dynDurationFilter.disable()
-                checkDynList(true)
+                check(true)
             },
         }),
         // 设定最低时长
@@ -238,7 +239,7 @@ if (isPageDynamic() || isPageSpace()) {
             unit: '秒',
             callback: async (value: number) => {
                 dynDurationFilter.setParam(value)
-                checkDynList(true)
+                check(true)
             },
         }),
     ]
@@ -252,11 +253,11 @@ if (isPageDynamic() || isPageSpace()) {
             description: '启用 视频标题 关键词过滤',
             enableFunc: () => {
                 dynVideoTitleFilter.enable()
-                checkDynList(true)
+                check(true)
             },
             disableFunc: () => {
                 dynVideoTitleFilter.disable()
-                checkDynList(true)
+                check(true)
             },
         }),
         // 编辑 关键词黑名单
@@ -271,7 +272,7 @@ if (isPageDynamic() || isPageSpace()) {
                     `每行一个关键词或正则，不区分大小写\n正则默认iv模式，无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         dynVideoTitleFilter.setParam(values)
-                        checkDynList(true)
+                        check(true)
                     },
                 ).show()
             },

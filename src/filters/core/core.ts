@@ -13,10 +13,15 @@ export type SelectorFn = (el: HTMLElement) => SelectorResult
 
 export interface ISubFilter {
     isEnable: boolean
+
     enable(): void
+
     disable(): void
+
     addParam?(value: string): void
+
     setParam?(value: string[] | number): void
+
     check(el: HTMLElement, selectorFn: SelectorFn): Promise<void>
 }
 
@@ -51,7 +56,7 @@ export const coreCheck = async (
         }
 
         // 构建黑白名单检测任务
-        elements.forEach(async (el) => {
+        for (const el of elements) {
             const blackTasks: Promise<void>[] = []
             blackPairs.forEach((pair) => {
                 blackTasks.push(pair[0].check(el, pair[1]))
@@ -85,7 +90,7 @@ export const coreCheck = async (
 
             // 标记已过滤元素
             sign && el.setAttribute(settings.filterSign, '')
-        })
+        }
     } catch (err) {
         error('coreCheck error', err)
     }

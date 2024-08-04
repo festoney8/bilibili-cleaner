@@ -127,8 +127,8 @@ if (isPageHomepage()) {
         }
         try {
             // 提取元素
-            let feedVideos: HTMLElement[] = []
-            let rcmdVideos: HTMLElement[] = []
+            let feedVideos: HTMLElement[]
+            let rcmdVideos: HTMLElement[]
 
             if (!fullSite) {
                 // 增量选取
@@ -196,11 +196,23 @@ if (isPageHomepage()) {
             videoIsFollowWhiteFilter.isEnable && whitePairs.push([videoIsFollowWhiteFilter, selectorFns.isFollow])
 
             // 检测
-            feedVideos.length && coreCheck(feedVideos, true, blackPairs, whitePairs)
-            rcmdVideos.length && coreCheck(rcmdVideos, true, blackPairs, whitePairs)
+            feedVideos.length && (await coreCheck(feedVideos, true, blackPairs, whitePairs))
+            rcmdVideos.length && (await coreCheck(rcmdVideos, true, blackPairs, whitePairs))
             debug(`check ${feedVideos.length} feedVideos, ${rcmdVideos.length} rcmdVideos`)
         } catch (err) {
             error('checkVideoList error', err)
+        }
+    }
+
+    const check = (fullSite: boolean) => {
+        if (
+            videoBvidFilter.isEnable ||
+            videoDurationFilter.isEnable ||
+            videoTitleFilter.isEnable ||
+            videoUploaderFilter.isEnable ||
+            videoUploaderKeywordFilter.isEnable
+        ) {
+            checkVideoList(fullSite).then().catch()
         }
     }
 
@@ -228,7 +240,7 @@ if (isPageHomepage()) {
                         e.preventDefault()
                         menu.registerMenu(`◎ 屏蔽UP主：${uploader}`, () => {
                             videoUploaderFilter.addParam(uploader)
-                            checkVideoList(true)
+                            check(true)
                             try {
                                 const arr: string[] = GM_getValue(`BILICLEANER_${GM_KEYS.black.uploader.valueKey}`, [])
                                 if (!arr.includes(uploader)) {
@@ -241,7 +253,7 @@ if (isPageHomepage()) {
                         })
                         menu.registerMenu(`◎ 将UP主加入白名单`, () => {
                             videoUploaderWhiteFilter.addParam(uploader)
-                            checkVideoList(true)
+                            check(true)
                             try {
                                 const arr: string[] = GM_getValue(`BILICLEANER_${GM_KEYS.white.uploader.valueKey}`, [])
                                 if (!arr.includes(uploader)) {
@@ -274,7 +286,7 @@ if (isPageHomepage()) {
                             e.preventDefault()
                             menu.registerMenu(`◎ 屏蔽视频 ${bvid}`, () => {
                                 videoBvidFilter.addParam(bvid)
-                                checkVideoList(true)
+                                check(true)
                                 try {
                                     const arr: string[] = GM_getValue(`BILICLEANER_${GM_KEYS.black.bvid.valueKey}`, [])
                                     if (!arr.includes(bvid)) {
@@ -304,17 +316,6 @@ if (isPageHomepage()) {
         }).then((ele) => {
             if (ele) {
                 vlc = ele
-                const check = (fullSite: boolean) => {
-                    if (
-                        videoBvidFilter.isEnable ||
-                        videoDurationFilter.isEnable ||
-                        videoTitleFilter.isEnable ||
-                        videoUploaderFilter.isEnable ||
-                        videoUploaderKeywordFilter.isEnable
-                    ) {
-                        checkVideoList(fullSite)
-                    }
-                }
                 check(true)
                 // 监听视频列表变化
                 new MutationObserver(() => {
@@ -334,11 +335,11 @@ if (isPageHomepage()) {
             description: '启用 时长过滤',
             enableFunc: () => {
                 videoDurationFilter.enable()
-                checkVideoList(true)
+                check(true)
             },
             disableFunc: () => {
                 videoDurationFilter.disable()
-                checkVideoList(true)
+                check(true)
             },
         }),
         // 设定最低时长
@@ -352,7 +353,7 @@ if (isPageHomepage()) {
             unit: '秒',
             callback: async (value: number) => {
                 videoDurationFilter.setParam(value)
-                checkVideoList(true)
+                check(true)
             },
         }),
     ]
@@ -370,13 +371,13 @@ if (isPageHomepage()) {
                 isContextMenuUploaderEnable = true
                 contextMenuFunc()
                 videoUploaderFilter.enable()
-                checkVideoList(true)
+                check(true)
             },
             disableFunc: () => {
                 // 禁用右键菜单功能
                 isContextMenuUploaderEnable = false
                 videoUploaderFilter.disable()
-                checkVideoList(true)
+                check(true)
             },
         }),
         // 编辑 UP主黑名单
@@ -391,7 +392,7 @@ if (isPageHomepage()) {
                     `每行一个UP主昵称，保存时自动去重`,
                     (values: string[]) => {
                         videoUploaderFilter.setParam(values)
-                        checkVideoList(true)
+                        check(true)
                     },
                 ).show()
             },
@@ -402,11 +403,11 @@ if (isPageHomepage()) {
             description: '启用 UP主昵称关键词过滤',
             enableFunc: () => {
                 videoUploaderKeywordFilter.enable()
-                checkVideoList(true)
+                check(true)
             },
             disableFunc: () => {
                 videoUploaderKeywordFilter.disable()
-                checkVideoList(true)
+                check(true)
             },
         }),
         // 编辑 UP主昵称关键词黑名单
@@ -421,7 +422,7 @@ if (isPageHomepage()) {
                     `每行一个关键词或正则，不区分大小写\n正则默认iv模式，无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         videoUploaderKeywordFilter.setParam(values)
-                        checkVideoList(true)
+                        check(true)
                     },
                 ).show()
             },
@@ -437,11 +438,11 @@ if (isPageHomepage()) {
             description: '启用 标题关键词过滤',
             enableFunc: () => {
                 videoTitleFilter.enable()
-                checkVideoList(true)
+                check(true)
             },
             disableFunc: () => {
                 videoTitleFilter.disable()
-                checkVideoList(true)
+                check(true)
             },
         }),
         // 编辑 关键词黑名单
@@ -457,7 +458,7 @@ if (isPageHomepage()) {
                     `每行一个关键词或正则，不区分大小写\n正则默认iv模式，无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         videoTitleFilter.setParam(values)
-                        checkVideoList(true)
+                        check(true)
                     },
                 ).show()
             },
@@ -478,13 +479,13 @@ if (isPageHomepage()) {
                 isContextMenuBvidEnable = true
                 contextMenuFunc()
                 videoBvidFilter.enable()
-                checkVideoList(true)
+                check(true)
             },
             disableFunc: () => {
                 // 禁用 右键功能
                 isContextMenuBvidEnable = false
                 videoBvidFilter.disable()
-                checkVideoList(true)
+                check(true)
             },
         }),
         // 编辑 BV号黑名单
@@ -500,7 +501,7 @@ if (isPageHomepage()) {
                     `每行一个BV号，保存时自动去重`,
                     (values: string[]) => {
                         videoBvidFilter.setParam(values)
-                        checkVideoList(true)
+                        check(true)
                     },
                 ).show()
             },
@@ -516,11 +517,11 @@ if (isPageHomepage()) {
             description: '启用 发布日期过滤',
             enableFunc: () => {
                 videoPubdateFilter.enable()
-                checkVideoList(true)
+                check(true)
             },
             disableFunc: () => {
                 videoPubdateFilter.disable()
-                checkVideoList(true)
+                check(true)
             },
         }),
         // 设定发布日期阈值
@@ -534,7 +535,7 @@ if (isPageHomepage()) {
             unit: '天',
             callback: async (value: number) => {
                 videoPubdateFilter.setParam(value)
-                checkVideoList(true)
+                check(true)
             },
         }),
     ]
@@ -549,11 +550,11 @@ if (isPageHomepage()) {
             defaultStatus: true,
             enableFunc: () => {
                 videoIsFollowWhiteFilter.enable()
-                checkVideoList(true)
+                check(true)
             },
             disableFunc: () => {
                 videoIsFollowWhiteFilter.disable()
-                checkVideoList(true)
+                check(true)
             },
         }),
         // 启用 UP主白名单
@@ -562,11 +563,11 @@ if (isPageHomepage()) {
             description: '启用 UP主白名单',
             enableFunc: () => {
                 videoUploaderWhiteFilter.enable()
-                checkVideoList(true)
+                check(true)
             },
             disableFunc: () => {
                 videoUploaderWhiteFilter.disable()
-                checkVideoList(true)
+                check(true)
             },
         }),
         // 编辑 UP主白名单
@@ -582,7 +583,7 @@ if (isPageHomepage()) {
                     `每行一个UP主昵称，保存时自动去重`,
                     (values: string[]) => {
                         videoUploaderWhiteFilter.setParam(values)
-                        checkVideoList(true)
+                        check(true)
                     },
                 ).show()
             },
@@ -593,11 +594,11 @@ if (isPageHomepage()) {
             description: '启用 标题关键词白名单',
             enableFunc: () => {
                 videoTitleWhiteFilter.enable()
-                checkVideoList(true)
+                check(true)
             },
             disableFunc: () => {
                 videoTitleWhiteFilter.disable()
-                checkVideoList(true)
+                check(true)
             },
         }),
         // 编辑 关键词白名单
@@ -613,7 +614,7 @@ if (isPageHomepage()) {
                     `每行一个关键词或正则，不区分大小写\n正则默认iv模式，无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         videoTitleWhiteFilter.setParam(values)
-                        checkVideoList(true)
+                        check(true)
                     },
                 ).show()
             },

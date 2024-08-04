@@ -216,7 +216,6 @@ if (isPagePopular()) {
         }
         try {
             // 提取元素
-            let videos: HTMLElement[] = []
             let selector = ''
             // 热门视频
             if (location.pathname.includes('/v/popular/all')) {
@@ -233,7 +232,7 @@ if (isPagePopular()) {
                 selector = fullSite ? `.rank-list .rank-item` : `.rank-list .rank-item:not([${settings.filterSign}])`
             }
 
-            videos = Array.from(vlc.querySelectorAll<HTMLElement>(selector))
+            const videos = Array.from(vlc.querySelectorAll<HTMLElement>(selector))
 
             // videos.forEach((v) => {
             //     debug(
@@ -264,10 +263,31 @@ if (isPagePopular()) {
             videoTitleWhiteFilter.isEnable && whitePairs.push([videoTitleWhiteFilter, selectorFns.title])
 
             // 检测
-            videos.length && coreCheck(videos, true, blackPairs, whitePairs)
-            debug(`check ${videos.length} videos`)
+            if (videos.length) {
+                await coreCheck(videos, true, blackPairs, whitePairs)
+                debug(`check ${videos.length} videos`)
+            }
         } catch (err) {
             error('checkVideoList error', err)
+        }
+    }
+
+    const check = async (fullSite: boolean) => {
+        if (
+            videoBvidFilter.isEnable ||
+            videoDurationFilter.isEnable ||
+            videoTitleFilter.isEnable ||
+            videoUploaderFilter.isEnable ||
+            videoUploaderKeywordFilter.isEnable ||
+            videoDimensionFilter.isEnable ||
+            videoQualityFilter.isEnable
+        ) {
+            if (location.pathname.match(/\/v\/popular\/(?:all|rank|weekly)/)) {
+                videoDurationFilter.isEnable || videoDimensionFilter.isEnable || videoQualityFilter.isEnable
+                    ? await parseResp()
+                    : parseResp().then().catch()
+            }
+            await checkVideoList(fullSite)
         }
     }
 
@@ -295,7 +315,7 @@ if (isPagePopular()) {
                         e.preventDefault()
                         menu.registerMenu(`◎ 屏蔽UP主：${uploader}`, () => {
                             videoUploaderFilter.addParam(uploader)
-                            checkVideoList(true)
+                            check(true).then().catch()
                             try {
                                 const arr: string[] = GM_getValue(`BILICLEANER_${GM_KEYS.black.uploader.valueKey}`, [])
                                 if (!arr.includes(uploader)) {
@@ -308,7 +328,7 @@ if (isPagePopular()) {
                         })
                         menu.registerMenu(`◎ 将UP主加入白名单`, () => {
                             videoUploaderWhiteFilter.addParam(uploader)
-                            checkVideoList(true)
+                            check(true).then().catch()
                             try {
                                 const arr: string[] = GM_getValue(`BILICLEANER_${GM_KEYS.white.uploader.valueKey}`, [])
                                 if (!arr.includes(uploader)) {
@@ -341,7 +361,7 @@ if (isPagePopular()) {
                             e.preventDefault()
                             menu.registerMenu(`屏蔽视频 ${bvid}`, () => {
                                 videoBvidFilter.addParam(bvid)
-                                checkVideoList(true)
+                                check(true).then().catch()
                                 try {
                                     const arr: string[] = GM_getValue(`BILICLEANER_${GM_KEYS.black.bvid.valueKey}`, [])
                                     if (!arr.includes(bvid)) {
@@ -368,28 +388,10 @@ if (isPagePopular()) {
         }).then((ele) => {
             if (ele) {
                 vlc = ele
-                const check = async (fullSite: boolean) => {
-                    if (
-                        videoBvidFilter.isEnable ||
-                        videoDurationFilter.isEnable ||
-                        videoTitleFilter.isEnable ||
-                        videoUploaderFilter.isEnable ||
-                        videoUploaderKeywordFilter.isEnable ||
-                        videoDimensionFilter.isEnable ||
-                        videoQualityFilter.isEnable
-                    ) {
-                        if (location.pathname.match(/\/v\/popular\/(?:all|rank|weekly)/)) {
-                            videoDurationFilter.isEnable || videoDimensionFilter.isEnable || videoQualityFilter.isEnable
-                                ? await parseResp()
-                                : parseResp().then().catch()
-                        }
-                        checkVideoList(fullSite)
-                    }
-                }
-                check(true)
+                check(true).then().catch()
                 // 监听视频列表变化
                 new MutationObserver(() => {
-                    check(true)
+                    check(true).then().catch()
                 }).observe(vlc, { childList: true, subtree: true })
             }
         })
@@ -405,11 +407,11 @@ if (isPagePopular()) {
             description: '启用 时长过滤',
             enableFunc: () => {
                 videoDurationFilter.enable()
-                checkVideoList(true)
+                check(true).then().catch()
             },
             disableFunc: () => {
                 videoDurationFilter.disable()
-                checkVideoList(true)
+                check(true).then().catch()
             },
         }),
         // 设定最低时长
@@ -423,7 +425,7 @@ if (isPagePopular()) {
             unit: '秒',
             callback: async (value: number) => {
                 videoDurationFilter.setParam(value)
-                checkVideoList(true)
+                check(true).then().catch()
             },
         }),
     ]
@@ -436,11 +438,11 @@ if (isPagePopular()) {
             description: '启用 竖屏视频过滤 (刷新)',
             enableFunc: () => {
                 videoDimensionFilter.enable()
-                checkVideoList(true)
+                check(true).then().catch()
             },
             disableFunc: () => {
                 videoDimensionFilter.disable()
-                checkVideoList(true)
+                check(true).then().catch()
             },
         }),
         new CheckboxItem({
@@ -448,11 +450,11 @@ if (isPagePopular()) {
             description: '启用 劣质视频过滤 (刷新)',
             enableFunc: () => {
                 videoQualityFilter.enable()
-                checkVideoList(true)
+                check(true).then().catch()
             },
             disableFunc: () => {
                 videoQualityFilter.disable()
-                checkVideoList(true)
+                check(true).then().catch()
             },
         }),
         new NumberItem({
@@ -465,7 +467,7 @@ if (isPagePopular()) {
             unit: '%',
             callback: async (value: number) => {
                 videoQualityFilter.setParam(value)
-                checkVideoList(true)
+                check(true).then().catch()
             },
         }),
     ]
@@ -485,13 +487,13 @@ if (isPagePopular()) {
                 isContextMenuUploaderEnable = true
                 contextMenuFunc()
                 videoUploaderFilter.enable()
-                checkVideoList(true)
+                check(true).then().catch()
             },
             disableFunc: () => {
                 // 禁用右键菜单功能
                 isContextMenuUploaderEnable = false
                 videoUploaderFilter.disable()
-                checkVideoList(true)
+                check(true).then().catch()
             },
         }),
         // 编辑 UP主黑名单
@@ -506,7 +508,7 @@ if (isPagePopular()) {
                     `每行一个UP主昵称，保存时自动去重`,
                     (values: string[]) => {
                         videoUploaderFilter.setParam(values)
-                        checkVideoList(true)
+                        check(true).then().catch()
                     },
                 ).show()
             },
@@ -517,11 +519,11 @@ if (isPagePopular()) {
             description: '启用 UP主昵称关键词过滤',
             enableFunc: () => {
                 videoUploaderKeywordFilter.enable()
-                checkVideoList(true)
+                check(true).then().catch()
             },
             disableFunc: () => {
                 videoUploaderKeywordFilter.disable()
-                checkVideoList(true)
+                check(true).then().catch()
             },
         }),
         // 编辑 UP主昵称关键词黑名单
@@ -536,7 +538,7 @@ if (isPagePopular()) {
                     `每行一个关键词或正则，不区分大小写\n正则默认iv模式，无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         videoUploaderKeywordFilter.setParam(values)
-                        checkVideoList(true)
+                        check(true).then().catch()
                     },
                 ).show()
             },
@@ -552,11 +554,11 @@ if (isPagePopular()) {
             description: '启用 标题关键词过滤',
             enableFunc: () => {
                 videoTitleFilter.enable()
-                checkVideoList(true)
+                check(true).then().catch()
             },
             disableFunc: () => {
                 videoTitleFilter.disable()
-                checkVideoList(true)
+                check(true).then().catch()
             },
         }),
         // 编辑 关键词黑名单
@@ -572,7 +574,7 @@ if (isPagePopular()) {
                     `每行一个关键词或正则，不区分大小写\n正则默认iv模式，无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         videoTitleFilter.setParam(values)
-                        checkVideoList(true)
+                        check(true).then().catch()
                     },
                 ).show()
             },
@@ -593,13 +595,13 @@ if (isPagePopular()) {
                 isContextMenuBvidEnable = true
                 contextMenuFunc()
                 videoBvidFilter.enable()
-                checkVideoList(true)
+                check(true).then().catch()
             },
             disableFunc: () => {
                 // 禁用 右键功能
                 isContextMenuBvidEnable = false
                 videoBvidFilter.disable()
-                checkVideoList(true)
+                check(true).then().catch()
             },
         }),
         // 编辑 BV号黑名单
@@ -615,7 +617,7 @@ if (isPagePopular()) {
                     `每行一个BV号，保存时自动去重`,
                     (values: string[]) => {
                         videoBvidFilter.setParam(values)
-                        checkVideoList(true)
+                        check(true).then().catch()
                     },
                 ).show()
             },
@@ -631,11 +633,11 @@ if (isPagePopular()) {
             description: '启用 UP主白名单',
             enableFunc: () => {
                 videoUploaderWhiteFilter.enable()
-                checkVideoList(true)
+                check(true).then().catch()
             },
             disableFunc: () => {
                 videoUploaderWhiteFilter.disable()
-                checkVideoList(true)
+                check(true).then().catch()
             },
         }),
         // 编辑 UP主白名单
@@ -651,7 +653,7 @@ if (isPagePopular()) {
                     `每行一个UP主昵称，保存时自动去重`,
                     (values: string[]) => {
                         videoUploaderWhiteFilter.setParam(values)
-                        checkVideoList(true)
+                        check(true).then().catch()
                     },
                 ).show()
             },
@@ -662,11 +664,11 @@ if (isPagePopular()) {
             description: '启用 标题关键词白名单',
             enableFunc: () => {
                 videoTitleWhiteFilter.enable()
-                checkVideoList(true)
+                check(true).then().catch()
             },
             disableFunc: () => {
                 videoTitleWhiteFilter.disable()
-                checkVideoList(true)
+                check(true).then().catch()
             },
         }),
         // 编辑 关键词白名单
@@ -682,7 +684,7 @@ if (isPagePopular()) {
                     `每行一个关键词或正则，不区分大小写\n正则默认iv模式，无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         videoTitleWhiteFilter.setParam(values)
-                        checkVideoList(true)
+                        check(true).then().catch()
                     },
                 ).show()
             },

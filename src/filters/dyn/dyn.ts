@@ -114,7 +114,7 @@ if (isPageDynamic() || isPageSpace()) {
 
         try {
             // 提取元素
-            let dyns: HTMLElement[] = []
+            let dyns: HTMLElement[]
             if (fullSite) {
                 dyns = Array.from(dynListContainer.querySelectorAll<HTMLElement>(`.bili-dyn-list__item`))
             } else {

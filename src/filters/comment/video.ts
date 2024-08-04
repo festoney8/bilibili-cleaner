@@ -213,8 +213,15 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             },
             isLink: (comment: HTMLElement): SelectorResult => {
                 if (isCommentV2()) {
-                    const urls = (comment as any).__data?.content?.jump_url
-                    return urls ? Object.keys(urls).length > 0 : undefined
+                    const jump_url = (comment as any).__data?.content?.jump_url
+                    if (jump_url) {
+                        for (const k of Object.keys(jump_url)) {
+                            if (!jump_url[k]?.pc_url?.includes('search.bilibili.com')) {
+                                return true
+                            }
+                        }
+                    }
+                    return false
                 }
                 return !!comment.querySelector('.root-reply-container .jump-link:is(.normal, .video)')
             },

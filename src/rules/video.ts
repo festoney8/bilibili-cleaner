@@ -268,6 +268,10 @@ if (isPageVideo() || isPagePlaylist()) {
                 .webscreen-fix .fixed-sidenav-storage .mini-player-window {
                     display: none !important;
                 }
+                /* 投币收藏弹窗 */
+                .webscreen-fix .bili-dialog-m {
+                    z-index: 100000 !important;
+                }
                 /* 滚动条 */
                 .webscreen-fix::-webkit-scrollbar {
                     display: none !important;
@@ -357,6 +361,10 @@ if (isPageVideo() || isPagePlaylist()) {
                 .webscreen-fix .float-nav-exp .nav-menu .item.mini,
                 .webscreen-fix .fixed-sidenav-storage .mini-player-window {
                     display: none !important;
+                }
+                /* 投币收藏弹窗 */
+                .webscreen-fix .bili-dialog-m {
+                    z-index: 100000 !important;
                 }
                 /* 滚动条 */
                 .webscreen-fix::-webkit-scrollbar {

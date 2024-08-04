@@ -119,7 +119,7 @@ if (isPageChannel()) {
         }
         try {
             // 提取元素
-            let videos: HTMLElement[] = []
+            let videos: HTMLElement[]
             if (!fullSite) {
                 videos = Array.from(vlc.querySelectorAll<HTMLElement>(`.bili-video-card:not([${settings.filterSign}])`))
             } else {

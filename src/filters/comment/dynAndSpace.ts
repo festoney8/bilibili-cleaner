@@ -4,10 +4,9 @@ import { Group } from '../../components/group'
 import { ButtonItem, CheckboxItem, NumberItem } from '../../components/item'
 import { WordList } from '../../components/wordlist'
 import settings from '../../settings'
-import fetchHook from '../../utils/fetch'
 import { debugCommentFilter as debug, error } from '../../utils/logger'
 import { isPageDynamic, isPageSpace } from '../../utils/pageType'
-import { showEle } from '../../utils/tool'
+import { showEle, waitForEle } from '../../utils/tool'
 import { coreCheck, SelectorResult, SubFilterPair } from '../core/core'
 import {
     CommentBotFilter,
@@ -328,27 +327,27 @@ if (isPageDynamic() || isPageSpace()) {
         }
     }
 
-    // 评论区过滤，新旧通用，在获取评论相关API后触发检测
-    fetchHook.addPostFn((input: RequestInfo | URL, init: RequestInit | undefined, _resp?: Response) => {
-        if (typeof input === 'string' && init?.method?.toUpperCase() === 'GET' && input.includes('api.bilibili.com')) {
-            // 主评论载入
-            if (input.includes('/v2/reply/wbi/main')) {
-                let cnt = 0
-                const id = setInterval(() => {
-                    check(false)
-                    ++cnt > 30 && clearInterval(id)
-                }, 100)
-            }
-            // 二级评论翻页
-            if (input.includes('/v2/reply/reply')) {
-                let cnt = 0
-                const id = setInterval(() => {
-                    check(false)
-                    ++cnt > 15 && clearInterval(id)
-                }, 200)
-            }
-        }
-    })
+    // // 评论区过滤，新旧通用，在获取评论相关API后触发检测
+    // fetchHook.addPostFn((input: RequestInfo | URL, init: RequestInit | undefined, _resp?: Response) => {
+    //     if (typeof input === 'string' && init?.method?.toUpperCase() === 'GET' && input.includes('api.bilibili.com')) {
+    //         // 主评论载入
+    //         if (input.includes('/v2/reply/wbi/main')) {
+    //             let cnt = 0
+    //             const id = setInterval(() => {
+    //                 check(false)
+    //                 ++cnt > 30 && clearInterval(id)
+    //             }, 100)
+    //         }
+    //         // 二级评论翻页
+    //         if (input.includes('/v2/reply/reply')) {
+    //             let cnt = 0
+    //             const id = setInterval(() => {
+    //                 check(false)
+    //                 ++cnt > 15 && clearInterval(id)
+    //             }, 200)
+    //         }
+    //     }
+    // })
 
     // 右键监听函数, 屏蔽评论用户
     const contextMenuFunc = () => {
@@ -399,6 +398,42 @@ if (isPageDynamic() || isPageSpace()) {
                 error('contextmenu error', err)
             }
         })
+    }
+
+    // 监听评论列表内部变化, 有变化时检测评论列表
+    let commentListContainer: HTMLElement
+    const watchCommentListContainer = () => {
+        if (commentListContainer) {
+            // 初次全站检测
+            check(true)
+            const commentObserver = new MutationObserver(() => {
+                // 增量检测
+                check(false)
+            })
+            commentObserver.observe(commentListContainer, { childList: true, subtree: true })
+        }
+    }
+
+    try {
+        waitForEle(
+            document,
+            '.bili-dyn-home--member, .bili-comment-container, .bili-comment, #app',
+            (node: HTMLElement): boolean => {
+                return (
+                    node.className === 'bili-dyn-home--member' ||
+                    node.className.includes('bili-comment-container') ||
+                    node.className.includes('bili-comment') ||
+                    node.id === 'app'
+                )
+            },
+        ).then((ele) => {
+            if (ele) {
+                commentListContainer = ele
+                watchCommentListContainer()
+            }
+        })
+    } catch (err) {
+        error(`watch comment list ERROR`, err)
     }
 
     // UI组件, 用户名过滤

@@ -300,12 +300,12 @@ if (isPageLiveRoom()) {
 
     // 播放器
     const playerItems = [
-        // 隐藏 右上角反馈, 默认开启
+        // 隐藏 反馈按钮, 默认开启
         new CheckboxItem({
             itemID: 'live-page-head-web-player-icon-feedback',
-            description: '隐藏 右上角反馈',
+            description: '隐藏 反馈按钮',
             defaultStatus: true,
-            itemCSS: `#live-player .web-player-icon-feedback {display: none !important;}`,
+            itemCSS: `.web-player-icon-feedback {display: none !important;}`,
         }),
         // 隐藏 购物小橙车提示, 默认开启
         new CheckboxItem({
@@ -319,6 +319,16 @@ if (isPageLiveRoom()) {
             itemID: 'live-page-head-web-player-awesome-pk-vm',
             description: '隐藏 直播PK特效',
             itemCSS: `#pk-vm, #awesome-pk-vm, #universal-pk-vm {display: none !important;}`,
+        }),
+        // 隐藏 直播水印, 默认开启
+        new CheckboxItem({
+            itemID: 'live-page-web-player-watermark',
+            description: '隐藏 直播水印',
+            defaultStatus: true,
+            itemCSS: `
+                .web-player-icon-roomStatus {display: none !important;}
+                /* 部分播放器马赛克 */
+                .web-player-module-area-mask {backdrop-filter: none !important;}`,
         }),
         // 隐藏 滚动礼物通告
         new CheckboxItem({

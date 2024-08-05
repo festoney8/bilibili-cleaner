@@ -434,7 +434,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 new WordList(
                     GM_KEYS.black.uploaderKeyword.valueKey,
                     'UP主昵称关键词 黑名单',
-                    `每行一个关键词或正则，不区分大小写\n正则默认iv模式，无需flag，语法：/abc|\\d+/`,
+                    `每行一个关键词或正则，不区分大小写\n正则默认iu模式，无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         videoUploaderKeywordFilter.setParam(values)
                         check(true)
@@ -470,7 +470,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 new WordList(
                     GM_KEYS.black.title.valueKey,
                     '标题关键词 黑名单',
-                    `每行一个关键词或正则，不区分大小写\n正则默认iv模式，无需flag，语法：/abc|\\d+/`,
+                    `每行一个关键词或正则，不区分大小写\n正则默认iu模式，无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         videoTitleFilter.setParam(values)
                         check(true)
@@ -612,7 +612,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 new WordList(
                     GM_KEYS.white.title.valueKey,
                     '标题关键词 白名单',
-                    `每行一个关键词或正则，不区分大小写\n正则默认iv模式，无需flag，语法：/abc|\\d+/`,
+                    `每行一个关键词或正则，不区分大小写\n正则默认iu模式，无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         videoTitleWhiteFilter.setParam(values)
                         check(true)

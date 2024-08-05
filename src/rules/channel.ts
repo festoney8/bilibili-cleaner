@@ -65,10 +65,10 @@ if (isPageChannel()) {
             description: '隐藏 大图轮播',
             itemCSS: `.channel-swiper, .channel-swiper-client {display: none !important;}`,
         }),
-        // 隐藏 滚动页面时 顶部吸附频道分区
+        // 隐藏 滚动页面时 顶部吸附分区栏
         new CheckboxItem({
             itemID: 'channel-hide-sticky-subchannel',
-            description: '隐藏 滚动页面时 顶部吸附 频道分区',
+            description: '隐藏 滚动页面时 顶部吸附 分区栏',
             itemCSS: `.fixed-header-nav-sticky {display: none !important;}
                     .fixed-wrapper-shown {box-shadow: unset !important;}`,
         }),
@@ -91,7 +91,7 @@ if (isPageChannel()) {
             itemCSSPlaceholder: '???',
         }),
     ]
-    channelGroupList.push(new Group('channel-basic', '频道页 基础功能', basicItems))
+    channelGroupList.push(new Group('channel-basic', '分区页 基础功能', basicItems))
 
     // 视频列表
     const videoListItems = [

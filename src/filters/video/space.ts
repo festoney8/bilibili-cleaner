@@ -191,7 +191,7 @@ if (isPageSpace()) {
 
     // UI组件, 时长过滤
     const durationItems = [
-        // 启用 频道页时长过滤
+        // 启用 分区页时长过滤
         new CheckboxItem({
             itemID: GM_KEYS.black.duration.statusKey,
             description: '启用 时长过滤',
@@ -219,11 +219,11 @@ if (isPageSpace()) {
             },
         }),
     ]
-    spacePageVideoFilterGroupList.push(new Group('space-duration-filter-group', '频道页 时长过滤', durationItems))
+    spacePageVideoFilterGroupList.push(new Group('space-duration-filter-group', '分区页 时长过滤', durationItems))
 
     // UI组件, 标题关键词过滤
     const titleItems = [
-        // 启用 频道页关键词过滤
+        // 启用 分区页关键词过滤
         new CheckboxItem({
             itemID: GM_KEYS.black.title.statusKey,
             description: '启用 标题关键词过滤',
@@ -256,12 +256,12 @@ if (isPageSpace()) {
         }),
     ]
     spacePageVideoFilterGroupList.push(
-        new Group('space-title-keyword-filter-group', '频道页 标题关键词过滤', titleItems),
+        new Group('space-title-keyword-filter-group', '分区页 标题关键词过滤', titleItems),
     )
 
     // UI组件, bvid过滤
     const bvidItems = [
-        // 启用 频道页 BV号过滤
+        // 启用 分区页 BV号过滤
         new CheckboxItem({
             itemID: GM_KEYS.black.bvid.statusKey,
             description: '启用 BV号过滤 (右键单击标题)',
@@ -298,7 +298,7 @@ if (isPageSpace()) {
             },
         }),
     ]
-    spacePageVideoFilterGroupList.push(new Group('space-bvid-filter-group', '频道页 BV号过滤', bvidItems))
+    spacePageVideoFilterGroupList.push(new Group('space-bvid-filter-group', '分区页 BV号过滤', bvidItems))
 
     // UI组件, 免过滤和白名单
     const whitelistItems = [
@@ -335,7 +335,7 @@ if (isPageSpace()) {
         }),
     ]
     spacePageVideoFilterGroupList.push(
-        new Group('space-whitelist-filter-group', '频道页 白名单设定 (免过滤)', whitelistItems),
+        new Group('space-whitelist-filter-group', '分区页 白名单设定 (免过滤)', whitelistItems),
     )
 }
 

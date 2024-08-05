@@ -71,15 +71,15 @@ if (isPageVideo() || isPagePlaylist()) {
             itemID: 'video-page-bv2av',
             description: 'BV号转AV号',
             enableFunc: async () => {
+                /**
+                 * algo by bilibili-API-collect
+                 * @see https://www.zhihu.com/question/381784377/answer/1099438784
+                 * @see https://github.com/SocialSisterYi/bilibili-API-collect/issues/740
+                 * @see https://socialsisteryi.github.io/bilibili-API-collect/docs/misc/bvid_desc.html
+                 * @param bvid 输入BV号
+                 * @returns 输出纯数字av号
+                 */
                 const bv2av = (url: string): string => {
-                    /**
-                     * algo by bilibili-API-collect
-                     * @see https://www.zhihu.com/question/381784377/answer/1099438784
-                     * @see https://github.com/SocialSisterYi/bilibili-API-collect/issues/740
-                     * @see https://socialsisteryi.github.io/bilibili-API-collect/docs/misc/bvid_desc.html
-                     * @param bvid 输入BV号
-                     * @returns 输出纯数字av号
-                     */
                     const XOR_CODE = 23442827791579n
                     const MASK_CODE = 2251799813685247n
                     const BASE = 58n

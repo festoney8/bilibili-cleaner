@@ -15,9 +15,10 @@ interface IItem {
  * itemID item的唯一ID, 与GM database中的Key对应, 使用相同ID可共享item状态
  * description item的功能介绍, 显示在panel内, \n可用来换行
  * defaultStatus item默认开启状态, 第一次安装时使用, 对于所有用户均开启的项目给true
- * itemFunc 功能函数
+ * enableFunc 启用功能函数
+ * enableFuncRunAt 启用功能函数运行时机 (立即执行，DOMContentLoaded, load)
+ * disableFunc 禁用功能函数
  * itemCSS item的CSS
- * callback 回调函数, 用于在关掉开关时触发外部事务
  */
 interface ICheckboxItemOption {
     itemID: string

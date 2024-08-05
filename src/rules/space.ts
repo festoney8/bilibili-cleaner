@@ -8,6 +8,19 @@ const spaceGroupList: Group[] = []
 if (isPageSpace()) {
     // 基本功能
     const basicItems = [
+        // 打开用户主页 自动跳转到投稿
+        new CheckboxItem({
+            itemID: 'space-page-redirect-to-video',
+            description: '打开用户主页 自动跳转到投稿',
+            enableFunc: () => {
+                if (/\/\d+\/?($|\?)/.test(location.pathname)) {
+                    const userid = location.pathname.match(/\d+/)?.[0]
+                    if (userid) {
+                        location.href = `https://space.bilibili.com/${userid}/video`
+                    }
+                }
+            },
+        }),
         // 修复字体
         new CheckboxItem({
             itemID: 'font-patch',

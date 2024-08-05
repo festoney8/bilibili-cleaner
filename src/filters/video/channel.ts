@@ -287,7 +287,7 @@ if (isPageChannel()) {
 
     // UI组件, 时长过滤
     const durationItems = [
-        // 启用 频道页时长过滤
+        // 启用 分区页时长过滤
         new CheckboxItem({
             itemID: GM_KEYS.black.duration.statusKey,
             description: '启用 时长过滤',
@@ -315,11 +315,11 @@ if (isPageChannel()) {
             },
         }),
     ]
-    channelPageVideoFilterGroupList.push(new Group('channel-duration-filter-group', '频道页 时长过滤', durationItems))
+    channelPageVideoFilterGroupList.push(new Group('channel-duration-filter-group', '分区页 时长过滤', durationItems))
 
     // UI组件, UP主过滤
     const uploaderItems = [
-        // 启用 频道页UP主过滤, 默认开启
+        // 启用 分区页UP主过滤, 默认开启
         new CheckboxItem({
             itemID: GM_KEYS.black.uploader.statusKey,
             description: '启用 UP主过滤 (右键单击UP主)',
@@ -377,7 +377,7 @@ if (isPageChannel()) {
                 new WordList(
                     GM_KEYS.black.uploaderKeyword.valueKey,
                     'UP主昵称关键词 黑名单',
-                    `每行一个关键词或正则，不区分大小写\n正则默认iv模式，无需flag，语法：/abc|\\d+/`,
+                    `每行一个关键词或正则，不区分大小写\n正则默认iu模式，无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         videoUploaderKeywordFilter.setParam(values)
                         check(true)
@@ -386,11 +386,11 @@ if (isPageChannel()) {
             },
         }),
     ]
-    channelPageVideoFilterGroupList.push(new Group('channel-uploader-filter-group', '频道页 UP主过滤', uploaderItems))
+    channelPageVideoFilterGroupList.push(new Group('channel-uploader-filter-group', '分区页 UP主过滤', uploaderItems))
 
     // UI组件, 标题关键词过滤
     const titleItems = [
-        // 启用 频道页关键词过滤
+        // 启用 分区页关键词过滤
         new CheckboxItem({
             itemID: GM_KEYS.black.title.statusKey,
             description: '启用 标题关键词过滤',
@@ -413,7 +413,7 @@ if (isPageChannel()) {
                 new WordList(
                     GM_KEYS.black.title.valueKey,
                     '标题关键词 黑名单',
-                    `每行一个关键词或正则，不区分大小写\n正则默认iv模式，无需flag，语法：/abc|\\d+/`,
+                    `每行一个关键词或正则，不区分大小写\n正则默认iu模式，无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         videoTitleFilter.setParam(values)
                         check(true)
@@ -423,12 +423,12 @@ if (isPageChannel()) {
         }),
     ]
     channelPageVideoFilterGroupList.push(
-        new Group('channel-title-keyword-filter-group', '频道页 标题关键词过滤', titleItems),
+        new Group('channel-title-keyword-filter-group', '分区页 标题关键词过滤', titleItems),
     )
 
     // UI组件, bvid过滤
     const bvidItems = [
-        // 启用 频道页 BV号过滤
+        // 启用 分区页 BV号过滤
         new CheckboxItem({
             itemID: GM_KEYS.black.bvid.statusKey,
             description: '启用 BV号过滤 (右键单击标题)',
@@ -465,7 +465,7 @@ if (isPageChannel()) {
             },
         }),
     ]
-    channelPageVideoFilterGroupList.push(new Group('channel-bvid-filter-group', '频道页 BV号过滤', bvidItems))
+    channelPageVideoFilterGroupList.push(new Group('channel-bvid-filter-group', '分区页 BV号过滤', bvidItems))
 
     // UI组件, 发布日期过滤
     const pubdateItems = [
@@ -497,7 +497,7 @@ if (isPageChannel()) {
             },
         }),
     ]
-    channelPageVideoFilterGroupList.push(new Group('channel-pubdate-filter-group', '频道页 发布日期过滤', pubdateItems))
+    channelPageVideoFilterGroupList.push(new Group('channel-pubdate-filter-group', '分区页 发布日期过滤', pubdateItems))
 
     // UI组件, 免过滤和白名单
     const whitelistItems = [
@@ -555,7 +555,7 @@ if (isPageChannel()) {
                 new WordList(
                     GM_KEYS.white.title.valueKey,
                     '标题关键词 白名单',
-                    `每行一个关键词或正则，不区分大小写\n正则默认iv模式，无需flag，语法：/abc|\\d+/`,
+                    `每行一个关键词或正则，不区分大小写\n正则默认iu模式，无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         videoTitleWhiteFilter.setParam(values)
                         check(true)
@@ -565,7 +565,7 @@ if (isPageChannel()) {
         }),
     ]
     channelPageVideoFilterGroupList.push(
-        new Group('channel-whitelist-filter-group', '频道页 白名单设定 (免过滤)', whitelistItems),
+        new Group('channel-whitelist-filter-group', '分区页 白名单设定 (免过滤)', whitelistItems),
     )
 }
 

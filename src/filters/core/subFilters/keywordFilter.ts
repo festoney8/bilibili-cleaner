@@ -4,7 +4,7 @@ import { ISubFilter, SelectorFn } from '../core'
 export class KeywordFilter implements ISubFilter {
     isEnable = false
     private keywordSet = new Set<string>()
-    private mergedRegExp = new RegExp('', 'iv')
+    private mergedRegExp: RegExp | undefined = undefined
 
     enable(): void {
         this.isEnable = true
@@ -16,18 +16,26 @@ export class KeywordFilter implements ISubFilter {
     private buildRegExp(): void {
         const validParts = []
         for (let word of this.keywordSet) {
+            word = word.trim()
+            if (word === '' || word === '//') {
+                continue
+            }
             if (word.startsWith('/') && word.endsWith('/')) {
                 word = word.slice(1, -1)
             } else {
                 word = word.replace(/[*+?^${}().|[\]\\]/g, '\\$&') // 转义
             }
             try {
-                new RegExp(word, 'iv')
+                new RegExp(word, 'iu')
                 validParts.push(word)
             } catch {}
         }
         try {
-            this.mergedRegExp = new RegExp(validParts.join('|'), 'iv')
+            if (validParts.length) {
+                this.mergedRegExp = new RegExp(validParts.join('|'), 'iu')
+            } else {
+                this.mergedRegExp = undefined
+            }
         } catch (err) {
             error('keyword filter build RegExp error', err)
         }
@@ -52,7 +60,7 @@ export class KeywordFilter implements ISubFilter {
                 resolve()
                 return
             }
-            this.mergedRegExp.test(value.trim()) ? reject() : resolve()
+            this.mergedRegExp?.test(value.trim()) ? reject() : resolve()
         })
     }
 }

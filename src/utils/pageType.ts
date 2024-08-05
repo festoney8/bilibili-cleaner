@@ -50,7 +50,7 @@ const currPage = (): string => {
     if (host === 'space.bilibili.com') {
         return 'space'
     }
-    // 频道子分类
+    // 分区子分类
     if (!href.includes('bilibili.com/v/popular/') && href.includes('bilibili.com/v/')) {
         return 'channel'
     }

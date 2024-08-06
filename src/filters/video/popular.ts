@@ -109,8 +109,7 @@ if (isPagePopular()) {
     fetchHook.addPostFn((input: RequestInfo | URL, init: RequestInit | undefined, resp?: Response) => {
         if (
             typeof input === 'string' &&
-            input.includes('api.bilibili.com') &&
-            input.match(/web-interface\/(ranking|popular\/series\/one|popular\?ps)/) &&
+            /api\.bilibili\.com.+web-interface\/(ranking|popular\/series\/one|popular\?ps)/.test(input) &&
             init?.method?.toUpperCase() === 'GET' &&
             resp
         ) {
@@ -228,7 +227,7 @@ if (isPagePopular()) {
                     : `.video-list .video-card:not([${settings.filterSign}])`
             }
             // 排行榜
-            if (location.pathname.includes('/v/popular/rank/all')) {
+            if (location.pathname.includes('/v/popular/rank')) {
                 selector = fullSite ? `.rank-list .rank-item` : `.rank-list .rank-item:not([${settings.filterSign}])`
             }
 

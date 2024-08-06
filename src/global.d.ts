@@ -22,6 +22,7 @@ export declare global {
                 comment_next_version?: 'ELEMENTS' | 'DEFAULT'
             }
         }
+        __NEXT_DATA__?: any
         EmbedPlayer?: {
             instance?: {
                 getPlayerInfo: () => {

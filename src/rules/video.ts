@@ -931,50 +931,35 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
             itemID: 'video-page-bpx-player-mini-mode-position-record',
             description: '记录小窗位置',
             enableFunc: async () => {
-                let player: HTMLElement
-
-                // 监听mini播放器移动
-                const addMiniPlayerMoveListener = () => {
-                    if (!player) {
-                        return
-                    }
-                    player.addEventListener('mouseup', () => {
-                        if (player.getAttribute('data-screen') !== 'mini') {
-                            return
-                        }
-                        GM_setValue(
-                            'BILICLEANER_video-page-bpx-player-mini-mode-position-record-right',
-                            parseInt(player.style.right),
-                        )
-                        GM_setValue(
-                            'BILICLEANER_video-page-bpx-player-mini-mode-position-record-bottom',
-                            parseInt(player.style.bottom),
-                        )
-                    })
-                }
-                // 设置player API内小窗播放器position初始值
-                const setMiniPlayerState = () => {
-                    const right = GM_getValue('BILICLEANER_video-page-bpx-player-mini-mode-position-record-right')
-                    const bottom = GM_getValue('BILICLEANER_video-page-bpx-player-mini-mode-position-record-bottom')
-                    if (typeof right === 'number' && typeof bottom === 'number') {
-                        if (unsafeWindow.player) {
-                            unsafeWindow.player.__core().uiStore.state.miniScreenRight = right
-                            unsafeWindow.player.__core().uiStore.state.miniScreenBottom = bottom
-                        }
-                    }
+                const keys = {
+                    tx: 'BILICLEANER_video-page-bpx-player-mini-mode-position-record-translate-x',
+                    ty: 'BILICLEANER_video-page-bpx-player-mini-mode-position-record-translate-y',
                 }
 
-                waitForEle(document.body, '#bilibili-player .bpx-player-container', (node: HTMLElement) => {
+                // 注入样式
+                const x = GM_getValue(keys.tx, 0)
+                const y = GM_getValue(keys.ty, 0)
+                if (x && y) {
+                    const s = document.createElement('style')
+                    s.innerHTML = `.bpx-player-container[data-screen="mini"] {transform: translateX(${x}px) translateY(${y}px);}`
+                    s.setAttribute('bili-cleaner-css', 'video-page-bpx-player-mini-mode-position-record')
+                    document.documentElement.appendChild(s)
+                }
+
+                waitForEle(document, '#bilibili-player .bpx-player-container', (node: HTMLElement) => {
                     return node.className.startsWith('bpx-player-container')
-                }).then((ele) => {
-                    if (ele) {
-                        player = ele
-                        try {
-                            setMiniPlayerState()
-                            addMiniPlayerMoveListener()
-                        } catch {
-                            // err
-                        }
+                }).then((player) => {
+                    if (player) {
+                        // 监听mini播放器移动
+                        player.addEventListener('mouseup', () => {
+                            if (player.getAttribute('data-screen') === 'mini') {
+                                const rect = player.getBoundingClientRect()
+                                const dx = document.documentElement.clientWidth - rect.right
+                                const dy = document.documentElement.clientHeight - rect.bottom
+                                GM_setValue(keys.tx, 84 - dx)
+                                GM_setValue(keys.ty, 48 - dy)
+                            }
+                        })
                     }
                 })
             },

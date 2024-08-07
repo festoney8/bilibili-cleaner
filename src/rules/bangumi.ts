@@ -61,6 +61,28 @@ if (isPageBangumi()) {
 
     // 播放设定
     const playerInitItems = [
+        // 默认宽屏播放
+        new CheckboxItem({
+            itemID: 'default-widescreen',
+            description: '默认宽屏播放 刷新生效',
+            enableFunc: () => {
+                let origNextData = unsafeWindow.__NEXT_DATA__
+                if (origNextData?.props?.pageProps?.dehydratedState?.queries?.[1]?.state?.data?.show) {
+                    origNextData.props.pageProps.dehydratedState.queries[1].state.data.show.wide_screen = 1
+                }
+                Object.defineProperty(unsafeWindow, '__NEXT_DATA__', {
+                    get() {
+                        return origNextData
+                    },
+                    set(value) {
+                        if (value.props?.pageProps?.dehydratedState?.queries?.[1]?.state?.data?.show) {
+                            value.props.pageProps.dehydratedState.queries[1].state.data.show.wide_screen = 1
+                        }
+                        origNextData = value
+                    },
+                })
+            },
+        }),
         // 网页全屏时 页面可滚动
         new CheckboxItem({
             itemID: 'webscreen-scrollable',

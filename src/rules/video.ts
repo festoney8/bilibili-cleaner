@@ -174,6 +174,29 @@ if (isPageVideo() || isPagePlaylist()) {
             description: '顶栏 滚动页面后不再吸附顶部',
             itemCSS: `.fixed-header .bili-header__bar {position: relative !important;}`,
         }),
+        // 禁用 弹幕云屏蔽灰测 默认开启
+        new CheckboxItem({
+            itemID: 'video-page-disable-danmaku-abtest',
+            description: '禁用 弹幕云屏蔽灰测 (临时功能)',
+            defaultStatus: true,
+            enableFunc: () => {
+                let origValue = unsafeWindow.webAbTest
+                if (origValue) {
+                    origValue.danmuku_block_version = 'OLD'
+                }
+                Object.defineProperty(unsafeWindow, 'webAbTest', {
+                    get() {
+                        return origValue
+                    },
+                    set(value) {
+                        if (value) {
+                            value.danmuku_block_version = 'OLD'
+                        }
+                        origValue = value
+                    },
+                })
+            },
+        }),
     ]
     videoGroupList.push(new Group('video-basic', '播放页 基本功能', basicItems))
 

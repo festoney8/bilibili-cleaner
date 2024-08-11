@@ -491,7 +491,7 @@ if (isPageLiveRoom()) {
             itemID: 'live-page-convention-msg',
             description: '隐藏 系统提示',
             defaultStatus: true,
-            itemCSS: `.convention-msg.border-box {display: none !important;}`,
+            itemCSS: `.convention-msg.border-box, .new-video-pk-item-dm {display: none !important;}`,
         }),
         // 隐藏 用户排名
         new CheckboxItem({

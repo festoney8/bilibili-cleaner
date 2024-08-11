@@ -1,6 +1,6 @@
 import { Group } from '../components/group'
 import { CheckboxItem, NumberItem } from '../components/item'
-import { debugRules as debug, error } from '../utils/logger'
+import { error } from '../utils/logger'
 import { matchAvidBvid, matchBvid, waitForEle } from '../utils/tool'
 import { isPageFestival, isPagePlaylist, isPageVideo } from '../utils/pageType'
 import { GM_getValue, GM_setValue, unsafeWindow } from '$'
@@ -227,7 +227,7 @@ if (isPageVideo() || isPagePlaylist()) {
                         }
                     })
                 }
-                document.addEventListener('DOMContentLoaded', listener)
+                document.readyState !== 'loading' ? listener() : document.addEventListener('DOMContentLoaded', listener)
             },
             disableFunc: async () => {
                 wideScreenLock = false
@@ -1166,84 +1166,26 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
             itemID: 'video-page-hide-bpx-player-sending-area',
             description: '非全屏下 关闭弹幕栏',
             itemCSS: `
-                /* video page的player height由JS动态设定 */
-                .bpx-player-sending-area {display: none !important;}
+                .bpx-player-sending-area {
+                    display: none !important;
+                }
+                #bilibili-player-placeholder-bottom {
+                    display: none !important;
+                }
+                #playerWrap:has(.bpx-player-container:not([data-screen="web"], [data-screen="full"])) {
+                    height: unset !important;
+                    aspect-ratio: 16 / 9;
+                }
+                #playerWrap:has(.bpx-player-container:not([data-screen="web"], [data-screen="full"])) #bilibili-player {
+                    height: unset !important;
+                    aspect-ratio: 16 / 9;
+                }
 
                 /* 活动播放器直接去黑边 */
                 .page-main-content:has(.festival-video-player) .video-player-box {height: fit-content !important;}
                 .festival-video-player {height: fit-content !important;}
                 .festival-video-player #bilibili-player:not(.mode-webscreen) {height: calc(100% - 46px) !important;}
             `,
-            // 隐藏弹幕栏时，强行调节播放器高度
-            enableFunc: async () => {
-                // 念咒
-                const genSizeCSS = (): string => {
-                    const e = unsafeWindow.isWide
-                    const i = unsafeWindow.innerHeight
-                    const t = Math.max((document.body && document.body.clientWidth) || unsafeWindow.innerWidth, 1100)
-                    const n = 1680 < innerWidth ? 411 : 350
-                    const o = (16 * (i - (1690 < innerWidth ? 318 : 308))) / 9
-                    const r = t - 112 - n
-                    let d = r < o ? r : o
-                    if (d < 668) {
-                        d = 668
-                    }
-                    if (1694 < d) {
-                        d = 1694
-                    }
-                    let a = d + n
-                    if (unsafeWindow.isWide) {
-                        a -= 125
-                        d -= 100
-                    }
-                    let l
-                    if (unsafeWindow.hasBlackSide && !unsafeWindow.isWide) {
-                        l = Math.round((d - 14 + (e ? n : 0)) * 0.5625) + 96
-                    } else {
-                        l = Math.round((d + (e ? n : 0)) * 0.5625)
-                    }
-                    const s = `
-                        .video-container-v1 {width: auto;padding: 0 10px;}
-                        .left-container {width: ${a - n}px;}
-                        #bilibili-player {width: ${a - (e ? -30 : n)}px;height: ${l}px;position: ${e ? 'relative' : 'static'};}
-                        #oldfanfollowEntry {position: relative;top: ${e ? `${l + 10}px` : '0'};}
-                        #danmukuBox {margin-top: ${e ? `${l + 28}px` : '0'};}
-                        #playerWrap {height: ${l}px;}
-                        .video-discover {margin-left: ${(a - n) / 2}px;}
-                    `
-                    return s.replace(/\n\s*/g, '').trim()
-                }
-
-                // override CSS
-                // 插入新style覆盖(必须在原style出现后，appendChild在head尾部，权限更高)
-                const overrideCSS = () => {
-                    const overrideStyle = document.getElementById('overrideSetSizeStyle') as HTMLStyleElement
-                    if (!overrideStyle) {
-                        const newStyleNode = document.createElement('style')
-                        newStyleNode.id = 'overrideSetSizeStyle'
-                        newStyleNode.innerHTML = genSizeCSS()
-                        document.head.appendChild(newStyleNode)
-                        debug('override setSize OK')
-                    } else {
-                        overrideStyle.innerHTML = genSizeCSS()
-                        debug('refresh setSize OK')
-                    }
-                }
-
-                if (document.getElementById('setSizeStyle')) {
-                    overrideCSS()
-                }
-                // 监听官方style #setSizeStyle 出现
-                const observeStyle = new MutationObserver(() => {
-                    if (document.getElementById('setSizeStyle')) {
-                        overrideCSS()
-                        observeStyle.disconnect()
-                    }
-                })
-                document.head && observeStyle.observe(document.head, { childList: true })
-                // 宽屏模式
-                onIsWideChangeFnArr.push(overrideCSS)
-            },
         }),
         // 全屏下 关闭弹幕输入框
         new CheckboxItem({

@@ -1392,10 +1392,10 @@ if (isPageVideo() || isPagePlaylist()) {
             itemCSS: `#reco_list .next-play {display: none !important;}
                      #reco_list .rec-list {margin-top: 0 !important;}`,
         }),
-        // 视频合集 增加合集列表高度, 默认开启
+        // 优化 视频合集列表高度, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-right-container-section-height',
-            description: '视频合集 增加合集列表高度',
+            description: '优化 视频合集列表高度',
             defaultStatus: true,
             itemCSS: `.base-video-sections-v1 .video-sections-content-list {height: fit-content !important; max-height: 350px !important;}
                 .video-sections-v1 .video-sections-content-list {height: fit-content !important; max-height: 350px !important;}`,
@@ -1507,10 +1507,10 @@ if (isPageVideo() || isPagePlaylist()) {
                     justify-content: space-between;
                 }`,
         }),
-        // 隐藏 相关视频 全部列表
+        // 隐藏 全部相关视频
         new CheckboxItem({
             itemID: 'video-page-hide-right-container-reco-list-rec-list',
-            description: '隐藏 相关视频 全部列表',
+            description: '隐藏 全部相关视频',
             itemCSS: `#reco_list .rec-list {display: none !important;}
                 #reco_list .rec-footer {display: none !important;}
                 /* 适配watchlater, favlist */
@@ -1549,6 +1549,15 @@ if (isPageVideo() || isPagePlaylist()) {
                         padding-bottom: 10px;
                     }
                 `,
+        }),
+        // 隐藏 整个右栏
+        new CheckboxItem({
+            itemID: 'video-page-hide-right-container',
+            description: '隐藏 整个右栏 (宽屏模式不适用)',
+            itemCSS: `
+                html:not([bili-cleaner-is-wide]) .right-container {
+                    display: none !important;
+                }`,
         }),
     ]
     videoGroupList.push(new Group('video-right', '右侧 视频栏', rightItems))

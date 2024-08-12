@@ -521,71 +521,29 @@ if (isPageVideo() || isPagePlaylist()) {
             disableValue: -1,
             unit: 'vw',
             itemCSS: `
-                /* 魔法, 勿动 */
                 :root {
                     --normal-width: min(calc(100vw - 400px), ???vw);
-                    --normal-height: calc(min(calc(100vw - 400px), ???vw) * 9 / 16);
                 }
-
-                #bilibili-player-placeholder {
-                    visibility: hidden !important;
-                }
-
                 /*
                     需避免右侧视频预览 inline player 影响
                     data-screen变化慢, 播放模式判断一律用:not(), 使用html元素的bili-cleaner-is-wide加快wide模式判断
                 */
-                /* 左列basis宽度 */
+                /* 左列宽度 */
                 html:not([bili-cleaner-is-wide]) :is(.left-container, .playlist-container--left):has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"])) {
-                    flex-basis: var(--normal-width);
+                    flex-basis: var(--normal-width) !important;
                 }
-                /* 播放器长宽限制 */
+                /* 播放器长宽 */
                 html:not([bili-cleaner-is-wide]) :is(.left-container, .playlist-container--left):has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"], [data-screen="mini"])) :is(.bpx-player-video-area, video) {
                     width: 100% !important;
-                    height: var(--normal-height) !important;
-                    min-height: var(--normal-height) !important;
-                    max-height: var(--normal-height) !important;
+                    height: unset !important;
+                    aspect-ratio: 16 / 9 !important;
                 }
                 /* 播放器外层 */
                 html:not([bili-cleaner-is-wide]) :is(.left-container, .playlist-container--left):has(.bpx-player-container:not([data-screen="wide"], [data-screen="web"], [data-screen="full"], [data-screen="mini"])) :is(.bpx-player-primary-area, .bpx-player-container, .bpx-docker-major, #bilibili-player, #playerWrap) {
-                    width: var(--normal-width);
-                    height: fit-content;
-                    max-height: calc(var(--normal-height) + 56px);
-                }
-                /* 普通mini模式 主播放器支撑 */
-                html:not([bili-cleaner-is-wide]) #playerWrap:has(.bpx-player-container[data-screen="mini"]) {
-                    background-color: transparent;
-                    width: var(--normal-width);
-                    height: calc(var(--normal-height) + 46px);
-                    min-height: var(--normal-height);
-                    max-height: calc(var(--normal-height) + 56px);
-                    position: relative;
-                }
-                html:not([bili-cleaner-is-wide]) #playerWrap:has(.bpx-player-container[data-screen="mini"])::before {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: calc(100% - 46px);
-                    background-color: black;
-                }
-                /* 宽屏mini模式 主播放器支撑 */
-                html[bili-cleaner-is-wide] #playerWrap:has(.bpx-player-container[data-screen="mini"]) {
-                    background-color: transparent;
-                    width: fit-content;
-                    position: relative;
-                }
-                html[bili-cleaner-is-wide] #playerWrap:has(.bpx-player-container[data-screen="mini"])::before {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: calc(100% - 46px);
-                    background-color: black;
-                }
-            `,
+                    width: var(--normal-width) !important;
+                    height: unset !important;
+                    min-height: calc(var(--normal-width) * 9 / 16) !important;
+                }`,
             itemCSSPlaceholder: '???',
         }),
     ]

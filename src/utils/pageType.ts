@@ -11,7 +11,7 @@ const currPage = (): string => {
     ) {
         return 'invalid'
     }
-    if (href.startsWith('https://www.bilibili.com/') && ['/index.html', '/'].includes(pathname)) {
+    if (href.startsWith('https://www.bilibili.com') && ['/index.html', '/'].includes(pathname)) {
         return 'homepage'
     }
     if (href.includes('bilibili.com/video/')) {
@@ -32,11 +32,11 @@ const currPage = (): string => {
     }
     if (host === 'live.bilibili.com') {
         // 匹配blanc页（赛事直播or活动直播用），用于对iframe内直播生效
-        if (pathname.match(/^\/(?:blanc\/)?\d+(#\/)?/)) {
+        if (/^\/(?:blanc\/)?\d+(#\/)?/.test(pathname)) {
             return 'liveRoom'
         }
         // 匹配各种直播页iframe、直播活动, 不做处理
-        if (href.match(/live\.bilibili\.com\/(p\/html|activity|blackboard)/)) {
+        if (/live\.bilibili\.com\/(p\/html|activity|blackboard)/.test(href)) {
             return ''
         }
         return 'liveHome'

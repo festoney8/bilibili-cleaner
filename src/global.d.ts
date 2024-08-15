@@ -3,6 +3,9 @@ export declare global {
         isWide?: boolean
         hasBlackSide?: boolean
         setSize?: function
+        webAbTest?: {
+            danmuku_block_version?: string
+        }
         vd?: {
             aid?: number
             bvid?: string

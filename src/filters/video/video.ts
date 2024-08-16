@@ -1,11 +1,11 @@
-import { GM_getValue, GM_setValue } from '$'
+import { GM_getValue, GM_setValue, unsafeWindow } from '$'
 import { ContextMenu } from '../../components/contextmenu'
 import { Group } from '../../components/group'
 import { CheckboxItem, NumberItem, ButtonItem } from '../../components/item'
 import { WordList } from '../../components/wordlist'
 import { debugVideoFilter as debug, error } from '../../utils/logger'
 import { isPageVideo, isPageBangumi, isPagePlaylist } from '../../utils/pageType'
-import { convertTimeToSec, hideEle, isEleHide, matchBvid, showEle, waitForEle } from '../../utils/tool'
+import { convertTimeToSec, isEleHide, matchBvid, waitForEle } from '../../utils/tool'
 import { SelectorResult, SubFilterPair, coreCheck } from '../core/core'
 import {
     VideoBvidFilter,
@@ -40,6 +40,9 @@ const GM_KEYS = {
             statusKey: 'video-title-keyword-filter-status',
             valueKey: 'global-title-keyword-filter-value',
         },
+        related: {
+            statusKey: 'video-related-filter-status',
+        },
     },
     white: {
         uploader: {
@@ -49,12 +52,6 @@ const GM_KEYS = {
         title: {
             statusKey: 'video-title-keyword-whitelist-filter-status',
             valueKey: 'global-title-keyword-whitelist-filter-value',
-        },
-        isNext: {
-            statusKey: 'video-next-play-whitelist-filter-status',
-        },
-        isEnding: {
-            statusKey: 'video-ending-whitelist-filter-status',
         },
     },
 }
@@ -106,39 +103,23 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
     let videoListContainer: HTMLElement
 
     // 检测视频列表
-    let isNextPlayWhitelistEnable = false
     const checkVideoList = async (_fullSite: boolean) => {
         if (!videoListContainer) {
             return
         }
         try {
             // 提取元素
-            const nextVideos = Array.from(
+            const videos = Array.from(
                 videoListContainer.querySelectorAll<HTMLElement>(
-                    `.next-play :is(.video-page-card-small, .video-page-operator-card-small)`,
-                ),
-            )
-            const rcmdVideos = Array.from(
-                videoListContainer.querySelectorAll<HTMLElement>(
-                    `.rec-list :is(.video-page-card-small, .video-page-operator-card-small), .recommend-video-card`,
+                    `.next-play :is(.video-page-card-small, .video-page-operator-card-small),
+                    .rec-list :is(.video-page-card-small, .video-page-operator-card-small), .recommend-video-card`,
                 ),
             )
 
-            // nextVideos.forEach((v) => {
+            // videos.forEach((v) => {
             //     debug(
             //         [
-            //             `nextVideos`,
-            //             `bvid: ${selectorFns.bvid(v)}`,
-            //             `duration: ${selectorFns.duration(v)}`,
-            //             `title: ${selectorFns.title(v)}`,
-            //             `uploader: ${selectorFns.uploader(v)}`,
-            //         ].join('\n'),
-            //     )
-            // })
-            // rcmdVideos.forEach((v) => {
-            //     debug(
-            //         [
-            //             `rcmdVideos`,
+            //             `videos`,
             //             `bvid: ${selectorFns.bvid(v)}`,
             //             `duration: ${selectorFns.duration(v)}`,
             //             `title: ${selectorFns.title(v)}`,
@@ -160,15 +141,41 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             videoTitleWhiteFilter.isEnable && whitePairs.push([videoTitleWhiteFilter, selectorFns.title])
 
             // 检测
-            if (!isNextPlayWhitelistEnable && nextVideos.length) {
-                await coreCheck(nextVideos, false, blackPairs, whitePairs)
-            } else {
-                nextVideos.forEach((el) => showEle(el))
-            }
-            rcmdVideos.length && (await coreCheck(rcmdVideos, false, blackPairs, whitePairs))
-            debug(`check ${nextVideos.length} next, ${rcmdVideos.length} rcmd videos`)
+            videos.length && (await coreCheck(videos, false, blackPairs, whitePairs))
+            debug(`check ${videos.length} videos`)
         } catch (err) {
             error('checkVideoList error', err)
+        }
+    }
+
+    // 检测相关视频数据 __INITIAL_STATE__.related, 右侧视频列表检测完成后触发
+    let isRelatedFilterEnable = false
+    const checkRelated = async () => {
+        if (!isRelatedFilterEnable) {
+            return
+        }
+        const video = document.querySelector('video')
+        if (!video) {
+            return
+        }
+        const rightList = document.querySelectorAll<HTMLElement>(`
+                .recommend-video-card,
+                :is(.next-play, .rec-list) :is(.video-page-card-small, .video-page-operator-card-small)
+            `)
+        const blackBvids = new Set<string>()
+        rightList.forEach((video: HTMLElement) => {
+            if (isEleHide(video)) {
+                const url = video.querySelector('.info > a')?.getAttribute('href')
+                if (url) {
+                    const bvid = matchBvid(url)
+                    bvid && blackBvids.add(bvid)
+                }
+            }
+        })
+
+        const rel = unsafeWindow.__INITIAL_STATE__?.related
+        if (rel?.length && blackBvids.size) {
+            unsafeWindow.__INITIAL_STATE__!.related = rel.filter((v) => !(v.bvid && blackBvids.has(v.bvid)))
         }
     }
 
@@ -180,50 +187,12 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             videoUploaderFilter.isEnable ||
             videoUploaderKeywordFilter.isEnable
         ) {
-            checkVideoList(fullSite).then().catch()
+            checkVideoList(fullSite)
+                .then(() => {
+                    checkRelated().then().catch()
+                })
+                .catch()
         }
-    }
-
-    // 视频结束后筛选播放器内视频
-    let isEndingWhitelistEnable = false
-    const watchPlayerEnding = () => {
-        if (isEndingWhitelistEnable) {
-            return
-        }
-        const video = document.querySelector('video')
-        if (!video) {
-            return
-        }
-        const check = () => {
-            const rightList = document.querySelectorAll<HTMLElement>(`
-                .recommend-video-card,
-                :is(.next-play, .rec-list) :is(.video-page-card-small, .video-page-operator-card-small)
-            `)
-            const blacklistVideoTitle = new Set<string>()
-            rightList.forEach((video: HTMLElement) => {
-                if (isEleHide(video)) {
-                    const title = video.querySelector('.info > a p')?.textContent?.trim()
-                    title && blacklistVideoTitle.add(title)
-                }
-            })
-            let cnt = 0
-            const endingId = setInterval(() => {
-                const endingVideos = document.querySelectorAll<HTMLElement>('.bpx-player-ending-related-item')
-                if (endingVideos.length > 0) {
-                    endingVideos.forEach((video: HTMLElement) => {
-                        const title = video.querySelector('.bpx-player-ending-related-item-title')?.textContent?.trim()
-                        if (title && blacklistVideoTitle.has(title)) {
-                            hideEle(video)
-                        } else {
-                            showEle(video)
-                        }
-                    })
-                    clearInterval(endingId)
-                }
-                ++cnt > 100 && clearInterval(endingId)
-            }, 10)
-        }
-        video.ended ? check() : video.addEventListener('ended', check)
     }
 
     // 右键监听, 屏蔽UP主
@@ -336,8 +305,6 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 }).observe(videoListContainer, { childList: true, subtree: true })
             }
         })
-        // 视频播放结束监听
-        document.addEventListener('DOMContentLoaded', watchPlayerEnding)
     } catch (err) {
         error(`watch video list error`, err)
     }
@@ -524,40 +491,24 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
     ]
     videoPageVideoFilterGroupList.push(new Group('video-bvid-filter-group', '播放页 BV号过滤', bvidItems))
 
+    const otherItems = [
+        // 启用 相关视频 暂存数据过滤
+        new CheckboxItem({
+            itemID: GM_KEYS.black.related.statusKey,
+            description: '相关视频 暂存数据过滤 (实验功能)\n自动替换 接下来播放\n启用时 修改其他视频过滤设置需刷新',
+            enableFunc: () => {
+                isRelatedFilterEnable = true
+                checkRelated()
+            },
+            disableFunc: () => {
+                isRelatedFilterEnable = false
+            },
+        }),
+    ]
+    videoPageVideoFilterGroupList.push(new Group('video-other-filter-group', '播放页 其他过滤', otherItems))
+
     // UI组件, 免过滤和白名单
     const whitelistItems = [
-        // 接下来播放 免过滤
-        new CheckboxItem({
-            itemID: GM_KEYS.white.isNext.statusKey,
-            description: '接下来播放 免过滤',
-            defaultStatus: true,
-            enableFunc: () => {
-                isNextPlayWhitelistEnable = true
-                check(true)
-            },
-            disableFunc: () => {
-                isNextPlayWhitelistEnable = false
-                check(true)
-            },
-        }),
-        // 视频播放结束推荐 免过滤
-        new CheckboxItem({
-            itemID: GM_KEYS.white.isEnding.statusKey,
-            description: '视频播放结束推荐 免过滤',
-            defaultStatus: true,
-            enableFunc: () => {
-                isEndingWhitelistEnable = true
-                document
-                    .querySelectorAll<HTMLElement>('.bpx-player-ending-related-item')
-                    .forEach((e: HTMLElement) => showEle(e))
-                check(true)
-            },
-            disableFunc: () => {
-                isEndingWhitelistEnable = false
-                watchPlayerEnding()
-                check(true)
-            },
-        }),
         // 启用 播放页UP主白名单
         new CheckboxItem({
             itemID: GM_KEYS.white.uploader.statusKey,

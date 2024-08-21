@@ -189,7 +189,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         ) {
             checkVideoList(fullSite)
                 .then(() => {
-                    checkRelated().then().catch()
+                    isRelatedFilterEnable && checkRelated().then().catch()
                 })
                 .catch()
         }

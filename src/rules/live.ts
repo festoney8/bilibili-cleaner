@@ -236,7 +236,7 @@ if (isPageLiveRoom()) {
         new CheckboxItem({
             itemID: 'live-page-head-info-vm-upper-row-popular',
             description: '隐藏 人气',
-            itemCSS: `#head-info-vm .upper-row .right-ctnr div:has(.icon-popular) {display: none !important;}`,
+            itemCSS: `#head-info-vm .upper-row .right-ctnr div:has(.icon-popular), #LiveRoomHotrankEntries {display: none !important;}`,
         }),
         // 隐藏 点赞
         new CheckboxItem({
@@ -327,6 +327,8 @@ if (isPageLiveRoom()) {
             defaultStatus: true,
             itemCSS: `
                 .web-player-icon-roomStatus {display: none !important;}
+                /* 播放器上用途不明的条纹 */
+                .blur-edges-ctnr {display: none !important;}
                 /* 部分播放器马赛克 */
                 .web-player-module-area-mask {backdrop-filter: none !important;}`,
         }),

@@ -430,7 +430,6 @@ if (isPageLiveRoom()) {
         new CheckboxItem({
             itemID: 'live-page-rank-list-vm-fold',
             description: '折叠 排行榜/大航海',
-            // calc中强调单位，var变量必须添加单位，否则fallback
             itemCSS: `
                 #rank-list-vm {
                     max-height: 32px;
@@ -444,15 +443,16 @@ if (isPageLiveRoom()) {
                     max-height: 178px;
                     overflow: unset;
                 }
-                .chat-history-panel {
-                    --rank-list-height: 32px;
-                    height: calc(100% - var(--rank-list-height, 178px) - var(--chat-control-panel-height, 145px)) !important;
-                }
-                #chat-control-panel-vm {
-                    height: var(--chat-control-panel-height, 145px) !important;
-                }
+                /* 弹幕栏 */
                 #aside-area-vm {
-                    overflow: hidden;
+                    display: flex;
+                    flex-direction: column;
+                }
+                .chat-history-panel {
+                    flex: 1;
+                }
+                .chat-history-panel .danmaku-at-prompt {
+                    bottom: 160px;
                 }
             `,
         }),
@@ -460,20 +460,20 @@ if (isPageLiveRoom()) {
         new CheckboxItem({
             itemID: 'live-page-rank-list-vm',
             description: '隐藏 排行榜/大航海',
-            // calc中强调单位，var变量必须添加单位，否则fallback
             itemCSS: `
                 #rank-list-vm {
                     display: none !important;
                 }
-                .chat-history-panel {
-                    --rank-list-height: 0px;
-                    height: calc(100% - var(--rank-list-height, 178px) - var(--chat-control-panel-height, 145px)) !important;
-                }
-                #chat-control-panel-vm {
-                    height: var(--chat-control-panel-height, 145px) !important;
-                }
+                /* 弹幕栏 */
                 #aside-area-vm {
-                    overflow: hidden;
+                    display: flex;
+                    flex-direction: column;
+                }
+                .chat-history-panel {
+                    flex: 1;
+                }
+                .chat-history-panel .danmaku-at-prompt {
+                    bottom: 160px;
                 }
             `,
         }),
@@ -582,74 +582,73 @@ if (isPageLiveRoom()) {
             defaultStatus: true,
             itemCSS: `.vote-card {display: none !important;}`,
         }),
-        // 隐藏 发送框 左侧功能按钮
+        // 隐藏 发送框 功能按钮
         new CheckboxItem({
-            itemID: 'live-page-control-panel-icon-row-left',
-            description: '隐藏 发送框 左侧功能按钮',
-            itemCSS: `#chat-control-panel-vm .control-panel-icon-row .icon-left-part {display: none !important;}`,
-        }),
-        // 隐藏 发送框 右侧功能按钮
-        new CheckboxItem({
-            itemID: 'live-page-control-panel-icon-row-right',
-            description: '隐藏 发送框 右侧功能按钮',
-            itemCSS: `#chat-control-panel-vm .control-panel-icon-row .icon-right-part {display: none !important;}`,
+            itemID: 'live-page-control-panel-icon-row',
+            description: '隐藏 发送框 功能按钮',
+            itemCSS: `
+                .control-panel-ctnr-new {
+                    padding: 8px 8px !important;
+                }
+                .control-panel-icon-row-new {
+                    display: none !important;
+                }
+                .chat-input-ctnr-new {
+                    margin-top: 0 !important;
+                }
+                #chat-control-panel-vm {
+                    height: fit-content !important;
+                }
+                /* 弹幕栏 */
+                #aside-area-vm {
+                    display: flex;
+                    flex-direction: column;
+                }
+                .chat-history-panel {
+                    flex: 1;
+                }
+                .chat-history-panel .danmaku-at-prompt {
+                    bottom: 100px;
+                }
+            `,
         }),
         // 隐藏 发送框 粉丝勋章
         new CheckboxItem({
             itemID: 'live-page-chat-input-ctnr-medal-section',
             description: '隐藏 发送框 粉丝勋章',
-            itemCSS: `.medal-section {display: none !important;}`,
+            itemCSS: `.medal-section {display: none !important;}
+                    .chat-input-new {padding: 10px 5px !important;}`,
         }),
         // 隐藏 发送框 发送按钮
         new CheckboxItem({
             itemID: 'live-page-chat-input-ctnr-send-btn',
             description: '隐藏 发送框 发送按钮 (回车发送)',
-            itemCSS: `
-                :root {
-                    --ctrlh1: calc(145px - 36px);
-                    --chat-control-panel-height: min(min(var(--ctrlh1, 145px), var(--ctrlh2, 145px)), var(--ctrlh3, 145px));
-                }
-                .bottom-actions {
-                    display: none !important;
-                }
-                .chat-history-panel {
-                    height: calc(100% - var(--rank-list-height, 178px) - var(--chat-control-panel-height, 145px)) !important;
-                }
-                #chat-control-panel-vm {
-                    height: var(--chat-control-panel-height, 145px) !important;
-                }
-                #aside-area-vm {
-                    overflow: hidden;
-                }
-                .chat-history-panel .danmaku-at-prompt {
-                    bottom: calc(var(--chat-control-panel-height) + 3px);
-                }
-            `,
+            itemCSS: `.right-action-btn {display: none !important;}`,
         }),
         // 隐藏 发送框
         new CheckboxItem({
             itemID: 'live-page-chat-input-ctnr',
             description: '隐藏 发送框',
             itemCSS: `
-                :root {
-                    --ctrlh2: calc(145px - 105px);
-                    --chat-control-panel-height: min(min(var(--ctrlh1, 145px), var(--ctrlh2, 145px)), var(--ctrlh3, 145px));
-                }
-                #chat-control-panel-vm .chat-input-ctnr,
-                #chat-control-panel-vm .bottom-actions {
+                .chat-input-ctnr-new {
                     display: none !important;
                 }
-                .chat-history-panel {
-                    height: calc(100% - var(--rank-list-height, 178px) - var(--chat-control-panel-height, 145px)) !important;
+                .control-panel-ctnr-new {
+                    padding: 8px 8px !important;
                 }
                 #chat-control-panel-vm {
-                    height: var(--chat-control-panel-height) !important;
+                    height: fit-content !important;
                 }
+                /* 弹幕栏 */
                 #aside-area-vm {
-                    overflow: hidden;
+                    display: flex;
+                    flex-direction: column;
+                }
+                .chat-history-panel {
+                    flex: 1;
                 }
                 .chat-history-panel .danmaku-at-prompt {
-                    bottom: calc(var(--chat-control-panel-height) + 10px);
+                    bottom: 70px;
                 }
             `,
         }),
@@ -658,27 +657,19 @@ if (isPageLiveRoom()) {
             itemID: 'live-page-chat-control-panel',
             description: '隐藏 弹幕栏底部全部功能',
             itemCSS: `
-                :root {
-                    --ctrlh3: 0px;
-                    --chat-control-panel-height: min(min(var(--ctrlh1, 145px), var(--ctrlh2, 145px)), var(--ctrlh3, 145px));
-                }
                 #chat-control-panel-vm {
                     display: none !important;
                 }
-                .chat-history-panel {
-                    height: calc(100% - var(--rank-list-height, 178px) - var(--chat-control-panel-height, 145px)) !important;
-                }
-                .chat-history-panel .chat-history-list {
-                    padding: 10px !important;
-                }
-                #chat-control-panel-vm {
-                    height: var(--chat-control-panel-height, 145px) !important;
-                }
+                /* 弹幕栏 */
                 #aside-area-vm {
-                    overflow: hidden;
+                    display: flex;
+                    flex-direction: column;
+                }
+                .chat-history-panel {
+                    flex: 1;
                 }
                 .chat-history-panel .danmaku-at-prompt {
-                    bottom: calc(var(--chat-control-panel-height) + 30px);
+                    bottom: 20px !important;
                 }
             `,
         }),

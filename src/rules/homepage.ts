@@ -436,7 +436,12 @@ if (isPageHomepage()) {
         new CheckboxItem({
             itemID: 'homepage-hide-live-card-recommend',
             description: '隐藏 直播间推荐',
-            itemCSS: `.bili-live-card.is-rcmd {display: none !important;}`,
+            itemCSS: `
+                .bili-live-card,
+                .floor-single-card:has(use[*|href$='#channel-live']) {
+                    display: none !important;
+                }
+            `,
         }),
         // 精简 分区视频推荐, 默认开启
         new CheckboxItem({

@@ -399,10 +399,10 @@ if (isPageHomepage()) {
             description: '隐藏 广告',
             defaultStatus: true,
             itemCSS: `
-                :is(.feed-card, .bili-video-card.is-rcmd):has(.bili-video-card__info--ad, [href*="cm.bilibili.com"], .bili-video-card__info--creative-ad) {
+                :is(.feed-card, .bili-video-card):has(.bili-video-card__info--ad, [href*="cm.bilibili.com"], .bili-video-card__info--creative-ad) {
                     display: none !important;
                 }
-                :is(.feed-card, .bili-video-card.is-rcmd):not(:has(.bili-video-card__wrap, .bili-video-card__skeleton)) {
+                :is(.feed-card, .bili-video-card):not(:has(.bili-video-card__wrap, .bili-video-card__skeleton)) {
                     display: none !important;
                 }
                 /* 布局调整 */

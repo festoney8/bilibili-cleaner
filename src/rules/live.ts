@@ -405,7 +405,13 @@ if (isPageLiveRoom()) {
         new CheckboxItem({
             itemID: 'live-page-gift-control-vm',
             description: '隐藏 礼物栏',
-            itemCSS: `#gift-control-vm {display: none !important;}
+            itemCSS: `
+                #gift-control-vm {
+                    display: none !important;
+                }
+                #sections-vm {
+                    margin-top: 100px !important;
+                }
                 /* 壁纸高度 */
                 #room-background-vm {min-height: calc(100vh - 64px) !important;}
                 /* 补齐圆角, 不可important */
@@ -587,17 +593,11 @@ if (isPageLiveRoom()) {
             itemID: 'live-page-control-panel-icon-row',
             description: '隐藏 发送框 功能按钮',
             itemCSS: `
-                .control-panel-ctnr-new {
-                    padding: 8px 8px !important;
-                }
-                .control-panel-icon-row-new {
+                .control-panel-icon-row {
                     display: none !important;
                 }
-                .chat-input-ctnr-new {
-                    margin-top: 0 !important;
-                }
                 #chat-control-panel-vm {
-                    height: fit-content !important;
+                    height: 115px;
                 }
                 /* 弹幕栏 */
                 #aside-area-vm {
@@ -623,18 +623,33 @@ if (isPageLiveRoom()) {
         new CheckboxItem({
             itemID: 'live-page-chat-input-ctnr-send-btn',
             description: '隐藏 发送框 发送按钮 (回车发送)',
-            itemCSS: `.right-action-btn {display: none !important;}`,
+            itemCSS: `
+                .bottom-actions {
+                    display: none !important;
+                }
+                #chat-control-panel-vm {
+                    height: fit-content !important;
+                }
+                /* 弹幕栏 */
+                #aside-area-vm {
+                    display: flex;
+                    flex-direction: column;
+                }
+                .chat-history-panel {
+                    flex: 1;
+                }
+                .chat-history-panel .danmaku-at-prompt {
+                    bottom: 120px;
+                }
+            `,
         }),
         // 隐藏 发送框
         new CheckboxItem({
             itemID: 'live-page-chat-input-ctnr',
             description: '隐藏 发送框',
             itemCSS: `
-                .chat-input-ctnr-new {
+                .chat-input-ctnr, .bottom-actions {
                     display: none !important;
-                }
-                .control-panel-ctnr-new {
-                    padding: 8px 8px !important;
                 }
                 #chat-control-panel-vm {
                     height: fit-content !important;

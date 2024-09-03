@@ -31,6 +31,7 @@ import { popularPageVideoFilterGroupList } from './filters/video/popular'
 import { spacePageVideoFilterGroupList } from './filters/video/space'
 import { watchlaterGroupList } from './rules/watchlater'
 import { spaceGroupList } from './rules/space'
+import { commentGroupList } from './rules/comment'
 import { dynamicPageDynFilterGroupList } from './filters/dyn/dyn'
 import { videoPageCommentFilterGroupList } from './filters/comment/video'
 import { dynamicPageCommentFilterGroupList } from './filters/comment/dynAndSpace'
@@ -51,6 +52,7 @@ const main = async () => {
         ...channelGroupList,
         ...watchlaterGroupList,
         ...spaceGroupList,
+        ...commentGroupList,
         ...commonGroupList,
     ]
     RULE_GROUPS.forEach((e) => e.enableGroup())

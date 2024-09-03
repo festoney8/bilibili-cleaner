@@ -23,8 +23,6 @@ jobs:
 
       # prepare
       - run: pnpm install
-      - run: pnpm run lint
-      - run: pnpm run format
 
       # build normal and minify version, save to folder
       - name: build minify

@@ -25,6 +25,9 @@ importers:
             prettier:
                 specifier: 3.3.3
                 version: 3.3.3
+            sass:
+                specifier: ^1.78.0
+                version: 1.78.0
             typescript:
                 specifier: ^5.5.4
                 version: 5.5.4
@@ -33,10 +36,10 @@ importers:
                 version: 8.4.0(eslint@9.9.1)(typescript@5.5.4)
             vite:
                 specifier: ^4.5.3
-                version: 4.5.3(sass@1.77.8)
+                version: 4.5.3(sass@1.78.0)
             vite-plugin-monkey:
                 specifier: ^3.5.2
-                version: 3.5.2(vite@4.5.3(sass@1.77.8))
+                version: 3.5.2(vite@4.5.3(sass@1.78.0))
 
 packages:
     '@esbuild/android-arm64@0.18.20':
@@ -1482,10 +1485,10 @@ packages:
                 integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==,
             }
 
-    sass@1.77.8:
+    sass@1.78.0:
         resolution:
             {
-                integrity: sha512-4UHg6prsrycW20fqLGPShtEvo/WyHRVRHwOP4DzkUrObWoWI05QBSfzU71TVB7PFaL104TwNaHpjlWXAZbQiNQ==,
+                integrity: sha512-AaIqGSrjo5lA2Yg7RvFZrlXDBCp3nV4XP73GrLGvdRWWwk+8H3l0SDvq/5bA4eF+0RFPLuWUk3E+P1U/YqnpsQ==,
             }
         engines: { node: '>=14.0.0' }
         hasBin: true
@@ -1991,7 +1994,6 @@ snapshots:
         dependencies:
             normalize-path: 3.0.0
             picomatch: 2.3.1
-        optional: true
 
     argparse@2.0.1: {}
 
@@ -1999,8 +2001,7 @@ snapshots:
 
     big-integer@1.6.52: {}
 
-    binary-extensions@2.3.0:
-        optional: true
+    binary-extensions@2.3.0: {}
 
     bplist-parser@0.2.0:
         dependencies:
@@ -2043,7 +2044,6 @@ snapshots:
             readdirp: 3.6.0
         optionalDependencies:
             fsevents: 2.3.3
-        optional: true
 
     cli-cursor@5.0.0:
         dependencies:
@@ -2327,8 +2327,7 @@ snapshots:
 
     ignore@5.3.2: {}
 
-    immutable@4.3.7:
-        optional: true
+    immutable@4.3.7: {}
 
     import-fresh@3.3.0:
         dependencies:
@@ -2340,7 +2339,6 @@ snapshots:
     is-binary-path@2.1.0:
         dependencies:
             binary-extensions: 2.3.0
-        optional: true
 
     is-docker@2.2.1: {}
 
@@ -2470,8 +2468,7 @@ snapshots:
 
     natural-compare@1.4.0: {}
 
-    normalize-path@3.0.0:
-        optional: true
+    normalize-path@3.0.0: {}
 
     npm-run-path@4.0.1:
         dependencies:
@@ -2550,7 +2547,6 @@ snapshots:
     readdirp@3.6.0:
         dependencies:
             picomatch: 2.3.1
-        optional: true
 
     resolve-from@4.0.0: {}
 
@@ -2575,12 +2571,11 @@ snapshots:
         dependencies:
             queue-microtask: 1.2.3
 
-    sass@1.77.8:
+    sass@1.78.0:
         dependencies:
             chokidar: 3.6.0
             immutable: 4.3.7
             source-map-js: 1.2.0
-        optional: true
 
     semver@7.6.3: {}
 
@@ -2669,7 +2664,7 @@ snapshots:
         dependencies:
             punycode: 2.3.1
 
-    vite-plugin-monkey@3.5.2(vite@4.5.3(sass@1.77.8)):
+    vite-plugin-monkey@3.5.2(vite@4.5.3(sass@1.78.0)):
         dependencies:
             acorn-walk: 8.3.3
             cross-spawn: 7.0.3
@@ -2680,16 +2675,16 @@ snapshots:
             picocolors: 1.1.0
             systemjs: 6.15.1
         optionalDependencies:
-            vite: 4.5.3(sass@1.77.8)
+            vite: 4.5.3(sass@1.78.0)
 
-    vite@4.5.3(sass@1.77.8):
+    vite@4.5.3(sass@1.78.0):
         dependencies:
             esbuild: 0.18.20
             postcss: 8.4.44
             rollup: 3.29.4
         optionalDependencies:
             fsevents: 2.3.3
-            sass: 1.77.8
+            sass: 1.78.0
 
     which@2.0.2:
         dependencies:

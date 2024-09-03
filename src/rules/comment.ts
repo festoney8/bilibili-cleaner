@@ -1,11 +1,11 @@
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
-import { isPageBangumi, isPageDynamic, isPageSpace, isPageVideo } from '../utils/pageType'
+import { isPageBangumi, isPageDynamic, isPagePlaylist, isPageSpace, isPageVideo } from '../utils/pageType'
 import { Shadow } from '../utils/shadow'
 
 const commentGroupList: Group[] = []
 
-if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace()) {
+if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPagePlaylist()) {
     // shadow DOM 评论区
     const shadow = new Shadow([
         'bili-comments-header-renderer', // 评论区header(notice,编辑器)

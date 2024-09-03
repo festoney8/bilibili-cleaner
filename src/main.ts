@@ -34,10 +34,11 @@ import { spaceGroupList } from './rules/space'
 import { commentGroupList } from './rules/comment'
 import { dynamicPageDynFilterGroupList } from './filters/dyn/dyn'
 import { videoPageCommentFilterGroupList } from './filters/comment/video'
-import { dynamicPageCommentFilterGroupList } from './filters/comment/dynAndSpace'
+import { dynamicPageCommentFilterGroupList } from './filters/comment/dyn'
 import { videoPageVideoFilterGroupList } from './filters/video/video'
 import { channelPageVideoFilterGroupList } from './filters/video/channel'
 import { searchPageVideoFilterGroupList } from './filters/video/search'
+import { spacePageCommentFilterGroupList } from './filters/comment/space'
 
 const main = async () => {
     // 载入元素屏蔽规则
@@ -69,7 +70,11 @@ const main = async () => {
     VIDEO_FILTER_GROUPS.forEach((e) => e.enableGroup())
 
     // 载入评论过滤器
-    const COMMENT_FILTER_GROUPS = [...videoPageCommentFilterGroupList, ...dynamicPageCommentFilterGroupList]
+    const COMMENT_FILTER_GROUPS = [
+        ...videoPageCommentFilterGroupList,
+        ...dynamicPageCommentFilterGroupList,
+        ...spacePageCommentFilterGroupList,
+    ]
     COMMENT_FILTER_GROUPS.forEach((e) => e.enableGroup())
 
     // 载入动态过滤器

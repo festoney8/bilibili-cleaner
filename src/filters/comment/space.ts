@@ -5,7 +5,7 @@ import { ButtonItem, CheckboxItem, NumberItem } from '../../components/item'
 import { WordList } from '../../components/wordlist'
 import settings from '../../settings'
 import { debugCommentFilter as debug, error } from '../../utils/logger'
-import { isPageDynamic, isPageSpace } from '../../utils/pageType'
+import { isPageSpace } from '../../utils/pageType'
 import { showEle, waitForEle } from '../../utils/tool'
 import { coreCheck, SelectorResult, SubFilterPair } from '../core/core'
 import {
@@ -64,7 +64,7 @@ const GM_KEYS = {
     },
 }
 
-const dynamicPageCommentFilterGroupList: Group[] = []
+const spacePageCommentFilterGroupList: Group[] = []
 
 // 右键菜单功能
 let isContextMenuFuncRunning = false
@@ -74,7 +74,7 @@ let isContextMenuUsernameEnable = false
 let isRootWhite = false
 let isSubWhite = false
 
-if (isPageDynamic() || isPageSpace()) {
+if (isPageSpace()) {
     // 初始化黑名单
     const bots = [
         // 8455326 @机器工具人
@@ -472,7 +472,7 @@ if (isPageDynamic() || isPageSpace()) {
             },
         }),
     ]
-    dynamicPageCommentFilterGroupList.push(
+    spacePageCommentFilterGroupList.push(
         new Group('comment-username-filter-group', '动态页 评论区 用户过滤', usernameItems),
     )
 
@@ -509,7 +509,7 @@ if (isPageDynamic() || isPageSpace()) {
             },
         }),
     ]
-    dynamicPageCommentFilterGroupList.push(new Group('comment-content-filter-group', '评论区 关键词过滤', contentItems))
+    spacePageCommentFilterGroupList.push(new Group('comment-content-filter-group', '评论区 关键词过滤', contentItems))
 
     // UI组件, 按类型过滤
     const typeItems = [
@@ -554,7 +554,7 @@ if (isPageDynamic() || isPageSpace()) {
             },
         }),
     ]
-    dynamicPageCommentFilterGroupList.push(new Group('comment-type-filter-group', '评论区 按类型过滤', typeItems))
+    spacePageCommentFilterGroupList.push(new Group('comment-type-filter-group', '评论区 按类型过滤', typeItems))
 
     // UI组件, 等级过滤
     const levelItems = [
@@ -586,7 +586,7 @@ if (isPageDynamic() || isPageSpace()) {
             },
         }),
     ]
-    dynamicPageCommentFilterGroupList.push(
+    spacePageCommentFilterGroupList.push(
         new Group('comment-level-filter-whitelist-group', '评论区 等级过滤', levelItems),
     )
 
@@ -675,9 +675,9 @@ if (isPageDynamic() || isPageSpace()) {
             },
         }),
     ]
-    dynamicPageCommentFilterGroupList.push(
+    spacePageCommentFilterGroupList.push(
         new Group('comment-content-filter-whitelist-group', '评论区 白名单设置 (免过滤)', whitelistItems),
     )
 }
 
-export { dynamicPageCommentFilterGroupList }
+export { spacePageCommentFilterGroupList }

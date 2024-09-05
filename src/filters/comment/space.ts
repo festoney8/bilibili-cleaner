@@ -96,6 +96,7 @@ if (isPageSpace()) {
         // 91394217 @AI全文总结
         // 473018527 @AI视频总结
         // 3546639035795567 @AI总结视频
+        // 605801219 @AI工具集
         '机器工具人',
         '有趣的程序员',
         'AI视频小助理',
@@ -115,6 +116,7 @@ if (isPageSpace()) {
         'AI全文总结',
         'AI视频总结',
         'AI总结视频',
+        'AI工具集',
     ]
     const commentUsernameFilter = new CommentUsernameFilter()
     commentUsernameFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.username.valueKey}`, []))

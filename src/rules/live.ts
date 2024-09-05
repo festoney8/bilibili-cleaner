@@ -912,7 +912,7 @@ if (isPageLiveHome() || isPageLiveRoom()) {
         new CheckboxItem({
             itemID: 'live-page-nav-search-rcmd',
             description: '隐藏 推荐搜索',
-            itemCSS: `#nav-searchform input::placeholder {visibility: hidden;}`,
+            itemCSS: `#nav-searchform input::placeholder {visibility: hidden; opacity: 0 !important}`,
         }),
         // 隐藏 搜索历史
         new CheckboxItem({

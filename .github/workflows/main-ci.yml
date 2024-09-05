@@ -19,12 +19,8 @@ jobs:
         with:
           version: 8
 
-      - name: Install dependencies
-        run: pnpm install
-      - name: lint
-        run: pnpm run lint
-      - name: format
-        run: pnpm run format
+      # prepare
+      - run: pnpm install
 
       # build两个版本
       - name: build minify

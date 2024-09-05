@@ -217,6 +217,7 @@
 ## 数据导入与导出
 
 -   更换电脑或浏览器时，需全选油猴插件内所有脚本，一并导出数据，在另一设备恢复
+-   TamperMonkey 和 ViolentMonkey 插件的同步脚本功能只能同步代码，但不同步数据，同步数据请使用导入导出或云端备份功能
 
 <details>
 <summary><b>导出数据</b></summary>
@@ -231,12 +232,14 @@
 
 </details>
 <details>
-<summary><b>数据云同步</b></summary>
+<summary><b>备份 TamperMonkey 数据到云端</b></summary>
+<br>
 
--   Tampermonkey/Violentmonkey 均支持同步数据到 Google Drive/Onedrive 等网盘
--   [Tampermonkey Q105: How can I sync all scripts installed at Tampermonkey to another browser?](https://www.tampermonkey.net/faq.php?locale=en#Q105)
--   [开启 Chrome 油猴插件「Tampermonkey」的同步备份功能](https://www.10wan.com/software-guide/1015_7tg8bw/)
--   同步到 Google drive 的数据是默认隐藏的，参考 [Google Drive Appdata](https://developers.google.com/drive/api/guides/appdata?hl=zh-cn)
+-   这一操作将备份 TamperMonkey 内所有脚本代码及其本地数据到云端
+-   点击 **显示备份** 按钮查看历史备份
+-   ViolentMonkey 插件无这一功能，只支持备份到本地
+
+![](images/how-to-backup-to-cloud-drive.png)
 
 </details>
 

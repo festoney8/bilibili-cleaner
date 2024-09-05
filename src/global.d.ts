@@ -24,6 +24,9 @@ export declare global {
             abtest?: {
                 comment_next_version?: 'ELEMENTS' | 'DEFAULT'
             }
+            related?: {
+                bvid?: string
+            }[]
         }
         __NEXT_DATA__?: any
         EmbedPlayer?: {

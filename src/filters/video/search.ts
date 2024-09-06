@@ -274,8 +274,8 @@ if (isPageSearch()) {
     }
 
     try {
-        waitForEle(document, '.search-content', (node: HTMLElement): boolean => {
-            return node.className.includes('search-content')
+        waitForEle(document, '.search-layout', (node: HTMLElement): boolean => {
+            return node.className.includes('search-layout')
         }).then((ele) => {
             if (ele) {
                 vlc = ele

@@ -1,4 +1,4 @@
-import { GM_getValue, GM_setValue, unsafeWindow } from '$'
+import { GM_getValue, GM_setValue } from '$'
 import { ContextMenu } from '../../components/contextmenu'
 import { Group } from '../../components/group'
 import { ButtonItem, CheckboxItem, NumberItem } from '../../components/item'
@@ -28,14 +28,6 @@ let isContextMenuUsernameEnable = false
 // 一二级评论是否检测
 let isRootWhite = false
 let isSubWhite = false
-
-let isV2 = false
-const isCommentV2 = () => {
-    if (!isV2) {
-        isV2 = unsafeWindow.__INITIAL_STATE__?.abtest?.comment_next_version === 'ELEMENTS'
-    }
-    return isV2
-}
 
 const GM_KEYS = {
     black: {
@@ -105,6 +97,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         // 91394217 @AI全文总结
         // 473018527 @AI视频总结
         // 3546639035795567 @AI总结视频
+        // 605801219 @AI工具集
         '机器工具人',
         '有趣的程序员',
         'AI视频小助理',
@@ -124,6 +117,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         'AI全文总结',
         'AI视频总结',
         'AI总结视频',
+        'AI工具集',
     ]
     const commentUsernameFilter = new CommentUsernameFilter()
     commentUsernameFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.username.valueKey}`, []))
@@ -159,13 +153,13 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         // https://b23.tv/av1350214762
         root: {
             username: (comment: HTMLElement): SelectorResult => {
-                if (isCommentV2()) {
+                if (!isPageBangumi()) {
                     return (comment as any).__data?.member?.uname?.trim()
                 }
                 return comment.querySelector('.root-reply-container .user-name')?.textContent?.trim()
             },
             content: (comment: HTMLElement): SelectorResult => {
-                if (isCommentV2()) {
+                if (!isPageBangumi()) {
                     return (comment as any).__data?.content?.message?.replace(/@[^@ ]+?( |$)/g, '').trim()
                 }
                 return comment
@@ -175,7 +169,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                     .trim()
             },
             callUser: (comment: HTMLElement): SelectorResult => {
-                if (isCommentV2()) {
+                if (!isPageBangumi()) {
                     return (comment as any).__data?.content?.members[0]?.uname
                 }
                 return comment
@@ -184,7 +178,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                     .trim()
             },
             level: (comment: HTMLElement): SelectorResult => {
-                if (isCommentV2()) {
+                if (!isPageBangumi()) {
                     return (comment as any).__data?.member?.level_info?.current_level
                 }
                 const c = comment.querySelector('.root-reply-container .user-level')?.className
@@ -192,7 +186,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 return lv ? parseInt(lv) : undefined
             },
             isUp: (comment: HTMLElement): SelectorResult => {
-                if (isCommentV2()) {
+                if (!isPageBangumi()) {
                     const mid = (comment as any).__data?.mid
                     const upMid = (comment as any).__upMid
                     return typeof mid === 'number' && mid === upMid
@@ -200,19 +194,19 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 return !!comment.querySelector('.root-reply-container .up-icon')
             },
             isPin: (comment: HTMLElement): SelectorResult => {
-                if (isCommentV2()) {
+                if (!isPageBangumi()) {
                     return !!(comment as any).__data?.reply_control?.is_up_top
                 }
                 return !!comment.querySelector('.root-reply-container .top-icon')
             },
             isNote: (comment: HTMLElement): SelectorResult => {
-                if (isCommentV2()) {
+                if (!isPageBangumi()) {
                     return !!(comment as any).__data?.reply_control?.is_note_v2
                 }
                 return !!comment.querySelector('.root-reply-container .note-prefix')
             },
             isLink: (comment: HTMLElement): SelectorResult => {
-                if (isCommentV2()) {
+                if (!isPageBangumi()) {
                     const jump_url = (comment as any).__data?.content?.jump_url
                     if (jump_url) {
                         for (const k of Object.keys(jump_url)) {
@@ -228,13 +222,13 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         },
         sub: {
             username: (comment: HTMLElement): SelectorResult => {
-                if (isCommentV2()) {
+                if (!isPageBangumi()) {
                     return (comment as any).__data?.member?.uname?.trim()
                 }
                 return comment.querySelector('.sub-user-name')?.textContent?.trim()
             },
             content: (comment: HTMLElement): SelectorResult => {
-                if (isCommentV2()) {
+                if (!isPageBangumi()) {
                     return (comment as any).__data?.content?.message
                         ?.trim()
                         ?.replace(/@[^@ ]+?( |$)/g, '')
@@ -249,7 +243,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                     .trim()
             },
             callUser: (comment: HTMLElement): SelectorResult => {
-                if (isCommentV2()) {
+                if (!isPageBangumi()) {
                     return (comment as any).__data?.content?.message
                         ?.trim()
                         .replace(/^回复 ?@[^@ ]+? ?:/, '')
@@ -268,7 +262,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                     .trim()
             },
             level: (comment: HTMLElement): SelectorResult => {
-                if (isCommentV2()) {
+                if (!isPageBangumi()) {
                     return (comment as any).__data?.member?.level_info?.current_level
                 }
                 const c = comment.querySelector('.sub-user-level')?.className
@@ -276,7 +270,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 return lv ? parseInt(lv) : undefined
             },
             isUp: (comment: HTMLElement): SelectorResult => {
-                if (isCommentV2()) {
+                if (!isPageBangumi()) {
                     const mid = (comment as any).__data?.mid
                     const upMid = (comment as any).__upMid
                     return typeof mid === 'number' && mid === upMid
@@ -284,7 +278,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 return !!comment.querySelector('.sub-up-icon')
             },
             isLink: (comment: HTMLElement): SelectorResult => {
-                if (isCommentV2()) {
+                if (!isPageBangumi()) {
                     const urls = (comment as any).__data?.content?.jump_url
                     return urls ? Object.keys(urls).length > 0 : undefined
                 }
@@ -299,7 +293,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             // 提取元素：一级评论、二级评论
             let rootComments: HTMLElement[] = []
             let subComments: HTMLElement[] = []
-            if (isCommentV2()) {
+            if (!isPageBangumi()) {
                 const shadowRoot = document.querySelector('bili-comments')?.shadowRoot
                 if (!shadowRoot) {
                     return
@@ -447,7 +441,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             }
             // 二级评论翻页
             if (input.includes('/v2/reply/reply')) {
-                if (isCommentV2()) {
+                if (!isPageBangumi()) {
                     let cnt = 0
                     const id = setInterval(() => {
                         check(true)

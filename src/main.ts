@@ -39,6 +39,7 @@ import { videoPageVideoFilterGroupList } from './filters/video/video'
 import { channelPageVideoFilterGroupList } from './filters/video/channel'
 import { searchPageVideoFilterGroupList } from './filters/video/search'
 import { spacePageCommentFilterGroupList } from './filters/comment/space'
+import { bangumiPageCommentFilterGroupList } from './filters/comment/bangumi'
 
 const main = async () => {
     // 载入元素屏蔽规则
@@ -72,6 +73,7 @@ const main = async () => {
     // 载入评论过滤器
     const COMMENT_FILTER_GROUPS = [
         ...videoPageCommentFilterGroupList,
+        ...bangumiPageCommentFilterGroupList,
         ...dynamicPageCommentFilterGroupList,
         ...spacePageCommentFilterGroupList,
     ]

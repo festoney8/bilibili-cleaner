@@ -4,6 +4,7 @@ import { Group } from '../../components/group'
 import { ButtonItem, CheckboxItem, NumberItem } from '../../components/item'
 import { WordList } from '../../components/wordlist'
 import settings from '../../settings'
+import fetchHook from '../../utils/fetch'
 import { debugCommentFilter as debug, error } from '../../utils/logger'
 import { isPagePlaylist, isPageVideo } from '../../utils/pageType'
 import { showEle } from '../../utils/tool'
@@ -343,6 +344,28 @@ if (isPageVideo() || isPagePlaylist()) {
             checkCommentList(fullSite).then().catch()
         }
     }
+
+    // 评论区过滤，新旧通用，在获取评论相关API后触发检测
+    fetchHook.addPostFn((input: RequestInfo | URL, init: RequestInit | undefined, _resp?: Response) => {
+        if (typeof input === 'string' && init?.method?.toUpperCase() === 'GET' && input.includes('api.bilibili.com')) {
+            // 主评论载入
+            if (input.includes('/v2/reply/wbi/main')) {
+                let cnt = 0
+                const id = setInterval(() => {
+                    check(false)
+                    ++cnt > 20 && clearInterval(id)
+                }, 300)
+            }
+            // 二级评论翻页
+            if (input.includes('/v2/reply/reply')) {
+                let cnt = 0
+                const id = setInterval(() => {
+                    check(true)
+                    ++cnt > 10 && clearInterval(id)
+                }, 500)
+            }
+        }
+    })
 
     // 右键监听函数, 屏蔽评论用户
     const contextMenuFunc = () => {

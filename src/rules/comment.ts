@@ -494,14 +494,14 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
         new CheckboxItem({
             itemID: 'video-page-hide-comment',
             description: '隐藏 视频评论区 (播放页/番剧页)',
-            itemCSS: `#comment bili-comments, #comment-module bili-comments {display: none !important;}`,
+            itemCSS: `#commentapp bili-comments, #comment-module {display: none !important;}`,
         }),
         // 隐藏 动态评论区 (动态页/空间页)
         new CheckboxItem({
             itemID: 'dynamic-page-hide-all-comment',
             description: '隐藏 动态评论区 (动态页/空间页)',
             itemCSS: `
-                .bili-comment-container, .bili-tabs {display: none !important;}
+                .comment-wrap bili-comments {display: none !important;}
                 .bili-opus-view {border-radius: 6px !important;}
                 .opus-detail {margin-bottom: 10px !important; min-height: unset !important;}
                 #app .content .dyn-tabs {display: none !important;}

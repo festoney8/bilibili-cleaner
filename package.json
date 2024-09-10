@@ -1,5 +1,5 @@
 {
-    "name": "bili",
+    "name": "bilibili-cleaner",
     "private": true,
     "version": "0.0.0",
     "type": "module",
@@ -15,13 +15,16 @@
     "devDependencies": {
         "@eslint/js": "^9.10.0",
         "@vitejs/plugin-vue": "^5.1.3",
+        "autoprefixer": "^10.4.20",
         "eslint": "^9.10.0",
         "eslint-config-prettier": "^9.1.0",
         "eslint-plugin-vue": "^9.28.0",
         "globals": "^15.9.0",
         "husky": "^9.1.5",
         "lint-staged": "^15.2.10",
+        "postcss": "^8.4.45",
         "prettier": "3.3.3",
+        "tailwindcss": "^3.4.10",
         "typescript": "^5.6.2",
         "typescript-eslint": "^8.5.0",
         "vite": "^5.4.3",

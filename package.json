@@ -1,21 +1,35 @@
 {
-  "name": "bili",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "vue": "^3.4.27"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.4",
-    "typescript": "^5.4.5",
-    "vite": "^5.2.12",
-    "vite-plugin-monkey": "^4.0.0",
-    "vue-tsc": "^2.0.19"
-  }
+    "name": "bili",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vue-tsc --noEmit && vite build",
+        "preview": "vite preview",
+        "prepare": "husky"
+    },
+    "dependencies": {
+        "vue": "^3.5.4"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.10.0",
+        "@vitejs/plugin-vue": "^5.1.3",
+        "eslint": "^9.10.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-vue": "^9.28.0",
+        "globals": "^15.9.0",
+        "husky": "^9.1.5",
+        "lint-staged": "^15.2.10",
+        "prettier": "3.3.3",
+        "typescript": "^5.6.2",
+        "typescript-eslint": "^8.5.0",
+        "vite": "^5.4.3",
+        "vite-plugin-monkey": "^4.0.6",
+        "vue-tsc": "^2.1.6"
+    },
+    "lint-staged": {
+        "**/*": "prettier --write --ignore-unknown",
+        "**/*.{js,mjs,cjs,ts,vue}": "npx eslint src/** --fix"
+    }
 }

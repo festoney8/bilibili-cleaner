@@ -277,7 +277,7 @@ html[video-page-hide-right-container-live] {
 
 // 隐藏 整个右栏 (宽屏模式不适用)
 html[video-page-hide-right-container] {
-    &:not([bili-cleaner-is-wide]) .right-container {
+    &:not([player-is-wide]) .right-container {
         display: none !important;
     }
 }

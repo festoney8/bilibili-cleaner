@@ -1,5 +1,7 @@
+import { unsafeWindow } from '$'
 import { Item } from '../../../../types/item'
 import { waitForEle } from '../../../../utils/tool'
+import { wideScreenManager } from '../../../../utils/widePlayer'
 
 const disableAdjustVolume = () => {}
 
@@ -8,26 +10,22 @@ export const videoPlayerLayoutItems: Item[] = [
         type: 'switch',
         id: 'default-widescreen',
         name: '默认宽屏播放 刷新生效',
-        // Todo: 宽屏模式修改
         enableFn: async () => {
-            // wideScreenLock = true
-            // unsafeWindow.isWide = true
-            // const listener = () => {
-            //     window.scrollTo(0, 64)
-            //     // 监听宽屏按钮出现
-            //     waitForEle(document.body, '.bpx-player-ctrl-wide', (node: HTMLElement): boolean => {
-            //         return node.className.includes('bpx-player-ctrl-wide')
-            //     }).then((wideBtn) => {
-            //         if (wideBtn) {
-            //             wideBtn.click()
-            //             wideScreenLock = false
-            //         }
-            //     })
-            // }
-            // document.readyState !== 'loading' ? listener() : document.addEventListener('DOMContentLoaded', listener)
-        },
-        disableFn: async () => {
-            // wideScreenLock = false
+            unsafeWindow.isWide = true
+            wideScreenManager.lock() // 锁定宽屏模式
+            const listener = () => {
+                window.scrollTo(0, 64)
+                // 监听宽屏按钮出现
+                waitForEle(document.body, '.bpx-player-ctrl-wide', (node: HTMLElement): boolean => {
+                    return node.className.includes('bpx-player-ctrl-wide')
+                }).then((wideBtn) => {
+                    if (wideBtn) {
+                        wideBtn.click()
+                        wideScreenManager.unlock() // 解锁，允许修改宽屏模式
+                    }
+                })
+            }
+            document.readyState !== 'loading' ? listener() : document.addEventListener('DOMContentLoaded', listener)
         },
     },
     {

@@ -1,7 +1,7 @@
 // 默认宽屏播放 刷新生效
 html[default-widescreen] {
     // 修复mini播放模式主播放器宽度支撑问题
-    &[bili-cleaner-is-wide] #playerWrap:has(.bpx-player-container[data-screen='mini']) {
+    &[player-is-wide] #playerWrap:has(.bpx-player-container[data-screen='mini']) {
         width: fit-content;
     }
 }
@@ -179,7 +179,7 @@ html[video-page-exchange-player-position] {
     }
 
     // fix #80 宽屏模式下播放器遮盖up主
-    &[bili-cleaner-is-wide] body:not(.webscreen-fix) .up-panel-container {
+    &[player-is-wide] body:not(.webscreen-fix) .up-panel-container {
         position: relative !important;
 
         /*
@@ -189,7 +189,7 @@ html[video-page-exchange-player-position] {
         */
         margin-top: calc(max(min(calc(100vw * 0.9623 - 359.514px), 2010px), 923px) * 9 / 16 + 46px + 35px);
     }
-    &[bili-cleaner-is-wide] body:not(.webscreen-fix) #danmukuBox {
+    &[player-is-wide] body:not(.webscreen-fix) #danmukuBox {
         margin-top: 0 !important;
     }
 }
@@ -202,11 +202,11 @@ html[normalscreen-width] {
 
     /*
         需避免右侧视频预览 inline player 影响
-        data-screen变化慢, 播放模式判断一律用:not(), 使用html元素的bili-cleaner-is-wide加快wide模式判断
+        data-screen变化慢, 播放模式判断一律用:not(), 使用html元素的player-is-wide加快wide模式判断
     */
 
     /* 左列宽度 */
-    &:not([bili-cleaner-is-wide])
+    &:not([player-is-wide])
         :is(.left-container, .playlist-container--left):has(
             .bpx-player-container:not([data-screen='wide'], [data-screen='web'], [data-screen='full'])
         ) {
@@ -214,7 +214,7 @@ html[normalscreen-width] {
     }
 
     /* 播放器长宽 */
-    &:not([bili-cleaner-is-wide])
+    &:not([player-is-wide])
         :is(.left-container, .playlist-container--left):has(
             .bpx-player-container:not(
                     [data-screen='wide'],
@@ -230,7 +230,7 @@ html[normalscreen-width] {
     }
 
     /* 播放器外层 */
-    &:not([bili-cleaner-is-wide])
+    &:not([player-is-wide])
         :is(.left-container, .playlist-container--left):has(
             .bpx-player-container:not(
                     [data-screen='wide'],

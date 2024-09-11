@@ -1,5 +1,16 @@
 import { Item } from '../../../../types/item'
-import { isPageLiveRoom, isPageSearch } from '../../../../utils/pageType'
+import {
+    isPageBangumi,
+    isPageChannel,
+    isPageDynamic,
+    isPageHomepage,
+    isPageLiveHome,
+    isPageLiveRoom,
+    isPagePlaylist,
+    isPagePopular,
+    isPageSearch,
+    isPageVideo,
+} from '../../../../utils/pageType'
 import URLCleanerInstance from '../../../../utils/urlCleaner'
 
 export const commonBasicItems: Item[] = [
@@ -7,7 +18,34 @@ export const commonBasicItems: Item[] = [
         type: 'switch',
         id: 'border-radius',
         name: '页面直角化，去除圆角',
-        // Todo 自定义attr
+        // 根据当前页面选定attribute name
+        attrName: ((): string | undefined => {
+            if (isPageDynamic()) {
+                return 'border-radius-dynamic'
+            }
+            if (isPageLiveRoom() || isPageLiveHome()) {
+                return 'border-radius-live'
+            }
+            if (isPageSearch()) {
+                return 'border-radius-search'
+            }
+            if (isPageVideo() || isPagePlaylist()) {
+                return 'border-radius-video'
+            }
+            if (isPageBangumi()) {
+                return 'border-radius-bangumi'
+            }
+            if (isPageHomepage()) {
+                return 'border-radius-homepage'
+            }
+            if (isPagePopular()) {
+                return 'border-radius-popular'
+            }
+            if (isPageChannel()) {
+                return 'border-radius-channel'
+            }
+            return undefined
+        })(),
     },
     {
         type: 'switch',

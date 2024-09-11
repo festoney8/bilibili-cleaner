@@ -3,8 +3,6 @@ import { Item } from '../../../../types/item'
 import { matchAvidBvid, matchBvid } from '../../../../utils/tool'
 import URLCleanerInstance from '../../../../utils/urlCleaner'
 
-// Todo: 宽屏模式监听
-
 export const videoBasicItems: Item[] = [
     {
         type: 'switch',
@@ -64,7 +62,7 @@ export const videoBasicItems: Item[] = [
         type: 'switch',
         id: 'video-page-simple-share',
         name: '净化分享功能',
-        // 净化分享按钮功能
+        // 净化分享按钮写入剪贴板内容
         enableFn: async () => {
             // 监听shareBtn出现
             let counter = 0

@@ -36,6 +36,6 @@
     "lint-staged": {
         "**/*": "prettier --write --ignore-unknown",
         "**/*.{js,mjs,cjs,ts,vue}": "npx eslint src/** --fix",
-        "**/*.{scss}": "npx stylelint src/**/*.scss"
+        "**/*.{scss}": "npx stylelint src/**/*.scss --fix"
     }
 }

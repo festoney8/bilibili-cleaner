@@ -1,0 +1,8 @@
+// 修改 页面两侧边距
+html[homepage-layout-padding] {
+    .bili-feed4-layout,
+    .bili-feed4 .bili-header .bili-header__channel {
+        padding: 0 var(--homepage-layout-padding, initial) !important;
+        width: 100% !important;
+    }
+}

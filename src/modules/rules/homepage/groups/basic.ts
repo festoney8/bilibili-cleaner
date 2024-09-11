@@ -39,5 +39,4 @@ export const homepageBasicItems: Item[] = [
         id: 'homepage-revert-channel-dynamic-icon',
         name: '恢复 原始动态按钮',
     },
-    // Todo: 修改 页面两侧边距
 ]

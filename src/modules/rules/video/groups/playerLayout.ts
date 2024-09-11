@@ -132,5 +132,17 @@ export const videoPlayerLayoutItems: Item[] = [
         id: 'video-page-exchange-player-position',
         name: '播放器和视频信息 交换位置',
     },
-    // Todo: 普通播放 视频宽度调节
+    {
+        type: 'number',
+        id: 'normalscreen-width',
+        name: '普通播放 视频宽度调节（-1禁用）',
+        minValue: -1,
+        maxValue: 100,
+        defaultValue: -1,
+        disableValue: -1,
+        attrName: 'vw',
+        fn: (value: number) => {
+            document.documentElement.style.setProperty('--normalscreen-width', `${value}vw`)
+        },
+    },
 ]

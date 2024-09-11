@@ -193,3 +193,55 @@ html[video-page-exchange-player-position] {
         margin-top: 0 !important;
     }
 }
+
+// 普通播放 视频宽度调节
+html[normalscreen-width] {
+    :root {
+        --normal-width: min(calc(100vw - 400px), var(--normalscreen-width));
+    }
+
+    /*
+        需避免右侧视频预览 inline player 影响
+        data-screen变化慢, 播放模式判断一律用:not(), 使用html元素的bili-cleaner-is-wide加快wide模式判断
+    */
+
+    /* 左列宽度 */
+    &:not([bili-cleaner-is-wide])
+        :is(.left-container, .playlist-container--left):has(
+            .bpx-player-container:not([data-screen='wide'], [data-screen='web'], [data-screen='full'])
+        ) {
+        flex-basis: var(--normal-width) !important;
+    }
+
+    /* 播放器长宽 */
+    &:not([bili-cleaner-is-wide])
+        :is(.left-container, .playlist-container--left):has(
+            .bpx-player-container:not(
+                    [data-screen='wide'],
+                    [data-screen='web'],
+                    [data-screen='full'],
+                    [data-screen='mini']
+                )
+        )
+        :is(.bpx-player-video-area, video) {
+        width: 100% !important;
+        height: unset !important;
+        aspect-ratio: 16 / 9 !important;
+    }
+
+    /* 播放器外层 */
+    &:not([bili-cleaner-is-wide])
+        :is(.left-container, .playlist-container--left):has(
+            .bpx-player-container:not(
+                    [data-screen='wide'],
+                    [data-screen='web'],
+                    [data-screen='full'],
+                    [data-screen='mini']
+                )
+        )
+        :is(.bpx-player-primary-area, .bpx-player-container, .bpx-docker-major, #bilibili-player, #playerWrap) {
+        width: var(--normal-width) !important;
+        height: unset !important;
+        min-height: calc(var(--normal-width) * 9 / 16) !important;
+    }
+}

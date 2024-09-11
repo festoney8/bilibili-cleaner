@@ -108,3 +108,12 @@ html[channel-hide-sticky-header] {
         display: none !important;
     }
 }
+
+// 修改 页面两侧边距
+html[channel-layout-padding] {
+    .go-back-btn,
+    .channel-layout,
+    .channel-outer-nav {
+        padding: 0 var(--channel-layout-padding) !important;
+    }
+}

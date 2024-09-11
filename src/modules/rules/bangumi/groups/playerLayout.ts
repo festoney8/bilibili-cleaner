@@ -125,5 +125,17 @@ export const bangumiPlayerLayoutItems: Item[] = [
         disableFn: async () => document.removeEventListener('wheel', disableAdjustVolume),
         enableFnRunAt: 'document-end',
     },
-    // Todo: 普通播放 视频宽度调节
+    {
+        type: 'number',
+        id: 'normalscreen-width',
+        name: '普通播放 视频宽度调节（-1禁用）',
+        minValue: -1,
+        maxValue: 100,
+        defaultValue: -1,
+        disableValue: -1,
+        attrName: 'vw',
+        fn: (value: number) => {
+            document.documentElement.style.setProperty('--normalscreen-width', `${value}vw`)
+        },
+    },
 ]

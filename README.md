@@ -1,3 +1,11 @@
+# V4 WIP, DO NOT USE
+
+# V4 WIP, DO NOT USE
+
+# V4 WIP, DO NOT USE
+
+---
+
 <div align="center">
 <image src="./images/logo.png" height="100"></image>
 <h1>bilibili 页面净化大师</h1>
@@ -231,7 +239,7 @@
 ![](images/how-to-import.png)
 
 </details>
-<details>
+<details>;
 <summary><b>备份 TamperMonkey 数据到云端</b></summary>
 <br>
 

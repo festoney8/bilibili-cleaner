@@ -85,5 +85,6 @@ export const liveHeaderLeftItems: Item[] = [
         type: 'switch',
         id: 'live-page-header-showmore-link',
         name: '隐藏 更多',
+        defaultEnable: true,
     },
 ]

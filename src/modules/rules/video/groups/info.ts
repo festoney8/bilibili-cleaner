@@ -30,5 +30,6 @@ export const videoInfoItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-video-info-argue',
         name: '隐藏 温馨提示(饮酒/危险/AI生成)',
+        defaultEnable: true,
     },
 ]

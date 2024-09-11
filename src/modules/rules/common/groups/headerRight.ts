@@ -10,6 +10,7 @@ export const commonHeaderRightItems: Item[] = [
         type: 'switch',
         id: 'common-hide-nav-vip',
         name: '隐藏 大会员',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -40,6 +41,37 @@ export const commonHeaderRightItems: Item[] = [
         type: 'switch',
         id: 'common-nav-favorite-select-watchlater',
         name: '收藏弹出框 自动选中稍后再看',
+        enableFn: async () => {
+            let cnt = 0
+            const id = setInterval(() => {
+                const ele = document.querySelector(
+                    `.right-entry .v-popover-wrap:has(.right-entry__outside[href$="/favlist"]),
+                        .nav-user-center .user-con .item:has(.mini-favorite)`,
+                )
+                if (ele) {
+                    clearInterval(id)
+                    ele.addEventListener('mouseenter', () => {
+                        let innerCnt = 0
+                        const watchLaterId = setInterval(() => {
+                            const watchlater = document.querySelector(
+                                `:is(.favorite-panel-popover, .vp-container .tabs-panel) .tab-item:nth-child(2)`,
+                            ) as HTMLElement
+                            if (watchlater) {
+                                watchlater.click()
+                                clearInterval(watchLaterId)
+                            } else {
+                                innerCnt++
+                                innerCnt > 250 && clearInterval(watchLaterId)
+                            }
+                        }, 20)
+                    })
+                } else {
+                    cnt++
+                    cnt > 100 && clearInterval(id)
+                }
+            }, 200)
+        },
+        enableFnRunAt: 'document-end',
     },
     {
         type: 'switch',

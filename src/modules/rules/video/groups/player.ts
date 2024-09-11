@@ -15,6 +15,7 @@ export const videoPlayerItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-bpx-player-bili-qoe-feedback',
         name: '隐藏 播放效果调查',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -70,11 +71,13 @@ export const videoPlayerItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-bpx-player-top-left-follow',
         name: '隐藏 左上角 关注UP主',
+        defaultEnable: true,
     },
     {
         type: 'switch',
         id: 'video-page-hide-bpx-player-top-issue',
         name: '隐藏 右上角 反馈按钮',
+        defaultEnable: true,
     },
     {
         type: 'switch',

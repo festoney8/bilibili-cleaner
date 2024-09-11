@@ -20,6 +20,7 @@ export const channelRcmdItems: Item[] = [
         type: 'switch',
         id: 'channel-hide-ad-banner',
         name: '隐藏 广告banner',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -30,6 +31,7 @@ export const channelRcmdItems: Item[] = [
         type: 'switch',
         id: 'channel-hide-danmaku-count',
         name: '隐藏 弹幕数',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -40,6 +42,7 @@ export const channelRcmdItems: Item[] = [
         type: 'switch',
         id: 'channel-feed-card-body-grid-gap',
         name: '优化 近期投稿栏目 视频行距',
+        defaultEnable: true,
     },
     {
         type: 'switch',

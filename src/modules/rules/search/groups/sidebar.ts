@@ -5,6 +5,7 @@ export const searchSidebarItems: Item[] = [
         type: 'switch',
         id: 'hide-search-page-customer-service',
         name: '隐藏 客服',
+        defaultEnable: true,
     },
     {
         type: 'switch',

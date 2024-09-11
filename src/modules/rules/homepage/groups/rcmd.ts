@@ -1,4 +1,5 @@
 import { Item } from '../../../../types/item'
+import fetchHook from '../../../../utils/fetch'
 
 export const homepageRcmdItems: Item[] = [
     {
@@ -25,6 +26,7 @@ export const homepageRcmdItems: Item[] = [
         type: 'switch',
         id: 'homepage-hide-danmaku-count',
         name: '隐藏 弹幕数',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -45,6 +47,7 @@ export const homepageRcmdItems: Item[] = [
         type: 'switch',
         id: 'homepage-hide-ad-card',
         name: '隐藏 广告',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -55,6 +58,7 @@ export const homepageRcmdItems: Item[] = [
         type: 'switch',
         id: 'homepage-simple-sub-area-card-recommend',
         name: '简化 分区视频推荐',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -75,10 +79,23 @@ export const homepageRcmdItems: Item[] = [
         type: 'switch',
         id: 'homepage-increase-rcmd-load-size',
         name: '增大 视频载入 视频数量 (实验功能)',
+        enableFn: () => {
+            fetchHook.addPreFn((input: RequestInfo | URL, init: RequestInit | undefined): RequestInfo | URL => {
+                if (
+                    typeof input === 'string' &&
+                    input.includes('api.bilibili.com') &&
+                    input.includes('feed/rcmd') &&
+                    init?.method?.toUpperCase() === 'GET'
+                ) {
+                    input = input.replace('&ps=12&', '&ps=24&')
+                }
+                return input
+            })
+        },
     },
     {
         type: 'switch',
-        id: 'homepage-rcmd-video-preload',
-        name: '启用 预加载下一屏 (实验功能)\n需开启 隐藏分区视频推荐',
+        id: 'homepage-rcmd-video-load-optimize',
+        name: '优化 视频加载',
     },
 ]

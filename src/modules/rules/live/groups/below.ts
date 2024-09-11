@@ -5,6 +5,7 @@ export const liveBelowItems: Item[] = [
         type: 'switch',
         id: 'live-page-flip-view',
         name: '隐藏 活动海报',
+        defaultEnable: true,
     },
     {
         type: 'switch',

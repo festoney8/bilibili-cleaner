@@ -10,6 +10,7 @@ export const videoSidebarItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-sidenav-customer-service',
         name: '隐藏 客服',
+        defaultEnable: true,
     },
     {
         type: 'switch',

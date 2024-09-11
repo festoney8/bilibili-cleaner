@@ -5,11 +5,13 @@ export const dynamicRightItems: Item[] = [
         type: 'switch',
         id: 'hide-dynamic-page-bili-dyn-banner',
         name: '隐藏 社区中心',
+        defaultEnable: true,
     },
     {
         type: 'switch',
         id: 'hide-dynamic-page-bili-dyn-ads',
         name: '隐藏 广告',
+        defaultEnable: true,
     },
     {
         type: 'switch',

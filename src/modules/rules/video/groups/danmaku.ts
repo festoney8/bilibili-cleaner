@@ -30,11 +30,13 @@ export const videoDanmakuItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-bpx-player-dm-input',
         name: '隐藏 占位文字',
+        defaultEnable: true,
     },
     {
         type: 'switch',
         id: 'video-page-hide-bpx-player-dm-hint',
         name: '隐藏 弹幕礼仪',
+        defaultEnable: true,
     },
     {
         type: 'switch',

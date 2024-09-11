@@ -9,7 +9,8 @@
         "resolveJsonModule": true,
         "isolatedModules": true,
         "esModuleInterop": true,
-        "lib": ["ESNext", "DOM"],
+        // https://stackoverflow.com/questions/63310897
+        "lib": ["ESNext", "dom.iterable", "DOM"],
         "skipLibCheck": true,
         "noEmit": true
     },

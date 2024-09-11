@@ -197,14 +197,9 @@ html[homepage-increase-rcmd-load-size] {
     }
 }
 
-// 启用 预加载下一屏 (实验功能)
-html[homepage-rcmd-video-preload] {
-    .load-more-anchor.preload {
-        position: fixed;
-        z-index: -99999;
-        visibility: hidden;
-        opacity: 0;
-        top: 0;
-        left: 0;
+// 优化 视频加载
+html[homepage-rcmd-video-load-optimize] {
+    .bili-video-card:not(.is-rcmd):has(~ .load-more-anchor) {
+        display: none !important;
     }
 }

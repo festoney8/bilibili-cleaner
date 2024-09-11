@@ -20,6 +20,7 @@ export const dynamicCenterDynItems: Item[] = [
         type: 'switch',
         id: 'hide-dynamic-page-bili-dyn-dispute',
         name: '隐藏 警告notice',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -85,5 +86,17 @@ export const dynamicCenterDynItems: Item[] = [
         type: 'switch',
         id: 'dynamic-page-unfold-dynamic',
         name: '自动展开 相同UP主被折叠的动态',
+        enableFn: async () => {
+            // 大量动态下，单次耗时10ms内
+            const unfold = () => {
+                const dynFoldNodes = document.querySelectorAll('main .bili-dyn-list__item .bili-dyn-item-fold')
+                if (dynFoldNodes.length) {
+                    dynFoldNodes.forEach((e) => {
+                        e instanceof HTMLDivElement && e.click()
+                    })
+                }
+            }
+            setInterval(unfold, 500)
+        },
     },
 ]

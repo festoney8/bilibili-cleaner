@@ -15,6 +15,7 @@ export const videoRightItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-right-container-ad',
         name: '隐藏 广告',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -25,6 +26,7 @@ export const videoRightItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-right-container-danmaku',
         name: '隐藏 弹幕列表',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -40,6 +42,7 @@ export const videoRightItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-right-container-section-height',
         name: '优化 视频合集列表高度',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -55,6 +58,7 @@ export const videoRightItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-right-container-section-abstract',
         name: '隐藏 视频合集 简介',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -70,6 +74,7 @@ export const videoRightItems: Item[] = [
         type: 'switch',
         id: 'video-page-right-container-set-info-bottom',
         name: '相关视频 视频信息置底',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -100,11 +105,13 @@ export const videoRightItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-right-container-right-bottom-banner',
         name: '隐藏 活动banner',
+        defaultEnable: true,
     },
     {
         type: 'switch',
         id: 'video-page-hide-right-container-live',
         name: '隐藏 直播间推荐',
+        defaultEnable: true,
     },
     {
         type: 'switch',

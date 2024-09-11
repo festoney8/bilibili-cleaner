@@ -5,11 +5,13 @@ export const livePlayerItems: Item[] = [
         type: 'switch',
         id: 'live-page-head-web-player-icon-feedback',
         name: '隐藏 反馈按钮',
+        defaultEnable: true,
     },
     {
         type: 'switch',
         id: 'live-page-head-web-player-shop-popover-vm',
         name: '隐藏 购物小橙车提示',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -20,6 +22,7 @@ export const livePlayerItems: Item[] = [
         type: 'switch',
         id: 'live-page-web-player-watermark',
         name: '隐藏 直播水印',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -30,11 +33,13 @@ export const livePlayerItems: Item[] = [
         type: 'switch',
         id: 'live-page-head-web-player-game-id',
         name: '隐藏 幻星互动游戏',
+        defaultEnable: true,
     },
     {
         type: 'switch',
         id: 'live-page-head-web-player-research-container',
         name: '隐藏 直播卡顿打分',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -45,16 +50,6 @@ export const livePlayerItems: Item[] = [
         type: 'switch',
         id: 'live-page-combo-danmaku',
         name: '隐藏 播放器顶部变动计数弹幕',
-    },
-    {
-        type: 'switch',
-        id: 'live-page-clean-counter-danmaku',
-        name: '隐藏 计数结尾弹幕，如 ???? x24',
-    },
-    {
-        type: 'switch',
-        id: 'live-page-clean-redundant-text-danmaku',
-        name: '隐藏 文字重复多遍的弹幕 (n≥5) 如 prprprprpr, 88888888',
     },
     {
         type: 'switch',

@@ -10,6 +10,7 @@ export const searchBasicItems: Item[] = [
         type: 'switch',
         id: 'hide-search-page-ad',
         name: '隐藏 搜索结果中的广告',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -25,6 +26,7 @@ export const searchBasicItems: Item[] = [
         type: 'switch',
         id: 'hide-search-page-danmaku-count',
         name: '隐藏 弹幕数量',
+        defaultEnable: true,
     },
     {
         type: 'switch',

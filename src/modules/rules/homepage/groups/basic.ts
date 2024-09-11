@@ -1,6 +1,6 @@
-import { ISwitchItem } from '../../../../types/item'
+import { Item } from '../../../../types/item'
 
-export const homepageBasicItems: ISwitchItem[] = [
+export const homepageBasicItems: Item[] = [
     {
         type: 'switch',
         id: 'homepage-hide-banner',
@@ -10,6 +10,7 @@ export const homepageBasicItems: ISwitchItem[] = [
         type: 'switch',
         id: 'homepage-hide-recommend-swipe',
         name: '隐藏 大图活动轮播',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -25,15 +26,18 @@ export const homepageBasicItems: ISwitchItem[] = [
         type: 'switch',
         id: 'homepage-hide-sticky-subarea',
         name: '隐藏 滚动页面时 顶部吸附分区栏',
+        defaultEnable: true,
     },
     {
         type: 'switch',
         id: 'homepage-hide-adblock-tips',
         name: '隐藏 顶部adblock提示',
+        defaultEnable: true,
     },
     {
         type: 'switch',
         id: 'homepage-revert-channel-dynamic-icon',
         name: '恢复 原始动态按钮',
     },
+    // Todo: 修改 页面两侧边距
 ]

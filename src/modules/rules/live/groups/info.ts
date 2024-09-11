@@ -30,16 +30,19 @@ export const liveInfoItems: Item[] = [
         type: 'switch',
         id: 'live-page-head-info-vm-upper-row-report',
         name: '隐藏 举报',
+        defaultEnable: true,
     },
     {
         type: 'switch',
         id: 'live-page-head-info-vm-upper-row-share',
         name: '隐藏 分享',
+        defaultEnable: true,
     },
     {
         type: 'switch',
         id: 'live-page-head-info-vm-lower-row-hot-rank',
         name: '隐藏 人气榜',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -50,6 +53,7 @@ export const liveInfoItems: Item[] = [
         type: 'switch',
         id: 'live-page-head-info-vm-lower-row-activity-gather-entry',
         name: '隐藏 活动',
+        defaultEnable: true,
     },
     {
         type: 'switch',

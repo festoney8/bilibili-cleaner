@@ -10,11 +10,13 @@ export const bangumiPlayerItems: Item[] = [
         type: 'switch',
         id: 'bangumi-page-hide-bpx-player-top-follow',
         name: '隐藏 追番/追剧按钮 ★',
+        defaultEnable: true,
     },
     {
         type: 'switch',
         id: 'video-page-hide-bpx-player-top-issue',
         name: '隐藏 反馈按钮',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -25,6 +27,7 @@ export const bangumiPlayerItems: Item[] = [
         type: 'switch',
         id: 'bangumi-page-hide-bpx-player-record-item-wrap',
         name: '隐藏 视频内封审核号(非内嵌) ★',
+        defaultEnable: true,
     },
     {
         type: 'switch',

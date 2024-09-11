@@ -5,11 +5,13 @@ export const homepageSidebarItems: Item[] = [
         type: 'switch',
         id: 'homepage-hide-desktop-download-tip',
         name: '隐藏 下载桌面端弹窗',
+        defaultEnable: true,
     },
     {
         type: 'switch',
         id: 'homepage-hide-trial-feed-wrap',
         name: '隐藏 下滑浏览推荐提示',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -30,6 +32,7 @@ export const homepageSidebarItems: Item[] = [
         type: 'switch',
         id: 'homepage-hide-feedback',
         name: '隐藏 客服和反馈',
+        defaultEnable: true,
     },
     {
         type: 'switch',

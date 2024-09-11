@@ -15,11 +15,13 @@ export const liveRightItems: Item[] = [
         type: 'switch',
         id: 'live-page-compact-danmaku',
         name: '使弹幕列表紧凑',
+        defaultEnable: true,
     },
     {
         type: 'switch',
         id: 'live-page-convention-msg',
         name: '隐藏 系统提示',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -35,6 +37,7 @@ export const liveRightItems: Item[] = [
         type: 'switch',
         id: 'live-page-wealth-medal-ctnr',
         name: '隐藏 用户等级',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -65,26 +68,31 @@ export const liveRightItems: Item[] = [
         type: 'switch',
         id: 'live-page-brush-prompt',
         name: '隐藏 底部滚动提示',
+        defaultEnable: true,
     },
     {
         type: 'switch',
         id: 'live-page-combo-card-countdown',
         name: '隐藏 互动框 (倒计时互动)',
+        defaultEnable: true,
     },
     {
         type: 'switch',
         id: 'live-page-combo-card',
         name: '隐藏 互动框 (他们都在说)',
+        defaultEnable: true,
     },
     {
         type: 'switch',
         id: 'live-page-service-card-container',
         name: '隐藏 互动框 (找TA玩)',
+        defaultEnable: true,
     },
     {
         type: 'switch',
         id: 'live-page-vote-card',
         name: '隐藏 互动框 投票',
+        defaultEnable: true,
     },
     {
         type: 'switch',

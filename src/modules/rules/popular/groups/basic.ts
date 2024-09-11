@@ -3,37 +3,33 @@ import { Item } from '../../../../types/item'
 export const popularBasicItems: Item[] = [
     {
         type: 'switch',
-        id: 'hide-search-page-search-sticky-header',
-        name: '顶栏 滚动页面后不再吸附顶部',
+        id: 'homepage-hide-banner',
+        name: '隐藏 横幅banner',
     },
     {
         type: 'switch',
-        id: 'hide-search-page-ad',
-        name: '隐藏 搜索结果中的广告',
+        id: 'homepage-hide-sticky-header',
+        name: '隐藏 滚动页面时 顶部吸附顶栏',
     },
     {
         type: 'switch',
-        id: 'hide-search-page-bangumi-pgc-list',
-        name: '隐藏 搜索结果顶部 版权作品',
+        id: 'popular-hide-tips',
+        name: '隐藏 tips',
+        defaultEnable: true,
     },
     {
         type: 'switch',
-        id: 'hide-search-page-activity-game-list',
-        name: '隐藏 搜索结果顶部 游戏、热搜话题',
-    },
-    {
-        type: 'switch',
-        id: 'hide-search-page-danmaku-count',
-        name: '隐藏 弹幕数量',
-    },
-    {
-        type: 'switch',
-        id: 'hide-search-page-date',
-        name: '隐藏 视频日期',
-    },
-    {
-        type: 'switch',
-        id: 'hide-search-page-bili-watch-later',
+        id: 'popular-hide-watchlater',
         name: '隐藏 稍后再看按钮',
+    },
+    {
+        type: 'switch',
+        id: 'popular-hide-danmaku-count',
+        name: '隐藏 弹幕数',
+    },
+    {
+        type: 'switch',
+        id: 'font-patch',
+        name: '修复字体',
     },
 ]

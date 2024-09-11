@@ -20,10 +20,12 @@ export const liveHeaderRightItems: Item[] = [
         type: 'switch',
         id: 'live-page-header-bili-download-panel',
         name: '隐藏 下载客户端',
+        defaultEnable: true,
     },
     {
         type: 'switch',
         id: 'live-page-header-go-live',
         name: '隐藏 我要开播',
+        defaultEnable: true,
     },
 ]

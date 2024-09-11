@@ -60,6 +60,7 @@ export const commonHeaderLeftItems: Item[] = [
         type: 'switch',
         id: 'common-hide-nav-download-app',
         name: '隐藏 下载客户端',
+        defaultEnable: true,
     },
     {
         type: 'switch',

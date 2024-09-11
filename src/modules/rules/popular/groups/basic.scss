@@ -1,48 +1,197 @@
-// 顶栏 滚动页面后不再吸附顶部
-html[hide-search-page-search-sticky-header] {
-    .search-sticky-header {
+// 隐藏 横幅banner
+html[homepage-hide-banner] {
+    .header-banner__inner,
+    .bili-header__banner {
         display: none !important;
+    }
+    .bili-header .bili-header__bar:not(.slide-down) {
+        position: relative !important;
+        box-shadow: 0 2px 4px #00000014;
+    }
+    .bili-header__channel {
+        margin-top: 5px !important;
+    }
+
+    /* icon和文字颜色 */
+    .bili-header .right-entry__outside .right-entry-icon {
+        color: #18191c !important;
+    }
+    .bili-header .left-entry .entry-title,
+    .bili-header .left-entry .download-entry,
+    .bili-header .left-entry .default-entry,
+    .bili-header .left-entry .loc-entry {
+        color: #18191c !important;
+    }
+    .bili-header .left-entry .entry-title .zhuzhan-icon {
+        color: #00aeec !important;
+    }
+    .bili-header .right-entry__outside .right-entry-text {
+        color: #61666d !important;
+    }
+
+    /* header滚动后渐变出现, 否则闪动 */
+    #i_cecream .bili-header__bar.slide-down {
+        transition:
+            background-color 0.3s ease-out,
+            box-shadow 0.3s ease-out !important;
+    }
+    #i_cecream .bili-header__bar:not(.slide-down) {
+        transition: background-color 0.3s ease-out !important;
+    }
+
+    /* header高度 */
+    #biliMainHeader {
+        min-height: unset !important;
+    }
+
+    /* 旧版banner */
+    #internationalHeader .bili-banner {
+        display: none;
+    }
+    .mini-header__content {
+        box-shadow: 0 2px 4px #00000014;
+    }
+    .bili-icon_dingdao_zhuzhan::before {
+        color: #00aeec;
+    }
+    .mini-header__content .nav-link .nav-link-ul .nav-link-item .link {
+        color: black;
+        text-shadow: unset;
+    }
+    .mini-header__content .nav-search-box {
+        border: 1px solid #e3e5e7;
+    }
+    #nav_searchform {
+        background-color: #f2f3f4 !important;
+    }
+    .bili-header-m .nav-search .nav-search-btn,
+    .international-header .nav-search .nav-search-btn {
+        background-color: #f2f3f4;
+    }
+    .mini-header__content .nav-user-center .user-con .item .name {
+        color: black;
+        text-shadow: unset;
     }
 }
 
-// 隐藏 搜索结果中的广告
-html[hide-search-page-ad] {
-    .video-list.row > div:has([href*='cm.bilibili.com']) {
+// 隐藏 滚动页面时 顶部吸附顶栏
+html[homepage-hide-sticky-header] {
+    .bili-header .left-entry__title svg {
         display: none !important;
+    }
+
+    /* 高优先覆盖!important */
+    #i_cecream .bili-feed4 .bili-header .slide-down {
+        box-shadow: unset !important;
+    }
+    #nav-searchform.is-actived::before,
+    #nav-searchform.is-exper::before,
+    #nav-searchform.is-exper:hover::before,
+    #nav-searchform.is-focus::before,
+    .bili-header .slide-down {
+        background: unset !important;
+    }
+    .bili-header .slide-down {
+        position: absolute !important;
+        top: 0;
+        animation: unset !important;
+        box-shadow: unset !important;
+    }
+    .bili-header .slide-down .left-entry {
+        margin-right: 30px !important;
+    }
+    .bili-header .slide-down .left-entry .default-entry,
+    .bili-header .slide-down .left-entry .download-entry,
+    .bili-header .slide-down .left-entry .entry-title,
+    .bili-header .slide-down .left-entry .entry-title .zhuzhan-icon,
+    .bili-header .slide-down .left-entry .loc-entry,
+    .bili-header .slide-down .left-entry .loc-mc-box__text,
+    .bili-header .slide-down .left-entry .mini-header__title,
+    .bili-header .slide-down .right-entry .right-entry__outside .right-entry-icon,
+    .bili-header .slide-down .right-entry .right-entry__outside .right-entry-text {
+        color: #fff !important;
+    }
+    .bili-header .slide-down .download-entry,
+    .bili-header .slide-down .loc-entry {
+        display: unset !important;
+    }
+    .bili-header .slide-down .center-search-container,
+    .bili-header .slide-down .center-search-container .center-search__bar {
+        margin: 0 auto !important;
+    }
+
+    /* 不可添加important, 否则与Evolved的黑暗模式冲突 */
+    #nav-searchform {
+        background: #f1f2f3;
+    }
+    #nav-searchform:hover {
+        background-color: var(--bg1) !important;
+        opacity: 1;
+    }
+    #nav-searchform.is-focus {
+        border: 1px solid var(--line_regular) !important;
+        border-bottom: none !important;
+        background: var(--bg1) !important;
+    }
+    #nav-searchform.is-actived.is-exper4-actived,
+    #nav-searchform.is-focus.is-exper4-actived {
+        border-bottom: unset !important;
     }
 }
 
-// 隐藏 搜索结果顶部 版权作品
-html[hide-search-page-bangumi-pgc-list] {
-    .bangumi-pgc-list {
+// 隐藏 tips
+html[popular-hide-tips] {
+    .popular-list .popular-tips,
+    .rank-container .rank-tips,
+    .history-list .history-tips {
         display: none !important;
     }
-}
-
-// 隐藏 搜索结果顶部 游戏、热搜话题
-html[hide-search-page-activity-game-list] {
-    .activity-game-list {
-        display: none !important;
-    }
-}
-
-// 隐藏 弹幕数量
-html[hide-search-page-danmaku-count] {
-    .bili-video-card .bili-video-card__stats--left .bili-video-card__stats--item:nth-child(2) {
-        display: none !important;
-    }
-}
-
-// 隐藏 视频日期
-html[hide-search-page-date] {
-    .bili-video-card .bili-video-card__info--date {
-        display: none !important;
+    .rank-container .rank-tab-wrap {
+        margin-bottom: 0 !important;
+        padding: 10px 0 !important;
     }
 }
 
 // 隐藏 稍后再看按钮
-html[hide-search-page-bili-watch-later] {
-    .bili-video-card .bili-watch-later {
+html[popular-hide-watchlater] {
+    .rank-container .rank-item .van-watchlater,
+    .history-list .video-card .van-watchlater,
+    .history-list .video-card .watch-later,
+    .weekly-list .video-card .van-watchlater,
+    .weekly-list .video-card .watch-later,
+    .popular-list .video-card .van-watchlater,
+    .popular-list .video-card .watch-later {
         display: none !important;
+    }
+}
+
+// 隐藏 弹幕数
+html[popular-hide-danmaku-count] {
+    .popular-list .video-stat .like-text,
+    .weekly-list .video-stat .like-text,
+    .history-list .video-stat .like-text,
+    .rank-list .rank-item .detail-state .data-box:nth-child(2) {
+        display: none !important;
+    }
+    .rank-list .rank-item .detail-state .data-box:nth-child(1) {
+        margin: 0 !important;
+    }
+    .video-card .video-stat .play-text {
+        margin-right: 0 !important;
+    }
+}
+
+// 修复字体
+html[font-patch] {
+    #internationalHeader,
+    .international-header,
+    .suggest-wrap,
+    .van-popover {
+        font-family: 'PingFang SC', 'HarmonyOS_Regular', 'Helvetica Neue', 'Microsoft YaHei', sans-serif !important;
+        font-weight: 400;
+    }
+    #app {
+        font-family: 'PingFang SC', 'HarmonyOS_Medium', 'Helvetica Neue', 'Microsoft YaHei', sans-serif !important;
+        font-weight: 500;
     }
 }

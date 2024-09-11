@@ -5,6 +5,7 @@ export const videoUpInfoItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-up-sendmsg',
         name: '隐藏 发消息',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -30,5 +31,6 @@ export const videoUpInfoItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-up-membersinfo-normal-header',
         name: '隐藏 创作团队header',
+        defaultEnable: true,
     },
 ]

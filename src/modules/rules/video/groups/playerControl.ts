@@ -85,5 +85,6 @@ export const videoPlayerControlItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-bpx-player-shadow-progress-area',
         name: '隐藏 底边mini视频进度',
+        defaultEnable: true,
     },
 ]

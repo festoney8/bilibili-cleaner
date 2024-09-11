@@ -1,0 +1,28 @@
+// 顶栏 不再吸附顶部
+html[hide-dynamic-page-fixed-header] {
+    .fixed-header .bili-header__bar {
+        position: relative !important;
+    }
+    /* 高权限覆盖*/
+    aside.right section.sticky {
+        top: 15px !important;
+    }
+}
+
+// 交换 左栏与右栏位置
+html[exchange-dynamic-page-left-right-aside] {
+    aside.left {
+        order: 3;
+        margin-right: 0 !important;
+    }
+    main {
+        order: 2;
+    }
+    aside.right {
+        order: 1;
+        margin-right: 12px !important;
+    }
+    .bili-dyn-sidebar {
+        order: 4;
+    }
+}

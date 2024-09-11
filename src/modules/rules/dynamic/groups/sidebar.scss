@@ -1,0 +1,16 @@
+// 隐藏 回到旧版
+html[hide-dynamic-page-sidebar-old-version] {
+    .bili-dyn-sidebar .bili-dyn-sidebar__btn:first-child {
+        visibility: hidden !important;
+    }
+    .opus-detail .side-toolbar__bottom .side-toolbar__btn:not(.backtop) {
+        display: none !important;
+    }
+}
+
+// 隐藏 回顶部
+html[hide-dynamic-page-sidebar-back-to-top] {
+    .bili-dyn-sidebar .bili-dyn-sidebar__btn:last-child {
+        visibility: hidden !important;
+    }
+}

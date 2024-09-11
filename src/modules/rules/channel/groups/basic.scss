@@ -1,0 +1,106 @@
+// 隐藏 横幅banner
+html[homepage-hide-banner] {
+    .header-banner__inner,
+    .bili-header__banner {
+        display: none !important;
+    }
+    .bili-header .bili-header__bar:not(.slide-down) {
+        position: relative !important;
+        box-shadow: 0 2px 4px #00000014;
+    }
+    .bili-header__channel {
+        margin-top: 5px !important;
+    }
+    /* icon和文字颜色 */
+    .bili-header .right-entry__outside .right-entry-icon {
+        color: #18191c !important;
+    }
+    .bili-header .left-entry .entry-title,
+    .bili-header .left-entry .download-entry,
+    .bili-header .left-entry .default-entry,
+    .bili-header .left-entry .loc-entry {
+        color: #18191c !important;
+    }
+    .bili-header .left-entry .entry-title .zhuzhan-icon {
+        color: #00aeec !important;
+    }
+    .bili-header .right-entry__outside .right-entry-text {
+        color: #61666d !important;
+    }
+    /* header滚动后渐变出现, 否则闪动 */
+    #i_cecream .bili-header__bar.slide-down {
+        transition:
+            background-color 0.3s ease-out,
+            box-shadow 0.3s ease-out !important;
+    }
+    #i_cecream .bili-header__bar:not(.slide-down) {
+        transition: background-color 0.3s ease-out !important;
+    }
+    /* header高度 */
+    #biliMainHeader {
+        min-height: unset !important;
+    }
+    /* 分区菜单 第一排按钮的二级菜单下置  */
+    .v-popover.is-top {
+        padding-top: 5px;
+        padding-bottom: unset !important;
+        bottom: unset !important;
+    }
+    @media (min-width: 2200px) {
+        .v-popover.is-top {
+            top: 32px;
+        }
+    }
+    @media (min-width: 1701px) and (max-width: 2199.9px) {
+        .v-popover.is-top {
+            top: 32px;
+        }
+    }
+    @media (min-width: 1367px) and (max-width: 1700.9px) {
+        .v-popover.is-top {
+            top: 28px;
+        }
+    }
+    @media (min-width: 1100px) and (max-width: 1366.9px) {
+        .v-popover.is-top {
+            top: 28px;
+        }
+    }
+    @media (max-width: 1099.9px) {
+        .v-popover.is-top {
+            top: 24px;
+        }
+    }
+}
+
+// 隐藏 全站分区栏
+html[channel-hide-subarea] {
+    #i_cecream .bili-header__channel {
+        display: none !important;
+    }
+}
+
+// 隐藏 大图轮播
+html[channel-hide-carousel] {
+    .channel-swiper,
+    .channel-swiper-client {
+        display: none !important;
+    }
+}
+
+// 隐藏 滚动页面时 顶部吸附 分区栏
+html[channel-hide-sticky-subchannel] {
+    .fixed-header-nav-sticky {
+        display: none !important;
+    }
+    .fixed-wrapper-shown {
+        box-shadow: unset !important;
+    }
+}
+
+// 隐藏 滚动页面时 顶部吸附 顶栏
+html[channel-hide-sticky-header] {
+    .bili-header__bar.slide-down {
+        display: none !important;
+    }
+}

@@ -1,0 +1,264 @@
+// 折叠 排行榜/大航海
+html[live-page-rank-list-vm-fold] {
+    #rank-list-vm {
+        max-height: 32px;
+        transition: max-height 0.3s linear;
+        overflow: hidden;
+    }
+    .player-full-win #rank-list-vm {
+        border-radius: 0;
+    }
+    #rank-list-vm:hover {
+        max-height: 178px;
+        overflow: unset;
+    }
+    /* 弹幕栏 */
+    #aside-area-vm {
+        display: flex;
+        flex-direction: column;
+    }
+    .chat-history-panel {
+        flex: 1;
+    }
+    .chat-history-panel .danmaku-at-prompt {
+        bottom: 160px;
+    }
+}
+
+// 隐藏 排行榜/大航海
+html[live-page-rank-list-vm] {
+    #rank-list-vm {
+        display: none !important;
+    }
+    /* 弹幕栏 */
+    #aside-area-vm {
+        display: flex;
+        flex-direction: column;
+    }
+    .chat-history-panel {
+        flex: 1;
+    }
+    .chat-history-panel .danmaku-at-prompt {
+        bottom: 160px;
+    }
+}
+
+// 使弹幕列表紧凑
+html[live-page-compact-danmaku] {
+    .chat-history-panel .chat-history-list .chat-item.danmaku-item.chat-colorful-bubble {
+        margin: 2px 0 !important;
+    }
+    .chat-history-panel .chat-history-list .chat-item {
+        padding: 3px 5px !important;
+        font-size: 1.2rem !important;
+    }
+    .chat-history-panel .chat-history-list .chat-item.danmaku-item .user-name {
+        font-size: 1.2rem !important;
+    }
+    .chat-history-panel .chat-history-list .chat-item.danmaku-item .reply-uname {
+        font-size: 1.2rem !important;
+    }
+    .chat-history-panel .chat-history-list .chat-item.danmaku-item .reply-uname .common-nickname-wrapper {
+        font-size: 1.2rem !important;
+    }
+}
+
+// 隐藏 系统提示
+html[live-page-convention-msg] {
+    .convention-msg.border-box,
+    .new-video-pk-item-dm {
+        display: none !important;
+    }
+}
+
+// 隐藏 用户排名
+html[live-page-rank-icon] {
+    .chat-item .rank-icon {
+        display: none !important;
+    }
+}
+
+// 隐藏 头衔装扮
+html[live-page-title-label] {
+    .chat-item .title-label {
+        display: none !important;
+    }
+}
+
+// 隐藏 用户等级
+html[live-page-wealth-medal-ctnr] {
+    .chat-item .wealth-medal-ctnr {
+        display: none !important;
+    }
+}
+
+// 隐藏 团体勋章
+html[live-page-group-medal-ctnr] {
+    .chat-item .group-medal-ctnr {
+        display: none !important;
+    }
+}
+
+// 隐藏 粉丝牌
+html[live-page-fans-medal-item-ctnr] {
+    .chat-item .fans-medal-item-ctnr {
+        display: none !important;
+    }
+}
+
+// 隐藏 弹幕高亮底色
+html[live-page-chat-item-background-color] {
+    .chat-item {
+        background-color: unset !important;
+        border-image-source: unset !important;
+    }
+}
+
+// 隐藏 礼物弹幕
+html[live-page-gift-item] {
+    .chat-item.gift-item,
+    .chat-item.common-danmuku-msg {
+        display: none !important;
+    }
+}
+
+// 隐藏 高能用户提示
+html[live-page-chat-item-top3-notice] {
+    .chat-item.top3-notice {
+        display: none !important;
+    }
+}
+
+// 隐藏 底部滚动提示
+html[live-page-brush-prompt] {
+    #brush-prompt {
+        display: none !important;
+    }
+    /* 弹幕栏高度 */
+    .chat-history-panel .chat-history-list.with-brush-prompt {
+        height: 100% !important;
+    }
+}
+
+// 隐藏 互动框 (倒计时互动)
+html[live-page-combo-card-countdown] {
+    #combo-card:has(.countDownBtn) {
+        display: none !important;
+    }
+    .chat-history-panel {
+        padding-bottom: 0 !important;
+    }
+}
+
+// 隐藏 互动框 (他们都在说)
+html[live-page-combo-card] {
+    #combo-card:has(.combo-tips) {
+        display: none !important;
+    }
+}
+
+// 隐藏 互动框 (找TA玩)
+html[live-page-service-card-container] {
+    .play-together-service-card-container {
+        display: none !important;
+    }
+}
+
+// 隐藏 互动框 投票
+html[live-page-vote-card] {
+    .vote-card {
+        display: none !important;
+    }
+}
+
+// 隐藏 发送框 功能按钮
+html[live-page-control-panel-icon-row] {
+    .control-panel-icon-row {
+        display: none !important;
+    }
+    #chat-control-panel-vm {
+        height: 115px;
+    }
+    /* 弹幕栏 */
+    #aside-area-vm {
+        display: flex;
+        flex-direction: column;
+    }
+    .chat-history-panel {
+        flex: 1;
+    }
+    .chat-history-panel .danmaku-at-prompt {
+        bottom: 100px;
+    }
+}
+
+// 隐藏 发送框 粉丝勋章
+html[live-page-chat-input-ctnr-medal-section] {
+    .medal-section {
+        display: none !important;
+    }
+    .chat-input-new {
+        padding: 10px 5px !important;
+    }
+}
+
+// 隐藏 发送框 发送按钮 (回车发送)
+html[live-page-chat-input-ctnr-send-btn] {
+    .bottom-actions {
+        display: none !important;
+    }
+    #chat-control-panel-vm {
+        height: fit-content !important;
+    }
+    /* 弹幕栏 */
+    #aside-area-vm {
+        display: flex;
+        flex-direction: column;
+    }
+    .chat-history-panel {
+        flex: 1;
+    }
+    .chat-history-panel .danmaku-at-prompt {
+        bottom: 120px;
+    }
+}
+
+// 隐藏 发送框
+html[live-page-chat-input-ctnr] {
+    .chat-input-ctnr,
+    .bottom-actions {
+        display: none !important;
+    }
+    #chat-control-panel-vm {
+        height: fit-content !important;
+    }
+    /* 弹幕栏 */
+    #aside-area-vm {
+        display: flex;
+        flex-direction: column;
+    }
+    .chat-history-panel {
+        flex: 1;
+    }
+    .chat-history-panel .danmaku-at-prompt {
+        bottom: 70px;
+    }
+}
+
+// 隐藏 弹幕栏底部全部功能
+html[live-page-chat-control-panel] {
+    #chat-control-panel-vm {
+        display: none !important;
+    }
+    /* 弹幕栏 */
+    #aside-area-vm {
+        display: flex;
+        flex-direction: column;
+    }
+    .chat-history-panel {
+        flex: 1;
+    }
+    .chat-history-panel .danmaku-at-prompt {
+        bottom: 20px !important;
+    }
+}

@@ -1,0 +1,92 @@
+// 隐藏 同时在看人数
+html[video-page-hide-bpx-player-video-info-online] {
+    .bpx-player-video-info-online,
+    .bpx-player-video-info-divide {
+        display: none !important;
+    }
+}
+
+// 隐藏 载入弹幕数量
+html[video-page-hide-bpx-player-video-info-dm] {
+    .bpx-player-video-info-dm,
+    .bpx-player-video-info-divide {
+        display: none !important;
+    }
+}
+
+// 隐藏 弹幕启用
+html[video-page-hide-bpx-player-dm-switch] {
+    .bpx-player-dm-switch {
+        display: none !important;
+    }
+}
+
+// 隐藏 弹幕显示设置
+html[video-page-hide-bpx-player-dm-setting] {
+    .bpx-player-dm-setting {
+        display: none !important;
+    }
+}
+
+// 隐藏 弹幕样式
+html[video-page-hide-bpx-player-video-btn-dm] {
+    .bpx-player-video-btn-dm {
+        display: none !important;
+    }
+}
+
+// 隐藏 占位文字
+html[video-page-hide-bpx-player-dm-input] {
+    .bpx-player-dm-input::placeholder {
+        color: transparent !important;
+    }
+}
+
+// 隐藏 弹幕礼仪
+html[video-page-hide-bpx-player-dm-hint] {
+    .bpx-player-dm-hint {
+        display: none !important;
+    }
+}
+
+// 隐藏 发送按钮
+html[video-page-hide-bpx-player-dm-btn-send] {
+    .bpx-player-dm-btn-send {
+        display: none !important;
+    }
+}
+
+// 非全屏下 关闭弹幕栏
+html[video-page-hide-bpx-player-sending-area] {
+    .bpx-player-sending-area {
+        display: none !important;
+    }
+    /* 关闭弹幕栏后 播放器去黑边 */
+    #bilibili-player-wrap[class^='video_playerNormal'] {
+        height: calc(var(--video-width) * 0.5625);
+    }
+    #bilibili-player-wrap[class^='video_playerWide'] {
+        height: calc(var(--containerWidth) * 0.5625);
+    }
+}
+
+// 全屏下 关闭弹幕输入框
+html[video-page-hide-bpx-player-video-inputbar] {
+    .bpx-player-container[data-screen='full'] .bpx-player-control-bottom-center .bpx-player-video-inputbar,
+    .bpx-player-container[data-screen='web'] .bpx-player-control-bottom-center .bpx-player-video-inputbar {
+        display: none !important;
+    }
+    .bpx-player-container[data-screen='full'] .bpx-player-control-bottom-center,
+    .bpx-player-container[data-screen='web'] .bpx-player-control-bottom-center {
+        padding: 0 15px !important;
+    }
+    /* 弹幕开关按钮贴紧左侧, 有章节列表时增大列表宽度 */
+    .bpx-player-container[data-screen='full'] .bpx-player-control-bottom-left,
+    .bpx-player-container[data-screen='web'] .bpx-player-control-bottom-left {
+        min-width: unset !important;
+    }
+    .bpx-player-container[data-screen='full'] .bpx-player-ctrl-viewpoint,
+    .bpx-player-container[data-screen='web'] .bpx-player-ctrl-viewpoint {
+        width: fit-content !important;
+    }
+}

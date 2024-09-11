@@ -1,0 +1,13 @@
+// 隐藏 客服
+html[hide-search-page-customer-service] {
+    .side-buttons div:has(> a[href*='customer-service']) {
+        display: none !important;
+    }
+}
+
+// 隐藏 回顶部
+html[hide-search-page-btn-to-top] {
+    .side-buttons .btn-to-top-wrap {
+        display: none !important;
+    }
+}

@@ -1,0 +1,63 @@
+// 隐藏 分享按钮弹出菜单
+html[video-page-hide-video-share-popover] {
+    .video-share-popover {
+        display: none !important;
+    }
+}
+
+// 隐藏 官方AI总结
+html[video-page-hide-below-info-video-ai-assistant] {
+    .video-toolbar-right .video-ai-assistant {
+        display: none !important;
+    }
+}
+
+// 隐藏 记笔记
+html[video-page-hide-below-info-video-note] {
+    .video-toolbar-right .video-note {
+        display: none !important;
+    }
+}
+
+// 隐藏 举报/笔记/稍后再看
+html[video-page-hide-below-info-video-report-menu] {
+    .video-toolbar-right .video-tool-more {
+        display: none !important;
+    }
+}
+
+// 隐藏 视频简介
+html[video-page-hide-below-info-desc] {
+    #v_desc {
+        display: none !important;
+    }
+    /* 收藏夹和稍后再看 */
+    .video-desc-container {
+        display: none !important;
+    }
+}
+
+// 隐藏 tag列表
+html[video-page-hide-below-info-tag] {
+    #v_tag {
+        display: none !important;
+    }
+    /* 收藏夹和稍后再看 */
+    .video-tag-container {
+        display: none !important;
+    }
+}
+
+// 隐藏 活动宣传
+html[video-page-hide-below-activity-vote] {
+    #activity_vote {
+        display: none !important;
+    }
+}
+
+// 隐藏 广告banner
+html[video-page-hide-below-bannerAd] {
+    #bannerAd {
+        display: none !important;
+    }
+}

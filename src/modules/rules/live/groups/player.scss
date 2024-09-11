@@ -1,0 +1,116 @@
+// 隐藏 反馈按钮
+html[live-page-head-web-player-icon-feedback] {
+    .web-player-icon-feedback {
+        display: none !important;
+    }
+}
+
+// 隐藏 购物小橙车提示
+html[live-page-head-web-player-shop-popover-vm] {
+    #shop-popover-vm {
+        display: none !important;
+    }
+}
+
+// 隐藏 直播PK特效
+html[live-page-head-web-player-awesome-pk-vm] {
+    #pk-vm,
+    #awesome-pk-vm,
+    #universal-pk-vm {
+        display: none !important;
+    }
+}
+
+// 隐藏 直播水印
+html[live-page-web-player-watermark] {
+    .web-player-icon-roomStatus {
+        display: none !important;
+    }
+    /* 播放器上用途不明的条纹 */
+    .blur-edges-ctnr {
+        display: none !important;
+    }
+    /* 部分播放器马赛克 */
+    .web-player-module-area-mask {
+        backdrop-filter: none !important;
+    }
+}
+
+// 隐藏 滚动礼物通告
+html[live-page-head-web-player-announcement-wrapper] {
+    #live-player .announcement-wrapper {
+        display: none !important;
+    }
+}
+
+// 隐藏 幻星互动游戏
+html[live-page-head-web-player-game-id] {
+    #game-id {
+        display: none !important;
+    }
+}
+
+// 隐藏 直播卡顿打分
+html[live-page-head-web-player-research-container] {
+    .research-container {
+        display: none !important;
+    }
+}
+
+// 隐藏 天选时刻
+html[live-page-head-web-player-live-lottery] {
+    #anchor-guest-box-id {
+        display: none !important;
+    }
+}
+
+// 隐藏 播放器顶部变动计数弹幕
+html[live-page-combo-danmaku] {
+    .danmaku-item-container > div.combo {
+        display: none !important;
+    }
+    .bilibili-combo-danmaku-container {
+        display: none !important;
+    }
+}
+
+// 隐藏 弹幕中的小表情
+html[live-page-clean-all-danmaku-small-emoji] {
+    .danmaku-item-container .bili-dm .bili-dm-emoji {
+        display: none !important;
+    }
+}
+
+// 隐藏 弹幕中的大表情
+html[live-page-clean-all-danmaku-big-emoji] {
+    .danmaku-item-container .bili-dm img[style*='width:45px'] {
+        display: none !important;
+    }
+}
+
+// 隐藏 礼物栏
+html[live-page-gift-control-vm] {
+    #gift-control-vm {
+        display: none !important;
+    }
+    #sections-vm {
+        margin-top: 100px !important;
+    }
+    /* 壁纸高度 */
+    #room-background-vm {
+        min-height: calc(100vh - 64px) !important;
+    }
+    /* 补齐圆角, 不可important */
+    #player-ctnr {
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+        overflow: hidden;
+    }
+}
+
+// 全屏下 隐藏弹幕发送框
+html[live-page-fullscreen-danmaku-vm] {
+    #fullscreen-danmaku-vm {
+        display: none !important;
+    }
+}

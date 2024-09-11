@@ -1,0 +1,107 @@
+// 扩增 中栏宽度
+html[expand-dynamic-page-bili-dyn-width] {
+    main {
+        flex-grow: 0.8 !important;
+    }
+    /* 限制查看图片时img高度 */
+    .bili-album__watch__content img {
+        max-height: 80vh !important;
+    }
+}
+
+// 双行显示 UP 主列表
+html[dynamic-page-up-list-dual-line-mode] {
+    .bili-dyn-up-list__content {
+        display: grid !important;
+        grid-auto-flow: column !important;
+        grid-template-rows: auto auto !important;
+    }
+    .bili-dyn-up-list__content .shim {
+        display: none !important;
+    }
+    .bili-dyn-up-list__item {
+        height: auto !important;
+    }
+    .bili-dyn-up-list__window {
+        padding: 10px !important;
+    }
+    /* 左右按钮突出显示 */
+    .bili-dyn-up-list__nav__btn {
+        zoom: 1.4;
+        transition: background-color 0.1s linear;
+    }
+    .bili-dyn-up-list__nav__btn:hover {
+        background-color: #00aeec !important;
+        color: white !important;
+    }
+}
+
+// 淡化 UP 主列表 已查看项
+html[dynamic-page-up-list-checked-item-opacity] {
+    .bili-dyn-up-list__item:not(.active):has(
+            .bili-dyn-up-list__item__face .bili-dyn-up-list__item__face__img:only-child
+        ) {
+        transition: opacity 0.2s ease-out;
+        opacity: 0.25;
+    }
+    .bili-dyn-up-list__item:hover {
+        transition: opacity 0.1s linear !important;
+        opacity: 1 !important;
+    }
+}
+
+// 隐藏 UP 主列表 已查看项
+html[dynamic-page-up-list-checked-item-hide] {
+    /* keyframes 不支持 display, 但chrome可正常处理, firefox不消失 */
+    @keyframes disappear {
+        0% {
+            opacity: 1;
+            width: 68px;
+            margin-right: 6px;
+        }
+        99% {
+            opacity: 0;
+            width: 0;
+            margin-right: 0;
+        }
+        100% {
+            opacity: 0;
+            width: 0;
+            margin-right: 0;
+            display: none;
+        }
+    }
+    .bili-dyn-up-list__item:not(.active):has(
+            .bili-dyn-up-list__item__face .bili-dyn-up-list__item__face__img:only-child
+        ) {
+        animation: disappear;
+        animation-duration: 0.5s;
+        animation-delay: 1s;
+        animation-fill-mode: forwards;
+    }
+    /* firefox无动画 */
+    @-moz-document url-prefix() {
+        .bili-dyn-up-list__item:not(.active):has(
+                .bili-dyn-up-list__item__face .bili-dyn-up-list__item__face__img:only-child
+            ) {
+            display: none;
+        }
+    }
+}
+
+// 隐藏 动态发布框
+html[hide-dynamic-page-bili-dyn-publishing] {
+    .bili-dyn-publishing {
+        display: none !important;
+    }
+    main section:nth-child(1) {
+        margin-bottom: 0 !important;
+    }
+}
+
+// 隐藏 动态分类Tab bar
+html[hide-dynamic-page-bili-dyn-list-tabs] {
+    .bili-dyn-list-tabs {
+        display: none !important;
+    }
+}

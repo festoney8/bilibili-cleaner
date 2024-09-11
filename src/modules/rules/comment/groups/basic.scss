@@ -1,0 +1,251 @@
+// 隐藏 活动通知
+html[video-page-hide-reply-notice] {
+    .reply-header .reply-notice {
+        display: none !important;
+    }
+}
+
+// 隐藏 评论编辑器
+html[video-page-hide-main-reply-box] {
+    .main-reply-box {
+        height: 0 !important;
+        visibility: hidden !important;
+    }
+    .comment-container .reply-list {
+        margin-top: -20px !important;
+    }
+}
+
+// 隐藏 评论编辑器内占位文字
+html[video-page-hide-reply-box-textarea-placeholder] {
+    .main-reply-box .reply-box-textarea::placeholder {
+        color: transparent !important;
+        user-select: none;
+    }
+    .fixed-reply-box .reply-box-textarea::placeholder {
+        color: transparent !important;
+        user-select: none;
+    }
+}
+
+// 隐藏 页面底部 吸附评论框
+html[video-page-hide-fixed-reply-box] {
+    .fixed-reply-box {
+        display: none !important;
+    }
+}
+
+// 隐藏 投票栏 (红方/蓝方)
+html[video-page-hide-top-vote-card] {
+    .top-vote-card {
+        display: none !important;
+    }
+}
+
+// 隐藏 用户卡片 鼠标放在用户名上时不显示卡片
+html[video-page-hide-comment-user-card] {
+    .user-card {
+        display: none !important;
+    }
+}
+
+// 隐藏 评论右侧装饰
+html[video-page-hide-reply-decorate] {
+    .reply-decorate {
+        display: none !important;
+    }
+}
+
+// 隐藏 粉丝牌
+html[video-page-hide-fan-badge] {
+    .fan-badge {
+        display: none !important;
+    }
+}
+
+// 隐藏 老粉、原始粉丝Tag
+html[video-page-hide-contractor-box] {
+    .contractor-box {
+        display: none !important;
+    }
+}
+
+// 隐藏 用户等级
+html[video-page-hide-user-level] {
+    .user-level,
+    .sub-user-level {
+        display: none !important;
+    }
+}
+
+// 隐藏 用户头像饰品
+html[video-page-hide-bili-avatar-pendent-dom] {
+    .root-reply-avatar .bili-avatar-pendent-dom {
+        display: none !important;
+    }
+    .comment-container .root-reply-avatar .bili-avatar {
+        width: 48px !important;
+        height: 48px !important;
+    }
+}
+
+// 隐藏 用户头像徽章
+html[video-page-hide-bili-avatar-nft-icon] {
+    .bili-avatar-nft-icon {
+        display: none !important;
+    }
+    .comment-container .bili-avatar-icon {
+        display: none !important;
+    }
+}
+
+// 隐藏 用户投票 (红方/蓝方)
+html[video-page-hide-vote-info] {
+    .vote-info {
+        display: none !important;
+    }
+}
+
+// 隐藏 评论内容下Tag (UP觉得很赞)
+html[video-page-hide-reply-tag-list] {
+    .reply-tag-list {
+        display: none !important;
+    }
+}
+
+// 隐藏 笔记评论前的小Logo
+html[video-page-hide-note-prefix] {
+    .note-prefix {
+        display: none !important;
+    }
+}
+
+// 禁用 评论内容搜索关键词高亮
+html[video-page-hide-jump-link-search-word] {
+    .reply-content .jump-link.search-word {
+        color: inherit !important;
+    }
+    .comment-container .reply-content .jump-link.search-word:hover {
+        color: #008ac5 !important;
+    }
+    .comment-container .reply-content .icon.search-word {
+        display: none !important;
+    }
+}
+
+// 禁用 评论中的@高亮
+html[video-page-hide-reply-content-user-highlight] {
+    .sub-reply-container .reply-content .jump-link.user {
+        color: inherit !important;
+    }
+    .comment-container .sub-reply-container .reply-content .jump-link.user:hover {
+        color: #40c5f1 !important;
+    }
+}
+
+// 隐藏 踩/回复 只在hover时显示
+html[video-page-hide-reply-dislike-reply-btn] {
+    @keyframes appear {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+    /* 一级评论 */
+    .reply-item:not(:has(i.disliked)) :is(.reply-btn, .reply-dislike) {
+        opacity: 0;
+    }
+    .reply-item:hover :is(.reply-btn, .reply-dislike) {
+        animation: appear;
+        animation-duration: 0.2s;
+        animation-delay: 0.3s;
+        animation-fill-mode: forwards;
+    }
+    /* 二级评论 */
+    .sub-reply-item:not(:has(i.disliked)) :is(.sub-reply-btn, .sub-reply-dislike) {
+        opacity: 0;
+    }
+    .sub-reply-item:hover :is(.sub-reply-btn, .sub-reply-dislike) {
+        animation: appear;
+        animation-duration: 0.2s;
+        animation-delay: 0.3s;
+        animation-fill-mode: forwards;
+    }
+}
+
+// 隐藏 大表情
+html[video-page-hide-emoji-large] {
+    .emoji-large {
+        display: none !important;
+    }
+}
+
+// 大表情变成小表情
+html[video-page-hide-emoji-large-zoom] {
+    .emoji-large {
+        zoom: 0.5;
+    }
+}
+
+// 用户名 全部大会员色
+html[video-page-reply-user-name-color-pink] {
+    .reply-item .user-name,
+    .comment-container .reply-item .sub-user-name {
+        color: #fb7299 !important;
+    }
+}
+
+// 用户名 全部恢复默认色
+html[video-page-reply-user-name-color-default] {
+    .reply-item .user-name,
+    .comment-container .reply-item .sub-user-name {
+        color: #61666d !important;
+    }
+}
+
+// 笔记图片 查看大图优化
+html[video-page-reply-view-image-optimize] {
+    .reply-view-image .last-image,
+    .reply-view-image .next-image {
+        zoom: 1.4;
+    }
+    .reply-view-image:has(.preview-item-box:only-child) .last-image {
+        display: none !important;
+    }
+    .reply-view-image:has(.preview-item-box:only-child) .next-image {
+        display: none !important;
+    }
+    .reply-view-image .preview-list {
+        display: none !important;
+    }
+}
+
+// 隐藏 视频评论区 (播放页/番剧页)
+html[video-page-hide-comment] {
+    #commentapp bili-comments,
+    #comment-module {
+        display: none !important;
+    }
+}
+
+// 隐藏 动态评论区 (动态页/空间页)
+html[dynamic-page-hide-all-comment] {
+    .comment-wrap bili-comments {
+        display: none !important;
+    }
+    .bili-opus-view {
+        border-radius: 6px !important;
+    }
+    .opus-detail {
+        margin-bottom: 10px !important;
+        min-height: unset !important;
+    }
+    #app .content .dyn-tabs {
+        display: none !important;
+    }
+    #app .content .card {
+        padding-bottom: 30px !important;
+    }
+}

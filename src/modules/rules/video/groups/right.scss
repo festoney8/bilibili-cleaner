@@ -1,0 +1,274 @@
+// 优化 右栏底部吸附 (实验功能) 搭配“全屏时页面可滚动”使用
+html[video-page-right-container-sticky-optimize] {
+    /* 修复右栏底部吸附计算top时位置跳变 */
+    .video-container-v1 .right-container {
+        display: flex !important;
+    }
+    .video-container-v1 .right-container .right-container-inner {
+        position: sticky !important;
+        top: unset !important;
+        align-self: flex-end !important;
+        /* fix #87, #84 */
+        max-width: 100% !important;
+        padding-bottom: 0 !important;
+    }
+    /* 小窗播放器挡住下方视频 #87 */
+    body:has(.mini-player-window.on) .video-container-v1 .right-container .right-container-inner {
+        bottom: 240px !important;
+    }
+    body:has(.mini-player-window:not(.on)) .video-container-v1 .right-container .right-container-inner {
+        bottom: 10px !important;
+    }
+}
+
+// 禁用 右栏底部吸附
+html[video-page-right-container-sticky-disable] {
+    .right-container .right-container-inner {
+        position: static !important;
+    }
+}
+
+// 隐藏 广告
+html[video-page-hide-right-container-ad] {
+    #slide_ad {
+        display: none !important;
+    }
+    .ad-report.video-card-ad-small {
+        display: none !important;
+    }
+    .video-page-special-card-small {
+        display: none !important;
+    }
+    #reco_list {
+        margin-top: 0 !important;
+    }
+}
+
+// 隐藏 游戏推荐
+html[video-page-hide-right-container-video-page-game-card-small] {
+    #reco_list .video-page-game-card-small {
+        display: none !important;
+    }
+}
+
+// 隐藏 弹幕列表
+html[video-page-hide-right-container-danmaku] {
+    /* 不可使用 display:none 否则播放器宽屏模式下danmukuBox的margin-top失效，导致视频覆盖右侧列表 */
+    #danmukuBox {
+        visibility: hidden !important;
+        height: 0 !important;
+        margin-bottom: 0 !important;
+    }
+}
+
+// 隐藏 自动连播按钮
+html[video-page-hide-right-container-reco-list-next-play-next-button] {
+    #reco_list .next-play .next-button {
+        display: none !important;
+    }
+}
+
+// 隐藏 接下来播放
+html[video-page-hide-right-container-reco-list-next-play] {
+    #reco_list .next-play {
+        display: none !important;
+    }
+    #reco_list .rec-list {
+        margin-top: 0 !important;
+    }
+}
+
+// 优化 视频合集列表高度
+html[video-page-hide-right-container-section-height] {
+    .base-video-sections-v1 .video-sections-content-list {
+        height: fit-content !important;
+        max-height: 350px !important;
+    }
+    .video-sections-v1 .video-sections-content-list {
+        height: fit-content !important;
+        max-height: 350px !important;
+    }
+}
+
+// 隐藏 视频合集 自动连播
+html[video-page-hide-right-container-section-next-btn] {
+    .base-video-sections-v1 .next-button {
+        display: none !important;
+    }
+    .video-sections-head_first-line .first-line-left {
+        max-width: 100% !important;
+    }
+    .video-sections-head_first-line .first-line-title {
+        max-width: unset !important;
+    }
+    .video-sections-head_first-line .first-line-right {
+        display: none !important;
+    }
+}
+
+// 隐藏 视频合集 播放量
+html[video-page-hide-right-container-section-play-num] {
+    .base-video-sections-v1 .play-num {
+        display: none !important;
+    }
+    .video-sections-head_second-line .play-num {
+        display: none !important;
+    }
+}
+
+// 隐藏 视频合集 简介
+html[video-page-hide-right-container-section-abstract] {
+    .base-video-sections-v1 .abstract {
+        display: none !important;
+    }
+    .base-video-sections-v1 .second-line_left img {
+        display: none !important;
+    }
+    .video-sections-head_second-line .abstract {
+        display: none !important;
+    }
+    .video-sections-head_second-line .second-line_left img {
+        display: none !important;
+    }
+}
+
+// 隐藏 视频合集 订阅合集
+html[video-page-hide-right-container-section-subscribe] {
+    .base-video-sections-v1 .second-line_right {
+        display: none !important;
+    }
+    .video-sections-head_second-line .second-line_right {
+        display: none !important;
+    }
+}
+
+// 隐藏 分P视频 自动连播
+html[video-page-hide-right-container-multi-page-next-btn] {
+    #multi_page .next-button {
+        display: none !important;
+    }
+}
+
+// 相关视频 视频信息置底
+html[video-page-right-container-set-info-bottom] {
+    :is(.video-page-card-small, .video-page-operator-card-small) .card-box .info {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    :is(.video-page-card-small, .video-page-operator-card-small) .card-box .info .upname {
+        margin-top: auto !important;
+    }
+}
+
+// 隐藏 相关视频 视频时长
+html[video-page-hide-right-container-duration] {
+    #reco_list .duration {
+        display: none !important;
+    }
+    /* 适配watchlater, favlist */
+    .recommend-list-container .duration {
+        display: none !important;
+    }
+}
+
+// 隐藏 相关视频 稍后再看按钮
+html[video-page-hide-right-container-reco-list-watch-later-video] {
+    #reco_list .watch-later-video {
+        display: none !important;
+    }
+    /* 适配watchlater, favlist */
+    .recommend-list-container .watch-later-video {
+        display: none !important;
+    }
+}
+
+// 隐藏 相关视频 UP主
+html[video-page-hide-right-container-reco-list-rec-list-info-up] {
+    #reco_list .info .upname {
+        visibility: hidden !important;
+    }
+    #reco_list .info {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    /* 适配watchlater, favlist */
+    .recommend-list-container .info .upname {
+        display: none !important;
+    }
+    .recommend-list-container .info {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+}
+
+// 隐藏 相关视频 播放和弹幕
+html[video-page-hide-right-container-reco-list-rec-list-info-plays] {
+    #reco_list .info .playinfo {
+        display: none !important;
+    }
+    #reco_list .info {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    /* 适配watchlater, favlist */
+    .recommend-list-container .info .playinfo {
+        display: none !important;
+    }
+    .recommend-list-container .info {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+}
+
+// 隐藏 全部相关视频
+html[video-page-hide-right-container-reco-list-rec-list] {
+    #reco_list .rec-list {
+        display: none !important;
+    }
+    #reco_list .rec-footer {
+        display: none !important;
+    }
+    /* 适配watchlater, favlist */
+    .recommend-list-container {
+        display: none !important;
+    }
+}
+
+// 隐藏 活动banner
+html[video-page-hide-right-container-right-bottom-banner] {
+    #right-bottom-banner {
+        display: none !important;
+    }
+    /* 小窗视频防挡 #87 */
+    body:has(.mini-player-window.on) .video-container-v1 .right-container .right-container-inner {
+        padding-bottom: 240px;
+    }
+    body:has(.mini-player-window:not(.on)) .video-container-v1 .right-container .right-container-inner {
+        padding-bottom: 10px;
+    }
+}
+
+// 隐藏 直播间推荐
+html[video-page-hide-right-container-live] {
+    .right-container .pop-live-small-mode {
+        display: none !important;
+    }
+    /* 小窗视频防挡 #87 */
+    body:has(.mini-player-window.on) .video-container-v1 .right-container .right-container-inner {
+        padding-bottom: 240px;
+    }
+    body:has(.mini-player-window:not(.on)) .video-container-v1 .right-container .right-container-inner {
+        padding-bottom: 10px;
+    }
+}
+
+// 隐藏 整个右栏 (宽屏模式不适用)
+html[video-page-hide-right-container] {
+    &:not([bili-cleaner-is-wide]) .right-container {
+        display: none !important;
+    }
+}

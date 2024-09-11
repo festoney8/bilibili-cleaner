@@ -33,7 +33,7 @@ export interface ISwitchItem extends IBaseItem {
     // 禁用时函数
     disableFn?: () => Promise<void> | void
     /**
-     * 启用时函数运行时机
+     * 启用时函数运行时机, 缺省时默认document-start
      * document-start: 立即运行
      * document-end: DOMContentLoaded触发
      */

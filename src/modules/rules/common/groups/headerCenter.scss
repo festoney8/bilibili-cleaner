@@ -1,0 +1,47 @@
+// 隐藏 推荐搜索
+html[common-hide-nav-search-rcmd] {
+    #nav-searchform .nav-search-input::placeholder {
+        color: transparent;
+    }
+    #nav-searchform .nav-search-input {
+        user-select: none;
+    }
+    /* 旧版header */
+    #internationalHeader #nav_searchform input::placeholder {
+        color: transparent;
+    }
+    #internationalHeader #nav_searchform input {
+        user-select: none;
+    }
+}
+
+// 隐藏 搜索历史
+html[common-hide-nav-search-history] {
+    .search-panel .history {
+        display: none;
+    }
+    /* 旧版header */
+    #internationalHeader .nav-search-box .history {
+        display: none !important;
+    }
+}
+
+// 隐藏 bilibili热搜
+html[common-hide-nav-search-trending] {
+    .search-panel .trending {
+        display: none;
+    }
+    /* 旧版header */
+    #internationalHeader .nav-search-box .trending {
+        display: none !important;
+    }
+}
+
+// 修复 搜索框居中
+html[common-nav-search-middle-justify] {
+    @media (min-width: 1100px) and (max-width: 1366.9px) {
+        .mini-header .center-search-container .center-search__bar {
+            margin: 0 auto;
+        }
+    }
+}

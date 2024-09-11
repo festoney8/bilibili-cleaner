@@ -3,7 +3,8 @@ html[hide-dynamic-page-fixed-header] {
     .fixed-header .bili-header__bar {
         position: relative !important;
     }
-    /* 高权限覆盖*/
+
+    // 高权限覆盖
     aside.right section.sticky {
         top: 15px !important;
     }

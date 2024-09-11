@@ -3,7 +3,8 @@ html[video-page-hide-sidenav-right-container-live] {
     .fixed-sidenav-storage .mini-player-window {
         display: none !important;
     }
-    /* 适配watchlater, favlist */
+
+    // 适配watchlater, favlist
     .float-nav-exp .nav-menu .item.mini {
         display: none !important;
     }
@@ -14,7 +15,8 @@ html[video-page-hide-sidenav-customer-service] {
     .fixed-sidenav-storage .customer-service {
         display: none !important;
     }
-    /* 适配watchlater, favlist */
+
+    // 适配watchlater, favlist
     .float-nav-exp .nav-menu a:has(> .item.help) {
         display: none !important;
     }
@@ -25,7 +27,8 @@ html[video-page-hide-sidenav-back-to-top] {
     .fixed-sidenav-storage .back-to-top {
         display: none !important;
     }
-    /* 适配watchlater, favlist */
+
+    // 适配watchlater, favlist
     .float-nav-exp .nav-menu .item.backup {
         display: none !important;
     }

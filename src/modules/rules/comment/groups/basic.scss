@@ -153,7 +153,8 @@ html[video-page-hide-reply-dislike-reply-btn] {
             opacity: 1;
         }
     }
-    /* 一级评论 */
+
+    // 一级评论
     .reply-item:not(:has(i.disliked)) :is(.reply-btn, .reply-dislike) {
         opacity: 0;
     }
@@ -163,7 +164,8 @@ html[video-page-hide-reply-dislike-reply-btn] {
         animation-delay: 0.3s;
         animation-fill-mode: forwards;
     }
-    /* 二级评论 */
+
+    // 二级评论
     .sub-reply-item:not(:has(i.disliked)) :is(.sub-reply-btn, .sub-reply-dislike) {
         opacity: 0;
     }

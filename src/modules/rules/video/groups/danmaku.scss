@@ -82,7 +82,7 @@ html[video-page-hide-bpx-player-sending-area] {
         aspect-ratio: 16 / 9;
     }
 
-    /* 活动播放器直接去黑边 */
+    // 活动播放器直接去黑边
     .page-main-content:has(.festival-video-player) .video-player-box {
         height: fit-content !important;
     }
@@ -104,7 +104,8 @@ html[video-page-hide-bpx-player-video-inputbar] {
     .bpx-player-container[data-screen='web'] .bpx-player-control-bottom-center {
         padding: 0 15px !important;
     }
-    /* 弹幕开关按钮贴紧左侧, 有章节列表时增大列表宽度 */
+
+    // 弹幕开关按钮贴紧左侧, 有章节列表时增大列表宽度
     .bpx-player-container[data-screen='full'] .bpx-player-control-bottom-left,
     .bpx-player-container[data-screen='web'] .bpx-player-control-bottom-left {
         min-width: unset !important;

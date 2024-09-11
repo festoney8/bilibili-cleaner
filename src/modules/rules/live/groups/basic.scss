@@ -9,7 +9,8 @@ html[live-page-sidebar-vm] {
 html[live-page-default-skin] {
     #head-info-vm {
         background-image: unset !important;
-        /* color不加important, 适配Evolved黑暗模式 */
+
+        // color不加important, 适配Evolved黑暗模式
         background-color: white;
     }
     .live-title .text {
@@ -18,7 +19,8 @@ html[live-page-default-skin] {
     .header-info-ctnr .rows-ctnr .upper-row .room-owner-username {
         color: #18191c !important;
     }
-    /* 高权限覆盖 */
+
+    // 高权限覆盖
     #head-info-vm .live-skin-coloration-area .live-skin-normal-a-text {
         color: unset !important;
     }
@@ -26,11 +28,13 @@ html[live-page-default-skin] {
         color: #61666d !important;
         fill: #61666d !important;
     }
-    /* 礼物栏 */
+
+    // 礼物栏
     #gift-control-vm {
         background-image: unset !important;
     }
-    /* 右侧弹幕框背景 */
+
+    // 右侧弹幕框背景
     #rank-list-vm,
     #rank-list-ctnr-box {
         background-image: unset !important;
@@ -68,11 +72,11 @@ html[live-page-remove-wallpaper] {
         background-image: unset !important;
     }
     #player-ctnr {
-        box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0 12px rgb(0 0 0 / 0.2);
         border-radius: 12px;
     }
     #aside-area-vm {
-        box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0 12px rgb(0 0 0 / 0.2);
     }
 }
 
@@ -83,12 +87,7 @@ html[font-patch] {
     .feed-card,
     .bb-comment,
     .comment-bilibili-fold {
-        font-family:
-            PingFang SC,
-            HarmonyOS_Regular,
-            Helvetica Neue,
-            Microsoft YaHei,
-            sans-serif !important;
+        font-family: 'PingFang SC', 'HarmonyOS_Regular', 'Helvetica Neue', 'Microsoft YaHei', sans-serif !important;
         font-weight: 400;
     }
 }

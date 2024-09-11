@@ -1,6 +1,6 @@
 // 默认宽屏播放 刷新生效
 html[default-widescreen] {
-    /* 修复mini播放模式主播放器宽度支撑问题 */
+    // 修复mini播放模式主播放器宽度支撑问题
     &[bili-cleaner-is-wide] #playerWrap:has(.bpx-player-container[data-screen='mini']) {
         width: fit-content;
     }
@@ -56,21 +56,25 @@ html[webscreen-scrollable] {
     .webscreen-fix :is(.right-container, .playlist-container--right) {
         padding-top: 100vh;
     }
-    /* 隐藏小窗 */
+
+    // 隐藏小窗
     .webscreen-fix .float-nav-exp .nav-menu .item.mini,
     .webscreen-fix .fixed-sidenav-storage .mini-player-window {
         display: none !important;
     }
-    /* 投币收藏弹窗 */
+
+    // 投币收藏弹窗
     .webscreen-fix .bili-dialog-m {
         z-index: 100000 !important;
     }
-    /* 滚动条 */
+
+    // 滚动条
     .webscreen-fix::-webkit-scrollbar {
         display: none !important;
     }
-    /* firefox滚动条 */
-    @-moz-document url-prefix() {
+
+    // firefox滚动条
+    @supports (-moz-appearance: none) {
         body.webscreen-fix {
             scrollbar-width: none !important;
         }
@@ -127,21 +131,25 @@ html[fullscreen-scrollable] {
     .webscreen-fix :is(.right-container, .playlist-container--right) {
         padding-top: 100vh;
     }
-    /* 隐藏小窗 */
+
+    // 隐藏小窗
     .webscreen-fix .float-nav-exp .nav-menu .item.mini,
     .webscreen-fix .fixed-sidenav-storage .mini-player-window {
         display: none !important;
     }
-    /* 投币收藏弹窗 */
+
+    // 投币收藏弹窗
     .webscreen-fix .bili-dialog-m {
         z-index: 100000 !important;
     }
-    /* 滚动条 */
+
+    // 滚动条
     .webscreen-fix::-webkit-scrollbar {
         display: none !important;
     }
-    /* firefox滚动条 */
-    @-moz-document url-prefix() {
+
+    // firefox滚动条
+    @supports (-moz-appearance: none) {
         body.webscreen-fix {
             scrollbar-width: none !important;
         }
@@ -165,19 +173,21 @@ html[video-page-exchange-player-position] {
     body:not(.webscreen-fix) .video-info-container {
         height: auto !important;
         padding-top: 16px !important;
-        /* 高权限消除展开标题的间距 */
+
+        // 高权限消除展开标题的间距
         margin-bottom: 0 !important;
     }
 
-    /* fix #80 宽屏模式下播放器遮盖up主 */
+    // fix #80 宽屏模式下播放器遮盖up主
     &[bili-cleaner-is-wide] body:not(.webscreen-fix) .up-panel-container {
         position: relative !important;
+
         /*
             拟合魔法，勿动
             videoWidth = innerWidth * 0.962339 - 359.514px
             videoHeight = max(min(calc(innerWidth * 0.962339 - 359.514px), 2010px), 923px) * 9/16 + 46px
         */
-        margin-top: calc(max(min(calc(100vw * 0.962339 - 359.514px), 2010px), 923px) * 9 / 16 + 46px + 35px);
+        margin-top: calc(max(min(calc(100vw * 0.9623 - 359.514px), 2010px), 923px) * 9 / 16 + 46px + 35px);
     }
     &[bili-cleaner-is-wide] body:not(.webscreen-fix) #danmukuBox {
         margin-top: 0 !important;

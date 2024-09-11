@@ -1,6 +1,6 @@
 // 优化 右栏底部吸附 (实验功能) 搭配“全屏时页面可滚动”使用
 html[video-page-right-container-sticky-optimize] {
-    /* 修复右栏底部吸附计算top时位置跳变 */
+    // 修复右栏底部吸附计算top时位置跳变
     .video-container-v1 .right-container {
         display: flex !important;
     }
@@ -8,11 +8,13 @@ html[video-page-right-container-sticky-optimize] {
         position: sticky !important;
         top: unset !important;
         align-self: flex-end !important;
-        /* fix #87, #84 */
+
+        // fix #87, #84
         max-width: 100% !important;
         padding-bottom: 0 !important;
     }
-    /* 小窗播放器挡住下方视频 #87 */
+
+    // 小窗播放器挡住下方视频 #87
     body:has(.mini-player-window.on) .video-container-v1 .right-container .right-container-inner {
         bottom: 240px !important;
     }
@@ -53,7 +55,7 @@ html[video-page-hide-right-container-video-page-game-card-small] {
 
 // 隐藏 弹幕列表
 html[video-page-hide-right-container-danmaku] {
-    /* 不可使用 display:none 否则播放器宽屏模式下danmukuBox的margin-top失效，导致视频覆盖右侧列表 */
+    // 不可使用 display:none 否则播放器宽屏模式下danmukuBox的margin-top失效，导致视频覆盖右侧列表
     #danmukuBox {
         visibility: hidden !important;
         height: 0 !important;
@@ -165,7 +167,8 @@ html[video-page-hide-right-container-duration] {
     #reco_list .duration {
         display: none !important;
     }
-    /* 适配watchlater, favlist */
+
+    // 适配watchlater, favlist
     .recommend-list-container .duration {
         display: none !important;
     }
@@ -176,7 +179,8 @@ html[video-page-hide-right-container-reco-list-watch-later-video] {
     #reco_list .watch-later-video {
         display: none !important;
     }
-    /* 适配watchlater, favlist */
+
+    // 适配watchlater, favlist
     .recommend-list-container .watch-later-video {
         display: none !important;
     }
@@ -192,7 +196,8 @@ html[video-page-hide-right-container-reco-list-rec-list-info-up] {
         flex-direction: column;
         justify-content: space-between;
     }
-    /* 适配watchlater, favlist */
+
+    // 适配watchlater, favlist
     .recommend-list-container .info .upname {
         display: none !important;
     }
@@ -213,7 +218,8 @@ html[video-page-hide-right-container-reco-list-rec-list-info-plays] {
         flex-direction: column;
         justify-content: space-between;
     }
-    /* 适配watchlater, favlist */
+
+    // 适配watchlater, favlist
     .recommend-list-container .info .playinfo {
         display: none !important;
     }
@@ -232,7 +238,8 @@ html[video-page-hide-right-container-reco-list-rec-list] {
     #reco_list .rec-footer {
         display: none !important;
     }
-    /* 适配watchlater, favlist */
+
+    // 适配watchlater, favlist
     .recommend-list-container {
         display: none !important;
     }
@@ -243,7 +250,8 @@ html[video-page-hide-right-container-right-bottom-banner] {
     #right-bottom-banner {
         display: none !important;
     }
-    /* 小窗视频防挡 #87 */
+
+    // 小窗视频防挡 #87
     body:has(.mini-player-window.on) .video-container-v1 .right-container .right-container-inner {
         padding-bottom: 240px;
     }
@@ -257,7 +265,8 @@ html[video-page-hide-right-container-live] {
     .right-container .pop-live-small-mode {
         display: none !important;
     }
-    /* 小窗视频防挡 #87 */
+
+    // 小窗视频防挡 #87
     body:has(.mini-player-window.on) .video-container-v1 .right-container .right-container-inner {
         padding-bottom: 240px;
     }

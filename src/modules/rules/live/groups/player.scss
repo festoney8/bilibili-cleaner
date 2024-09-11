@@ -26,11 +26,13 @@ html[live-page-web-player-watermark] {
     .web-player-icon-roomStatus {
         display: none !important;
     }
-    /* 播放器上用途不明的条纹 */
+
+    // 播放器上用途不明的条纹
     .blur-edges-ctnr {
         display: none !important;
     }
-    /* 部分播放器马赛克 */
+
+    // 部分播放器马赛克
     .web-player-module-area-mask {
         backdrop-filter: none !important;
     }
@@ -96,11 +98,13 @@ html[live-page-gift-control-vm] {
     #sections-vm {
         margin-top: 100px !important;
     }
-    /* 壁纸高度 */
+
+    // 壁纸高度
     #room-background-vm {
         min-height: calc(100vh - 64px) !important;
     }
-    /* 补齐圆角, 不可important */
+
+    // 补齐圆角, 不可important
     #player-ctnr {
         border-bottom-left-radius: 12px;
         border-bottom-right-radius: 12px;

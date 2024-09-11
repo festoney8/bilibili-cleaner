@@ -30,7 +30,7 @@ html[homepage-hide-no-interest] {
 
 // 隐藏 视频tag (已关注/1万点赞)
 html[homepage-hide-up-info-icon] {
-    /* CSS伪造Logo */
+    // CSS伪造Logo
     .bili-video-card .bili-video-card__info--icon-text {
         width: 17px;
         height: 17px;
@@ -103,7 +103,8 @@ html[homepage-hide-ad-card] {
     :is(.feed-card, .bili-video-card):not(:has(.bili-video-card__wrap, .bili-video-card__skeleton)) {
         display: none !important;
     }
-    /* 布局调整 */
+
+    // 布局调整
     .recommended-container_floor-aside .container > *:nth-of-type(5) {
         margin-top: 0 !important;
     }
@@ -116,7 +117,8 @@ html[homepage-hide-ad-card] {
     .recommended-container_floor-aside .container > *:nth-of-type(n + 8) {
         margin-top: 0 !important;
     }
-    /* 完全展示10个推荐项 */
+
+    // 完全展示10个推荐项
     .recommended-container_floor-aside .container .feed-card:nth-of-type(n + 9) {
         display: inherit !important;
     }
@@ -189,7 +191,7 @@ html[homepage-hide-skeleton] {
 
 // 增大 视频载入 视频数量 (实验功能)
 html[homepage-increase-rcmd-load-size] {
-    /* 扩增载入后会产生奇怪的骨架空位 */
+    // 扩增载入后会产生奇怪的骨架空位
     .container.is-version8 > .floor-single-card:has(.skeleton, .skeleton-item, .floor-skeleton) {
         display: none;
     }

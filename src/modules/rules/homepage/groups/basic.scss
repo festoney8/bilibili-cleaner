@@ -11,7 +11,8 @@ html[homepage-hide-banner] {
     .bili-header__channel {
         margin-top: 5px !important;
     }
-    /* icon和文字颜色 */
+
+    // icon和文字颜色
     .bili-header .right-entry__outside .right-entry-icon {
         color: #18191c !important;
     }
@@ -27,7 +28,8 @@ html[homepage-hide-banner] {
     .bili-header .right-entry__outside .right-entry-text {
         color: #61666d !important;
     }
-    /* header滚动后渐变出现, 否则闪动 */
+
+    // header滚动后渐变出现, 否则闪动
     #i_cecream .bili-header__bar.slide-down {
         transition:
             background-color 0.3s ease-out,
@@ -36,33 +38,34 @@ html[homepage-hide-banner] {
     #i_cecream .bili-header__bar:not(.slide-down) {
         transition: background-color 0.3s ease-out !important;
     }
-    /* 分区菜单 第一排按钮的二级菜单下置  */
+
+    // 分区菜单 第一排按钮的二级菜单下置
     .v-popover.is-top {
         padding-top: 5px;
         padding-bottom: unset !important;
         bottom: unset !important;
     }
-    @media (min-width: 2200px) {
+    @media (width >= 2200px) {
         .v-popover.is-top {
             top: 32px;
         }
     }
-    @media (min-width: 1701px) and (max-width: 2199.9px) {
+    @media (width >= 1701px) and (width <= 2199.9px) {
         .v-popover.is-top {
             top: 32px;
         }
     }
-    @media (min-width: 1367px) and (max-width: 1700.9px) {
+    @media (width >= 1367px) and (width <= 1700.9px) {
         .v-popover.is-top {
             top: 28px;
         }
     }
-    @media (min-width: 1100px) and (max-width: 1366.9px) {
+    @media (width >= 1100px) and (width <= 1366.9px) {
         .v-popover.is-top {
             top: 28px;
         }
     }
-    @media (max-width: 1099.9px) {
+    @media (width <= 1099.9px) {
         .v-popover.is-top {
             top: 24px;
         }
@@ -74,7 +77,8 @@ html[homepage-hide-recommend-swipe] {
     .recommended-swipe {
         display: none !important;
     }
-    /* 布局调整 */
+
+    // 布局调整
     .recommended-container_floor-aside .container > *:nth-of-type(5) {
         margin-top: 0 !important;
     }
@@ -87,7 +91,8 @@ html[homepage-hide-recommend-swipe] {
     .recommended-container_floor-aside .container > *:nth-of-type(n + 8) {
         margin-top: 0 !important;
     }
-    /* 完全展示10个推荐项 */
+
+    // 完全展示10个推荐项
     .recommended-container_floor-aside .container .feed-card:nth-of-type(n + 9) {
         display: inherit !important;
     }
@@ -100,28 +105,29 @@ html[homepage-hide-recommend-swipe] {
     .recommended-container_floor-aside .container .floor-single-card:first-of-type {
         margin-top: 0 !important;
     }
-    /* 压缩分区栏高度, 压缩16px */
-    @media (max-width: 1099.9px) {
+
+    // 压缩分区栏高度, 压缩16px
+    @media (width <= 1099.9px) {
         .bili-header .bili-header__channel {
             height: 84px !important;
         }
     }
-    @media (min-width: 1100px) and (max-width: 1366.9px) {
+    @media (width >= 1100px) and (width <= 1366.9px) {
         .bili-header .bili-header__channel {
             height: 84px !important;
         }
     }
-    @media (min-width: 1367px) and (max-width: 1700.9px) {
+    @media (width >= 1367px) and (width <= 1700.9px) {
         .bili-header .bili-header__channel {
             height: 94px !important;
         }
     }
-    @media (min-width: 1701px) and (max-width: 2199.9px) {
+    @media (width >= 1701px) and (width <= 2199.9px) {
         .bili-header .bili-header__channel {
             height: 104px !important;
         }
     }
-    @media (min-width: 2200px) {
+    @media (width >= 2200px) {
         .bili-header .bili-header__channel {
             height: 114px !important;
         }
@@ -136,7 +142,8 @@ html[homepage-hide-subarea] {
     #i_cecream .bili-header__channel .right-channel-container {
         display: none !important;
     }
-    /* adapt bilibili-app-recommend */
+
+    // adapt bilibili-app-recommend
     #i_cecream .bili-header__channel {
         height: 0 !important;
     }
@@ -150,14 +157,15 @@ html[homepage-hide-sticky-header] {
     .bili-header .left-entry__title svg {
         display: none !important;
     }
-    /* 高优先覆盖!important */
+
+    // 高优先覆盖!important
     #i_cecream .bili-feed4 .bili-header .slide-down {
         box-shadow: unset !important;
     }
-    #nav-searchform.is-actived:before,
-    #nav-searchform.is-exper:before,
-    #nav-searchform.is-exper:hover:before,
-    #nav-searchform.is-focus:before,
+    #nav-searchform.is-actived::before,
+    #nav-searchform.is-exper::before,
+    #nav-searchform.is-exper:hover::before,
+    #nav-searchform.is-focus::before,
     .bili-header .slide-down {
         background: unset !important;
     }
@@ -189,7 +197,8 @@ html[homepage-hide-sticky-header] {
     .bili-header .slide-down .center-search-container .center-search__bar {
         margin: 0 auto !important;
     }
-    /* 不可添加important, 否则与Evolved的黑暗模式冲突 */
+
+    // 不可添加important, 否则与Evolved的黑暗模式冲突
     #nav-searchform {
         background: #f1f2f3;
     }
@@ -206,11 +215,13 @@ html[homepage-hide-sticky-header] {
     #nav-searchform.is-focus.is-exper4-actived {
         border-bottom: unset !important;
     }
-    /* 只隐藏吸附header时的吸附分区栏 */
+
+    // 只隐藏吸附header时的吸附分区栏
     #i_cecream .header-channel {
         top: 0 !important;
     }
-    /* adapt bilibili-app-recommend */
+
+    // adapt bilibili-app-recommend
     .bilibili-app-recommend-root .area-header {
         top: 0 !important;
     }
@@ -221,7 +232,8 @@ html[homepage-hide-sticky-subarea] {
     #i_cecream .header-channel {
         display: none !important;
     }
-    /* 吸附分区栏的动效转移给吸附header, 滚动后渐变出现 */
+
+    // 吸附分区栏的动效转移给吸附header, 滚动后渐变出现
     #i_cecream .bili-header__bar.slide-down {
         transition:
             background-color 0.3s ease-out,

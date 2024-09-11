@@ -3,7 +3,8 @@ html[common-hide-nav-avatar] {
     .right-entry .v-popover-wrap.header-avatar-wrap {
         display: none !important;
     }
-    /* 旧版header */
+
+    // 旧版header
     #internationalHeader .nav-user-center .item:has(.mini-avatar) {
         display: none !important;
     }
@@ -15,7 +16,8 @@ html[common-hide-nav-vip] {
     {
         display: none !important;
     }
-    /* 旧版header */
+
+    // 旧版header
     #internationalHeader .nav-user-center .item:has(.mini-vip) {
         display: none !important;
     }
@@ -27,7 +29,8 @@ html[common-hide-nav-message] {
     {
         display: none !important;
     }
-    /* 旧版header */
+
+    // 旧版header
     #internationalHeader .nav-user-center .item:has(.nav-item-message) {
         display: none !important;
     }
@@ -39,7 +42,8 @@ html[common-hide-nav-message-red-num] {
     {
         display: none !important;
     }
-    /* 旧版header */
+
+    // 旧版header
     #internationalHeader .nav-user-center .nav-item-message .num {
         display: none !important;
     }
@@ -51,7 +55,8 @@ html[common-hide-nav-dynamic] {
     {
         display: none !important;
     }
-    /* 旧版header */
+
+    // 旧版header
     #internationalHeader .nav-user-center .item:has(.nav-item-dynamic) {
         display: none !important;
     }
@@ -63,7 +68,8 @@ html[common-hide-nav-dynamic-red-num] {
     {
         display: none !important;
     }
-    /* 旧版header */
+
+    // 旧版header
     #internationalHeader .nav-user-center .nav-item-dynamic .num {
         display: none !important;
     }
@@ -74,7 +80,8 @@ html[common-hide-nav-favorite] {
     .right-entry .v-popover-wrap:has(.right-entry__outside[href$='/favlist']) {
         display: none !important;
     }
-    /* 旧版header */
+
+    // 旧版header
     #internationalHeader .nav-user-center .item:has(.mini-favorite) {
         display: none !important;
     }
@@ -85,7 +92,8 @@ html[common-hide-nav-history] {
     .right-entry .v-popover-wrap:has([href*='www.bilibili.com/account/history'], [data-idx='history']) {
         display: none !important;
     }
-    /* 旧版header */
+
+    // 旧版header
     #internationalHeader .nav-user-center .item:has(.mini-history) {
         display: none !important;
     }
@@ -97,7 +105,8 @@ html[common-hide-nav-member] {
     {
         display: none !important;
     }
-    /* 旧版header */
+
+    // 旧版header
     #internationalHeader .nav-user-center .item:has(a[href*='member.bilibili.com/platform/home']) {
         display: none !important;
     }
@@ -108,11 +117,13 @@ html[common-hide-nav-upload] {
     .right-entry .right-entry-item.right-entry-item--upload {
         visibility: hidden !important;
     }
-    /* 旧版header */
+
+    // 旧版header
     #internationalHeader .nav-user-center > div:has(.mini-upload) {
         visibility: hidden !important;
     }
-    /* 番剧页 */
+
+    // 番剧页
     [class^='BiliHeaderV3_headerUploadEntry'] {
         visibility: hidden !important;
     }

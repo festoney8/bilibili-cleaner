@@ -105,7 +105,8 @@ html[video-page-hide-bpx-player-top-left-title] {
     .bpx-player-top-left-title {
         display: none !important;
     }
-    /* 播放器上方阴影渐变 */
+
+    // 播放器上方阴影渐变
     .bpx-player-top-mask {
         display: none !important;
     }
@@ -172,13 +173,13 @@ html[video-page-bpx-player-bili-dm-vip-white] {
         background: unset !important;
         background-image: unset !important;
         background-size: unset !important;
-        /* 父元素未指定 var(--textShadow), 默认重墨描边凑合用 */
+
+        // 父元素未指定 var(--textShadow), 默认重墨描边凑合用
         text-shadow:
-            1px 0 1px #000000,
-            0 1px 1px #000000,
-            0 -1px 1px #000000,
-            -1px 0 1px #000000 !important;
-        text-stroke: none !important;
+            1px 0 1px #000,
+            0 1px 1px #000,
+            0 -1px 1px #000,
+            -1px 0 1px #000 !important;
         -webkit-text-stroke: none !important;
         -moz-text-stroke: none !important;
         -ms-text-stroke: none !important;
@@ -196,15 +197,11 @@ html[video-page-bpx-player-subtitle-font-family] {
 html[video-page-bpx-player-subtitle-text-stroke] {
     #bilibili-player .bpx-player-subtitle-panel-text {
         background: unset !important;
-        background-color: rgba(0, 0, 0, 0.7) !important;
-        text-shadow: none !important;
+        background-color: rgb(0 0 0 / 0.7) !important;
         background-clip: text !important;
-        text-stroke: 3px transparent !important;
-        -webkit-background-clip: text !important;
+        text-shadow: none !important;
         -webkit-text-stroke: 3px transparent;
-        -moz-background-clip: text !important;
         -moz-text-stroke: 3px transparent;
-        -ms-background-clip: text !important;
         -ms-text-stroke: 3px transparent;
     }
 }

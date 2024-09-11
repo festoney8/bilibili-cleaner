@@ -4,11 +4,13 @@ html[common-hide-nav-homepage-logo] {
     {
         display: none !important;
     }
-    /* 首页版本 */
+
+    // 首页版本
     .bili-header__bar .left-entry .zhuzhan-icon {
         display: none !important;
     }
-    /* 旧版header */
+
+    // 旧版header
     #internationalHeader li.nav-link-item:has(>span>a[href="//www.bilibili.com"], >span>a[href="www.bilibili.com/"]) .navbar_logo
     {
         display: none !important;
@@ -17,7 +19,8 @@ html[common-hide-nav-homepage-logo] {
     {
         display: none !important;
     }
-    /* 番剧页 */
+
+    // 番剧页
     [class^='BiliHeaderV3_leftEntryTitle__'] > svg {
         display: none !important;
     }
@@ -28,11 +31,13 @@ html[common-hide-nav-homepage] {
     .bili-header__bar .left-entry .mini-header__title {
         display: none !important;
     }
-    /* 首页版本 */
+
+    // 首页版本
     .bili-header__bar .left-entry .zhuzhan-icon + span {
         display: none !important;
     }
-    /* 旧版header */
+
+    // 旧版header
     #internationalHeader li.nav-link-item:has(>span>a[href="//www.bilibili.com"]) :not(svg)
     {
         color: transparent;
@@ -49,7 +54,8 @@ html[common-hide-nav-homepage] {
     #biliMainHeader .bili-header .left-entry__title .mini-header__logo {
         margin-right: 0 !important;
     }
-    /* 番剧页 */
+
+    // 番剧页
     [class^='BiliHeaderV3_leftEntryTitle__'] > div {
         display: none !important;
     }
@@ -61,14 +67,16 @@ html[common-hide-nav-anime] {
     {
         display: none !important;
     }
-    /* 旧版header */
+
+    // 旧版header
     #internationalHeader li.nav-link-item:has(> a[href*='bilibili.com/anime']) {
         display: none !important;
     }
     #biliMainHeader .left-entry .v-popover-wrap:has(> a[href*='bilibili.com/anime']) {
         display: none !important;
     }
-    /* 番剧页 */
+
+    // 番剧页
     [class^='BiliHeaderV3_leftEntry__'] li:has(a[href*='bilibili.com/anime']) {
         display: none !important;
     }
@@ -80,14 +88,16 @@ html[common-hide-nav-live] {
     {
         display: none !important;
     }
-    /* 旧版header */
+
+    // 旧版header
     #internationalHeader li.nav-link-item:has(> span > a[href*='live.bilibili.com']) {
         display: none !important;
     }
     #biliMainHeader .left-entry .v-popover-wrap:has(> a[href*='live.bilibili.com']) {
         display: none !important;
     }
-    /* 番剧页 */
+
+    // 番剧页
     [class^='BiliHeaderV3_leftEntry__'] li:has(a[href*='live.bilibili.com']) {
         display: none !important;
     }
@@ -99,14 +109,16 @@ html[common-hide-nav-game] {
     {
         display: none !important;
     }
-    /* 旧版header */
+
+    // 旧版header
     #internationalHeader li.nav-link-item:has(> span > a[href*='game.bilibili.com']) {
         display: none !important;
     }
     #biliMainHeader .left-entry .v-popover-wrap:has(> a[href*='game.bilibili.com']) {
         display: none !important;
     }
-    /* 番剧页 */
+
+    // 番剧页
     [class^='BiliHeaderV3_leftEntry__'] li:has(a[href*='game.bilibili.com']) {
         display: none !important;
     }
@@ -118,14 +130,16 @@ html[common-hide-nav-vipshop] {
     {
         display: none !important;
     }
-    /* 旧版header */
+
+    // 旧版header
     #internationalHeader li.nav-link-item:has(> a[href*='show.bilibili.com']) {
         display: none !important;
     }
     #biliMainHeader .left-entry .v-popover-wrap:has(> a[href*='show.bilibili.com']) {
         display: none !important;
     }
-    /* 番剧页 */
+
+    // 番剧页
     [class^='BiliHeaderV3_leftEntry__'] li:has(a[href*='show.bilibili.com']) {
         display: none !important;
     }
@@ -137,14 +151,16 @@ html[common-hide-nav-manga] {
     {
         display: none !important;
     }
-    /* 旧版header */
+
+    // 旧版header
     #internationalHeader li.nav-link-item:has(> span > a[href*='manga.bilibili.com']) {
         display: none !important;
     }
     #biliMainHeader .left-entry .v-popover-wrap:has(> a[href*='manga.bilibili.com']) {
         display: none !important;
     }
-    /* 番剧页 */
+
+    // 番剧页
     [class^='BiliHeaderV3_leftEntry__'] li:has(a[href*='manga.bilibili.com']) {
         display: none !important;
     }
@@ -156,14 +172,16 @@ html[common-hide-nav-match] {
     {
         display: none !important;
     }
-    /* 旧版header */
+
+    // 旧版header
     #internationalHeader li.nav-link-item:has(> a[href*='bilibili.com/match/']) {
         display: none !important;
     }
     #biliMainHeader .left-entry .v-popover-wrap:has(> a[href*='bilibili.com/match/']) {
         display: none !important;
     }
-    /* 番剧页 */
+
+    // 番剧页
     [class^='BiliHeaderV3_leftEntry__'] li:has(a[href*='www.bilibili.com/v/game/match']) {
         display: none !important;
     }
@@ -182,7 +200,8 @@ html[common-hide-nav-moveclip] {
     {
         display: none !important;
     }
-    /* 旧版header */
+
+    // 旧版header
     #internationalHeader li.nav-link-item:has(a[href*='live.bilibili.com/blackboard']) {
         display: none !important;
     }
@@ -211,7 +230,8 @@ html[common-hide-nav-download-app] {
     {
         display: none !important;
     }
-    /* 旧版header */
+
+    // 旧版header
     #internationalHeader li.nav-link-item:has(a[href*='app.bilibili.com']) {
         display: none !important;
     }
@@ -237,7 +257,8 @@ html[common-hide-nav-blackboard] {
     .bili-header__bar .left-entry li:has(> div > a[href*='bilibili.com/video/']) {
         display: none !important;
     }
-    /* 旧版header */
+
+    // 旧版header
     #internationalHeader .nav-link-item:has(.loc-mc-box, span > a[href*='bilibili.com/blackboard']) {
         display: none !important;
     }

@@ -7,6 +7,9 @@ settings:
 importers:
     .:
         dependencies:
+            '@headlessui/vue':
+                specifier: ^1.7.23
+                version: 1.7.23(vue@3.5.4(typescript@5.6.2))
             vue:
                 specifier: ^3.5.4
                 version: 3.5.4(typescript@5.6.2)
@@ -44,6 +47,9 @@ importers:
             prettier:
                 specifier: 3.3.3
                 version: 3.3.3
+            prettier-plugin-tailwindcss:
+                specifier: ^0.6.6
+                version: 0.6.6(prettier@3.3.3)
             stylelint:
                 specifier: ^16.9.0
                 version: 16.9.0(typescript@5.6.2)
@@ -425,6 +431,15 @@ packages:
             }
         engines: { node: ^18.18.0 || ^20.9.0 || >=21.1.0 }
 
+    '@headlessui/vue@1.7.23':
+        resolution:
+            {
+                integrity: sha512-JzdCNqurrtuu0YW6QaDtR2PIYCKPUWq28csDyMvN4zmGccmE7lz40Is6hc3LA4HFeCI7sekZ/PQMTNmn9I/4Wg==,
+            }
+        engines: { node: '>=10' }
+        peerDependencies:
+            vue: ^3.2.0
+
     '@humanwhocodes/module-importer@1.0.1':
         resolution:
             {
@@ -634,6 +649,20 @@ packages:
             }
         cpu: [x64]
         os: [win32]
+
+    '@tanstack/virtual-core@3.10.7':
+        resolution:
+            {
+                integrity: sha512-ND5dfsU0n9F4gROzwNNDJmg6y8n9pI8YWxtgbfJ5UcNn7Hx+MxEXtXcQ189tS7sh8pmCObgz2qSiyRKTZxT4dg==,
+            }
+
+    '@tanstack/vue-virtual@3.10.7':
+        resolution:
+            {
+                integrity: sha512-OSK1fkvz4GaBhF80KVmBsJZoMI9ncVaUU//pI8OqTdBnepw467zcuF2Y+Ia1VC0CPYfUEALyS8n4Ar0RI/7ASg==,
+            }
+        peerDependencies:
+            vue: ^2.7.0 || ^3.0.0
 
     '@types/estree@1.0.5':
         resolution:
@@ -2544,6 +2573,64 @@ packages:
             }
         engines: { node: '>= 0.8.0' }
 
+    prettier-plugin-tailwindcss@0.6.6:
+        resolution:
+            {
+                integrity: sha512-OPva5S7WAsPLEsOuOWXATi13QrCKACCiIonFgIR6V4lYv4QLp++UXVhZSzRbZxXGimkQtQT86CC6fQqTOybGng==,
+            }
+        engines: { node: '>=14.21.3' }
+        peerDependencies:
+            '@ianvs/prettier-plugin-sort-imports': '*'
+            '@prettier/plugin-pug': '*'
+            '@shopify/prettier-plugin-liquid': '*'
+            '@trivago/prettier-plugin-sort-imports': '*'
+            '@zackad/prettier-plugin-twig-melody': '*'
+            prettier: ^3.0
+            prettier-plugin-astro: '*'
+            prettier-plugin-css-order: '*'
+            prettier-plugin-import-sort: '*'
+            prettier-plugin-jsdoc: '*'
+            prettier-plugin-marko: '*'
+            prettier-plugin-multiline-arrays: '*'
+            prettier-plugin-organize-attributes: '*'
+            prettier-plugin-organize-imports: '*'
+            prettier-plugin-sort-imports: '*'
+            prettier-plugin-style-order: '*'
+            prettier-plugin-svelte: '*'
+        peerDependenciesMeta:
+            '@ianvs/prettier-plugin-sort-imports':
+                optional: true
+            '@prettier/plugin-pug':
+                optional: true
+            '@shopify/prettier-plugin-liquid':
+                optional: true
+            '@trivago/prettier-plugin-sort-imports':
+                optional: true
+            '@zackad/prettier-plugin-twig-melody':
+                optional: true
+            prettier-plugin-astro:
+                optional: true
+            prettier-plugin-css-order:
+                optional: true
+            prettier-plugin-import-sort:
+                optional: true
+            prettier-plugin-jsdoc:
+                optional: true
+            prettier-plugin-marko:
+                optional: true
+            prettier-plugin-multiline-arrays:
+                optional: true
+            prettier-plugin-organize-attributes:
+                optional: true
+            prettier-plugin-organize-imports:
+                optional: true
+            prettier-plugin-sort-imports:
+                optional: true
+            prettier-plugin-style-order:
+                optional: true
+            prettier-plugin-svelte:
+                optional: true
+
     prettier@3.3.3:
         resolution:
             {
@@ -3549,6 +3636,11 @@ snapshots:
         dependencies:
             levn: 0.4.1
 
+    '@headlessui/vue@1.7.23(vue@3.5.4(typescript@5.6.2))':
+        dependencies:
+            '@tanstack/vue-virtual': 3.10.7(vue@3.5.4(typescript@5.6.2))
+            vue: 3.5.4(typescript@5.6.2)
+
     '@humanwhocodes/module-importer@1.0.1': {}
 
     '@humanwhocodes/retry@0.3.0': {}
@@ -3641,6 +3733,13 @@ snapshots:
 
     '@rollup/rollup-win32-x64-msvc@4.21.2':
         optional: true
+
+    '@tanstack/virtual-core@3.10.7': {}
+
+    '@tanstack/vue-virtual@3.10.7(vue@3.5.4(typescript@5.6.2))':
+        dependencies:
+            '@tanstack/virtual-core': 3.10.7
+            vue: 3.5.4(typescript@5.6.2)
 
     '@types/estree@1.0.5': {}
 
@@ -4743,6 +4842,10 @@ snapshots:
             source-map-js: 1.2.1
 
     prelude-ls@1.2.1: {}
+
+    prettier-plugin-tailwindcss@0.6.6(prettier@3.3.3):
+        dependencies:
+            prettier: 3.3.3
 
     prettier@3.3.3: {}
 

@@ -9,7 +9,7 @@ export const commonHeaderWidthItems: Item[] = [
         maxValue: 2000,
         defaultValue: -1,
         disableValue: -1,
-        attrName: 'px',
+        addonText: 'px',
         fn: (value: number) => {
             document.documentElement.style.setProperty('--common-header-bar-padding-left', `${value}px`)
         },
@@ -22,7 +22,7 @@ export const commonHeaderWidthItems: Item[] = [
         maxValue: 2000,
         defaultValue: -1,
         disableValue: -1,
-        attrName: 'px',
+        addonText: 'px',
         fn: (value: number) => {
             document.documentElement.style.setProperty('--common-header-bar-search-width', `${value}px`)
         },
@@ -35,7 +35,7 @@ export const commonHeaderWidthItems: Item[] = [
         maxValue: 2000,
         defaultValue: -1,
         disableValue: -1,
-        attrName: 'px',
+        addonText: 'px',
         fn: (value: number) => {
             document.documentElement.style.setProperty('--common-header-bar-padding-right', `${value}px`)
         },

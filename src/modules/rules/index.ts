@@ -15,6 +15,7 @@ import {
 import { bangumiGroups } from './bangumi'
 import { channelGroups } from './channel'
 import { commentGroups } from './comment'
+import { commonGroups } from './common'
 import { dynamicGroups } from './dynamic'
 import { homepageGroups } from './homepage'
 import { liveGroups } from './live'
@@ -23,6 +24,7 @@ import { searchGroups } from './search'
 import { spaceGroups } from './space'
 import { videoGroups } from './video'
 
+import { error } from '../../utils/logger'
 import bangumiStyle from './bangumi/index.scss?inline'
 import channelStyle from './channel/index.scss?inline'
 import commentStyle from './comment/index.scss?inline'
@@ -40,11 +42,11 @@ const loadGroups = (groups: Group[]) => {
     for (const group of groups) {
         for (const item of group.items) {
             try {
-                if ('id' in item) {
+                if (item.type === 'switch') {
                     document.documentElement.setAttribute(item.id, '')
                 }
             } catch (err) {
-                console.error(err)
+                error('load item failed', err)
             }
         }
     }
@@ -61,7 +63,7 @@ const loadStyle = (css: string) => {
  * 载入当前页面规则列表
  */
 export const loadRules = () => {
-    loadGroups(commentGroups)
+    loadGroups(commonGroups)
 
     if (isPageHomepage()) {
         loadGroups(homepageGroups)

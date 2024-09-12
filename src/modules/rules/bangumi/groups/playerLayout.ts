@@ -133,7 +133,7 @@ export const bangumiPlayerLayoutItems: Item[] = [
         maxValue: 100,
         defaultValue: -1,
         disableValue: -1,
-        attrName: 'vw',
+        addonText: 'vw',
         fn: (value: number) => {
             document.documentElement.style.setProperty('--normalscreen-width', `${value}vw`)
         },

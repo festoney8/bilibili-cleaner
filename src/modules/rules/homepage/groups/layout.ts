@@ -1,8 +1,31 @@
 import { Item } from '../../../../types/item'
 
 export const homepageLayoutItems: Item[] = [
-    // Todo: radio item
-
+    {
+        type: 'list',
+        id: 'homepage-layout',
+        name: '页面强制布局',
+        defaultValue: 'homepage-layout-disable',
+        disableValue: 'homepage-layout-disable',
+        options: [
+            {
+                id: 'homepage-layout-disable',
+                name: '未启用',
+            },
+            {
+                id: 'homepage-layout-4-column',
+                name: '4 列布局',
+            },
+            {
+                id: 'homepage-layout-5-column',
+                name: '5 列布局',
+            },
+            {
+                id: 'homepage-layout-6-column',
+                name: '6 列布局',
+            },
+        ],
+    },
     {
         type: 'number',
         id: 'homepage-layout-padding',

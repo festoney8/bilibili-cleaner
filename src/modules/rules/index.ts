@@ -25,7 +25,7 @@ import { spaceGroups } from './space'
 import { videoGroups } from './video'
 
 import { GM_getValue } from '$'
-import { INumberItem, IRadioItem, ISwitchItem } from '../../types/item'
+import { IListItem, INumberItem, ISwitchItem } from '../../types/item'
 import { error } from '../../utils/logger'
 import bangumiStyle from './bangumi/index.scss?inline'
 import channelStyle from './channel/index.scss?inline'
@@ -41,7 +41,7 @@ import videoStyle from './video/index.scss?inline'
 import watchlaterStyle from './watchlater/index.scss?inline'
 
 const loadSwitchItem = (item: ISwitchItem) => {
-    const enable = GM_getValue(item.id, GM_getValue('BILICLEANER_' + item.id, item.defaultEnable))
+    const enable = GM_getValue(item.id, item.defaultEnable)
     if (enable) {
         if (!item.noStyle) {
             document.documentElement.setAttribute(item.attrName ?? item.id, '')
@@ -59,7 +59,7 @@ const loadSwitchItem = (item: ISwitchItem) => {
 }
 
 const loadNumberItem = (item: INumberItem) => {
-    const value = GM_getValue(item.id, GM_getValue('BILICLEANER_' + item.id, item.defaultValue))
+    const value = GM_getValue(item.id, item.defaultValue)
     if (value !== item.disableValue) {
         if (!item.noStyle) {
             document.documentElement.setAttribute(item.attrName ?? item.id, '')
@@ -68,7 +68,12 @@ const loadNumberItem = (item: INumberItem) => {
     }
 }
 
-const loadRadioItem = (item: IRadioItem) => {}
+const loadListItem = (item: IListItem) => {
+    const value = GM_getValue(item.id, item.defaultValue)
+    if (value !== item.disableValue) {
+        document.documentElement.setAttribute(item.id, '')
+    }
+}
 
 const loadGroups = (groups: Group[]) => {
     for (const group of groups) {
@@ -81,8 +86,8 @@ const loadGroups = (groups: Group[]) => {
                     case 'number':
                         loadNumberItem(item)
                         break
-                    case 'radio':
-                        loadRadioItem(item)
+                    case 'list':
+                        loadListItem(item)
                         break
                 }
             } catch (err) {

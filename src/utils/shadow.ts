@@ -69,7 +69,7 @@ export class Shadow {
                 if (tagName && self.shadowStyleMap.has(tagName)) {
                     const shadowStyles = self.shadowStyleMap.get(tagName)
                     shadowStyles?.forEach((v) => {
-                        value += `\n<style bili-cleaner-css="${v.className}">${v.css}</style>`
+                        value += `<style bili-cleaner-css="${v.className}">${v.css}</style>`
                     })
                 }
                 origShadowInnerHTML!.set!.call(this, value)

@@ -1,7 +1,9 @@
-export type Item = ISwitchItem | INumberItem | IRadioItem | IButtonItem
+export type Item = ISwitchItem | INumberItem | IListItem | IButtonItem
 
 interface IBaseItem {
     type: 'switch' | 'number' | 'radio' | 'button'
+
+    id: string
 }
 
 // 开关功能
@@ -101,22 +103,31 @@ export interface IButtonItem extends IBaseItem {
 }
 
 // 单选功能
-export interface IRadioItem extends IBaseItem {
+export interface IListItem extends IBaseItem {
     // item类型
-    type: 'radio'
+    type: 'list'
 
-    // radio name
-    radioName: string
+    // item id, 与GM key对应，GM value为选项id
+    id: string
 
-    // 默认启用的 radio 项 id，id 需在列表内
-    defaultEnableId?: string
+    // 功能名
+    name: string
 
-    // radio项列表
-    radios: {
-        // id 与 GM key 对应，与样式 HTML attribute 对应
+    // 功能补充介绍
+    description?: string
+
+    // 默认值
+    defaultValue: string
+
+    // 禁用值
+    disableValue: string
+
+    // 选项列表
+    options: {
+        // id 与 GM value 对应
         id: string
 
-        // 功能介绍
-        description: string
+        // 选项名
+        name: string
     }[]
 }

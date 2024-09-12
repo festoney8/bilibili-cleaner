@@ -1,3 +1,24 @@
+// 使用 4 列布局
+html[homepage-layout-4-column] {
+    #i_cecream .recommended-container_floor-aside .container {
+        grid-template-columns: repeat(4, 1fr) !important;
+    }
+}
+
+// 使用 5 列布局
+html[homepage-layout-5-column] {
+    #i_cecream .recommended-container_floor-aside .container {
+        grid-template-columns: repeat(5, 1fr) !important;
+    }
+}
+
+// 使用 6 列布局
+html[homepage-layout-6-column] {
+    #i_cecream .recommended-container_floor-aside .container {
+        grid-template-columns: repeat(6, 1fr) !important;
+    }
+}
+
 // 修改 页面两侧边距
 html[homepage-layout-padding] {
     .bili-feed4-layout,

@@ -1,6 +1,5 @@
 import { unsafeWindow } from '$'
 import { error } from './logger'
-import { isPageInvalid } from './pageType'
 
 class URLCleaner {
     private static instance: URLCleaner
@@ -13,9 +12,7 @@ class URLCleaner {
 
     private constructor() {
         try {
-            if (!isPageInvalid()) {
-                this.hijack()
-            }
+            this.hijack()
         } catch (err) {
             error('init URLCleaner error', err)
         }

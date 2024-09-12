@@ -4,8 +4,7 @@ import {
     isPageChannel,
     isPageDynamic,
     isPageHomepage,
-    isPageLiveHome,
-    isPageLiveRoom,
+    isPageLive,
     isPagePlaylist,
     isPagePopular,
     isPageSearch,
@@ -23,7 +22,7 @@ export const commonBasicItems: Item[] = [
             if (isPageDynamic()) {
                 return 'border-radius-dynamic'
             }
-            if (isPageLiveRoom() || isPageLiveHome()) {
+            if (isPageLive()) {
                 return 'border-radius-live'
             }
             if (isPageSearch()) {
@@ -105,7 +104,7 @@ export const commonBasicItems: Item[] = [
                     if (isPageSearch()) {
                         keysToRemove.add('vt')
                     }
-                    if (isPageLiveRoom()) {
+                    if (isPageLive()) {
                         keysToRemove.add('bbid')
                         keysToRemove.add('ts')
                         keysToRemove.add('hotRank')

@@ -24,6 +24,8 @@ import { searchGroups } from './search'
 import { spaceGroups } from './space'
 import { videoGroups } from './video'
 
+import { GM_getValue } from '$'
+import { INumberItem, IRadioItem, ISwitchItem } from '../../types/item'
 import { error } from '../../utils/logger'
 import bangumiStyle from './bangumi/index.scss?inline'
 import channelStyle from './channel/index.scss?inline'
@@ -38,12 +40,50 @@ import spaceStyle from './space/index.scss?inline'
 import videoStyle from './video/index.scss?inline'
 import watchlaterStyle from './watchlater/index.scss?inline'
 
+const loadSwitchItem = (item: ISwitchItem) => {
+    const enable = GM_getValue(item.id, GM_getValue('BILICLEANER_' + item.id, item.defaultEnable))
+    if (enable) {
+        if (!item.noStyle) {
+            document.documentElement.setAttribute(item.attrName ?? item.id, '')
+        }
+        if (item.enableFn) {
+            if (item.enableFnRunAt === 'document-end') {
+                document.addEventListener('DOMContentLoaded', () => {
+                    item.enableFn!()?.then().catch()
+                })
+            } else {
+                item.enableFn()?.then().catch()
+            }
+        }
+    }
+}
+
+const loadNumberItem = (item: INumberItem) => {
+    const value = GM_getValue(item.id, GM_getValue('BILICLEANER_' + item.id, item.defaultValue))
+    if (value !== item.disableValue) {
+        if (!item.noStyle) {
+            document.documentElement.setAttribute(item.attrName ?? item.id, '')
+        }
+        item.fn(value)?.then().catch()
+    }
+}
+
+const loadRadioItem = (item: IRadioItem) => {}
+
 const loadGroups = (groups: Group[]) => {
     for (const group of groups) {
         for (const item of group.items) {
             try {
-                if (item.type === 'switch') {
-                    document.documentElement.setAttribute(item.id, '')
+                switch (item.type) {
+                    case 'switch':
+                        loadSwitchItem(item)
+                        break
+                    case 'number':
+                        loadNumberItem(item)
+                        break
+                    case 'radio':
+                        loadRadioItem(item)
+                        break
                 }
             } catch (err) {
                 error('load item failed', err)
@@ -59,9 +99,7 @@ const loadStyle = (css: string) => {
     document.documentElement?.appendChild(style)
 }
 
-/**
- * 载入当前页面规则列表
- */
+/** 载入当前页面规则列表 */
 export const loadRules = () => {
     loadGroups(commonGroups)
 
@@ -97,9 +135,7 @@ export const loadRules = () => {
     }
 }
 
-/**
- * 载入css, 注入在html节点下, 需在head节点出现后(html节点可插入时)执行
- */
+/** 载入css, 注入在html节点下, 需在head节点出现后(html节点可插入时)执行 */
 export const loadStyles = () => {
     loadStyle(commonStyle)
 

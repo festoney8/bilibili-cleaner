@@ -69,6 +69,9 @@ export interface INumberItem extends IBaseItem {
     // 附加文字，显示在输入框后（如数值单位）
     addonText?: string
 
+    // 是否无样式
+    noStyle?: boolean
+
     // 在html节点注册用attribute名，控制样式是否生效，缺省时默认使用id
     attrName?: string
 

@@ -86,6 +86,7 @@ export const dynamicCenterDynItems: Item[] = [
         type: 'switch',
         id: 'dynamic-page-unfold-dynamic',
         name: '自动展开 相同UP主被折叠的动态',
+        noStyle: true,
         enableFn: async () => {
             // 大量动态下，单次耗时10ms内
             const unfold = () => {

@@ -41,6 +41,7 @@ export const commonHeaderRightItems: Item[] = [
         type: 'switch',
         id: 'common-nav-favorite-select-watchlater',
         name: '收藏弹出框 自动选中稍后再看',
+        noStyle: true,
         enableFn: async () => {
             let cnt = 0
             const id = setInterval(() => {

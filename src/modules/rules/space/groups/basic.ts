@@ -5,6 +5,7 @@ export const spcaeBasicItems: Item[] = [
         type: 'switch',
         id: 'space-page-redirect-to-video',
         name: '打开用户主页 自动跳转到投稿',
+        noStyle: true,
         enableFn: () => {
             if (/\/\d+\/?($|\?)/.test(location.pathname)) {
                 const userid = location.pathname.match(/\d+/)?.[0]

@@ -8,6 +8,7 @@ export const videoBasicItems: Item[] = [
         type: 'switch',
         id: 'video-page-bv2av',
         name: 'BV号转AV号',
+        noStyle: true,
         enableFn: async () => {
             /**
              * algo by bilibili-API-collect
@@ -109,6 +110,7 @@ export const videoBasicItems: Item[] = [
         id: 'video-page-disable-danmaku-abtest',
         name: '禁用 弹幕云屏蔽灰测 (临时功能)',
         defaultEnable: true,
+        noStyle: true,
         enableFn: () => {
             let origValue = unsafeWindow.webAbTest
             if (origValue) {

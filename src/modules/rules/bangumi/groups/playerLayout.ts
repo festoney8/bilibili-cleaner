@@ -9,6 +9,7 @@ export const bangumiPlayerLayoutItems: Item[] = [
         type: 'switch',
         id: 'default-widescreen',
         name: '默认宽屏播放 刷新生效',
+        noStyle: true,
         enableFn: () => {
             let origNextData = unsafeWindow.__NEXT_DATA__
             if (origNextData?.props?.pageProps?.dehydratedState?.queries?.[1]?.state?.data?.show) {

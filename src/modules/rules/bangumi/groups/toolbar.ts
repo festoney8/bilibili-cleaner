@@ -5,6 +5,7 @@ export const bangumiToolbarItems: Item[] = [
         type: 'switch',
         id: 'video-page-coin-disable-auto-like',
         name: '投币时不自动点赞 (关闭需刷新)',
+        noStyle: true,
         enableFn: async () => {
             const disableAutoLike = () => {
                 let counter = 0

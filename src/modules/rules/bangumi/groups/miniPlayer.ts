@@ -21,42 +21,9 @@ export const bangumiMiniPlayerItems: Item[] = [
         name: '滚轮调节大小',
         enableFn: async () => {
             try {
-                const insertCSS = (zoom: number) => {
-                    const cssText = `
-                        .bpx-player-container[data-screen=mini] {
-                            height: calc(225px * ${zoom}) !important;
-                            width: calc(400px * ${zoom}) !important;
-                        }
-                        .bpx-player-container[data-revision="1"][data-screen=mini],
-                        .bpx-player-container[data-revision="2"][data-screen=mini] {
-                            height: calc(180px * ${zoom}) !important;
-                            width: calc(320px * ${zoom}) !important;
-                        }
-                        @media screen and (min-width:1681px) {
-                            .bpx-player-container[data-revision="1"][data-screen=mini],
-                            .bpx-player-container[data-revision="2"][data-screen=mini] {
-                                height: calc(203px * ${zoom}) !important;
-                                width: calc(360px * ${zoom}) !important;
-                            }
-                        }`
-                        .replace(/\n\s*/g, '')
-                        .trim()
-                    const node = document.querySelector(
-                        `html>style[bili-cleaner-css=video-page-bpx-player-mini-mode-wheel-adjust]`,
-                    )
-                    if (node) {
-                        node.innerHTML = cssText
-                    } else {
-                        const style = document.createElement('style')
-                        style.innerHTML = cssText
-                        style.setAttribute('bili-cleaner-css', 'video-page-bpx-player-mini-mode-wheel-adjust')
-                        document.documentElement.appendChild(style)
-                    }
-                }
                 // 载入上次缩放
-                const oldZoom: number | undefined = GM_getValue('BILICLEANER_video-page-bpx-player-mini-mode-zoom')
-                oldZoom && insertCSS(oldZoom)
-
+                const oldZoom = GM_getValue('BILICLEANER_video-page-bpx-player-mini-mode-zoom', 1)
+                document.documentElement.style.setProperty('--mini-player-zoom', oldZoom + '')
                 // 等player出现
                 let cnt = 0
                 const interval = setInterval(() => {
@@ -85,7 +52,7 @@ export const bangumiMiniPlayerItems: Item[] = [
                                 zoom = zoom > 3 ? 3 : zoom
                                 if (zoom !== lastZoom) {
                                     lastZoom = zoom
-                                    insertCSS(zoom)
+                                    document.documentElement.style.setProperty('--mini-player-zoom', zoom + '')
                                     GM_setValue('BILICLEANER_video-page-bpx-player-mini-mode-zoom', zoom)
                                 }
                             }
@@ -102,9 +69,6 @@ export const bangumiMiniPlayerItems: Item[] = [
             }
         },
         enableFnRunAt: 'document-end',
-        disableFn: async () => {
-            document.querySelector(`style[bili-cleaner-css=video-page-bpx-player-mini-mode-wheel-adjust]`)?.remove()
-        },
     },
     {
         type: 'switch',
@@ -116,14 +80,12 @@ export const bangumiMiniPlayerItems: Item[] = [
                 ty: 'BILICLEANER_video-page-bpx-player-mini-mode-position-record-translate-y',
             }
 
-            // 注入样式
+            // 设置初始位置
             const x = GM_getValue(keys.tx, 0)
             const y = GM_getValue(keys.ty, 0)
             if (x && y) {
-                const s = document.createElement('style')
-                s.innerHTML = `.bpx-player-container[data-screen="mini"] {transform: translateX(${x}px) translateY(${y}px);}`
-                s.setAttribute('bili-cleaner-css', 'video-page-bpx-player-mini-mode-position-record')
-                document.documentElement.appendChild(s)
+                document.documentElement.style.setProperty('--mini-player-translate-x', x)
+                document.documentElement.style.setProperty('--mini-player-translate-y', y)
             }
 
             waitForEle(document.body, `#bilibili-player [class^="bpx-player-video"]`, (node: HTMLElement) => {

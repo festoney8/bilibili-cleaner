@@ -28,6 +28,7 @@ export const liveBasicItems: Item[] = [
         type: 'switch',
         id: 'activity-live-auto-jump',
         name: '活动直播页 自动跳转普通直播 (实验功能)',
+        noStyle: true,
         enableFn: async () => {
             let cnt = 0
             const id = setInterval(() => {
@@ -47,6 +48,7 @@ export const liveBasicItems: Item[] = [
         type: 'switch',
         id: 'auto-best-quality',
         name: '自动切换最高画质 (实验功能)',
+        noStyle: true,
         enableFn: async () => {
             const qualityFn = () => {
                 const player = unsafeWindow.EmbedPlayer?.instance || unsafeWindow.livePlayer

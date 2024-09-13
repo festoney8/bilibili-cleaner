@@ -1,16 +1,16 @@
 import { Group } from '../../types/group'
 import {
-    isPageBangumi,
-    isPageChannel,
-    isPageDynamic,
-    isPageHomepage,
-    isPageLive,
-    isPagePlaylist,
-    isPagePopular,
-    isPageSearch,
-    isPageSpace,
-    isPageVideo,
-    isPageWatchlater,
+  isPageBangumi,
+  isPageChannel,
+  isPageDynamic,
+  isPageHomepage,
+  isPageLive,
+  isPagePlaylist,
+  isPagePopular,
+  isPageSearch,
+  isPageSpace,
+  isPageVideo,
+  isPageWatchlater,
 } from '../../utils/pageType'
 import { bangumiGroups } from './bangumi'
 import { channelGroups } from './channel'
@@ -41,140 +41,178 @@ import videoStyle from './video/index.scss?inline'
 import watchlaterStyle from './watchlater/index.scss?inline'
 
 const loadSwitchItem = (item: ISwitchItem) => {
-    const enable = GM_getValue(item.id, item.defaultEnable)
-    if (enable) {
-        if (!item.noStyle) {
-            document.documentElement.setAttribute(item.attrName ?? item.id, '')
-        }
-        if (item.enableFn) {
-            if (item.enableFnRunAt === 'document-end') {
-                document.addEventListener('DOMContentLoaded', () => {
-                    item.enableFn!()?.then().catch()
-                })
-            } else {
-                item.enableFn()?.then().catch()
-            }
-        }
+  const enable = GM_getValue(item.id, item.defaultEnable)
+  if (enable) {
+    if (!item.noStyle) {
+      document.documentElement.setAttribute(item.attrName ?? item.id, '')
     }
+    if (item.enableFn) {
+      if (item.enableFnRunAt === 'document-end') {
+        document.addEventListener('DOMContentLoaded', () => {
+          item.enableFn!()?.then().catch()
+        })
+      } else {
+        item.enableFn()?.then().catch()
+      }
+    }
+  }
 }
 
 const loadNumberItem = (item: INumberItem) => {
-    const value = GM_getValue(item.id, item.defaultValue)
-    if (value !== item.disableValue) {
-        if (!item.noStyle) {
-            document.documentElement.setAttribute(item.attrName ?? item.id, '')
-        }
-        item.fn(value)?.then().catch()
+  const value = GM_getValue(item.id, item.defaultValue)
+  if (value !== item.disableValue) {
+    if (!item.noStyle) {
+      document.documentElement.setAttribute(item.attrName ?? item.id, '')
     }
+    item.fn(value)?.then().catch()
+  }
 }
 
 const loadListItem = (item: IListItem) => {
-    const value = GM_getValue(item.id, item.defaultValue)
-    if (value !== item.disableValue) {
-        document.documentElement.setAttribute(item.id, '')
-    }
+  const value = GM_getValue(item.id, item.defaultValue)
+  if (value !== item.disableValue) {
+    document.documentElement.setAttribute(item.id, '')
+  }
 }
 
 const loadGroups = (groups: Group[]) => {
-    for (const group of groups) {
-        for (const item of group.items) {
-            try {
-                switch (item.type) {
-                    case 'switch':
-                        loadSwitchItem(item)
-                        break
-                    case 'number':
-                        loadNumberItem(item)
-                        break
-                    case 'list':
-                        loadListItem(item)
-                        break
-                }
-            } catch (err) {
-                error('load item failed', err)
-            }
+  for (const group of groups) {
+    for (const item of group.items) {
+      try {
+        switch (item.type) {
+          case 'switch':
+            loadSwitchItem(item)
+            break
+          case 'number':
+            loadNumberItem(item)
+            break
+          case 'list':
+            loadListItem(item)
+            break
         }
+      } catch (err) {
+        error('load item failed', err)
+      }
     }
+  }
 }
 
 const loadStyle = (css: string) => {
-    const style = document.createElement('style')
-    style.textContent = css
-    style.className = 'bili-cleaner-css'
-    document.documentElement?.appendChild(style)
+  const style = document.createElement('style')
+  style.textContent = css
+  style.className = 'bili-cleaner-css'
+  document.documentElement?.appendChild(style)
 }
 
 /** 载入当前页面规则列表 */
 export const loadRules = () => {
-    loadGroups(commonGroups)
+  loadGroups(commonGroups)
 
-    if (isPageHomepage()) {
-        loadGroups(homepageGroups)
-    }
-    if (isPageVideo() || isPagePlaylist()) {
-        loadGroups(videoGroups)
-    }
-    if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPagePlaylist()) {
-        loadGroups(commentGroups)
-    }
-    if (isPageBangumi()) {
-        loadGroups(bangumiGroups)
-    }
-    if (isPageChannel()) {
-        loadGroups(channelGroups)
-    }
-    if (isPageDynamic()) {
-        loadGroups(dynamicGroups)
-    }
-    if (isPageLive()) {
-        loadGroups(liveGroups)
-    }
-    if (isPagePopular()) {
-        loadGroups(popularGroups)
-    }
-    if (isPageSearch()) {
-        loadGroups(searchGroups)
-    }
-    if (isPageSpace()) {
-        loadGroups(spaceGroups)
-    }
+  if (isPageHomepage()) {
+    loadGroups(homepageGroups)
+  }
+  if (isPageVideo() || isPagePlaylist()) {
+    loadGroups(videoGroups)
+  }
+  if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPagePlaylist()) {
+    loadGroups(commentGroups)
+  }
+  if (isPageBangumi()) {
+    loadGroups(bangumiGroups)
+  }
+  if (isPageChannel()) {
+    loadGroups(channelGroups)
+  }
+  if (isPageDynamic()) {
+    loadGroups(dynamicGroups)
+  }
+  if (isPageLive()) {
+    loadGroups(liveGroups)
+  }
+  if (isPagePopular()) {
+    loadGroups(popularGroups)
+  }
+  if (isPageSearch()) {
+    loadGroups(searchGroups)
+  }
+  if (isPageSpace()) {
+    loadGroups(spaceGroups)
+  }
 }
 
 /** 载入css, 注入在html节点下, 需在head节点出现后(html节点可插入时)执行 */
 export const loadStyles = () => {
-    loadStyle(commonStyle)
+  loadStyle(commonStyle)
 
-    if (isPageHomepage()) {
-        loadStyle(homepageStyle)
-    }
-    if (isPageVideo() || isPagePlaylist()) {
-        loadStyle(videoStyle)
-    }
-    if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPagePlaylist()) {
-        loadStyle(commentStyle)
-    }
-    if (isPageBangumi()) {
-        loadStyle(bangumiStyle)
-    }
-    if (isPageChannel()) {
-        loadStyle(channelStyle)
-    }
-    if (isPageDynamic()) {
-        loadStyle(dynamicStyle)
-    }
-    if (isPageLive()) {
-        loadStyle(liveStyle)
-    }
-    if (isPagePopular()) {
-        loadStyle(popularStyle)
-    }
-    if (isPageSearch()) {
-        loadStyle(searchStyle)
-    }
-    if (isPageSpace()) {
-        loadStyle(spaceStyle)
-    }
-    if (isPageWatchlater()) {
-        loadStyle(watchlaterStyle)
-    }
+  if (isPageHomepage()) {
+    loadStyle(homepageStyle)
+  }
+  if (isPageVideo() || isPagePlaylist()) {
+    loadStyle(videoStyle)
+  }
+  if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPagePlaylist()) {
+    loadStyle(commentStyle)
+  }
+  if (isPageBangumi()) {
+    loadStyle(bangumiStyle)
+  }
+  if (isPageChannel()) {
+    loadStyle(channelStyle)
+  }
+  if (isPageDynamic()) {
+    loadStyle(dynamicStyle)
+  }
+  if (isPageLive()) {
+    loadStyle(liveStyle)
+  }
+  if (isPagePopular()) {
+    loadStyle(popularStyle)
+  }
+  if (isPageSearch()) {
+    loadStyle(searchStyle)
+  }
+  if (isPageSpace()) {
+    loadStyle(spaceStyle)
+  }
+  if (isPageWatchlater()) {
+    loadStyle(watchlaterStyle)
+  }
+}
+
+export const currPageRules = (): Group[] => {
+  let rules: Group[] = []
+
+  if (isPageHomepage()) {
+    rules = [...rules, ...homepageGroups]
+  }
+  if (isPageVideo() || isPagePlaylist()) {
+    rules = [...rules, ...videoGroups]
+  }
+  if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPagePlaylist()) {
+    rules = [...rules, ...commentGroups]
+  }
+  if (isPageBangumi()) {
+    rules = [...rules, ...bangumiGroups]
+  }
+  if (isPageChannel()) {
+    rules = [...rules, ...channelGroups]
+  }
+  if (isPageDynamic()) {
+    rules = [...rules, ...dynamicGroups]
+  }
+  if (isPageLive()) {
+    rules = [...rules, ...liveGroups]
+  }
+  if (isPagePopular()) {
+    rules = [...rules, ...popularGroups]
+  }
+  if (isPageSearch()) {
+    rules = [...rules, ...searchGroups]
+  }
+  if (isPageSpace()) {
+    rules = [...rules, ...spaceGroups]
+  }
+  rules = [...rules, ...commonGroups]
+
+  return rules
 }

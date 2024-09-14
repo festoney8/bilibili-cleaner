@@ -1,4 +1,4 @@
-import { Group } from '../../types/group'
+import { Rule } from '../../types/rule'
 import {
   isPageBangumi,
   isPageChannel,
@@ -38,7 +38,123 @@ import popularStyle from './popular/index.scss?inline'
 import searchStyle from './search/index.scss?inline'
 import spaceStyle from './space/index.scss?inline'
 import videoStyle from './video/index.scss?inline'
+import { watchlaterGroups } from './watchlater'
 import watchlaterStyle from './watchlater/index.scss?inline'
+
+/** 全部规则 */
+export const rules: Rule[] = [
+  {
+    name: '首页',
+    groups: homepageGroups,
+    style: homepageStyle,
+    checkFn: isPageHomepage,
+  },
+  {
+    name: '普通播放页',
+    groups: videoGroups,
+    style: videoStyle,
+    checkFn: () => isPageVideo() || isPagePlaylist(),
+  },
+  {
+    name: '番剧播放页',
+    groups: bangumiGroups,
+    style: bangumiStyle,
+    checkFn: isPageBangumi,
+  },
+  {
+    name: '动态页',
+    groups: dynamicGroups,
+    style: dynamicStyle,
+    checkFn: isPageDynamic,
+  },
+  {
+    name: '直播页',
+    groups: liveGroups,
+    style: liveStyle,
+    checkFn: isPageLive,
+  },
+  {
+    name: '热门/排行榜页',
+    groups: popularGroups,
+    style: popularStyle,
+    checkFn: isPagePopular,
+  },
+  {
+    name: '分区页',
+    groups: channelGroups,
+    style: channelStyle,
+    checkFn: isPageChannel,
+  },
+  {
+    name: '空间页',
+    groups: spaceGroups,
+    style: spaceStyle,
+    checkFn: isPageSpace,
+  },
+  {
+    name: '搜索页',
+    groups: searchGroups,
+    style: searchStyle,
+    checkFn: isPageSearch,
+  },
+  {
+    name: '稍后再看页',
+    groups: watchlaterGroups,
+    style: watchlaterStyle,
+    checkFn: isPageWatchlater,
+  },
+  {
+    name: '评论区',
+    groups: commentGroups,
+    style: commentStyle,
+    checkFn: () => isPageVideo() || isPageBangumi() || isPageDynamic() || isPageSpace() || isPagePlaylist(),
+  },
+  {
+    name: '全站通用',
+    groups: commonGroups,
+    style: commonStyle,
+    checkFn: () => true,
+  },
+]
+
+/** 载入当前页面规则列表 */
+export const loadRules = () => {
+  for (const rule of rules) {
+    if (rule.checkFn()) {
+      for (const group of rule.groups) {
+        for (const item of group.items) {
+          try {
+            switch (item.type) {
+              case 'switch':
+                loadSwitchItem(item)
+                break
+              case 'number':
+                loadNumberItem(item)
+                break
+              case 'list':
+                loadListItem(item)
+                break
+            }
+          } catch (err) {
+            error('load item failed', err)
+          }
+        }
+      }
+    }
+  }
+}
+
+/** 载入css, 注入在html节点下, 需在head节点出现后(html节点可插入时)执行 */
+export const loadStyles = () => {
+  for (const rule of rules) {
+    if (rule.checkFn()) {
+      const style = document.createElement('style')
+      style.className = 'bili-cleaner-css'
+      style.textContent = rule.style
+      document.documentElement?.appendChild(style)
+    }
+  }
+}
 
 const loadSwitchItem = (item: ISwitchItem) => {
   const enable = GM_getValue(item.id, item.defaultEnable)
@@ -73,146 +189,4 @@ const loadListItem = (item: IListItem) => {
   if (value !== item.disableValue) {
     document.documentElement.setAttribute(item.id, '')
   }
-}
-
-const loadGroups = (groups: Group[]) => {
-  for (const group of groups) {
-    for (const item of group.items) {
-      try {
-        switch (item.type) {
-          case 'switch':
-            loadSwitchItem(item)
-            break
-          case 'number':
-            loadNumberItem(item)
-            break
-          case 'list':
-            loadListItem(item)
-            break
-        }
-      } catch (err) {
-        error('load item failed', err)
-      }
-    }
-  }
-}
-
-const loadStyle = (css: string) => {
-  const style = document.createElement('style')
-  style.textContent = css
-  style.className = 'bili-cleaner-css'
-  document.documentElement?.appendChild(style)
-}
-
-/** 载入当前页面规则列表 */
-export const loadRules = () => {
-  loadGroups(commonGroups)
-
-  if (isPageHomepage()) {
-    loadGroups(homepageGroups)
-  }
-  if (isPageVideo() || isPagePlaylist()) {
-    loadGroups(videoGroups)
-  }
-  if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPagePlaylist()) {
-    loadGroups(commentGroups)
-  }
-  if (isPageBangumi()) {
-    loadGroups(bangumiGroups)
-  }
-  if (isPageChannel()) {
-    loadGroups(channelGroups)
-  }
-  if (isPageDynamic()) {
-    loadGroups(dynamicGroups)
-  }
-  if (isPageLive()) {
-    loadGroups(liveGroups)
-  }
-  if (isPagePopular()) {
-    loadGroups(popularGroups)
-  }
-  if (isPageSearch()) {
-    loadGroups(searchGroups)
-  }
-  if (isPageSpace()) {
-    loadGroups(spaceGroups)
-  }
-}
-
-/** 载入css, 注入在html节点下, 需在head节点出现后(html节点可插入时)执行 */
-export const loadStyles = () => {
-  loadStyle(commonStyle)
-
-  if (isPageHomepage()) {
-    loadStyle(homepageStyle)
-  }
-  if (isPageVideo() || isPagePlaylist()) {
-    loadStyle(videoStyle)
-  }
-  if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPagePlaylist()) {
-    loadStyle(commentStyle)
-  }
-  if (isPageBangumi()) {
-    loadStyle(bangumiStyle)
-  }
-  if (isPageChannel()) {
-    loadStyle(channelStyle)
-  }
-  if (isPageDynamic()) {
-    loadStyle(dynamicStyle)
-  }
-  if (isPageLive()) {
-    loadStyle(liveStyle)
-  }
-  if (isPagePopular()) {
-    loadStyle(popularStyle)
-  }
-  if (isPageSearch()) {
-    loadStyle(searchStyle)
-  }
-  if (isPageSpace()) {
-    loadStyle(spaceStyle)
-  }
-  if (isPageWatchlater()) {
-    loadStyle(watchlaterStyle)
-  }
-}
-
-export const currPageRules = (): Group[] => {
-  let rules: Group[] = []
-
-  if (isPageHomepage()) {
-    rules = [...rules, ...homepageGroups]
-  }
-  if (isPageVideo() || isPagePlaylist()) {
-    rules = [...rules, ...videoGroups]
-  }
-  if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPagePlaylist()) {
-    rules = [...rules, ...commentGroups]
-  }
-  if (isPageBangumi()) {
-    rules = [...rules, ...bangumiGroups]
-  }
-  if (isPageChannel()) {
-    rules = [...rules, ...channelGroups]
-  }
-  if (isPageDynamic()) {
-    rules = [...rules, ...dynamicGroups]
-  }
-  if (isPageLive()) {
-    rules = [...rules, ...liveGroups]
-  }
-  if (isPagePopular()) {
-    rules = [...rules, ...popularGroups]
-  }
-  if (isPageSearch()) {
-    rules = [...rules, ...searchGroups]
-  }
-  if (isPageSpace()) {
-    rules = [...rules, ...spaceGroups]
-  }
-  rules = [...rules, ...commonGroups]
-
-  return rules
 }

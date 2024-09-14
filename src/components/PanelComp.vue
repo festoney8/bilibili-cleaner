@@ -2,6 +2,14 @@
 import { useDraggable } from '@vueuse/core'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 
+defineProps<{
+  title: string
+  widthPercent: number // 单位vw
+  heightPercent: number // 单位vh
+  minWidth: number // 单位px
+  minHeight: number // 单位px
+}>()
+
 const wrap = ref<HTMLElement | null>(null)
 const bar = ref<HTMLElement | null>(null)
 const disabled = ref(false)
@@ -41,8 +49,22 @@ watch([x, y], ([newX, newY]) => {
 </script>
 
 <template>
-  <div ref="wrap" :style="style" class="fixed z-[99999] h-80 w-80 select-none bg-yellow-400">
-    <div ref="bar" class="cursor-move select-none bg-blue-200 text-2xl font-black">title</div>
-    <div class="mt-8 select-none bg-red-100">body {{ x }} {{ y }}</div>
+  <div
+    ref="wrap"
+    :style="[
+      {
+        width: widthPercent + 'vw',
+        height: heightPercent + 'vh',
+        minWidth: minWidth + 'px',
+        minHeight: minHeight + 'px',
+      },
+      style,
+    ]"
+    class="fixed z-[99999] h-80 w-80 select-none bg-yellow-400"
+  >
+    <div ref="bar" class="cursor-move select-none bg-blue-200 text-2xl font-black">{{ title }}</div>
+    <div class="no-scrollbar h-full select-none overflow-x-hidden overflow-y-scroll bg-red-100">
+      <slot />
+    </div>
   </div>
 </template>

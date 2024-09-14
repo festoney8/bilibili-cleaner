@@ -29,7 +29,7 @@ const enabled = ref(GM_getValue(props.id, props.defaultEnable))
 watch(enabled, () => {
   if (enabled.value) {
     if (!props.noStyle) {
-      document.documentElement.setAttribute(props.id, '')
+      document.documentElement.setAttribute(props.attrName ?? props.id, '')
     }
     // Todo: enableFn run at
     if (props.enableFn) {
@@ -39,7 +39,7 @@ watch(enabled, () => {
     console.log('enable', props.name, props.id)
   } else {
     if (!props.noStyle) {
-      document.documentElement.removeAttribute(props.id)
+      document.documentElement.removeAttribute(props.attrName ?? props.id)
     }
     if (props.disableFn) {
       props.disableFn()?.then().catch()

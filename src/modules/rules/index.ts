@@ -187,6 +187,6 @@ const loadNumberItem = (item: INumberItem) => {
 const loadListItem = (item: IListItem) => {
   const value = GM_getValue(item.id, item.defaultValue)
   if (value !== item.disableValue) {
-    document.documentElement.setAttribute(item.id, '')
+    document.documentElement.setAttribute(value, '')
   }
 }

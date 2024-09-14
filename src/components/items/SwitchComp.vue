@@ -11,9 +11,14 @@
           class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
         />
       </Switch>
-      <SwitchLabel class="ml-2 flex-1 select-none text-base text-black"> {{ props.name }}</SwitchLabel>
+      <SwitchLabel class="ml-2 flex-1 select-none text-base text-black"> {{ item.name }}</SwitchLabel>
     </div>
   </SwitchGroup>
+  <div v-if="item.description" class="mb-1.5 px-1">
+    <div class="whitespace-pre-wrap text-sm leading-6 text-orange-900">
+      {{ item.description }}
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -22,30 +27,30 @@ import { Switch, SwitchGroup, SwitchLabel } from '@headlessui/vue'
 import { ref, watch } from 'vue'
 import { ISwitchItem } from '../../types/item'
 
-const props = defineProps<ISwitchItem>()
+const item = defineProps<ISwitchItem>()
 
-const enabled = ref(GM_getValue(props.id, props.defaultEnable))
+const enabled = ref(GM_getValue(item.id, item.defaultEnable))
 
 watch(enabled, () => {
   if (enabled.value) {
-    if (!props.noStyle) {
-      document.documentElement.setAttribute(props.attrName ?? props.id, '')
+    if (!item.noStyle) {
+      document.documentElement.setAttribute(item.attrName ?? item.id, '')
     }
     // Todo: enableFn run at
-    if (props.enableFn) {
-      props.enableFn()?.then().catch()
+    if (item.enableFn) {
+      item.enableFn()?.then().catch()
     }
-    GM_setValue(props.id, true)
-    console.log('enable', props.name, props.id)
+    GM_setValue(item.id, true)
+    console.log('enable', item.name, item.id)
   } else {
-    if (!props.noStyle) {
-      document.documentElement.removeAttribute(props.attrName ?? props.id)
+    if (!item.noStyle) {
+      document.documentElement.removeAttribute(item.attrName ?? item.id)
     }
-    if (props.disableFn) {
-      props.disableFn()?.then().catch()
+    if (item.disableFn) {
+      item.disableFn()?.then().catch()
     }
-    GM_setValue(props.id, false)
-    console.log('disable', props.name, props.id)
+    GM_setValue(item.id, false)
+    console.log('disable', item.name, item.id)
   }
 })
 </script>

@@ -71,7 +71,7 @@ watch([x, y], ([newX, newY]) => {
     >
       {{ title }}
     </div>
-    <div class="no-scrollbar flex select-none flex-col overflow-x-hidden overflow-y-scroll py-1">
+    <div class="no-scrollbar flex h-full select-none flex-col overflow-x-hidden overflow-y-scroll py-1">
       <slot />
     </div>
   </div>

@@ -2,7 +2,7 @@
 import { useDraggable } from '@vueuse/core'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 
-defineProps<{
+const props = defineProps<{
   title: string
   widthPercent: number // 单位vw
   heightPercent: number // 单位vh
@@ -15,7 +15,10 @@ const bar = ref<HTMLElement | null>(null)
 const disabled = ref(false)
 
 const { x, y, style } = useDraggable(wrap, {
-  initialValue: { x: 40, y: 40 },
+  initialValue: {
+    x: innerWidth / 2 - Math.max((innerWidth * props.widthPercent) / 100, props.minWidth) / 2,
+    y: innerHeight / 2 - Math.max((innerHeight * props.heightPercent) / 100, props.minHeight) / 2,
+  },
   handle: computed(() => bar.value),
   preventDefault: true,
   disabled: disabled,
@@ -60,10 +63,15 @@ watch([x, y], ([newX, newY]) => {
       },
       style,
     ]"
-    class="fixed z-[99999] h-80 w-80 select-none bg-yellow-400"
+    class="no-scrollbar fixed z-[99999] select-none overflow-auto overscroll-none rounded-xl bg-white pb-4 shadow-lg"
   >
-    <div ref="bar" class="cursor-move select-none bg-blue-200 text-2xl font-black">{{ title }}</div>
-    <div class="no-scrollbar h-full select-none overflow-x-hidden overflow-y-scroll bg-red-100">
+    <div
+      ref="bar"
+      class="sticky top-0 z-10 w-full cursor-move select-none bg-[#00AEEC] py-1.5 text-center text-xl font-black text-white"
+    >
+      {{ title }}
+    </div>
+    <div class="no-scrollbar flex select-none flex-col overflow-x-hidden overflow-y-scroll py-1">
       <slot />
     </div>
   </div>

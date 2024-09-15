@@ -4,7 +4,7 @@
         <input
             type="number"
             v-model="currValue"
-            class="ml-auto block w-1/4 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-sm outline-none invalid:border-red-500 focus:border-gray-500 focus:invalid:border-red-500"
+            class="ml-auto block w-1/5 rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-sm outline-none invalid:border-red-500 focus:border-gray-500 focus:invalid:border-red-500"
         />
         <div class="ml-2">{{ item.addonText }}</div>
     </div>

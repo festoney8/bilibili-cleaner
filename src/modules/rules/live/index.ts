@@ -10,7 +10,7 @@ import { liveRightItems } from './groups/right'
 
 export const liveGroups: Group[] = [
     {
-        name: '直播页 基本功能',
+        name: '基本功能',
         items: liveBasicItems,
     },
     {

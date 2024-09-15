@@ -1,6 +1,6 @@
 <template>
-    <div class="mx-auto w-full bg-white px-2 py-1.5">
-        <Disclosure v-slot="{ open }">
+    <div class="mx-auto w-full bg-white p-1.5">
+        <Disclosure v-slot="{ open }" v-bind:default-open="true">
             <DisclosureButton
                 class="flex w-full justify-between rounded-lg bg-blue-100/40 px-4 py-1.5 text-left text-base font-bold text-blue-900 outline-none hover:bg-blue-100/80"
             >

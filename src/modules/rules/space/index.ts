@@ -4,7 +4,7 @@ import { spcaeDynamicItems } from './groups/dynamic'
 
 export const spaceGroups: Group[] = [
     {
-        name: '空间页 基本功能',
+        name: '基本功能',
         items: spcaeBasicItems,
     },
     {

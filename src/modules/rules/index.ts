@@ -163,7 +163,7 @@ const loadSwitchItem = (item: ISwitchItem) => {
             document.documentElement.setAttribute(item.attrName ?? item.id, '')
         }
         if (item.enableFn) {
-            if (item.enableFnRunAt === 'document-end') {
+            if (item.enableFnRunAt === 'document-end' && document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', () => {
                     item.enableFn!()?.then().catch()
                 })

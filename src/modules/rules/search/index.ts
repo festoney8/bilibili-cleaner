@@ -4,7 +4,7 @@ import { searchSidebarItems } from './groups/sidebar'
 
 export const searchGroups: Group[] = [
     {
-        name: '搜索页 基本功能',
+        name: '基本功能',
         items: searchBasicItems,
     },
     {

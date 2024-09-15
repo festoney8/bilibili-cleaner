@@ -7,7 +7,7 @@ import { homepageSidebarItems } from './groups/sidebar'
 
 export const homepageGroups: Group[] = [
     {
-        name: '首页 基本功能',
+        name: '基本功能',
         items: homepageBasicItems,
     },
     {
@@ -23,7 +23,7 @@ export const homepageGroups: Group[] = [
         items: homepageSidebarItems,
     },
     {
-        name: '适配插件[bilibili-app-recommend]',
+        name: '适配插件 bilibili-app-recommend',
         items: homepagePluginItems,
     },
 ]

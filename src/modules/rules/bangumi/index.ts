@@ -11,7 +11,7 @@ import { bangumiToolbarItems } from './groups/toolbar'
 
 export const bangumiGroups: Group[] = [
     {
-        name: '影视播放页 基本功能',
+        name: '基本功能',
         items: bangumiBasicItems,
     },
     {

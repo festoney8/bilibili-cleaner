@@ -5,11 +5,11 @@ import { popularOtherItems } from './groups/other'
 
 export const popularGroups: Group[] = [
     {
-        name: '热门/排行榜页 基本功能',
+        name: '基本功能',
         items: popularBasicItems,
     },
     {
-        name: '页面强制布局 (单选)',
+        name: '页面强制布局',
         items: popularLayoutItems,
     },
     {

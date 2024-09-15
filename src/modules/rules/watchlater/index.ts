@@ -3,7 +3,7 @@ import { watchlaterBasicItems } from './groups/basic'
 
 export const watchlaterGroups: Group[] = [
     {
-        name: '稍后再看页 基本功能',
+        name: '基本功能',
         items: watchlaterBasicItems,
     },
 ]

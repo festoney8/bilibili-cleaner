@@ -8,7 +8,7 @@ import { dynamicSidebar } from './groups/sidebar'
 
 export const dynamicGroups: Group[] = [
     {
-        name: '动态页 基本功能',
+        name: '基本功能',
         items: dynamicBasicItems,
     },
     {

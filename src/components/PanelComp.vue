@@ -10,7 +10,7 @@
             },
             style,
         ]"
-        class="no-scrollbar fixed z-[10000000] select-none overflow-auto overscroll-none rounded-xl bg-white pb-2 shadow-lg"
+        class="no-scrollbar fixed z-[10000000] select-none overflow-auto rounded-xl bg-white pb-2 shadow-lg"
     >
         <div
             ref="bar"
@@ -18,7 +18,7 @@
         >
             {{ title }}
         </div>
-        <div class="no-scrollbar flex h-full select-none flex-col overflow-x-hidden overflow-y-scroll py-1">
+        <div class="no-scrollbar flex h-full select-none flex-col p-2">
             <slot />
         </div>
     </div>

@@ -13,7 +13,7 @@ import { videoUpInfoItems } from './groups/upInfo'
 
 export const videoGroups: Group[] = [
     {
-        name: '播放页 基本功能',
+        name: '基本功能',
         items: videoBasicItems,
     },
     {

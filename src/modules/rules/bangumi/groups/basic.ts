@@ -6,7 +6,7 @@ export const bangumiBasicItems: Item[] = [
         id: 'video-page-simple-share',
         name: '净化分享功能',
         defaultEnable: true,
-        description: '点击分享按钮时，复制纯净链接',
+        description: ['点击分享按钮时，复制纯净链接'],
         enableFn: async () => {
             // 监听shareBtn出现
             let counter = 0

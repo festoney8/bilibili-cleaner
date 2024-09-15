@@ -29,7 +29,7 @@ export const videoGroups: Group[] = [
         items: videoPlayerItems,
     },
     {
-        name: '播放控制',
+        name: '播放控制栏',
         items: videoPlayerControlItems,
     },
     {
@@ -37,7 +37,7 @@ export const videoGroups: Group[] = [
         items: videoDanmakuItems,
     },
     {
-        name: '视频下方 三连/简介/Tag',
+        name: '视频下方 三连/简介/标签',
         items: videoToolbarItems,
     },
     {

@@ -1,10 +1,10 @@
 <template>
     <div class="flex items-center justify-between py-1">
-        <div class="text-base text-black">{{ item.name }}</div>
+        <div class="text-base text-black">{{ name }}</div>
         <Listbox v-model="selectedOption">
             <div class="relative w-2/5">
                 <ListboxButton
-                    class="relative w-full cursor-pointer rounded-lg bg-white px-3 py-1.5 text-left ring-1 ring-gray-200 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
+                    class="relative w-full cursor-pointer rounded-lg bg-white px-3 py-1.5 text-left ring-1 ring-gray-300 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
                 >
                     <span class="block truncate text-gray-800">{{ selectedOption.name }}</span>
                     <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -30,7 +30,7 @@
                             <li
                                 :class="[
                                     active ? 'bg-purple-100 text-black' : 'text-gray-900',
-                                    'relative cursor-default select-none py-2 pl-10 pr-4',
+                                    'relative cursor-default py-2 pl-10 pr-4',
                                 ]"
                             >
                                 <span :class="[selected ? 'font-medium' : 'font-normal', 'block truncate']">{{
@@ -49,6 +49,7 @@
             </div>
         </Listbox>
     </div>
+    <DescriptionComp v-if="description?.length" :description="description"></DescriptionComp>
 </template>
 
 <script setup lang="ts">
@@ -58,6 +59,7 @@ import { ref, watch } from 'vue'
 
 import { GM_getValue, GM_setValue } from '$'
 import { IListItem } from '../../types/item'
+import DescriptionComp from './DescriptionComp.vue'
 
 const item = defineProps<IListItem>()
 const options = item.options

@@ -68,7 +68,7 @@ export const videoToolbarItems: Item[] = [
     {
         type: 'switch',
         id: 'video-page-hide-below-info-tag',
-        name: '隐藏 tag列表',
+        name: '隐藏 标签列表',
     },
     {
         type: 'switch',

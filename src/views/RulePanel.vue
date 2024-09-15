@@ -1,6 +1,6 @@
 <template>
     <PanelComp
-        v-bind="{ title: 'bilibili 页面净化大师', widthPercent: 28, heightPercent: 85, minWidth: 350, minHeight: 600 }"
+        v-bind="{ title: 'bilibili 页面净化大师', widthPercent: 28, heightPercent: 85, minWidth: 360, minHeight: 600 }"
     >
         <div v-for="(group, index) in currPageGroups" :key="index">
             <DisclosureComp v-bind="{ title: group.name }">

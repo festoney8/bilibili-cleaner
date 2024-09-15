@@ -108,7 +108,7 @@ export const commentBasicItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-comment-user-card',
         name: '隐藏 用户卡片',
-        description: '鼠标放在用户名上时不显示卡片',
+        description: ['鼠标放在用户名上时不显示卡片'],
         enableFn: () => {
             shadow.register(
                 'bili-user-profile',
@@ -232,7 +232,7 @@ export const commentBasicItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-reply-tag-list',
         name: '隐藏 评论内容下Tag',
-        description: '热评 / UP主觉得很赞',
+        description: ['如：热评、UP主觉得很赞'],
         enableFn: () => {
             shadow.register(
                 'bili-comment-renderer',

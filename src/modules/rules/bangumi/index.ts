@@ -19,11 +19,11 @@ export const bangumiGroups: Group[] = [
         items: bangumiPlayerLayoutItems,
     },
     {
-        name: '播放器 (★为独有项)',
+        name: '播放器（标★是番剧页独有项）',
         items: bangumiPlayerItems,
     },
     {
-        name: '播放控制',
+        name: '播放控制栏',
         items: bangumiPlayerControlItems,
     },
     {
@@ -35,7 +35,7 @@ export const bangumiGroups: Group[] = [
         items: bangumiToolbarItems,
     },
     {
-        name: '右栏 作品选集/作品推荐',
+        name: '右栏 作品选集/其他推荐',
         items: bangumiRightItems,
     },
     {

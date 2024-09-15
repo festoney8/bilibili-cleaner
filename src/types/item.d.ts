@@ -17,8 +17,8 @@ export interface ISwitchItem extends IBaseItem {
     // 功能名
     name: string
 
-    // 功能补充介绍
-    description?: string
+    // 功能补充介绍，每个string显示为一行
+    description?: string[]
 
     // 是否默认启用
     defaultEnable?: boolean
@@ -54,8 +54,8 @@ export interface INumberItem extends IBaseItem {
     // 功能名
     name: string
 
-    // 功能补充介绍
-    description?: string
+    // 功能补充介绍，每个string显示为一行
+    description?: string[]
 
     // 最小值
     minValue: number
@@ -111,8 +111,8 @@ export interface IListItem extends IBaseItem {
     // 功能名
     name: string
 
-    // 功能补充介绍
-    description?: string
+    // 功能补充介绍，每个string显示为一行
+    description?: string[]
 
     // 默认值
     defaultValue: string

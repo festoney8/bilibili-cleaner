@@ -4,8 +4,8 @@ export const videoRightItems: Item[] = [
     {
         type: 'switch',
         id: 'video-page-right-container-sticky-optimize',
-        name: '优化 右栏底部吸附 (实验功能)',
-        description: '搭配 "全屏时页面可滚动" 使用',
+        name: '优化 全屏滚动时右栏底部吸附 (实验功能)',
+        description: ['搭配 "全屏时页面可滚动" 使用'],
     },
     {
         type: 'switch',

@@ -14,11 +14,11 @@
     >
         <div
             ref="bar"
-            class="sticky top-0 z-10 w-full cursor-move select-none bg-[#00AEEC] py-1.5 text-center text-xl font-black text-white"
+            class="sticky top-0 z-10 w-full cursor-move bg-[#00AEEC] py-1.5 text-center text-xl font-black text-white"
         >
             {{ title }}
         </div>
-        <div class="no-scrollbar flex h-full select-none flex-col p-2">
+        <div class="no-scrollbar flex h-full flex-col p-2">
             <slot />
         </div>
     </div>

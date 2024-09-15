@@ -40,13 +40,11 @@ html[video-page-hide-below-info-desc] {
 
 // 隐藏 tag列表
 html[video-page-hide-below-info-tag] {
-    #v_tag {
-        display: none !important;
-    }
-
-    // 收藏夹和稍后再看
+    #v_tag,
     .video-tag-container {
-        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        margin: 0 0 0.5rem !important;
     }
 }
 

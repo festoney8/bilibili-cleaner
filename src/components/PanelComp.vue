@@ -1,3 +1,29 @@
+<template>
+  <div
+    ref="wrap"
+    :style="[
+      {
+        width: widthPercent + 'vw',
+        height: heightPercent + 'vh',
+        minWidth: minWidth + 'px',
+        minHeight: minHeight + 'px',
+      },
+      style,
+    ]"
+    class="no-scrollbar fixed z-[10000000] select-none overflow-auto overscroll-none rounded-xl bg-white pb-4 shadow-lg"
+  >
+    <div
+      ref="bar"
+      class="sticky top-0 z-10 w-full cursor-move select-none bg-[#00AEEC] py-1.5 text-center text-xl font-black text-white"
+    >
+      {{ title }}
+    </div>
+    <div class="no-scrollbar flex h-full select-none flex-col overflow-x-hidden overflow-y-scroll py-1">
+      <slot />
+    </div>
+  </div>
+</template>
+
 <script setup lang="ts">
 import { useDraggable } from '@vueuse/core'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
@@ -50,29 +76,3 @@ watch([x, y], ([newX, newY]) => {
   }
 })
 </script>
-
-<template>
-  <div
-    ref="wrap"
-    :style="[
-      {
-        width: widthPercent + 'vw',
-        height: heightPercent + 'vh',
-        minWidth: minWidth + 'px',
-        minHeight: minHeight + 'px',
-      },
-      style,
-    ]"
-    class="no-scrollbar fixed z-[10000000] select-none overflow-auto overscroll-none rounded-xl bg-white pb-4 shadow-lg"
-  >
-    <div
-      ref="bar"
-      class="sticky top-0 z-10 w-full cursor-move select-none bg-[#00AEEC] py-1.5 text-center text-xl font-black text-white"
-    >
-      {{ title }}
-    </div>
-    <div class="no-scrollbar flex h-full select-none flex-col overflow-x-hidden overflow-y-scroll py-1">
-      <slot />
-    </div>
-  </div>
-</template>

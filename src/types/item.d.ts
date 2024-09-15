@@ -90,11 +90,8 @@ export interface IButtonItem extends IBaseItem {
   // 功能类型
   type: 'button'
 
-  // 功能介绍
-  description: string
-
-  // item类型
-  type: 'button'
+  // 功能名
+  name: string
 
   // 按钮文字
   buttonText: string

@@ -4,7 +4,7 @@ export const homepageLayoutItems: Item[] = [
   {
     type: 'list',
     id: 'homepage-layout',
-    name: '视频列表列数',
+    name: '修改视频列表列数',
     defaultValue: 'homepage-layout-disable',
     disableValue: 'homepage-layout-disable',
     options: [

@@ -19,12 +19,12 @@ export const channelBasicItems: Item[] = [
     {
         type: 'switch',
         id: 'channel-hide-sticky-subchannel',
-        name: '隐藏 滚动页面时 顶部吸附 分区栏',
+        name: '隐藏 滚动页面时 顶部吸附分区栏',
     },
     {
         type: 'switch',
         id: 'channel-hide-sticky-header',
-        name: '隐藏 滚动页面时 顶部吸附 顶栏',
+        name: '隐藏 滚动页面时 顶部吸附顶栏',
     },
     {
         type: 'number',

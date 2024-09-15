@@ -5,6 +5,7 @@ import { Shadow } from '../../../../utils/shadow'
 const shadow = new Shadow([
     'bili-comments-header-renderer', // 评论区header(notice,编辑器)
     'bili-comment-textarea', // 主编辑器、底部编辑器输入框
+    'bili-comment-rich-textarea', // 主编辑器、底部编辑器输入框
     'bili-comment-renderer', // 一级评论
     'bili-comment-user-info', // 一级二级评论用户信息
     'bili-rich-text', // 一级二级评论内容
@@ -60,9 +61,15 @@ export const commentBasicItems: Item[] = [
                 'video-page-hide-reply-box-textarea-placeholder',
                 `textarea:not([placeholder^="回复"])::placeholder {color: transparent !important; user-select: none;}`,
             )
+            shadow.register(
+                'bili-comment-rich-textarea',
+                'video-page-hide-reply-box-textarea-placeholder',
+                `.brt-placeholder {display: none !important;}`,
+            )
         },
         disableFn: () => {
             shadow.unregister('bili-comment-textarea', 'video-page-hide-reply-box-textarea-placeholder')
+            shadow.unregister('bili-comment-rich-textarea', 'video-page-hide-reply-box-textarea-placeholder')
         },
     },
     {
@@ -100,7 +107,8 @@ export const commentBasicItems: Item[] = [
     {
         type: 'switch',
         id: 'video-page-hide-comment-user-card',
-        name: '隐藏 用户卡片 鼠标放在用户名上时不显示卡片',
+        name: '隐藏 用户卡片',
+        description: '鼠标放在用户名上时不显示卡片',
         enableFn: () => {
             shadow.register(
                 'bili-user-profile',
@@ -223,7 +231,8 @@ export const commentBasicItems: Item[] = [
     {
         type: 'switch',
         id: 'video-page-hide-reply-tag-list',
-        name: '隐藏 评论内容下Tag (UP觉得很赞)',
+        name: '隐藏 评论内容下Tag',
+        description: '热评 / UP主觉得很赞',
         enableFn: () => {
             shadow.register(
                 'bili-comment-renderer',

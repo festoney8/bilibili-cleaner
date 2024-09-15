@@ -10,6 +10,7 @@ export const videoPlayerLayoutItems: Item[] = [
         type: 'switch',
         id: 'default-widescreen',
         name: '默认宽屏播放 刷新生效',
+        description: '与番剧播放页同步',
         enableFn: async () => {
             unsafeWindow.isWide = true
             wideScreenManager.lock() // 锁定宽屏模式
@@ -31,7 +32,8 @@ export const videoPlayerLayoutItems: Item[] = [
     {
         type: 'switch',
         id: 'webscreen-scrollable',
-        name: '网页全屏时 页面可滚动 滚轮调音量失效 （Firefox 不适用）',
+        name: '网页全屏时 页面可滚动',
+        description: '滚轮调节音量失效，Firefox 不适用',
         enableFn: async () => {
             // 禁用滚动调音量, firefox不生效
             document.removeEventListener('wheel', disableAdjustVolume)
@@ -56,7 +58,8 @@ export const videoPlayerLayoutItems: Item[] = [
     {
         type: 'switch',
         id: 'fullscreen-scrollable',
-        name: '全屏时 页面可滚动 滚轮调音量失效 （实验功能，Firefox 不适用）',
+        name: '全屏时 页面可滚动 (实验功能)',
+        description: '滚轮调节音量失效，Firefox 不适用',
         enableFn: async () => {
             if (!navigator.userAgent.toLocaleLowerCase().includes('chrome')) {
                 return

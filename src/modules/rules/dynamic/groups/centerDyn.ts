@@ -55,7 +55,7 @@ export const dynamicCenterDynItems: Item[] = [
     {
         type: 'switch',
         id: 'hide-dynamic-page-bili-dyn-lottery',
-        name: '隐藏 抽奖动态(含转发)',
+        name: '隐藏 抽奖动态 (含转发)',
     },
     {
         type: 'switch',
@@ -80,7 +80,7 @@ export const dynamicCenterDynItems: Item[] = [
     {
         type: 'switch',
         id: 'hide-dynamic-page-bili-dyn-charge-video',
-        name: '隐藏 全部充电视频(含已充电)',
+        name: '隐藏 全部充电视频 (含已充电)',
     },
     {
         type: 'switch',

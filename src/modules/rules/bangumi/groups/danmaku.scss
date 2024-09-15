@@ -6,7 +6,7 @@ html[video-page-hide-bpx-player-video-info-online] {
     }
 }
 
-// 隐藏 载入弹幕数量
+// 隐藏 装填弹幕数量
 html[video-page-hide-bpx-player-video-info-dm] {
     .bpx-player-video-info-dm,
     .bpx-player-video-info-divide {
@@ -14,7 +14,7 @@ html[video-page-hide-bpx-player-video-info-dm] {
     }
 }
 
-// 隐藏 弹幕启用
+// 隐藏 弹幕开关
 html[video-page-hide-bpx-player-dm-switch] {
     .bpx-player-dm-switch {
         display: none !important;

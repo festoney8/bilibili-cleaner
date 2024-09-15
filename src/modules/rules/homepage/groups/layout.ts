@@ -5,6 +5,7 @@ export const homepageLayoutItems: Item[] = [
         type: 'list',
         id: 'homepage-layout',
         name: '修改 视频列表列数',
+        description: '未启用时，B 站自动判断列数',
         defaultValue: 'homepage-layout-disable',
         disableValue: 'homepage-layout-disable',
         options: [

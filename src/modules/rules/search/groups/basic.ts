@@ -4,7 +4,7 @@ export const searchBasicItems: Item[] = [
     {
         type: 'switch',
         id: 'hide-search-page-search-sticky-header',
-        name: '顶栏 滚动页面后不再吸附顶部',
+        name: '顶栏 滚动页面后 不再吸附顶部',
     },
     {
         type: 'switch',

@@ -4,7 +4,7 @@ export const popularLayoutItems: Item[] = [
     {
         type: 'list',
         id: 'popular-layout',
-        name: '页面强制布局',
+        name: '强制修改页面布局',
         defaultValue: 'popular-layout-disable',
         disableValue: 'popular-layout-disable',
         options: [

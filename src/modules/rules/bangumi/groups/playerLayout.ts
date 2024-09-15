@@ -10,6 +10,7 @@ export const bangumiPlayerLayoutItems: Item[] = [
         id: 'default-widescreen',
         name: '默认宽屏播放 刷新生效',
         noStyle: true,
+        description: '与播放页同步',
         enableFn: () => {
             let origNextData = unsafeWindow.__NEXT_DATA__
             if (origNextData?.props?.pageProps?.dehydratedState?.queries?.[1]?.state?.data?.show) {
@@ -31,7 +32,8 @@ export const bangumiPlayerLayoutItems: Item[] = [
     {
         type: 'switch',
         id: 'webscreen-scrollable',
-        name: '网页全屏时 页面可滚动 滚轮调音量失效（Firefox 不适用）',
+        name: '网页全屏时 页面可滚动',
+        description: '滚轮调节音量失效，Firefox 不适用',
         enableFn: async () => {
             // 禁用滚动调音量
             document.removeEventListener('wheel', disableAdjustVolume)
@@ -56,7 +58,8 @@ export const bangumiPlayerLayoutItems: Item[] = [
     {
         type: 'switch',
         id: 'fullscreen-scrollable',
-        name: '全屏时 页面可滚动 滚轮调音量失效（实验功能，Firefox 不适用）',
+        name: '全屏时 页面可滚动 (实验功能)',
+        description: '滚轮调节音量失效，Firefox 不适用',
         enableFn: async () => {
             if (!navigator.userAgent.toLocaleLowerCase().includes('chrome')) {
                 return

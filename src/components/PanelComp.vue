@@ -10,7 +10,7 @@
             },
             style,
         ]"
-        class="no-scrollbar fixed z-[10000000] select-none overflow-auto overscroll-none rounded-xl bg-white pb-4 shadow-lg"
+        class="no-scrollbar fixed z-[10000000] select-none overflow-auto overscroll-none rounded-xl bg-white pb-2 shadow-lg"
     >
         <div
             ref="bar"

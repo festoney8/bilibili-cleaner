@@ -1,13 +1,13 @@
 <template>
-  <div class="my-1 flex items-center py-1 text-black">
-    <div>{{ item.name }}</div>
-    <input
-      type="number"
-      v-model="currValue"
-      class="ml-auto block w-1/4 rounded-lg border border-gray-300 bg-gray-50 px-2.5 py-1.5 text-sm outline-none invalid:border-red-500 focus:border-gray-500 focus:invalid:border-red-500"
-    />
-    <div class="ml-2">{{ item.addonText }}</div>
-  </div>
+    <div class="my-1 flex items-center py-1 text-black">
+        <div>{{ item.name }}</div>
+        <input
+            type="number"
+            v-model="currValue"
+            class="ml-auto block w-1/4 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-sm outline-none invalid:border-red-500 focus:border-gray-500 focus:invalid:border-red-500"
+        />
+        <div class="ml-2">{{ item.addonText }}</div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -20,27 +20,26 @@ const item = defineProps<INumberItem>()
 const currValue = ref(GM_getValue(item.id, item.defaultValue))
 
 watch(currValue, (newValue, oldValue) => {
-  console.log(item.id, newValue, oldValue)
-  if (newValue > item.maxValue) {
-    currValue.value = item.maxValue
-  }
-  if (newValue < item.minValue) {
-    currValue.value = item.minValue
-  }
+    if (newValue > item.maxValue) {
+        currValue.value = item.maxValue
+    }
+    if (newValue < item.minValue) {
+        currValue.value = item.minValue
+    }
 
-  // 样式生效、失效
-  if (oldValue === item.disableValue) {
-    if (!item.noStyle) {
-      document.documentElement.setAttribute(item.attrName ?? item.id, '')
+    // 样式生效、失效
+    if (oldValue === item.disableValue) {
+        if (!item.noStyle) {
+            document.documentElement.setAttribute(item.attrName ?? item.id, '')
+        }
     }
-  }
-  if (newValue === item.disableValue) {
-    if (!item.noStyle) {
-      document.documentElement.removeAttribute(item.attrName ?? item.id)
+    if (newValue === item.disableValue) {
+        if (!item.noStyle) {
+            document.documentElement.removeAttribute(item.attrName ?? item.id)
+        }
+    } else if (currValue.value !== oldValue) {
+        item.fn(currValue.value)?.then().catch()
     }
-  } else if (currValue.value !== oldValue) {
-    item.fn(currValue.value)?.then().catch()
-  }
-  GM_setValue(item.id, currValue.value)
+    GM_setValue(item.id, currValue.value)
 })
 </script>

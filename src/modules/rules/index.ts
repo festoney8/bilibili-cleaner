@@ -1,16 +1,16 @@
 import { Rule } from '../../types/rule'
 import {
-  isPageBangumi,
-  isPageChannel,
-  isPageDynamic,
-  isPageHomepage,
-  isPageLive,
-  isPagePlaylist,
-  isPagePopular,
-  isPageSearch,
-  isPageSpace,
-  isPageVideo,
-  isPageWatchlater,
+    isPageBangumi,
+    isPageChannel,
+    isPageDynamic,
+    isPageHomepage,
+    isPageLive,
+    isPagePlaylist,
+    isPagePopular,
+    isPageSearch,
+    isPageSpace,
+    isPageVideo,
+    isPageWatchlater,
 } from '../../utils/pageType'
 import { bangumiGroups } from './bangumi'
 import { channelGroups } from './channel'
@@ -43,150 +43,150 @@ import watchlaterStyle from './watchlater/index.scss?inline'
 
 /** 全部规则 */
 export const rules: Rule[] = [
-  {
-    name: '首页',
-    groups: homepageGroups,
-    style: homepageStyle,
-    checkFn: isPageHomepage,
-  },
-  {
-    name: '普通播放页',
-    groups: videoGroups,
-    style: videoStyle,
-    checkFn: () => isPageVideo() || isPagePlaylist(),
-  },
-  {
-    name: '番剧播放页',
-    groups: bangumiGroups,
-    style: bangumiStyle,
-    checkFn: isPageBangumi,
-  },
-  {
-    name: '动态页',
-    groups: dynamicGroups,
-    style: dynamicStyle,
-    checkFn: isPageDynamic,
-  },
-  {
-    name: '直播页',
-    groups: liveGroups,
-    style: liveStyle,
-    checkFn: isPageLive,
-  },
-  {
-    name: '热门/排行榜页',
-    groups: popularGroups,
-    style: popularStyle,
-    checkFn: isPagePopular,
-  },
-  {
-    name: '分区页',
-    groups: channelGroups,
-    style: channelStyle,
-    checkFn: isPageChannel,
-  },
-  {
-    name: '空间页',
-    groups: spaceGroups,
-    style: spaceStyle,
-    checkFn: isPageSpace,
-  },
-  {
-    name: '搜索页',
-    groups: searchGroups,
-    style: searchStyle,
-    checkFn: isPageSearch,
-  },
-  {
-    name: '稍后再看页',
-    groups: watchlaterGroups,
-    style: watchlaterStyle,
-    checkFn: isPageWatchlater,
-  },
-  {
-    name: '评论区',
-    groups: commentGroups,
-    style: commentStyle,
-    checkFn: () => isPageVideo() || isPageBangumi() || isPageDynamic() || isPageSpace() || isPagePlaylist(),
-  },
-  {
-    name: '全站通用',
-    groups: commonGroups,
-    style: commonStyle,
-    checkFn: () => true,
-  },
+    {
+        name: '首页',
+        groups: homepageGroups,
+        style: homepageStyle,
+        checkFn: isPageHomepage,
+    },
+    {
+        name: '普通播放页',
+        groups: videoGroups,
+        style: videoStyle,
+        checkFn: () => isPageVideo() || isPagePlaylist(),
+    },
+    {
+        name: '番剧播放页',
+        groups: bangumiGroups,
+        style: bangumiStyle,
+        checkFn: isPageBangumi,
+    },
+    {
+        name: '动态页',
+        groups: dynamicGroups,
+        style: dynamicStyle,
+        checkFn: isPageDynamic,
+    },
+    {
+        name: '直播页',
+        groups: liveGroups,
+        style: liveStyle,
+        checkFn: isPageLive,
+    },
+    {
+        name: '热门/排行榜页',
+        groups: popularGroups,
+        style: popularStyle,
+        checkFn: isPagePopular,
+    },
+    {
+        name: '分区页',
+        groups: channelGroups,
+        style: channelStyle,
+        checkFn: isPageChannel,
+    },
+    {
+        name: '空间页',
+        groups: spaceGroups,
+        style: spaceStyle,
+        checkFn: isPageSpace,
+    },
+    {
+        name: '搜索页',
+        groups: searchGroups,
+        style: searchStyle,
+        checkFn: isPageSearch,
+    },
+    {
+        name: '稍后再看页',
+        groups: watchlaterGroups,
+        style: watchlaterStyle,
+        checkFn: isPageWatchlater,
+    },
+    {
+        name: '评论区',
+        groups: commentGroups,
+        style: commentStyle,
+        checkFn: () => isPageVideo() || isPageBangumi() || isPageDynamic() || isPageSpace() || isPagePlaylist(),
+    },
+    {
+        name: '全站通用',
+        groups: commonGroups,
+        style: commonStyle,
+        checkFn: () => true,
+    },
 ]
 
 /** 载入当前页面规则列表 */
 export const loadRules = () => {
-  for (const rule of rules) {
-    if (rule.checkFn()) {
-      for (const group of rule.groups) {
-        for (const item of group.items) {
-          try {
-            switch (item.type) {
-              case 'switch':
-                loadSwitchItem(item)
-                break
-              case 'number':
-                loadNumberItem(item)
-                break
-              case 'list':
-                loadListItem(item)
-                break
+    for (const rule of rules) {
+        if (rule.checkFn()) {
+            for (const group of rule.groups) {
+                for (const item of group.items) {
+                    try {
+                        switch (item.type) {
+                            case 'switch':
+                                loadSwitchItem(item)
+                                break
+                            case 'number':
+                                loadNumberItem(item)
+                                break
+                            case 'list':
+                                loadListItem(item)
+                                break
+                        }
+                    } catch (err) {
+                        error('load item failed', err)
+                    }
+                }
             }
-          } catch (err) {
-            error('load item failed', err)
-          }
         }
-      }
     }
-  }
 }
 
 /** 载入css, 注入在html节点下, 需在head节点出现后(html节点可插入时)执行 */
 export const loadStyles = () => {
-  for (const rule of rules) {
-    if (rule.checkFn()) {
-      const style = document.createElement('style')
-      style.className = 'bili-cleaner-css'
-      style.textContent = rule.style
-      document.documentElement?.appendChild(style)
+    for (const rule of rules) {
+        if (rule.checkFn()) {
+            const style = document.createElement('style')
+            style.className = 'bili-cleaner-css'
+            style.textContent = rule.style
+            document.documentElement?.appendChild(style)
+        }
     }
-  }
 }
 
 const loadSwitchItem = (item: ISwitchItem) => {
-  const enable = GM_getValue(item.id, item.defaultEnable)
-  if (enable) {
-    if (!item.noStyle) {
-      document.documentElement.setAttribute(item.attrName ?? item.id, '')
+    const enable = GM_getValue(item.id, item.defaultEnable)
+    if (enable) {
+        if (!item.noStyle) {
+            document.documentElement.setAttribute(item.attrName ?? item.id, '')
+        }
+        if (item.enableFn) {
+            if (item.enableFnRunAt === 'document-end') {
+                document.addEventListener('DOMContentLoaded', () => {
+                    item.enableFn!()?.then().catch()
+                })
+            } else {
+                item.enableFn()?.then().catch()
+            }
+        }
     }
-    if (item.enableFn) {
-      if (item.enableFnRunAt === 'document-end') {
-        document.addEventListener('DOMContentLoaded', () => {
-          item.enableFn!()?.then().catch()
-        })
-      } else {
-        item.enableFn()?.then().catch()
-      }
-    }
-  }
 }
 
 const loadNumberItem = (item: INumberItem) => {
-  const value = GM_getValue(item.id, item.defaultValue)
-  if (value !== item.disableValue) {
-    if (!item.noStyle) {
-      document.documentElement.setAttribute(item.attrName ?? item.id, '')
+    const value = GM_getValue(item.id, item.defaultValue)
+    if (value !== item.disableValue) {
+        if (!item.noStyle) {
+            document.documentElement.setAttribute(item.attrName ?? item.id, '')
+        }
+        item.fn(value)?.then().catch()
     }
-    item.fn(value)?.then().catch()
-  }
 }
 
 const loadListItem = (item: IListItem) => {
-  const value = GM_getValue(item.id, item.defaultValue)
-  if (value !== item.disableValue) {
-    document.documentElement.setAttribute(value, '')
-  }
+    const value = GM_getValue(item.id, item.defaultValue)
+    if (value !== item.disableValue) {
+        document.documentElement.setAttribute(value, '')
+    }
 }

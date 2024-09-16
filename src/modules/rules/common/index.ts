@@ -1,4 +1,4 @@
-import { Group } from '../../../types/rule'
+import { Group } from '../../../types/collection'
 import { commonBasicItems } from './groups/basic'
 import { commonHeaderCenterItems } from './groups/headerCenter'
 import { commonHeaderLeftItems } from './groups/headerLeft'

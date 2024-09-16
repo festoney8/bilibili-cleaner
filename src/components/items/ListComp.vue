@@ -22,8 +22,8 @@
                     >
                         <ListboxOption
                             v-slot="{ active, selected }"
-                            v-for="option in options"
-                            :key="option.id"
+                            v-for="(option, index) in options"
+                            :key="index"
                             :value="option"
                             as="template"
                         >
@@ -49,7 +49,7 @@
             </div>
         </Listbox>
     </div>
-    <DescriptionComp v-if="description?.length" :description="description"></DescriptionComp>
+    <DescriptionComp class="pl-1" v-if="description?.length" :description="description"></DescriptionComp>
 </template>
 
 <script setup lang="ts">

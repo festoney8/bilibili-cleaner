@@ -8,7 +8,7 @@ export type Group = {
     items: Item[]
 }
 
-export type Rule = {
+export type Collection = {
     // 名称
     name: string
 
@@ -16,7 +16,7 @@ export type Rule = {
     groups: Group[]
 
     // 附加样式
-    style: string
+    style?: string
 
     // 检测当前是否生效
     checkFn: () => boolean

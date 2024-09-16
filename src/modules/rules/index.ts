@@ -1,4 +1,4 @@
-import { Rule } from '../../types/rule'
+import { Collection } from '../../types/collection'
 import {
     isPageBangumi,
     isPageChannel,
@@ -42,7 +42,7 @@ import { watchlaterGroups } from './watchlater'
 import watchlaterStyle from './watchlater/index.scss?inline'
 
 /** 全部规则 */
-export const rules: Rule[] = [
+export const rules: Collection[] = [
     {
         name: '首页',
         groups: homepageGroups,
@@ -147,7 +147,7 @@ export const loadRules = () => {
 /** 载入css, 注入在html节点下, 需在head节点出现后(html节点可插入时)执行 */
 export const loadStyles = () => {
     for (const rule of rules) {
-        if (rule.checkFn()) {
+        if (rule.checkFn() && rule.style) {
             const style = document.createElement('style')
             style.className = 'bili-cleaner-css'
             style.textContent = rule.style

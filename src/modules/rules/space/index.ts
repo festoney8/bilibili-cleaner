@@ -1,4 +1,4 @@
-import { Group } from '../../../types/rule'
+import { Group } from '../../../types/collection'
 import { spcaeBasicItems } from './groups/basic'
 import { spcaeDynamicItems } from './groups/dynamic'
 

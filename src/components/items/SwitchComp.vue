@@ -14,7 +14,7 @@
             <SwitchLabel class="ml-2 flex-1 text-base text-black"> {{ name }}</SwitchLabel>
         </div>
     </SwitchGroup>
-    <DescriptionComp class="pl-10 pr-2" v-if="description?.length" :description="description"></DescriptionComp>
+    <DescriptionComp class="pl-10" v-if="description?.length" :description="description"></DescriptionComp>
 </template>
 
 <script setup lang="ts">

@@ -55,7 +55,7 @@ export const bangumiPlayerControlItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-bpx-player-ctrl-pip',
         name: '隐藏 画中画',
-        description: ['Chrome/Edge 浏览器生效', 'Firefox 可在浏览器设置中关闭'],
+        description: ['Chrome / Edge 浏览器可用', 'Firefox 可在浏览器设置中关闭'],
     },
     {
         type: 'switch',

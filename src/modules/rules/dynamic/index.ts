@@ -1,4 +1,4 @@
-import { Group } from '../../../types/rule'
+import { Group } from '../../../types/collection'
 import { dynamicBasicItems } from './groups/basic'
 import { dynamicCenterDynItems } from './groups/centerDyn'
 import { dynamicCenterTopItems } from './groups/centerTop'

@@ -23,7 +23,7 @@ import NumberComp from '../components/items/NumberComp.vue'
 import SwitchComp from '../components/items/SwitchComp.vue'
 import PanelComp from '../components/PanelComp.vue'
 import { rules } from '../modules/rules'
-import { Group } from '../types/rule'
+import { Group } from '../types/collection'
 
 let currPageGroups: Group[] = []
 

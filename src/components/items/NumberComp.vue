@@ -8,7 +8,7 @@
         />
         <div v-if="addonText" class="ml-2">{{ addonText }}</div>
     </div>
-    <DescriptionComp v-if="description?.length" :description="description"></DescriptionComp>
+    <DescriptionComp class="pl-1" v-if="description?.length" :description="description"></DescriptionComp>
 </template>
 
 <script setup lang="ts">

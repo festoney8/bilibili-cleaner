@@ -1,4 +1,4 @@
-import { Group } from '../../../types/rule'
+import { Group } from '../../../types/collection'
 import { bangumiBasicItems } from './groups/basic'
 import { bangumiDanmakuItems } from './groups/danmaku'
 import { bangumiMiniPlayerItems } from './groups/miniPlayer'

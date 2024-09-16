@@ -1,10 +1,10 @@
 <template>
     <div class="flex items-center justify-between py-1">
-        <div class="text-base text-black">{{ name }}</div>
+        <div class="text-black">{{ name }}</div>
         <Listbox v-model="selectedOption">
             <div class="relative w-2/5">
                 <ListboxButton
-                    class="relative w-full cursor-pointer rounded-lg bg-white px-3 py-1.5 text-left ring-1 ring-gray-300 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
+                    class="relative w-full cursor-pointer rounded-lg bg-white px-3 py-1.5 text-left ring-1 ring-gray-300 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-1 focus-visible:ring-gray-500 focus-visible:ring-white/75 sm:text-sm"
                 >
                     <span class="block truncate text-gray-800">{{ selectedOption.name }}</span>
                     <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -18,7 +18,7 @@
                     leave-to-class="opacity-0"
                 >
                     <ListboxOptions
-                        class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
+                        class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
                     >
                         <ListboxOption
                             v-slot="{ active, selected }"

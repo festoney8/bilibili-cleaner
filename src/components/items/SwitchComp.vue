@@ -4,14 +4,14 @@
             <Switch
                 v-model="enabled"
                 :class="enabled ? 'bg-[#00AEEC]' : 'bg-gray-200'"
-                class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                class="relative inline-flex h-6 w-11 items-center rounded-full outline-none transition-colors"
             >
                 <span
                     :class="enabled ? 'translate-x-6' : 'translate-x-1'"
                     class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
                 />
             </Switch>
-            <SwitchLabel class="ml-2 flex-1 text-base text-black"> {{ name }}</SwitchLabel>
+            <SwitchLabel class="ml-2 flex-1 text-black"> {{ name }}</SwitchLabel>
         </div>
     </SwitchGroup>
     <DescriptionComp class="pl-10" v-if="description?.length" :description="description"></DescriptionComp>

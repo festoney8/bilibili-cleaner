@@ -7,7 +7,7 @@
         >
             {{ buttonText }}
         </button>
-        <div class="ml-2 self-center text-base text-black">{{ name }}</div>
+        <div class="ml-2 self-center text-black">{{ name }}</div>
     </div>
 </template>
 

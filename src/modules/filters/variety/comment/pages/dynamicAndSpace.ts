@@ -535,7 +535,7 @@ export const commentFilterSpaceGroups: Group[] = [
         ],
     },
     {
-        name: '白名单免过滤',
+        name: '白名单 免过滤',
         items: [
             {
                 type: 'switch',

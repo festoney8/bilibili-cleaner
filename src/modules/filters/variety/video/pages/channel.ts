@@ -298,7 +298,7 @@ export const videoFilterChannelGroups: Group[] = [
             {
                 type: 'number',
                 id: GM_KEYS.black.duration.valueKey,
-                name: '设定最低时长 (0~300s)',
+                name: '设定最低时长（0~300s）',
                 noStyle: true,
                 minValue: 0,
                 maxValue: 300,

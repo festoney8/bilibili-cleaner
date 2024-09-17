@@ -37,9 +37,10 @@ export const coreCheck = async (
     sign = true,
     blackPairs: SubFilterPair[],
     whitePairs?: SubFilterPair[],
-) => {
+): Promise<number> => {
+    let blackCnt = 0
     try {
-        // 黑名单过滤器全部关闭时恢复全部元素
+        // 黑名单过滤器全部关闭时恢复元素
         let isAllDisable = true
         for (const pair of blackPairs) {
             if (pair[0].isEnable) {
@@ -49,7 +50,7 @@ export const coreCheck = async (
         }
         if (isAllDisable) {
             elements.forEach((el) => showEle(el))
-            return
+            return blackCnt
         }
 
         // 构建黑白名单检测任务
@@ -75,6 +76,7 @@ export const coreCheck = async (
                             .then(() => {
                                 // 命中黑名单，未命中白名单
                                 hideEle(el)
+                                blackCnt++
                             })
                             .catch(() => {
                                 // 命中白名单
@@ -82,13 +84,17 @@ export const coreCheck = async (
                             })
                     } else {
                         hideEle(el)
+                        blackCnt++
                     }
                 })
 
             // 标记已过滤元素
-            sign && el.setAttribute(settings.filterSign, '')
+            if (sign) {
+                el.setAttribute(settings.filterSign, '')
+            }
         }
     } catch (err) {
         error('coreCheck error', err)
     }
+    return blackCnt
 }

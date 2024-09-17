@@ -412,7 +412,7 @@ if (isPageDynamic()) {
     // }
 }
 
-export const commentFilterVideoGroups: Group[] = [
+export const commentFilterDynamicGroups: Group[] = [
     {
         name: '用户名过滤',
         items: [

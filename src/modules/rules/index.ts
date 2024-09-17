@@ -1,4 +1,4 @@
-import { Collection } from '../../types/collection'
+import { Rule } from '../../types/collection'
 import {
     isPageBangumi,
     isPageChannel,
@@ -42,7 +42,7 @@ import { watchlaterGroups } from './watchlater'
 import watchlaterStyle from './watchlater/index.scss?inline'
 
 /** 全部规则 */
-export const rules: Collection[] = [
+export const rules: Rule[] = [
     {
         name: '首页',
         groups: homepageGroups,

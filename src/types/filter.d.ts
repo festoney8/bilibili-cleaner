@@ -1,6 +1,7 @@
 export type SelectorResult = string | boolean | number | undefined
 export type SubFilterType = BooleanFilter | StringFilter | KeywordFilter | NumberMinFilter | NumberMaxFilter
 export type SelectorFn = (el: HTMLElement) => SelectorResult
+export type SubFilterPair = [SubFilterType, SelectorFn]
 
 // 子过滤器
 export interface ISubFilter {
@@ -19,5 +20,3 @@ export interface ISubFilter {
     // 检测元素
     check(el: HTMLElement, selectorFn: SelectorFn): Promise<void>
 }
-
-export type SubFilterPair = [SubFilterType, SelectorFn]

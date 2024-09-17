@@ -1,4 +1,6 @@
+import { GM_getValue } from '$'
 import { Filter } from '../../types/collection'
+import { INumberItem, ISwitchItem } from '../../types/item'
 import {
     isPageBangumi,
     isPageChannel,
@@ -19,7 +21,7 @@ import { videoFilterSearchGroups } from './variety/video/pages/search'
 import { videoFilterSpaceGroups } from './variety/video/pages/space'
 import { videoFilterVideoGroups } from './variety/video/pages/video'
 
-/** 视频过滤功能 */
+/** 视频过滤器 */
 export const videoFilters: Filter[] = [
     // 视频过滤
     {
@@ -60,7 +62,7 @@ export const videoFilters: Filter[] = [
     },
 ]
 
-/** 评论过滤功能 */
+/** 评论过滤器 */
 export const commentFilters: Filter[] = [
     {
         name: '视频页/番剧页 视频评论过滤',
@@ -76,7 +78,7 @@ export const commentFilters: Filter[] = [
     },
 ]
 
-/** 动态过滤功能 */
+/** 动态过滤器 */
 export const dynamicFilters: Filter[] = [
     {
         name: '动态页 动态过滤',
@@ -88,19 +90,44 @@ export const dynamicFilters: Filter[] = [
 
 /** 载入全部过滤器 */
 export const loadFilters = () => {
-    for (const videoFilter of videoFilters) {
-        if (videoFilter.checkFn()) {
-            videoFilter.entry()
+    const filters = [...videoFilters, ...commentFilters, ...dynamicFilters]
+    for (const filter of filters) {
+        if (filter.checkFn()) {
+            filter.entry()
+            for (const group of filter.groups) {
+                for (const item of group.items) {
+                    switch (item.type) {
+                        case 'switch':
+                            loadSwitchItem(item)
+                            break
+                        case 'number':
+                            loadNumberItem(item)
+                            break
+                    }
+                }
+            }
         }
     }
-    for (const commentFilter of commentFilters) {
-        if (commentFilter.checkFn()) {
-            commentFilter.entry()
+}
+
+const loadSwitchItem = (item: ISwitchItem) => {
+    const enable = GM_getValue(item.id, item.defaultEnable)
+    if (enable) {
+        if (item.enableFn) {
+            if (item.enableFnRunAt === 'document-end' && document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => {
+                    item.enableFn!()?.then().catch()
+                })
+            } else {
+                item.enableFn()?.then().catch()
+            }
         }
     }
-    for (const dynamicFilter of dynamicFilters) {
-        if (dynamicFilter.checkFn()) {
-            dynamicFilter.entry()
-        }
+}
+
+const loadNumberItem = (item: INumberItem) => {
+    const value = GM_getValue(item.id, item.defaultValue)
+    if (value !== item.disableValue) {
+        item.fn(value)?.then().catch()
     }
 }

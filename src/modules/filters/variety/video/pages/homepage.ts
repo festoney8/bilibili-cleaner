@@ -185,7 +185,7 @@ export const videoFilterHomepageGroups: Group[] = [
                 disableValue: 0,
                 addonText: '秒',
                 fn: (value: number) => {
-                    // Todo
+                    VFHome.videoDurationFilter.setParam(value)
                     VFHome.check('full')
                 },
             },
@@ -326,12 +326,12 @@ export const videoFilterHomepageGroups: Group[] = [
                 name: '视频发布日 距今不超过',
                 noStyle: true,
                 minValue: 0,
-                maxValue: 0,
-                defaultValue: 0,
+                maxValue: 300,
+                defaultValue: 60,
                 disableValue: 0,
                 addonText: '天',
                 fn: (value: number) => {
-                    // Todo
+                    VFHome.videoPubdateFilter.setParam(value)
                     VFHome.check('full')
                 },
             },

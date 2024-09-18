@@ -94,8 +94,7 @@ class VFSP extends MainFilter {
         const timer = performance.now()
 
         // 提取元素
-
-        let selector = ''
+        let selector
         // 主页视频
         if (/^\/\d+$/.test(location.pathname)) {
             selector = `#page-index .small-item`
@@ -107,6 +106,9 @@ class VFSP extends MainFilter {
         // 视频合集、视频系列
         if (/^\/\d+\/channel\/(collectiondetail|seriesdetail)/.test(location.pathname)) {
             selector = `:is(#page-collection-detail,#page-series-detail) li.small-item`
+        }
+        if (!selector) {
+            return
         }
         const videos = Array.from(VFSP.target.querySelectorAll<HTMLElement>(selector))
         if (!videos.length) {
@@ -145,8 +147,8 @@ class VFSP extends MainFilter {
 }
 
 export const videoFilterSpaceEntry = async () => {
-    const f = new VFSP()
-    f.observe()
+    const vfsp = new VFSP()
+    vfsp.observe()
 }
 
 export const videoFilterSpaceGroups: Group[] = [

@@ -199,9 +199,9 @@ class VFV extends MainFilter {
     }
 }
 
-export const viderFilterVideoEntry = async () => {
-    const f = new VFV()
-    f.observe()
+export const videoFilterVideoEntry = async () => {
+    const vfv = new VFV()
+    vfv.observe()
 }
 
 export const videoFilterVideoGroups: Group[] = [

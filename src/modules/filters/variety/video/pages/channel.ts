@@ -191,9 +191,9 @@ class VFC extends MainFilter {
     }
 }
 
-export const viderFilterChannelEntry = async () => {
-    const f = new VFC()
-    f.observe()
+export const videoFilterChannelEntry = async () => {
+    const vfc = new VFC()
+    vfc.observe()
 }
 
 export const videoFilterChannelGroups: Group[] = [

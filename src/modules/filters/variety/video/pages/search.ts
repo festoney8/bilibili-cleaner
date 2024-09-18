@@ -175,8 +175,8 @@ class VFSE extends MainFilter {
 }
 
 export const videoFilterSearchEntry = async () => {
-    const f = new VFSE()
-    f.observe()
+    const vfe = new VFSE()
+    vfe.observe()
 }
 
 export const videoFilterSearchGroups: Group[] = [

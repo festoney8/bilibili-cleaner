@@ -1,7 +1,6 @@
 import { GM_getValue } from '$'
 import { Filter } from '../../types/collection'
 import { INumberItem, ISwitchItem } from '../../types/item'
-import { log } from '../../utils/logger'
 import {
     isPageBangumi,
     isPageChannel,
@@ -16,12 +15,12 @@ import {
 import { commentFilterBangumiGroups } from './variety/comment/pages/bangumi'
 import { commentFilterDynamicGroups } from './variety/comment/pages/dynamic'
 import { dynamicFilterDynamicGroups } from './variety/dynamic/pages/dynamic'
-import { videoFilterChannelGroups, viderFilterChannelEntry } from './variety/video/pages/channel'
-import { videoFilterHomepageGroups, viderFilterHomepageEntry } from './variety/video/pages/homepage'
-import { videoFilterPopularGroups } from './variety/video/pages/popular'
+import { videoFilterChannelEntry, videoFilterChannelGroups } from './variety/video/pages/channel'
+import { videoFilterHomepageEntry, videoFilterHomepageGroups } from './variety/video/pages/homepage'
+import { videoFilterPopularEntry, videoFilterPopularGroups } from './variety/video/pages/popular'
 import { videoFilterSearchEntry, videoFilterSearchGroups } from './variety/video/pages/search'
 import { videoFilterSpaceEntry, videoFilterSpaceGroups } from './variety/video/pages/space'
-import { videoFilterVideoGroups, viderFilterVideoEntry } from './variety/video/pages/video'
+import { videoFilterVideoEntry, videoFilterVideoGroups } from './variety/video/pages/video'
 
 /** 视频过滤器 */
 export const videoFilters: Filter[] = [
@@ -29,25 +28,25 @@ export const videoFilters: Filter[] = [
     {
         name: '首页 视频过滤',
         groups: videoFilterHomepageGroups,
-        entry: viderFilterHomepageEntry,
+        entry: videoFilterHomepageEntry,
         checkFn: isPageHomepage,
     },
     {
         name: '播放页 视频过滤',
         groups: videoFilterVideoGroups,
-        entry: viderFilterVideoEntry,
+        entry: videoFilterVideoEntry,
         checkFn: () => isPageVideo() || isPagePlaylist(),
     },
     {
         name: '热门页 视频过滤',
         groups: videoFilterPopularGroups,
-        entry: async () => {},
+        entry: videoFilterPopularEntry,
         checkFn: isPagePopular,
     },
     {
         name: '分区页 视频过滤',
         groups: videoFilterChannelGroups,
-        entry: viderFilterChannelEntry,
+        entry: videoFilterChannelEntry,
         checkFn: isPageChannel,
     },
     {
@@ -95,7 +94,6 @@ export const loadFilters = () => {
     const filters = [...videoFilters, ...commentFilters, ...dynamicFilters]
     for (const filter of filters) {
         if (filter.checkFn()) {
-            log('loadFilters load', filter.name)
             filter.entry()
             for (const group of filter.groups) {
                 for (const item of group.items) {

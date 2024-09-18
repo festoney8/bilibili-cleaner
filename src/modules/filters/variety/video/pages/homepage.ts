@@ -200,9 +200,9 @@ class VFH extends MainFilter {
     }
 }
 
-export const viderFilterHomepageEntry = async () => {
-    const f = new VFH()
-    f.observe()
+export const videoFilterHomepageEntry = async () => {
+    const vfh = new VFH()
+    vfh.observe()
 }
 
 export const videoFilterHomepageGroups: Group[] = [

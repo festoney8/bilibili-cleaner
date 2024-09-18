@@ -14,7 +14,7 @@ import {
 } from '../../utils/pageType'
 import { commentFilterBangumiGroups } from './variety/comment/pages/bangumi'
 import { commentFilterDynamicGroups } from './variety/comment/pages/dynamic'
-import { dynamicFilterDynamicGroups } from './variety/dynamic/pages/dynamic'
+import { dynamicFilterDynamicEntry, dynamicFilterDynamicGroups } from './variety/dynamic/pages/dynamic'
 import { videoFilterChannelEntry, videoFilterChannelGroups } from './variety/video/pages/channel'
 import { videoFilterHomepageEntry, videoFilterHomepageGroups } from './variety/video/pages/homepage'
 import { videoFilterPopularEntry, videoFilterPopularGroups } from './variety/video/pages/popular'
@@ -84,7 +84,7 @@ export const dynamicFilters: Filter[] = [
     {
         name: '动态页 动态过滤',
         groups: dynamicFilterDynamicGroups,
-        entry: async () => {},
+        entry: dynamicFilterDynamicEntry,
         checkFn: isPageDynamic,
     },
 ]

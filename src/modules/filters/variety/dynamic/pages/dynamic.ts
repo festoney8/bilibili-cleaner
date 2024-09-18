@@ -2,10 +2,9 @@ import { GM_getValue } from '$'
 import settings from '../../../../../settings'
 import { Group } from '../../../../../types/collection'
 import { SelectorResult, SubFilterPair } from '../../../../../types/filter'
-import { error, log } from '../../../../../utils/logger'
-import { isPageDynamic, isPageSpace } from '../../../../../utils/pageType'
-import { convertTimeToSec, waitForEle } from '../../../../../utils/tool'
-import { coreCheck } from '../../../core/core'
+import { log } from '../../../../../utils/logger'
+import { convertTimeToSec, showEle, waitForEle } from '../../../../../utils/tool'
+import { MainFilter, coreCheck } from '../../../core/core'
 import { DynDurationFilter, DynUploaderFilter, DynVideoTitleFilter } from '../subFilters/black'
 
 const GM_KEYS = {
@@ -25,151 +24,113 @@ const GM_KEYS = {
     },
 }
 
-if (isPageDynamic() || isPageSpace()) {
-    // 初始化黑名单
-    const dynUploaderFilter = new DynUploaderFilter()
-    dynUploaderFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.uploader.valueKey}`, []))
-    const dynDurationFilter = new DynDurationFilter()
-    dynDurationFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.duration.valueKey}`, 0))
-    const dynVideoTitleFilter = new DynVideoTitleFilter()
-    dynVideoTitleFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.title.valueKey}`, []))
+// 动态信息提取
+let isAllDyn = true // 是否为全部动态
+const selectorFns = {
+    uploader: (dyn: HTMLElement): SelectorResult => {
+        if (!isAllDyn) {
+            return undefined
+        }
+        return dyn.querySelector('.bili-dyn-title__text')?.textContent?.trim()
+    },
+    duration: (dyn: HTMLElement): SelectorResult => {
+        const time = dyn.querySelector('.bili-dyn-card-video__cover-shadow .duration-time')?.textContent?.trim()
+        return time ? convertTimeToSec(time) : undefined
+    },
+    title: (dyn: HTMLElement): SelectorResult => {
+        return dyn.querySelector('.bili-dyn-card-video__title')?.textContent?.trim()
+    },
+}
 
-    let dynListContainer: HTMLElement // 动态列表容器
-    let isAllDyn = true // 是否为全部动态
+// DFD is DynamicFilterDynamic
+class DFD extends MainFilter {
+    // 黑名单
+    static dynUploaderFilter = new DynUploaderFilter()
+    static dynDurationFilter = new DynDurationFilter()
+    static dynVideoTitleFilter = new DynVideoTitleFilter()
 
-    // 动态信息提取
-    const selectorFns = {
-        uploader: (dyn: HTMLElement): SelectorResult => {
-            if (!isAllDyn) {
-                return undefined
-            }
-            return dyn.querySelector('.bili-dyn-title__text')?.textContent?.trim()
-        },
-        duration: (dyn: HTMLElement): SelectorResult => {
-            const time = dyn.querySelector('.bili-dyn-card-video__cover-shadow .duration-time')?.textContent?.trim()
-            return time ? convertTimeToSec(time) : undefined
-        },
-        title: (dyn: HTMLElement): SelectorResult => {
-            return dyn.querySelector('.bili-dyn-card-video__title')?.textContent?.trim()
-        },
+    constructor() {
+        super()
+        // 黑名单
+        DFD.dynUploaderFilter.setParam(GM_getValue(GM_KEYS.black.uploader.valueKey, []))
+        DFD.dynDurationFilter.setParam(GM_getValue(GM_KEYS.black.duration.valueKey, 0))
+        DFD.dynVideoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
     }
 
-    // // 右键监听, 屏蔽动态用户
-    // let isContextMenuFuncRunning = false
-    // let isContextMenuUploaderEnable = false
-    // const contextMenuFunc = () => {
-    //     if (isContextMenuFuncRunning) {
-    //         return
-    //     }
-    //     isContextMenuFuncRunning = true
-    //     const menu = new ContextMenu()
-    //     document.addEventListener('contextmenu', (e) => {
-    //         menu.hide()
-    //         if (e.target instanceof HTMLElement) {
-    //             const target = e.target
-    //             if (isContextMenuUploaderEnable && target.classList.contains('bili-dyn-title__text')) {
-    //                 if (document.querySelector('.bili-dyn-list-tabs')) {
-    //                     // 命中用户
-    //                     const uploader = target.textContent?.trim()
-    //                     if (uploader) {
-    //                         e.preventDefault()
-    //                         menu.registerMenu(`隐藏用户动态：${uploader}`, () => {
-    //                             dynUploaderFilter.addParam(uploader)
-    //                             check(true)
-    //                             try {
-    //                                 const arr: string[] = GM_getValue(
-    //                                     `BILICLEANER_${GM_KEYS.black.uploader.valueKey}`,
-    //                                     [],
-    //                                 )
-    //                                 if (!arr.includes(uploader)) {
-    //                                     arr.unshift(uploader)
-    //                                     GM_setValue(`BILICLEANER_${GM_KEYS.black.uploader.valueKey}`, arr)
-    //                                 }
-    //                             } catch (err) {
-    //                                 error('contextMenuFunc addParam error', err)
-    //                             }
-    //                         })
-    //                         menu.show(e.clientX, e.clientY)
-    //                     }
-    //                 }
-    //             } else {
-    //                 menu.hide()
-    //             }
-    //         }
-    //     })
-    // }
-
-    // 检测动态列表
-    const checkDynList = async (fullSite: boolean) => {
-        if (!dynListContainer) {
-            return
-        }
-
-        // 是否选中全部动态
-        isAllDyn = !!dynListContainer.querySelector('.bili-dyn-list-tabs')
-
-        try {
-            // 提取元素
-            let dyns: HTMLElement[]
-            if (fullSite) {
-                dyns = Array.from(dynListContainer.querySelectorAll<HTMLElement>(`.bili-dyn-list__item`))
-            } else {
-                dyns = Array.from(
-                    dynListContainer.querySelectorAll<HTMLElement>(
-                        `.bili-dyn-list__item:not([${settings.filterSign}])`,
-                    ),
-                )
-            }
-
-            // dyns.forEach((dyn) => {
-            //     log(
-            //         [
-            //             ``,
-            //             `uploader: ${selectorFns.uploader(dyn)}`,
-            //             `title: ${selectorFns.title(dyn)}`,
-            //             `duration: ${selectorFns.duration(dyn)}`,
-            //         ].join('\n'),
-            //     )
-            // })
-
-            // 构建黑白检测任务
-            if (dyns.length) {
-                const blackPairs: SubFilterPair[] = []
-                dynUploaderFilter.isEnable && blackPairs.push([dynUploaderFilter, selectorFns.uploader])
-                dynDurationFilter.isEnable && blackPairs.push([dynDurationFilter, selectorFns.duration])
-                dynVideoTitleFilter.isEnable && blackPairs.push([dynVideoTitleFilter, selectorFns.title])
-                await coreCheck(dyns, true, blackPairs, [])
-                log(`check ${dyns.length} dyns`)
-            }
-        } catch (err) {
-            error('checkDynList error', err)
-        }
-    }
-
-    const check = (fullSite: boolean) => {
-        if (dynUploaderFilter.isEnable || dynDurationFilter.isEnable || dynVideoTitleFilter.isEnable) {
-            checkDynList(fullSite).then().catch()
-        }
-    }
-
-    try {
+    observe(): void {
         waitForEle(
             document,
             '.bili-dyn-home--member',
             (node: HTMLElement): boolean => node.className === 'bili-dyn-home--member',
         ).then((ele) => {
-            if (ele) {
-                dynListContainer = ele
-                // 监听动态列表内部变化
-                check(true)
-                new MutationObserver(() => {
-                    check(false)
-                }).observe(dynListContainer, { childList: true, subtree: true })
+            if (!ele) {
+                return
             }
+
+            DFD.target = ele
+            log('DFD target appear')
+            DFD.check('full')
+
+            new MutationObserver(() => {
+                DFD.check('incr')
+            }).observe(DFD.target, { childList: true, subtree: true })
         })
-    } catch (err) {
-        error(`watch dyn list ERROR`, err)
     }
+
+    static async check(mode?: 'full' | 'incr') {
+        if (!DFD.target) {
+            return
+        }
+        let revertAll = false
+        if (!(DFD.dynUploaderFilter.isEnable || DFD.dynDurationFilter.isEnable || DFD.dynVideoTitleFilter.isEnable)) {
+            revertAll = true
+        }
+        const timer = performance.now()
+
+        // 是否选中全部动态
+        isAllDyn = !!DFD.target.querySelector('.bili-dyn-list-tabs')
+
+        // 提取元素
+        let selector = `.bili-dyn-list__item`
+        if (mode === 'incr') {
+            selector += `:not([${settings.filterSign}])`
+        }
+        const dyns = Array.from(DFD.target.querySelectorAll<HTMLElement>(selector))
+        if (!dyns.length) {
+            return
+        }
+        if (revertAll) {
+            dyns.forEach((v) => showEle(v))
+            return
+        }
+
+        // dyns.forEach((dyn) => {
+        //     log(
+        //         [
+        //             `dynamic`,
+        //             `uploader: ${selectorFns.uploader(dyn)}`,
+        //             `title: ${selectorFns.title(dyn)}`,
+        //             `duration: ${selectorFns.duration(dyn)}`,
+        //         ].join('\n'),
+        //     )
+        // })
+
+        // 构建黑白检测任务
+        const blackPairs: SubFilterPair[] = []
+        DFD.dynUploaderFilter.isEnable && blackPairs.push([DFD.dynUploaderFilter, selectorFns.uploader])
+        DFD.dynDurationFilter.isEnable && blackPairs.push([DFD.dynDurationFilter, selectorFns.duration])
+        DFD.dynVideoTitleFilter.isEnable && blackPairs.push([DFD.dynVideoTitleFilter, selectorFns.title])
+
+        // 检测
+        const blackCnt = await coreCheck(dyns, true, blackPairs, [])
+        const time = (performance.now() - timer).toFixed(1)
+        log(`DFD hide ${blackCnt} in ${dyns.length} dyns, mode=${mode}, time=${time}`)
+    }
+}
+
+export const dynamicFilterDynamicEntry = async () => {
+    const dfd = new DFD()
+    dfd.observe()
 }
 
 export const dynamicFilterDynamicGroups: Group[] = [
@@ -183,15 +144,23 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 description: ['仅隐藏动态，与UP主过滤相互隔离'],
-                enableFn: () => {},
-                disableFn() {},
+                enableFn: () => {
+                    DFD.dynUploaderFilter.enable()
+                    DFD.check('full')
+                },
+                disableFn: () => {
+                    DFD.dynUploaderFilter.disable()
+                    DFD.check('full')
+                },
             },
             {
                 type: 'button',
                 id: `${Date.now()}`,
                 name: '编辑 用户名列表',
                 buttonText: '编辑',
-                fn: () => {},
+                fn: () => {
+                    // Todo
+                },
             },
         ],
     },
@@ -204,8 +173,14 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 name: '启用 时长过滤',
                 defaultEnable: false,
                 noStyle: true,
-                enableFn: () => {},
-                disableFn() {},
+                enableFn: () => {
+                    DFD.dynDurationFilter.enable()
+                    DFD.check('full')
+                },
+                disableFn: () => {
+                    DFD.dynDurationFilter.disable()
+                    DFD.check('full')
+                },
             },
             {
                 type: 'number',
@@ -216,7 +191,10 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 defaultValue: 60,
                 disableValue: 0,
                 addonText: '秒',
-                fn: (value: number) => {},
+                fn: (value: number) => {
+                    DFD.dynDurationFilter.setParam(value)
+                    DFD.check('full')
+                },
             },
         ],
     },
@@ -229,15 +207,23 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 name: '启用 视频标题 关键词过滤',
                 defaultEnable: false,
                 noStyle: true,
-                enableFn: () => {},
-                disableFn() {},
+                enableFn: () => {
+                    DFD.dynVideoTitleFilter.enable()
+                    DFD.check('full')
+                },
+                disableFn: () => {
+                    DFD.dynVideoTitleFilter.disable()
+                    DFD.check('full')
+                },
             },
             {
                 type: 'button',
                 id: `${Date.now()}`,
                 name: '编辑 标题关键词黑名单',
                 buttonText: '编辑',
-                fn: () => {},
+                fn: () => {
+                    // Todo
+                },
             },
         ],
     },

@@ -5,7 +5,7 @@ import css from './style.css?inline'
 import { waitForBody } from './utils/init'
 import { log } from './utils/logger'
 import { upgrade } from './utils/upgrade'
-import VideoFilterPanel from './views/VideoFilterPanel.vue'
+import DynamicFilterPanel from './views/DynamicFilterPanel.vue'
 
 log(`script start, mode: ${import.meta.env.MODE}, url: ${location.href}`)
 
@@ -18,7 +18,7 @@ loadModules()
 waitForBody().then(() => {
     log(`body appear`)
 
-    createApp(VideoFilterPanel).mount(
+    createApp(DynamicFilterPanel).mount(
         (() => {
             const wrap = document.createElement('div')
             wrap.id = 'bili-cleaner'

@@ -1,12 +1,14 @@
 import { GM_getValue } from '$'
 import { Filter } from '../../types/collection'
 import { INumberItem, ISwitchItem } from '../../types/item'
+import { log } from '../../utils/logger'
 import {
     isPageBangumi,
     isPageChannel,
     isPageDynamic,
     isPageHomepage,
     isPagePlaylist,
+    isPagePopular,
     isPageSearch,
     isPageSpace,
     isPageVideo,
@@ -19,7 +21,7 @@ import { videoFilterHomepageGroups, viderFilterHomepageEntry } from './variety/v
 import { videoFilterPopularGroups } from './variety/video/pages/popular'
 import { videoFilterSearchEntry, videoFilterSearchGroups } from './variety/video/pages/search'
 import { videoFilterSpaceGroups } from './variety/video/pages/space'
-import { videoFilterVideoGroups } from './variety/video/pages/video'
+import { videoFilterVideoGroups, viderFilterVideoEntry } from './variety/video/pages/video'
 
 /** 视频过滤器 */
 export const videoFilters: Filter[] = [
@@ -33,14 +35,14 @@ export const videoFilters: Filter[] = [
     {
         name: '播放页 视频过滤',
         groups: videoFilterVideoGroups,
-        entry: async () => {},
+        entry: viderFilterVideoEntry,
         checkFn: () => isPageVideo() || isPagePlaylist(),
     },
     {
         name: '热门页 视频过滤',
         groups: videoFilterPopularGroups,
         entry: async () => {},
-        checkFn: isPageVideo,
+        checkFn: isPagePopular,
     },
     {
         name: '分区页 视频过滤',
@@ -93,6 +95,7 @@ export const loadFilters = () => {
     const filters = [...videoFilters, ...commentFilters, ...dynamicFilters]
     for (const filter of filters) {
         if (filter.checkFn()) {
+            log('loadFilters load', filter.name)
             filter.entry()
             for (const group of filter.groups) {
                 for (const item of group.items) {

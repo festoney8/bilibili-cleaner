@@ -141,7 +141,8 @@ class VFH extends MainFilter {
                 VFH.videoDurationFilter.isEnable ||
                 VFH.videoTitleFilter.isEnable ||
                 VFH.videoUploaderFilter.isEnable ||
-                VFH.videoUploaderKeywordFilter.isEnable
+                VFH.videoUploaderKeywordFilter.isEnable ||
+                VFH.videoPubdateFilter.isEnable
             )
         ) {
             return

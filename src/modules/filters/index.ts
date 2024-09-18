@@ -14,7 +14,7 @@ import {
 import { commentFilterBangumiGroups } from './variety/comment/pages/bangumi'
 import { commentFilterDynamicGroups } from './variety/comment/pages/dynamic'
 import { dynamicFilterDynamicGroups } from './variety/dynamic/pages/dynamic'
-import { videoFilterChannelGroups } from './variety/video/pages/channel'
+import { videoFilterChannelGroups, viderFilterChannelEntry } from './variety/video/pages/channel'
 import { videoFilterHomepageGroups, viderFilterHomepageEntry } from './variety/video/pages/homepage'
 import { videoFilterPopularGroups } from './variety/video/pages/popular'
 import { videoFilterSearchGroups } from './variety/video/pages/search'
@@ -45,7 +45,7 @@ export const videoFilters: Filter[] = [
     {
         name: '分区页 视频过滤',
         groups: videoFilterChannelGroups,
-        entry: async () => {},
+        entry: viderFilterChannelEntry,
         checkFn: isPageChannel,
     },
     {

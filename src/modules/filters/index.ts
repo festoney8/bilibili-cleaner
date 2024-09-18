@@ -20,7 +20,7 @@ import { videoFilterChannelGroups, viderFilterChannelEntry } from './variety/vid
 import { videoFilterHomepageGroups, viderFilterHomepageEntry } from './variety/video/pages/homepage'
 import { videoFilterPopularGroups } from './variety/video/pages/popular'
 import { videoFilterSearchEntry, videoFilterSearchGroups } from './variety/video/pages/search'
-import { videoFilterSpaceGroups } from './variety/video/pages/space'
+import { videoFilterSpaceEntry, videoFilterSpaceGroups } from './variety/video/pages/space'
 import { videoFilterVideoGroups, viderFilterVideoEntry } from './variety/video/pages/video'
 
 /** 视频过滤器 */
@@ -59,7 +59,7 @@ export const videoFilters: Filter[] = [
     {
         name: '空间页 视频过滤',
         groups: videoFilterSpaceGroups,
-        entry: async () => {},
+        entry: videoFilterSpaceEntry,
         checkFn: isPageSpace,
     },
 ]

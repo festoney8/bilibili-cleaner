@@ -40,19 +40,6 @@ export const coreCheck = async (
 ): Promise<number> => {
     let blackCnt = 0
     try {
-        // 黑名单过滤器全部关闭时恢复元素
-        let isAllDisable = true
-        for (const pair of blackPairs) {
-            if (pair[0].isEnable) {
-                isAllDisable = false
-                break
-            }
-        }
-        if (isAllDisable) {
-            elements.forEach((el) => showEle(el))
-            return blackCnt
-        }
-
         // 构建黑白名单检测任务
         for (const el of elements) {
             const blackTasks: Promise<void>[] = []

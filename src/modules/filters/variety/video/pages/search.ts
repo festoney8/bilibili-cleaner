@@ -2,7 +2,7 @@ import { GM_getValue } from '$'
 import { Group } from '../../../../../types/collection'
 import { SelectorResult, SubFilterPair } from '../../../../../types/filter'
 import { log } from '../../../../../utils/logger'
-import { convertTimeToSec, matchBvid, waitForEle } from '../../../../../utils/tool'
+import { convertTimeToSec, matchBvid, showEle, waitForEle } from '../../../../../utils/tool'
 import { coreCheck, MainFilter } from '../../../core/core'
 import {
     VideoBvidFilter,
@@ -116,6 +116,7 @@ class VFSE extends MainFilter {
         if (!VFSE.target) {
             return
         }
+        let revertAll = false
         if (
             !(
                 VFSE.videoBvidFilter.isEnable ||
@@ -125,7 +126,7 @@ class VFSE extends MainFilter {
                 VFSE.videoUploaderKeywordFilter.isEnable
             )
         ) {
-            return
+            revertAll = true
         }
         const timer = performance.now()
 
@@ -134,6 +135,10 @@ class VFSE extends MainFilter {
 
         const videos = Array.from(VFSE.target.querySelectorAll<HTMLElement>(selector))
         if (!videos.length) {
+            return
+        }
+        if (revertAll) {
+            videos.forEach((v) => showEle(v))
             return
         }
 
@@ -163,7 +168,7 @@ class VFSE extends MainFilter {
         VFSE.videoTitleWhiteFilter.isEnable && whitePairs.push([VFSE.videoTitleWhiteFilter, selectorFns.title])
 
         // 检测
-        const blackCnt = await coreCheck(videos, true, blackPairs, whitePairs)
+        const blackCnt = await coreCheck(videos, false, blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
         log(`VFSE hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
     }

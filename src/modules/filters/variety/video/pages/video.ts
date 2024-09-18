@@ -2,7 +2,7 @@ import { GM_getValue, unsafeWindow } from '$'
 import { Group } from '../../../../../types/collection'
 import { SelectorResult, SubFilterPair } from '../../../../../types/filter'
 import { log } from '../../../../../utils/logger'
-import { convertTimeToSec, isEleHide, matchBvid, waitForEle } from '../../../../../utils/tool'
+import { convertTimeToSec, isEleHide, matchBvid, showEle, waitForEle } from '../../../../../utils/tool'
 import { MainFilter, coreCheck } from '../../../core/core'
 import {
     VideoBvidFilter,
@@ -122,6 +122,7 @@ class VFV extends MainFilter {
         if (!VFV.target) {
             return
         }
+        let revertAll = false
         if (
             !(
                 VFV.videoBvidFilter.isEnable ||
@@ -131,7 +132,7 @@ class VFV extends MainFilter {
                 VFV.videoUploaderKeywordFilter.isEnable
             )
         ) {
-            return
+            revertAll = true
         }
         const timer = performance.now()
 
@@ -140,6 +141,10 @@ class VFV extends MainFilter {
             .rec-list :is(.video-page-card-small, .video-page-operator-card-small), .recommend-video-card`
         const videos = Array.from(VFV.target.querySelectorAll<HTMLElement>(selector))
         if (!videos.length) {
+            return
+        }
+        if (revertAll) {
+            videos.forEach((v) => showEle(v))
             return
         }
 
@@ -169,7 +174,7 @@ class VFV extends MainFilter {
         VFV.videoTitleWhiteFilter.isEnable && whitePairs.push([VFV.videoTitleWhiteFilter, selectorFns.title])
 
         // 检测
-        const blackCnt = await coreCheck(videos, true, blackPairs, whitePairs)
+        const blackCnt = await coreCheck(videos, false, blackPairs, whitePairs)
 
         // 缓存数据检测，更新__INITIAL_STATE__.related
         // __INITIAL_STATE__.related 与右侧视频列表绑定

@@ -3,7 +3,7 @@ import settings from '../../../../../settings'
 import { Group } from '../../../../../types/collection'
 import { SelectorResult, SubFilterPair } from '../../../../../types/filter'
 import { log } from '../../../../../utils/logger'
-import { convertDateToDays, convertTimeToSec, matchBvid, waitForEle } from '../../../../../utils/tool'
+import { convertDateToDays, convertTimeToSec, matchBvid, showEle, waitForEle } from '../../../../../utils/tool'
 import { coreCheck, MainFilter } from '../../../core/core'
 import {
     VideoBvidFilter,
@@ -135,6 +135,7 @@ class VFH extends MainFilter {
         if (!VFH.target) {
             return
         }
+        let revertAll = false
         if (
             !(
                 VFH.videoBvidFilter.isEnable ||
@@ -145,7 +146,7 @@ class VFH extends MainFilter {
                 VFH.videoPubdateFilter.isEnable
             )
         ) {
-            return
+            revertAll = true
         }
         const timer = performance.now()
 
@@ -156,6 +157,10 @@ class VFH extends MainFilter {
         }
         const videos = Array.from(VFH.target.querySelectorAll<HTMLElement>(selector))
         if (!videos.length) {
+            return
+        }
+        if (revertAll) {
+            videos.forEach((v) => showEle(v))
             return
         }
 

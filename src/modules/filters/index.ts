@@ -17,7 +17,7 @@ import { dynamicFilterDynamicGroups } from './variety/dynamic/pages/dynamic'
 import { videoFilterChannelGroups, viderFilterChannelEntry } from './variety/video/pages/channel'
 import { videoFilterHomepageGroups, viderFilterHomepageEntry } from './variety/video/pages/homepage'
 import { videoFilterPopularGroups } from './variety/video/pages/popular'
-import { videoFilterSearchGroups } from './variety/video/pages/search'
+import { videoFilterSearchEntry, videoFilterSearchGroups } from './variety/video/pages/search'
 import { videoFilterSpaceGroups } from './variety/video/pages/space'
 import { videoFilterVideoGroups } from './variety/video/pages/video'
 
@@ -51,7 +51,7 @@ export const videoFilters: Filter[] = [
     {
         name: '搜索页 视频过滤',
         groups: videoFilterSearchGroups,
-        entry: async () => {},
+        entry: videoFilterSearchEntry,
         checkFn: isPageSearch,
     },
     {

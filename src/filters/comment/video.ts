@@ -6,7 +6,7 @@ import { WordList } from '../../components/wordlist'
 import settings from '../../settings'
 import fetchHook from '../../utils/fetch'
 import { debugCommentFilter as debug, error } from '../../utils/logger'
-import { isPagePlaylist, isPageVideo } from '../../utils/pageType'
+import { isPageBangumi, isPagePlaylist, isPageVideo } from '../../utils/pageType'
 import { showEle } from '../../utils/tool'
 import { coreCheck, SelectorResult, SubFilterPair } from '../core/core'
 import {
@@ -75,7 +75,7 @@ const GM_KEYS = {
     },
 }
 
-if (isPageVideo() || isPagePlaylist()) {
+if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
     // 初始化黑名单
     const bots = [
         // 8455326 @机器工具人

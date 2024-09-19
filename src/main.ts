@@ -1,19 +1,32 @@
 // @ts-ignore isolatedModules
 import { GM_getValue, GM_registerMenuCommand, GM_unregisterMenuCommand } from '$'
-import { log, error, debugMain as debug } from './utils/logger'
-import { init } from './init'
 import { Group } from './components/group'
-import { SideBtn } from './components/sideBtn'
 import { Panel } from './components/panel'
-import { channelGroupList } from './rules/channel'
-import { homepageGroupList } from './rules/homepage'
-import { commonGroupList } from './rules/common'
-import { videoGroupList } from './rules/video'
+import { SideBtn } from './components/sideBtn'
+import { dynamicPageCommentFilterGroupList } from './filters/comment/dyn'
+import { spacePageCommentFilterGroupList } from './filters/comment/space'
+import { videoPageCommentFilterGroupList } from './filters/comment/video'
+import { dynamicPageDynFilterGroupList } from './filters/dyn/dyn'
+import { channelPageVideoFilterGroupList } from './filters/video/channel'
+import { homepagePageVideoFilterGroupList } from './filters/video/homepage'
+import { popularPageVideoFilterGroupList } from './filters/video/popular'
+import { searchPageVideoFilterGroupList } from './filters/video/search'
+import { spacePageVideoFilterGroupList } from './filters/video/space'
+import { videoPageVideoFilterGroupList } from './filters/video/video'
+import { init } from './init'
 import { bangumiGroupList } from './rules/bangumi'
-import { searchGroupList } from './rules/search'
-import { liveGroupList } from './rules/live'
+import { channelGroupList } from './rules/channel'
+import { commentGroupList } from './rules/comment'
+import { commonGroupList } from './rules/common'
 import { dynamicGroupList } from './rules/dynamic'
+import { homepageGroupList } from './rules/homepage'
+import { liveGroupList } from './rules/live'
 import { popularGroupList } from './rules/popular'
+import { searchGroupList } from './rules/search'
+import { spaceGroupList } from './rules/space'
+import { videoGroupList } from './rules/video'
+import { watchlaterGroupList } from './rules/watchlater'
+import { debugMain as debug, error, log } from './utils/logger'
 import {
     isPageBangumi,
     isPageChannel,
@@ -26,20 +39,6 @@ import {
     isPageSpace,
     isPageVideo,
 } from './utils/pageType'
-import { homepagePageVideoFilterGroupList } from './filters/video/homepage'
-import { popularPageVideoFilterGroupList } from './filters/video/popular'
-import { spacePageVideoFilterGroupList } from './filters/video/space'
-import { watchlaterGroupList } from './rules/watchlater'
-import { spaceGroupList } from './rules/space'
-import { commentGroupList } from './rules/comment'
-import { dynamicPageDynFilterGroupList } from './filters/dyn/dyn'
-import { videoPageCommentFilterGroupList } from './filters/comment/video'
-import { dynamicPageCommentFilterGroupList } from './filters/comment/dyn'
-import { videoPageVideoFilterGroupList } from './filters/video/video'
-import { channelPageVideoFilterGroupList } from './filters/video/channel'
-import { searchPageVideoFilterGroupList } from './filters/video/search'
-import { spacePageCommentFilterGroupList } from './filters/comment/space'
-import { bangumiPageCommentFilterGroupList } from './filters/comment/bangumi'
 
 const main = async () => {
     // 载入元素屏蔽规则
@@ -73,7 +72,6 @@ const main = async () => {
     // 载入评论过滤器
     const COMMENT_FILTER_GROUPS = [
         ...videoPageCommentFilterGroupList,
-        ...bangumiPageCommentFilterGroupList,
         ...dynamicPageCommentFilterGroupList,
         ...spacePageCommentFilterGroupList,
     ]

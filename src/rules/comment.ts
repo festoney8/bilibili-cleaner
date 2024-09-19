@@ -501,6 +501,7 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
             itemID: 'dynamic-page-hide-all-comment',
             description: '隐藏 动态评论区 (动态页/空间页)',
             itemCSS: `
+                .bili-comment-container {display: none !important;}
                 .comment-wrap bili-comments {display: none !important;}
                 .bili-opus-view {border-radius: 6px !important;}
                 .opus-detail {margin-bottom: 10px !important; min-height: unset !important;}

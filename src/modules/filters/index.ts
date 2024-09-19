@@ -12,8 +12,8 @@ import {
     isPageSpace,
     isPageVideo,
 } from '../../utils/pageType'
-import { commentFilterBangumiGroups } from './variety/comment/pages/bangumi'
 import { commentFilterDynamicGroups } from './variety/comment/pages/dynamic'
+import { commentFilterVideoEntry, commentFilterVideoGroups } from './variety/comment/pages/video'
 import { dynamicFilterDynamicEntry, dynamicFilterDynamicGroups } from './variety/dynamic/pages/dynamic'
 import { videoFilterChannelEntry, videoFilterChannelGroups } from './variety/video/pages/channel'
 import { videoFilterHomepageEntry, videoFilterHomepageGroups } from './variety/video/pages/homepage'
@@ -67,8 +67,8 @@ export const videoFilters: Filter[] = [
 export const commentFilters: Filter[] = [
     {
         name: '视频页/番剧页 视频评论过滤',
-        groups: commentFilterBangumiGroups,
-        entry: async () => {},
+        groups: commentFilterVideoGroups,
+        entry: commentFilterVideoEntry,
         checkFn: () => isPageVideo() || isPageBangumi() || isPagePlaylist(),
     },
     {

@@ -10,7 +10,7 @@ export abstract class MainFilter {
     /**
      * 被观测元素，target内出现变化时触发check
      */
-    static target: HTMLElement | undefined
+    static target: HTMLElement | ShadowRoot | undefined
 
     /**
      * 等待target出现，并开始监听，内容变化时触发检测

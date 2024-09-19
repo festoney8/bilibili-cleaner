@@ -10,6 +10,7 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
     const shadow = new Shadow([
         'bili-comments-header-renderer', // 评论区header(notice,编辑器)
         'bili-comment-textarea', // 主编辑器、底部编辑器输入框
+        'bili-comment-rich-textarea', // 主编辑器、底部编辑器输入框
         'bili-comment-renderer', // 一级评论
         'bili-comment-user-info', // 一级二级评论用户信息
         'bili-rich-text', // 一级二级评论内容
@@ -71,9 +72,15 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
                     'video-page-hide-reply-box-textarea-placeholder',
                     `textarea:not([placeholder^="回复"])::placeholder {color: transparent !important; user-select: none;}`,
                 )
+                shadow.register(
+                    'bili-comment-rich-textarea',
+                    'video-page-hide-reply-box-textarea-placeholder',
+                    `.brt-placeholder {display: none;}`,
+                )
             },
             disableFunc: () => {
                 shadow.unregister('bili-comment-textarea', 'video-page-hide-reply-box-textarea-placeholder')
+                shadow.unregister('bili-comment-rich-textarea', 'video-page-hide-reply-box-textarea-placeholder')
             },
         }),
         // 隐藏 页面底部 吸附评论框, 默认开启

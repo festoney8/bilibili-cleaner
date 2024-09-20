@@ -1226,9 +1226,14 @@ if (isPageVideo() || isPagePlaylist()) {
         new CheckboxItem({
             itemID: 'video-page-hide-below-info-tag',
             description: '隐藏 tag列表',
-            itemCSS: `#v_tag {display: none !important;}
-                /* 收藏夹和稍后再看 */
-                .video-tag-container {display: none !important;}`,
+            itemCSS: `
+                #v_tag,
+                .video-tag-container {
+                    visibility: hidden !important;
+                    height: 0 !important;
+                    margin: 0 0 0.5rem !important;
+                }
+            `,
         }),
         // 隐藏 活动宣传, 默认开启
         new CheckboxItem({

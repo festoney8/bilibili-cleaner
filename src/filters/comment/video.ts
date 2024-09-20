@@ -153,108 +153,54 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         // https://b23.tv/av1350214762
         root: {
             username: (comment: HTMLElement): SelectorResult => {
-                if (!isPageBangumi()) {
-                    return (comment as any).__data?.member?.uname?.trim()
-                }
-                return comment.querySelector('.root-reply-container .user-name')?.textContent?.trim()
+                return (comment as any).__data?.member?.uname?.trim()
             },
             content: (comment: HTMLElement): SelectorResult => {
-                if (!isPageBangumi()) {
-                    return (comment as any).__data?.content?.message?.replace(/@[^@ ]+?( |$)/g, '').trim()
-                }
-                return comment
-                    .querySelector('.root-reply-container .reply-content')
-                    ?.textContent?.trim()
-                    .replace(/@[^@ ]+?( |$)/g, '')
-                    .trim()
+                return (comment as any).__data?.content?.message?.replace(/@[^@ ]+?( |$)/g, '').trim()
             },
             callUser: (comment: HTMLElement): SelectorResult => {
-                if (!isPageBangumi()) {
-                    return (comment as any).__data?.content?.members[0]?.uname
-                }
-                return comment
-                    .querySelector('.root-reply-container .reply-content .jump-link.user')
-                    ?.textContent?.replace('@', '')
-                    .trim()
+                return (comment as any).__data?.content?.members[0]?.uname
             },
             level: (comment: HTMLElement): SelectorResult => {
-                if (!isPageBangumi()) {
-                    return (comment as any).__data?.member?.level_info?.current_level
-                }
-                const c = comment.querySelector('.root-reply-container .user-level')?.className
-                const lv = c?.match(/level-([1-6])/)?.[1] // 忽略level-hardcore
-                return lv ? parseInt(lv) : undefined
+                return (comment as any).__data?.member?.level_info?.current_level
             },
             isUp: (comment: HTMLElement): SelectorResult => {
-                if (!isPageBangumi()) {
-                    const mid = (comment as any).__data?.mid
-                    const upMid = (comment as any).__upMid
-                    return typeof mid === 'number' && mid === upMid
-                }
-                return !!comment.querySelector('.root-reply-container .up-icon')
+                const mid = (comment as any).__data?.mid
+                const upMid = (comment as any).__upMid
+                return typeof mid === 'number' && mid === upMid
             },
             isPin: (comment: HTMLElement): SelectorResult => {
-                if (!isPageBangumi()) {
-                    return !!(comment as any).__data?.reply_control?.is_up_top
-                }
-                return !!comment.querySelector('.root-reply-container .top-icon')
+                return !!(comment as any).__data?.reply_control?.is_up_top
             },
             isNote: (comment: HTMLElement): SelectorResult => {
-                if (!isPageBangumi()) {
-                    return !!(comment as any).__data?.reply_control?.is_note_v2
-                }
-                return !!comment.querySelector('.root-reply-container .note-prefix')
+                return !!(comment as any).__data?.reply_control?.is_note_v2
             },
             isLink: (comment: HTMLElement): SelectorResult => {
-                if (!isPageBangumi()) {
-                    const jump_url = (comment as any).__data?.content?.jump_url
-                    if (jump_url) {
-                        for (const k of Object.keys(jump_url)) {
-                            if (!jump_url[k]?.pc_url?.includes('search.bilibili.com')) {
-                                return true
-                            }
+                const jump_url = (comment as any).__data?.content?.jump_url
+                if (jump_url) {
+                    for (const k of Object.keys(jump_url)) {
+                        if (!jump_url[k]?.pc_url?.includes('search.bilibili.com')) {
+                            return true
                         }
                     }
-                    return false
                 }
-                return !!comment.querySelector('.root-reply-container .jump-link:is(.normal, .video)')
+                return false
             },
         },
         sub: {
             username: (comment: HTMLElement): SelectorResult => {
-                if (!isPageBangumi()) {
-                    return (comment as any).__data?.member?.uname?.trim()
-                }
-                return comment.querySelector('.sub-user-name')?.textContent?.trim()
+                return (comment as any).__data?.member?.uname?.trim()
             },
             content: (comment: HTMLElement): SelectorResult => {
-                if (!isPageBangumi()) {
-                    return (comment as any).__data?.content?.message
-                        ?.trim()
-                        ?.replace(/@[^@ ]+?( |$)/g, '')
-                        .replace(/^回复 *:?/, '')
-                        .trim()
-                }
-                return comment
-                    .querySelector('.reply-content')
-                    ?.textContent?.trim()
+                return (comment as any).__data?.content?.message
+                    ?.trim()
                     ?.replace(/@[^@ ]+?( |$)/g, '')
                     .replace(/^回复 *:?/, '')
                     .trim()
             },
             callUser: (comment: HTMLElement): SelectorResult => {
-                if (!isPageBangumi()) {
-                    return (comment as any).__data?.content?.message
-                        ?.trim()
-                        .replace(/^回复 ?@[^@ ]+? ?:/, '')
-                        .trim()
-                        ?.match(/@[^@ ]+( |$)/)?.[0]
-                        .replace('@', '')
-                        .trim()
-                }
-                return comment
-                    .querySelector('.reply-content')
-                    ?.textContent?.trim()
+                return (comment as any).__data?.content?.message
+                    ?.trim()
                     .replace(/^回复 ?@[^@ ]+? ?:/, '')
                     .trim()
                     ?.match(/@[^@ ]+( |$)/)?.[0]
@@ -262,27 +208,16 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                     .trim()
             },
             level: (comment: HTMLElement): SelectorResult => {
-                if (!isPageBangumi()) {
-                    return (comment as any).__data?.member?.level_info?.current_level
-                }
-                const c = comment.querySelector('.sub-user-level')?.className
-                const lv = c?.match(/level-([1-6])/)?.[1] // 忽略level-hardcore
-                return lv ? parseInt(lv) : undefined
+                return (comment as any).__data?.member?.level_info?.current_level
             },
             isUp: (comment: HTMLElement): SelectorResult => {
-                if (!isPageBangumi()) {
-                    const mid = (comment as any).__data?.mid
-                    const upMid = (comment as any).__upMid
-                    return typeof mid === 'number' && mid === upMid
-                }
-                return !!comment.querySelector('.sub-up-icon')
+                const mid = (comment as any).__data?.mid
+                const upMid = (comment as any).__upMid
+                return typeof mid === 'number' && mid === upMid
             },
             isLink: (comment: HTMLElement): SelectorResult => {
-                if (!isPageBangumi()) {
-                    const urls = (comment as any).__data?.content?.jump_url
-                    return urls ? Object.keys(urls).length > 0 : undefined
-                }
-                return !!comment.querySelector('.sub-reply-content .jump-link:is(.normal, .video)')
+                const urls = (comment as any).__data?.content?.jump_url
+                return urls ? Object.keys(urls).length > 0 : undefined
             },
         },
     }
@@ -293,54 +228,36 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             // 提取元素：一级评论、二级评论
             let rootComments: HTMLElement[] = []
             let subComments: HTMLElement[] = []
-            if (!isPageBangumi()) {
-                const shadowRoot = document.querySelector('bili-comments')?.shadowRoot
-                if (!shadowRoot) {
-                    return
-                }
-                if (fullSite) {
-                    rootComments = Array.from(shadowRoot.querySelectorAll<HTMLElement>('bili-comment-thread-renderer'))
-                    rootComments.forEach((c) => {
-                        const replies = c.shadowRoot
-                            ?.querySelector('bili-comment-replies-renderer')
-                            ?.shadowRoot?.querySelectorAll<HTMLElement>('bili-comment-reply-renderer')
-                        if (replies?.length) {
-                            subComments = subComments.concat(Array.from(replies))
-                        }
-                    })
-                } else {
-                    rootComments = Array.from(
-                        shadowRoot.querySelectorAll<HTMLElement>(
-                            `bili-comment-thread-renderer:not([${settings.filterSign}])`,
-                        ),
-                    )
-                    rootComments.forEach((c) => {
-                        const replies = c.shadowRoot
-                            ?.querySelector('bili-comment-replies-renderer')
-                            ?.shadowRoot?.querySelectorAll<HTMLElement>(
-                                `bili-comment-reply-renderer:not([${settings.filterSign}])`,
-                            )
-                        if (replies?.length) {
-                            subComments = subComments.concat(Array.from(replies))
-                        }
-                    })
-                }
+            const shadowRoot = document.querySelector('bili-comments')?.shadowRoot
+            if (!shadowRoot) {
+                return
+            }
+            if (fullSite) {
+                rootComments = Array.from(shadowRoot.querySelectorAll<HTMLElement>('bili-comment-thread-renderer'))
+                rootComments.forEach((c) => {
+                    const replies = c.shadowRoot
+                        ?.querySelector('bili-comment-replies-renderer')
+                        ?.shadowRoot?.querySelectorAll<HTMLElement>('bili-comment-reply-renderer')
+                    if (replies?.length) {
+                        subComments = subComments.concat(Array.from(replies))
+                    }
+                })
             } else {
-                if (fullSite) {
-                    rootComments = Array.from(document.querySelectorAll<HTMLElement>(`.reply-item`))
-                    subComments = Array.from(
-                        document.querySelectorAll<HTMLElement>(`.sub-reply-item:not(.jump-link.user)`),
-                    )
-                } else {
-                    rootComments = Array.from(
-                        document.querySelectorAll<HTMLElement>(`.reply-item:not([${settings.filterSign}])`),
-                    )
-                    subComments = Array.from(
-                        document.querySelectorAll<HTMLElement>(
-                            `.sub-reply-item:not(.jump-link.user):not([${settings.filterSign}])`,
-                        ),
-                    )
-                }
+                rootComments = Array.from(
+                    shadowRoot.querySelectorAll<HTMLElement>(
+                        `bili-comment-thread-renderer:not([${settings.filterSign}])`,
+                    ),
+                )
+                rootComments.forEach((c) => {
+                    const replies = c.shadowRoot
+                        ?.querySelector('bili-comment-replies-renderer')
+                        ?.shadowRoot?.querySelectorAll<HTMLElement>(
+                            `bili-comment-reply-renderer:not([${settings.filterSign}])`,
+                        )
+                    if (replies?.length) {
+                        subComments = subComments.concat(Array.from(replies))
+                    }
+                })
             }
 
             // rootComments.forEach((v) => {
@@ -436,24 +353,16 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 let cnt = 0
                 const id = setInterval(() => {
                     check(false)
-                    ++cnt > 30 && clearInterval(id)
-                }, 100)
+                    ++cnt > 20 && clearInterval(id)
+                }, 300)
             }
             // 二级评论翻页
             if (input.includes('/v2/reply/reply')) {
-                if (!isPageBangumi()) {
-                    let cnt = 0
-                    const id = setInterval(() => {
-                        check(true)
-                        ++cnt > 12 && clearInterval(id)
-                    }, 250)
-                } else {
-                    let cnt = 0
-                    const id = setInterval(() => {
-                        check(false)
-                        ++cnt > 20 && clearInterval(id)
-                    }, 150)
-                }
+                let cnt = 0
+                const id = setInterval(() => {
+                    check(true)
+                    ++cnt > 10 && clearInterval(id)
+                }, 500)
             }
         }
     })

@@ -4,6 +4,7 @@ import { Group } from '../../components/group'
 import { ButtonItem, CheckboxItem, NumberItem } from '../../components/item'
 import { WordList } from '../../components/wordlist'
 import settings from '../../settings'
+import fetchHook from '../../utils/fetch'
 import { debugCommentFilter as debug, error } from '../../utils/logger'
 import { isPageSpace } from '../../utils/pageType'
 import { showEle, waitForEle } from '../../utils/tool'
@@ -40,6 +41,9 @@ const GM_KEYS = {
         },
         callUser: {
             statusKey: 'dynamic-comment-call-user-filter-status',
+        },
+        isAD: {
+            statusKey: 'video-comment-ad-filter-status',
         },
     },
     white: {
@@ -553,6 +557,47 @@ if (isPageSpace()) {
             disableFunc: () => {
                 commentCallUserFilter.disable()
                 check(true)
+            },
+        }),
+        // 过滤 带货评论
+        new CheckboxItem({
+            itemID: GM_KEYS.black.isAD.statusKey,
+            description: '过滤 带货评论 (实验功能 需刷新)',
+            enableFunc: () => {
+                fetchHook.addPostFn(
+                    async (
+                        input: RequestInfo | URL,
+                        init: RequestInit | undefined,
+                        resp?: Response,
+                    ): Promise<Response | void> => {
+                        if (!resp) {
+                            return
+                        }
+                        if (
+                            typeof input === 'string' &&
+                            init?.method?.toUpperCase() === 'GET' &&
+                            input.includes('api.bilibili.com/x/v2/reply/wbi/main')
+                        ) {
+                            try {
+                                const respData = await resp.clone().json()
+                                const msg = respData?.data?.top?.upper?.content?.message
+                                if (msg && /b23\.tv\/mall-|领券|gaoneng\.bilibili\.com/.test(msg)) {
+                                    respData.data.top = null
+                                    respData.data.top_replies = null
+                                    const newResp = new Response(JSON.stringify(respData), {
+                                        status: resp.status,
+                                        statusText: resp.statusText,
+                                        headers: resp.headers,
+                                    })
+                                    return newResp
+                                }
+                            } catch {
+                                return resp
+                            }
+                            return resp
+                        }
+                    },
+                )
             },
         }),
     ]

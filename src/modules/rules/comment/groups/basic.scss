@@ -234,6 +234,7 @@ html[video-page-hide-comment] {
 
 // 隐藏 动态评论区 (动态页/空间页)
 html[dynamic-page-hide-all-comment] {
+    .bili-comment-container,
     .comment-wrap bili-comments {
         display: none !important;
     }

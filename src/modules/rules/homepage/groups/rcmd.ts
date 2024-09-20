@@ -95,7 +95,46 @@ export const homepageRcmdItems: Item[] = [
     },
     {
         type: 'switch',
-        id: 'homepage-rcmd-video-load-optimize',
-        name: '优化 视频加载',
+        id: 'homepage-rcmd-video-preload',
+        name: '启用 视频列表预加载 (不稳定功能)',
+        description: [
+            '需开启"隐藏 分区视频推荐"',
+            '建议开启"增大视频载入数量"',
+            '若影响视频载入或造成卡顿，请关闭本功能',
+        ],
+        enableFn: async () => {
+            let cnt = 0
+            const id = setInterval(() => {
+                const anchor = document.querySelector('.load-more-anchor') as HTMLElement
+                if (anchor) {
+                    clearInterval(id)
+
+                    // 向下滚动时，调整anchor位置
+                    let lastScrollTop = 0
+                    let isPreload = false
+                    window.addEventListener('scroll', function () {
+                        const scrollTop = window.scrollY || document.documentElement.scrollTop
+                        if (scrollTop > lastScrollTop) {
+                            const gap = innerHeight - anchor.getBoundingClientRect().top
+                            if (gap > -innerHeight * 0.75 && !isPreload) {
+                                anchor.classList.add('preload')
+                                isPreload = true
+                            } else {
+                                isPreload && anchor.classList.remove('preload')
+                                isPreload = false
+                            }
+                        } else {
+                            isPreload && anchor.classList.remove('preload')
+                            isPreload = false
+                        }
+                        lastScrollTop = scrollTop
+                    })
+                }
+                if (++cnt > 80) {
+                    clearInterval(id)
+                }
+            }, 250)
+        },
+        enableFnRunAt: 'document-end',
     },
 ]

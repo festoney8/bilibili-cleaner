@@ -197,9 +197,16 @@ html[homepage-increase-rcmd-load-size] {
     }
 }
 
-// 优化 视频加载
-html[homepage-rcmd-video-load-optimize] {
+// 启用 视频列表预加载
+html[homepage-rcmd-video-preload] {
+    // 隐藏anchor前的skeleton
     .bili-video-card:not(.is-rcmd):has(~ .load-more-anchor) {
         display: none !important;
+    }
+    .load-more-anchor.preload {
+        position: fixed;
+        top: -100px;
+        left: -100px;
+        opacity: 0;
     }
 }

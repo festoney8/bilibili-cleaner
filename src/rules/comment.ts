@@ -62,7 +62,7 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
         // 隐藏 评论编辑器内占位文字, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-reply-box-textarea-placeholder',
-            description: '隐藏 评论编辑器内占位文字',
+            description: '隐藏 评论编辑器内占位文字\n同时会隐藏回复评论时文字提示',
             defaultStatus: true,
             itemCSS: `.main-reply-box .reply-box-textarea::placeholder {color: transparent !important; user-select: none;}
                 .fixed-reply-box .reply-box-textarea::placeholder {color: transparent !important; user-select: none;}`,

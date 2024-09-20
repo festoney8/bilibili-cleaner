@@ -480,7 +480,8 @@ if (isPageHomepage()) {
             itemID: 'homepage-hide-skeleton',
             description: '隐藏 视频载入 骨架',
             // anchor占位也隐藏
-            itemCSS: `.bili-video-card:has(.loading_animation), .load-more-anchor {
+            itemCSS: `
+                .bili-video-card:not(.is-rcmd) {
                     visibility: hidden;
                 }
                 .floor-single-card:has(.skeleton, .skeleton-item) {
@@ -510,15 +511,56 @@ if (isPageHomepage()) {
                 })
             },
         }),
-        // 优化 视频载入
+        // 启用 视频列表预加载
         new CheckboxItem({
             itemID: 'homepage-rcmd-video-preload',
-            description: '优化 视频载入',
+            description: '启用 视频列表预加载 (不稳定功能)\n需开启"隐藏 分区视频推荐"\n建议开启"增大视频载入数量"',
             itemCSS: `
+                /* 隐藏anchor前的skeleton */
                 .bili-video-card:not(.is-rcmd):has(~ .load-more-anchor) {
                     display: none !important;
                 }
+                .load-more-anchor.preload {
+                    position: fixed;
+                    top: -100px;
+                    left: -100px;
+                    opacity: 0;
+                }
             `,
+            enableFunc: async () => {
+                let cnt = 0
+                const id = setInterval(() => {
+                    const anchor = document.querySelector('.load-more-anchor') as HTMLElement
+                    if (anchor) {
+                        clearInterval(id)
+
+                        // 向下滚动时，调整anchor位置
+                        let lastScrollTop = 0
+                        let isPreload = false
+                        window.addEventListener('scroll', function () {
+                            const scrollTop = window.scrollY || document.documentElement.scrollTop
+                            if (scrollTop > lastScrollTop) {
+                                const gap = innerHeight - anchor.getBoundingClientRect().top
+                                if (gap > -innerHeight * 0.75 && !isPreload) {
+                                    anchor.classList.add('preload')
+                                    isPreload = true
+                                } else {
+                                    isPreload && anchor.classList.remove('preload')
+                                    isPreload = false
+                                }
+                            } else {
+                                isPreload && anchor.classList.remove('preload')
+                                isPreload = false
+                            }
+                            lastScrollTop = scrollTop
+                        })
+                    }
+                    if (++cnt > 80) {
+                        clearInterval(id)
+                    }
+                }, 250)
+            },
+            enableFuncRunAt: 'document-end',
         }),
     ]
     homepageGroupList.push(new Group('homepage-rcmd-list', '视频列表', rcmdListItems))

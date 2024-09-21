@@ -232,7 +232,7 @@
 
 </details>
 <details>
-<summary><b>备份 TamperMonkey 数据到云端</b></summary>
+<summary><b>备份数据到云端</b></summary>
 <br>
 
 -   这一操作将备份 TamperMonkey 内所有脚本代码及其本地数据到云端
@@ -240,6 +240,18 @@
 -   ViolentMonkey 插件无这一功能，只支持备份到本地
 
 ![](images/how-to-backup-to-cloud-drive.png)
+
+</details>
+<details>
+<summary><b>复制 JSON 数据</b></summary>
+<br>
+
+-   可通过开启插件管理器的高级模式，复制脚本 JSON 数据，可用于保存或快速在另一设备导入
+-   请勿在未知后果的情况下编辑 JSON 数据
+
+![](images/how-to-edit-1.png)
+![](images/how-to-edit-2.png)
+![](images/how-to-edit-3.png)
 
 </details>
 

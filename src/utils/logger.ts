@@ -7,7 +7,7 @@ let currTime: number = startTime
 /**
  * 计时日志wrapper
  * 输出格式: [bili-cleaner] 0.1 / 2.4 ms | XXXXXXXXXXXXXX
- * 第一个时间为上一条日志到本条日志间隔, 第二个时间为脚本开始总时长
+ * 第一个时间为上一条日志到本条日志间隔, 第二个时间为页面开启总时长
  * 使用 performance.now() 做精确计时
  *
  * @param loggingFunc console.log等带级别打印日志的函数
@@ -19,8 +19,7 @@ const wrapper = (loggingFunc: (..._args: any[]) => void | undefined, isEnable: b
         return (...innerArgs: any[]) => {
             currTime = performance.now()
             const during: string = (currTime - lastTime).toFixed(1)
-            const total: string = (currTime - startTime).toFixed(1)
-            loggingFunc(`[bili-cleaner] ${during} / ${total} ms | ${innerArgs.join(' ')}`)
+            loggingFunc(`[bili-cleaner] ${during} / ${currTime.toFixed(0)} ms |`, ...innerArgs)
             lastTime = currTime
         }
     }

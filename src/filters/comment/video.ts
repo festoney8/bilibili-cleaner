@@ -7,7 +7,8 @@ import settings from '../../settings'
 import fetchHook from '../../utils/fetch'
 import { debugCommentFilter as debug, error } from '../../utils/logger'
 import { isPageBangumi, isPagePlaylist, isPageVideo } from '../../utils/pageType'
-import { showEle } from '../../utils/tool'
+import ShadowInstance from '../../utils/shadow'
+import { showEle, waitForEle } from '../../utils/tool'
 import { coreCheck, SelectorResult, SubFilterPair } from '../core/core'
 import {
     CommentBotFilter,
@@ -220,7 +221,14 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             },
             isLink: (comment: HTMLElement): SelectorResult => {
                 const urls = (comment as any).__data?.content?.jump_url
-                return urls ? Object.keys(urls).length > 0 : undefined
+                if (urls) {
+                    for (const k of Object.keys(urls)) {
+                        if (!urls[k]?.pc_url?.includes('search.bilibili.com')) {
+                            return true
+                        }
+                    }
+                }
+                return false
             },
         },
     }
@@ -231,36 +239,21 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             // 提取元素：一级评论、二级评论
             let rootComments: HTMLElement[] = []
             let subComments: HTMLElement[] = []
-            const shadowRoot = document.querySelector('bili-comments')?.shadowRoot
-            if (!shadowRoot) {
-                return
-            }
-            if (fullSite) {
-                rootComments = Array.from(shadowRoot.querySelectorAll<HTMLElement>('bili-comment-thread-renderer'))
-                rootComments.forEach((c) => {
-                    const replies = c.shadowRoot
-                        ?.querySelector('bili-comment-replies-renderer')
-                        ?.shadowRoot?.querySelectorAll<HTMLElement>('bili-comment-reply-renderer')
-                    if (replies?.length) {
-                        subComments = subComments.concat(Array.from(replies))
-                    }
-                })
-            } else {
-                rootComments = Array.from(
-                    shadowRoot.querySelectorAll<HTMLElement>(
-                        `bili-comment-thread-renderer:not([${settings.filterSign}])`,
-                    ),
+            if (ShadowInstance.shadowStore.has('BILI-COMMENT-THREAD-RENDERER')) {
+                rootComments = Array.from(ShadowInstance.shadowStore.get('BILI-COMMENT-THREAD-RENDERER')!).map(
+                    (v) => v.host as HTMLElement,
                 )
-                rootComments.forEach((c) => {
-                    const replies = c.shadowRoot
-                        ?.querySelector('bili-comment-replies-renderer')
-                        ?.shadowRoot?.querySelectorAll<HTMLElement>(
-                            `bili-comment-reply-renderer:not([${settings.filterSign}])`,
-                        )
-                    if (replies?.length) {
-                        subComments = subComments.concat(Array.from(replies))
-                    }
-                })
+                if (!fullSite) {
+                    rootComments = rootComments.filter((v) => !v.hasAttribute(settings.filterSign))
+                }
+            }
+            if (ShadowInstance.shadowStore.has('BILI-COMMENT-REPLY-RENDERER')) {
+                subComments = Array.from(ShadowInstance.shadowStore.get('BILI-COMMENT-REPLY-RENDERER')!).map(
+                    (v) => v.host as HTMLElement,
+                )
+                if (!fullSite) {
+                    subComments = subComments.filter((v) => !v.hasAttribute(settings.filterSign))
+                }
             }
 
             // rootComments.forEach((v) => {
@@ -301,7 +294,6 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 commentBotFilter.isEnable && blackPairs.push([commentBotFilter, selectorFns.root.username])
                 commentCallBotFilter.isEnable && blackPairs.push([commentCallBotFilter, selectorFns.root.callUser])
                 commentCallUserFilter.isEnable && blackPairs.push([commentCallUserFilter, selectorFns.root.callUser])
-
                 const whitePairs: SubFilterPair[] = []
                 commentIsUpFilter.isEnable && whitePairs.push([commentIsUpFilter, selectorFns.root.isUp])
                 commentIsPinFilter.isEnable && whitePairs.push([commentIsPinFilter, selectorFns.root.isPin])
@@ -320,7 +312,6 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
                 commentBotFilter.isEnable && blackPairs.push([commentBotFilter, selectorFns.sub.username])
                 commentCallBotFilter.isEnable && blackPairs.push([commentCallBotFilter, selectorFns.sub.callUser])
                 commentCallUserFilter.isEnable && blackPairs.push([commentCallUserFilter, selectorFns.sub.callUser])
-
                 const whitePairs: SubFilterPair[] = []
                 commentIsUpFilter.isEnable && whitePairs.push([commentIsUpFilter, selectorFns.sub.isUp])
                 commentIsLinkFilter.isEnable && whitePairs.push([commentIsLinkFilter, selectorFns.sub.isLink])
@@ -348,24 +339,17 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         }
     }
 
-    // 评论区过滤，新旧通用，在获取评论相关API后触发检测
-    fetchHook.addPostFn((input: RequestInfo | URL, init: RequestInit | undefined, _resp?: Response) => {
-        if (typeof input === 'string' && init?.method?.toUpperCase() === 'GET' && input.includes('api.bilibili.com')) {
-            // 主评论载入
-            if (input.includes('/v2/reply/wbi/main')) {
-                let cnt = 0
-                const id = setInterval(() => {
+    waitForEle(document, 'bili-comments', (node: HTMLElement): boolean => {
+        return node.tagName === 'BILI-COMMENTS'
+    }).then((ele) => {
+        if (ele) {
+            const container = ele.shadowRoot
+            if (container) {
+                check(true)
+                const observer = new MutationObserver(() => {
                     check(false)
-                    ++cnt > 20 && clearInterval(id)
-                }, 300)
-            }
-            // 二级评论翻页
-            if (input.includes('/v2/reply/reply')) {
-                let cnt = 0
-                const id = setInterval(() => {
-                    check(true)
-                    ++cnt > 10 && clearInterval(id)
-                }, 500)
+                })
+                observer.observe(container, { childList: true, subtree: true })
             }
         }
     })

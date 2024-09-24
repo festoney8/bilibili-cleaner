@@ -21,7 +21,7 @@ export abstract class MainFilter {
      * 提取target内元素列表，用子过滤器检测元素
      * @param mode full: 全量检测 incr: 增量检测
      */
-    static check(mode?: 'full' | 'incr'): void {}
+    static async check(mode?: 'full' | 'incr') {}
 }
 
 /**

@@ -2,9 +2,8 @@ import { GM_getValue } from '$'
 import settings from '../../../../../settings'
 import { Group } from '../../../../../types/collection'
 import { SelectorResult, SubFilterPair } from '../../../../../types/filter'
-import { error, log } from '../../../../../utils/logger'
-import ShadowInstance from '../../../../../utils/shadow'
-import { showEle } from '../../../../../utils/tool'
+import { log } from '../../../../../utils/logger'
+import { showEle, waitForEle } from '../../../../../utils/tool'
 import { coreCheck, MainFilter } from '../../../core/core'
 import {
     CommentBotFilter,
@@ -64,62 +63,57 @@ const GM_KEYS = {
 
 // 一二级评论信息提取
 const selectorFns = {
-    // 测试视频：
-    // https://b23.tv/av810872
-    // https://b23.tv/av1855797296
-    // https://b23.tv/av1706101190
-    // https://b23.tv/av1705573085
-    // https://b23.tv/av1350214762
     root: {
         username: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.member?.uname?.trim()
+            return comment.querySelector('.root-reply-container .user-name')?.textContent?.trim()
         },
         content: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.content?.message?.replace(/@[^@ ]+?( |$)/g, '').trim()
+            return comment
+                .querySelector('.root-reply-container .reply-content')
+                ?.textContent?.trim()
+                .replace(/@[^@ ]+?( |$)/g, '')
+                .trim()
         },
         callUser: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.content?.members[0]?.uname
+            return comment
+                .querySelector('.root-reply-container .reply-content .jump-link.user')
+                ?.textContent?.replace('@', '')
+                .trim()
         },
         level: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.member?.level_info?.current_level
+            const c = comment.querySelector('.root-reply-container .user-level')?.className
+            const lv = c?.match(/level-([1-6])/)?.[1] // 忽略level-hardcore
+            return lv ? parseInt(lv) : undefined
         },
         isUp: (comment: HTMLElement): SelectorResult => {
-            const mid = (comment as any).__data?.mid
-            const upMid = (comment as any).__upMid
-            return typeof mid === 'number' && mid === upMid
+            return !!comment.querySelector('.root-reply-container .up-icon')
         },
         isPin: (comment: HTMLElement): SelectorResult => {
-            return !!(comment as any).__data?.reply_control?.is_up_top
+            return !!comment.querySelector('.root-reply-container .top-icon')
         },
         isNote: (comment: HTMLElement): SelectorResult => {
-            return !!(comment as any).__data?.reply_control?.is_note_v2
+            return !!comment.querySelector('.root-reply-container .note-prefix')
         },
         isLink: (comment: HTMLElement): SelectorResult => {
-            const jump_url = (comment as any).__data?.content?.jump_url
-            if (jump_url) {
-                for (const k of Object.keys(jump_url)) {
-                    if (!jump_url[k]?.pc_url?.includes('search.bilibili.com')) {
-                        return true
-                    }
-                }
-            }
-            return false
+            return !!comment.querySelector('.root-reply-container .jump-link:is(.normal, .video)')
         },
     },
     sub: {
         username: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.member?.uname?.trim()
+            return comment.querySelector('.sub-user-name')?.textContent?.trim()
         },
         content: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.content?.message
-                ?.trim()
+            return comment
+                .querySelector('.reply-content')
+                ?.textContent?.trim()
                 ?.replace(/@[^@ ]+?( |$)/g, '')
                 .replace(/^回复 *:?/, '')
                 .trim()
         },
         callUser: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.content?.message
-                ?.trim()
+            return comment
+                .querySelector('.reply-content')
+                ?.textContent?.trim()
                 .replace(/^回复 ?@[^@ ]+? ?:/, '')
                 .trim()
                 ?.match(/@[^@ ]+( |$)/)?.[0]
@@ -127,33 +121,24 @@ const selectorFns = {
                 .trim()
         },
         level: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.member?.level_info?.current_level
+            const c = comment.querySelector('.sub-user-level')?.className
+            const lv = c?.match(/level-([1-6])/)?.[1] // 忽略level-hardcore
+            return lv ? parseInt(lv) : undefined
         },
         isUp: (comment: HTMLElement): SelectorResult => {
-            const mid = (comment as any).__data?.mid
-            const upMid = (comment as any).__upMid
-            return typeof mid === 'number' && mid === upMid
+            return !!comment.querySelector('.sub-up-icon')
         },
         isLink: (comment: HTMLElement): SelectorResult => {
-            const urls = (comment as any).__data?.content?.jump_url
-            if (urls) {
-                for (const k of Object.keys(urls)) {
-                    if (!urls[k]?.pc_url?.includes('search.bilibili.com')) {
-                        return true
-                    }
-                }
-            }
-            return false
+            return !!comment.querySelector('.sub-reply-content .jump-link:is(.normal, .video)')
         },
     },
 }
 
-// 一二级评论是否检测
 let isRootWhite = false
 let isSubWhite = false
 
-// CFD is CommentFilterDynamic
-class CFD extends MainFilter {
+// CFSP is CommentFilterSpace
+class CFSP extends MainFilter {
     // 黑名单
     static commentUsernameFilter = new CommentUsernameFilter()
     static commentContentFilter = new CommentContentFilter()
@@ -211,52 +196,47 @@ class CFD extends MainFilter {
             'AI总结视频',
             'AI工具集',
         ]
-        CFD.commentUsernameFilter.setParam(GM_getValue(GM_KEYS.black.username.valueKey, []))
-        CFD.commentContentFilter.setParam(GM_getValue(GM_KEYS.black.content.valueKey, []))
-        CFD.commentLevelFilter.setParam(GM_getValue(GM_KEYS.black.level.valueKey, 0))
-        CFD.commentBotFilter.setParam(bots)
-        CFD.commentCallBotFilter.setParam(bots)
-        CFD.commentCallUserFilter.setParam([`/./`])
+        CFSP.commentUsernameFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.username.valueKey}`, []))
+        CFSP.commentContentFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.content.valueKey}`, []))
+        CFSP.commentLevelFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.level.valueKey}`, 0))
+        CFSP.commentBotFilter.setParam(bots)
+        CFSP.commentCallBotFilter.setParam(bots)
+        CFSP.commentCallUserFilter.setParam([`/./`])
     }
 
-    /**
-     * 检测一级评论
-     * @param mode full全量，incr增量
-     * @returns
-     */
-    static async checkRoot(mode?: 'full' | 'incr') {
-        const timer = performance.now()
+    static async check(mode?: 'full' | 'incr') {
+        if (location.host === 'space.bilibili.com' && !location.pathname.includes('/dynamic')) {
+            return
+        }
+        if (!CFSP.target) {
+            return
+        }
+
         let revertAll = false
+        const timer = performance.now()
         if (
             !(
-                CFD.commentUsernameFilter.isEnable ||
-                CFD.commentContentFilter.isEnable ||
-                CFD.commentLevelFilter.isEnable ||
-                CFD.commentBotFilter.isEnable ||
-                CFD.commentCallBotFilter.isEnable ||
-                CFD.commentCallUserFilter.isEnable
+                CFSP.commentUsernameFilter.isEnable ||
+                CFSP.commentContentFilter.isEnable ||
+                CFSP.commentLevelFilter.isEnable ||
+                CFSP.commentBotFilter.isEnable ||
+                CFSP.commentCallBotFilter.isEnable ||
+                CFSP.commentCallUserFilter.isEnable
             )
         ) {
             revertAll = true
         }
 
-        let rootComments: HTMLElement[] = []
-        if (ShadowInstance.shadowStore.has('BILI-COMMENT-THREAD-RENDERER')) {
-            rootComments = Array.from(ShadowInstance.shadowStore.get('BILI-COMMENT-THREAD-RENDERER')!).map(
-                (v) => v.host as HTMLElement,
-            )
-            if (mode === 'incr') {
-                rootComments = rootComments.filter((v) => !v.hasAttribute(settings.filterSign))
-            }
-        }
-        if (!rootComments.length) {
-            return
-        }
+        // 提取元素：一级评论、二级评论
+        const rootSelector = `.reply-item` + (mode === 'incr' ? `:not([${settings.filterSign}])` : '')
+        const subSelector = `.sub-reply-item` + (mode === 'incr' ? `:not([${settings.filterSign}])` : '')
+        const rootComments = Array.from(CFSP.target.querySelectorAll<HTMLElement>(rootSelector))
+        const subComments = Array.from(CFSP.target.querySelectorAll<HTMLElement>(subSelector))
 
         // rootComments.forEach((v) => {
         //     log(
         //         [
-        //             `rootComments`,
+        //             `root comment`,
         //             `username: ${selectorFns.root.username(v)}`,
         //             `content: ${selectorFns.root.content(v)}`,
         //             `callUser: ${selectorFns.root.callUser(v)}`,
@@ -268,69 +248,10 @@ class CFD extends MainFilter {
         //         ].join('\n'),
         //     )
         // })
-
-        if (isRootWhite || revertAll) {
-            rootComments.forEach((el) => showEle(el))
-            return
-        }
-
-        const blackPairs: SubFilterPair[] = []
-        CFD.commentUsernameFilter.isEnable && blackPairs.push([CFD.commentUsernameFilter, selectorFns.root.username])
-        CFD.commentContentFilter.isEnable && blackPairs.push([CFD.commentContentFilter, selectorFns.root.content])
-        CFD.commentLevelFilter.isEnable && blackPairs.push([CFD.commentLevelFilter, selectorFns.root.level])
-        CFD.commentBotFilter.isEnable && blackPairs.push([CFD.commentBotFilter, selectorFns.root.username])
-        CFD.commentCallBotFilter.isEnable && blackPairs.push([CFD.commentCallBotFilter, selectorFns.root.callUser])
-        CFD.commentCallUserFilter.isEnable && blackPairs.push([CFD.commentCallUserFilter, selectorFns.root.callUser])
-
-        const whitePairs: SubFilterPair[] = []
-        CFD.commentIsUpFilter.isEnable && whitePairs.push([CFD.commentIsUpFilter, selectorFns.root.isUp])
-        CFD.commentIsPinFilter.isEnable && whitePairs.push([CFD.commentIsPinFilter, selectorFns.root.isPin])
-        CFD.commentIsNoteFilter.isEnable && whitePairs.push([CFD.commentIsNoteFilter, selectorFns.root.isNote])
-        CFD.commentIsLinkFilter.isEnable && whitePairs.push([CFD.commentIsLinkFilter, selectorFns.root.isLink])
-
-        const rootBlackCnt = await coreCheck(rootComments, true, blackPairs, whitePairs)
-        const time = (performance.now() - timer).toFixed(1)
-        log(`CFD hide ${rootBlackCnt} in ${rootComments.length} root comments, mode=${mode}, time=${time}`)
-    }
-
-    /**
-     * 检测二级评论
-     * @param mode full全量，incr增量
-     * @returns
-     */
-    static async checkSub(mode?: 'full' | 'incr') {
-        const timer = performance.now()
-        let revertAll = false
-        if (
-            !(
-                CFD.commentUsernameFilter.isEnable ||
-                CFD.commentContentFilter.isEnable ||
-                CFD.commentLevelFilter.isEnable ||
-                CFD.commentBotFilter.isEnable ||
-                CFD.commentCallBotFilter.isEnable ||
-                CFD.commentCallUserFilter.isEnable
-            )
-        ) {
-            revertAll = true
-        }
-
-        let subComments: HTMLElement[] = []
-        if (ShadowInstance.shadowStore.has('BILI-COMMENT-REPLY-RENDERER')) {
-            subComments = Array.from(ShadowInstance.shadowStore.get('BILI-COMMENT-REPLY-RENDERER')!).map(
-                (v) => v.host as HTMLElement,
-            )
-            if (mode === 'incr') {
-                subComments = subComments.filter((v) => !v.hasAttribute(settings.filterSign))
-            }
-        }
-        if (!subComments.length) {
-            return
-        }
-
         // subComments.forEach((v) => {
         //     log(
         //         [
-        //             `subComments`,
+        //             `sub comment`,
         //             `username: ${selectorFns.sub.username(v)}`,
         //             `content: ${selectorFns.sub.content(v)}`,
         //             `callUser: ${selectorFns.sub.callUser(v)}`,
@@ -341,86 +262,89 @@ class CFD extends MainFilter {
         //     )
         // })
 
+        if (!rootComments.length && !subComments.length) {
+            return
+        }
+        if (isRootWhite || revertAll) {
+            rootComments.forEach((el) => showEle(el))
+        }
         if (isSubWhite || revertAll) {
             subComments.forEach((el) => showEle(el))
+        }
+        if (revertAll) {
             return
         }
 
-        const blackPairs: SubFilterPair[] = []
-        CFD.commentUsernameFilter.isEnable && blackPairs.push([CFD.commentUsernameFilter, selectorFns.sub.username])
-        CFD.commentContentFilter.isEnable && blackPairs.push([CFD.commentContentFilter, selectorFns.sub.content])
-        CFD.commentLevelFilter.isEnable && blackPairs.push([CFD.commentLevelFilter, selectorFns.sub.level])
-        CFD.commentBotFilter.isEnable && blackPairs.push([CFD.commentBotFilter, selectorFns.sub.username])
-        CFD.commentCallBotFilter.isEnable && blackPairs.push([CFD.commentCallBotFilter, selectorFns.sub.callUser])
-        CFD.commentCallUserFilter.isEnable && blackPairs.push([CFD.commentCallUserFilter, selectorFns.sub.callUser])
+        // 构建黑白检测任务
+        let rootBlackCnt = 0
+        let subBlackCnt = 0
+        if (!isRootWhite && rootComments.length) {
+            const blackPairs: SubFilterPair[] = []
+            CFSP.commentUsernameFilter.isEnable &&
+                blackPairs.push([CFSP.commentUsernameFilter, selectorFns.root.username])
+            CFSP.commentContentFilter.isEnable && blackPairs.push([CFSP.commentContentFilter, selectorFns.root.content])
+            CFSP.commentLevelFilter.isEnable && blackPairs.push([CFSP.commentLevelFilter, selectorFns.root.level])
+            CFSP.commentBotFilter.isEnable && blackPairs.push([CFSP.commentBotFilter, selectorFns.root.username])
+            CFSP.commentCallBotFilter.isEnable &&
+                blackPairs.push([CFSP.commentCallBotFilter, selectorFns.root.callUser])
+            CFSP.commentCallUserFilter.isEnable &&
+                blackPairs.push([CFSP.commentCallUserFilter, selectorFns.root.callUser])
 
-        const whitePairs: SubFilterPair[] = []
-        CFD.commentIsUpFilter.isEnable && whitePairs.push([CFD.commentIsUpFilter, selectorFns.sub.isUp])
-        CFD.commentIsLinkFilter.isEnable && whitePairs.push([CFD.commentIsLinkFilter, selectorFns.sub.isLink])
+            const whitePairs: SubFilterPair[] = []
+            CFSP.commentIsUpFilter.isEnable && whitePairs.push([CFSP.commentIsUpFilter, selectorFns.root.isUp])
+            CFSP.commentIsPinFilter.isEnable && whitePairs.push([CFSP.commentIsPinFilter, selectorFns.root.isPin])
+            CFSP.commentIsNoteFilter.isEnable && whitePairs.push([CFSP.commentIsNoteFilter, selectorFns.root.isNote])
+            CFSP.commentIsLinkFilter.isEnable && whitePairs.push([CFSP.commentIsLinkFilter, selectorFns.root.isLink])
 
-        const subBlackCnt = await coreCheck(subComments, false, blackPairs, whitePairs)
+            rootBlackCnt = await coreCheck(rootComments, true, blackPairs, whitePairs)
+        }
+        if (!isSubWhite && subComments.length) {
+            const blackPairs: SubFilterPair[] = []
+            CFSP.commentUsernameFilter.isEnable &&
+                blackPairs.push([CFSP.commentUsernameFilter, selectorFns.sub.username])
+            CFSP.commentContentFilter.isEnable && blackPairs.push([CFSP.commentContentFilter, selectorFns.sub.content])
+            CFSP.commentLevelFilter.isEnable && blackPairs.push([CFSP.commentLevelFilter, selectorFns.sub.level])
+            CFSP.commentBotFilter.isEnable && blackPairs.push([CFSP.commentBotFilter, selectorFns.sub.username])
+            CFSP.commentCallBotFilter.isEnable && blackPairs.push([CFSP.commentCallBotFilter, selectorFns.sub.callUser])
+            CFSP.commentCallUserFilter.isEnable &&
+                blackPairs.push([CFSP.commentCallUserFilter, selectorFns.sub.callUser])
+
+            const whitePairs: SubFilterPair[] = []
+            CFSP.commentIsUpFilter.isEnable && whitePairs.push([CFSP.commentIsUpFilter, selectorFns.sub.isUp])
+            CFSP.commentIsLinkFilter.isEnable && whitePairs.push([CFSP.commentIsLinkFilter, selectorFns.sub.isLink])
+
+            subBlackCnt = await coreCheck(subComments, true, blackPairs, whitePairs)
+        }
+
         const time = (performance.now() - timer).toFixed(1)
-        log(`CFD hide ${subBlackCnt} in ${subComments.length} sub comments, mode=${mode}, time=${time}`)
-    }
-
-    static async check(mode?: 'full' | 'incr') {
-        this.checkRoot(mode)
-            .then()
-            .catch((err) => {
-                error('checkRoot failed', err)
-            })
-        this.checkSub(mode)
-            .then()
-            .catch((err) => {
-                error('checkSub failed', err)
-            })
-    }
-
-    /**
-     * 监听一级评论container
-     */
-    observeRoot() {
-        ShadowInstance.addShadowObserver(
-            'BILI-COMMENTS',
-            new MutationObserver(() => {
-                CFD.checkRoot('incr')
-            }),
-            {
-                subtree: true,
-                childList: true,
-            },
-        )
-    }
-
-    /**
-     * 监听二级评论container
-     * 使用同一Observer监视所有二级评论上级节点，所有变化只触发一次回调
-     */
-    observeSub() {
-        ShadowInstance.addShadowObserver(
-            'BILI-COMMENT-REPLIES-RENDERER',
-            new MutationObserver(() => {
-                CFD.checkSub('full')
-            }),
-            {
-                subtree: true,
-                childList: true,
-            },
+        log(
+            `CFSP hide ${rootBlackCnt} in ${rootComments.length} root, ${subBlackCnt} in ${subComments.length} sub, mode=${mode}, time=${time}`,
         )
     }
 
     observe(): void {
-        this.observeRoot()
-        this.observeSub()
+        waitForEle(document, '#app', (node: HTMLElement): boolean => {
+            return node.id === 'app'
+        }).then((ele) => {
+            if (ele) {
+                CFSP.target = ele
+                log('CFSP target appear')
+                CFSP.check('full')
+                const commentObserver = new MutationObserver(() => {
+                    CFSP.check('incr')
+                })
+                commentObserver.observe(CFSP.target, { childList: true, subtree: true })
+            }
+        })
     }
 }
 
-export const commentFilterDynamicEntry = async () => {
-    const cfd = new CFD()
-    cfd.observe()
+export const commentFilterSpaceEntry = async () => {
+    const cfsp = new CFSP()
+    cfsp.observe()
 }
 
-export const commentFilterDynamicGroups: Group[] = [
+export const commentFilterSpaceGroups: Group[] = [
     {
         name: '用户名过滤',
         items: [
@@ -431,12 +355,12 @@ export const commentFilterDynamicGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFD.commentUsernameFilter.enable()
-                    CFD.check('full').then().catch()
+                    CFSP.commentUsernameFilter.enable()
+                    CFSP.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFD.commentUsernameFilter.disable()
-                    CFD.check('full').then().catch()
+                    CFSP.commentUsernameFilter.disable()
+                    CFSP.check('full').then().catch()
                 },
             },
             {
@@ -460,12 +384,12 @@ export const commentFilterDynamicGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFD.commentContentFilter.enable()
-                    CFD.check('full').then().catch()
+                    CFSP.commentContentFilter.enable()
+                    CFSP.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFD.commentContentFilter.disable()
-                    CFD.check('full').then().catch()
+                    CFSP.commentContentFilter.disable()
+                    CFSP.check('full').then().catch()
                 },
             },
             {
@@ -489,12 +413,12 @@ export const commentFilterDynamicGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFD.commentCallBotFilter.enable()
-                    CFD.check('full').then().catch()
+                    CFSP.commentCallBotFilter.enable()
+                    CFSP.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFD.commentCallBotFilter.disable()
-                    CFD.check('full').then().catch()
+                    CFSP.commentCallBotFilter.disable()
+                    CFSP.check('full').then().catch()
                 },
             },
             {
@@ -504,12 +428,12 @@ export const commentFilterDynamicGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFD.commentBotFilter.enable()
-                    CFD.check('full').then().catch()
+                    CFSP.commentBotFilter.enable()
+                    CFSP.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFD.commentBotFilter.disable()
-                    CFD.check('full').then().catch()
+                    CFSP.commentBotFilter.disable()
+                    CFSP.check('full').then().catch()
                 },
             },
             {
@@ -519,12 +443,12 @@ export const commentFilterDynamicGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFD.commentCallUserFilter.enable()
-                    CFD.check('full').then().catch()
+                    CFSP.commentCallUserFilter.enable()
+                    CFSP.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFD.commentCallUserFilter.disable()
-                    CFD.check('full').then().catch()
+                    CFSP.commentCallUserFilter.disable()
+                    CFSP.check('full').then().catch()
                 },
             },
         ],
@@ -539,12 +463,12 @@ export const commentFilterDynamicGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFD.commentLevelFilter.enable()
-                    CFD.check('full').then().catch()
+                    CFSP.commentLevelFilter.enable()
+                    CFSP.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFD.commentLevelFilter.disable()
-                    CFD.check('full').then().catch()
+                    CFSP.commentLevelFilter.disable()
+                    CFSP.check('full').then().catch()
                 },
             },
             {
@@ -556,8 +480,8 @@ export const commentFilterDynamicGroups: Group[] = [
                 defaultValue: 0,
                 disableValue: 0,
                 fn: (value: number) => {
-                    CFD.commentLevelFilter.setParam(value)
-                    CFD.check('full').then().catch()
+                    CFSP.commentLevelFilter.setParam(value)
+                    CFSP.check('full').then().catch()
                 },
             },
         ],
@@ -573,11 +497,11 @@ export const commentFilterDynamicGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     isRootWhite = true
-                    CFD.check('full').then().catch()
+                    CFSP.check('full').then().catch()
                 },
                 disableFn: () => {
                     isRootWhite = false
-                    CFD.check('full').then().catch()
+                    CFSP.check('full').then().catch()
                 },
             },
             {
@@ -588,11 +512,11 @@ export const commentFilterDynamicGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     isSubWhite = true
-                    CFD.check('full').then().catch()
+                    CFSP.check('full').then().catch()
                 },
                 disableFn: () => {
                     isSubWhite = false
-                    CFD.check('full').then().catch()
+                    CFSP.check('full').then().catch()
                 },
             },
             {
@@ -602,12 +526,12 @@ export const commentFilterDynamicGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFD.commentIsUpFilter.enable()
-                    CFD.check('full').then().catch()
+                    CFSP.commentIsUpFilter.enable()
+                    CFSP.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFD.commentIsUpFilter.disable()
-                    CFD.check('full').then().catch()
+                    CFSP.commentIsUpFilter.disable()
+                    CFSP.check('full').then().catch()
                 },
             },
             {
@@ -617,12 +541,12 @@ export const commentFilterDynamicGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFD.commentIsPinFilter.enable()
-                    CFD.check('full').then().catch()
+                    CFSP.commentIsPinFilter.enable()
+                    CFSP.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFD.commentIsPinFilter.disable()
-                    CFD.check('full').then().catch()
+                    CFSP.commentIsPinFilter.disable()
+                    CFSP.check('full').then().catch()
                 },
             },
             {
@@ -632,12 +556,12 @@ export const commentFilterDynamicGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFD.commentIsNoteFilter.enable()
-                    CFD.check('full').then().catch()
+                    CFSP.commentIsNoteFilter.enable()
+                    CFSP.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFD.commentIsNoteFilter.disable()
-                    CFD.check('full').then().catch()
+                    CFSP.commentIsNoteFilter.disable()
+                    CFSP.check('full').then().catch()
                 },
             },
             {
@@ -647,12 +571,12 @@ export const commentFilterDynamicGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFD.commentIsLinkFilter.enable()
-                    CFD.check('full').then().catch()
+                    CFSP.commentIsLinkFilter.enable()
+                    CFSP.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFD.commentIsLinkFilter.disable()
-                    CFD.check('full').then().catch()
+                    CFSP.commentIsLinkFilter.disable()
+                    CFSP.check('full').then().catch()
                 },
             },
         ],

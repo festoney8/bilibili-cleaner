@@ -363,7 +363,7 @@ class CFV extends MainFilter {
         log(`CFV hide ${subBlackCnt} in ${subComments.length} sub comments, mode=${mode}, time=${time}`)
     }
 
-    static check(mode?: 'full' | 'incr') {
+    static async check(mode?: 'full' | 'incr') {
         this.checkRoot(mode)
             .then()
             .catch((err) => {
@@ -432,11 +432,11 @@ export const commentFilterVideoGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     CFV.commentUsernameFilter.enable()
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
                 disableFn: () => {
                     CFV.commentUsernameFilter.disable()
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
             },
             {
@@ -461,11 +461,11 @@ export const commentFilterVideoGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     CFV.commentContentFilter.enable()
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
                 disableFn: () => {
                     CFV.commentContentFilter.disable()
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
             },
             {
@@ -490,11 +490,11 @@ export const commentFilterVideoGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     CFV.commentCallBotFilter.enable()
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
                 disableFn: () => {
                     CFV.commentCallBotFilter.disable()
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
             },
             {
@@ -505,11 +505,11 @@ export const commentFilterVideoGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     CFV.commentBotFilter.enable()
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
                 disableFn: () => {
                     CFV.commentBotFilter.disable()
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
             },
             {
@@ -520,11 +520,11 @@ export const commentFilterVideoGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     CFV.commentCallUserFilter.enable()
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
                 disableFn: () => {
                     CFV.commentCallUserFilter.disable()
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
             },
         ],
@@ -540,11 +540,11 @@ export const commentFilterVideoGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     CFV.commentLevelFilter.enable()
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
                 disableFn: () => {
                     CFV.commentLevelFilter.disable()
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
             },
             {
@@ -557,7 +557,7 @@ export const commentFilterVideoGroups: Group[] = [
                 disableValue: 0,
                 fn: (value: number) => {
                     CFV.commentLevelFilter.setParam(value)
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
             },
         ],
@@ -573,11 +573,11 @@ export const commentFilterVideoGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     isRootWhite = true
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
                 disableFn: () => {
                     isRootWhite = false
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
             },
             {
@@ -588,11 +588,11 @@ export const commentFilterVideoGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     isSubWhite = true
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
                 disableFn: () => {
                     isSubWhite = false
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
             },
             {
@@ -603,11 +603,11 @@ export const commentFilterVideoGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     CFV.commentIsUpFilter.enable()
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
                 disableFn: () => {
                     CFV.commentIsUpFilter.disable()
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
             },
             {
@@ -618,11 +618,11 @@ export const commentFilterVideoGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     CFV.commentIsPinFilter.enable()
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
                 disableFn: () => {
                     CFV.commentIsPinFilter.disable()
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
             },
             {
@@ -633,11 +633,11 @@ export const commentFilterVideoGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     CFV.commentIsNoteFilter.enable()
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
                 disableFn: () => {
                     CFV.commentIsNoteFilter.disable()
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
             },
             {
@@ -648,11 +648,11 @@ export const commentFilterVideoGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     CFV.commentIsLinkFilter.enable()
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
                 disableFn: () => {
                     CFV.commentIsLinkFilter.disable()
-                    CFV.check('full')
+                    CFV.check('full').then().catch()
                 },
             },
         ],

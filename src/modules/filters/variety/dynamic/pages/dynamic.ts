@@ -69,7 +69,7 @@ class DFD extends MainFilter {
 
             DFD.target = ele
             log('DFD target appear')
-            DFD.check('full')
+            DFD.check('full').then().catch()
 
             new MutationObserver(() => {
                 DFD.check('incr')
@@ -146,11 +146,11 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 description: ['仅隐藏动态，与UP主过滤相互隔离'],
                 enableFn: () => {
                     DFD.dynUploaderFilter.enable()
-                    DFD.check('full')
+                    DFD.check('full').then().catch()
                 },
                 disableFn: () => {
                     DFD.dynUploaderFilter.disable()
-                    DFD.check('full')
+                    DFD.check('full').then().catch()
                 },
             },
             {
@@ -175,11 +175,11 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     DFD.dynDurationFilter.enable()
-                    DFD.check('full')
+                    DFD.check('full').then().catch()
                 },
                 disableFn: () => {
                     DFD.dynDurationFilter.disable()
-                    DFD.check('full')
+                    DFD.check('full').then().catch()
                 },
             },
             {
@@ -193,7 +193,7 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 addonText: '秒',
                 fn: (value: number) => {
                     DFD.dynDurationFilter.setParam(value)
-                    DFD.check('full')
+                    DFD.check('full').then().catch()
                 },
             },
         ],
@@ -209,11 +209,11 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     DFD.dynVideoTitleFilter.enable()
-                    DFD.check('full')
+                    DFD.check('full').then().catch()
                 },
                 disableFn: () => {
                     DFD.dynVideoTitleFilter.disable()
-                    DFD.check('full')
+                    DFD.check('full').then().catch()
                 },
             },
             {

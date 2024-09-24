@@ -104,10 +104,10 @@ class VFSE extends MainFilter {
 
             VFSE.target = ele
             log('VFSE target appear')
-            VFSE.check('full')
+            VFSE.check('full').then().catch()
 
             new MutationObserver(() => {
-                VFSE.check('full') // 搜索页始终全量check
+                VFSE.check('full').then().catch() // 搜索页始终全量check
             }).observe(VFSE.target, { childList: true, subtree: true })
         })
     }
@@ -191,11 +191,11 @@ export const videoFilterSearchGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     VFSE.videoDurationFilter.enable()
-                    VFSE.check('full')
+                    VFSE.check('full').then().catch()
                 },
                 disableFn: () => {
                     VFSE.videoDurationFilter.disable()
-                    VFSE.check('full')
+                    VFSE.check('full').then().catch()
                 },
             },
             {
@@ -210,7 +210,7 @@ export const videoFilterSearchGroups: Group[] = [
                 addonText: '秒',
                 fn: (value: number) => {
                     VFSE.videoDurationFilter.setParam(value)
-                    VFSE.check('full')
+                    VFSE.check('full').then().catch()
                 },
             },
         ],
@@ -226,11 +226,11 @@ export const videoFilterSearchGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     VFSE.videoUploaderFilter.enable()
-                    VFSE.check('full')
+                    VFSE.check('full').then().catch()
                 },
                 disableFn: () => {
                     VFSE.videoUploaderFilter.disable()
-                    VFSE.check('full')
+                    VFSE.check('full').then().catch()
                 },
             },
             {
@@ -250,11 +250,11 @@ export const videoFilterSearchGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     VFSE.videoUploaderKeywordFilter.enable()
-                    VFSE.check('full')
+                    VFSE.check('full').then().catch()
                 },
                 disableFn: () => {
                     VFSE.videoUploaderKeywordFilter.disable()
-                    VFSE.check('full')
+                    VFSE.check('full').then().catch()
                 },
             },
             {
@@ -279,11 +279,11 @@ export const videoFilterSearchGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     VFSE.videoTitleFilter.enable()
-                    VFSE.check('full')
+                    VFSE.check('full').then().catch()
                 },
                 disableFn: () => {
                     VFSE.videoTitleFilter.disable()
-                    VFSE.check('full')
+                    VFSE.check('full').then().catch()
                 },
             },
             {
@@ -308,11 +308,11 @@ export const videoFilterSearchGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     VFSE.videoBvidFilter.enable()
-                    VFSE.check('full')
+                    VFSE.check('full').then().catch()
                 },
                 disableFn: () => {
                     VFSE.videoBvidFilter.disable()
-                    VFSE.check('full')
+                    VFSE.check('full').then().catch()
                 },
             },
             {
@@ -337,11 +337,11 @@ export const videoFilterSearchGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     VFSE.videoUploaderWhiteFilter.enable()
-                    VFSE.check('full')
+                    VFSE.check('full').then().catch()
                 },
                 disableFn: () => {
                     VFSE.videoUploaderWhiteFilter.disable()
-                    VFSE.check('full')
+                    VFSE.check('full').then().catch()
                 },
             },
             {
@@ -361,11 +361,11 @@ export const videoFilterSearchGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     VFSE.videoTitleWhiteFilter.enable()
-                    VFSE.check('full')
+                    VFSE.check('full').then().catch()
                 },
                 disableFn: () => {
                     VFSE.videoTitleWhiteFilter.disable()
-                    VFSE.check('full')
+                    VFSE.check('full').then().catch()
                 },
             },
             {

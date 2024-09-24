@@ -75,10 +75,10 @@ class VFSP extends MainFilter {
 
             VFSP.target = ele
             log('VFSP target appear')
-            VFSP.check('full')
+            VFSP.check('full').then().catch()
 
             new MutationObserver(() => {
-                VFSP.check('full') // 空间页始终全量check
+                VFSP.check('full').then().catch() // 空间页始终全量check
             }).observe(VFSP.target, { childList: true, subtree: true })
         })
     }
@@ -163,11 +163,11 @@ export const videoFilterSpaceGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     VFSP.videoDurationFilter.enable()
-                    VFSP.check('full')
+                    VFSP.check('full').then().catch()
                 },
                 disableFn: () => {
                     VFSP.videoDurationFilter.disable()
-                    VFSP.check('full')
+                    VFSP.check('full').then().catch()
                 },
             },
             {
@@ -182,7 +182,7 @@ export const videoFilterSpaceGroups: Group[] = [
                 addonText: '秒',
                 fn: (value: number) => {
                     VFSP.videoDurationFilter.setParam(value)
-                    VFSP.check('full')
+                    VFSP.check('full').then().catch()
                 },
             },
         ],
@@ -198,11 +198,11 @@ export const videoFilterSpaceGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     VFSP.videoTitleFilter.enable()
-                    VFSP.check('full')
+                    VFSP.check('full').then().catch()
                 },
                 disableFn: () => {
                     VFSP.videoTitleFilter.disable()
-                    VFSP.check('full')
+                    VFSP.check('full').then().catch()
                 },
             },
             {
@@ -227,11 +227,11 @@ export const videoFilterSpaceGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     VFSP.videoBvidFilter.enable()
-                    VFSP.check('full')
+                    VFSP.check('full').then().catch()
                 },
                 disableFn: () => {
                     VFSP.videoBvidFilter.disable()
-                    VFSP.check('full')
+                    VFSP.check('full').then().catch()
                 },
             },
             {
@@ -256,11 +256,11 @@ export const videoFilterSpaceGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     VFSP.videoTitleWhiteFilter.enable()
-                    VFSP.check('full')
+                    VFSP.check('full').then().catch()
                 },
                 disableFn: () => {
                     VFSP.videoTitleWhiteFilter.disable()
-                    VFSP.check('full')
+                    VFSP.check('full').then().catch()
                 },
             },
             {

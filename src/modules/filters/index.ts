@@ -13,6 +13,7 @@ import {
     isPageVideo,
 } from '../../utils/pageType'
 import { commentFilterDynamicEntry, commentFilterDynamicGroups } from './variety/comment/pages/dynamic'
+import { commentFilterSpaceGroups, commentFilterSpaceEntry } from './variety/comment/pages/space'
 import { commentFilterVideoEntry, commentFilterVideoGroups } from './variety/comment/pages/video'
 import { dynamicFilterDynamicEntry, dynamicFilterDynamicGroups } from './variety/dynamic/pages/dynamic'
 import { videoFilterChannelEntry, videoFilterChannelGroups } from './variety/video/pages/channel'
@@ -72,10 +73,16 @@ export const commentFilters: Filter[] = [
         checkFn: () => isPageVideo() || isPageBangumi() || isPagePlaylist(),
     },
     {
-        name: '动态页/空间页 动态评论过滤',
+        name: '动态页 动态评论过滤',
         groups: commentFilterDynamicGroups,
         entry: commentFilterDynamicEntry,
         checkFn: () => isPageDynamic(),
+    },
+    {
+        name: '空间页 动态评论过滤',
+        groups: commentFilterSpaceGroups,
+        entry: commentFilterSpaceEntry,
+        checkFn: () => isPageSpace(),
     },
 ]
 

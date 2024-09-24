@@ -1,9 +1,9 @@
 import { GM_getValue } from '$'
 import { Group } from '../../../../../types/collection'
-import { SelectorResult, SubFilterPair } from '../../../../../types/filter'
+import { IMainFilter, SelectorResult, SubFilterPair } from '../../../../../types/filter'
 import { log } from '../../../../../utils/logger'
 import { convertTimeToSec, matchBvid, showEle, waitForEle } from '../../../../../utils/tool'
-import { coreCheck, MainFilter } from '../../../core/core'
+import { coreCheck } from '../../../core/core'
 import {
     VideoBvidFilter,
     VideoDurationFilter,
@@ -68,33 +68,33 @@ const selectorFns = {
     },
 }
 
-// VFSE is VideoFilterSearch
-class VFSE extends MainFilter {
+class VideoFilterSearch implements IMainFilter {
+    target: HTMLElement | undefined
+
     // 黑名单
-    static videoBvidFilter = new VideoBvidFilter()
-    static videoDurationFilter = new VideoDurationFilter()
-    static videoTitleFilter = new VideoTitleFilter()
-    static videoUploaderFilter = new VideoUploaderFilter()
-    static videoUploaderKeywordFilter = new VideoUploaderKeywordFilter()
+    videoBvidFilter = new VideoBvidFilter()
+    videoDurationFilter = new VideoDurationFilter()
+    videoTitleFilter = new VideoTitleFilter()
+    videoUploaderFilter = new VideoUploaderFilter()
+    videoUploaderKeywordFilter = new VideoUploaderKeywordFilter()
 
     // 白名单
-    static videoUploaderWhiteFilter = new VideoUploaderWhiteFilter()
-    static videoTitleWhiteFilter = new VideoTitleWhiteFilter()
+    videoUploaderWhiteFilter = new VideoUploaderWhiteFilter()
+    videoTitleWhiteFilter = new VideoTitleWhiteFilter()
 
-    constructor() {
-        super()
+    init() {
         // 黑名单
-        VFSE.videoBvidFilter.setParam(GM_getValue(GM_KEYS.black.bvid.valueKey, []))
-        VFSE.videoDurationFilter.setParam(GM_getValue(GM_KEYS.black.duration.valueKey, 0))
-        VFSE.videoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
-        VFSE.videoUploaderFilter.setParam(GM_getValue(GM_KEYS.black.uploader.valueKey, []))
-        VFSE.videoUploaderKeywordFilter.setParam(GM_getValue(GM_KEYS.black.uploaderKeyword.valueKey, []))
+        this.videoBvidFilter.setParam(GM_getValue(GM_KEYS.black.bvid.valueKey, []))
+        this.videoDurationFilter.setParam(GM_getValue(GM_KEYS.black.duration.valueKey, 0))
+        this.videoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
+        this.videoUploaderFilter.setParam(GM_getValue(GM_KEYS.black.uploader.valueKey, []))
+        this.videoUploaderKeywordFilter.setParam(GM_getValue(GM_KEYS.black.uploaderKeyword.valueKey, []))
         // 白名单
-        VFSE.videoUploaderWhiteFilter.setParam(GM_getValue(GM_KEYS.white.uploader.valueKey, []))
-        VFSE.videoTitleWhiteFilter.setParam(GM_getValue(GM_KEYS.white.title.valueKey, []))
+        this.videoUploaderWhiteFilter.setParam(GM_getValue(GM_KEYS.white.uploader.valueKey, []))
+        this.videoTitleWhiteFilter.setParam(GM_getValue(GM_KEYS.white.title.valueKey, []))
     }
 
-    observe(): void {
+    observe() {
         waitForEle(document, '.search-layout', (node: HTMLElement): boolean => {
             return node.className.includes('search-layout')
         }).then((ele) => {
@@ -102,28 +102,28 @@ class VFSE extends MainFilter {
                 return
             }
 
-            VFSE.target = ele
-            log('VFSE target appear')
-            VFSE.check('full').then().catch()
+            this.target = ele
+            log('VideoFilterSearch target appear')
+            this.check('full').then().catch()
 
             new MutationObserver(() => {
-                VFSE.check('full').then().catch() // 搜索页始终全量check
-            }).observe(VFSE.target, { childList: true, subtree: true })
+                this.check('full').then().catch() // 搜索页始终全量check
+            }).observe(this.target, { childList: true, subtree: true })
         })
     }
 
-    static async check(mode?: 'full' | 'incr') {
-        if (!VFSE.target) {
+    async check(mode?: 'full' | 'incr') {
+        if (!this.target) {
             return
         }
         let revertAll = false
         if (
             !(
-                VFSE.videoBvidFilter.isEnable ||
-                VFSE.videoDurationFilter.isEnable ||
-                VFSE.videoTitleFilter.isEnable ||
-                VFSE.videoUploaderFilter.isEnable ||
-                VFSE.videoUploaderKeywordFilter.isEnable
+                this.videoBvidFilter.isEnable ||
+                this.videoDurationFilter.isEnable ||
+                this.videoTitleFilter.isEnable ||
+                this.videoUploaderFilter.isEnable ||
+                this.videoUploaderKeywordFilter.isEnable
             )
         ) {
             revertAll = true
@@ -133,7 +133,7 @@ class VFSE extends MainFilter {
         // 提取元素
         const selector = `.video.search-all-list .video-list > div, .search-page-video .video-list > div, .video-list-item`
 
-        const videos = Array.from(VFSE.target.querySelectorAll<HTMLElement>(selector))
+        const videos = Array.from(this.target.querySelectorAll<HTMLElement>(selector))
         if (!videos.length) {
             return
         }
@@ -142,41 +142,45 @@ class VFSE extends MainFilter {
             return
         }
 
-        videos.forEach((v) => {
-            log(
-                [
-                    `search video`,
-                    `bvid: ${selectorFns.bvid(v)}`,
-                    `duration: ${selectorFns.duration(v)}`,
-                    `title: ${selectorFns.title(v)}`,
-                    `uploader: ${selectorFns.uploader(v)}`,
-                ].join('\n'),
-            )
-        })
+        // videos.forEach((v) => {
+        //     log(
+        //         [
+        //             `search video`,
+        //             `bvid: ${selectorFns.bvid(v)}`,
+        //             `duration: ${selectorFns.duration(v)}`,
+        //             `title: ${selectorFns.title(v)}`,
+        //             `uploader: ${selectorFns.uploader(v)}`,
+        //         ].join('\n'),
+        //     )
+        // })
 
         // 构建黑白检测任务
         const blackPairs: SubFilterPair[] = []
-        VFSE.videoBvidFilter.isEnable && blackPairs.push([VFSE.videoBvidFilter, selectorFns.bvid])
-        VFSE.videoDurationFilter.isEnable && blackPairs.push([VFSE.videoDurationFilter, selectorFns.duration])
-        VFSE.videoTitleFilter.isEnable && blackPairs.push([VFSE.videoTitleFilter, selectorFns.title])
-        VFSE.videoUploaderFilter.isEnable && blackPairs.push([VFSE.videoUploaderFilter, selectorFns.uploader])
-        VFSE.videoUploaderKeywordFilter.isEnable &&
-            blackPairs.push([VFSE.videoUploaderKeywordFilter, selectorFns.uploader])
+        this.videoBvidFilter.isEnable && blackPairs.push([this.videoBvidFilter, selectorFns.bvid])
+        this.videoDurationFilter.isEnable && blackPairs.push([this.videoDurationFilter, selectorFns.duration])
+        this.videoTitleFilter.isEnable && blackPairs.push([this.videoTitleFilter, selectorFns.title])
+        this.videoUploaderFilter.isEnable && blackPairs.push([this.videoUploaderFilter, selectorFns.uploader])
+        this.videoUploaderKeywordFilter.isEnable &&
+            blackPairs.push([this.videoUploaderKeywordFilter, selectorFns.uploader])
 
         const whitePairs: SubFilterPair[] = []
-        VFSE.videoUploaderWhiteFilter.isEnable && whitePairs.push([VFSE.videoUploaderWhiteFilter, selectorFns.uploader])
-        VFSE.videoTitleWhiteFilter.isEnable && whitePairs.push([VFSE.videoTitleWhiteFilter, selectorFns.title])
+        this.videoUploaderWhiteFilter.isEnable && whitePairs.push([this.videoUploaderWhiteFilter, selectorFns.uploader])
+        this.videoTitleWhiteFilter.isEnable && whitePairs.push([this.videoTitleWhiteFilter, selectorFns.title])
 
         // 检测
         const blackCnt = await coreCheck(videos, false, blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
-        log(`VFSE hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
+        log(`VideoFilterSearch hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
     }
 }
 
+//==================================================================================================
+
+const mainFilter = new VideoFilterSearch()
+
 export const videoFilterSearchEntry = async () => {
-    const vfe = new VFSE()
-    vfe.observe()
+    mainFilter.init()
+    mainFilter.observe()
 }
 
 export const videoFilterSearchGroups: Group[] = [
@@ -190,12 +194,12 @@ export const videoFilterSearchGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    VFSE.videoDurationFilter.enable()
-                    VFSE.check('full').then().catch()
+                    mainFilter.videoDurationFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    VFSE.videoDurationFilter.disable()
-                    VFSE.check('full').then().catch()
+                    mainFilter.videoDurationFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -209,8 +213,8 @@ export const videoFilterSearchGroups: Group[] = [
                 disableValue: 0,
                 addonText: '秒',
                 fn: (value: number) => {
-                    VFSE.videoDurationFilter.setParam(value)
-                    VFSE.check('full').then().catch()
+                    mainFilter.videoDurationFilter.setParam(value)
+                    mainFilter.check('full').then().catch()
                 },
             },
         ],
@@ -225,12 +229,12 @@ export const videoFilterSearchGroups: Group[] = [
                 defaultEnable: true,
                 noStyle: true,
                 enableFn: () => {
-                    VFSE.videoUploaderFilter.enable()
-                    VFSE.check('full').then().catch()
+                    mainFilter.videoUploaderFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    VFSE.videoUploaderFilter.disable()
-                    VFSE.check('full').then().catch()
+                    mainFilter.videoUploaderFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -249,12 +253,12 @@ export const videoFilterSearchGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    VFSE.videoUploaderKeywordFilter.enable()
-                    VFSE.check('full').then().catch()
+                    mainFilter.videoUploaderKeywordFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    VFSE.videoUploaderKeywordFilter.disable()
-                    VFSE.check('full').then().catch()
+                    mainFilter.videoUploaderKeywordFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -278,12 +282,12 @@ export const videoFilterSearchGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    VFSE.videoTitleFilter.enable()
-                    VFSE.check('full').then().catch()
+                    mainFilter.videoTitleFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    VFSE.videoTitleFilter.disable()
-                    VFSE.check('full').then().catch()
+                    mainFilter.videoTitleFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -307,12 +311,12 @@ export const videoFilterSearchGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    VFSE.videoBvidFilter.enable()
-                    VFSE.check('full').then().catch()
+                    mainFilter.videoBvidFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    VFSE.videoBvidFilter.disable()
-                    VFSE.check('full').then().catch()
+                    mainFilter.videoBvidFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -336,12 +340,12 @@ export const videoFilterSearchGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    VFSE.videoUploaderWhiteFilter.enable()
-                    VFSE.check('full').then().catch()
+                    mainFilter.videoUploaderWhiteFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    VFSE.videoUploaderWhiteFilter.disable()
-                    VFSE.check('full').then().catch()
+                    mainFilter.videoUploaderWhiteFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -360,12 +364,12 @@ export const videoFilterSearchGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    VFSE.videoTitleWhiteFilter.enable()
-                    VFSE.check('full').then().catch()
+                    mainFilter.videoTitleWhiteFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    VFSE.videoTitleWhiteFilter.disable()
-                    VFSE.check('full').then().catch()
+                    mainFilter.videoTitleWhiteFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {

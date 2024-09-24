@@ -4,27 +4,6 @@ import { error } from '../../../utils/logger'
 import { hideEle, showEle } from '../../../utils/tool'
 
 /**
- * 主过滤器
- */
-export abstract class MainFilter {
-    /**
-     * 被观测元素，target内出现变化时触发check
-     */
-    static target: HTMLElement | ShadowRoot | undefined
-
-    /**
-     * 等待target出现，并开始监听，内容变化时触发检测
-     */
-    abstract observe(): void
-
-    /**
-     * 提取target内元素列表，用子过滤器检测元素
-     * @param mode full: 全量检测 incr: 增量检测
-     */
-    static async check(mode?: 'full' | 'incr') {}
-}
-
-/**
  * 检测元素列表中每个元素是否合法, 隐藏不合法的元素
  * 对选取出的元素内容进行并发检测
  * @param elements 元素列表

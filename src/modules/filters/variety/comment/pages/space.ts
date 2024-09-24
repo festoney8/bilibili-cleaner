@@ -1,10 +1,10 @@
 import { GM_getValue } from '$'
 import settings from '../../../../../settings'
 import { Group } from '../../../../../types/collection'
-import { SelectorResult, SubFilterPair } from '../../../../../types/filter'
+import { IMainFilter, SelectorResult, SubFilterPair } from '../../../../../types/filter'
 import { log } from '../../../../../utils/logger'
 import { showEle, waitForEle } from '../../../../../utils/tool'
-import { coreCheck, MainFilter } from '../../../core/core'
+import { coreCheck } from '../../../core/core'
 import {
     CommentBotFilter,
     CommentCallBotFilter,
@@ -137,23 +137,23 @@ const selectorFns = {
 let isRootWhite = false
 let isSubWhite = false
 
-// CFSP is CommentFilterSpace
-class CFSP extends MainFilter {
-    // 黑名单
-    static commentUsernameFilter = new CommentUsernameFilter()
-    static commentContentFilter = new CommentContentFilter()
-    static commentLevelFilter = new CommentLevelFilter()
-    static commentBotFilter = new CommentBotFilter()
-    static commentCallBotFilter = new CommentCallBotFilter()
-    static commentCallUserFilter = new CommentCallUserFilter()
-    // 白名单
-    static commentIsUpFilter = new CommentIsUpFilter()
-    static commentIsPinFilter = new CommentIsPinFilter()
-    static commentIsNoteFilter = new CommentIsNoteFilter()
-    static commentIsLinkFilter = new CommentIsLinkFilter()
+class CommentFilterSpace implements IMainFilter {
+    target: HTMLElement | undefined
 
-    constructor() {
-        super()
+    // 黑名单
+    commentUsernameFilter = new CommentUsernameFilter()
+    commentContentFilter = new CommentContentFilter()
+    commentLevelFilter = new CommentLevelFilter()
+    commentBotFilter = new CommentBotFilter()
+    commentCallBotFilter = new CommentCallBotFilter()
+    commentCallUserFilter = new CommentCallUserFilter()
+    // 白名单
+    commentIsUpFilter = new CommentIsUpFilter()
+    commentIsPinFilter = new CommentIsPinFilter()
+    commentIsNoteFilter = new CommentIsNoteFilter()
+    commentIsLinkFilter = new CommentIsLinkFilter()
+
+    init() {
         // 黑名单
         const bots = [
             // 8455326 @机器工具人
@@ -196,19 +196,19 @@ class CFSP extends MainFilter {
             'AI总结视频',
             'AI工具集',
         ]
-        CFSP.commentUsernameFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.username.valueKey}`, []))
-        CFSP.commentContentFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.content.valueKey}`, []))
-        CFSP.commentLevelFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.level.valueKey}`, 0))
-        CFSP.commentBotFilter.setParam(bots)
-        CFSP.commentCallBotFilter.setParam(bots)
-        CFSP.commentCallUserFilter.setParam([`/./`])
+        this.commentUsernameFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.username.valueKey}`, []))
+        this.commentContentFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.content.valueKey}`, []))
+        this.commentLevelFilter.setParam(GM_getValue(`BILICLEANER_${GM_KEYS.black.level.valueKey}`, 0))
+        this.commentBotFilter.setParam(bots)
+        this.commentCallBotFilter.setParam(bots)
+        this.commentCallUserFilter.setParam([`/./`])
     }
 
-    static async check(mode?: 'full' | 'incr') {
+    async check(mode?: 'full' | 'incr') {
         if (location.host === 'space.bilibili.com' && !location.pathname.includes('/dynamic')) {
             return
         }
-        if (!CFSP.target) {
+        if (!this.target) {
             return
         }
 
@@ -216,12 +216,12 @@ class CFSP extends MainFilter {
         const timer = performance.now()
         if (
             !(
-                CFSP.commentUsernameFilter.isEnable ||
-                CFSP.commentContentFilter.isEnable ||
-                CFSP.commentLevelFilter.isEnable ||
-                CFSP.commentBotFilter.isEnable ||
-                CFSP.commentCallBotFilter.isEnable ||
-                CFSP.commentCallUserFilter.isEnable
+                this.commentUsernameFilter.isEnable ||
+                this.commentContentFilter.isEnable ||
+                this.commentLevelFilter.isEnable ||
+                this.commentBotFilter.isEnable ||
+                this.commentCallBotFilter.isEnable ||
+                this.commentCallUserFilter.isEnable
             )
         ) {
             revertAll = true
@@ -230,8 +230,8 @@ class CFSP extends MainFilter {
         // 提取元素：一级评论、二级评论
         const rootSelector = `.reply-item` + (mode === 'incr' ? `:not([${settings.filterSign}])` : '')
         const subSelector = `.sub-reply-item` + (mode === 'incr' ? `:not([${settings.filterSign}])` : '')
-        const rootComments = Array.from(CFSP.target.querySelectorAll<HTMLElement>(rootSelector))
-        const subComments = Array.from(CFSP.target.querySelectorAll<HTMLElement>(subSelector))
+        const rootComments = Array.from(this.target.querySelectorAll<HTMLElement>(rootSelector))
+        const subComments = Array.from(this.target.querySelectorAll<HTMLElement>(subSelector))
 
         // rootComments.forEach((v) => {
         //     log(
@@ -280,68 +280,71 @@ class CFSP extends MainFilter {
         let subBlackCnt = 0
         if (!isRootWhite && rootComments.length) {
             const blackPairs: SubFilterPair[] = []
-            CFSP.commentUsernameFilter.isEnable &&
-                blackPairs.push([CFSP.commentUsernameFilter, selectorFns.root.username])
-            CFSP.commentContentFilter.isEnable && blackPairs.push([CFSP.commentContentFilter, selectorFns.root.content])
-            CFSP.commentLevelFilter.isEnable && blackPairs.push([CFSP.commentLevelFilter, selectorFns.root.level])
-            CFSP.commentBotFilter.isEnable && blackPairs.push([CFSP.commentBotFilter, selectorFns.root.username])
-            CFSP.commentCallBotFilter.isEnable &&
-                blackPairs.push([CFSP.commentCallBotFilter, selectorFns.root.callUser])
-            CFSP.commentCallUserFilter.isEnable &&
-                blackPairs.push([CFSP.commentCallUserFilter, selectorFns.root.callUser])
+            this.commentUsernameFilter.isEnable &&
+                blackPairs.push([this.commentUsernameFilter, selectorFns.root.username])
+            this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns.root.content])
+            this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns.root.level])
+            this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns.root.username])
+            this.commentCallBotFilter.isEnable &&
+                blackPairs.push([this.commentCallBotFilter, selectorFns.root.callUser])
+            this.commentCallUserFilter.isEnable &&
+                blackPairs.push([this.commentCallUserFilter, selectorFns.root.callUser])
 
             const whitePairs: SubFilterPair[] = []
-            CFSP.commentIsUpFilter.isEnable && whitePairs.push([CFSP.commentIsUpFilter, selectorFns.root.isUp])
-            CFSP.commentIsPinFilter.isEnable && whitePairs.push([CFSP.commentIsPinFilter, selectorFns.root.isPin])
-            CFSP.commentIsNoteFilter.isEnable && whitePairs.push([CFSP.commentIsNoteFilter, selectorFns.root.isNote])
-            CFSP.commentIsLinkFilter.isEnable && whitePairs.push([CFSP.commentIsLinkFilter, selectorFns.root.isLink])
+            this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns.root.isUp])
+            this.commentIsPinFilter.isEnable && whitePairs.push([this.commentIsPinFilter, selectorFns.root.isPin])
+            this.commentIsNoteFilter.isEnable && whitePairs.push([this.commentIsNoteFilter, selectorFns.root.isNote])
+            this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns.root.isLink])
 
             rootBlackCnt = await coreCheck(rootComments, true, blackPairs, whitePairs)
         }
         if (!isSubWhite && subComments.length) {
             const blackPairs: SubFilterPair[] = []
-            CFSP.commentUsernameFilter.isEnable &&
-                blackPairs.push([CFSP.commentUsernameFilter, selectorFns.sub.username])
-            CFSP.commentContentFilter.isEnable && blackPairs.push([CFSP.commentContentFilter, selectorFns.sub.content])
-            CFSP.commentLevelFilter.isEnable && blackPairs.push([CFSP.commentLevelFilter, selectorFns.sub.level])
-            CFSP.commentBotFilter.isEnable && blackPairs.push([CFSP.commentBotFilter, selectorFns.sub.username])
-            CFSP.commentCallBotFilter.isEnable && blackPairs.push([CFSP.commentCallBotFilter, selectorFns.sub.callUser])
-            CFSP.commentCallUserFilter.isEnable &&
-                blackPairs.push([CFSP.commentCallUserFilter, selectorFns.sub.callUser])
+            this.commentUsernameFilter.isEnable &&
+                blackPairs.push([this.commentUsernameFilter, selectorFns.sub.username])
+            this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns.sub.content])
+            this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns.sub.level])
+            this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns.sub.username])
+            this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.sub.callUser])
+            this.commentCallUserFilter.isEnable &&
+                blackPairs.push([this.commentCallUserFilter, selectorFns.sub.callUser])
 
             const whitePairs: SubFilterPair[] = []
-            CFSP.commentIsUpFilter.isEnable && whitePairs.push([CFSP.commentIsUpFilter, selectorFns.sub.isUp])
-            CFSP.commentIsLinkFilter.isEnable && whitePairs.push([CFSP.commentIsLinkFilter, selectorFns.sub.isLink])
+            this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns.sub.isUp])
+            this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns.sub.isLink])
 
             subBlackCnt = await coreCheck(subComments, true, blackPairs, whitePairs)
         }
 
         const time = (performance.now() - timer).toFixed(1)
         log(
-            `CFSP hide ${rootBlackCnt} in ${rootComments.length} root, ${subBlackCnt} in ${subComments.length} sub, mode=${mode}, time=${time}`,
+            `CommentFilterSpace hide ${rootBlackCnt} in ${rootComments.length} root, ${subBlackCnt} in ${subComments.length} sub, mode=${mode}, time=${time}`,
         )
     }
 
-    observe(): void {
+    observe() {
         waitForEle(document, '#app', (node: HTMLElement): boolean => {
             return node.id === 'app'
         }).then((ele) => {
             if (ele) {
-                CFSP.target = ele
-                log('CFSP target appear')
-                CFSP.check('full')
+                this.target = ele
+                log('CommentFilterSpace target appear')
+                this.check('full')
                 const commentObserver = new MutationObserver(() => {
-                    CFSP.check('incr')
+                    this.check('incr')
                 })
-                commentObserver.observe(CFSP.target, { childList: true, subtree: true })
+                commentObserver.observe(this.target, { childList: true, subtree: true })
             }
         })
     }
 }
+//==================================================================================================
+
+const mainFilter = new CommentFilterSpace()
 
 export const commentFilterSpaceEntry = async () => {
-    const cfsp = new CFSP()
-    cfsp.observe()
+    mainFilter.init()
+    mainFilter.observe()
 }
 
 export const commentFilterSpaceGroups: Group[] = [
@@ -355,12 +358,12 @@ export const commentFilterSpaceGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFSP.commentUsernameFilter.enable()
-                    CFSP.check('full').then().catch()
+                    mainFilter.commentUsernameFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFSP.commentUsernameFilter.disable()
-                    CFSP.check('full').then().catch()
+                    mainFilter.commentUsernameFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -384,12 +387,12 @@ export const commentFilterSpaceGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFSP.commentContentFilter.enable()
-                    CFSP.check('full').then().catch()
+                    mainFilter.commentContentFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFSP.commentContentFilter.disable()
-                    CFSP.check('full').then().catch()
+                    mainFilter.commentContentFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -413,12 +416,12 @@ export const commentFilterSpaceGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFSP.commentCallBotFilter.enable()
-                    CFSP.check('full').then().catch()
+                    mainFilter.commentCallBotFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFSP.commentCallBotFilter.disable()
-                    CFSP.check('full').then().catch()
+                    mainFilter.commentCallBotFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -428,12 +431,12 @@ export const commentFilterSpaceGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFSP.commentBotFilter.enable()
-                    CFSP.check('full').then().catch()
+                    mainFilter.commentBotFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFSP.commentBotFilter.disable()
-                    CFSP.check('full').then().catch()
+                    mainFilter.commentBotFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -443,12 +446,12 @@ export const commentFilterSpaceGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFSP.commentCallUserFilter.enable()
-                    CFSP.check('full').then().catch()
+                    mainFilter.commentCallUserFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFSP.commentCallUserFilter.disable()
-                    CFSP.check('full').then().catch()
+                    mainFilter.commentCallUserFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
         ],
@@ -463,12 +466,12 @@ export const commentFilterSpaceGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFSP.commentLevelFilter.enable()
-                    CFSP.check('full').then().catch()
+                    mainFilter.commentLevelFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFSP.commentLevelFilter.disable()
-                    CFSP.check('full').then().catch()
+                    mainFilter.commentLevelFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -480,8 +483,8 @@ export const commentFilterSpaceGroups: Group[] = [
                 defaultValue: 0,
                 disableValue: 0,
                 fn: (value: number) => {
-                    CFSP.commentLevelFilter.setParam(value)
-                    CFSP.check('full').then().catch()
+                    mainFilter.commentLevelFilter.setParam(value)
+                    mainFilter.check('full').then().catch()
                 },
             },
         ],
@@ -497,11 +500,11 @@ export const commentFilterSpaceGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     isRootWhite = true
-                    CFSP.check('full').then().catch()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
                     isRootWhite = false
-                    CFSP.check('full').then().catch()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -512,11 +515,11 @@ export const commentFilterSpaceGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     isSubWhite = true
-                    CFSP.check('full').then().catch()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
                     isSubWhite = false
-                    CFSP.check('full').then().catch()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -526,12 +529,12 @@ export const commentFilterSpaceGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFSP.commentIsUpFilter.enable()
-                    CFSP.check('full').then().catch()
+                    mainFilter.commentIsUpFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFSP.commentIsUpFilter.disable()
-                    CFSP.check('full').then().catch()
+                    mainFilter.commentIsUpFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -541,12 +544,12 @@ export const commentFilterSpaceGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFSP.commentIsPinFilter.enable()
-                    CFSP.check('full').then().catch()
+                    mainFilter.commentIsPinFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFSP.commentIsPinFilter.disable()
-                    CFSP.check('full').then().catch()
+                    mainFilter.commentIsPinFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -556,12 +559,12 @@ export const commentFilterSpaceGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFSP.commentIsNoteFilter.enable()
-                    CFSP.check('full').then().catch()
+                    mainFilter.commentIsNoteFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFSP.commentIsNoteFilter.disable()
-                    CFSP.check('full').then().catch()
+                    mainFilter.commentIsNoteFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -571,12 +574,12 @@ export const commentFilterSpaceGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFSP.commentIsLinkFilter.enable()
-                    CFSP.check('full').then().catch()
+                    mainFilter.commentIsLinkFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFSP.commentIsLinkFilter.disable()
-                    CFSP.check('full').then().catch()
+                    mainFilter.commentIsLinkFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
         ],

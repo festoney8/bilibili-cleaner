@@ -1,10 +1,10 @@
 import { GM_getValue } from '$'
 import settings from '../../../../../settings'
 import { Group } from '../../../../../types/collection'
-import { SelectorResult, SubFilterPair } from '../../../../../types/filter'
+import { IMainFilter, SelectorResult, SubFilterPair } from '../../../../../types/filter'
 import { log } from '../../../../../utils/logger'
 import { convertTimeToSec, showEle, waitForEle } from '../../../../../utils/tool'
-import { MainFilter, coreCheck } from '../../../core/core'
+import { coreCheck } from '../../../core/core'
 import { DynDurationFilter, DynUploaderFilter, DynVideoTitleFilter } from '../subFilters/black'
 
 const GM_KEYS = {
@@ -42,22 +42,22 @@ const selectorFns = {
     },
 }
 
-// DFD is DynamicFilterDynamic
-class DFD extends MainFilter {
-    // 黑名单
-    static dynUploaderFilter = new DynUploaderFilter()
-    static dynDurationFilter = new DynDurationFilter()
-    static dynVideoTitleFilter = new DynVideoTitleFilter()
+class DynamicFilterDynamic implements IMainFilter {
+    target: HTMLElement | undefined
 
-    constructor() {
-        super()
+    // 黑名单
+    dynUploaderFilter = new DynUploaderFilter()
+    dynDurationFilter = new DynDurationFilter()
+    dynVideoTitleFilter = new DynVideoTitleFilter()
+
+    init() {
         // 黑名单
-        DFD.dynUploaderFilter.setParam(GM_getValue(GM_KEYS.black.uploader.valueKey, []))
-        DFD.dynDurationFilter.setParam(GM_getValue(GM_KEYS.black.duration.valueKey, 0))
-        DFD.dynVideoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
+        this.dynUploaderFilter.setParam(GM_getValue(GM_KEYS.black.uploader.valueKey, []))
+        this.dynDurationFilter.setParam(GM_getValue(GM_KEYS.black.duration.valueKey, 0))
+        this.dynVideoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
     }
 
-    observe(): void {
+    observe() {
         waitForEle(
             document,
             '.bili-dyn-home--member',
@@ -67,35 +67,37 @@ class DFD extends MainFilter {
                 return
             }
 
-            DFD.target = ele
-            log('DFD target appear')
-            DFD.check('full').then().catch()
+            this.target = ele
+            log('DynamicFilterDynamic target appear')
+            this.check('full').then().catch()
 
             new MutationObserver(() => {
-                DFD.check('incr')
-            }).observe(DFD.target, { childList: true, subtree: true })
+                this.check('incr')
+            }).observe(this.target, { childList: true, subtree: true })
         })
     }
 
-    static async check(mode?: 'full' | 'incr') {
-        if (!DFD.target) {
+    async check(mode?: 'full' | 'incr') {
+        if (!this.target) {
             return
         }
         let revertAll = false
-        if (!(DFD.dynUploaderFilter.isEnable || DFD.dynDurationFilter.isEnable || DFD.dynVideoTitleFilter.isEnable)) {
+        if (
+            !(this.dynUploaderFilter.isEnable || this.dynDurationFilter.isEnable || this.dynVideoTitleFilter.isEnable)
+        ) {
             revertAll = true
         }
         const timer = performance.now()
 
         // 是否选中全部动态
-        isAllDyn = !!DFD.target.querySelector('.bili-dyn-list-tabs')
+        isAllDyn = !!this.target.querySelector('.bili-dyn-list-tabs')
 
         // 提取元素
         let selector = `.bili-dyn-list__item`
         if (mode === 'incr') {
             selector += `:not([${settings.filterSign}])`
         }
-        const dyns = Array.from(DFD.target.querySelectorAll<HTMLElement>(selector))
+        const dyns = Array.from(this.target.querySelectorAll<HTMLElement>(selector))
         if (!dyns.length) {
             return
         }
@@ -104,33 +106,37 @@ class DFD extends MainFilter {
             return
         }
 
-        // dyns.forEach((dyn) => {
+        // dyns.forEach((v) => {
         //     log(
         //         [
         //             `dynamic`,
-        //             `uploader: ${selectorFns.uploader(dyn)}`,
-        //             `title: ${selectorFns.title(dyn)}`,
-        //             `duration: ${selectorFns.duration(dyn)}`,
+        //             `uploader: ${selectorFns.uploader(v)}`,
+        //             `title: ${selectorFns.title(v)}`,
+        //             `duration: ${selectorFns.duration(v)}`,
         //         ].join('\n'),
         //     )
         // })
 
         // 构建黑白检测任务
         const blackPairs: SubFilterPair[] = []
-        DFD.dynUploaderFilter.isEnable && blackPairs.push([DFD.dynUploaderFilter, selectorFns.uploader])
-        DFD.dynDurationFilter.isEnable && blackPairs.push([DFD.dynDurationFilter, selectorFns.duration])
-        DFD.dynVideoTitleFilter.isEnable && blackPairs.push([DFD.dynVideoTitleFilter, selectorFns.title])
+        this.dynUploaderFilter.isEnable && blackPairs.push([this.dynUploaderFilter, selectorFns.uploader])
+        this.dynDurationFilter.isEnable && blackPairs.push([this.dynDurationFilter, selectorFns.duration])
+        this.dynVideoTitleFilter.isEnable && blackPairs.push([this.dynVideoTitleFilter, selectorFns.title])
 
         // 检测
         const blackCnt = await coreCheck(dyns, true, blackPairs, [])
         const time = (performance.now() - timer).toFixed(1)
-        log(`DFD hide ${blackCnt} in ${dyns.length} dyns, mode=${mode}, time=${time}`)
+        log(`DynamicFilterDynamic hide ${blackCnt} in ${dyns.length} dyns, mode=${mode}, time=${time}`)
     }
 }
 
+//==================================================================================================
+
+const mainFilter = new DynamicFilterDynamic()
+
 export const dynamicFilterDynamicEntry = async () => {
-    const dfd = new DFD()
-    dfd.observe()
+    mainFilter.init()
+    mainFilter.observe()
 }
 
 export const dynamicFilterDynamicGroups: Group[] = [
@@ -145,12 +151,12 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 noStyle: true,
                 description: ['仅隐藏动态，与UP主过滤相互隔离'],
                 enableFn: () => {
-                    DFD.dynUploaderFilter.enable()
-                    DFD.check('full').then().catch()
+                    mainFilter.dynUploaderFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    DFD.dynUploaderFilter.disable()
-                    DFD.check('full').then().catch()
+                    mainFilter.dynUploaderFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -174,12 +180,12 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    DFD.dynDurationFilter.enable()
-                    DFD.check('full').then().catch()
+                    mainFilter.dynDurationFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    DFD.dynDurationFilter.disable()
-                    DFD.check('full').then().catch()
+                    mainFilter.dynDurationFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -192,8 +198,8 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 disableValue: 0,
                 addonText: '秒',
                 fn: (value: number) => {
-                    DFD.dynDurationFilter.setParam(value)
-                    DFD.check('full').then().catch()
+                    mainFilter.dynDurationFilter.setParam(value)
+                    mainFilter.check('full').then().catch()
                 },
             },
         ],
@@ -208,12 +214,12 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    DFD.dynVideoTitleFilter.enable()
-                    DFD.check('full').then().catch()
+                    mainFilter.dynVideoTitleFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    DFD.dynVideoTitleFilter.disable()
-                    DFD.check('full').then().catch()
+                    mainFilter.dynVideoTitleFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {

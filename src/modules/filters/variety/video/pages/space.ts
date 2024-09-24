@@ -1,9 +1,9 @@
 import { GM_getValue } from '$'
 import { Group } from '../../../../../types/collection'
-import { SelectorResult, SubFilterPair } from '../../../../../types/filter'
+import { IMainFilter, SelectorResult, SubFilterPair } from '../../../../../types/filter'
 import { log } from '../../../../../utils/logger'
 import { convertTimeToSec, matchBvid, showEle, waitForEle } from '../../../../../utils/tool'
-import { MainFilter, coreCheck } from '../../../core/core'
+import { coreCheck } from '../../../core/core'
 import { VideoBvidFilter, VideoDurationFilter, VideoTitleFilter } from '../subFilters/black'
 import { VideoTitleWhiteFilter } from '../subFilters/white'
 
@@ -45,27 +45,27 @@ const selectorFns = {
     },
 }
 
-// VFSP is VideoFilterSpace
-class VFSP extends MainFilter {
+class VideoFilterSpace implements IMainFilter {
+    target: HTMLElement | undefined
+
     // 黑名单
-    static videoBvidFilter = new VideoBvidFilter()
-    static videoDurationFilter = new VideoDurationFilter()
-    static videoTitleFilter = new VideoTitleFilter()
+    videoBvidFilter = new VideoBvidFilter()
+    videoDurationFilter = new VideoDurationFilter()
+    videoTitleFilter = new VideoTitleFilter()
 
     // 白名单
-    static videoTitleWhiteFilter = new VideoTitleWhiteFilter()
+    videoTitleWhiteFilter = new VideoTitleWhiteFilter()
 
-    constructor() {
-        super()
+    init() {
         // 黑名单
-        VFSP.videoBvidFilter.setParam(GM_getValue(GM_KEYS.black.bvid.valueKey, []))
-        VFSP.videoDurationFilter.setParam(GM_getValue(GM_KEYS.black.duration.valueKey, 0))
-        VFSP.videoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
+        this.videoBvidFilter.setParam(GM_getValue(GM_KEYS.black.bvid.valueKey, []))
+        this.videoDurationFilter.setParam(GM_getValue(GM_KEYS.black.duration.valueKey, 0))
+        this.videoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
         // 白名单
-        VFSP.videoTitleWhiteFilter.setParam(GM_getValue(GM_KEYS.white.title.valueKey, []))
+        this.videoTitleWhiteFilter.setParam(GM_getValue(GM_KEYS.white.title.valueKey, []))
     }
 
-    observe(): void {
+    observe() {
         waitForEle(document, '#app', (node: HTMLElement): boolean => {
             return node.id === 'app'
         }).then((ele) => {
@@ -73,22 +73,22 @@ class VFSP extends MainFilter {
                 return
             }
 
-            VFSP.target = ele
-            log('VFSP target appear')
-            VFSP.check('full').then().catch()
+            this.target = ele
+            log('VideoFilterSpace target appear')
+            this.check('full').then().catch()
 
             new MutationObserver(() => {
-                VFSP.check('full').then().catch() // 空间页始终全量check
-            }).observe(VFSP.target, { childList: true, subtree: true })
+                this.check('full').then().catch() // 空间页始终全量check
+            }).observe(this.target, { childList: true, subtree: true })
         })
     }
 
-    static async check(mode?: 'full' | 'incr') {
-        if (!VFSP.target) {
+    async check(mode?: 'full' | 'incr') {
+        if (!this.target) {
             return
         }
         let revertAll = false
-        if (!(VFSP.videoBvidFilter.isEnable || VFSP.videoDurationFilter.isEnable || VFSP.videoTitleFilter.isEnable)) {
+        if (!(this.videoBvidFilter.isEnable || this.videoDurationFilter.isEnable || this.videoTitleFilter.isEnable)) {
             revertAll = true
         }
         const timer = performance.now()
@@ -110,7 +110,7 @@ class VFSP extends MainFilter {
         if (!selector) {
             return
         }
-        const videos = Array.from(VFSP.target.querySelectorAll<HTMLElement>(selector))
+        const videos = Array.from(this.target.querySelectorAll<HTMLElement>(selector))
         if (!videos.length) {
             return
         }
@@ -119,36 +119,40 @@ class VFSP extends MainFilter {
             return
         }
 
-        videos.forEach((v) => {
-            log(
-                [
-                    `space video`,
-                    `bvid: ${selectorFns.bvid(v)}`,
-                    `duration: ${selectorFns.duration(v)}`,
-                    `title: ${selectorFns.title(v)}`,
-                ].join('\n'),
-            )
-        })
+        // videos.forEach((v) => {
+        //     log(
+        //         [
+        //             `space video`,
+        //             `bvid: ${selectorFns.bvid(v)}`,
+        //             `duration: ${selectorFns.duration(v)}`,
+        //             `title: ${selectorFns.title(v)}`,
+        //         ].join('\n'),
+        //     )
+        // })
 
         // 构建黑白检测任务
         const blackPairs: SubFilterPair[] = []
-        VFSP.videoBvidFilter.isEnable && blackPairs.push([VFSP.videoBvidFilter, selectorFns.bvid])
-        VFSP.videoDurationFilter.isEnable && blackPairs.push([VFSP.videoDurationFilter, selectorFns.duration])
-        VFSP.videoTitleFilter.isEnable && blackPairs.push([VFSP.videoTitleFilter, selectorFns.title])
+        this.videoBvidFilter.isEnable && blackPairs.push([this.videoBvidFilter, selectorFns.bvid])
+        this.videoDurationFilter.isEnable && blackPairs.push([this.videoDurationFilter, selectorFns.duration])
+        this.videoTitleFilter.isEnable && blackPairs.push([this.videoTitleFilter, selectorFns.title])
 
         const whitePairs: SubFilterPair[] = []
-        VFSP.videoTitleWhiteFilter.isEnable && whitePairs.push([VFSP.videoTitleWhiteFilter, selectorFns.title])
+        this.videoTitleWhiteFilter.isEnable && whitePairs.push([this.videoTitleWhiteFilter, selectorFns.title])
 
         // 检测
         const blackCnt = await coreCheck(videos, false, blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
-        log(`VFSP hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
+        log(`VideoFilterSpace hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
     }
 }
 
+//==================================================================================================
+
+const mainFilter = new VideoFilterSpace()
+
 export const videoFilterSpaceEntry = async () => {
-    const vfsp = new VFSP()
-    vfsp.observe()
+    mainFilter.init()
+    mainFilter.observe()
 }
 
 export const videoFilterSpaceGroups: Group[] = [
@@ -162,12 +166,12 @@ export const videoFilterSpaceGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    VFSP.videoDurationFilter.enable()
-                    VFSP.check('full').then().catch()
+                    mainFilter.videoDurationFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    VFSP.videoDurationFilter.disable()
-                    VFSP.check('full').then().catch()
+                    mainFilter.videoDurationFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -181,8 +185,8 @@ export const videoFilterSpaceGroups: Group[] = [
                 disableValue: 0,
                 addonText: '秒',
                 fn: (value: number) => {
-                    VFSP.videoDurationFilter.setParam(value)
-                    VFSP.check('full').then().catch()
+                    mainFilter.videoDurationFilter.setParam(value)
+                    mainFilter.check('full').then().catch()
                 },
             },
         ],
@@ -197,12 +201,12 @@ export const videoFilterSpaceGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    VFSP.videoTitleFilter.enable()
-                    VFSP.check('full').then().catch()
+                    mainFilter.videoTitleFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    VFSP.videoTitleFilter.disable()
-                    VFSP.check('full').then().catch()
+                    mainFilter.videoTitleFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -226,12 +230,12 @@ export const videoFilterSpaceGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    VFSP.videoBvidFilter.enable()
-                    VFSP.check('full').then().catch()
+                    mainFilter.videoBvidFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    VFSP.videoBvidFilter.disable()
-                    VFSP.check('full').then().catch()
+                    mainFilter.videoBvidFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -255,12 +259,12 @@ export const videoFilterSpaceGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    VFSP.videoTitleWhiteFilter.enable()
-                    VFSP.check('full').then().catch()
+                    mainFilter.videoTitleWhiteFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    VFSP.videoTitleWhiteFilter.disable()
-                    VFSP.check('full').then().catch()
+                    mainFilter.videoTitleWhiteFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {

@@ -1,9 +1,9 @@
 import { GM_getValue, unsafeWindow } from '$'
 import { Group } from '../../../../../types/collection'
-import { SelectorResult, SubFilterPair } from '../../../../../types/filter'
+import { IMainFilter, SelectorResult, SubFilterPair } from '../../../../../types/filter'
 import { log } from '../../../../../utils/logger'
 import { convertTimeToSec, isEleHide, matchBvid, showEle, waitForEle } from '../../../../../utils/tool'
-import { MainFilter, coreCheck } from '../../../core/core'
+import { coreCheck } from '../../../core/core'
 import {
     VideoBvidFilter,
     VideoDurationFilter,
@@ -74,33 +74,33 @@ const selectorFns = {
 // 是否检测相关视频缓存数据
 let enableRelatedCheck = false
 
-// VFV is VideoFilterVideo
-class VFV extends MainFilter {
+class VideoFilterVideo implements IMainFilter {
+    target: HTMLElement | undefined
+
     // 黑名单
-    static videoBvidFilter = new VideoBvidFilter()
-    static videoDurationFilter = new VideoDurationFilter()
-    static videoTitleFilter = new VideoTitleFilter()
-    static videoUploaderFilter = new VideoUploaderFilter()
-    static videoUploaderKeywordFilter = new VideoUploaderKeywordFilter()
+    videoBvidFilter = new VideoBvidFilter()
+    videoDurationFilter = new VideoDurationFilter()
+    videoTitleFilter = new VideoTitleFilter()
+    videoUploaderFilter = new VideoUploaderFilter()
+    videoUploaderKeywordFilter = new VideoUploaderKeywordFilter()
 
     // 白名单
-    static videoUploaderWhiteFilter = new VideoUploaderWhiteFilter()
-    static videoTitleWhiteFilter = new VideoTitleWhiteFilter()
+    videoUploaderWhiteFilter = new VideoUploaderWhiteFilter()
+    videoTitleWhiteFilter = new VideoTitleWhiteFilter()
 
-    constructor() {
-        super()
+    init() {
         // 黑名单
-        VFV.videoBvidFilter.setParam(GM_getValue(GM_KEYS.black.bvid.valueKey, []))
-        VFV.videoDurationFilter.setParam(GM_getValue(GM_KEYS.black.duration.valueKey, 0))
-        VFV.videoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
-        VFV.videoUploaderFilter.setParam(GM_getValue(GM_KEYS.black.uploader.valueKey, []))
-        VFV.videoUploaderKeywordFilter.setParam(GM_getValue(GM_KEYS.black.uploaderKeyword.valueKey, []))
+        this.videoBvidFilter.setParam(GM_getValue(GM_KEYS.black.bvid.valueKey, []))
+        this.videoDurationFilter.setParam(GM_getValue(GM_KEYS.black.duration.valueKey, 0))
+        this.videoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
+        this.videoUploaderFilter.setParam(GM_getValue(GM_KEYS.black.uploader.valueKey, []))
+        this.videoUploaderKeywordFilter.setParam(GM_getValue(GM_KEYS.black.uploaderKeyword.valueKey, []))
         // 白名单
-        VFV.videoUploaderWhiteFilter.setParam(GM_getValue(GM_KEYS.white.uploader.valueKey, []))
-        VFV.videoTitleWhiteFilter.setParam(GM_getValue(GM_KEYS.white.title.valueKey, []))
+        this.videoUploaderWhiteFilter.setParam(GM_getValue(GM_KEYS.white.uploader.valueKey, []))
+        this.videoTitleWhiteFilter.setParam(GM_getValue(GM_KEYS.white.title.valueKey, []))
     }
 
-    observe(): void {
+    observe() {
         waitForEle(document, '#reco_list, .recommend-list-container', (node: HTMLElement): boolean => {
             return node.id === 'reco_list' || node.className === 'recommend-list-container'
         }).then((ele) => {
@@ -108,28 +108,28 @@ class VFV extends MainFilter {
                 return
             }
 
-            VFV.target = ele
-            log('VFV target appear')
-            VFV.check('full').then().catch()
+            this.target = ele
+            log('VideoFilterVideo target appear')
+            this.check('full').then().catch()
 
             new MutationObserver(() => {
-                VFV.check('full').then().catch() // 播放页始终全量check
-            }).observe(VFV.target, { childList: true, subtree: true })
+                this.check('full').then().catch() // 播放页始终全量check
+            }).observe(this.target, { childList: true, subtree: true })
         })
     }
 
-    static async check(mode?: 'full' | 'incr') {
-        if (!VFV.target) {
+    async check(mode?: 'full' | 'incr') {
+        if (!this.target) {
             return
         }
         let revertAll = false
         if (
             !(
-                VFV.videoBvidFilter.isEnable ||
-                VFV.videoDurationFilter.isEnable ||
-                VFV.videoTitleFilter.isEnable ||
-                VFV.videoUploaderFilter.isEnable ||
-                VFV.videoUploaderKeywordFilter.isEnable
+                this.videoBvidFilter.isEnable ||
+                this.videoDurationFilter.isEnable ||
+                this.videoTitleFilter.isEnable ||
+                this.videoUploaderFilter.isEnable ||
+                this.videoUploaderKeywordFilter.isEnable
             )
         ) {
             revertAll = true
@@ -139,7 +139,7 @@ class VFV extends MainFilter {
         // 提取元素
         const selector = `.next-play :is(.video-page-card-small, .video-page-operator-card-small),
             .rec-list :is(.video-page-card-small, .video-page-operator-card-small), .recommend-video-card`
-        const videos = Array.from(VFV.target.querySelectorAll<HTMLElement>(selector))
+        const videos = Array.from(this.target.querySelectorAll<HTMLElement>(selector))
         if (!videos.length) {
             return
         }
@@ -162,16 +162,16 @@ class VFV extends MainFilter {
 
         // 构建黑白检测任务
         const blackPairs: SubFilterPair[] = []
-        VFV.videoBvidFilter.isEnable && blackPairs.push([VFV.videoBvidFilter, selectorFns.bvid])
-        VFV.videoDurationFilter.isEnable && blackPairs.push([VFV.videoDurationFilter, selectorFns.duration])
-        VFV.videoTitleFilter.isEnable && blackPairs.push([VFV.videoTitleFilter, selectorFns.title])
-        VFV.videoUploaderFilter.isEnable && blackPairs.push([VFV.videoUploaderFilter, selectorFns.uploader])
-        VFV.videoUploaderKeywordFilter.isEnable &&
-            blackPairs.push([VFV.videoUploaderKeywordFilter, selectorFns.uploader])
+        this.videoBvidFilter.isEnable && blackPairs.push([this.videoBvidFilter, selectorFns.bvid])
+        this.videoDurationFilter.isEnable && blackPairs.push([this.videoDurationFilter, selectorFns.duration])
+        this.videoTitleFilter.isEnable && blackPairs.push([this.videoTitleFilter, selectorFns.title])
+        this.videoUploaderFilter.isEnable && blackPairs.push([this.videoUploaderFilter, selectorFns.uploader])
+        this.videoUploaderKeywordFilter.isEnable &&
+            blackPairs.push([this.videoUploaderKeywordFilter, selectorFns.uploader])
 
         const whitePairs: SubFilterPair[] = []
-        VFV.videoUploaderWhiteFilter.isEnable && whitePairs.push([VFV.videoUploaderWhiteFilter, selectorFns.uploader])
-        VFV.videoTitleWhiteFilter.isEnable && whitePairs.push([VFV.videoTitleWhiteFilter, selectorFns.title])
+        this.videoUploaderWhiteFilter.isEnable && whitePairs.push([this.videoUploaderWhiteFilter, selectorFns.uploader])
+        this.videoTitleWhiteFilter.isEnable && whitePairs.push([this.videoTitleWhiteFilter, selectorFns.title])
 
         // 检测
         const blackCnt = await coreCheck(videos, false, blackPairs, whitePairs)
@@ -195,13 +195,17 @@ class VFV extends MainFilter {
             }
         }
         const time = (performance.now() - timer).toFixed(1)
-        log(`VFV hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
+        log(`VideoFilterVideo hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
     }
 }
 
+//==================================================================================================
+
+const mainFilter = new VideoFilterVideo()
+
 export const videoFilterVideoEntry = async () => {
-    const vfv = new VFV()
-    vfv.observe()
+    mainFilter.init()
+    mainFilter.observe()
 }
 
 export const videoFilterVideoGroups: Group[] = [
@@ -215,12 +219,12 @@ export const videoFilterVideoGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    VFV.videoDurationFilter.enable()
-                    VFV.check('full').then().catch()
+                    mainFilter.videoDurationFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    VFV.videoDurationFilter.disable()
-                    VFV.check('full').then().catch()
+                    mainFilter.videoDurationFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -234,8 +238,8 @@ export const videoFilterVideoGroups: Group[] = [
                 disableValue: 0,
                 addonText: '秒',
                 fn: (value: number) => {
-                    VFV.videoDurationFilter.setParam(value)
-                    VFV.check('full').then().catch()
+                    mainFilter.videoDurationFilter.setParam(value)
+                    mainFilter.check('full').then().catch()
                 },
             },
         ],
@@ -250,12 +254,12 @@ export const videoFilterVideoGroups: Group[] = [
                 defaultEnable: true,
                 noStyle: true,
                 enableFn: () => {
-                    VFV.videoUploaderFilter.enable()
-                    VFV.check('full').then().catch()
+                    mainFilter.videoUploaderFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    VFV.videoUploaderFilter.disable()
-                    VFV.check('full').then().catch()
+                    mainFilter.videoUploaderFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -274,12 +278,12 @@ export const videoFilterVideoGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    VFV.videoUploaderKeywordFilter.enable()
-                    VFV.check('full').then().catch()
+                    mainFilter.videoUploaderKeywordFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    VFV.videoUploaderKeywordFilter.disable()
-                    VFV.check('full').then().catch()
+                    mainFilter.videoUploaderKeywordFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -303,12 +307,12 @@ export const videoFilterVideoGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    VFV.videoTitleFilter.enable()
-                    VFV.check('full').then().catch()
+                    mainFilter.videoTitleFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    VFV.videoTitleFilter.disable()
-                    VFV.check('full').then().catch()
+                    mainFilter.videoTitleFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -332,12 +336,12 @@ export const videoFilterVideoGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    VFV.videoBvidFilter.enable()
-                    VFV.check('full').then().catch()
+                    mainFilter.videoBvidFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    VFV.videoBvidFilter.disable()
-                    VFV.check('full').then().catch()
+                    mainFilter.videoBvidFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -367,11 +371,11 @@ export const videoFilterVideoGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     enableRelatedCheck = true
-                    VFV.check('full').then().catch()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
                     enableRelatedCheck = false
-                    VFV.check('full').then().catch()
+                    mainFilter.check('full').then().catch()
                 },
             },
         ],
@@ -386,12 +390,12 @@ export const videoFilterVideoGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    VFV.videoUploaderWhiteFilter.enable()
-                    VFV.check('full').then().catch()
+                    mainFilter.videoUploaderWhiteFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    VFV.videoUploaderWhiteFilter.disable()
-                    VFV.check('full').then().catch()
+                    mainFilter.videoUploaderWhiteFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -410,12 +414,12 @@ export const videoFilterVideoGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    VFV.videoTitleWhiteFilter.enable()
-                    VFV.check('full').then().catch()
+                    mainFilter.videoTitleWhiteFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    VFV.videoTitleWhiteFilter.disable()
-                    VFV.check('full').then().catch()
+                    mainFilter.videoTitleWhiteFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {

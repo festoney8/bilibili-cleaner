@@ -1,11 +1,11 @@
 import { GM_getValue } from '$'
 import settings from '../../../../../settings'
 import { Group } from '../../../../../types/collection'
-import { SelectorResult, SubFilterPair } from '../../../../../types/filter'
+import { IMainFilter, SelectorResult, SubFilterPair } from '../../../../../types/filter'
 import { error, log } from '../../../../../utils/logger'
 import ShadowInstance from '../../../../../utils/shadow'
 import { showEle } from '../../../../../utils/tool'
-import { MainFilter, coreCheck } from '../../../core/core'
+import { coreCheck } from '../../../core/core'
 import {
     CommentBotFilter,
     CommentCallBotFilter,
@@ -152,23 +152,23 @@ const selectorFns = {
 let isRootWhite = false
 let isSubWhite = false
 
-// CFV is CommentFilterVideo
-class CFV extends MainFilter {
-    // 黑名单
-    static commentUsernameFilter = new CommentUsernameFilter()
-    static commentContentFilter = new CommentContentFilter()
-    static commentLevelFilter = new CommentLevelFilter()
-    static commentBotFilter = new CommentBotFilter()
-    static commentCallBotFilter = new CommentCallBotFilter()
-    static commentCallUserFilter = new CommentCallUserFilter()
-    // 白名单
-    static commentIsUpFilter = new CommentIsUpFilter()
-    static commentIsPinFilter = new CommentIsPinFilter()
-    static commentIsNoteFilter = new CommentIsNoteFilter()
-    static commentIsLinkFilter = new CommentIsLinkFilter()
+class CommentFilterVideo implements IMainFilter {
+    target: HTMLElement | undefined
 
-    constructor() {
-        super()
+    // 黑名单
+    commentUsernameFilter = new CommentUsernameFilter()
+    commentContentFilter = new CommentContentFilter()
+    commentLevelFilter = new CommentLevelFilter()
+    commentBotFilter = new CommentBotFilter()
+    commentCallBotFilter = new CommentCallBotFilter()
+    commentCallUserFilter = new CommentCallUserFilter()
+    // 白名单
+    commentIsUpFilter = new CommentIsUpFilter()
+    commentIsPinFilter = new CommentIsPinFilter()
+    commentIsNoteFilter = new CommentIsNoteFilter()
+    commentIsLinkFilter = new CommentIsLinkFilter()
+
+    init() {
         // 黑名单
         const bots = [
             // 8455326 @机器工具人
@@ -211,12 +211,12 @@ class CFV extends MainFilter {
             'AI总结视频',
             'AI工具集',
         ]
-        CFV.commentUsernameFilter.setParam(GM_getValue(GM_KEYS.black.username.valueKey, []))
-        CFV.commentContentFilter.setParam(GM_getValue(GM_KEYS.black.content.valueKey, []))
-        CFV.commentLevelFilter.setParam(GM_getValue(GM_KEYS.black.level.valueKey, 0))
-        CFV.commentBotFilter.setParam(bots)
-        CFV.commentCallBotFilter.setParam(bots)
-        CFV.commentCallUserFilter.setParam([`/./`])
+        this.commentUsernameFilter.setParam(GM_getValue(GM_KEYS.black.username.valueKey, []))
+        this.commentContentFilter.setParam(GM_getValue(GM_KEYS.black.content.valueKey, []))
+        this.commentLevelFilter.setParam(GM_getValue(GM_KEYS.black.level.valueKey, 0))
+        this.commentBotFilter.setParam(bots)
+        this.commentCallBotFilter.setParam(bots)
+        this.commentCallUserFilter.setParam([`/./`])
     }
 
     /**
@@ -224,17 +224,17 @@ class CFV extends MainFilter {
      * @param mode full全量，incr增量
      * @returns
      */
-    static async checkRoot(mode?: 'full' | 'incr') {
+    async checkRoot(mode?: 'full' | 'incr') {
         const timer = performance.now()
         let revertAll = false
         if (
             !(
-                CFV.commentUsernameFilter.isEnable ||
-                CFV.commentContentFilter.isEnable ||
-                CFV.commentLevelFilter.isEnable ||
-                CFV.commentBotFilter.isEnable ||
-                CFV.commentCallBotFilter.isEnable ||
-                CFV.commentCallUserFilter.isEnable
+                this.commentUsernameFilter.isEnable ||
+                this.commentContentFilter.isEnable ||
+                this.commentLevelFilter.isEnable ||
+                this.commentBotFilter.isEnable ||
+                this.commentCallBotFilter.isEnable ||
+                this.commentCallUserFilter.isEnable
             )
         ) {
             revertAll = true
@@ -275,22 +275,24 @@ class CFV extends MainFilter {
         }
 
         const blackPairs: SubFilterPair[] = []
-        CFV.commentUsernameFilter.isEnable && blackPairs.push([CFV.commentUsernameFilter, selectorFns.root.username])
-        CFV.commentContentFilter.isEnable && blackPairs.push([CFV.commentContentFilter, selectorFns.root.content])
-        CFV.commentLevelFilter.isEnable && blackPairs.push([CFV.commentLevelFilter, selectorFns.root.level])
-        CFV.commentBotFilter.isEnable && blackPairs.push([CFV.commentBotFilter, selectorFns.root.username])
-        CFV.commentCallBotFilter.isEnable && blackPairs.push([CFV.commentCallBotFilter, selectorFns.root.callUser])
-        CFV.commentCallUserFilter.isEnable && blackPairs.push([CFV.commentCallUserFilter, selectorFns.root.callUser])
+        this.commentUsernameFilter.isEnable && blackPairs.push([this.commentUsernameFilter, selectorFns.root.username])
+        this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns.root.content])
+        this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns.root.level])
+        this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns.root.username])
+        this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.root.callUser])
+        this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns.root.callUser])
 
         const whitePairs: SubFilterPair[] = []
-        CFV.commentIsUpFilter.isEnable && whitePairs.push([CFV.commentIsUpFilter, selectorFns.root.isUp])
-        CFV.commentIsPinFilter.isEnable && whitePairs.push([CFV.commentIsPinFilter, selectorFns.root.isPin])
-        CFV.commentIsNoteFilter.isEnable && whitePairs.push([CFV.commentIsNoteFilter, selectorFns.root.isNote])
-        CFV.commentIsLinkFilter.isEnable && whitePairs.push([CFV.commentIsLinkFilter, selectorFns.root.isLink])
+        this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns.root.isUp])
+        this.commentIsPinFilter.isEnable && whitePairs.push([this.commentIsPinFilter, selectorFns.root.isPin])
+        this.commentIsNoteFilter.isEnable && whitePairs.push([this.commentIsNoteFilter, selectorFns.root.isNote])
+        this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns.root.isLink])
 
         const rootBlackCnt = await coreCheck(rootComments, true, blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
-        log(`CFV hide ${rootBlackCnt} in ${rootComments.length} root comments, mode=${mode}, time=${time}`)
+        log(
+            `CommentFilterVideo hide ${rootBlackCnt} in ${rootComments.length} root comments, mode=${mode}, time=${time}`,
+        )
     }
 
     /**
@@ -298,17 +300,17 @@ class CFV extends MainFilter {
      * @param mode full全量，incr增量
      * @returns
      */
-    static async checkSub(mode?: 'full' | 'incr') {
+    async checkSub(mode?: 'full' | 'incr') {
         const timer = performance.now()
         let revertAll = false
         if (
             !(
-                CFV.commentUsernameFilter.isEnable ||
-                CFV.commentContentFilter.isEnable ||
-                CFV.commentLevelFilter.isEnable ||
-                CFV.commentBotFilter.isEnable ||
-                CFV.commentCallBotFilter.isEnable ||
-                CFV.commentCallUserFilter.isEnable
+                this.commentUsernameFilter.isEnable ||
+                this.commentContentFilter.isEnable ||
+                this.commentLevelFilter.isEnable ||
+                this.commentBotFilter.isEnable ||
+                this.commentCallBotFilter.isEnable ||
+                this.commentCallUserFilter.isEnable
             )
         ) {
             revertAll = true
@@ -347,23 +349,23 @@ class CFV extends MainFilter {
         }
 
         const blackPairs: SubFilterPair[] = []
-        CFV.commentUsernameFilter.isEnable && blackPairs.push([CFV.commentUsernameFilter, selectorFns.sub.username])
-        CFV.commentContentFilter.isEnable && blackPairs.push([CFV.commentContentFilter, selectorFns.sub.content])
-        CFV.commentLevelFilter.isEnable && blackPairs.push([CFV.commentLevelFilter, selectorFns.sub.level])
-        CFV.commentBotFilter.isEnable && blackPairs.push([CFV.commentBotFilter, selectorFns.sub.username])
-        CFV.commentCallBotFilter.isEnable && blackPairs.push([CFV.commentCallBotFilter, selectorFns.sub.callUser])
-        CFV.commentCallUserFilter.isEnable && blackPairs.push([CFV.commentCallUserFilter, selectorFns.sub.callUser])
+        this.commentUsernameFilter.isEnable && blackPairs.push([this.commentUsernameFilter, selectorFns.sub.username])
+        this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns.sub.content])
+        this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns.sub.level])
+        this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns.sub.username])
+        this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.sub.callUser])
+        this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns.sub.callUser])
 
         const whitePairs: SubFilterPair[] = []
-        CFV.commentIsUpFilter.isEnable && whitePairs.push([CFV.commentIsUpFilter, selectorFns.sub.isUp])
-        CFV.commentIsLinkFilter.isEnable && whitePairs.push([CFV.commentIsLinkFilter, selectorFns.sub.isLink])
+        this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns.sub.isUp])
+        this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns.sub.isLink])
 
         const subBlackCnt = await coreCheck(subComments, false, blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
-        log(`CFV hide ${subBlackCnt} in ${subComments.length} sub comments, mode=${mode}, time=${time}`)
+        log(`CommentFilterVideo hide ${subBlackCnt} in ${subComments.length} sub comments, mode=${mode}, time=${time}`)
     }
 
-    static async check(mode?: 'full' | 'incr') {
+    async check(mode?: 'full' | 'incr') {
         this.checkRoot(mode)
             .then()
             .catch((err) => {
@@ -383,7 +385,7 @@ class CFV extends MainFilter {
         ShadowInstance.addShadowObserver(
             'BILI-COMMENTS',
             new MutationObserver(() => {
-                CFV.checkRoot('incr')
+                this.checkRoot('incr')
             }),
             {
                 subtree: true,
@@ -400,7 +402,7 @@ class CFV extends MainFilter {
         ShadowInstance.addShadowObserver(
             'BILI-COMMENT-REPLIES-RENDERER',
             new MutationObserver(() => {
-                CFV.checkSub('full')
+                this.checkSub('full')
             }),
             {
                 subtree: true,
@@ -409,15 +411,18 @@ class CFV extends MainFilter {
         )
     }
 
-    observe(): void {
+    observe() {
         this.observeRoot()
         this.observeSub()
     }
 }
+//==================================================================================================
+
+const mainFilter = new CommentFilterVideo()
 
 export const commentFilterVideoEntry = async () => {
-    const cfv = new CFV()
-    cfv.observe()
+    mainFilter.init()
+    mainFilter.observe()
 }
 
 export const commentFilterVideoGroups: Group[] = [
@@ -431,12 +436,12 @@ export const commentFilterVideoGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFV.commentUsernameFilter.enable()
-                    CFV.check('full').then().catch()
+                    mainFilter.commentUsernameFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFV.commentUsernameFilter.disable()
-                    CFV.check('full').then().catch()
+                    mainFilter.commentUsernameFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -460,12 +465,12 @@ export const commentFilterVideoGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFV.commentContentFilter.enable()
-                    CFV.check('full').then().catch()
+                    mainFilter.commentContentFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFV.commentContentFilter.disable()
-                    CFV.check('full').then().catch()
+                    mainFilter.commentContentFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -489,12 +494,12 @@ export const commentFilterVideoGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFV.commentCallBotFilter.enable()
-                    CFV.check('full').then().catch()
+                    mainFilter.commentCallBotFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFV.commentCallBotFilter.disable()
-                    CFV.check('full').then().catch()
+                    mainFilter.commentCallBotFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -504,12 +509,12 @@ export const commentFilterVideoGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFV.commentBotFilter.enable()
-                    CFV.check('full').then().catch()
+                    mainFilter.commentBotFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFV.commentBotFilter.disable()
-                    CFV.check('full').then().catch()
+                    mainFilter.commentBotFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -519,12 +524,12 @@ export const commentFilterVideoGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFV.commentCallUserFilter.enable()
-                    CFV.check('full').then().catch()
+                    mainFilter.commentCallUserFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFV.commentCallUserFilter.disable()
-                    CFV.check('full').then().catch()
+                    mainFilter.commentCallUserFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
         ],
@@ -539,12 +544,12 @@ export const commentFilterVideoGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFV.commentLevelFilter.enable()
-                    CFV.check('full').then().catch()
+                    mainFilter.commentLevelFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFV.commentLevelFilter.disable()
-                    CFV.check('full').then().catch()
+                    mainFilter.commentLevelFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -556,8 +561,8 @@ export const commentFilterVideoGroups: Group[] = [
                 defaultValue: 0,
                 disableValue: 0,
                 fn: (value: number) => {
-                    CFV.commentLevelFilter.setParam(value)
-                    CFV.check('full').then().catch()
+                    mainFilter.commentLevelFilter.setParam(value)
+                    mainFilter.check('full').then().catch()
                 },
             },
         ],
@@ -573,11 +578,11 @@ export const commentFilterVideoGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     isRootWhite = true
-                    CFV.check('full').then().catch()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
                     isRootWhite = false
-                    CFV.check('full').then().catch()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -588,11 +593,11 @@ export const commentFilterVideoGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     isSubWhite = true
-                    CFV.check('full').then().catch()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
                     isSubWhite = false
-                    CFV.check('full').then().catch()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -602,12 +607,12 @@ export const commentFilterVideoGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFV.commentIsUpFilter.enable()
-                    CFV.check('full').then().catch()
+                    mainFilter.commentIsUpFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFV.commentIsUpFilter.disable()
-                    CFV.check('full').then().catch()
+                    mainFilter.commentIsUpFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -617,12 +622,12 @@ export const commentFilterVideoGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFV.commentIsPinFilter.enable()
-                    CFV.check('full').then().catch()
+                    mainFilter.commentIsPinFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFV.commentIsPinFilter.disable()
-                    CFV.check('full').then().catch()
+                    mainFilter.commentIsPinFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -632,12 +637,12 @@ export const commentFilterVideoGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFV.commentIsNoteFilter.enable()
-                    CFV.check('full').then().catch()
+                    mainFilter.commentIsNoteFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFV.commentIsNoteFilter.disable()
-                    CFV.check('full').then().catch()
+                    mainFilter.commentIsNoteFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
             {
@@ -647,12 +652,12 @@ export const commentFilterVideoGroups: Group[] = [
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
-                    CFV.commentIsLinkFilter.enable()
-                    CFV.check('full').then().catch()
+                    mainFilter.commentIsLinkFilter.enable()
+                    mainFilter.check('full').then().catch()
                 },
                 disableFn: () => {
-                    CFV.commentIsLinkFilter.disable()
-                    CFV.check('full').then().catch()
+                    mainFilter.commentIsLinkFilter.disable()
+                    mainFilter.check('full').then().catch()
                 },
             },
         ],

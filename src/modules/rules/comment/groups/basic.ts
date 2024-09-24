@@ -1,21 +1,5 @@
 import { Item } from '../../../../types/item'
-import { Shadow } from '../../../../utils/shadow'
-
-// shadow DOM 评论区
-const shadow = new Shadow([
-    'bili-comments-header-renderer', // 评论区header(notice,编辑器)
-    'bili-comment-textarea', // 主编辑器、底部编辑器输入框
-    'bili-comment-rich-textarea', // 主编辑器、底部编辑器输入框
-    'bili-comment-renderer', // 一级评论
-    'bili-comment-user-info', // 一级二级评论用户信息
-    'bili-rich-text', // 一级二级评论内容
-    'bili-avatar', // 头像
-    'bili-photoswipe', // 全屏图片查看(笔记图片)
-    'bili-user-profile', // 用户卡片
-    'bili-comment-user-medal', // 昵称后勋章
-    'bili-comment-action-buttons-renderer', // 赞踩回复按钮区域
-    'bili-comment-reply-renderer', // 单个二级评论
-])
+import shadow from '../../../../utils/shadow'
 
 export const commentBasicItems: Item[] = [
     {
@@ -24,14 +8,14 @@ export const commentBasicItems: Item[] = [
         name: '隐藏 活动通知',
         defaultEnable: true,
         enableFn: () => {
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-comments-header-renderer',
                 'video-page-hide-reply-notice',
                 `#notice {display: none !important;}`,
             )
         },
         disableFn: () => {
-            shadow.unregister('bili-comments-header-renderer', 'video-page-hide-reply-notice')
+            shadow.removeShadowStyle('bili-comments-header-renderer', 'video-page-hide-reply-notice')
         },
     },
     {
@@ -39,7 +23,7 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-hide-main-reply-box',
         name: '隐藏 评论编辑器',
         enableFn: () => {
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-comments-header-renderer',
                 'video-page-hide-main-reply-box',
                 `#commentbox bili-comment-box {display: none !important;}
@@ -47,29 +31,30 @@ export const commentBasicItems: Item[] = [
             )
         },
         disableFn: () => {
-            shadow.unregister('bili-comments-header-renderer', 'video-page-hide-main-reply-box')
+            shadow.removeShadowStyle('bili-comments-header-renderer', 'video-page-hide-main-reply-box')
         },
     },
     {
         type: 'switch',
         id: 'video-page-hide-reply-box-textarea-placeholder',
         name: '隐藏 评论编辑器内占位文字',
+        description: ['同时会隐藏回复评论时的文字提示'],
         defaultEnable: true,
         enableFn: () => {
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-comment-textarea',
                 'video-page-hide-reply-box-textarea-placeholder',
                 `textarea:not([placeholder^="回复"])::placeholder {color: transparent !important; user-select: none;}`,
             )
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-comment-rich-textarea',
                 'video-page-hide-reply-box-textarea-placeholder',
                 `.brt-placeholder {display: none !important;}`,
             )
         },
         disableFn: () => {
-            shadow.unregister('bili-comment-textarea', 'video-page-hide-reply-box-textarea-placeholder')
-            shadow.unregister('bili-comment-rich-textarea', 'video-page-hide-reply-box-textarea-placeholder')
+            shadow.removeShadowStyle('bili-comment-textarea', 'video-page-hide-reply-box-textarea-placeholder')
+            shadow.removeShadowStyle('bili-comment-rich-textarea', 'video-page-hide-reply-box-textarea-placeholder')
         },
     },
     {
@@ -78,14 +63,14 @@ export const commentBasicItems: Item[] = [
         name: '隐藏 页面底部 吸附评论框',
         defaultEnable: true,
         enableFn: () => {
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-comments-header-renderer',
                 'video-page-hide-fixed-reply-box',
                 `.bili-comments-bottom-fixed-wrapper {display: none !important;}`,
             )
         },
         disableFn: () => {
-            shadow.unregister('bili-comments-header-renderer', 'video-page-hide-fixed-reply-box')
+            shadow.removeShadowStyle('bili-comments-header-renderer', 'video-page-hide-fixed-reply-box')
         },
     },
     {
@@ -94,14 +79,14 @@ export const commentBasicItems: Item[] = [
         name: '隐藏 投票栏 (红方/蓝方)',
         defaultEnable: true,
         enableFn: () => {
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-comments-header-renderer',
                 'video-page-hide-top-vote-card',
                 `#vote {display: none !important;}`,
             )
         },
         disableFn: () => {
-            shadow.unregister('bili-comments-header-renderer', 'video-page-hide-top-vote-card')
+            shadow.removeShadowStyle('bili-comments-header-renderer', 'video-page-hide-top-vote-card')
         },
     },
     {
@@ -110,14 +95,14 @@ export const commentBasicItems: Item[] = [
         name: '隐藏 用户卡片',
         description: ['鼠标放在用户名上时不显示卡片'],
         enableFn: () => {
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-user-profile',
                 'video-page-hide-comment-user-card',
                 `#wrap {display: none !important;}`,
             )
         },
         disableFn: () => {
-            shadow.unregister('bili-user-profile', 'video-page-hide-comment-user-card')
+            shadow.removeShadowStyle('bili-user-profile', 'video-page-hide-comment-user-card')
         },
     },
     {
@@ -125,14 +110,14 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-hide-reply-decorate',
         name: '隐藏 评论右侧装饰',
         enableFn: () => {
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-comment-renderer',
                 'video-page-hide-reply-decorate',
                 `#ornament {display: none !important;}`,
             )
         },
         disableFn: () => {
-            shadow.unregister('bili-comment-renderer', 'video-page-hide-reply-decorate')
+            shadow.removeShadowStyle('bili-comment-renderer', 'video-page-hide-reply-decorate')
         },
     },
     {
@@ -140,10 +125,14 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-hide-fan-badge',
         name: '隐藏 粉丝牌',
         enableFn: () => {
-            shadow.register('bili-comment-user-medal', 'video-page-hide-fan-badge', `#fans {display: none !important;}`)
+            shadow.addShadowStyle(
+                'bili-comment-user-medal',
+                'video-page-hide-fan-badge',
+                `#fans {display: none !important;}`,
+            )
         },
         disableFn: () => {
-            shadow.unregister('bili-comment-user-medal', 'video-page-hide-fan-badge')
+            shadow.removeShadowStyle('bili-comment-user-medal', 'video-page-hide-fan-badge')
         },
     },
     {
@@ -151,14 +140,14 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-hide-contractor-box',
         name: '隐藏 老粉、原始粉丝Tag',
         enableFn: () => {
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-comment-user-medal',
                 'video-page-hide-contractor-box',
                 `#contractor {display: none !important;}`,
             )
         },
         disableFn: () => {
-            shadow.unregister('bili-comment-user-medal', 'video-page-hide-contractor-box')
+            shadow.removeShadowStyle('bili-comment-user-medal', 'video-page-hide-contractor-box')
         },
     },
     {
@@ -166,7 +155,7 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-hide-user-level',
         name: '隐藏 用户等级',
         enableFn: () => {
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-comment-user-info',
                 'video-page-hide-user-level',
                 `#user-level {display: none !important;}
@@ -174,7 +163,7 @@ export const commentBasicItems: Item[] = [
             )
         },
         disableFn: () => {
-            shadow.unregister('bili-comment-user-info', 'video-page-hide-user-level')
+            shadow.removeShadowStyle('bili-comment-user-info', 'video-page-hide-user-level')
         },
     },
     {
@@ -182,7 +171,7 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-hide-bili-avatar-pendent-dom',
         name: '隐藏 用户头像饰品',
         enableFn: () => {
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-avatar',
                 'video-page-hide-bili-avatar-pendent-dom',
                 `picture:has(img[src*="/bfs/garb/"]) {display: none !important;}
@@ -194,7 +183,7 @@ export const commentBasicItems: Item[] = [
             )
         },
         disableFn: () => {
-            shadow.unregister('bili-avatar', 'video-page-hide-bili-avatar-pendent-dom')
+            shadow.removeShadowStyle('bili-avatar', 'video-page-hide-bili-avatar-pendent-dom')
         },
     },
     {
@@ -202,14 +191,14 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-hide-bili-avatar-nft-icon',
         name: '隐藏 用户头像徽章',
         enableFn: () => {
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-avatar',
                 'video-page-hide-bili-avatar-nft-icon',
                 `.layer:not(.center) {display: none !important;}`,
             )
         },
         disableFn: () => {
-            shadow.unregister('bili-avatar', 'video-page-hide-bili-avatar-nft-icon')
+            shadow.removeShadowStyle('bili-avatar', 'video-page-hide-bili-avatar-nft-icon')
         },
     },
     {
@@ -218,14 +207,14 @@ export const commentBasicItems: Item[] = [
         name: '隐藏 用户投票 (红方/蓝方)',
         defaultEnable: true,
         enableFn: () => {
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-comment-renderer',
                 'video-page-hide-vote-info',
                 `bili-comment-vote-option {display: none !important;}`,
             )
         },
         disableFn: () => {
-            shadow.unregister('bili-comment-renderer', 'video-page-hide-vote-info')
+            shadow.removeShadowStyle('bili-comment-renderer', 'video-page-hide-vote-info')
         },
     },
     {
@@ -234,14 +223,14 @@ export const commentBasicItems: Item[] = [
         name: '隐藏 评论内容下Tag',
         description: ['如：热评、UP主觉得很赞'],
         enableFn: () => {
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-comment-renderer',
                 'video-page-hide-reply-tag-list',
                 `#tags {display: none !important;}`,
             )
         },
         disableFn: () => {
-            shadow.unregister('bili-comment-renderer', 'video-page-hide-reply-tag-list')
+            shadow.removeShadowStyle('bili-comment-renderer', 'video-page-hide-reply-tag-list')
         },
     },
     {
@@ -250,10 +239,14 @@ export const commentBasicItems: Item[] = [
         name: '隐藏 笔记评论前的小Logo',
         defaultEnable: true,
         enableFn: () => {
-            shadow.register('bili-comment-renderer', 'video-page-hide-note-prefix', `#note {display: none !important;}`)
+            shadow.addShadowStyle(
+                'bili-comment-renderer',
+                'video-page-hide-note-prefix',
+                `#note {display: none !important;}`,
+            )
         },
         disableFn: () => {
-            shadow.unregister('bili-comment-renderer', 'video-page-hide-note-prefix')
+            shadow.removeShadowStyle('bili-comment-renderer', 'video-page-hide-note-prefix')
         },
     },
     {
@@ -262,7 +255,7 @@ export const commentBasicItems: Item[] = [
         name: '禁用 评论内容搜索关键词高亮',
         defaultEnable: true,
         enableFn: () => {
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-rich-text',
                 'video-page-hide-jump-link-search-word',
                 `#contents a[href*="search.bilibili.com"] {color: inherit !important;}
@@ -272,7 +265,7 @@ export const commentBasicItems: Item[] = [
             )
         },
         disableFn: () => {
-            shadow.unregister('bili-rich-text', 'video-page-hide-jump-link-search-word')
+            shadow.removeShadowStyle('bili-rich-text', 'video-page-hide-jump-link-search-word')
         },
     },
     {
@@ -280,7 +273,7 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-hide-reply-content-user-highlight',
         name: '禁用 评论中的@高亮',
         enableFn: () => {
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-rich-text',
                 'video-page-hide-reply-content-user-highlight',
                 `#contents a[href*="space.bilibili.com"] {color: inherit !important;}
@@ -289,7 +282,7 @@ export const commentBasicItems: Item[] = [
             )
         },
         disableFn: () => {
-            shadow.unregister('bili-rich-text', 'video-page-hide-reply-content-user-highlight')
+            shadow.removeShadowStyle('bili-rich-text', 'video-page-hide-reply-content-user-highlight')
         },
     },
     {
@@ -299,7 +292,7 @@ export const commentBasicItems: Item[] = [
         defaultEnable: true,
         enableFn: () => {
             /* 借用more button的display样式，改为传透明度值 */
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-comment-renderer', // 一级评论
                 'video-page-hide-root-reply-dislike-reply-btn',
                 `#body {
@@ -309,7 +302,7 @@ export const commentBasicItems: Item[] = [
                     --bili-comment-hover-more-display: 1 !important;
                 }`,
             )
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-comment-reply-renderer', // 二级评论
                 'video-page-hide-sub-reply-dislike-reply-btn',
                 `
@@ -320,7 +313,7 @@ export const commentBasicItems: Item[] = [
                     --bili-comment-hover-more-display: 1 !important;
                 }`,
             )
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-comment-action-buttons-renderer',
                 'video-page-hide-root-reply-dislike-reply-btn',
                 `#dislike button, #reply button, #more button {
@@ -331,8 +324,11 @@ export const commentBasicItems: Item[] = [
             )
         },
         disableFn: () => {
-            shadow.unregister('bili-comment-renderer', 'video-page-hide-root-reply-dislike-reply-btn')
-            shadow.unregister('bili-comment-action-buttons-renderer', 'video-page-hide-root-reply-dislike-reply-btn')
+            shadow.removeShadowStyle('bili-comment-renderer', 'video-page-hide-root-reply-dislike-reply-btn')
+            shadow.removeShadowStyle(
+                'bili-comment-action-buttons-renderer',
+                'video-page-hide-root-reply-dislike-reply-btn',
+            )
         },
     },
     {
@@ -340,14 +336,14 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-hide-emoji-large',
         name: '隐藏 大表情',
         enableFn: () => {
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-rich-text',
                 'video-page-hide-emoji-large',
                 `#contents img:is(.emoji-large, [style^="width:50px"]) {display: none !important;}`,
             )
         },
         disableFn: () => {
-            shadow.unregister('bili-rich-text', 'video-page-hide-emoji-large')
+            shadow.removeShadowStyle('bili-rich-text', 'video-page-hide-emoji-large')
         },
     },
     {
@@ -355,14 +351,14 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-hide-emoji-large-zoom',
         name: '大表情变成小表情',
         enableFn: () => {
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-rich-text',
                 'video-page-hide-emoji-large-zoom',
                 `#contents img:is(.emoji-large, [style^="width:50px"]) {zoom: 0.5 !important;}`,
             )
         },
         disableFn: () => {
-            shadow.unregister('bili-rich-text', 'video-page-hide-emoji-large-zoom')
+            shadow.removeShadowStyle('bili-rich-text', 'video-page-hide-emoji-large-zoom')
         },
     },
     {
@@ -370,7 +366,7 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-reply-user-name-color-pink',
         name: '用户名 全部大会员色',
         enableFn: () => {
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-comment-user-info',
                 'video-page-reply-user-name-color-pink',
                 `#user-name {color: #FB7299 !important;}
@@ -378,7 +374,7 @@ export const commentBasicItems: Item[] = [
             )
         },
         disableFn: () => {
-            shadow.unregister('bili-comment-user-info', 'video-page-reply-user-name-color-pink')
+            shadow.removeShadowStyle('bili-comment-user-info', 'video-page-reply-user-name-color-pink')
         },
     },
     {
@@ -386,7 +382,7 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-reply-user-name-color-default',
         name: '用户名 全部恢复默认色',
         enableFn: () => {
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-comment-user-info',
                 'video-page-reply-user-name-color-default',
                 `#user-name {color: #61666d !important;}
@@ -394,7 +390,7 @@ export const commentBasicItems: Item[] = [
             )
         },
         disableFn: () => {
-            shadow.unregister('bili-comment-user-info', 'video-page-reply-user-name-color-default')
+            shadow.removeShadowStyle('bili-comment-user-info', 'video-page-reply-user-name-color-default')
         },
     },
     {
@@ -403,7 +399,7 @@ export const commentBasicItems: Item[] = [
         name: '笔记图片 查看大图优化',
         defaultEnable: true,
         enableFn: () => {
-            shadow.register(
+            shadow.addShadowStyle(
                 'bili-photoswipe',
                 'video-page-reply-view-image-optimize',
                 `#wrap:has(#thumb:empty) :is(#prev, #next) {display: none !important;}
@@ -412,7 +408,7 @@ export const commentBasicItems: Item[] = [
             )
         },
         disableFn: () => {
-            shadow.unregister('bili-photoswipe', 'video-page-reply-view-image-optimize')
+            shadow.removeShadowStyle('bili-photoswipe', 'video-page-reply-view-image-optimize')
         },
     },
     {

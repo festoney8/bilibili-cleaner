@@ -1,47 +1,71 @@
 import { error } from './logger'
+import { isPageBangumi, isPageDynamic, isPagePlaylist, isPageVideo } from './pageType'
 
-type shadowCSS = {
-    // tagName: string
-    css: string
-    className: string
-}
+type TagName = string
 
 export class Shadow {
-    // shadowRoot节点列表
-    shadowRootMap = new Map<string, ShadowRoot[]>()
-    // shadowRoot内注入style列表
-    shadowStyleMap = new Map<string, shadowCSS[]>()
-    // 需记录shadowRoot的tag名单
-    tagSet: Set<string>
+    /**
+     * 单例
+     */
+    private static instance: Shadow
 
     /**
-     * @param tagArr 需记录shadowRoot元素的tagName列表
+     * 记录全部shadowRoot节点
+     * key: tagName, value: ShadowRoot Set
      */
-    constructor(tagArr: string[]) {
+    shadowStore = new Map<TagName, Set<ShadowRoot>>()
+
+    /**
+     * 记录需注入的样式
+     * key: tagName, value: css+className set
+     */
+    cssStore = new Map<
+        TagName,
+        Set<{
+            className: string
+            css: string
+        }>
+    >()
+
+    /**
+     * ShadowRoot内的MutationObserver
+     * key: tagName, value: MutationObserver set
+     */
+    observerStore = new Map<TagName, Set<[MutationObserver, MutationObserverInit]>>()
+
+    private constructor() {
         try {
-            this.hook()
+            // 特定页面运行
+            if (isPageVideo() || isPageBangumi() || isPageDynamic() || isPagePlaylist()) {
+                this.hook()
+            }
         } catch (err) {
-            error('shadow hook error')
+            error('hook shadow failed', err)
         }
-        this.tagSet = new Set(tagArr.map((v) => v.toUpperCase()))
+    }
+
+    static getInstance() {
+        if (!Shadow.instance) {
+            Shadow.instance = new Shadow()
+        }
+        return Shadow.instance
     }
 
     /**
-     * hook attachShadow函数，创建shadowRoot时注入自定义规则
+     * hook attachShadow，创建shadowRoot时注入自定义样式，启用自定义监听
+     * 重载ShadowRoot.innerHTML，被调用时注入自定义样式
      */
-    hook() {
+    private hook() {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         const origAttachShadow = Element.prototype.attachShadow
 
         Element.prototype.attachShadow = function (init) {
             const shadowRoot = origAttachShadow.call(this, init)
-            if (!self.tagSet.has(this.tagName)) {
-                return shadowRoot
-            }
+            const tag = this.tagName
 
             // 注入样式
-            const styles = self.shadowStyleMap.get(this.tagName)
+            const styles = self.cssStore.get(tag)
             styles?.forEach((v) => {
                 const style = document.createElement('style')
                 style.textContent = v.css
@@ -50,10 +74,17 @@ export class Shadow {
             })
 
             // 记录节点
-            if (self.shadowRootMap.has(this.tagName)) {
-                self.shadowRootMap.get(this.tagName)?.push(shadowRoot)
+            if (self.shadowStore.has(tag)) {
+                self.shadowStore.get(tag)!.add(shadowRoot)
             } else {
-                self.shadowRootMap.set(this.tagName, [shadowRoot])
+                self.shadowStore.set(tag, new Set([shadowRoot]))
+            }
+
+            // 监听节点
+            if (self.observerStore.has(tag)) {
+                for (const [observer, config] of self.observerStore.get(tag)!) {
+                    observer.observe(shadowRoot, config)
+                }
             }
             return shadowRoot
         }
@@ -66,8 +97,8 @@ export class Shadow {
             },
             set(value) {
                 const tagName = this.host.tagName
-                if (tagName && self.shadowStyleMap.has(tagName)) {
-                    const shadowStyles = self.shadowStyleMap.get(tagName)
+                if (tagName && self.cssStore.has(tagName)) {
+                    const shadowStyles = self.cssStore.get(tagName)
                     shadowStyles?.forEach((v) => {
                         value += `<style bili-cleaner-css="${v.className}">${v.css}</style>`
                     })
@@ -78,49 +109,79 @@ export class Shadow {
     }
 
     /**
-     * 注册css规则
-     * @param tagName shadowRoot父节点Tag名
-     * @param cssClassName css类名
+     * 新增需要在shadowDOM内注入的样式
+     * @param tag tagName
+     * @param className css类名
      * @param css 样式
      */
-    register(tagName: string, cssClassName: string, css: string) {
-        tagName = tagName.toUpperCase()
-        css = css.replace(/\n\s*/g, '').trim()
-
-        if (this.shadowStyleMap.has(tagName)) {
-            this.shadowStyleMap.get(tagName)?.push({
-                css: css,
-                className: cssClassName,
-            })
+    addShadowStyle(tag: TagName, className: string, css: string) {
+        tag = tag.toUpperCase()
+        const curr = this.cssStore.get(tag)
+        if (curr) {
+            curr.add({ className: className, css: css })
         } else {
-            this.shadowStyleMap.set(tagName, [
-                {
-                    css: css,
-                    className: cssClassName,
-                },
-            ])
+            this.cssStore.set(tag, new Set([{ className: className, css: css }]))
         }
-        this.shadowRootMap.get(tagName)?.forEach((root) => {
-            const style = document.createElement('style')
-            style.textContent = css
-            style.setAttribute('bili-cleaner-css', cssClassName)
-            root.appendChild(style)
-        })
+
+        if (this.shadowStore.size) {
+            const nodes = this.shadowStore.get(tag)
+            nodes?.forEach((node) => {
+                const style = document.createElement('style')
+                style.textContent = css
+                style.setAttribute('bili-cleaner-css', className)
+                node.appendChild(style)
+            })
+        }
     }
 
     /**
-     * 移除css规则
-     * @param tagName shadowRoot父节点tag名
-     * @param cssClassName css类名
+     * 移除需要在shadowDOM内注入的样式
+     * @param tag tagName
+     * @param className css类名
      */
-    unregister(tagName: string, cssClassName: string) {
-        tagName = tagName.toUpperCase()
+    removeShadowStyle(tag: TagName, className: string) {
+        tag = tag.toUpperCase()
+        const curr = this.cssStore.get(tag)
+        if (curr) {
+            for (const value of curr) {
+                if (value.className === className) {
+                    curr.delete(value)
+                    break
+                }
+            }
+        }
 
-        const result = this.shadowStyleMap.get(tagName)?.filter((v) => v.className !== cssClassName)
-        result && this.shadowStyleMap.set(tagName, result)
+        if (this.shadowStore.size) {
+            const nodes = this.shadowStore.get(tag)
+            nodes?.forEach((node) => {
+                node.querySelectorAll(`style[bili-cleaner-css="${className}"]`).forEach((v) => v.remove())
+            })
+        }
+    }
 
-        this.shadowRootMap.get(tagName)?.forEach((root) => {
-            root.querySelector(`style[bili-cleaner-css=${cssClassName}]`)?.remove()
-        })
+    /**
+     * 新增shadowRoot内MutationObserver
+     * @param tag tagName
+     * @param observer MutationObserver
+     * @param config Observer配置
+     */
+    addShadowObserver(tag: TagName, observer: MutationObserver, config: MutationObserverInit) {
+        tag = tag.toUpperCase()
+        const curr = this.observerStore.get(tag)
+        if (curr) {
+            curr.add([observer, config])
+        } else {
+            this.observerStore.set(tag, new Set([[observer, config]]))
+        }
+
+        if (this.shadowStore.size) {
+            const nodes = this.shadowStore.get(tag)
+            nodes?.forEach((node) => {
+                observer.observe(node, config)
+            })
+        }
     }
 }
+
+const ShadowInstance = Shadow.getInstance()
+export default ShadowInstance

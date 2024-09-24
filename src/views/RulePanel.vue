@@ -6,9 +6,9 @@
             <DisclosureComp v-bind="{ title: group.name }">
                 <div v-for="(item, innerIndex) in group.items" :key="innerIndex">
                     <SwitchComp v-if="item.type === 'switch'" v-bind="item"></SwitchComp>
-                    <NumberComp v-if="item.type === 'number'" v-bind="item"></NumberComp>
-                    <ButtonComp v-if="item.type === 'button'" v-bind="item"></ButtonComp>
-                    <ListComp v-if="item.type === 'list'" v-bind="item"></ListComp>
+                    <NumberComp v-else-if="item.type === 'number'" v-bind="item"></NumberComp>
+                    <ButtonComp v-else-if="item.type === 'button'" v-bind="item"></ButtonComp>
+                    <ListComp v-else-if="item.type === 'list'" v-bind="item"></ListComp>
                 </div>
             </DisclosureComp>
         </div>
@@ -29,7 +29,7 @@ let currPageGroups: Group[] = []
 
 for (const rule of rules) {
     if (rule.checkFn()) {
-        currPageGroups = [...currPageGroups, ...rule.groups]
+        currPageGroups = currPageGroups.concat(rule.groups)
     }
 }
 </script>

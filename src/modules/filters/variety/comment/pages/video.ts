@@ -2,8 +2,9 @@ import { GM_getValue } from '$'
 import settings from '../../../../../settings'
 import { Group } from '../../../../../types/collection'
 import { SelectorResult, SubFilterPair } from '../../../../../types/filter'
-import { log } from '../../../../../utils/logger'
-import { showEle, waitForEle } from '../../../../../utils/tool'
+import { error, log } from '../../../../../utils/logger'
+import ShadowInstance from '../../../../../utils/shadow'
+import { showEle } from '../../../../../utils/tool'
 import { MainFilter, coreCheck } from '../../../core/core'
 import {
     CommentBotFilter,
@@ -135,7 +136,14 @@ const selectorFns = {
         },
         isLink: (comment: HTMLElement): SelectorResult => {
             const urls = (comment as any).__data?.content?.jump_url
-            return urls ? Object.keys(urls).length > 0 : undefined
+            if (urls) {
+                for (const k of Object.keys(urls)) {
+                    if (!urls[k]?.pc_url?.includes('search.bilibili.com')) {
+                        return true
+                    }
+                }
+            }
+            return false
         },
     },
 }
@@ -211,28 +219,13 @@ class CFV extends MainFilter {
         CFV.commentCallUserFilter.setParam([`/./`])
     }
 
-    observe(): void {
-        waitForEle(document, 'bili-comments', (node: HTMLElement): boolean => {
-            return node.tagName === 'BILI-COMMENTS'
-        }).then((ele) => {
-            if (!ele || !ele.shadowRoot) {
-                return
-            }
-
-            CFV.target = ele.shadowRoot // 在第一层shadowRoot下监听一级评论变化
-            log('CFV target appear')
-            CFV.check('full')
-
-            new MutationObserver(() => {
-                CFV.check('incr')
-            }).observe(CFV.target, { childList: true, subtree: true })
-        })
-    }
-
-    static async check(mode?: 'full' | 'incr') {
-        if (!CFV.target) {
-            return
-        }
+    /**
+     * 检测一级评论
+     * @param mode full全量，incr增量
+     * @returns
+     */
+    static async checkRoot(mode?: 'full' | 'incr') {
+        const timer = performance.now()
         let revertAll = false
         if (
             !(
@@ -246,55 +239,18 @@ class CFV extends MainFilter {
         ) {
             revertAll = true
         }
-        const timer = performance.now()
 
-        // 提取元素：一级评论、二级评论
         let rootComments: HTMLElement[] = []
-        let subComments: HTMLElement[] = []
-        if (mode !== 'incr') {
-            // 全量
-            rootComments = Array.from(CFV.target.querySelectorAll<HTMLElement>('bili-comment-thread-renderer'))
-            rootComments.forEach((c) => {
-                const replies = c.shadowRoot
-                    ?.querySelector('bili-comment-replies-renderer')
-                    ?.shadowRoot?.querySelectorAll<HTMLElement>('bili-comment-reply-renderer')
-                if (replies?.length) {
-                    subComments = subComments.concat(Array.from(replies))
-                }
-            })
-        } else {
-            // 增量
-            rootComments = Array.from(
-                CFV.target.querySelectorAll<HTMLElement>(`bili-comment-thread-renderer:not([${settings.filterSign}])`),
+        if (ShadowInstance.shadowStore.has('BILI-COMMENT-THREAD-RENDERER')) {
+            rootComments = Array.from(ShadowInstance.shadowStore.get('BILI-COMMENT-THREAD-RENDERER')!).map(
+                (v) => v.host as HTMLElement,
             )
-            rootComments.forEach((c) => {
-                const replies = c.shadowRoot
-                    ?.querySelector('bili-comment-replies-renderer')
-                    ?.shadowRoot?.querySelectorAll<HTMLElement>(
-                        `bili-comment-reply-renderer:not([${settings.filterSign}])`,
-                    )
-                if (replies?.length) {
-                    subComments = subComments.concat(Array.from(replies))
-                }
-            })
+            if (mode === 'incr') {
+                rootComments = rootComments.filter((v) => !v.hasAttribute(settings.filterSign))
+            }
         }
-
-        if (!rootComments.length && !subComments.length) {
+        if (!rootComments.length) {
             return
-        }
-
-        if (revertAll) {
-            rootComments.forEach((v) => showEle(v))
-            subComments.forEach((v) => showEle(v))
-            return
-        }
-        if (isRootWhite) {
-            rootComments.forEach((v) => showEle(v))
-            rootComments = []
-        }
-        if (isSubWhite) {
-            subComments.forEach((v) => showEle(v))
-            subComments = []
         }
 
         // rootComments.forEach((v) => {
@@ -312,6 +268,65 @@ class CFV extends MainFilter {
         //         ].join('\n'),
         //     )
         // })
+
+        if (isRootWhite || revertAll) {
+            rootComments.forEach((el) => showEle(el))
+            return
+        }
+
+        const blackPairs: SubFilterPair[] = []
+        CFV.commentUsernameFilter.isEnable && blackPairs.push([CFV.commentUsernameFilter, selectorFns.root.username])
+        CFV.commentContentFilter.isEnable && blackPairs.push([CFV.commentContentFilter, selectorFns.root.content])
+        CFV.commentLevelFilter.isEnable && blackPairs.push([CFV.commentLevelFilter, selectorFns.root.level])
+        CFV.commentBotFilter.isEnable && blackPairs.push([CFV.commentBotFilter, selectorFns.root.username])
+        CFV.commentCallBotFilter.isEnable && blackPairs.push([CFV.commentCallBotFilter, selectorFns.root.callUser])
+        CFV.commentCallUserFilter.isEnable && blackPairs.push([CFV.commentCallUserFilter, selectorFns.root.callUser])
+
+        const whitePairs: SubFilterPair[] = []
+        CFV.commentIsUpFilter.isEnable && whitePairs.push([CFV.commentIsUpFilter, selectorFns.root.isUp])
+        CFV.commentIsPinFilter.isEnable && whitePairs.push([CFV.commentIsPinFilter, selectorFns.root.isPin])
+        CFV.commentIsNoteFilter.isEnable && whitePairs.push([CFV.commentIsNoteFilter, selectorFns.root.isNote])
+        CFV.commentIsLinkFilter.isEnable && whitePairs.push([CFV.commentIsLinkFilter, selectorFns.root.isLink])
+
+        const rootBlackCnt = await coreCheck(rootComments, true, blackPairs, whitePairs)
+        const time = (performance.now() - timer).toFixed(1)
+        log(`CFV hide ${rootBlackCnt} in ${rootComments.length} root comments, mode=${mode}, time=${time}`)
+    }
+
+    /**
+     * 检测二级评论
+     * @param mode full全量，incr增量
+     * @returns
+     */
+    static async checkSub(mode?: 'full' | 'incr') {
+        const timer = performance.now()
+        let revertAll = false
+        if (
+            !(
+                CFV.commentUsernameFilter.isEnable ||
+                CFV.commentContentFilter.isEnable ||
+                CFV.commentLevelFilter.isEnable ||
+                CFV.commentBotFilter.isEnable ||
+                CFV.commentCallBotFilter.isEnable ||
+                CFV.commentCallUserFilter.isEnable
+            )
+        ) {
+            revertAll = true
+        }
+
+        let subComments: HTMLElement[] = []
+        if (ShadowInstance.shadowStore.has('BILI-COMMENT-REPLY-RENDERER')) {
+            subComments = Array.from(ShadowInstance.shadowStore.get('BILI-COMMENT-REPLY-RENDERER')!).map(
+                (v) => v.host as HTMLElement,
+            )
+            if (mode === 'incr') {
+                subComments = subComments.filter((v) => !v.hasAttribute(settings.filterSign))
+            }
+        }
+        if (!subComments.length) {
+            return
+        }
+
         // subComments.forEach((v) => {
         //     log(
         //         [
@@ -326,48 +341,77 @@ class CFV extends MainFilter {
         //     )
         // })
 
-        // 构建黑白检测任务
-        let rootBlackCnt = 0
-        let subBlackCnt = 0
-        if (!isRootWhite) {
-            const blackPairs: SubFilterPair[] = []
-            CFV.commentUsernameFilter.isEnable &&
-                blackPairs.push([CFV.commentUsernameFilter, selectorFns.root.username])
-            CFV.commentContentFilter.isEnable && blackPairs.push([CFV.commentContentFilter, selectorFns.root.content])
-            CFV.commentLevelFilter.isEnable && blackPairs.push([CFV.commentLevelFilter, selectorFns.root.level])
-            CFV.commentBotFilter.isEnable && blackPairs.push([CFV.commentBotFilter, selectorFns.root.username])
-            CFV.commentCallBotFilter.isEnable && blackPairs.push([CFV.commentCallBotFilter, selectorFns.root.callUser])
-            CFV.commentCallUserFilter.isEnable &&
-                blackPairs.push([CFV.commentCallUserFilter, selectorFns.root.callUser])
-            const whitePairs: SubFilterPair[] = []
-            CFV.commentIsUpFilter.isEnable && whitePairs.push([CFV.commentIsUpFilter, selectorFns.root.isUp])
-            CFV.commentIsPinFilter.isEnable && whitePairs.push([CFV.commentIsPinFilter, selectorFns.root.isPin])
-            CFV.commentIsNoteFilter.isEnable && whitePairs.push([CFV.commentIsNoteFilter, selectorFns.root.isNote])
-            CFV.commentIsLinkFilter.isEnable && whitePairs.push([CFV.commentIsLinkFilter, selectorFns.root.isLink])
-
-            // 检测
-            rootBlackCnt = await coreCheck(rootComments, true, blackPairs, whitePairs)
-        }
-        if (!isSubWhite) {
-            const blackPairs: SubFilterPair[] = []
-            CFV.commentUsernameFilter.isEnable && blackPairs.push([CFV.commentUsernameFilter, selectorFns.sub.username])
-            CFV.commentContentFilter.isEnable && blackPairs.push([CFV.commentContentFilter, selectorFns.sub.content])
-            CFV.commentLevelFilter.isEnable && blackPairs.push([CFV.commentLevelFilter, selectorFns.sub.level])
-            CFV.commentBotFilter.isEnable && blackPairs.push([CFV.commentBotFilter, selectorFns.sub.username])
-            CFV.commentCallBotFilter.isEnable && blackPairs.push([CFV.commentCallBotFilter, selectorFns.sub.callUser])
-            CFV.commentCallUserFilter.isEnable && blackPairs.push([CFV.commentCallUserFilter, selectorFns.sub.callUser])
-            const whitePairs: SubFilterPair[] = []
-            CFV.commentIsUpFilter.isEnable && whitePairs.push([CFV.commentIsUpFilter, selectorFns.sub.isUp])
-            CFV.commentIsLinkFilter.isEnable && whitePairs.push([CFV.commentIsLinkFilter, selectorFns.sub.isLink])
-
-            // 检测
-            subBlackCnt = await coreCheck(subComments, true, blackPairs, whitePairs)
+        if (isSubWhite || revertAll) {
+            subComments.forEach((el) => showEle(el))
+            return
         }
 
+        const blackPairs: SubFilterPair[] = []
+        CFV.commentUsernameFilter.isEnable && blackPairs.push([CFV.commentUsernameFilter, selectorFns.sub.username])
+        CFV.commentContentFilter.isEnable && blackPairs.push([CFV.commentContentFilter, selectorFns.sub.content])
+        CFV.commentLevelFilter.isEnable && blackPairs.push([CFV.commentLevelFilter, selectorFns.sub.level])
+        CFV.commentBotFilter.isEnable && blackPairs.push([CFV.commentBotFilter, selectorFns.sub.username])
+        CFV.commentCallBotFilter.isEnable && blackPairs.push([CFV.commentCallBotFilter, selectorFns.sub.callUser])
+        CFV.commentCallUserFilter.isEnable && blackPairs.push([CFV.commentCallUserFilter, selectorFns.sub.callUser])
+
+        const whitePairs: SubFilterPair[] = []
+        CFV.commentIsUpFilter.isEnable && whitePairs.push([CFV.commentIsUpFilter, selectorFns.sub.isUp])
+        CFV.commentIsLinkFilter.isEnable && whitePairs.push([CFV.commentIsLinkFilter, selectorFns.sub.isLink])
+
+        const subBlackCnt = await coreCheck(subComments, false, blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
-        log(
-            `CFV hide ${rootBlackCnt} in ${rootComments.length} root, ${subBlackCnt} in ${subComments.length} sub, mode=${mode}, time=${time}`,
+        log(`CFV hide ${subBlackCnt} in ${subComments.length} sub comments, mode=${mode}, time=${time}`)
+    }
+
+    static check(mode?: 'full' | 'incr') {
+        this.checkRoot(mode)
+            .then()
+            .catch((err) => {
+                error('checkRoot failed', err)
+            })
+        this.checkSub(mode)
+            .then()
+            .catch((err) => {
+                error('checkSub failed', err)
+            })
+    }
+
+    /**
+     * 监听一级评论container
+     */
+    observeRoot() {
+        ShadowInstance.addShadowObserver(
+            'BILI-COMMENTS',
+            new MutationObserver(() => {
+                CFV.checkRoot('incr')
+            }),
+            {
+                subtree: true,
+                childList: true,
+            },
         )
+    }
+
+    /**
+     * 监听二级评论container
+     * 使用同一Observer监视所有二级评论上级节点，所有变化只触发一次回调
+     */
+    observeSub() {
+        ShadowInstance.addShadowObserver(
+            'BILI-COMMENT-REPLIES-RENDERER',
+            new MutationObserver(() => {
+                CFV.checkSub('full')
+            }),
+            {
+                subtree: true,
+                childList: true,
+            },
+        )
+    }
+
+    observe(): void {
+        this.observeRoot()
+        this.observeSub()
     }
 }
 

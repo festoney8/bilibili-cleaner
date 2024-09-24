@@ -103,7 +103,7 @@ if (isPageBangumi()) {
                     padding-top: calc(100vh + 15px) !important;
                 }
                 body:has(#bilibili-player-wrap[class*='video_playerFullScreen']) .bpx-player-video-area {
-                    flex: unset !important;
+                    flex: 1 !important;
                 }
                 body:has(#bilibili-player-wrap[class*='video_playerFullScreen'])::-webkit-scrollbar {
                     display: none !important;
@@ -159,7 +159,7 @@ if (isPageBangumi()) {
                     padding-top: calc(100vh + 15px) !important;
                 }
                 body:has(#bilibili-player-wrap[class*='video_playerFullScreen']) .bpx-player-video-area {
-                    flex: unset !important;
+                    flex: 1 !important;
                 }
                 body:has(#bilibili-player-wrap[class*='video_playerFullScreen'])::-webkit-scrollbar {
                     display: none !important;

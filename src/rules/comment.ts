@@ -1,27 +1,11 @@
 import { Group } from '../components/group'
 import { CheckboxItem } from '../components/item'
 import { isPageBangumi, isPageDynamic, isPagePlaylist, isPageSpace, isPageVideo } from '../utils/pageType'
-import { Shadow } from '../utils/shadow'
+import ShadowInstance from '../utils/shadow'
 
 const commentGroupList: Group[] = []
 
 if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPagePlaylist()) {
-    // shadow DOM 评论区
-    const shadow = new Shadow([
-        'bili-comments-header-renderer', // 评论区header(notice,编辑器)
-        'bili-comment-textarea', // 主编辑器、底部编辑器输入框
-        'bili-comment-rich-textarea', // 主编辑器、底部编辑器输入框
-        'bili-comment-renderer', // 一级评论
-        'bili-comment-user-info', // 一级二级评论用户信息
-        'bili-rich-text', // 一级二级评论内容
-        'bili-avatar', // 头像
-        'bili-photoswipe', // 全屏图片查看(笔记图片)
-        'bili-user-profile', // 用户卡片
-        'bili-comment-user-medal', // 昵称后勋章
-        'bili-comment-action-buttons-renderer', // 赞踩回复按钮区域
-        'bili-comment-reply-renderer', // 单个二级评论
-    ])
-
     const commentItems = [
         // 隐藏 活动通知, 默认开启
         new CheckboxItem({
@@ -30,14 +14,14 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
             defaultStatus: true,
             itemCSS: `.reply-header .reply-notice {display: none !important;}`,
             enableFunc: () => {
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-comments-header-renderer',
                     'video-page-hide-reply-notice',
                     `#notice {display: none !important;}`,
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-comments-header-renderer', 'video-page-hide-reply-notice')
+                ShadowInstance.removeShadowStyle('bili-comments-header-renderer', 'video-page-hide-reply-notice')
             },
         }),
         // 隐藏 评论编辑器
@@ -48,7 +32,7 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
             itemCSS: `.main-reply-box {height: 0 !important; visibility: hidden !important;}
                 .comment-container .reply-list {margin-top: -20px !important;}`,
             enableFunc: () => {
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-comments-header-renderer',
                     'video-page-hide-main-reply-box',
                     `#commentbox bili-comment-box {display: none !important;}
@@ -56,31 +40,37 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-comments-header-renderer', 'video-page-hide-main-reply-box')
+                ShadowInstance.removeShadowStyle('bili-comments-header-renderer', 'video-page-hide-main-reply-box')
             },
         }),
         // 隐藏 评论编辑器内占位文字, 默认开启
         new CheckboxItem({
             itemID: 'video-page-hide-reply-box-textarea-placeholder',
-            description: '隐藏 评论编辑器内占位文字',
+            description: '隐藏 评论编辑器内占位文字\n同时会隐藏回复评论时文字提示',
             defaultStatus: true,
             itemCSS: `.main-reply-box .reply-box-textarea::placeholder {color: transparent !important; user-select: none;}
                 .fixed-reply-box .reply-box-textarea::placeholder {color: transparent !important; user-select: none;}`,
             enableFunc: () => {
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-comment-textarea',
                     'video-page-hide-reply-box-textarea-placeholder',
                     `textarea:not([placeholder^="回复"])::placeholder {color: transparent !important; user-select: none;}`,
                 )
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-comment-rich-textarea',
                     'video-page-hide-reply-box-textarea-placeholder',
                     `.brt-placeholder {display: none;}`,
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-comment-textarea', 'video-page-hide-reply-box-textarea-placeholder')
-                shadow.unregister('bili-comment-rich-textarea', 'video-page-hide-reply-box-textarea-placeholder')
+                ShadowInstance.removeShadowStyle(
+                    'bili-comment-textarea',
+                    'video-page-hide-reply-box-textarea-placeholder',
+                )
+                ShadowInstance.removeShadowStyle(
+                    'bili-comment-rich-textarea',
+                    'video-page-hide-reply-box-textarea-placeholder',
+                )
             },
         }),
         // 隐藏 页面底部 吸附评论框, 默认开启
@@ -90,14 +80,14 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
             defaultStatus: true,
             itemCSS: `.fixed-reply-box {display: none !important;}`,
             enableFunc: () => {
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-comments-header-renderer',
                     'video-page-hide-fixed-reply-box',
                     `.bili-comments-bottom-fixed-wrapper {display: none !important;}`,
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-comments-header-renderer', 'video-page-hide-fixed-reply-box')
+                ShadowInstance.removeShadowStyle('bili-comments-header-renderer', 'video-page-hide-fixed-reply-box')
             },
         }),
         // 隐藏 投票栏 (红方/蓝方)
@@ -108,14 +98,14 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
             itemCSS: `.top-vote-card {display: none !important;}`,
             defaultStatus: true,
             enableFunc: () => {
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-comments-header-renderer',
                     'video-page-hide-top-vote-card',
                     `#vote {display: none !important;}`,
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-comments-header-renderer', 'video-page-hide-top-vote-card')
+                ShadowInstance.removeShadowStyle('bili-comments-header-renderer', 'video-page-hide-top-vote-card')
             },
         }),
         // 隐藏 用户卡片
@@ -124,14 +114,14 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
             description: '隐藏 用户卡片\n鼠标放在用户名上时不显示卡片',
             itemCSS: `.user-card {display: none!important;}`,
             enableFunc: () => {
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-user-profile',
                     'video-page-hide-comment-user-card',
                     `#wrap {display: none !important;}`,
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-user-profile', 'video-page-hide-comment-user-card')
+                ShadowInstance.removeShadowStyle('bili-user-profile', 'video-page-hide-comment-user-card')
             },
         }),
         // 隐藏 评论右侧装饰
@@ -140,14 +130,14 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
             description: '隐藏 评论右侧装饰',
             itemCSS: `.reply-decorate {display: none !important;}`,
             enableFunc: () => {
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-comment-renderer',
                     'video-page-hide-reply-decorate',
                     `#ornament {display: none !important;}`,
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-comment-renderer', 'video-page-hide-reply-decorate')
+                ShadowInstance.removeShadowStyle('bili-comment-renderer', 'video-page-hide-reply-decorate')
             },
         }),
         // 隐藏 粉丝牌
@@ -156,14 +146,14 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
             description: '隐藏 粉丝牌',
             itemCSS: `.fan-badge {display: none !important;}`,
             enableFunc: () => {
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-comment-user-medal',
                     'video-page-hide-fan-badge',
                     `#fans {display: none !important;}`,
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-comment-user-medal', 'video-page-hide-fan-badge')
+                ShadowInstance.removeShadowStyle('bili-comment-user-medal', 'video-page-hide-fan-badge')
             },
         }),
         // 隐藏 老粉、原始粉丝Tag
@@ -173,14 +163,14 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
             description: '隐藏 老粉、原始粉丝Tag',
             itemCSS: `.contractor-box {display: none !important;}`,
             enableFunc: () => {
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-comment-user-medal',
                     'video-page-hide-contractor-box',
                     `#contractor {display: none !important;}`,
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-comment-user-medal', 'video-page-hide-contractor-box')
+                ShadowInstance.removeShadowStyle('bili-comment-user-medal', 'video-page-hide-contractor-box')
             },
         }),
         // 隐藏 用户等级
@@ -189,7 +179,7 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
             description: '隐藏 用户等级',
             itemCSS: `.user-level, .sub-user-level {display: none !important;}`,
             enableFunc: () => {
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-comment-user-info',
                     'video-page-hide-user-level',
                     `#user-level {display: none !important;}
@@ -197,7 +187,7 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-comment-user-info', 'video-page-hide-user-level')
+                ShadowInstance.removeShadowStyle('bili-comment-user-info', 'video-page-hide-user-level')
             },
         }),
         // 隐藏 用户头像饰品
@@ -207,7 +197,7 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
             itemCSS: `.root-reply-avatar .bili-avatar-pendent-dom {display: none !important;}
             .comment-container .root-reply-avatar .bili-avatar {width: 48px !important; height:48px !important;}`,
             enableFunc: () => {
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-avatar',
                     'video-page-hide-bili-avatar-pendent-dom',
                     `picture:has(img[src*="/bfs/garb/"]) {display: none !important;}
@@ -219,7 +209,7 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-avatar', 'video-page-hide-bili-avatar-pendent-dom')
+                ShadowInstance.removeShadowStyle('bili-avatar', 'video-page-hide-bili-avatar-pendent-dom')
             },
         }),
         // 隐藏 用户头像徽章
@@ -229,14 +219,14 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
             itemCSS: `.bili-avatar-nft-icon {display: none !important;}
                 .comment-container .bili-avatar-icon {display: none !important;}`,
             enableFunc: () => {
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-avatar',
                     'video-page-hide-bili-avatar-nft-icon',
                     `.layer:not(.center) {display: none !important;}`,
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-avatar', 'video-page-hide-bili-avatar-nft-icon')
+                ShadowInstance.removeShadowStyle('bili-avatar', 'video-page-hide-bili-avatar-nft-icon')
             },
         }),
         // 隐藏 用户投票 (红方/蓝方)
@@ -247,14 +237,14 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
             defaultStatus: true,
             itemCSS: `.vote-info {display: none !important;}`,
             enableFunc: () => {
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-comment-renderer',
                     'video-page-hide-vote-info',
                     `bili-comment-vote-option {display: none !important;}`,
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-comment-renderer', 'video-page-hide-vote-info')
+                ShadowInstance.removeShadowStyle('bili-comment-renderer', 'video-page-hide-vote-info')
             },
         }),
         // 隐藏 评论内容下Tag (UP觉得很赞)
@@ -263,14 +253,14 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
             description: '隐藏 评论内容下Tag (UP觉得很赞)',
             itemCSS: `.reply-tag-list {display: none !important;}`,
             enableFunc: () => {
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-comment-renderer',
                     'video-page-hide-reply-tag-list',
                     `#tags {display: none !important;}`,
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-comment-renderer', 'video-page-hide-reply-tag-list')
+                ShadowInstance.removeShadowStyle('bili-comment-renderer', 'video-page-hide-reply-tag-list')
             },
         }),
         // 隐藏 笔记评论前的小Logo, 默认开启
@@ -280,14 +270,14 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
             defaultStatus: true,
             itemCSS: `.note-prefix {display: none !important;}`,
             enableFunc: () => {
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-comment-renderer',
                     'video-page-hide-note-prefix',
                     `#note {display: none !important;}`,
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-comment-renderer', 'video-page-hide-note-prefix')
+                ShadowInstance.removeShadowStyle('bili-comment-renderer', 'video-page-hide-note-prefix')
             },
         }),
         // 禁用 评论内容搜索关键词高亮, 默认开启
@@ -300,7 +290,7 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
                 .comment-container .reply-content .jump-link.search-word:hover {color: #008AC5 !important;}
                 .comment-container .reply-content .icon.search-word {display: none !important;}`,
             enableFunc: () => {
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-rich-text',
                     'video-page-hide-jump-link-search-word',
                     `#contents a[href*="search.bilibili.com"] {color: inherit !important;}
@@ -310,7 +300,7 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-rich-text', 'video-page-hide-jump-link-search-word')
+                ShadowInstance.removeShadowStyle('bili-rich-text', 'video-page-hide-jump-link-search-word')
             },
         }),
         // 禁用 评论中的@高亮
@@ -320,7 +310,7 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
             itemCSS: `.sub-reply-container .reply-content .jump-link.user {color: inherit !important;}
                 .comment-container .sub-reply-container .reply-content .jump-link.user:hover {color: #40C5F1 !important;}`,
             enableFunc: () => {
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-rich-text',
                     'video-page-hide-reply-content-user-highlight',
                     `#contents a[href*="space.bilibili.com"] {color: inherit !important;}
@@ -329,7 +319,7 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-rich-text', 'video-page-hide-reply-content-user-highlight')
+                ShadowInstance.removeShadowStyle('bili-rich-text', 'video-page-hide-reply-content-user-highlight')
             },
         }),
         // 隐藏 踩/回复 只在hover时显示, 默认开启
@@ -365,7 +355,7 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
             `,
             enableFunc: () => {
                 /* 借用more button的display样式，改为传透明度值 */
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-comment-renderer', // 一级评论
                     'video-page-hide-root-reply-dislike-reply-btn',
                     `#body {
@@ -375,7 +365,7 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
                         --bili-comment-hover-more-display: 1 !important;
                     }`,
                 )
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-comment-reply-renderer', // 二级评论
                     'video-page-hide-sub-reply-dislike-reply-btn',
                     `
@@ -386,7 +376,7 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
                         --bili-comment-hover-more-display: 1 !important;
                     }`,
                 )
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-comment-action-buttons-renderer',
                     'video-page-hide-root-reply-dislike-reply-btn',
                     `#dislike button, #reply button, #more button {
@@ -397,8 +387,11 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-comment-renderer', 'video-page-hide-root-reply-dislike-reply-btn')
-                shadow.unregister(
+                ShadowInstance.removeShadowStyle(
+                    'bili-comment-renderer',
+                    'video-page-hide-root-reply-dislike-reply-btn',
+                )
+                ShadowInstance.removeShadowStyle(
                     'bili-comment-action-buttons-renderer',
                     'video-page-hide-root-reply-dislike-reply-btn',
                 )
@@ -411,14 +404,14 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
             description: '隐藏 大表情',
             itemCSS: `.emoji-large {display: none !important;}`,
             enableFunc: () => {
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-rich-text',
                     'video-page-hide-emoji-large',
                     `#contents img:is(.emoji-large, [style^="width:50px"]) {display: none !important;}`,
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-rich-text', 'video-page-hide-emoji-large')
+                ShadowInstance.removeShadowStyle('bili-rich-text', 'video-page-hide-emoji-large')
             },
         }),
         // 大表情变成小表情
@@ -428,14 +421,14 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
             description: '大表情变成小表情',
             itemCSS: `.emoji-large {zoom: 0.5;}`,
             enableFunc: () => {
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-rich-text',
                     'video-page-hide-emoji-large-zoom',
                     `#contents img:is(.emoji-large, [style^="width:50px"]) {zoom: 0.5 !important;}`,
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-rich-text', 'video-page-hide-emoji-large-zoom')
+                ShadowInstance.removeShadowStyle('bili-rich-text', 'video-page-hide-emoji-large-zoom')
             },
         }),
         // 用户名 全部大会员色
@@ -444,7 +437,7 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
             description: '用户名 全部大会员色',
             itemCSS: `.reply-item .user-name, .comment-container .reply-item .sub-user-name {color: #FB7299 !important;}`,
             enableFunc: () => {
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-comment-user-info',
                     'video-page-reply-user-name-color-pink',
                     `#user-name {color: #FB7299 !important;}
@@ -452,7 +445,7 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-comment-user-info', 'video-page-reply-user-name-color-pink')
+                ShadowInstance.removeShadowStyle('bili-comment-user-info', 'video-page-reply-user-name-color-pink')
             },
         }),
         // 用户名 全部恢复默认色
@@ -461,7 +454,7 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
             description: '用户名 全部恢复默认色',
             itemCSS: `.reply-item .user-name, .comment-container .reply-item .sub-user-name {color: #61666d !important;}`,
             enableFunc: () => {
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-comment-user-info',
                     'video-page-reply-user-name-color-default',
                     `#user-name {color: #61666d !important;}
@@ -469,7 +462,7 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-comment-user-info', 'video-page-reply-user-name-color-default')
+                ShadowInstance.removeShadowStyle('bili-comment-user-info', 'video-page-reply-user-name-color-default')
             },
         }),
         // 笔记图片 查看大图优化, 默认开启
@@ -484,7 +477,7 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
                 .reply-view-image:has(.preview-item-box:only-child) .next-image {display: none !important;}
                 .reply-view-image .preview-list {display: none !important;}`,
             enableFunc: () => {
-                shadow.register(
+                ShadowInstance.addShadowStyle(
                     'bili-photoswipe',
                     'video-page-reply-view-image-optimize',
                     `#wrap:has(#thumb:empty) :is(#prev, #next) {display: none !important;}
@@ -493,7 +486,7 @@ if (isPageBangumi() || isPageVideo() || isPageDynamic() || isPageSpace() || isPa
                 )
             },
             disableFunc: () => {
-                shadow.unregister('bili-photoswipe', 'video-page-reply-view-image-optimize')
+                ShadowInstance.removeShadowStyle('bili-photoswipe', 'video-page-reply-view-image-optimize')
             },
         }),
 

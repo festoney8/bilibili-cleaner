@@ -7,6 +7,7 @@ import settings from '../../settings'
 import fetchHook from '../../utils/fetch'
 import { debugCommentFilter as debug, error } from '../../utils/logger'
 import { isPageDynamic } from '../../utils/pageType'
+import ShadowInstance from '../../utils/shadow'
 import { showEle } from '../../utils/tool'
 import { coreCheck, SelectorResult, SubFilterPair } from '../core/core'
 import {
@@ -42,6 +43,9 @@ const GM_KEYS = {
         callUser: {
             statusKey: 'dynamic-comment-call-user-filter-status',
         },
+        isAD: {
+            statusKey: 'dynamic-comment-ad-filter-status',
+        },
     },
     white: {
         root: {
@@ -61,6 +65,86 @@ const GM_KEYS = {
         },
         isLink: {
             statusKey: 'dynamic-comment-link-whitelist-status',
+        },
+    },
+}
+
+// 一二级评论信息提取
+const selectorFns = {
+    root: {
+        username: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.member?.uname?.trim()
+        },
+        content: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.content?.message?.replace(/@[^@ ]+?( |$)/g, '').trim()
+        },
+        callUser: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.content?.members[0]?.uname
+        },
+        level: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.member?.level_info?.current_level
+        },
+        isUp: (comment: HTMLElement): SelectorResult => {
+            const mid = (comment as any).__data?.mid
+            const upMid = (comment as any).__upMid
+            return typeof mid === 'number' && mid === upMid
+        },
+        isPin: (comment: HTMLElement): SelectorResult => {
+            return !!(comment as any).__data?.reply_control?.is_up_top
+        },
+        isNote: (comment: HTMLElement): SelectorResult => {
+            return !!(comment as any).__data?.reply_control?.is_note_v2
+        },
+        isLink: (comment: HTMLElement): SelectorResult => {
+            const jump_url = (comment as any).__data?.content?.jump_url
+            if (jump_url) {
+                for (const k of Object.keys(jump_url)) {
+                    if (!jump_url[k]?.pc_url?.includes('search.bilibili.com')) {
+                        return true
+                    }
+                }
+            }
+            return false
+        },
+    },
+    sub: {
+        username: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.member?.uname?.trim()
+        },
+        content: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.content?.message
+                ?.trim()
+                ?.replace(/@[^@ ]+?( |$)/g, '')
+                .replace(/^回复 *:?/, '')
+                .trim()
+        },
+        callUser: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.content?.message
+                ?.trim()
+                .replace(/^回复 ?@[^@ ]+? ?:/, '')
+                .trim()
+                ?.match(/@[^@ ]+( |$)/)?.[0]
+                .replace('@', '')
+                .trim()
+        },
+        level: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.member?.level_info?.current_level
+        },
+        isUp: (comment: HTMLElement): SelectorResult => {
+            const mid = (comment as any).__data?.mid
+            const upMid = (comment as any).__upMid
+            return typeof mid === 'number' && mid === upMid
+        },
+        isLink: (comment: HTMLElement): SelectorResult => {
+            const urls = (comment as any).__data?.content?.jump_url
+            if (urls) {
+                for (const k of Object.keys(urls)) {
+                    if (!urls[k]?.pc_url?.includes('search.bilibili.com')) {
+                        return true
+                    }
+                }
+            }
+            return false
         },
     },
 }
@@ -110,7 +194,7 @@ if (isPageDynamic()) {
         '木几萌Moe',
         '星崽丨StarZai',
         'AI沈阳美食家',
-        'AI识片酱',
+        // 'AI识片酱', // 听歌识曲，免除过滤
         'AI头脑风暴',
         'GPT_5',
         'Juice_AI',
@@ -143,193 +227,138 @@ if (isPageDynamic()) {
     const commentIsNoteFilter = new CommentIsNoteFilter()
     const commentIsLinkFilter = new CommentIsLinkFilter()
 
-    // 一二级评论信息提取
-    const selectorFns = {
-        root: {
-            username: (comment: HTMLElement): SelectorResult => {
-                return (comment as any).__data?.member?.uname?.trim()
-            },
-            content: (comment: HTMLElement): SelectorResult => {
-                return (comment as any).__data?.content?.message?.replace(/@[^@ ]+?( |$)/g, '').trim()
-            },
-            callUser: (comment: HTMLElement): SelectorResult => {
-                return (comment as any).__data?.content?.members[0]?.uname
-            },
-            level: (comment: HTMLElement): SelectorResult => {
-                return (comment as any).__data?.member?.level_info?.current_level
-            },
-            isUp: (comment: HTMLElement): SelectorResult => {
-                const mid = (comment as any).__data?.mid
-                const upMid = (comment as any).__upMid
-                return typeof mid === 'number' && mid === upMid
-            },
-            isPin: (comment: HTMLElement): SelectorResult => {
-                return !!(comment as any).__data?.reply_control?.is_up_top
-            },
-            isNote: (comment: HTMLElement): SelectorResult => {
-                return !!(comment as any).__data?.reply_control?.is_note_v2
-            },
-            isLink: (comment: HTMLElement): SelectorResult => {
-                const jump_url = (comment as any).__data?.content?.jump_url
-                if (jump_url) {
-                    for (const k of Object.keys(jump_url)) {
-                        if (!jump_url[k]?.pc_url?.includes('search.bilibili.com')) {
-                            return true
-                        }
-                    }
-                }
-                return false
-            },
-        },
-        sub: {
-            username: (comment: HTMLElement): SelectorResult => {
-                return (comment as any).__data?.member?.uname?.trim()
-            },
-            content: (comment: HTMLElement): SelectorResult => {
-                return (comment as any).__data?.content?.message
-                    ?.trim()
-                    ?.replace(/@[^@ ]+?( |$)/g, '')
-                    .replace(/^回复 *:?/, '')
-                    .trim()
-            },
-            callUser: (comment: HTMLElement): SelectorResult => {
-                return (comment as any).__data?.content?.message
-                    ?.trim()
-                    .replace(/^回复 ?@[^@ ]+? ?:/, '')
-                    .trim()
-                    ?.match(/@[^@ ]+( |$)/)?.[0]
-                    .replace('@', '')
-                    .trim()
-            },
-            level: (comment: HTMLElement): SelectorResult => {
-                return (comment as any).__data?.member?.level_info?.current_level
-            },
-            isUp: (comment: HTMLElement): SelectorResult => {
-                const mid = (comment as any).__data?.mid
-                const upMid = (comment as any).__upMid
-                return typeof mid === 'number' && mid === upMid
-            },
-            isLink: (comment: HTMLElement): SelectorResult => {
-                const urls = (comment as any).__data?.content?.jump_url
-                return urls ? Object.keys(urls).length > 0 : undefined
-            },
-        },
-    }
-
-    // 检测评论列表
-    const checkCommentList = async (fullSite: boolean) => {
-        if (location.host === 'space.bilibili.com' && !location.pathname.includes('/dynamic')) {
+    // 检测一级评论
+    const checkRoot = async (fullSite: boolean) => {
+        if (
+            !(
+                commentUsernameFilter.isEnable ||
+                commentContentFilter.isEnable ||
+                commentLevelFilter.isEnable ||
+                commentBotFilter.isEnable ||
+                commentCallBotFilter.isEnable ||
+                commentCallUserFilter.isEnable
+            )
+        ) {
             return
         }
-        try {
-            // 提取元素：一级评论、二级评论
-            let rootComments: HTMLElement[] = []
-            let subComments: HTMLElement[] = []
-            const shadowRoot = document.querySelector('bili-comments')?.shadowRoot
-            if (!shadowRoot) {
-                return
+
+        let rootComments: HTMLElement[] = []
+        if (ShadowInstance.shadowStore.has('BILI-COMMENT-THREAD-RENDERER')) {
+            rootComments = Array.from(ShadowInstance.shadowStore.get('BILI-COMMENT-THREAD-RENDERER')!).map(
+                (v) => v.host as HTMLElement,
+            )
+            if (!fullSite) {
+                rootComments = rootComments.filter((v) => !v.hasAttribute(settings.filterSign))
             }
-            if (fullSite) {
-                rootComments = Array.from(shadowRoot.querySelectorAll<HTMLElement>('bili-comment-thread-renderer'))
-                rootComments.forEach((c) => {
-                    const replies = c.shadowRoot
-                        ?.querySelector('bili-comment-replies-renderer')
-                        ?.shadowRoot?.querySelectorAll<HTMLElement>('bili-comment-reply-renderer')
-                    if (replies?.length) {
-                        subComments = subComments.concat(Array.from(replies))
-                    }
-                })
-            } else {
-                rootComments = Array.from(
-                    shadowRoot.querySelectorAll<HTMLElement>(
-                        `bili-comment-thread-renderer:not([${settings.filterSign}])`,
-                    ),
-                )
-                rootComments.forEach((c) => {
-                    const replies = c.shadowRoot
-                        ?.querySelector('bili-comment-replies-renderer')
-                        ?.shadowRoot?.querySelectorAll<HTMLElement>(
-                            `bili-comment-reply-renderer:not([${settings.filterSign}])`,
-                        )
-                    if (replies?.length) {
-                        subComments = subComments.concat(Array.from(replies))
-                    }
-                })
-            }
-
-            // rootComments.forEach((v) => {
-            //     debug(
-            //         [
-            //             `rootComments`,
-            //             `username: ${selectorFns.root.username(v)}`,
-            //             `content: ${selectorFns.root.content(v)}`,
-            //             `callUser: ${selectorFns.root.callUser(v)}`,
-            //             `level: ${selectorFns.root.level(v)}`,
-            //             `isUp: ${selectorFns.root.isUp(v)}`,
-            //             `isPin: ${selectorFns.root.isPin(v)}`,
-            //             `isNote: ${selectorFns.root.isNote(v)}`,
-            //             `isLink: ${selectorFns.root.isLink(v)}`,
-            //         ].join('\n'),
-            //     )
-            // })
-            // subComments.forEach((v) => {
-            //     debug(
-            //         [
-            //             `subComments`,
-            //             `username: ${selectorFns.sub.username(v)}`,
-            //             `content: ${selectorFns.sub.content(v)}`,
-            //             `callUser: ${selectorFns.sub.callUser(v)}`,
-            //             `level: ${selectorFns.sub.level(v)}`,
-            //             `isUp: ${selectorFns.sub.isUp(v)}`,
-            //             `isLink: ${selectorFns.sub.isLink(v)}`,
-            //         ].join('\n'),
-            //     )
-            // })
-
-            // 构建黑白检测任务
-            if (!isRootWhite && rootComments.length) {
-                const blackPairs: SubFilterPair[] = []
-                commentUsernameFilter.isEnable && blackPairs.push([commentUsernameFilter, selectorFns.root.username])
-                commentContentFilter.isEnable && blackPairs.push([commentContentFilter, selectorFns.root.content])
-                commentLevelFilter.isEnable && blackPairs.push([commentLevelFilter, selectorFns.root.level])
-                commentBotFilter.isEnable && blackPairs.push([commentBotFilter, selectorFns.root.username])
-                commentCallBotFilter.isEnable && blackPairs.push([commentCallBotFilter, selectorFns.root.callUser])
-                commentCallUserFilter.isEnable && blackPairs.push([commentCallUserFilter, selectorFns.root.callUser])
-
-                const whitePairs: SubFilterPair[] = []
-                commentIsUpFilter.isEnable && whitePairs.push([commentIsUpFilter, selectorFns.root.isUp])
-                commentIsPinFilter.isEnable && whitePairs.push([commentIsPinFilter, selectorFns.root.isPin])
-                commentIsNoteFilter.isEnable && whitePairs.push([commentIsNoteFilter, selectorFns.root.isNote])
-                commentIsLinkFilter.isEnable && whitePairs.push([commentIsLinkFilter, selectorFns.root.isLink])
-
-                await coreCheck(rootComments, true, blackPairs, whitePairs)
-            } else {
-                rootComments.forEach((el) => showEle(el))
-            }
-            if (!isSubWhite && subComments.length) {
-                const blackPairs: SubFilterPair[] = []
-                commentUsernameFilter.isEnable && blackPairs.push([commentUsernameFilter, selectorFns.sub.username])
-                commentContentFilter.isEnable && blackPairs.push([commentContentFilter, selectorFns.sub.content])
-                commentLevelFilter.isEnable && blackPairs.push([commentLevelFilter, selectorFns.sub.level])
-                commentBotFilter.isEnable && blackPairs.push([commentBotFilter, selectorFns.sub.username])
-                commentCallBotFilter.isEnable && blackPairs.push([commentCallBotFilter, selectorFns.sub.callUser])
-                commentCallUserFilter.isEnable && blackPairs.push([commentCallUserFilter, selectorFns.sub.callUser])
-
-                const whitePairs: SubFilterPair[] = []
-                commentIsUpFilter.isEnable && whitePairs.push([commentIsUpFilter, selectorFns.sub.isUp])
-                commentIsLinkFilter.isEnable && whitePairs.push([commentIsLinkFilter, selectorFns.sub.isLink])
-
-                await coreCheck(subComments, true, blackPairs, whitePairs)
-            } else {
-                subComments.forEach((el) => showEle(el))
-            }
-            debug(`check ${rootComments.length} root, ${subComments.length} sub comments`)
-        } catch (err) {
-            error('checkCommentList error', err)
         }
+        if (!rootComments.length) {
+            return
+        }
+
+        // rootComments.forEach((v) => {
+        //     debug(
+        //         [
+        //             `rootComments`,
+        //             `username: ${selectorFns.root.username(v)}`,
+        //             `content: ${selectorFns.root.content(v)}`,
+        //             `callUser: ${selectorFns.root.callUser(v)}`,
+        //             `level: ${selectorFns.root.level(v)}`,
+        //             `isUp: ${selectorFns.root.isUp(v)}`,
+        //             `isPin: ${selectorFns.root.isPin(v)}`,
+        //             `isNote: ${selectorFns.root.isNote(v)}`,
+        //             `isLink: ${selectorFns.root.isLink(v)}`,
+        //         ].join('\n'),
+        //     )
+        // })
+
+        if (isRootWhite) {
+            rootComments.forEach((el) => showEle(el))
+            return
+        }
+
+        const blackPairs: SubFilterPair[] = []
+        commentUsernameFilter.isEnable && blackPairs.push([commentUsernameFilter, selectorFns.root.username])
+        commentContentFilter.isEnable && blackPairs.push([commentContentFilter, selectorFns.root.content])
+        commentLevelFilter.isEnable && blackPairs.push([commentLevelFilter, selectorFns.root.level])
+        commentBotFilter.isEnable && blackPairs.push([commentBotFilter, selectorFns.root.username])
+        commentCallBotFilter.isEnable && blackPairs.push([commentCallBotFilter, selectorFns.root.callUser])
+        commentCallUserFilter.isEnable && blackPairs.push([commentCallUserFilter, selectorFns.root.callUser])
+
+        const whitePairs: SubFilterPair[] = []
+        commentIsUpFilter.isEnable && whitePairs.push([commentIsUpFilter, selectorFns.root.isUp])
+        commentIsPinFilter.isEnable && whitePairs.push([commentIsPinFilter, selectorFns.root.isPin])
+        commentIsNoteFilter.isEnable && whitePairs.push([commentIsNoteFilter, selectorFns.root.isNote])
+        commentIsLinkFilter.isEnable && whitePairs.push([commentIsLinkFilter, selectorFns.root.isLink])
+
+        await coreCheck(rootComments, true, blackPairs, whitePairs)
+        debug(`check ${rootComments.length} root comments`)
     }
 
-    const check = (fullSite: boolean) => {
+    // 检测二级评论
+    const checkSub = async (fullSite: boolean) => {
+        if (
+            !(
+                commentUsernameFilter.isEnable ||
+                commentContentFilter.isEnable ||
+                commentLevelFilter.isEnable ||
+                commentBotFilter.isEnable ||
+                commentCallBotFilter.isEnable ||
+                commentCallUserFilter.isEnable
+            )
+        ) {
+            return
+        }
+
+        let subComments: HTMLElement[] = []
+        if (ShadowInstance.shadowStore.has('BILI-COMMENT-REPLY-RENDERER')) {
+            subComments = Array.from(ShadowInstance.shadowStore.get('BILI-COMMENT-REPLY-RENDERER')!).map(
+                (v) => v.host as HTMLElement,
+            )
+            if (!fullSite) {
+                subComments = subComments.filter((v) => !v.hasAttribute(settings.filterSign))
+            }
+        }
+        if (!subComments.length) {
+            return
+        }
+
+        // subComments.forEach((v) => {
+        //     debug(
+        //         [
+        //             `subComments`,
+        //             `username: ${selectorFns.sub.username(v)}`,
+        //             `content: ${selectorFns.sub.content(v)}`,
+        //             `callUser: ${selectorFns.sub.callUser(v)}`,
+        //             `level: ${selectorFns.sub.level(v)}`,
+        //             `isUp: ${selectorFns.sub.isUp(v)}`,
+        //             `isLink: ${selectorFns.sub.isLink(v)}`,
+        //         ].join('\n'),
+        //     )
+        // })
+
+        if (isSubWhite) {
+            subComments.forEach((el) => showEle(el))
+            return
+        }
+
+        const blackPairs: SubFilterPair[] = []
+        commentUsernameFilter.isEnable && blackPairs.push([commentUsernameFilter, selectorFns.sub.username])
+        commentContentFilter.isEnable && blackPairs.push([commentContentFilter, selectorFns.sub.content])
+        commentLevelFilter.isEnable && blackPairs.push([commentLevelFilter, selectorFns.sub.level])
+        commentBotFilter.isEnable && blackPairs.push([commentBotFilter, selectorFns.sub.username])
+        commentCallBotFilter.isEnable && blackPairs.push([commentCallBotFilter, selectorFns.sub.callUser])
+        commentCallUserFilter.isEnable && blackPairs.push([commentCallUserFilter, selectorFns.sub.callUser])
+
+        const whitePairs: SubFilterPair[] = []
+        commentIsUpFilter.isEnable && whitePairs.push([commentIsUpFilter, selectorFns.sub.isUp])
+        commentIsLinkFilter.isEnable && whitePairs.push([commentIsLinkFilter, selectorFns.sub.isLink])
+
+        await coreCheck(subComments, true, blackPairs, whitePairs)
+        debug(`check ${subComments.length} sub comments`)
+    }
+
+    // 检测全部
+    const checkAll = (fullSite: boolean) => {
         if (
             commentUsernameFilter.isEnable ||
             commentContentFilter.isEnable ||
@@ -338,31 +367,48 @@ if (isPageDynamic()) {
             commentCallBotFilter.isEnable ||
             commentCallUserFilter.isEnable
         ) {
-            checkCommentList(fullSite).then().catch()
+            checkRoot(fullSite).then().catch()
+            checkSub(fullSite).then().catch()
         }
     }
 
-    // 评论区过滤，新旧通用，在获取评论相关API后触发检测
-    fetchHook.addPostFn((input: RequestInfo | URL, init: RequestInit | undefined, _resp?: Response) => {
-        if (typeof input === 'string' && init?.method?.toUpperCase() === 'GET' && input.includes('api.bilibili.com')) {
-            // 主评论载入
-            if (input.includes('/v2/reply/wbi/main')) {
-                let cnt = 0
-                const id = setInterval(() => {
-                    check(false)
-                    ++cnt > 30 && clearInterval(id)
-                }, 100)
-            }
-            // 二级评论翻页
-            if (input.includes('/v2/reply/reply')) {
-                let cnt = 0
-                const id = setInterval(() => {
-                    check(true)
-                    ++cnt > 10 && clearInterval(id)
-                }, 500)
-            }
-        }
-    })
+    /**
+     * 监听一级评论container
+     */
+    const observeRoot = () => {
+        ShadowInstance.addShadowObserver(
+            'BILI-COMMENTS',
+            new MutationObserver(() => {
+                checkRoot(true)
+            }),
+            {
+                subtree: true,
+                childList: true,
+            },
+        )
+    }
+
+    /**
+     * 监听二级评论container
+     * 使用同一Observer监视所有二级评论上级节点，所有变化只触发一次回调
+     */
+    const observeSub = () => {
+        ShadowInstance.addShadowObserver(
+            'BILI-COMMENT-REPLIES-RENDERER',
+            new MutationObserver(() => {
+                checkSub(true)
+            }),
+            {
+                subtree: true,
+                childList: true,
+            },
+        )
+    }
+
+    try {
+        observeRoot()
+        observeSub()
+    } catch {}
 
     // 右键监听函数, 屏蔽评论用户
     const contextMenuFunc = () => {
@@ -389,7 +435,7 @@ if (isPageDynamic()) {
                             e.preventDefault()
                             menu.registerMenu(`屏蔽用户：${username}`, () => {
                                 commentUsernameFilter.addParam(username)
-                                check(true)
+                                checkAll(true)
                                 try {
                                     const arr: string[] = GM_getValue(
                                         `BILICLEANER_${GM_KEYS.black.username.valueKey}`,
@@ -425,12 +471,12 @@ if (isPageDynamic()) {
                 isContextMenuUsernameEnable = true
                 contextMenuFunc()
                 commentUsernameFilter.enable()
-                check(true)
+                checkAll(true)
             },
             disableFunc: () => {
                 isContextMenuUsernameEnable = false
                 commentUsernameFilter.disable()
-                check(true)
+                checkAll(true)
             },
         }),
         // 编辑 用户名黑名单
@@ -445,7 +491,7 @@ if (isPageDynamic()) {
                     '每行一个用户名，保存时自动去重',
                     (values: string[]) => {
                         commentUsernameFilter.setParam(values)
-                        check(true)
+                        checkAll(true)
                     },
                 ).show()
             },
@@ -463,11 +509,11 @@ if (isPageDynamic()) {
             description: '启用 评论区 关键词过滤',
             enableFunc: () => {
                 commentContentFilter.enable()
-                check(true)
+                checkAll(true)
             },
             disableFunc: () => {
                 commentContentFilter.disable()
-                check(true)
+                checkAll(true)
             },
         }),
         // 编辑 关键词黑名单
@@ -482,7 +528,7 @@ if (isPageDynamic()) {
                     `每行一个关键词或正则，不区分大小写\n正则默认iu模式，无需flag，语法：/abc|\\d+/`,
                     (values: string[]) => {
                         commentContentFilter.setParam(values)
-                        check(true)
+                        checkAll(true)
                     },
                 ).show()
             },
@@ -499,11 +545,11 @@ if (isPageDynamic()) {
             defaultStatus: true,
             enableFunc: () => {
                 commentCallBotFilter.enable()
-                check(true)
+                checkAll(true)
             },
             disableFunc: () => {
                 commentCallBotFilter.disable()
-                check(true)
+                checkAll(true)
             },
         }),
         // 过滤 AI发布的评论
@@ -512,11 +558,11 @@ if (isPageDynamic()) {
             description: '过滤 AI发布的评论',
             enableFunc: () => {
                 commentBotFilter.enable()
-                check(true)
+                checkAll(true)
             },
             disableFunc: () => {
                 commentBotFilter.disable()
-                check(true)
+                checkAll(true)
             },
         }),
         // 过滤 @其他用户的评论
@@ -525,11 +571,52 @@ if (isPageDynamic()) {
             description: '过滤 @其他用户的评论',
             enableFunc: () => {
                 commentCallUserFilter.enable()
-                check(true)
+                checkAll(true)
             },
             disableFunc: () => {
                 commentCallUserFilter.disable()
-                check(true)
+                checkAll(true)
+            },
+        }),
+        // 过滤 带货评论
+        new CheckboxItem({
+            itemID: GM_KEYS.black.isAD.statusKey,
+            description: '过滤 带货评论 (实验功能 需刷新)',
+            enableFunc: () => {
+                fetchHook.addPostFn(
+                    async (
+                        input: RequestInfo | URL,
+                        init: RequestInit | undefined,
+                        resp?: Response,
+                    ): Promise<Response | void> => {
+                        if (!resp) {
+                            return
+                        }
+                        if (
+                            typeof input === 'string' &&
+                            init?.method?.toUpperCase() === 'GET' &&
+                            input.includes('api.bilibili.com/x/v2/reply/wbi/main')
+                        ) {
+                            try {
+                                const respData = await resp.clone().json()
+                                const msg = respData?.data?.top?.upper?.content?.message
+                                if (msg && /b23\.tv\/mall-|领券|gaoneng\.bilibili\.com/.test(msg)) {
+                                    respData.data.top = null
+                                    respData.data.top_replies = null
+                                    const newResp = new Response(JSON.stringify(respData), {
+                                        status: resp.status,
+                                        statusText: resp.statusText,
+                                        headers: resp.headers,
+                                    })
+                                    return newResp
+                                }
+                            } catch {
+                                return resp
+                            }
+                            return resp
+                        }
+                    },
+                )
             },
         }),
     ]
@@ -543,11 +630,11 @@ if (isPageDynamic()) {
             description: '启用 用户等级过滤',
             enableFunc: () => {
                 commentLevelFilter.enable()
-                check(true)
+                checkAll(true)
             },
             disableFunc: () => {
                 commentLevelFilter.disable()
-                check(true)
+                checkAll(true)
             },
         }),
         // 设定最低等级
@@ -561,7 +648,7 @@ if (isPageDynamic()) {
             unit: '',
             callback: async (value: number) => {
                 commentLevelFilter.setParam(value)
-                check(true)
+                checkAll(true)
             },
         }),
     ]
@@ -577,11 +664,11 @@ if (isPageDynamic()) {
             description: '一级评论(主评论) 免过滤',
             enableFunc: () => {
                 isRootWhite = true
-                check(true)
+                checkAll(true)
             },
             disableFunc: () => {
                 isRootWhite = false
-                check(true)
+                checkAll(true)
             },
         }),
         // 二级评论 免过滤
@@ -590,11 +677,11 @@ if (isPageDynamic()) {
             description: '二级评论(回复) 免过滤',
             enableFunc: () => {
                 isSubWhite = true
-                check(true)
+                checkAll(true)
             },
             disableFunc: () => {
                 isSubWhite = false
-                check(true)
+                checkAll(true)
             },
         }),
         // UP主的评论 免过滤, 默认开启
@@ -604,11 +691,11 @@ if (isPageDynamic()) {
             defaultStatus: true,
             enableFunc: () => {
                 commentIsUpFilter.enable()
-                check(true)
+                checkAll(true)
             },
             disableFunc: () => {
                 commentIsUpFilter.disable()
-                check(true)
+                checkAll(true)
             },
         }),
         // 置顶评论 免过滤, 默认开启
@@ -618,11 +705,11 @@ if (isPageDynamic()) {
             defaultStatus: true,
             enableFunc: () => {
                 commentIsPinFilter.enable()
-                check(true)
+                checkAll(true)
             },
             disableFunc: () => {
                 commentIsPinFilter.disable()
-                check(true)
+                checkAll(true)
             },
         }),
         // 笔记评论 免过滤, 默认开启
@@ -632,11 +719,11 @@ if (isPageDynamic()) {
             defaultStatus: true,
             enableFunc: () => {
                 commentIsNoteFilter.enable()
-                check(true)
+                checkAll(true)
             },
             disableFunc: () => {
                 commentIsNoteFilter.disable()
-                check(true)
+                checkAll(true)
             },
         }),
         // 含超链接的评论 免过滤, 默认开启
@@ -646,11 +733,11 @@ if (isPageDynamic()) {
             defaultStatus: true,
             enableFunc: () => {
                 commentIsLinkFilter.enable()
-                check(true)
+                checkAll(true)
             },
             disableFunc: () => {
                 commentIsLinkFilter.disable()
-                check(true)
+                checkAll(true)
             },
         }),
     ]

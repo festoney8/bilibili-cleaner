@@ -68,6 +68,85 @@ const GM_KEYS = {
     },
 }
 
+// 一二级评论信息提取
+const selectorFns = {
+    // 测试视频：
+    // https://b23.tv/av810872
+    // https://b23.tv/av1855797296
+    // https://b23.tv/av1706101190
+    // https://b23.tv/av1705573085
+    // https://b23.tv/av1350214762
+    root: {
+        username: (comment: HTMLElement): SelectorResult => {
+            return comment.querySelector('.root-reply-container .user-name')?.textContent?.trim()
+        },
+        content: (comment: HTMLElement): SelectorResult => {
+            return comment
+                .querySelector('.root-reply-container .reply-content')
+                ?.textContent?.trim()
+                .replace(/@[^@ ]+?( |$)/g, '')
+                .trim()
+        },
+        callUser: (comment: HTMLElement): SelectorResult => {
+            return comment
+                .querySelector('.root-reply-container .reply-content .jump-link.user')
+                ?.textContent?.replace('@', '')
+                .trim()
+        },
+        level: (comment: HTMLElement): SelectorResult => {
+            const c = comment.querySelector('.root-reply-container .user-level')?.className
+            const lv = c?.match(/level-([1-6])/)?.[1] // 忽略level-hardcore
+            return lv ? parseInt(lv) : undefined
+        },
+        isUp: (comment: HTMLElement): SelectorResult => {
+            return !!comment.querySelector('.root-reply-container .up-icon')
+        },
+        isPin: (comment: HTMLElement): SelectorResult => {
+            return !!comment.querySelector('.root-reply-container .top-icon')
+        },
+        isNote: (comment: HTMLElement): SelectorResult => {
+            return !!comment.querySelector('.root-reply-container .note-prefix')
+        },
+        isLink: (comment: HTMLElement): SelectorResult => {
+            return !!comment.querySelector('.root-reply-container .jump-link:is(.normal, .video)')
+        },
+    },
+    sub: {
+        username: (comment: HTMLElement): SelectorResult => {
+            return comment.querySelector('.sub-user-name')?.textContent?.trim()
+        },
+        content: (comment: HTMLElement): SelectorResult => {
+            return comment
+                .querySelector('.reply-content')
+                ?.textContent?.trim()
+                ?.replace(/@[^@ ]+?( |$)/g, '')
+                .replace(/^回复 *:?/, '')
+                .trim()
+        },
+        callUser: (comment: HTMLElement): SelectorResult => {
+            return comment
+                .querySelector('.reply-content')
+                ?.textContent?.trim()
+                .replace(/^回复 ?@[^@ ]+? ?:/, '')
+                .trim()
+                ?.match(/@[^@ ]+( |$)/)?.[0]
+                .replace('@', '')
+                .trim()
+        },
+        level: (comment: HTMLElement): SelectorResult => {
+            const c = comment.querySelector('.sub-user-level')?.className
+            const lv = c?.match(/level-([1-6])/)?.[1] // 忽略level-hardcore
+            return lv ? parseInt(lv) : undefined
+        },
+        isUp: (comment: HTMLElement): SelectorResult => {
+            return !!comment.querySelector('.sub-up-icon')
+        },
+        isLink: (comment: HTMLElement): SelectorResult => {
+            return !!comment.querySelector('.sub-reply-content .jump-link:is(.normal, .video)')
+        },
+    },
+}
+
 const spacePageCommentFilterGroupList: Group[] = []
 
 // 右键菜单功能
@@ -145,85 +224,6 @@ if (isPageSpace()) {
     const commentIsPinFilter = new CommentIsPinFilter()
     const commentIsNoteFilter = new CommentIsNoteFilter()
     const commentIsLinkFilter = new CommentIsLinkFilter()
-
-    // 一二级评论信息提取
-    const selectorFns = {
-        // 测试视频：
-        // https://b23.tv/av810872
-        // https://b23.tv/av1855797296
-        // https://b23.tv/av1706101190
-        // https://b23.tv/av1705573085
-        // https://b23.tv/av1350214762
-        root: {
-            username: (comment: HTMLElement): SelectorResult => {
-                return comment.querySelector('.root-reply-container .user-name')?.textContent?.trim()
-            },
-            content: (comment: HTMLElement): SelectorResult => {
-                return comment
-                    .querySelector('.root-reply-container .reply-content')
-                    ?.textContent?.trim()
-                    .replace(/@[^@ ]+?( |$)/g, '')
-                    .trim()
-            },
-            callUser: (comment: HTMLElement): SelectorResult => {
-                return comment
-                    .querySelector('.root-reply-container .reply-content .jump-link.user')
-                    ?.textContent?.replace('@', '')
-                    .trim()
-            },
-            level: (comment: HTMLElement): SelectorResult => {
-                const c = comment.querySelector('.root-reply-container .user-level')?.className
-                const lv = c?.match(/level-([1-6])/)?.[1] // 忽略level-hardcore
-                return lv ? parseInt(lv) : undefined
-            },
-            isUp: (comment: HTMLElement): SelectorResult => {
-                return !!comment.querySelector('.root-reply-container .up-icon')
-            },
-            isPin: (comment: HTMLElement): SelectorResult => {
-                return !!comment.querySelector('.root-reply-container .top-icon')
-            },
-            isNote: (comment: HTMLElement): SelectorResult => {
-                return !!comment.querySelector('.root-reply-container .note-prefix')
-            },
-            isLink: (comment: HTMLElement): SelectorResult => {
-                return !!comment.querySelector('.root-reply-container .jump-link:is(.normal, .video)')
-            },
-        },
-        sub: {
-            username: (comment: HTMLElement): SelectorResult => {
-                return comment.querySelector('.sub-user-name')?.textContent?.trim()
-            },
-            content: (comment: HTMLElement): SelectorResult => {
-                return comment
-                    .querySelector('.reply-content')
-                    ?.textContent?.trim()
-                    ?.replace(/@[^@ ]+?( |$)/g, '')
-                    .replace(/^回复 *:?/, '')
-                    .trim()
-            },
-            callUser: (comment: HTMLElement): SelectorResult => {
-                return comment
-                    .querySelector('.reply-content')
-                    ?.textContent?.trim()
-                    .replace(/^回复 ?@[^@ ]+? ?:/, '')
-                    .trim()
-                    ?.match(/@[^@ ]+( |$)/)?.[0]
-                    .replace('@', '')
-                    .trim()
-            },
-            level: (comment: HTMLElement): SelectorResult => {
-                const c = comment.querySelector('.sub-user-level')?.className
-                const lv = c?.match(/level-([1-6])/)?.[1] // 忽略level-hardcore
-                return lv ? parseInt(lv) : undefined
-            },
-            isUp: (comment: HTMLElement): SelectorResult => {
-                return !!comment.querySelector('.sub-up-icon')
-            },
-            isLink: (comment: HTMLElement): SelectorResult => {
-                return !!comment.querySelector('.sub-reply-content .jump-link:is(.normal, .video)')
-            },
-        },
-    }
 
     // 检测评论列表
     const checkCommentList = async (fullSite: boolean) => {
@@ -332,28 +332,6 @@ if (isPageSpace()) {
             checkCommentList(fullSite).then().catch()
         }
     }
-
-    // // 评论区过滤，新旧通用，在获取评论相关API后触发检测
-    // fetchHook.addPostFn((input: RequestInfo | URL, init: RequestInit | undefined, _resp?: Response) => {
-    //     if (typeof input === 'string' && init?.method?.toUpperCase() === 'GET' && input.includes('api.bilibili.com')) {
-    //         // 主评论载入
-    //         if (input.includes('/v2/reply/wbi/main')) {
-    //             let cnt = 0
-    //             const id = setInterval(() => {
-    //                 check(false)
-    //                 ++cnt > 30 && clearInterval(id)
-    //             }, 100)
-    //         }
-    //         // 二级评论翻页
-    //         if (input.includes('/v2/reply/reply')) {
-    //             let cnt = 0
-    //             const id = setInterval(() => {
-    //                 check(false)
-    //                 ++cnt > 15 && clearInterval(id)
-    //             }, 200)
-    //         }
-    //     }
-    // })
 
     // 右键监听函数, 屏蔽评论用户
     const contextMenuFunc = () => {

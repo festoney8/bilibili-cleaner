@@ -8,7 +8,7 @@ import fetchHook from '../../utils/fetch'
 import { debugCommentFilter as debug, error } from '../../utils/logger'
 import { isPageBangumi, isPagePlaylist, isPageVideo } from '../../utils/pageType'
 import ShadowInstance from '../../utils/shadow'
-import { showEle, waitForEle } from '../../utils/tool'
+import { showEle } from '../../utils/tool'
 import { coreCheck, SelectorResult, SubFilterPair } from '../core/core'
 import {
     CommentBotFilter,
@@ -75,6 +75,92 @@ const GM_KEYS = {
         },
         isTLink: {
             statusKey: 'video-comment-link-whitelist-status',
+        },
+    },
+}
+
+// 一二级评论信息提取
+const selectorFns = {
+    // 测试视频：
+    // https://b23.tv/av810872
+    // https://b23.tv/av1855797296
+    // https://b23.tv/av1706101190
+    // https://b23.tv/av1705573085
+    // https://b23.tv/av1350214762
+    root: {
+        username: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.member?.uname?.trim()
+        },
+        content: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.content?.message?.replace(/@[^@ ]+?( |$)/g, '').trim()
+        },
+        callUser: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.content?.members[0]?.uname
+        },
+        level: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.member?.level_info?.current_level
+        },
+        isUp: (comment: HTMLElement): SelectorResult => {
+            const mid = (comment as any).__data?.mid
+            const upMid = (comment as any).__upMid
+            return typeof mid === 'number' && mid === upMid
+        },
+        isPin: (comment: HTMLElement): SelectorResult => {
+            return !!(comment as any).__data?.reply_control?.is_up_top
+        },
+        isNote: (comment: HTMLElement): SelectorResult => {
+            return !!(comment as any).__data?.reply_control?.is_note_v2
+        },
+        isLink: (comment: HTMLElement): SelectorResult => {
+            const jump_url = (comment as any).__data?.content?.jump_url
+            if (jump_url) {
+                for (const k of Object.keys(jump_url)) {
+                    if (!jump_url[k]?.pc_url?.includes('search.bilibili.com')) {
+                        return true
+                    }
+                }
+            }
+            return false
+        },
+    },
+    sub: {
+        username: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.member?.uname?.trim()
+        },
+        content: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.content?.message
+                ?.trim()
+                ?.replace(/@[^@ ]+?( |$)/g, '')
+                .replace(/^回复 *:?/, '')
+                .trim()
+        },
+        callUser: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.content?.message
+                ?.trim()
+                .replace(/^回复 ?@[^@ ]+? ?:/, '')
+                .trim()
+                ?.match(/@[^@ ]+( |$)/)?.[0]
+                .replace('@', '')
+                .trim()
+        },
+        level: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.member?.level_info?.current_level
+        },
+        isUp: (comment: HTMLElement): SelectorResult => {
+            const mid = (comment as any).__data?.mid
+            const upMid = (comment as any).__upMid
+            return typeof mid === 'number' && mid === upMid
+        },
+        isLink: (comment: HTMLElement): SelectorResult => {
+            const urls = (comment as any).__data?.content?.jump_url
+            if (urls) {
+                for (const k of Object.keys(urls)) {
+                    if (!urls[k]?.pc_url?.includes('search.bilibili.com')) {
+                        return true
+                    }
+                }
+            }
+            return false
         },
     },
 }
@@ -146,92 +232,6 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
     const commentIsPinFilter = new CommentIsPinFilter()
     const commentIsNoteFilter = new CommentIsNoteFilter()
     const commentIsLinkFilter = new CommentIsLinkFilter()
-
-    // 一二级评论信息提取
-    const selectorFns = {
-        // 测试视频：
-        // https://b23.tv/av810872
-        // https://b23.tv/av1855797296
-        // https://b23.tv/av1706101190
-        // https://b23.tv/av1705573085
-        // https://b23.tv/av1350214762
-        root: {
-            username: (comment: HTMLElement): SelectorResult => {
-                return (comment as any).__data?.member?.uname?.trim()
-            },
-            content: (comment: HTMLElement): SelectorResult => {
-                return (comment as any).__data?.content?.message?.replace(/@[^@ ]+?( |$)/g, '').trim()
-            },
-            callUser: (comment: HTMLElement): SelectorResult => {
-                return (comment as any).__data?.content?.members[0]?.uname
-            },
-            level: (comment: HTMLElement): SelectorResult => {
-                return (comment as any).__data?.member?.level_info?.current_level
-            },
-            isUp: (comment: HTMLElement): SelectorResult => {
-                const mid = (comment as any).__data?.mid
-                const upMid = (comment as any).__upMid
-                return typeof mid === 'number' && mid === upMid
-            },
-            isPin: (comment: HTMLElement): SelectorResult => {
-                return !!(comment as any).__data?.reply_control?.is_up_top
-            },
-            isNote: (comment: HTMLElement): SelectorResult => {
-                return !!(comment as any).__data?.reply_control?.is_note_v2
-            },
-            isLink: (comment: HTMLElement): SelectorResult => {
-                const jump_url = (comment as any).__data?.content?.jump_url
-                if (jump_url) {
-                    for (const k of Object.keys(jump_url)) {
-                        if (!jump_url[k]?.pc_url?.includes('search.bilibili.com')) {
-                            return true
-                        }
-                    }
-                }
-                return false
-            },
-        },
-        sub: {
-            username: (comment: HTMLElement): SelectorResult => {
-                return (comment as any).__data?.member?.uname?.trim()
-            },
-            content: (comment: HTMLElement): SelectorResult => {
-                return (comment as any).__data?.content?.message
-                    ?.trim()
-                    ?.replace(/@[^@ ]+?( |$)/g, '')
-                    .replace(/^回复 *:?/, '')
-                    .trim()
-            },
-            callUser: (comment: HTMLElement): SelectorResult => {
-                return (comment as any).__data?.content?.message
-                    ?.trim()
-                    .replace(/^回复 ?@[^@ ]+? ?:/, '')
-                    .trim()
-                    ?.match(/@[^@ ]+( |$)/)?.[0]
-                    .replace('@', '')
-                    .trim()
-            },
-            level: (comment: HTMLElement): SelectorResult => {
-                return (comment as any).__data?.member?.level_info?.current_level
-            },
-            isUp: (comment: HTMLElement): SelectorResult => {
-                const mid = (comment as any).__data?.mid
-                const upMid = (comment as any).__upMid
-                return typeof mid === 'number' && mid === upMid
-            },
-            isLink: (comment: HTMLElement): SelectorResult => {
-                const urls = (comment as any).__data?.content?.jump_url
-                if (urls) {
-                    for (const k of Object.keys(urls)) {
-                        if (!urls[k]?.pc_url?.includes('search.bilibili.com')) {
-                            return true
-                        }
-                    }
-                }
-                return false
-            },
-        },
-    }
 
     // 检测一级评论
     const checkRoot = async (fullSite: boolean) => {
@@ -379,10 +379,26 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
     }
 
     /**
+     * 监听一级评论container
+     */
+    const observeRoot = () => {
+        ShadowInstance.addShadowObserver(
+            'BILI-COMMENTS',
+            new MutationObserver(() => {
+                checkRoot(true)
+            }),
+            {
+                subtree: true,
+                childList: true,
+            },
+        )
+    }
+
+    /**
      * 监听二级评论container
      * 使用同一Observer监视所有二级评论上级节点，所有变化只触发一次回调
      */
-    const observeSubReplies = () => {
+    const observeSub = () => {
         ShadowInstance.addShadowObserver(
             'BILI-COMMENT-REPLIES-RENDERER',
             new MutationObserver(() => {
@@ -395,24 +411,10 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
         )
     }
 
-    waitForEle(document, 'bili-comments', (node: HTMLElement): boolean => {
-        return node.tagName === 'BILI-COMMENTS'
-    }).then((ele) => {
-        if (ele) {
-            const container = ele.shadowRoot
-            if (container) {
-                // 监听一级评论变化
-                checkRoot(true)
-                const observer = new MutationObserver(() => {
-                    checkRoot(false)
-                })
-                observer.observe(container, { childList: true, subtree: true })
-
-                // 监听二级评论变化
-                observeSubReplies()
-            }
-        }
-    })
+    try {
+        observeRoot()
+        observeSub()
+    } catch {}
 
     // 右键监听函数, 屏蔽评论用户
     const contextMenuFunc = () => {

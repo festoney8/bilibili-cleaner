@@ -12,7 +12,7 @@ import {
     isPageSpace,
     isPageVideo,
 } from '../../utils/pageType'
-import { commentFilterDynamicGroups } from './variety/comment/pages/dynamic'
+import { commentFilterDynamicEntry, commentFilterDynamicGroups } from './variety/comment/pages/dynamic'
 import { commentFilterVideoEntry, commentFilterVideoGroups } from './variety/comment/pages/video'
 import { dynamicFilterDynamicEntry, dynamicFilterDynamicGroups } from './variety/dynamic/pages/dynamic'
 import { videoFilterChannelEntry, videoFilterChannelGroups } from './variety/video/pages/channel'
@@ -74,8 +74,8 @@ export const commentFilters: Filter[] = [
     {
         name: '动态页/空间页 动态评论过滤',
         groups: commentFilterDynamicGroups,
-        entry: async () => {},
-        checkFn: () => isPageDynamic() || isPageSpace(),
+        entry: commentFilterDynamicEntry,
+        checkFn: () => isPageDynamic(),
     },
 ]
 

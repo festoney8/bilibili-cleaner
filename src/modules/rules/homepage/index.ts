@@ -11,7 +11,7 @@ export const homepageGroups: Group[] = [
         items: homepageBasicItems,
     },
     {
-        name: '页面强制布局',
+        name: '页面布局',
         items: homepageLayoutItems,
     },
     {

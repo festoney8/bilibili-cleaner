@@ -1,4 +1,4 @@
-// 顶栏左侧 与页面左边界距离
+// 左边界距离
 html[common-header-bar-padding-left] {
     .bili-header .bili-header__bar,
     .mini-header__content,
@@ -7,7 +7,7 @@ html[common-header-bar-padding-left] {
     }
 }
 
-// 顶栏中间 搜索框宽度
+// 搜索框宽度
 html[common-header-bar-search-width] {
     .bili-header .center-search-container .center-search__bar,
     .bili-header-m .nav-search-box,
@@ -23,7 +23,7 @@ html[common-header-bar-search-width] {
     }
 }
 
-// 顶栏右侧 与页面右边界距离
+// 右边界距离
 html[common-header-bar-padding-right] {
     .bili-header .bili-header__bar,
     .mini-header__content,

@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 import { useDraggable } from '@vueuse/core'
-import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 
 const props = defineProps<{
     title: string
@@ -73,10 +73,6 @@ const getBarSize = () => {
 onMounted(() => {
     getBarSize()
     window.addEventListener('resize', getBarSize)
-})
-
-onBeforeUnmount(() => {
-    window.removeEventListener('resize', getBarSize)
 })
 
 // 限制拖拽范围

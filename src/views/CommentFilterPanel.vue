@@ -1,7 +1,7 @@
 <template>
     <PanelComp
         v-bind="{
-            title: 'bilibili 页面净化大师 - 评论过滤',
+            title: '评论过滤',
             widthPercent: 28,
             heightPercent: 85,
             minWidth: 360,

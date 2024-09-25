@@ -1,6 +1,6 @@
 <template>
     <div
-        ref="wrap"
+        ref="panel"
         :style="[
             {
                 width: widthPercent + 'vw',
@@ -12,11 +12,23 @@
         ]"
         class="no-scrollbar fixed z-[10000000] select-none overflow-auto overscroll-none rounded-xl bg-white shadow-lg"
     >
-        <div
-            ref="bar"
-            class="sticky top-0 z-10 w-full cursor-move bg-[#00AEEC] py-1.5 text-center text-xl font-black text-white"
-        >
-            {{ title }}
+        <div ref="bar" class="sticky top-0 z-10 w-full cursor-move bg-[#00AEEC] py-1.5 text-center">
+            <div class="text-xl font-black text-white">{{ title }}</div>
+            <i
+                class="absolute right-0 top-0 m-1 cursor-pointer text-white hover:rounded-full hover:bg-white hover:bg-opacity-40"
+                @click="panel?.remove()"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="2.5"
+                    stroke="currentColor"
+                    class="size-8"
+                >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+            </i>
         </div>
         <div class="no-scrollbar flex flex-grow flex-col p-2">
             <slot />
@@ -36,18 +48,16 @@ const props = defineProps<{
     minHeight: number // 单位px
 }>()
 
-const wrap = ref<HTMLElement | null>(null)
+const panel = ref<HTMLElement | null>(null)
 const bar = ref<HTMLElement | null>(null)
-const disabled = ref(false)
 
-const { x, y, style } = useDraggable(wrap, {
+const { x, y, style } = useDraggable(panel, {
     initialValue: {
         x: innerWidth / 2 - Math.max((innerWidth * props.widthPercent) / 100, props.minWidth) / 2,
         y: innerHeight / 2 - Math.max((innerHeight * props.heightPercent) / 100, props.minHeight) / 2,
     },
     handle: computed(() => bar.value),
     preventDefault: true,
-    disabled: disabled,
 })
 
 const barSize = reactive({ width: 0, height: 0 })

@@ -7,7 +7,7 @@
                 <span>{{ title || 'Disclosure Title' }}</span>
                 <ChevronUpIcon :class="open ? 'rotate-180 transform' : 'rotate-90'" class="h-6 w-6 text-blue-500" />
             </DisclosureButton>
-            <DisclosurePanel class="pl-3 pr-2 pt-2 text-gray-500">
+            <DisclosurePanel :unmount="false" class="pl-3 pr-2 pt-2 text-gray-500">
                 <slot />
             </DisclosurePanel>
         </Disclosure>

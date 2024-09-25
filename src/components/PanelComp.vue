@@ -16,7 +16,7 @@
             <div class="text-xl font-black text-white">{{ title }}</div>
             <i
                 class="absolute right-0 top-0 m-1 cursor-pointer text-white hover:rounded-full hover:bg-white hover:bg-opacity-40"
-                @click="panel?.remove()"
+                @click="emit('close')"
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -30,7 +30,7 @@
                 </svg>
             </i>
         </div>
-        <div class="no-scrollbar flex flex-grow flex-col p-2">
+        <div class="no-scrollbar flex min-h-[calc(100%-2.5rem)] flex-1 flex-col p-2">
             <slot />
         </div>
     </div>
@@ -47,6 +47,8 @@ const props = defineProps<{
     minWidth: number // 单位px
     minHeight: number // 单位px
 }>()
+
+const emit = defineEmits(['close'])
 
 const panel = ref<HTMLElement | null>(null)
 const bar = ref<HTMLElement | null>(null)

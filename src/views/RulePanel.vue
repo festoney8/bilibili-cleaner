@@ -1,6 +1,8 @@
 <template>
     <PanelComp
         v-bind="{ title: 'bilibili 页面净化大师', widthPercent: 28, heightPercent: 85, minWidth: 360, minHeight: 600 }"
+        v-if="isShow"
+        @close="isShow = false"
     >
         <div v-for="(group, index) in currPageGroups" :key="index">
             <DisclosureComp v-bind="{ title: group.name }">
@@ -16,6 +18,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import DisclosureComp from '../components/DisclosureComp.vue'
 import EditorComp from '../components/items/EditorComp.vue'
 import ListComp from '../components/items/ListComp.vue'
@@ -24,6 +27,8 @@ import SwitchComp from '../components/items/SwitchComp.vue'
 import PanelComp from '../components/PanelComp.vue'
 import { rules } from '../modules/rules'
 import { Group } from '../types/collection'
+
+const isShow = ref(true)
 
 let currPageGroups: Group[] = []
 

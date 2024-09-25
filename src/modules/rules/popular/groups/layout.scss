@@ -4,7 +4,7 @@ html[popular-layout-default] {
         display: none !important;
     }
 
-    /* grid替代flex做双列布局，屏蔽视频后不产生空白 */
+    // grid替代flex做双列布局，屏蔽视频后不产生空白
     .video-list,
     .popular-list .card-list,
     .history-list .card-list {
@@ -24,7 +24,7 @@ html[popular-layout-4-column] {
         display: none !important;
     }
 
-    /* 页面宽度 */
+    // 页面宽度
     @media (width >= 1300px) and (width <= 1399.9px) {
         .popular-container {
             max-width: 1180px !important;
@@ -36,7 +36,7 @@ html[popular-layout-4-column] {
         }
     }
 
-    /* 布局高度 */
+    // 布局高度
     .rank-container .rank-tab-wrap {
         margin-bottom: 0 !important;
         padding: 10px 0 !important;
@@ -51,21 +51,21 @@ html[popular-layout-4-column] {
         margin-top: 15px !important;
     }
 
-    /* 屏蔽 Tips */
+    // 屏蔽 Tips
     .popular-list .popular-tips,
     .rank-container .rank-tips,
     .history-list .history-tips {
         display: none !important;
     }
 
-    /* 屏蔽 Hint */
+    // 屏蔽 Hint
     .popular-list .popular-tips,
     .weekly-list .weekly-hint,
     .history-list .history-hint {
         display: none !important;
     }
 
-    /* 通用：综合热门, 每周必看, 入站必刷, grid布局 */
+    // 通用：综合热门, 每周必看, 入站必刷, grid布局
     .card-list,
     .video-list {
         width: 100% !important;
@@ -128,7 +128,7 @@ html[popular-layout-4-column] {
         text-wrap: nowrap !important;
     }
 
-    /* 排行榜, grid布局 */
+    // 排行榜, grid布局
     .rank-list {
         width: 100% !important;
         display: grid !important;
@@ -203,7 +203,7 @@ html[popular-layout-5-column] {
         display: none !important;
     }
 
-    /* 页面宽度 */
+    // 页面宽度
     @media (width >= 1300px) and (width <= 1399.9px) {
         .popular-container {
             max-width: 1180px !important;
@@ -215,7 +215,7 @@ html[popular-layout-5-column] {
         }
     }
 
-    /* 布局高度 */
+    // 布局高度
     .rank-container .rank-tab-wrap {
         margin-bottom: 0 !important;
         padding: 10px 0 !important;
@@ -230,21 +230,21 @@ html[popular-layout-5-column] {
         margin-top: 15px !important;
     }
 
-    /* 屏蔽 Tips */
+    // 屏蔽 Tips
     .popular-list .popular-tips,
     .rank-container .rank-tips,
     .history-list .history-tips {
         display: none !important;
     }
 
-    /* 屏蔽 Hint */
+    // 屏蔽 Hint
     .popular-list .popular-tips,
     .weekly-list .weekly-hint,
     .history-list .history-hint {
         display: none !important;
     }
 
-    /* 通用：综合热门, 每周必看, 入站必刷, grid布局 */
+    // 通用：综合热门, 每周必看, 入站必刷, grid布局
     .card-list,
     .video-list {
         width: 100% !important;
@@ -307,7 +307,7 @@ html[popular-layout-5-column] {
         text-wrap: nowrap !important;
     }
 
-    /* 排行榜, grid布局 */
+    // 排行榜, grid布局
     .rank-list {
         width: 100% !important;
         display: grid !important;
@@ -382,7 +382,7 @@ html[popular-layout-6-column] {
         display: none !important;
     }
 
-    /* 页面宽度 */
+    // 页面宽度
     @media (width >= 1300px) and (width <= 1399.9px) {
         .popular-container {
             max-width: 1180px !important;
@@ -394,7 +394,7 @@ html[popular-layout-6-column] {
         }
     }
 
-    /* 布局高度 */
+    // 布局高度
     .rank-container .rank-tab-wrap {
         margin-bottom: 0 !important;
         padding: 10px 0 !important;
@@ -409,21 +409,21 @@ html[popular-layout-6-column] {
         margin-top: 15px !important;
     }
 
-    /* 屏蔽 Tips */
+    // 屏蔽 Tips
     .popular-list .popular-tips,
     .rank-container .rank-tips,
     .history-list .history-tips {
         display: none !important;
     }
 
-    /* 屏蔽 Hint */
+    // 屏蔽 Hint
     .popular-list .popular-tips,
     .weekly-list .weekly-hint,
     .history-list .history-hint {
         display: none !important;
     }
 
-    /* 通用：综合热门, 每周必看, 入站必刷, grid布局 */
+    // 通用：综合热门, 每周必看, 入站必刷, grid布局
     .card-list,
     .video-list {
         width: 100% !important;
@@ -486,7 +486,7 @@ html[popular-layout-6-column] {
         text-wrap: nowrap !important;
     }
 
-    /* 排行榜, grid布局 */
+    // 排行榜, grid布局
     .rank-list {
         width: 100% !important;
         display: grid !important;

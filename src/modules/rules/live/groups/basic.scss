@@ -17,7 +17,7 @@ html[live-page-default-skin] {
         color: #61666d !important;
     }
     .header-info-ctnr .rows-ctnr .upper-row .room-owner-username {
-        color: #18191c !important;
+        color: var(--text1, #18191c) !important;
     }
 
     // 高权限覆盖

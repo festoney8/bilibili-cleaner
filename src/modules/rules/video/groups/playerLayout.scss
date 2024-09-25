@@ -201,7 +201,7 @@ html[normalscreen-width] {
         data-screen变化慢, 播放模式判断一律用:not(), 使用html元素的player-is-wide加快wide模式判断
     */
 
-    /* 左列宽度 */
+    // 左列宽度
     &:not([player-is-wide])
         :is(.left-container, .playlist-container--left):has(
             .bpx-player-container:not([data-screen='wide'], [data-screen='web'], [data-screen='full'])
@@ -209,7 +209,7 @@ html[normalscreen-width] {
         flex-basis: min(calc(100vw - 400px), var(--normalscreen-width)) !important;
     }
 
-    /* 播放器长宽 */
+    // 播放器长宽
     &:not([player-is-wide])
         :is(.left-container, .playlist-container--left):has(
             .bpx-player-container:not(
@@ -225,7 +225,7 @@ html[normalscreen-width] {
         aspect-ratio: 16 / 9 !important;
     }
 
-    /* 播放器外层 */
+    // 播放器外层
     &:not([player-is-wide])
         :is(.left-container, .playlist-container--left):has(
             .bpx-player-container:not(

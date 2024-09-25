@@ -5,6 +5,7 @@ export const popularBasicItems: Item[] = [
         type: 'switch',
         id: 'homepage-hide-banner',
         name: '隐藏 横幅banner',
+        description: ['同步生效：首页、分区页、热门页'],
     },
     {
         type: 'switch',

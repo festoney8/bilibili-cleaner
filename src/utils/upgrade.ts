@@ -1,4 +1,5 @@
 import { GM_getValue, GM_listValues, GM_setValue } from '$'
+import { log } from './logger'
 
 const removePrefix = () => {
     const prefix = 'BILICLEANER_'
@@ -16,4 +17,5 @@ const removePrefix = () => {
 
 export const upgrade = () => {
     removePrefix()
+    log('upgrade done')
 }

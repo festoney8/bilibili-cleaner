@@ -141,15 +141,14 @@ export const dynamicFilterDynamicEntry = async () => {
 
 export const dynamicFilterDynamicGroups: Group[] = [
     {
-        name: '用户名过滤',
+        name: '动态发布人过滤',
         items: [
             {
                 type: 'switch',
                 id: GM_KEYS.black.uploader.statusKey,
-                name: '启用 用户名过滤',
+                name: '启用 动态发布人过滤 (右键单击用户名)',
                 defaultEnable: false,
                 noStyle: true,
-                description: ['仅隐藏动态，与UP主过滤相互隔离'],
                 enableFn: () => {
                     mainFilter.dynUploaderFilter.enable()
                     mainFilter.check('full').then().catch()
@@ -160,13 +159,12 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 },
             },
             {
-                type: 'button',
-                id: `${Date.now()}`,
-                name: '编辑 用户名列表',
-                buttonText: '编辑',
-                fn: () => {
-                    // Todo
-                },
+                type: 'editor',
+                id: GM_KEYS.black.uploader.valueKey,
+                name: '编辑 动态发布用户黑名单',
+                editorTitle: '动态发布用户 黑名单',
+                description: ['右键屏蔽的用户会出现在这里'],
+                editorDescription: ['一行一个用户名，保存时自动去重'],
             },
         ],
     },
@@ -210,7 +208,7 @@ export const dynamicFilterDynamicGroups: Group[] = [
             {
                 type: 'switch',
                 id: GM_KEYS.black.title.statusKey,
-                name: '启用 视频标题 关键词过滤',
+                name: '启用 标题关键词过滤',
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
@@ -223,13 +221,15 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 },
             },
             {
-                type: 'button',
-                id: `${Date.now()}`,
+                type: 'editor',
+                id: GM_KEYS.black.title.valueKey,
                 name: '编辑 标题关键词黑名单',
-                buttonText: '编辑',
-                fn: () => {
-                    // Todo
-                },
+                editorTitle: '标题关键词 黑名单',
+                editorDescription: [
+                    '每行一个关键词或正则，不区分大小写',
+                    '请勿使用过于激进的关键词或正则',
+                    '正则默认iu模式，无需flag，语法：/abc|\\d+/',
+                ],
             },
         ],
     },

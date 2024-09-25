@@ -13,7 +13,7 @@
                 <div v-for="(item, innerIndex) in group.items" :key="innerIndex">
                     <SwitchComp v-if="item.type === 'switch'" v-bind="item"></SwitchComp>
                     <NumberComp v-else-if="item.type === 'number'" v-bind="item"></NumberComp>
-                    <ButtonComp v-else-if="item.type === 'button'" v-bind="item"></ButtonComp>
+                    <EditorComp v-else-if="item.type === 'editor'" v-bind="item"></EditorComp>
                     <ListComp v-else-if="item.type === 'list'" v-bind="item"></ListComp>
                 </div>
             </DisclosureComp>
@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import DisclosureComp from '../components/DisclosureComp.vue'
-import ButtonComp from '../components/items/ButtonComp.vue'
+import EditorComp from '../components/items/EditorComp.vue'
 import ListComp from '../components/items/ListComp.vue'
 import NumberComp from '../components/items/NumberComp.vue'
 import SwitchComp from '../components/items/SwitchComp.vue'

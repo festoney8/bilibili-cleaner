@@ -110,7 +110,7 @@ export const rules: Rule[] = [
         checkFn: () => isPageVideo() || isPageBangumi() || isPageDynamic() || isPageSpace() || isPagePlaylist(),
     },
     {
-        name: '全站通用',
+        name: '全站通用功能',
         groups: commonGroups,
         style: commonStyle,
         checkFn: () => true,

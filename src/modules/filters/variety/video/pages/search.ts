@@ -238,13 +238,12 @@ export const videoFilterSearchGroups: Group[] = [
                 },
             },
             {
-                type: 'button',
-                id: `${Date.now()}`,
+                type: 'editor',
+                id: GM_KEYS.black.uploader.valueKey,
                 name: '编辑 UP主黑名单',
-                buttonText: '编辑',
-                fn: () => {
-                    // Todo
-                },
+                description: ['右键屏蔽的UP主会出现在这里'],
+                editorTitle: 'UP主 黑名单',
+                editorDescription: ['每行一个UP主昵称，保存时自动去重'],
             },
             {
                 type: 'switch',
@@ -262,13 +261,15 @@ export const videoFilterSearchGroups: Group[] = [
                 },
             },
             {
-                type: 'button',
-                id: `${Date.now()}`,
+                type: 'editor',
+                id: GM_KEYS.black.uploaderKeyword.valueKey,
                 name: '编辑 UP主昵称关键词黑名单',
-                buttonText: '编辑',
-                fn: () => {
-                    // Todo
-                },
+                editorTitle: 'UP主昵称关键词 黑名单',
+                editorDescription: [
+                    '每行一个关键词或正则，不区分大小写',
+                    '请勿使用过于激进的关键词或正则',
+                    '正则默认iu模式，无需flag，语法：/abc|\\d+/',
+                ],
             },
         ],
     },
@@ -291,13 +292,15 @@ export const videoFilterSearchGroups: Group[] = [
                 },
             },
             {
-                type: 'button',
-                id: `${Date.now()}`,
+                type: 'editor',
+                id: GM_KEYS.black.title.valueKey,
                 name: '编辑 标题关键词黑名单',
-                buttonText: '编辑',
-                fn: () => {
-                    // Todo
-                },
+                editorTitle: '标题关键词 黑名单',
+                editorDescription: [
+                    '每行一个关键词或正则，不区分大小写',
+                    '请勿使用过于激进的关键词或正则',
+                    '正则默认iu模式，无需flag，语法：/abc|\\d+/',
+                ],
             },
         ],
     },
@@ -320,13 +323,12 @@ export const videoFilterSearchGroups: Group[] = [
                 },
             },
             {
-                type: 'button',
-                id: `${Date.now()}`,
+                type: 'editor',
+                id: GM_KEYS.black.bvid.valueKey,
                 name: '编辑 BV号黑名单',
-                buttonText: '编辑',
-                fn: () => {
-                    // Todo
-                },
+                description: ['右键屏蔽的BV号会出现在这里'],
+                editorTitle: 'BV号 黑名单',
+                editorDescription: ['每行一个BV号，保存时自动去重'],
             },
         ],
     },
@@ -349,13 +351,11 @@ export const videoFilterSearchGroups: Group[] = [
                 },
             },
             {
-                type: 'button',
-                id: `${Date.now()}`,
+                type: 'editor',
+                id: GM_KEYS.white.uploader.valueKey,
                 name: '编辑 UP主白名单',
-                buttonText: '编辑',
-                fn: () => {
-                    // Todo
-                },
+                editorTitle: 'UP主 白名单',
+                editorDescription: ['每行一个UP主昵称，保存时自动去重'],
             },
             {
                 type: 'switch',
@@ -373,13 +373,15 @@ export const videoFilterSearchGroups: Group[] = [
                 },
             },
             {
-                type: 'button',
-                id: `${Date.now()}`,
+                type: 'editor',
+                id: GM_KEYS.white.title.valueKey,
                 name: '编辑 标题关键词白名单',
-                buttonText: '编辑',
-                fn: () => {
-                    // Todo
-                },
+                editorTitle: '标题关键词 白名单',
+                editorDescription: [
+                    '每行一个关键词或正则，不区分大小写',
+                    '请勿使用过于激进的关键词或正则',
+                    '正则默认iu模式，无需flag，语法：/abc|\\d+/',
+                ],
             },
         ],
     },

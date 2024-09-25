@@ -1,7 +1,7 @@
-export type Item = ISwitchItem | INumberItem | IListItem | IButtonItem
+export type Item = ISwitchItem | INumberItem | IListItem | IEditorItem
 
 interface IBaseItem {
-    type: 'switch' | 'number' | 'radio' | 'button'
+    type: 'switch' | 'number' | 'radio' | 'editor'
 
     id: string
 }
@@ -85,21 +85,6 @@ export interface INumberItem extends IBaseItem {
     fn: (value: number) => Promise<void> | void
 }
 
-// 普通按钮
-export interface IButtonItem extends IBaseItem {
-    // 功能类型
-    type: 'button'
-
-    // 功能名
-    name: string
-
-    // 按钮文字
-    buttonText: string
-
-    // 按钮功能函数
-    fn: () => Promise<void> | void
-}
-
 // 单选功能
 export interface IListItem extends IBaseItem {
     // item类型
@@ -128,4 +113,25 @@ export interface IListItem extends IBaseItem {
         // 选项名
         name: string
     }[]
+}
+
+// 编辑器功能
+export interface IEditorItem extends IBaseItem {
+    // 功能类型
+    type: 'editor'
+
+    // item id, 与GM key对应，GM value为编辑器文字内容
+    id: string
+
+    // 功能名
+    name: string
+
+    // 功能补充介绍，每个string显示为一行
+    description?: string[]
+
+    // 编辑器标题
+    editorTitle: string
+
+    // 编辑器补充介绍
+    editorDescription?: string[]
 }

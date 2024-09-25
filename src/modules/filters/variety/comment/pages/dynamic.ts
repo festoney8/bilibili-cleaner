@@ -430,12 +430,12 @@ export const commentFilterDynamicEntry = async () => {
 
 export const commentFilterDynamicGroups: Group[] = [
     {
-        name: '用户名过滤',
+        name: '评论用户过滤',
         items: [
             {
                 type: 'switch',
                 id: GM_KEYS.black.username.statusKey,
-                name: '启用 用户名过滤 (右键单击用户名)',
+                name: '启用 评论用户过滤 (右键单击用户名)',
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
@@ -448,13 +448,12 @@ export const commentFilterDynamicGroups: Group[] = [
                 },
             },
             {
-                type: 'button',
-                id: `${Date.now()}`,
-                name: '编辑 用户名黑名单',
-                buttonText: '编辑',
-                fn: () => {
-                    // Todo
-                },
+                type: 'editor',
+                id: GM_KEYS.black.username.valueKey,
+                name: '编辑 评论用户黑名单',
+                description: ['本黑名单与UP主黑名单互不影响', '右键屏蔽的用户会出现在这里'],
+                editorTitle: '评论区 用户黑名单',
+                editorDescription: ['每行一个用户名，保存时自动去重'],
             },
         ],
     },
@@ -464,7 +463,7 @@ export const commentFilterDynamicGroups: Group[] = [
             {
                 type: 'switch',
                 id: GM_KEYS.black.content.statusKey,
-                name: '启用 关键词过滤',
+                name: '启用 评论关键词过滤',
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
@@ -477,13 +476,15 @@ export const commentFilterDynamicGroups: Group[] = [
                 },
             },
             {
-                type: 'button',
-                id: `${Date.now()}`,
+                type: 'editor',
+                id: GM_KEYS.black.content.valueKey,
                 name: '编辑 评论关键词黑名单',
-                buttonText: '编辑',
-                fn: () => {
-                    // Todo
-                },
+                editorTitle: '评论关键词 黑名单',
+                editorDescription: [
+                    '每行一个关键词或正则，不区分大小写',
+                    '请勿使用过于激进的关键词或正则',
+                    '正则默认iu模式，无需flag，语法：/abc|\\d+/',
+                ],
             },
         ],
     },

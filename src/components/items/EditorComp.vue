@@ -3,18 +3,78 @@
         <button
             type="button"
             class="inline-flex justify-center rounded-md border border-transparent bg-white px-2 py-1 text-sm text-blue-900 outline-none ring-1 ring-gray-300 hover:bg-blue-50 hover:ring-blue-500 focus:outline-none focus-visible:ring-1 focus-visible:ring-gray-500 focus-visible:ring-offset-1"
-            @click="onClick"
+            @click="isEditorShow = true"
         >
             编辑
         </button>
         <div class="ml-2 self-center text-black">{{ name }}</div>
     </div>
+    <DescriptionComp class="pl-12" v-if="description?.length" :description="description"></DescriptionComp>
+
+    <PanelComp
+        ref="panel"
+        v-bind="{
+            title: editorTitle,
+            widthPercent: 28,
+            heightPercent: 85,
+            minWidth: 360,
+            minHeight: 600,
+        }"
+        v-if="isEditorShow"
+        @close="isEditorShow = false"
+    >
+        <div class="mx-2 mb-2 flex flex-1 flex-col p-1 text-black">
+            <DescriptionComp
+                class="mb-3"
+                v-if="editorDescription?.length"
+                :description="editorDescription"
+            ></DescriptionComp>
+            <textarea
+                v-model="editorData"
+                class="flex-1 resize-none overscroll-none rounded-md border-2 border-gray-300 p-2 leading-snug outline-none focus:border-gray-400"
+                placeholder="请输入内容..."
+            ></textarea>
+            <div class="mt-4 flex justify-around">
+                <button
+                    class="w-24 self-center rounded-md border-2 border-gray-300 bg-white py-0.5 text-center text-lg hover:border-blue-400"
+                    @click="saveData"
+                >
+                    保存
+                </button>
+                <button
+                    class="w-24 self-center rounded-md border-2 border-gray-300 bg-white py-0.5 text-center text-lg hover:border-red-300"
+                    @click="isEditorShow = false"
+                >
+                    关闭
+                </button>
+            </div>
+        </div>
+    </PanelComp>
 </template>
 
 <script setup lang="ts">
+import { GM_getValue, GM_setValue } from '$'
+import { onBeforeUpdate, ref } from 'vue'
 import { IEditorItem } from '../../types/item'
+import PanelComp from '../PanelComp.vue'
+import DescriptionComp from './DescriptionComp.vue'
 
 const item = defineProps<IEditorItem>()
 
-const onClick = () => {}
+const isEditorShow = ref(false)
+
+const editorData = ref(GM_getValue(item.id, []).join('\n'))
+
+const panel = ref<HTMLElement | null>(null)
+
+const saveData = () => {
+    const data = editorData.value.split('\n').filter((v) => v.trim() !== '')
+    GM_setValue(item.id, data)
+}
+
+onBeforeUpdate(() => {
+    if (panel.value) {
+        editorData.value = GM_getValue(item.id, []).join('\n')
+    }
+})
 </script>

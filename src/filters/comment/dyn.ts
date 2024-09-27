@@ -399,7 +399,7 @@ if (isPageDynamic()) {
         ShadowInstance.addShadowObserver(
             'BILI-COMMENTS',
             new MutationObserver(() => {
-                checkRoot(true)
+                checkRoot(true).then().catch()
             }),
             {
                 subtree: true,
@@ -416,7 +416,7 @@ if (isPageDynamic()) {
         ShadowInstance.addShadowObserver(
             'BILI-COMMENT-REPLIES-RENDERER',
             new MutationObserver(() => {
-                checkSub(true)
+                checkSub(true).then().catch()
             }),
             {
                 subtree: true,

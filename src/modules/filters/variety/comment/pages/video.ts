@@ -10,6 +10,7 @@ import {
     CommentBotFilter,
     CommentCallBotFilter,
     CommentCallUserFilter,
+    CommentCallUserOnlyFilter,
     CommentContentFilter,
     CommentLevelFilter,
     CommentUsernameFilter,
@@ -38,6 +39,9 @@ const GM_KEYS = {
         },
         callUser: {
             statusKey: 'video-comment-call-user-filter-status',
+        },
+        callUserOnly: {
+            statusKey: 'video-comment-call-user-only-filter-status',
         },
     },
     white: {
@@ -70,6 +74,7 @@ const selectorFns = {
     // https://b23.tv/av1706101190
     // https://b23.tv/av1705573085
     // https://b23.tv/av1350214762
+    // https://b23.tv/av113195607985861
     root: {
         username: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.member?.uname?.trim()
@@ -79,6 +84,9 @@ const selectorFns = {
         },
         callUser: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.content?.members[0]?.uname
+        },
+        callUserOnly: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.content?.message?.replace(/@[^@ ]+/g, '').trim() === ''
         },
         level: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.member?.level_info?.current_level
@@ -126,6 +134,9 @@ const selectorFns = {
                 .replace('@', '')
                 .trim()
         },
+        callUserOnly: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.content?.message?.replace(/@[^@ ]+/g, '').trim() === ''
+        },
         level: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.member?.level_info?.current_level
         },
@@ -162,6 +173,7 @@ class CommentFilterVideo implements IMainFilter {
     commentBotFilter = new CommentBotFilter()
     commentCallBotFilter = new CommentCallBotFilter()
     commentCallUserFilter = new CommentCallUserFilter()
+    commentCallUserOnlyFilter = new CommentCallUserOnlyFilter()
     // 白名单
     commentIsUpFilter = new CommentIsUpFilter()
     commentIsPinFilter = new CommentIsPinFilter()
@@ -234,7 +246,8 @@ class CommentFilterVideo implements IMainFilter {
                 this.commentLevelFilter.isEnable ||
                 this.commentBotFilter.isEnable ||
                 this.commentCallBotFilter.isEnable ||
-                this.commentCallUserFilter.isEnable
+                this.commentCallUserFilter.isEnable ||
+                this.commentCallUserOnlyFilter.isEnable
             )
         ) {
             revertAll = true
@@ -260,6 +273,7 @@ class CommentFilterVideo implements IMainFilter {
         //             `username: ${selectorFns.root.username(v)}`,
         //             `content: ${selectorFns.root.content(v)}`,
         //             `callUser: ${selectorFns.root.callUser(v)}`,
+        //             `callUserOnly: ${selectorFns.root.callUserOnly(v)}`,
         //             `level: ${selectorFns.root.level(v)}`,
         //             `isUp: ${selectorFns.root.isUp(v)}`,
         //             `isPin: ${selectorFns.root.isPin(v)}`,
@@ -281,6 +295,8 @@ class CommentFilterVideo implements IMainFilter {
         this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns.root.username])
         this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.root.callUser])
         this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns.root.callUser])
+        this.commentCallUserOnlyFilter.isEnable &&
+            blackPairs.push([this.commentCallUserOnlyFilter, selectorFns.root.callUserOnly])
 
         const whitePairs: SubFilterPair[] = []
         this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns.root.isUp])
@@ -310,7 +326,8 @@ class CommentFilterVideo implements IMainFilter {
                 this.commentLevelFilter.isEnable ||
                 this.commentBotFilter.isEnable ||
                 this.commentCallBotFilter.isEnable ||
-                this.commentCallUserFilter.isEnable
+                this.commentCallUserFilter.isEnable ||
+                this.commentCallUserOnlyFilter.isEnable
             )
         ) {
             revertAll = true
@@ -336,6 +353,7 @@ class CommentFilterVideo implements IMainFilter {
         //             `username: ${selectorFns.sub.username(v)}`,
         //             `content: ${selectorFns.sub.content(v)}`,
         //             `callUser: ${selectorFns.sub.callUser(v)}`,
+        //             `callUserOnly: ${selectorFns.sub.callUserOnly(v)}`,
         //             `level: ${selectorFns.sub.level(v)}`,
         //             `isUp: ${selectorFns.sub.isUp(v)}`,
         //             `isLink: ${selectorFns.sub.isLink(v)}`,
@@ -355,6 +373,8 @@ class CommentFilterVideo implements IMainFilter {
         this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns.sub.username])
         this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.sub.callUser])
         this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns.sub.callUser])
+        this.commentCallUserOnlyFilter.isEnable &&
+            blackPairs.push([this.commentCallUserOnlyFilter, selectorFns.sub.callUserOnly])
 
         const whitePairs: SubFilterPair[] = []
         this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns.sub.isUp])
@@ -520,8 +540,23 @@ export const commentFilterVideoGroups: Group[] = [
             },
             {
                 type: 'switch',
+                id: GM_KEYS.black.callUserOnly.statusKey,
+                name: '过滤 只含 @其他用户 的评论',
+                defaultEnable: false,
+                noStyle: true,
+                enableFn: () => {
+                    mainFilter.commentCallUserOnlyFilter.enable()
+                    mainFilter.check('full').then().catch()
+                },
+                disableFn: () => {
+                    mainFilter.commentCallUserOnlyFilter.disable()
+                    mainFilter.check('full').then().catch()
+                },
+            },
+            {
+                type: 'switch',
                 id: GM_KEYS.black.callUser.statusKey,
-                name: '过滤 @其他用户的评论',
+                name: '过滤 包含 @其他用户 的评论',
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {

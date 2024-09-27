@@ -56,11 +56,11 @@ const menu = () => {
     GM_registerMenuCommand('✅视频过滤设置', () => {
         createView(VideoFilterPanel)
     })
-    GM_registerMenuCommand('✅动态过滤设置', () => {
-        createView(DynamicFilterPanel)
-    })
     GM_registerMenuCommand('✅评论过滤设置', () => {
         createView(CommentFilterPanel)
+    })
+    GM_registerMenuCommand('✅动态过滤设置', () => {
+        createView(DynamicFilterPanel)
     })
 }
 

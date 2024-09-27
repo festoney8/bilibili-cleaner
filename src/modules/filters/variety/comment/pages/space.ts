@@ -9,6 +9,7 @@ import {
     CommentBotFilter,
     CommentCallBotFilter,
     CommentCallUserFilter,
+    CommentCallUserOnlyFilter,
     CommentContentFilter,
     CommentLevelFilter,
     CommentUsernameFilter,
@@ -37,6 +38,9 @@ const GM_KEYS = {
         },
         callUser: {
             statusKey: 'dynamic-comment-call-user-filter-status',
+        },
+        callUserOnly: {
+            statusKey: 'dynamic-comment-call-user-only-filter-status',
         },
     },
     white: {
@@ -80,6 +84,15 @@ const selectorFns = {
                 ?.textContent?.replace('@', '')
                 .trim()
         },
+        callUserOnly: (comment: HTMLElement): SelectorResult => {
+            return (
+                comment
+                    .querySelector('.root-reply-container .reply-content')
+                    ?.textContent?.trim()
+                    .replace(/@[^@ ]+/g, '')
+                    .trim() === ''
+            )
+        },
         level: (comment: HTMLElement): SelectorResult => {
             const c = comment.querySelector('.root-reply-container .user-level')?.className
             const lv = c?.match(/level-([1-6])/)?.[1] // 忽略level-hardcore
@@ -120,6 +133,15 @@ const selectorFns = {
                 .replace('@', '')
                 .trim()
         },
+        callUserOnly: (comment: HTMLElement): SelectorResult => {
+            return (
+                comment
+                    .querySelector('.reply-content')
+                    ?.textContent?.trim()
+                    .replace(/@[^@ ]+/g, '')
+                    .trim() === ''
+            )
+        },
         level: (comment: HTMLElement): SelectorResult => {
             const c = comment.querySelector('.sub-user-level')?.className
             const lv = c?.match(/level-([1-6])/)?.[1] // 忽略level-hardcore
@@ -147,6 +169,7 @@ class CommentFilterSpace implements IMainFilter {
     commentBotFilter = new CommentBotFilter()
     commentCallBotFilter = new CommentCallBotFilter()
     commentCallUserFilter = new CommentCallUserFilter()
+    commentCallUserOnlyFilter = new CommentCallUserOnlyFilter()
     // 白名单
     commentIsUpFilter = new CommentIsUpFilter()
     commentIsPinFilter = new CommentIsPinFilter()
@@ -221,7 +244,8 @@ class CommentFilterSpace implements IMainFilter {
                 this.commentLevelFilter.isEnable ||
                 this.commentBotFilter.isEnable ||
                 this.commentCallBotFilter.isEnable ||
-                this.commentCallUserFilter.isEnable
+                this.commentCallUserFilter.isEnable ||
+                this.commentCallUserOnlyFilter.isEnable
             )
         ) {
             revertAll = true
@@ -240,6 +264,7 @@ class CommentFilterSpace implements IMainFilter {
         //             `username: ${selectorFns.root.username(v)}`,
         //             `content: ${selectorFns.root.content(v)}`,
         //             `callUser: ${selectorFns.root.callUser(v)}`,
+        //             `callUserOnly: ${selectorFns.root.callUserOnly(v)}`,
         //             `level: ${selectorFns.root.level(v)}`,
         //             `isUp: ${selectorFns.root.isUp(v)}`,
         //             `isPin: ${selectorFns.root.isPin(v)}`,
@@ -255,6 +280,7 @@ class CommentFilterSpace implements IMainFilter {
         //             `username: ${selectorFns.sub.username(v)}`,
         //             `content: ${selectorFns.sub.content(v)}`,
         //             `callUser: ${selectorFns.sub.callUser(v)}`,
+        //             `callUserOnly: ${selectorFns.sub.callUserOnly(v)}`,
         //             `level: ${selectorFns.sub.level(v)}`,
         //             `isUp: ${selectorFns.sub.isUp(v)}`,
         //             `isLink: ${selectorFns.sub.isLink(v)}`,
@@ -289,6 +315,8 @@ class CommentFilterSpace implements IMainFilter {
                 blackPairs.push([this.commentCallBotFilter, selectorFns.root.callUser])
             this.commentCallUserFilter.isEnable &&
                 blackPairs.push([this.commentCallUserFilter, selectorFns.root.callUser])
+            this.commentCallUserOnlyFilter.isEnable &&
+                blackPairs.push([this.commentCallUserOnlyFilter, selectorFns.root.callUserOnly])
 
             const whitePairs: SubFilterPair[] = []
             this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns.root.isUp])
@@ -308,6 +336,8 @@ class CommentFilterSpace implements IMainFilter {
             this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.sub.callUser])
             this.commentCallUserFilter.isEnable &&
                 blackPairs.push([this.commentCallUserFilter, selectorFns.sub.callUser])
+            this.commentCallUserOnlyFilter.isEnable &&
+                blackPairs.push([this.commentCallUserOnlyFilter, selectorFns.sub.callUserOnly])
 
             const whitePairs: SubFilterPair[] = []
             this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns.sub.isUp])
@@ -442,8 +472,23 @@ export const commentFilterSpaceGroups: Group[] = [
             },
             {
                 type: 'switch',
+                id: GM_KEYS.black.callUserOnly.statusKey,
+                name: '过滤 只含 @其他用户 的评论',
+                defaultEnable: false,
+                noStyle: true,
+                enableFn: () => {
+                    mainFilter.commentCallUserOnlyFilter.enable()
+                    mainFilter.check('full').then().catch()
+                },
+                disableFn: () => {
+                    mainFilter.commentCallUserOnlyFilter.disable()
+                    mainFilter.check('full').then().catch()
+                },
+            },
+            {
+                type: 'switch',
                 id: GM_KEYS.black.callUser.statusKey,
-                name: '过滤 @其他用户的评论',
+                name: '过滤 包含 @其他用户 的评论',
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {

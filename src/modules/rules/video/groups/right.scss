@@ -106,6 +106,9 @@ html[video-page-hide-right-container-section-next-btn] {
     .video-sections-head_first-line .first-line-right {
         display: none !important;
     }
+    .video-pod__header .auto-play {
+        display: none !important;
+    }
 }
 
 // 隐藏 视频合集 播放量
@@ -114,6 +117,9 @@ html[video-page-hide-right-container-section-play-num] {
         display: none !important;
     }
     .video-sections-head_second-line .play-num {
+        display: none !important;
+    }
+    .video-pod__header .total-view {
         display: none !important;
     }
 }
@@ -132,6 +138,9 @@ html[video-page-hide-right-container-section-abstract] {
     .video-sections-head_second-line .second-line_left img {
         display: none !important;
     }
+    .video-pod__header .pod-description-reference {
+        display: none !important;
+    }
 }
 
 // 隐藏 视频合集 订阅合集
@@ -140,6 +149,9 @@ html[video-page-hide-right-container-section-subscribe] {
         display: none !important;
     }
     .video-sections-head_second-line .second-line_right {
+        display: none !important;
+    }
+    .video-pod__header .subscribe-btn {
         display: none !important;
     }
 }

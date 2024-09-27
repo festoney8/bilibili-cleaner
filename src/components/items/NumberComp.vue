@@ -15,6 +15,7 @@
 import { GM_getValue, GM_setValue } from '$'
 import { ref, watch } from 'vue'
 import { INumberItem } from '../../types/item'
+import { error } from '../../utils/logger'
 import DescriptionComp from './DescriptionComp.vue'
 
 const item = defineProps<INumberItem>()
@@ -22,26 +23,35 @@ const item = defineProps<INumberItem>()
 const currValue = ref(GM_getValue(item.id, item.defaultValue))
 
 watch(currValue, (newValue, oldValue) => {
-    if (newValue > item.maxValue) {
-        currValue.value = item.maxValue
-    }
-    if (newValue < item.minValue) {
-        currValue.value = item.minValue
-    }
+    try {
+        if (newValue > item.maxValue) {
+            currValue.value = item.maxValue
+        }
+        if (newValue < item.minValue) {
+            currValue.value = item.minValue
+        }
 
-    // 样式生效、失效
-    if (oldValue === item.disableValue) {
-        if (!item.noStyle) {
-            document.documentElement.setAttribute(item.attrName ?? item.id, '')
+        // 样式生效、失效
+        if (oldValue === item.disableValue) {
+            if (!item.noStyle) {
+                document.documentElement.setAttribute(item.attrName ?? item.id, '')
+            }
         }
-    }
-    if (newValue === item.disableValue) {
-        if (!item.noStyle) {
-            document.documentElement.removeAttribute(item.attrName ?? item.id)
+        if (newValue === item.disableValue) {
+            if (!item.noStyle) {
+                document.documentElement.removeAttribute(item.attrName ?? item.id)
+            }
+        } else if (currValue.value !== oldValue) {
+            item
+                .fn(currValue.value)
+                ?.then()
+                .catch((err) => {
+                    throw err
+                })
         }
-    } else if (currValue.value !== oldValue) {
-        item.fn(currValue.value)?.then().catch()
+        GM_setValue(item.id, currValue.value)
+    } catch (err) {
+        error(`number item ${item.id} error`, err)
     }
-    GM_setValue(item.id, currValue.value)
 })
 </script>

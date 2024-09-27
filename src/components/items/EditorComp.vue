@@ -58,6 +58,7 @@
 import { GM_getValue, GM_setValue } from '$'
 import { onBeforeUpdate, ref } from 'vue'
 import { IEditorItem } from '../../types/item'
+import { error } from '../../utils/logger'
 import PanelComp from '../PanelComp.vue'
 import DescriptionComp from './DescriptionComp.vue'
 
@@ -70,13 +71,17 @@ const saveSuccess = ref(false)
 const editorData = ref(GM_getValue(item.id, []).join('\n') + '\n') // 末尾空行
 
 const saveData = () => {
-    const data = editorData.value.split('\n').filter((v) => v.trim() !== '')
-    GM_setValue(item.id, data)
-    saveSuccess.value = true
-    setTimeout(() => {
-        saveSuccess.value = false
-    }, 1500)
-    item.saveFn()
+    try {
+        const data = editorData.value.split('\n').filter((v) => v.trim() !== '')
+        GM_setValue(item.id, data)
+        saveSuccess.value = true
+        setTimeout(() => {
+            saveSuccess.value = false
+        }, 1500)
+        item.saveFn()
+    } catch (err) {
+        error(`editor item ${item.id} saveData error`, err)
+    }
 }
 
 onBeforeUpdate(() => {

@@ -24,6 +24,7 @@ import { GM_getValue, GM_setValue } from '$'
 import { Switch, SwitchGroup, SwitchLabel } from '@headlessui/vue'
 import { ref, watch } from 'vue'
 import { ISwitchItem } from '../../types/item'
+import { error } from '../../utils/logger'
 import DescriptionComp from './DescriptionComp.vue'
 
 const item = defineProps<ISwitchItem>()
@@ -31,23 +32,31 @@ const item = defineProps<ISwitchItem>()
 const enabled = ref(GM_getValue(item.id, item.defaultEnable))
 
 watch(enabled, () => {
-    if (enabled.value) {
-        if (!item.noStyle) {
-            document.documentElement.setAttribute(item.attrName ?? item.id, '')
+    try {
+        if (enabled.value) {
+            if (!item.noStyle) {
+                document.documentElement.setAttribute(item.attrName ?? item.id, '')
+            }
+            if (item.enableFn) {
+                item.enableFn()?.then().catch()
+            }
+            GM_setValue(item.id, true)
+        } else {
+            if (!item.noStyle) {
+                document.documentElement.removeAttribute(item.attrName ?? item.id)
+            }
+            if (item.disableFn) {
+                item
+                    .disableFn()
+                    ?.then()
+                    .catch((err) => {
+                        throw err
+                    })
+            }
+            GM_setValue(item.id, false)
         }
-        // Todo: enableFn run at
-        if (item.enableFn) {
-            item.enableFn()?.then().catch()
-        }
-        GM_setValue(item.id, true)
-    } else {
-        if (!item.noStyle) {
-            document.documentElement.removeAttribute(item.attrName ?? item.id)
-        }
-        if (item.disableFn) {
-            item.disableFn()?.then().catch()
-        }
-        GM_setValue(item.id, false)
+    } catch (err) {
+        error(`switch item ${item.id} error`, err)
     }
 })
 </script>

@@ -59,6 +59,7 @@ import { ref, watch } from 'vue'
 
 import { GM_getValue, GM_setValue } from '$'
 import { IListItem } from '../../types/item'
+import { error } from '../../utils/logger'
 import DescriptionComp from './DescriptionComp.vue'
 
 const item = defineProps<IListItem>()
@@ -68,13 +69,17 @@ const currOption = options.find((v) => v.id === currValue)
 const selectedOption = ref(currOption ?? options[0])
 
 watch(selectedOption, (newSelected) => {
-    for (const option of options) {
-        if (option.id === newSelected.id && newSelected.id !== item.disableValue) {
-            document.documentElement.setAttribute(option.id, '')
-        } else {
-            document.documentElement.removeAttribute(option.id)
+    try {
+        for (const option of options) {
+            if (option.id === newSelected.id && newSelected.id !== item.disableValue) {
+                document.documentElement.setAttribute(option.id, '')
+            } else {
+                document.documentElement.removeAttribute(option.id)
+            }
         }
+        GM_setValue(item.id, newSelected.id)
+    } catch (err) {
+        error(`list item ${item.id} error`, err)
     }
-    GM_setValue(item.id, newSelected.id)
 })
 </script>

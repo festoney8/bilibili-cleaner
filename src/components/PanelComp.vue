@@ -37,8 +37,8 @@
 </template>
 
 <script setup lang="ts">
-import { useDraggable } from '@vueuse/core'
-import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { useDraggable, useElementBounding } from '@vueuse/core'
+import { computed, ref, watch } from 'vue'
 
 const props = defineProps<{
     title: string
@@ -52,6 +52,7 @@ const emit = defineEmits(['close'])
 
 const panel = ref<HTMLElement | null>(null)
 const bar = ref<HTMLElement | null>(null)
+const { width, height } = useElementBounding(bar, { windowScroll: false }) // bar元素长宽
 
 const { x, y, style } = useDraggable(panel, {
     initialValue: {
@@ -62,21 +63,6 @@ const { x, y, style } = useDraggable(panel, {
     preventDefault: true,
 })
 
-const barSize = reactive({ width: 0, height: 0 })
-
-const getBarSize = () => {
-    if (bar.value) {
-        const rect = bar.value.getBoundingClientRect()
-        barSize.height = rect.height
-        barSize.width = rect.width
-    }
-}
-
-onMounted(() => {
-    getBarSize()
-    window.addEventListener('resize', getBarSize)
-})
-
 // 限制拖拽范围
 watch([x, y], ([newX, newY]) => {
     if (newX < 0) {
@@ -85,11 +71,11 @@ watch([x, y], ([newX, newY]) => {
     if (newY < 0) {
         y.value = 0
     }
-    if (newY + barSize.height > innerHeight) {
-        y.value = innerHeight - barSize.height
+    if (newY + height.value > innerHeight) {
+        y.value = innerHeight - height.value
     }
-    if (newX + barSize.width > innerWidth) {
-        x.value = innerWidth - barSize.width
+    if (newX + width.value > innerWidth) {
+        x.value = innerWidth - width.value
     }
 })
 </script>

@@ -126,7 +126,7 @@ class VideoFilterHomepage implements IMainFilter {
             this.check('full').then().catch()
 
             new MutationObserver(() => {
-                this.check('incr')
+                this.check('incr').then().catch()
             }).observe(this.target, { childList: true })
         })
     }

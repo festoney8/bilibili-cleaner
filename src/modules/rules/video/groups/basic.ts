@@ -14,7 +14,7 @@ export const videoBasicItems: Item[] = [
              * @see https://www.zhihu.com/question/381784377/answer/1099438784
              * @see https://github.com/SocialSisterYi/bilibili-API-collect/issues/740
              * @see https://socialsisteryi.github.io/bilibili-API-collect/docs/misc/bvid_desc.html
-             * @param bvid 输入BV号
+             * @param url 网址
              * @returns 输出纯数字av号
              */
             const bv2av = (url: string): string => {

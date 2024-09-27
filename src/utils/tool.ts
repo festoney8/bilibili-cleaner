@@ -1,15 +1,3 @@
-export const debounce = (fn: (...params: any[]) => any, wait: number, immed: boolean = false) => {
-    let timer: number | undefined = undefined
-    return function (this: any, ...args: any[]) {
-        if (timer === undefined && immed) {
-            fn.apply(this, args)
-        }
-        clearTimeout(timer)
-        timer = setTimeout(() => fn.apply(this, args), wait)
-        return timer
-    }
-}
-
 // 匹配BV号
 const bvidPattern = /(BV[1-9A-HJ-NP-Za-km-z]+)/
 export const matchBvid = (s: string): string | null => {

@@ -22,7 +22,7 @@ export interface ISubFilter {
 }
 
 // 主过滤器
-export abstract class IMainFilter {
+export interface IMainFilter {
     /**
      * 被观测元素，target内出现变化时触发check
      */
@@ -43,5 +43,5 @@ export abstract class IMainFilter {
      * 提取target内元素列表，用子过滤器检测元素
      * @param mode full: 全量检测 incr: 增量检测
      */
-    async check(mode?: 'full' | 'incr') {}
+    check(mode?: 'full' | 'incr'): void
 }

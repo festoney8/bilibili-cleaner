@@ -9,9 +9,11 @@ export class KeywordFilter implements ISubFilter {
     enable(): void {
         this.isEnable = true
     }
+
     disable(): void {
         this.isEnable = false
     }
+
     /** 将关键词或正则列表合并为正则 */
     private buildRegExp(): void {
         this.mergedRegExp = []
@@ -48,15 +50,18 @@ export class KeywordFilter implements ISubFilter {
             error('keyword filter build RegExp error', err)
         }
     }
+
     addParam(value: string): void {
         value = value.trim()
         value && this.keywordSet.add(value)
         this.buildRegExp()
     }
+
     setParam(value: string[]): void {
         this.keywordSet = new Set(value.map((v) => v.trim()).filter((v) => v))
         this.buildRegExp()
     }
+
     check(el: HTMLElement, selectorFn: SelectorFn): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             if (this.isEnable) {
@@ -72,7 +77,6 @@ export class KeywordFilter implements ISubFilter {
                 }
             }
             resolve()
-            return
         })
     }
 }

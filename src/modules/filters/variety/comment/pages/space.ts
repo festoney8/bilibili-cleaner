@@ -329,9 +329,9 @@ class CommentFilterSpace implements IMainFilter {
             if (ele) {
                 this.target = ele
                 log('CommentFilterSpace target appear')
-                this.check('full')
+                this.check('full').then().catch()
                 const commentObserver = new MutationObserver(() => {
-                    this.check('incr')
+                    this.check('incr').then().catch()
                 })
                 commentObserver.observe(this.target, { childList: true, subtree: true })
             }

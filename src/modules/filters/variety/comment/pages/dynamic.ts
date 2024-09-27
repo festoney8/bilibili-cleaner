@@ -387,7 +387,7 @@ class CommentFilterDynamic implements IMainFilter {
         ShadowInstance.addShadowObserver(
             'BILI-COMMENTS',
             new MutationObserver(() => {
-                this.checkRoot('incr')
+                this.checkRoot('incr').then().catch()
             }),
             {
                 subtree: true,
@@ -404,7 +404,7 @@ class CommentFilterDynamic implements IMainFilter {
         ShadowInstance.addShadowObserver(
             'BILI-COMMENT-REPLIES-RENDERER',
             new MutationObserver(() => {
-                this.checkSub('full')
+                this.checkSub('full').then().catch()
             }),
             {
                 subtree: true,

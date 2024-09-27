@@ -12,12 +12,10 @@ class WideScreenManager {
                 get: () => _isWide,
                 set: (value: boolean) => {
                     _isWide = value || this.wideScreenLock
-                    if (typeof _isWide === 'boolean') {
-                        if (_isWide) {
-                            document.documentElement?.setAttribute('player-is-wide', '')
-                        } else {
-                            document.documentElement?.removeAttribute('player-is-wide')
-                        }
+                    if (_isWide) {
+                        document.documentElement?.setAttribute('player-is-wide', '')
+                    } else {
+                        document.documentElement?.removeAttribute('player-is-wide')
                     }
                 },
             })

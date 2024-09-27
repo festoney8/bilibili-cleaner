@@ -1,6 +1,6 @@
 import { Item } from '../../../../types/item'
 
-export const spcaeBasicItems: Item[] = [
+export const spaceBasicItems: Item[] = [
     {
         type: 'switch',
         id: 'space-page-redirect-to-video',

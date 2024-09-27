@@ -1,6 +1,6 @@
 import { Item } from '../../../../types/item'
 
-export const spcaeDynamicItems: Item[] = [
+export const spaceDynamicItems: Item[] = [
     {
         type: 'switch',
         id: 'hide-dynamic-page-bili-dyn-avatar-pendent',

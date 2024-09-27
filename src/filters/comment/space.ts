@@ -13,6 +13,7 @@ import {
     CommentBotFilter,
     CommentCallBotFilter,
     CommentCallUserFilter,
+    CommentCallUserOnlyFilter,
     CommentContentFilter,
     CommentLevelFilter,
     CommentUsernameFilter,
@@ -42,8 +43,11 @@ const GM_KEYS = {
         callUser: {
             statusKey: 'dynamic-comment-call-user-filter-status',
         },
+        callUserOnly: {
+            statusKey: 'dynamic-comment-call-user-only-filter-status',
+        },
         isAD: {
-            statusKey: 'video-comment-ad-filter-status',
+            statusKey: 'dynamic-comment-ad-filter-status',
         },
     },
     white: {
@@ -70,12 +74,6 @@ const GM_KEYS = {
 
 // 一二级评论信息提取
 const selectorFns = {
-    // 测试视频：
-    // https://b23.tv/av810872
-    // https://b23.tv/av1855797296
-    // https://b23.tv/av1706101190
-    // https://b23.tv/av1705573085
-    // https://b23.tv/av1350214762
     root: {
         username: (comment: HTMLElement): SelectorResult => {
             return comment.querySelector('.root-reply-container .user-name')?.textContent?.trim()
@@ -92,6 +90,15 @@ const selectorFns = {
                 .querySelector('.root-reply-container .reply-content .jump-link.user')
                 ?.textContent?.replace('@', '')
                 .trim()
+        },
+        callUserOnly: (comment: HTMLElement): SelectorResult => {
+            return (
+                comment
+                    .querySelector('.root-reply-container .reply-content')
+                    ?.textContent?.trim()
+                    .replace(/@[^@ ]+/g, '')
+                    .trim() === ''
+            )
         },
         level: (comment: HTMLElement): SelectorResult => {
             const c = comment.querySelector('.root-reply-container .user-level')?.className
@@ -132,6 +139,15 @@ const selectorFns = {
                 ?.match(/@[^@ ]+( |$)/)?.[0]
                 .replace('@', '')
                 .trim()
+        },
+        callUserOnly: (comment: HTMLElement): SelectorResult => {
+            return (
+                comment
+                    .querySelector('.reply-content')
+                    ?.textContent?.trim()
+                    .replace(/@[^@ ]+/g, '')
+                    .trim() === ''
+            )
         },
         level: (comment: HTMLElement): SelectorResult => {
             const c = comment.querySelector('.sub-user-level')?.className
@@ -219,6 +235,8 @@ if (isPageSpace()) {
     const commentCallUserFilter = new CommentCallUserFilter()
     commentCallUserFilter.addParam(`/./`)
 
+    const commentCallUserOnlyFilter = new CommentCallUserOnlyFilter()
+
     // 初始化白名单
     const commentIsUpFilter = new CommentIsUpFilter()
     const commentIsPinFilter = new CommentIsPinFilter()
@@ -255,6 +273,7 @@ if (isPageSpace()) {
             //             `username: ${selectorFns.root.username(v)}`,
             //             `content: ${selectorFns.root.content(v)}`,
             //             `callUser: ${selectorFns.root.callUser(v)}`,
+            //             `callUserOnly: ${selectorFns.root.callUserOnly(v)}`,
             //             `level: ${selectorFns.root.level(v)}`,
             //             `isUp: ${selectorFns.root.isUp(v)}`,
             //             `isPin: ${selectorFns.root.isPin(v)}`,
@@ -270,6 +289,7 @@ if (isPageSpace()) {
             //             `username: ${selectorFns.sub.username(v)}`,
             //             `content: ${selectorFns.sub.content(v)}`,
             //             `callUser: ${selectorFns.sub.callUser(v)}`,
+            //             `callUserOnly: ${selectorFns.sub.callUserOnly(v)}`,
             //             `level: ${selectorFns.sub.level(v)}`,
             //             `isUp: ${selectorFns.sub.isUp(v)}`,
             //             `isLink: ${selectorFns.sub.isLink(v)}`,
@@ -286,6 +306,8 @@ if (isPageSpace()) {
                 commentBotFilter.isEnable && blackPairs.push([commentBotFilter, selectorFns.root.username])
                 commentCallBotFilter.isEnable && blackPairs.push([commentCallBotFilter, selectorFns.root.callUser])
                 commentCallUserFilter.isEnable && blackPairs.push([commentCallUserFilter, selectorFns.root.callUser])
+                commentCallUserOnlyFilter.isEnable &&
+                    blackPairs.push([commentCallUserOnlyFilter, selectorFns.root.callUserOnly])
 
                 const whitePairs: SubFilterPair[] = []
                 commentIsUpFilter.isEnable && whitePairs.push([commentIsUpFilter, selectorFns.root.isUp])
@@ -305,6 +327,8 @@ if (isPageSpace()) {
                 commentBotFilter.isEnable && blackPairs.push([commentBotFilter, selectorFns.sub.username])
                 commentCallBotFilter.isEnable && blackPairs.push([commentCallBotFilter, selectorFns.sub.callUser])
                 commentCallUserFilter.isEnable && blackPairs.push([commentCallUserFilter, selectorFns.sub.callUser])
+                commentCallUserOnlyFilter.isEnable &&
+                    blackPairs.push([commentCallUserOnlyFilter, selectorFns.sub.callUserOnly])
 
                 const whitePairs: SubFilterPair[] = []
                 commentIsUpFilter.isEnable && whitePairs.push([commentIsUpFilter, selectorFns.sub.isUp])
@@ -327,7 +351,8 @@ if (isPageSpace()) {
             commentLevelFilter.isEnable ||
             commentBotFilter.isEnable ||
             commentCallBotFilter.isEnable ||
-            commentCallUserFilter.isEnable
+            commentCallUserFilter.isEnable ||
+            commentCallUserOnlyFilter.isEnable
         ) {
             checkCommentList(fullSite).then().catch()
         }
@@ -524,10 +549,23 @@ if (isPageSpace()) {
                 check(true)
             },
         }),
-        // 过滤 @其他用户的评论
+        // 过滤 只含 @其他用户 的评论
+        new CheckboxItem({
+            itemID: GM_KEYS.black.callUserOnly.statusKey,
+            description: '过滤 只含 @其他用户 的评论',
+            enableFunc: () => {
+                commentCallUserOnlyFilter.enable()
+                check(true)
+            },
+            disableFunc: () => {
+                commentCallUserOnlyFilter.disable()
+                check(true)
+            },
+        }),
+        // 过滤 包含 @其他用户 的评论
         new CheckboxItem({
             itemID: GM_KEYS.black.callUser.statusKey,
-            description: '过滤 @其他用户的评论',
+            description: '过滤 包含 @其他用户 的评论',
             enableFunc: () => {
                 commentCallUserFilter.enable()
                 check(true)

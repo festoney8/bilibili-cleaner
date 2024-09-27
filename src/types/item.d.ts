@@ -134,4 +134,7 @@ export interface IEditorItem extends IBaseItem {
 
     // 编辑器补充介绍
     editorDescription?: string[]
+
+    // 保存时运行函数
+    saveFn: () => Promise<void> | void
 }

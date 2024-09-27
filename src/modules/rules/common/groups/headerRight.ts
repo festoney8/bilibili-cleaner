@@ -43,6 +43,9 @@ export const commonHeaderRightItems: Item[] = [
         name: '收藏弹出框 自动选中稍后再看',
         noStyle: true,
         enableFn: async () => {
+            if (!CSS.supports('selector(:has(*))')) {
+                return
+            }
             let cnt = 0
             const id = setInterval(() => {
                 const ele = document.querySelector(

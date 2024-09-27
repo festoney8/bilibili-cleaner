@@ -165,6 +165,10 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 editorTitle: '动态发布用户 黑名单',
                 description: ['右键屏蔽的用户会出现在这里'],
                 editorDescription: ['一行一个用户名，保存时自动去重'],
+                saveFn: async () => {
+                    mainFilter.dynUploaderFilter.setParam(GM_getValue(GM_KEYS.black.uploader.valueKey, []))
+                    mainFilter.check('full').then().catch()
+                },
             },
         ],
     },
@@ -230,6 +234,10 @@ export const dynamicFilterDynamicGroups: Group[] = [
                     '请勿使用过于激进的关键词或正则',
                     '正则默认iu模式，无需flag，语法：/abc|\\d+/',
                 ],
+                saveFn: async () => {
+                    mainFilter.dynVideoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
+                    mainFilter.check('full').then().catch()
+                },
             },
         ],
     },

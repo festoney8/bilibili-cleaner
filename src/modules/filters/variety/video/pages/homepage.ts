@@ -270,6 +270,10 @@ export const videoFilterHomepageGroups: Group[] = [
                 description: ['右键屏蔽的UP主会出现在这里'],
                 editorTitle: 'UP主 黑名单',
                 editorDescription: ['每行一个UP主昵称，保存时自动去重'],
+                saveFn: async () => {
+                    mainFilter.videoUploaderFilter.setParam(GM_getValue(GM_KEYS.black.uploader.valueKey, []))
+                    mainFilter.check('full').then().catch()
+                },
             },
             {
                 type: 'switch',
@@ -296,6 +300,12 @@ export const videoFilterHomepageGroups: Group[] = [
                     '请勿使用过于激进的关键词或正则',
                     '正则默认iu模式，无需flag，语法：/abc|\\d+/',
                 ],
+                saveFn: async () => {
+                    mainFilter.videoUploaderKeywordFilter.setParam(
+                        GM_getValue(GM_KEYS.black.uploaderKeyword.valueKey, []),
+                    )
+                    mainFilter.check('full').then().catch()
+                },
             },
         ],
     },
@@ -327,6 +337,10 @@ export const videoFilterHomepageGroups: Group[] = [
                     '请勿使用过于激进的关键词或正则',
                     '正则默认iu模式，无需flag，语法：/abc|\\d+/',
                 ],
+                saveFn: async () => {
+                    mainFilter.videoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
+                    mainFilter.check('full').then().catch()
+                },
             },
         ],
     },
@@ -355,6 +369,10 @@ export const videoFilterHomepageGroups: Group[] = [
                 description: ['右键屏蔽的BV号会出现在这里'],
                 editorTitle: 'BV号 黑名单',
                 editorDescription: ['每行一个BV号，保存时自动去重'],
+                saveFn: async () => {
+                    mainFilter.videoBvidFilter.setParam(GM_getValue(GM_KEYS.black.bvid.valueKey, []))
+                    mainFilter.check('full').then().catch()
+                },
             },
         ],
     },
@@ -432,6 +450,10 @@ export const videoFilterHomepageGroups: Group[] = [
                 name: '编辑 UP主白名单',
                 editorTitle: 'UP主 白名单',
                 editorDescription: ['每行一个UP主昵称，保存时自动去重'],
+                saveFn: async () => {
+                    mainFilter.videoUploaderWhiteFilter.setParam(GM_getValue(GM_KEYS.white.uploader.valueKey, []))
+                    mainFilter.check('full').then().catch()
+                },
             },
             {
                 type: 'switch',
@@ -458,6 +480,10 @@ export const videoFilterHomepageGroups: Group[] = [
                     '请勿使用过于激进的关键词或正则',
                     '正则默认iu模式，无需flag，语法：/abc|\\d+/',
                 ],
+                saveFn: async () => {
+                    mainFilter.videoTitleWhiteFilter.setParam(GM_getValue(GM_KEYS.white.title.valueKey, []))
+                    mainFilter.check('full').then().catch()
+                },
             },
         ],
     },

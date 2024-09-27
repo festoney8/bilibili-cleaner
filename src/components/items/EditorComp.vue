@@ -70,6 +70,7 @@ const panel = ref<HTMLElement | null>(null)
 const saveData = () => {
     const data = editorData.value.split('\n').filter((v) => v.trim() !== '')
     GM_setValue(item.id, data)
+    item.saveFn()
 }
 
 onBeforeUpdate(() => {

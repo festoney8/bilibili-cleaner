@@ -219,6 +219,10 @@ export const videoFilterSpaceGroups: Group[] = [
                     '请勿使用过于激进的关键词或正则',
                     '正则默认iu模式，无需flag，语法：/abc|\\d+/',
                 ],
+                saveFn: async () => {
+                    mainFilter.videoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
+                    mainFilter.check('full').then().catch()
+                },
             },
         ],
     },
@@ -247,6 +251,10 @@ export const videoFilterSpaceGroups: Group[] = [
                 description: ['右键屏蔽的BV号会出现在这里'],
                 editorTitle: 'BV号 黑名单',
                 editorDescription: ['每行一个BV号，保存时自动去重'],
+                saveFn: async () => {
+                    mainFilter.videoBvidFilter.setParam(GM_getValue(GM_KEYS.black.bvid.valueKey, []))
+                    mainFilter.check('full').then().catch()
+                },
             },
         ],
     },
@@ -278,6 +286,10 @@ export const videoFilterSpaceGroups: Group[] = [
                     '请勿使用过于激进的关键词或正则',
                     '正则默认iu模式，无需flag，语法：/abc|\\d+/',
                 ],
+                saveFn: async () => {
+                    mainFilter.videoTitleWhiteFilter.setParam(GM_getValue(GM_KEYS.white.title.valueKey, []))
+                    mainFilter.check('full').then().catch()
+                },
             },
         ],
     },

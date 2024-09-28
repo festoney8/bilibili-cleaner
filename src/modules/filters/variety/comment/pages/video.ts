@@ -1,10 +1,10 @@
-import { GM_getValue } from '$'
+import { GM_getValue, GM_setValue } from '$'
 import settings from '../../../../../settings'
 import { Group } from '../../../../../types/collection'
 import { IMainFilter, SelectorResult, SubFilterPair } from '../../../../../types/filter'
 import { error, log } from '../../../../../utils/logger'
 import ShadowInstance from '../../../../../utils/shadow'
-import { showEle } from '../../../../../utils/tool'
+import { orderedUniq, showEle } from '../../../../../utils/tool'
 import { coreCheck } from '../../../core/core'
 import {
     CommentBotFilter,
@@ -468,7 +468,7 @@ export const commentFilterVideoGroups: Group[] = [
                 type: 'editor',
                 id: GM_KEYS.black.username.valueKey,
                 name: '编辑 评论用户黑名单',
-                description: ['本黑名单与UP主黑名单互不影响', '右键屏蔽的用户会出现在这里'],
+                description: ['本黑名单与UP主黑名单互不影响', '右键屏蔽的用户会出现在首行'],
                 editorTitle: '评论区 用户黑名单',
                 editorDescription: ['每行一个用户名，保存时自动去重'],
                 saveFn: async () => {
@@ -707,3 +707,20 @@ export const commentFilterVideoGroups: Group[] = [
         ],
     },
 ]
+
+// 右键菜单回调
+export const commentFilterVideoAddUsername = async (username: string) => {
+    username = username.trim()
+    if (!username) {
+        return
+    }
+    try {
+        mainFilter.commentUsernameFilter.addParam(username)
+        mainFilter.check('full').then().catch()
+        const arr: string[] = GM_getValue(GM_KEYS.black.username.valueKey, [])
+        arr.unshift(username)
+        GM_setValue(GM_KEYS.black.username.valueKey, orderedUniq(arr))
+    } catch (err) {
+        error(`commentFilterVideoAddUsername add username ${username} failed`, err)
+    }
+}

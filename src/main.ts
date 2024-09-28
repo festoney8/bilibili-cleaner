@@ -6,6 +6,7 @@ import { waitForBody } from './utils/init'
 import { log } from './utils/logger'
 import { upgrade } from './utils/upgrade'
 import CommentFilterPanel from './views/CommentFilterPanel.vue'
+import ContextMenu from './views/ContextMenu.vue'
 import DynamicFilterPanel from './views/DynamicFilterPanel.vue'
 import RulePanel from './views/RulePanel.vue'
 import VideoFilterPanel from './views/VideoFilterPanel.vue'
@@ -48,6 +49,9 @@ const createView = (view: any) => {
         })(),
     )
 }
+
+// 右键菜单
+createView(ContextMenu)
 
 const menu = () => {
     GM_registerMenuCommand('✅页面净化优化', () => {

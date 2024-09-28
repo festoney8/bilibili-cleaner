@@ -1,9 +1,16 @@
-import { GM_getValue } from '$'
+import { GM_getValue, GM_setValue } from '$'
 import settings from '../../../../../settings'
 import { Group } from '../../../../../types/collection'
 import { IMainFilter, SelectorResult, SubFilterPair } from '../../../../../types/filter'
-import { log } from '../../../../../utils/logger'
-import { convertDateToDays, convertTimeToSec, matchBvid, showEle, waitForEle } from '../../../../../utils/tool'
+import { error, log } from '../../../../../utils/logger'
+import {
+    convertDateToDays,
+    convertTimeToSec,
+    matchBvid,
+    orderedUniq,
+    showEle,
+    waitForEle,
+} from '../../../../../utils/tool'
 import { coreCheck } from '../../../core/core'
 import {
     VideoBvidFilter,
@@ -267,7 +274,7 @@ export const videoFilterHomepageGroups: Group[] = [
                 type: 'editor',
                 id: GM_KEYS.black.uploader.valueKey,
                 name: '编辑 UP主黑名单',
-                description: ['右键屏蔽的UP主会出现在这里'],
+                description: ['右键屏蔽的UP主会出现在首行'],
                 editorTitle: 'UP主 黑名单',
                 editorDescription: ['每行一个UP主昵称，保存时自动去重'],
                 saveFn: async () => {
@@ -366,7 +373,7 @@ export const videoFilterHomepageGroups: Group[] = [
                 type: 'editor',
                 id: GM_KEYS.black.bvid.valueKey,
                 name: '编辑 BV号黑名单',
-                description: ['右键屏蔽的BV号会出现在这里'],
+                description: ['右键屏蔽的BV号会出现在首行'],
                 editorTitle: 'BV号 黑名单',
                 editorDescription: ['每行一个BV号，保存时自动去重'],
                 saveFn: async () => {
@@ -488,3 +495,52 @@ export const videoFilterHomepageGroups: Group[] = [
         ],
     },
 ]
+
+// 右键菜单回调
+export const videoFilterHomepageAddUploader = async (uploader: string) => {
+    uploader = uploader.trim()
+    if (!uploader) {
+        return
+    }
+    try {
+        mainFilter.videoUploaderFilter.addParam(uploader)
+        mainFilter.check('full').then().catch()
+        const arr: string[] = GM_getValue(GM_KEYS.black.uploader.valueKey, [])
+        arr.unshift(uploader)
+        GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
+    } catch (err) {
+        error(`videoFilterHomepageAddUploader add uploader ${uploader} failed`, err)
+    }
+}
+
+export const videoFilterHomepageAddUploaderWhite = async (uploader: string) => {
+    uploader = uploader.trim()
+    if (!uploader) {
+        return
+    }
+    try {
+        mainFilter.videoUploaderWhiteFilter.addParam(uploader)
+        mainFilter.check('full').then().catch()
+        const arr: string[] = GM_getValue(GM_KEYS.white.uploader.valueKey, [])
+        arr.unshift(uploader)
+        GM_setValue(GM_KEYS.white.uploader.valueKey, orderedUniq(arr))
+    } catch (err) {
+        error(`videoFilterHomepageAddUploaderWhite add uploader ${uploader} failed`, err)
+    }
+}
+
+export const videoFilterHomepageAddBvid = async (bvid: string) => {
+    bvid = bvid.trim()
+    if (!bvid) {
+        return
+    }
+    try {
+        mainFilter.videoBvidFilter.addParam(bvid)
+        mainFilter.check('full').then().catch()
+        const arr: string[] = GM_getValue(GM_KEYS.black.bvid.valueKey, [])
+        arr.unshift(bvid)
+        GM_setValue(GM_KEYS.black.bvid.valueKey, orderedUniq(arr))
+    } catch (err) {
+        error(`videoFilterHomepageAddBvid add bvid ${bvid} failed`, err)
+    }
+}

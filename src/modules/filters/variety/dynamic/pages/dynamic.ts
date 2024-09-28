@@ -1,9 +1,9 @@
-import { GM_getValue } from '$'
+import { GM_getValue, GM_setValue } from '$'
 import settings from '../../../../../settings'
 import { Group } from '../../../../../types/collection'
 import { IMainFilter, SelectorResult, SubFilterPair } from '../../../../../types/filter'
-import { log } from '../../../../../utils/logger'
-import { convertTimeToSec, showEle, waitForEle } from '../../../../../utils/tool'
+import { error, log } from '../../../../../utils/logger'
+import { convertTimeToSec, orderedUniq, showEle, waitForEle } from '../../../../../utils/tool'
 import { coreCheck } from '../../../core/core'
 import { DynDurationFilter, DynUploaderFilter, DynVideoTitleFilter } from '../subFilters/black'
 
@@ -163,7 +163,7 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 id: GM_KEYS.black.uploader.valueKey,
                 name: '编辑 动态发布用户黑名单',
                 editorTitle: '动态发布用户 黑名单',
-                description: ['右键屏蔽的用户会出现在这里'],
+                description: ['右键屏蔽的用户会出现在首行'],
                 editorDescription: ['一行一个用户名，保存时自动去重'],
                 saveFn: async () => {
                     mainFilter.dynUploaderFilter.setParam(GM_getValue(GM_KEYS.black.uploader.valueKey, []))
@@ -242,3 +242,20 @@ export const dynamicFilterDynamicGroups: Group[] = [
         ],
     },
 ]
+
+// 右键菜单回调
+export const dynamicFilterDynamicAddUploader = async (uploader: string) => {
+    uploader = uploader.trim()
+    if (!uploader) {
+        return
+    }
+    try {
+        mainFilter.dynUploaderFilter.addParam(uploader)
+        mainFilter.check('full').then().catch()
+        const arr: string[] = GM_getValue(GM_KEYS.black.uploader.valueKey, [])
+        arr.unshift(uploader)
+        GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
+    } catch (err) {
+        error(`dynamicFilterDynamicAddUploader add uploader ${uploader} failed`, err)
+    }
+}

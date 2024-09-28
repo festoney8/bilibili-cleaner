@@ -13,7 +13,7 @@ import {
     isPageVideo,
 } from '../../utils/pageType'
 import { commentFilterDynamicEntry, commentFilterDynamicGroups } from './variety/comment/pages/dynamic'
-import { commentFilterSpaceGroups, commentFilterSpaceEntry } from './variety/comment/pages/space'
+import { commentFilterSpaceEntry, commentFilterSpaceGroups } from './variety/comment/pages/space'
 import { commentFilterVideoEntry, commentFilterVideoGroups } from './variety/comment/pages/video'
 import { dynamicFilterDynamicEntry, dynamicFilterDynamicGroups } from './variety/dynamic/pages/dynamic'
 import { videoFilterChannelEntry, videoFilterChannelGroups } from './variety/video/pages/channel'

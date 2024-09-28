@@ -125,3 +125,12 @@ export const waitForEle = async (
         observer.observe(watchEle, { childList: true, subtree: true })
     })
 }
+
+/**
+ * 对Array去重并保持原序
+ * @param arr 输入Array
+ * @returns 去重后Array
+ */
+export const orderedUniq = <T = unknown>(arr: T[]): T[] => {
+    return Array.from(new Set(arr))
+}

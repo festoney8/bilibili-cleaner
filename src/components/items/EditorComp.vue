@@ -1,15 +1,20 @@
 <template>
-    <div class="flex w-full py-1">
+    <label class="flex w-full py-1 hover:bg-blue-50 hover:bg-opacity-50">
         <button
             type="button"
             class="inline-flex justify-center rounded-md border border-transparent bg-white px-2 py-1 text-sm text-blue-900 outline-none ring-1 ring-gray-300 hover:bg-blue-50 hover:ring-blue-500 focus:outline-none focus-visible:ring-1 focus-visible:ring-gray-500 focus-visible:ring-offset-1"
-            @click="isEditorShow = true"
+            @click="
+                () => {
+                    isEditorShow = true
+                    updateData()
+                }
+            "
         >
             编辑
         </button>
         <div class="ml-2 self-center text-black">{{ name }}</div>
-    </div>
-    <DescriptionComp class="pl-10" v-if="description?.length" :description="description"></DescriptionComp>
+    </label>
+    <DescriptionComp class="pl-8" v-if="description?.length" :description="description"></DescriptionComp>
 
     <PanelComp
         ref="panel"
@@ -56,9 +61,10 @@
 
 <script setup lang="ts">
 import { GM_getValue, GM_setValue } from '$'
-import { onBeforeUpdate, ref } from 'vue'
+import { ref } from 'vue'
 import { IEditorItem } from '../../types/item'
 import { error } from '../../utils/logger'
+import { orderedUniq } from '../../utils/tool'
 import PanelComp from '../PanelComp.vue'
 import DescriptionComp from './DescriptionComp.vue'
 
@@ -68,25 +74,23 @@ const panel = ref<HTMLElement | null>(null)
 
 const isEditorShow = ref(false)
 const saveSuccess = ref(false)
-const editorData = ref(GM_getValue(item.id, []).join('\n') + '\n') // 末尾空行
+const editorData = ref('') // 末尾空行
+
+const updateData = () => {
+    editorData.value = GM_getValue(item.id, []).join('\n') + '\n'
+}
 
 const saveData = () => {
     try {
         const data = editorData.value.split('\n').filter((v) => v.trim() !== '')
-        GM_setValue(item.id, data)
+        GM_setValue(item.id, orderedUniq(data))
         saveSuccess.value = true
+        item.saveFn()
         setTimeout(() => {
             saveSuccess.value = false
         }, 1500)
-        item.saveFn()
     } catch (err) {
         error(`editor item ${item.id} saveData error`, err)
     }
 }
-
-onBeforeUpdate(() => {
-    if (panel.value) {
-        editorData.value = GM_getValue(item.id, []).join('\n') + '\n'
-    }
-})
 </script>

@@ -68,24 +68,18 @@ const GM_KEYS = {
 
 // 一二级评论信息提取
 const selectorFns = {
-    // 测试视频：
-    // https://b23.tv/av810872
-    // https://b23.tv/av1855797296
-    // https://b23.tv/av1706101190
-    // https://b23.tv/av1705573085
-    // https://b23.tv/av1350214762
     root: {
         username: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.member?.uname?.trim()
         },
         content: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.content?.message?.replace(/@[^@ ]+?( |$)/g, '').trim()
+            return (comment as any).__data?.content?.message?.replace(/@[^@\s]+/g, ' ').trim()
         },
         callUser: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.content?.members[0]?.uname
         },
         callUserOnly: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.content?.message?.replace(/@[^@ ]+/g, '').trim() === ''
+            return (comment as any).__data?.content?.message?.replace(/@[^@\s]+/g, ' ').trim() === ''
         },
         level: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.member?.level_info?.current_level
@@ -120,21 +114,26 @@ const selectorFns = {
         content: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.content?.message
                 ?.trim()
-                ?.replace(/@[^@ ]+?( |$)/g, '')
-                .replace(/^回复 *:?/, '')
+                ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
+                ?.replace(/@[^@\s]+/g, ' ')
                 .trim()
         },
         callUser: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.content?.message
                 ?.trim()
-                .replace(/^回复 ?@[^@ ]+? ?:/, '')
-                .trim()
-                ?.match(/@[^@ ]+( |$)/)?.[0]
+                ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
+                ?.match(/@[^@\s]+/)?.[0]
                 .replace('@', '')
                 .trim()
         },
         callUserOnly: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.content?.message?.replace(/@[^@ ]+/g, '').trim() === ''
+            return (
+                (comment as any).__data?.content?.message
+                    ?.trim()
+                    ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
+                    ?.replace(/@[^@\s]+/g, ' ')
+                    .trim() === ''
+            )
         },
         level: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.member?.level_info?.current_level
@@ -157,7 +156,6 @@ const selectorFns = {
         },
     },
 }
-
 // 一二级评论是否检测
 let isRootWhite = false
 let isSubWhite = false

@@ -75,7 +75,7 @@ const selectorFns = {
             return comment
                 .querySelector('.root-reply-container .reply-content')
                 ?.textContent?.trim()
-                .replace(/@[^@ ]+?( |$)/g, '')
+                .replace(/@[^@\s]+/g, ' ')
                 .trim()
         },
         callUser: (comment: HTMLElement): SelectorResult => {
@@ -88,8 +88,7 @@ const selectorFns = {
             return (
                 comment
                     .querySelector('.root-reply-container .reply-content')
-                    ?.textContent?.trim()
-                    .replace(/@[^@ ]+/g, '')
+                    ?.textContent?.replace(/@[^@\s]+/g, ' ')
                     .trim() === ''
             )
         },
@@ -119,17 +118,16 @@ const selectorFns = {
             return comment
                 .querySelector('.reply-content')
                 ?.textContent?.trim()
-                ?.replace(/@[^@ ]+?( |$)/g, '')
-                .replace(/^回复 *:?/, '')
+                ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
+                ?.replace(/@[^@\s]+/g, ' ')
                 .trim()
         },
         callUser: (comment: HTMLElement): SelectorResult => {
             return comment
                 .querySelector('.reply-content')
                 ?.textContent?.trim()
-                .replace(/^回复 ?@[^@ ]+? ?:/, '')
-                .trim()
-                ?.match(/@[^@ ]+( |$)/)?.[0]
+                ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
+                ?.match(/@[^@\s]+/)?.[0]
                 .replace('@', '')
                 .trim()
         },
@@ -138,7 +136,8 @@ const selectorFns = {
                 comment
                     .querySelector('.reply-content')
                     ?.textContent?.trim()
-                    .replace(/@[^@ ]+/g, '')
+                    ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
+                    ?.replace(/@[^@\s]+/g, ' ')
                     .trim() === ''
             )
         },

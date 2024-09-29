@@ -19,7 +19,7 @@ jobs:
       - name: install node and pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 9
 
       # prepare
       - run: pnpm install

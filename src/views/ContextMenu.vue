@@ -1,22 +1,23 @@
 <template>
     <div
-        v-show="show"
-        class="fixed z-50 block cursor-pointer overflow-hidden rounded-md bg-white font-[15px] text-black shadow-lg shadow-gray-300"
+        v-if="show"
+        class="fixed z-50 block cursor-pointer overflow-hidden rounded-md bg-white font-[15px] text-black shadow-lg shadow-black/20"
         :style="{ left: pos.left + 'px', top: pos.top + 'px' }"
     >
-        <ul v-show="show" v-for="(menu, index) in menuList" :key="index">
-            <li @click="menu.fn" class="px-2.5 py-1 hover:bg-[#00aeec] hover:text-white">
+        <div v-for="(menu, index) in menuList" :key="index">
+            <div @click="menu.fn" class="px-2.5 py-1 hover:bg-[#00aeec] hover:text-white">
                 <span class="mr-0.5">◎</span>
-                {{ `${menu.name}` }}
-            </li>
+                {{ menu.name }}
+            </div>
             <hr v-if="index < menuList.length - 1" />
-        </ul>
+        </div>
     </div>
 </template>
 <script setup lang="ts">
 import { useEventListener } from '@vueuse/core'
 import { reactive, ref } from 'vue'
 import { commentFilterDynamicAddUsername } from '../modules/filters/variety/comment/pages/dynamic'
+import { commentFilterSpaceAddUsername } from '../modules/filters/variety/comment/pages/space'
 import { commentFilterVideoAddUsername } from '../modules/filters/variety/comment/pages/video'
 import { dynamicFilterDynamicAddUploader } from '../modules/filters/variety/dynamic/pages/dynamic'
 import {
@@ -57,7 +58,6 @@ import {
     isPageVideo,
 } from '../utils/pageType'
 import { matchBvid } from '../utils/tool'
-import { commentFilterSpaceAddUsername } from '../modules/filters/variety/comment/pages/space'
 
 type Menu = {
     name: string
@@ -71,14 +71,6 @@ const pos = reactive({
     top: -9999,
 })
 const menuList = reactive<Menu[]>([])
-
-useEventListener(document, 'click', () => {
-    show.value = false
-})
-
-useEventListener(window, 'wheel', () => {
-    show.value = false
-})
 
 useEventListener(window, 'contextmenu', (e: MouseEvent) => {
     if (e.target instanceof HTMLElement) {
@@ -96,6 +88,12 @@ useEventListener(window, 'contextmenu', (e: MouseEvent) => {
             pos.left = e.x
             pos.top = e.y
         }
+        useEventListener(window, 'wheel', () => {
+            show.value = false
+        })
+        useEventListener(document, 'click', () => {
+            show.value = false
+        })
     }
 })
 
@@ -301,7 +299,7 @@ const handlePopular: TargetHandler = (target: HTMLElement): boolean => {
     }
     // BVID
     if (
-        (target.classList.contains('title') && target.closest('.info a') === target) ||
+        (target.classList.contains('title') && target.closest('.info a')) ||
         target.classList.contains('video-name') ||
         target.classList.contains('lazy-image')
     ) {

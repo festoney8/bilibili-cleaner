@@ -19,6 +19,12 @@
     /* change 1rem for live.bilibili.com */
     :host {
         font-size: 16px !important;
+        font-family:
+            PingFang SC,
+            HarmonyOS_Regular,
+            Helvetica Neue,
+            Microsoft YaHei,
+            sans-serif !important;
     }
 
     input[type='number']::-webkit-inner-spin-button,

@@ -38,6 +38,8 @@
                 v-model="editorData"
                 class="flex-1 resize-none overscroll-none rounded-md border-2 border-gray-300 p-2 text-[15px] outline-none focus:border-gray-400"
                 style="scrollbar-width: thin; scrollbar-color: #999 #00000000"
+                autocorrect="off"
+                spellcheck="false"
                 placeholder="请输入内容..."
             ></textarea>
             <div class="mt-4 flex justify-around">

@@ -1,0 +1,58 @@
+name: main-release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      # environment
+      - name: checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+      - name: install node and pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      # prepare
+      - run: pnpm install
+
+      # build normal and minify version, save to folder
+      - name: build minify
+        run: pnpm run build:minify
+      - name: mkdir
+        run: mkdir build-release
+      - name: move and rename file
+        run: mv dist/bilibili-cleaner.user.js build-release/bilibili-cleaner.min.user.js
+      - name: build default
+        run: pnpm run build
+      - name: copy file
+        run: cp dist/bilibili-cleaner.user.js build-release/
+      - name: list files
+        run: ls -lah build-release/
+
+      # release
+      - name: get version num
+        id: get_vernum
+        run: |
+          version=${{ github.ref_name }}
+          vernum=$( echo $version | sed 's/[^0-9]//g')
+          echo "New version: $vernum"
+          echo "VERSION_NUM=$vernum" >> "$GITHUB_OUTPUT"
+
+      - name: release action
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: 'build-release/*.js'
+          allowUpdates: true
+          replacesArtifacts: true
+          generateReleaseNotes: true
+          body: '## [更新日志](https://github.com/festoney8/bilibili-cleaner/blob/main/CHANGELOG.md#${{ steps.get_vernum.outputs.VERSION_NUM }})'
+          token: ${{ secrets.GITHUB_TOKEN }}

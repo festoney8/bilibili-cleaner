@@ -6,6 +6,7 @@
     "scripts": {
         "dev": "vite",
         "build": "vue-tsc --noEmit && vite build",
+        "build:minify": "vue-tsc --noEmit && vite build --minify",
         "preview": "vite preview",
         "prepare": "husky"
     },
@@ -28,6 +29,7 @@
         "postcss": "^8.4.45",
         "prettier": "3.3.3",
         "prettier-plugin-tailwindcss": "^0.6.6",
+        "sass-embedded": "^1.79.4",
         "stylelint": "^16.9.0",
         "stylelint-config-standard-scss": "^13.1.0",
         "tailwindcss": "^3.4.10",

@@ -5,11 +5,11 @@ import css from './style.css?inline'
 import { waitForBody } from './utils/init'
 import { log } from './utils/logger'
 import { upgrade } from './utils/upgrade'
-import CommentFilterPanel from './views/CommentFilterPanel.vue'
-import ContextMenu from './views/ContextMenu.vue'
-import DynamicFilterPanel from './views/DynamicFilterPanel.vue'
-import RulePanel from './views/RulePanel.vue'
-import VideoFilterPanel from './views/VideoFilterPanel.vue'
+import CommentFilterPanelView from './views/CommentFilterPanelView.vue'
+import ContextMenuView from './views/ContextMenuView.vue'
+import DynamicFilterPanelView from './views/DynamicFilterPanelView.vue'
+import RulePanelView from './views/RulePanelView.vue'
+import VideoFilterPanelView from './views/VideoFilterPanelView.vue'
 
 log(`start, mode: ${import.meta.env.MODE}, url: ${location.href}`)
 
@@ -51,21 +51,13 @@ const createView = (view: any) => {
 }
 
 // 右键菜单
-createView(ContextMenu)
+createView(ContextMenuView)
 
 const menu = () => {
-    GM_registerMenuCommand('✅页面净化优化', () => {
-        createView(RulePanel)
-    })
-    GM_registerMenuCommand('✅视频过滤设置', () => {
-        createView(VideoFilterPanel)
-    })
-    GM_registerMenuCommand('✅评论过滤设置', () => {
-        createView(CommentFilterPanel)
-    })
-    GM_registerMenuCommand('✅动态过滤设置', () => {
-        createView(DynamicFilterPanel)
-    })
+    GM_registerMenuCommand('✅页面净化优化', () => createView(RulePanelView))
+    GM_registerMenuCommand('✅视频过滤设置', () => createView(VideoFilterPanelView))
+    GM_registerMenuCommand('✅评论过滤设置', () => createView(CommentFilterPanelView))
+    GM_registerMenuCommand('✅动态过滤设置', () => createView(DynamicFilterPanelView))
 }
 
 menu()

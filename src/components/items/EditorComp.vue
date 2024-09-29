@@ -76,10 +76,10 @@ const panel = ref<HTMLElement | null>(null)
 
 const isEditorShow = ref(false)
 const saveSuccess = ref(false)
-const editorData = ref('') // 末尾空行
+const editorData = ref('')
 
 const updateData = () => {
-    editorData.value = GM_getValue(item.id, []).join('\n') + '\n'
+    editorData.value = GM_getValue(item.id, []).join('\n') + '\n' // 末尾空行
 }
 
 const saveData = () => {

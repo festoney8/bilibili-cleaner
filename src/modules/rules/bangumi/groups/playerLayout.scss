@@ -1,4 +1,4 @@
-// 网页全屏时 页面可滚动 滚轮调音量失效
+// 网页全屏时 页面可滚动
 html[webscreen-scrollable] {
     body:has(#bilibili-player-wrap[class*='video_playerFullScreen']) {
         overflow: auto !important;
@@ -20,16 +20,21 @@ html[webscreen-scrollable] {
     body:has(#bilibili-player-wrap[class*='video_playerFullScreen'])::-webkit-scrollbar {
         display: none !important;
     }
+}
 
-    // firefox
-    @supports (-moz-appearance: none) {
-        body:has(#bilibili-player-wrap[class*='video_playerFullScreen']) {
-            scrollbar-width: none !important;
+// 网页全屏时 页面可滚动 firefox
+@supports (-moz-appearance: none) {
+    html[webscreen-scrollable] {
+        &,
+        body {
+            &:has(#bilibili-player-wrap[class*='video_playerFullScreen']) {
+                scrollbar-width: none !important;
+            }
         }
     }
 }
 
-// 全屏时 页面可滚动 滚轮调音量失效
+// 全屏时 页面可滚动
 html[fullscreen-scrollable] {
     body:has(#bilibili-player-wrap[class*='video_playerFullScreen']) {
         overflow: auto !important;
@@ -54,11 +59,16 @@ html[fullscreen-scrollable] {
     body:has(#bilibili-player-wrap[class*='video_playerFullScreen'])::-webkit-scrollbar {
         display: none !important;
     }
+}
 
-    // firefox
-    @supports (-moz-appearance: none) {
-        body:has(#bilibili-player-wrap[class*='video_playerFullScreen']) {
-            scrollbar-width: none !important;
+// 全屏时 页面可滚动 firefox
+@supports (-moz-appearance: none) {
+    html[fullscreen-scrollable] {
+        &,
+        body {
+            &:has(#bilibili-player-wrap[class*='video_playerFullScreen']) {
+                scrollbar-width: none !important;
+            }
         }
     }
 }

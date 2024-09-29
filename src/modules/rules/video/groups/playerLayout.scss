@@ -6,7 +6,7 @@ html[default-widescreen] {
     }
 }
 
-// 网页全屏时 页面可滚动 滚轮调音量失效 （Firefox 不适用）
+// 网页全屏时 页面可滚动
 html[webscreen-scrollable] {
     .webscreen-fix {
         position: unset;
@@ -72,16 +72,18 @@ html[webscreen-scrollable] {
     .webscreen-fix::-webkit-scrollbar {
         display: none !important;
     }
+}
 
-    // firefox滚动条
-    @supports (-moz-appearance: none) {
-        body.webscreen-fix {
+// 网页全屏时 页面可滚动 firefox滚动条
+@supports (-moz-appearance: none) {
+    html[webscreen-scrollable] {
+        &:has(.webscreen-fix) {
             scrollbar-width: none !important;
         }
     }
 }
 
-// 全屏时 页面可滚动 滚轮调音量失效 （实验功能，Firefox 不适用）
+// 全屏时 页面可滚动
 html[fullscreen-scrollable] {
     .webscreen-fix {
         position: unset;
@@ -147,10 +149,12 @@ html[fullscreen-scrollable] {
     .webscreen-fix::-webkit-scrollbar {
         display: none !important;
     }
+}
 
-    // firefox滚动条
-    @supports (-moz-appearance: none) {
-        body.webscreen-fix {
+// 全屏时 页面可滚动 firefox滚动条
+@supports (-moz-appearance: none) {
+    html[fullscreen-scrollable] {
+        &:has(.webscreen-fix) {
             scrollbar-width: none !important;
         }
     }

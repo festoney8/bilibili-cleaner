@@ -301,11 +301,14 @@ html[beauty-scrollbar] {
     ::-webkit-scrollbar-thumb:active {
         background-color: rgb(0 0 0 / 0.6) !important;
     }
+}
 
-    // Firefox
-    @supports (-moz-appearance: none) {
+// 美化页面滚动条 Firefox
+@supports (-moz-appearance: none) {
+    html[beauty-scrollbar] {
+        &,
         * {
-            scrollbar-color: rgb(0 0 0 / 0.6) transparent !important;
+            scrollbar-color: #cdcdcd transparent !important;
             scrollbar-width: thin;
         }
     }

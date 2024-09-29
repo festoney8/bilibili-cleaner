@@ -16,7 +16,7 @@
             </SwitchLabel>
         </div>
     </SwitchGroup>
-    <DescriptionComp class="pl-10" v-if="description?.length" :description="description"></DescriptionComp>
+    <DescriptionComp class="pl-8" v-if="description?.length" :description="description"></DescriptionComp>
 </template>
 
 <script setup lang="ts">

@@ -1,9 +1,17 @@
-import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { defineConfig } from 'vite'
 import monkey, { cdn } from 'vite-plugin-monkey'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    // https://github.com/sass/dart-sass/issues/2352
+    css: {
+        preprocessorOptions: {
+            scss: {
+                api: 'modern-compiler',
+            },
+        },
+    },
     plugins: [
         vue(),
         monkey({

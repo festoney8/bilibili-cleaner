@@ -47,6 +47,11 @@ export const videoToolbarItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'video-page-hide-triple-oldfan-entry',
+        name: '隐藏 成为老粉按钮',
+    },
+    {
+        type: 'switch',
         id: 'video-page-hide-below-info-video-ai-assistant',
         name: '隐藏 官方AI总结',
     },

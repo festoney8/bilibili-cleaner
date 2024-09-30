@@ -1,15 +1,16 @@
 // 隐藏 横幅banner
 html[homepage-hide-banner] {
-    .header-banner__inner,
     .bili-header__banner {
+        min-height: unset !important;
+        height: 64px !important;
+        background: var(--bg1, white) !important;
+    }
+    .bili-header__banner > * {
         display: none !important;
     }
-    .bili-header .bili-header__bar:not(.slide-down) {
-        position: relative !important;
-        box-shadow: 0 2px 4px #00000014;
-    }
-    .bili-header__channel {
-        margin-top: 5px !important;
+    .bili-header__bar,
+    .bili-feed4 .bili-header .slide-down {
+        box-shadow: 0 2px 4px #00000014 !important;
     }
 
     // icon和文字颜色
@@ -26,17 +27,7 @@ html[homepage-hide-banner] {
         color: #00aeec !important;
     }
     .bili-header .right-entry__outside .right-entry-text {
-        color: #61666d !important;
-    }
-
-    // header滚动后渐变出现, 否则闪动
-    #i_cecream .bili-header__bar.slide-down {
-        transition:
-            background-color 0.3s ease-out,
-            box-shadow 0.3s ease-out !important;
-    }
-    #i_cecream .bili-header__bar:not(.slide-down) {
-        transition: background-color 0.3s ease-out !important;
+        color: var(--text2, #61666d) !important;
     }
 
     // 分区菜单 第一排按钮的二级菜单下置

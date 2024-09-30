@@ -5,6 +5,13 @@ html[video-page-hide-video-share-popover] {
     }
 }
 
+// 隐藏 成为老粉按钮
+html[video-page-hide-triple-oldfan-entry] {
+    .triple-oldfan-entry {
+        display: none !important;
+    }
+}
+
 // 隐藏 官方AI总结
 html[video-page-hide-below-info-video-ai-assistant] {
     .video-toolbar-right .video-ai-assistant {

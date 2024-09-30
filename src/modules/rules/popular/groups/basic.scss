@@ -26,7 +26,7 @@ html[homepage-hide-banner] {
         color: #00aeec !important;
     }
     .bili-header .right-entry__outside .right-entry-text {
-        color: #61666d !important;
+        color: var(--text2, #61666d) !important;
     }
 
     // header滚动后渐变出现, 否则闪动

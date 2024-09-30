@@ -28,9 +28,4 @@ export const popularBasicItems: Item[] = [
         id: 'popular-hide-danmaku-count',
         name: '隐藏 弹幕数',
     },
-    {
-        type: 'switch',
-        id: 'font-patch',
-        name: '修复字体',
-    },
 ]

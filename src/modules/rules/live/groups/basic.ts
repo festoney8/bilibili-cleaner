@@ -21,11 +21,6 @@ export const liveBasicItems: Item[] = [
     },
     {
         type: 'switch',
-        id: 'font-patch',
-        name: '修复字体',
-    },
-    {
-        type: 'switch',
         id: 'activity-live-auto-jump',
         name: '活动直播页 自动跳转普通直播 (实验功能)',
         noStyle: true,

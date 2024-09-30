@@ -8,7 +8,9 @@ import {
     isPagePlaylist,
     isPagePopular,
     isPageSearch,
+    isPageSpace,
     isPageVideo,
+    isPageWatchlater,
 } from '../../../../utils/pageType'
 import URLCleanerInstance from '../../../../utils/urlCleaner'
 
@@ -138,5 +140,30 @@ export const commonBasicItems: Item[] = [
         type: 'switch',
         id: 'hide-footer',
         name: '隐藏 页底footer',
+    },
+    {
+        type: 'switch',
+        id: 'hide-footer',
+        name: '修复字体 (实验功能)',
+        // 根据当前页面选定attribute name
+        attrName: ((): string | undefined => {
+            if (isPageLive()) {
+                return 'font-patch-live'
+            }
+            if (isPageDynamic()) {
+                return 'font-patch-dynamic'
+            }
+            if (isPagePopular()) {
+                return 'font-patch-popular'
+            }
+            if (isPageWatchlater()) {
+                return 'font-patch-watchlater'
+            }
+            if (isPageSpace()) {
+                return 'font-patch-space'
+            }
+            return undefined
+        })(),
+        description: ['让全站字体与首页字体一致', '生效页面：动态、直播、热门、稍后再看'],
     },
 ]

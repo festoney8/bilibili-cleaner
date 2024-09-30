@@ -15,9 +15,4 @@ export const spaceBasicItems: Item[] = [
             }
         },
     },
-    {
-        type: 'switch',
-        id: 'font-patch',
-        name: '修复字体',
-    },
 ]

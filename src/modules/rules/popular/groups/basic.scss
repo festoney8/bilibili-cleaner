@@ -180,18 +180,3 @@ html[popular-hide-danmaku-count] {
         margin-right: 0 !important;
     }
 }
-
-// 修复字体
-html[font-patch] {
-    #internationalHeader,
-    .international-header,
-    .suggest-wrap,
-    .van-popover {
-        font-family: 'PingFang SC', 'HarmonyOS_Regular', 'Helvetica Neue', 'Microsoft YaHei', sans-serif !important;
-        font-weight: 400;
-    }
-    #app {
-        font-family: 'PingFang SC', 'HarmonyOS_Medium', 'Helvetica Neue', 'Microsoft YaHei', sans-serif !important;
-        font-weight: 500;
-    }
-}

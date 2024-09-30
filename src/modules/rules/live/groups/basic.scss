@@ -79,15 +79,3 @@ html[live-page-remove-wallpaper] {
         box-shadow: 0 0 12px rgb(0 0 0 / 0.2);
     }
 }
-
-// 修复字体
-html[font-patch] {
-    body,
-    .gift-item,
-    .feed-card,
-    .bb-comment,
-    .comment-bilibili-fold {
-        font-family: 'PingFang SC', 'HarmonyOS_Regular', 'Helvetica Neue', 'Microsoft YaHei', sans-serif !important;
-        font-weight: 400;
-    }
-}

@@ -11,9 +11,4 @@ export const dynamicBasicItems: Item[] = [
         id: 'exchange-dynamic-page-left-right-aside',
         name: '交换 左栏与右栏位置',
     },
-    {
-        type: 'switch',
-        id: 'font-patch',
-        name: '修复字体',
-    },
 ]

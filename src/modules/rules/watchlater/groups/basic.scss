@@ -61,16 +61,3 @@ html[watchlater-page-layout-2-column] {
         float: unset !important;
     }
 }
-
-// 修复字体
-html[font-patch] {
-    body {
-        font-family: 'PingFang SC', 'HarmonyOS_Regular', 'Helvetica Neue', 'Microsoft YaHei', sans-serif !important;
-        font-weight: 400;
-        font-size: 14px;
-    }
-    .av-item .av-about .t {
-        font-family: 'PingFang SC', 'HarmonyOS_Medium', 'Helvetica Neue', 'Microsoft YaHei', sans-serif !important;
-        font-weight: 500 !important;
-    }
-}

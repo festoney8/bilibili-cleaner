@@ -189,6 +189,13 @@ html[homepage-hide-skeleton] {
     }
 }
 
+// 隐藏 加载锚点之前的骨架
+html[homepage-hide-skeleton-before-anchor] {
+    .bili-video-card:not(.is-rcmd):has(~ .load-more-anchor) {
+        display: none !important;
+    }
+}
+
 // 增大 视频载入 视频数量 (实验功能)
 html[homepage-increase-rcmd-load-size] {
     // 扩增载入后会产生奇怪的骨架空位
@@ -201,6 +208,11 @@ html[homepage-increase-rcmd-load-size] {
 html[homepage-rcmd-video-preload] {
     // 隐藏anchor前的skeleton
     .bili-video-card:not(.is-rcmd):has(~ .load-more-anchor) {
+        display: none !important;
+    }
+
+    // 隐藏分区视频
+    .floor-single-card:not(:has(.skeleton, .skeleton-item)) {
         display: none !important;
     }
     .load-more-anchor.preload {

@@ -77,6 +77,13 @@ export const homepageRcmdItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'homepage-hide-skeleton-before-anchor',
+        name: '隐藏 加载锚点之前的骨架',
+        defaultEnable: true,
+        description: ['会让视频列表加载更快一些'],
+    },
+    {
+        type: 'switch',
         id: 'homepage-increase-rcmd-load-size',
         name: '增大 视频载入 视频数量 (实验功能)',
         enableFn: () => {
@@ -97,11 +104,7 @@ export const homepageRcmdItems: Item[] = [
         type: 'switch',
         id: 'homepage-rcmd-video-preload',
         name: '启用 视频列表预加载 (不稳定功能)',
-        description: [
-            '需开启"隐藏 分区视频推荐"',
-            '建议开启"增大视频载入数量"',
-            '若影响视频载入或造成卡顿，请关闭本功能',
-        ],
+        description: ['建议开启 "增大视频载入数量"', '若影响视频载入或造成卡顿，请关闭本功能'],
         enableFn: async () => {
             let cnt = 0
             const id = setInterval(() => {

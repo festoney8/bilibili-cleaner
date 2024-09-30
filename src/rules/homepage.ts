@@ -21,7 +21,7 @@ if (isPageHomepage()) {
                 .bili-header__banner > * {
                     display: none !important;
                 }
-                .bili-header__bar {
+                .bili-header__bar, .bili-feed4 .bili-header .slide-down {
                     box-shadow: 0 2px 4px #00000014 !important;
                 }
                 /* icon和文字颜色 */

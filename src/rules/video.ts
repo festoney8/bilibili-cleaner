@@ -1197,6 +1197,12 @@ if (isPageVideo() || isPagePlaylist()) {
             defaultStatus: true,
             itemCSS: `.video-share-popover {display: none !important;}`,
         }),
+        // 隐藏 成为老粉按钮
+        new CheckboxItem({
+            itemID: 'video-page-hide-triple-oldfan-entry',
+            description: '隐藏 成为老粉按钮',
+            itemCSS: `.triple-oldfan-entry {display: none !important;}`,
+        }),
         // 隐藏 官方AI总结
         new CheckboxItem({
             itemID: 'video-page-hide-below-info-video-ai-assistant',

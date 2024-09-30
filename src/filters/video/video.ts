@@ -498,7 +498,7 @@ if (isPageVideo() || isPageBangumi() || isPagePlaylist()) {
             description: '相关视频 暂存数据过滤 (实验功能)\n自动替换 接下来播放\n启用时 修改其他视频过滤设置需刷新',
             enableFunc: () => {
                 isRelatedFilterEnable = true
-                checkRelated()
+                checkRelated().then().catch()
             },
             disableFunc: () => {
                 isRelatedFilterEnable = false

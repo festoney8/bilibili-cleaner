@@ -1,9 +1,9 @@
+import { GM_getValue, GM_setValue, unsafeWindow } from '$'
 import { Group } from '../components/group'
 import { CheckboxItem, NumberItem } from '../components/item'
 import { error } from '../utils/logger'
-import { matchAvidBvid, matchBvid, waitForEle } from '../utils/tool'
 import { isPageFestival, isPagePlaylist, isPageVideo } from '../utils/pageType'
-import { GM_getValue, GM_setValue, unsafeWindow } from '$'
+import { matchAvidBvid, matchBvid, waitForEle } from '../utils/tool'
 import URLCleanerInstance from '../utils/urlCleaner'
 
 /** 宽屏模式监听 */
@@ -54,7 +54,7 @@ if (isPageVideo() || isPagePlaylist()) {
                  * @see https://www.zhihu.com/question/381784377/answer/1099438784
                  * @see https://github.com/SocialSisterYi/bilibili-API-collect/issues/740
                  * @see https://socialsisteryi.github.io/bilibili-API-collect/docs/misc/bvid_desc.html
-                 * @param bvid 输入BV号
+                 * @param url 网址
                  * @returns 输出纯数字av号
                  */
                 const bv2av = (url: string): string => {
@@ -621,6 +621,7 @@ if (isPageVideo() || isPagePlaylist() || isPageFestival()) {
             description: '隐藏 播放效果调查',
             defaultStatus: true,
             itemCSS: `
+                .bpx-player-qoeFeedback,
                 .bili-qoeFeedback,
                 .bili-qoeFeedback-score,
                 .bili-qoeFeedback-vote {
@@ -1196,6 +1197,12 @@ if (isPageVideo() || isPagePlaylist()) {
             defaultStatus: true,
             itemCSS: `.video-share-popover {display: none !important;}`,
         }),
+        // 隐藏 成为老粉按钮
+        new CheckboxItem({
+            itemID: 'video-page-hide-triple-oldfan-entry',
+            description: '隐藏 成为老粉按钮',
+            itemCSS: `.triple-oldfan-entry {display: none !important;}`,
+        }),
         // 隐藏 官方AI总结
         new CheckboxItem({
             itemID: 'video-page-hide-below-info-video-ai-assistant',
@@ -1390,14 +1397,16 @@ if (isPageVideo() || isPagePlaylist()) {
             itemCSS: `.base-video-sections-v1 .next-button {display: none !important;}
                 .video-sections-head_first-line .first-line-left {max-width: 100% !important;}
                 .video-sections-head_first-line .first-line-title {max-width: unset !important;}
-                .video-sections-head_first-line .first-line-right {display: none !important;}`,
+                .video-sections-head_first-line .first-line-right {display: none !important;}
+                .video-pod__header .auto-play {display: none !important;}`,
         }),
         // 隐藏 视频合集 播放量
         new CheckboxItem({
             itemID: 'video-page-hide-right-container-section-play-num',
             description: '隐藏 视频合集 播放量',
             itemCSS: `.base-video-sections-v1 .play-num {display: none !important;}
-                .video-sections-head_second-line .play-num {display: none !important;}`,
+                .video-sections-head_second-line .play-num {display: none !important;}
+                .video-pod__header .total-view {display: none !important;}`,
         }),
         // 隐藏 视频合集 简介, 默认开启
         new CheckboxItem({
@@ -1407,14 +1416,16 @@ if (isPageVideo() || isPagePlaylist()) {
             itemCSS: `.base-video-sections-v1 .abstract {display: none !important;}
                 .base-video-sections-v1 .second-line_left img {display: none !important;}
                 .video-sections-head_second-line .abstract {display: none !important;}
-                .video-sections-head_second-line .second-line_left img {display: none !important;}`,
+                .video-sections-head_second-line .second-line_left img {display: none !important;}
+                .video-pod__header .pod-description-reference {display: none !important;}`,
         }),
         // 隐藏 视频合集 订阅合集
         new CheckboxItem({
             itemID: 'video-page-hide-right-container-section-subscribe',
             description: '隐藏 视频合集 订阅合集',
             itemCSS: `.base-video-sections-v1 .second-line_right {display: none !important;}
-                .video-sections-head_second-line .second-line_right {display: none !important;}`,
+                .video-sections-head_second-line .second-line_right {display: none !important;}
+                .video-pod__header .subscribe-btn {display: none !important;}`,
         }),
         // 隐藏 分P视频 自动连播
         new CheckboxItem({

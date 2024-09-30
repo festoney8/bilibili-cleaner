@@ -1,3 +1,4 @@
+import { BooleanFilter } from '../../core/subFilters/booleanFilter'
 import { KeywordFilter } from '../../core/subFilters/keywordFilter'
 import { NumberMinFilter } from '../../core/subFilters/numberMinFilter'
 import { StringFilter } from '../../core/subFilters/stringFilter'
@@ -13,3 +14,5 @@ export class CommentBotFilter extends StringFilter {}
 export class CommentCallBotFilter extends StringFilter {}
 
 export class CommentCallUserFilter extends KeywordFilter {}
+
+export class CommentCallUserOnlyFilter extends BooleanFilter {}

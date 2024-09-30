@@ -12,35 +12,30 @@ if (isPageHomepage()) {
         new CheckboxItem({
             itemID: 'homepage-hide-banner',
             description: '隐藏 横幅banner',
-            itemCSS: `.header-banner__inner, .bili-header__banner {
+            itemCSS: `
+                .bili-header__banner {
+                    min-height: unset !important;
+                    height: 64px !important;
+                    background: var(--bg1, white) !important;
+                }
+                .bili-header__banner > * {
                     display: none !important;
                 }
-                .bili-header .bili-header__bar:not(.slide-down) {
-                    position: relative !important;
-                    box-shadow: 0 2px 4px #00000014;
-                }
-                .bili-header__channel {
-                    margin-top: 5px !important;
+                .bili-header__bar, .bili-feed4 .bili-header .slide-down {
+                    box-shadow: 0 2px 4px #00000014 !important;
                 }
                 /* icon和文字颜色 */
                 .bili-header .right-entry__outside .right-entry-icon {
-                    color: #18191c !important;
+                    color: var(--text1, #18191c) !important;
                 }
                 .bili-header .left-entry .entry-title, .bili-header .left-entry .download-entry, .bili-header .left-entry .default-entry, .bili-header .left-entry .loc-entry {
-                    color: #18191c !important;
+                    color: var(--text1, #18191c) !important;
                 }
                 .bili-header .left-entry .entry-title .zhuzhan-icon {
                     color: #00aeec !important;
                 }
                 .bili-header .right-entry__outside .right-entry-text {
-                    color: #61666d !important;
-                }
-                /* header滚动后渐变出现, 否则闪动 */
-                #i_cecream .bili-header__bar.slide-down {
-                    transition: background-color 0.3s ease-out, box-shadow 0.3s ease-out !important;
-                }
-                #i_cecream .bili-header__bar:not(.slide-down) {
-                    transition: background-color 0.3s ease-out !important;
+                    color: var(--text2, #61666d) !important;
                 }
                 /* 分区菜单 第一排按钮的二级菜单下置  */
                 .v-popover.is-top {padding-top: 5px; padding-bottom: unset !important; bottom: unset !important;}
@@ -116,7 +111,8 @@ if (isPageHomepage()) {
         new CheckboxItem({
             itemID: 'homepage-hide-sticky-header',
             description: '隐藏 滚动页面时 顶部吸附顶栏',
-            itemCSS: `.bili-header .left-entry__title svg {
+            itemCSS: `
+                .bili-header .left-entry__title svg {
                     display: none !important;
                 }
                 /* 高优先覆盖!important */

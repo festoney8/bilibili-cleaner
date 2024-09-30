@@ -14,6 +14,7 @@ import {
     CommentBotFilter,
     CommentCallBotFilter,
     CommentCallUserFilter,
+    CommentCallUserOnlyFilter,
     CommentContentFilter,
     CommentLevelFilter,
     CommentUsernameFilter,
@@ -42,6 +43,9 @@ const GM_KEYS = {
         },
         callUser: {
             statusKey: 'dynamic-comment-call-user-filter-status',
+        },
+        callUserOnly: {
+            statusKey: 'dynamic-comment-call-user-only-filter-status',
         },
         isAD: {
             statusKey: 'dynamic-comment-ad-filter-status',
@@ -76,10 +80,13 @@ const selectorFns = {
             return (comment as any).__data?.member?.uname?.trim()
         },
         content: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.content?.message?.replace(/@[^@ ]+?( |$)/g, '').trim()
+            return (comment as any).__data?.content?.message?.replace(/@[^@\s]+/g, ' ').trim()
         },
         callUser: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.content?.members[0]?.uname
+        },
+        callUserOnly: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.content?.message?.replace(/@[^@\s]+/g, ' ').trim() === ''
         },
         level: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.member?.level_info?.current_level
@@ -114,18 +121,26 @@ const selectorFns = {
         content: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.content?.message
                 ?.trim()
-                ?.replace(/@[^@ ]+?( |$)/g, '')
-                .replace(/^回复 *:?/, '')
+                ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
+                ?.replace(/@[^@\s]+/g, ' ')
                 .trim()
         },
         callUser: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.content?.message
                 ?.trim()
-                .replace(/^回复 ?@[^@ ]+? ?:/, '')
-                .trim()
-                ?.match(/@[^@ ]+( |$)/)?.[0]
+                ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
+                ?.match(/@[^@\s]+/)?.[0]
                 .replace('@', '')
                 .trim()
+        },
+        callUserOnly: (comment: HTMLElement): SelectorResult => {
+            return (
+                (comment as any).__data?.content?.message
+                    ?.trim()
+                    ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
+                    ?.replace(/@[^@\s]+/g, ' ')
+                    .trim() === ''
+            )
         },
         level: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.member?.level_info?.current_level
@@ -221,6 +236,8 @@ if (isPageDynamic()) {
     const commentCallUserFilter = new CommentCallUserFilter()
     commentCallUserFilter.addParam(`/./`)
 
+    const commentCallUserOnlyFilter = new CommentCallUserOnlyFilter()
+
     // 初始化白名单
     const commentIsUpFilter = new CommentIsUpFilter()
     const commentIsPinFilter = new CommentIsPinFilter()
@@ -236,7 +253,8 @@ if (isPageDynamic()) {
                 commentLevelFilter.isEnable ||
                 commentBotFilter.isEnable ||
                 commentCallBotFilter.isEnable ||
-                commentCallUserFilter.isEnable
+                commentCallUserFilter.isEnable ||
+                commentCallUserOnlyFilter.isEnable
             )
         ) {
             return
@@ -262,6 +280,7 @@ if (isPageDynamic()) {
         //             `username: ${selectorFns.root.username(v)}`,
         //             `content: ${selectorFns.root.content(v)}`,
         //             `callUser: ${selectorFns.root.callUser(v)}`,
+        //             `callUserOnly: ${selectorFns.root.callUserOnly(v)}`,
         //             `level: ${selectorFns.root.level(v)}`,
         //             `isUp: ${selectorFns.root.isUp(v)}`,
         //             `isPin: ${selectorFns.root.isPin(v)}`,
@@ -283,6 +302,8 @@ if (isPageDynamic()) {
         commentBotFilter.isEnable && blackPairs.push([commentBotFilter, selectorFns.root.username])
         commentCallBotFilter.isEnable && blackPairs.push([commentCallBotFilter, selectorFns.root.callUser])
         commentCallUserFilter.isEnable && blackPairs.push([commentCallUserFilter, selectorFns.root.callUser])
+        commentCallUserOnlyFilter.isEnable &&
+            blackPairs.push([commentCallUserOnlyFilter, selectorFns.root.callUserOnly])
 
         const whitePairs: SubFilterPair[] = []
         commentIsUpFilter.isEnable && whitePairs.push([commentIsUpFilter, selectorFns.root.isUp])
@@ -303,7 +324,8 @@ if (isPageDynamic()) {
                 commentLevelFilter.isEnable ||
                 commentBotFilter.isEnable ||
                 commentCallBotFilter.isEnable ||
-                commentCallUserFilter.isEnable
+                commentCallUserFilter.isEnable ||
+                commentCallUserOnlyFilter.isEnable
             )
         ) {
             return
@@ -329,6 +351,7 @@ if (isPageDynamic()) {
         //             `username: ${selectorFns.sub.username(v)}`,
         //             `content: ${selectorFns.sub.content(v)}`,
         //             `callUser: ${selectorFns.sub.callUser(v)}`,
+        //             `callUserOnly: ${selectorFns.sub.callUserOnly(v)}`,
         //             `level: ${selectorFns.sub.level(v)}`,
         //             `isUp: ${selectorFns.sub.isUp(v)}`,
         //             `isLink: ${selectorFns.sub.isLink(v)}`,
@@ -348,6 +371,7 @@ if (isPageDynamic()) {
         commentBotFilter.isEnable && blackPairs.push([commentBotFilter, selectorFns.sub.username])
         commentCallBotFilter.isEnable && blackPairs.push([commentCallBotFilter, selectorFns.sub.callUser])
         commentCallUserFilter.isEnable && blackPairs.push([commentCallUserFilter, selectorFns.sub.callUser])
+        commentCallUserOnlyFilter.isEnable && blackPairs.push([commentCallUserOnlyFilter, selectorFns.sub.callUserOnly])
 
         const whitePairs: SubFilterPair[] = []
         commentIsUpFilter.isEnable && whitePairs.push([commentIsUpFilter, selectorFns.sub.isUp])
@@ -365,7 +389,8 @@ if (isPageDynamic()) {
             commentLevelFilter.isEnable ||
             commentBotFilter.isEnable ||
             commentCallBotFilter.isEnable ||
-            commentCallUserFilter.isEnable
+            commentCallUserFilter.isEnable ||
+            commentCallUserOnlyFilter.isEnable
         ) {
             checkRoot(fullSite).then().catch()
             checkSub(fullSite).then().catch()
@@ -379,7 +404,7 @@ if (isPageDynamic()) {
         ShadowInstance.addShadowObserver(
             'BILI-COMMENTS',
             new MutationObserver(() => {
-                checkRoot(true)
+                checkRoot(true).then().catch()
             }),
             {
                 subtree: true,
@@ -396,7 +421,7 @@ if (isPageDynamic()) {
         ShadowInstance.addShadowObserver(
             'BILI-COMMENT-REPLIES-RENDERER',
             new MutationObserver(() => {
-                checkSub(true)
+                checkSub(true).then().catch()
             }),
             {
                 subtree: true,
@@ -565,10 +590,23 @@ if (isPageDynamic()) {
                 checkAll(true)
             },
         }),
-        // 过滤 @其他用户的评论
+        // 过滤 只含 @其他用户 的评论
+        new CheckboxItem({
+            itemID: GM_KEYS.black.callUserOnly.statusKey,
+            description: '过滤 只含 @其他用户 的评论',
+            enableFunc: () => {
+                commentCallUserOnlyFilter.enable()
+                checkAll(true)
+            },
+            disableFunc: () => {
+                commentCallUserOnlyFilter.disable()
+                checkAll(true)
+            },
+        }),
+        // 过滤 包含 @其他用户 的评论
         new CheckboxItem({
             itemID: GM_KEYS.black.callUser.statusKey,
-            description: '过滤 @其他用户的评论',
+            description: '过滤 包含 @其他用户 的评论',
             enableFunc: () => {
                 commentCallUserFilter.enable()
                 checkAll(true)

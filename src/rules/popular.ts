@@ -1,8 +1,8 @@
 import { Group } from '../components/group'
 import { CheckboxItem, RadioItem } from '../components/item'
 import { isPagePopular } from '../utils/pageType'
-import fontFaceRegular from './styles/fontFaceRegular.scss?inline'
 import fontFaceMedium from './styles/fontFaceMedium.scss?inline'
+import fontFaceRegular from './styles/fontFaceRegular.scss?inline'
 
 const popularGroupList: Group[] = []
 
@@ -26,16 +26,16 @@ if (isPagePopular()) {
                 }
                 /* icon和文字颜色 */
                 .bili-header .right-entry__outside .right-entry-icon {
-                    color: #18191c !important;
+                    color: var(--text1, #18191c) !important;
                 }
                 .bili-header .left-entry .entry-title, .bili-header .left-entry .download-entry, .bili-header .left-entry .default-entry, .bili-header .left-entry .loc-entry {
-                    color: #18191c !important;
+                    color: var(--text1, #18191c) !important;
                 }
                 .bili-header .left-entry .entry-title .zhuzhan-icon {
                     color: #00aeec !important;
                 }
                 .bili-header .right-entry__outside .right-entry-text {
-                    color: #61666d !important;
+                    color: var(--text2, #61666d) !important;
                 }
                 /* header滚动后渐变出现, 否则闪动 */
                 #i_cecream .bili-header__bar.slide-down {

@@ -2,6 +2,13 @@ import { defineConfig } from 'vite'
 import monkey from 'vite-plugin-monkey'
 
 export default defineConfig({
+    css: {
+        preprocessorOptions: {
+            scss: {
+                api: 'modern-compiler',
+            },
+        },
+    },
     plugins: [
         monkey({
             entry: 'src/main.ts',

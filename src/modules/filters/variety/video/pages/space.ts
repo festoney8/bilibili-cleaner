@@ -1,8 +1,8 @@
-import { GM_getValue, GM_setValue } from '$'
+import { GM_getValue } from '$'
 import { Group } from '../../../../../types/collection'
 import { IMainFilter, SelectorResult, SubFilterPair } from '../../../../../types/filter'
-import { error, log } from '../../../../../utils/logger'
-import { convertTimeToSec, matchBvid, orderedUniq, showEle, waitForEle } from '../../../../../utils/tool'
+import { log } from '../../../../../utils/logger'
+import { convertTimeToSec, matchBvid, showEle, waitForEle } from '../../../../../utils/tool'
 import { coreCheck } from '../../../core/core'
 import { VideoBvidFilter, VideoDurationFilter, VideoTitleFilter } from '../subFilters/black'
 import { VideoTitleWhiteFilter } from '../subFilters/white'
@@ -226,38 +226,38 @@ export const videoFilterSpaceGroups: Group[] = [
             },
         ],
     },
-    {
-        name: 'BV号过滤',
-        items: [
-            {
-                type: 'switch',
-                id: GM_KEYS.black.bvid.statusKey,
-                name: '启用 BV号过滤 (右键单击标题)',
-                defaultEnable: false,
-                noStyle: true,
-                enableFn: () => {
-                    mainFilter.videoBvidFilter.enable()
-                    mainFilter.check('full').then().catch()
-                },
-                disableFn: () => {
-                    mainFilter.videoBvidFilter.disable()
-                    mainFilter.check('full').then().catch()
-                },
-            },
-            {
-                type: 'editor',
-                id: GM_KEYS.black.bvid.valueKey,
-                name: '编辑 BV号黑名单',
-                description: ['右键屏蔽的BV号会出现在首行'],
-                editorTitle: 'BV号 黑名单',
-                editorDescription: ['每行一个BV号，保存时自动去重'],
-                saveFn: async () => {
-                    mainFilter.videoBvidFilter.setParam(GM_getValue(GM_KEYS.black.bvid.valueKey, []))
-                    mainFilter.check('full').then().catch()
-                },
-            },
-        ],
-    },
+    // {
+    //     name: 'BV号过滤',
+    //     items: [
+    //         {
+    //             type: 'switch',
+    //             id: GM_KEYS.black.bvid.statusKey,
+    //             name: '启用 BV号过滤 (右键单击标题)',
+    //             defaultEnable: false,
+    //             noStyle: true,
+    //             enableFn: () => {
+    //                 mainFilter.videoBvidFilter.enable()
+    //                 mainFilter.check('full').then().catch()
+    //             },
+    //             disableFn: () => {
+    //                 mainFilter.videoBvidFilter.disable()
+    //                 mainFilter.check('full').then().catch()
+    //             },
+    //         },
+    //         {
+    //             type: 'editor',
+    //             id: GM_KEYS.black.bvid.valueKey,
+    //             name: '编辑 BV号黑名单',
+    //             description: ['右键屏蔽的BV号会出现在首行'],
+    //             editorTitle: 'BV号 黑名单',
+    //             editorDescription: ['每行一个BV号，保存时自动去重'],
+    //             saveFn: async () => {
+    //                 mainFilter.videoBvidFilter.setParam(GM_getValue(GM_KEYS.black.bvid.valueKey, []))
+    //                 mainFilter.check('full').then().catch()
+    //             },
+    //         },
+    //     ],
+    // },
     {
         name: '白名单 免过滤',
         items: [
@@ -294,20 +294,3 @@ export const videoFilterSpaceGroups: Group[] = [
         ],
     },
 ]
-
-// 右键菜单回调
-export const videoFilterSpaceAddBvid = async (bvid: string) => {
-    bvid = bvid.trim()
-    if (!bvid) {
-        return
-    }
-    try {
-        mainFilter.videoBvidFilter.addParam(bvid)
-        mainFilter.check('full').then().catch()
-        const arr: string[] = GM_getValue(GM_KEYS.black.bvid.valueKey, [])
-        arr.unshift(bvid)
-        GM_setValue(GM_KEYS.black.bvid.valueKey, orderedUniq(arr))
-    } catch (err) {
-        error(`videoFilterSpaceAddBvid add bvid ${bvid} failed`, err)
-    }
-}

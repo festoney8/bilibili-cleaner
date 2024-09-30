@@ -1,8 +1,15 @@
 import { GM_getValue, GM_setValue } from '$'
 import settings from '../../../../../settings'
 import { Group } from '../../../../../types/collection'
-import { IMainFilter, SelectorResult, SubFilterPair } from '../../../../../types/filter'
+import {
+    ContextMenuTargetHandler,
+    FilterContextMenu,
+    IMainFilter,
+    SelectorResult,
+    SubFilterPair,
+} from '../../../../../types/filter'
 import { error, log } from '../../../../../utils/logger'
+import { isPageBangumi, isPagePlaylist, isPageVideo } from '../../../../../utils/pageType'
 import ShadowInstance from '../../../../../utils/shadow'
 import { orderedUniq, showEle } from '../../../../../utils/tool'
 import { coreCheck } from '../../../core/core'
@@ -713,19 +720,35 @@ export const commentFilterVideoGroups: Group[] = [
     },
 ]
 
-// 右键菜单回调
-export const commentFilterVideoAddUsername = async (username: string) => {
-    username = username.trim()
-    if (!username) {
-        return
+// 右键菜单handler
+export const commentFilterVideoHandler: ContextMenuTargetHandler = (target: HTMLElement): FilterContextMenu[] => {
+    if (!(isPageVideo() || isPagePlaylist() || isPageBangumi())) {
+        return []
     }
-    try {
-        mainFilter.commentUsernameFilter.addParam(username)
-        mainFilter.check('full').then().catch()
-        const arr: string[] = GM_getValue(GM_KEYS.black.username.valueKey, [])
-        arr.unshift(username)
-        GM_setValue(GM_KEYS.black.username.valueKey, orderedUniq(arr))
-    } catch (err) {
-        error(`commentFilterVideoAddUsername add username ${username} failed`, err)
+
+    const menus: FilterContextMenu[] = []
+    if (
+        target.parentElement?.id === 'user-name' ||
+        target.classList.contains('user-name') ||
+        target.classList.contains('sub-user-name')
+    ) {
+        const username = target.textContent?.trim()
+        if (username && mainFilter.commentUsernameFilter.isEnable) {
+            menus.push({
+                name: `屏蔽用户：${username}`,
+                fn: async () => {
+                    try {
+                        mainFilter.commentUsernameFilter.addParam(username)
+                        mainFilter.check('full').then().catch()
+                        const arr: string[] = GM_getValue(GM_KEYS.black.username.valueKey, [])
+                        arr.unshift(username)
+                        GM_setValue(GM_KEYS.black.username.valueKey, orderedUniq(arr))
+                    } catch (err) {
+                        error(`commentFilterVideoHandler add username ${username} failed`, err)
+                    }
+                },
+            })
+        }
     }
+    return menus
 }

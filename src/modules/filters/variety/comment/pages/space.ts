@@ -1,8 +1,15 @@
 import { GM_getValue, GM_setValue } from '$'
 import settings from '../../../../../settings'
 import { Group } from '../../../../../types/collection'
-import { IMainFilter, SelectorResult, SubFilterPair } from '../../../../../types/filter'
+import {
+    ContextMenuTargetHandler,
+    FilterContextMenu,
+    IMainFilter,
+    SelectorResult,
+    SubFilterPair,
+} from '../../../../../types/filter'
 import { error, log } from '../../../../../utils/logger'
+import { isPageSpace } from '../../../../../utils/pageType'
 import { orderedUniq, showEle, waitForEle } from '../../../../../utils/tool'
 import { coreCheck } from '../../../core/core'
 import {
@@ -639,19 +646,35 @@ export const commentFilterSpaceGroups: Group[] = [
     },
 ]
 
-// 右键菜单回调
-export const commentFilterSpaceAddUsername = async (username: string) => {
-    username = username.trim()
-    if (!username) {
-        return
+// 右键菜单handler
+export const commentFilterSpaceHandler: ContextMenuTargetHandler = (target: HTMLElement): FilterContextMenu[] => {
+    if (!isPageSpace()) {
+        return []
     }
-    try {
-        mainFilter.commentUsernameFilter.addParam(username)
-        mainFilter.check('full').then().catch()
-        const arr: string[] = GM_getValue(GM_KEYS.black.username.valueKey, [])
-        arr.unshift(username)
-        GM_setValue(GM_KEYS.black.username.valueKey, orderedUniq(arr))
-    } catch (err) {
-        error(`commentFilterSpaceAddUsername add username ${username} failed`, err)
+
+    const menus: FilterContextMenu[] = []
+    if (
+        target.parentElement?.id === 'user-name' ||
+        target.classList.contains('user-name') ||
+        target.classList.contains('sub-user-name')
+    ) {
+        const username = target.textContent?.trim()
+        if (username && mainFilter.commentUsernameFilter.isEnable) {
+            menus.push({
+                name: `屏蔽用户：${username}`,
+                fn: async () => {
+                    try {
+                        mainFilter.commentUsernameFilter.addParam(username)
+                        mainFilter.check('full').then().catch()
+                        const arr: string[] = GM_getValue(GM_KEYS.black.username.valueKey, [])
+                        arr.unshift(username)
+                        GM_setValue(GM_KEYS.black.username.valueKey, orderedUniq(arr))
+                    } catch (err) {
+                        error(`commentFilterSpaceHandler add username ${username} failed`, err)
+                    }
+                },
+            })
+        }
     }
+    return menus
 }

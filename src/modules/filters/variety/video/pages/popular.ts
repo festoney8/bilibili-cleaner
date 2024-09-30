@@ -1,8 +1,15 @@
 import { GM_getValue, GM_setValue } from '$'
 import { Group } from '../../../../../types/collection'
-import { IMainFilter, SelectorResult, SubFilterPair } from '../../../../../types/filter'
+import {
+    ContextMenuTargetHandler,
+    FilterContextMenu,
+    IMainFilter,
+    SelectorResult,
+    SubFilterPair,
+} from '../../../../../types/filter'
 import { error, log } from '../../../../../utils/logger'
-import { calcQuality, orderedUniq, showEle, waitForEle } from '../../../../../utils/tool'
+import { isPagePopular } from '../../../../../utils/pageType'
+import { calcQuality, matchBvid, orderedUniq, showEle, waitForEle } from '../../../../../utils/tool'
 import { coreCheck } from '../../../core/core'
 import {
     VideoBvidFilter,
@@ -504,51 +511,84 @@ export const videoFilterPopularGroups: Group[] = [
     },
 ]
 
-// 右键菜单回调
-export const videoFilterPopularAddUploader = async (uploader: string) => {
-    uploader = uploader.trim()
-    if (!uploader) {
-        return
+// 右键菜单handler
+export const videoFilterPopularHandler: ContextMenuTargetHandler = (target: HTMLElement): FilterContextMenu[] => {
+    if (!isPagePopular()) {
+        return []
     }
-    try {
-        mainFilter.videoUploaderFilter.addParam(uploader)
-        mainFilter.check('full').then().catch()
-        const arr: string[] = GM_getValue(GM_KEYS.black.uploader.valueKey, [])
-        arr.unshift(uploader)
-        GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
-    } catch (err) {
-        error(`videoFilterPopularAddUploader add uploader ${uploader} failed`, err)
-    }
-}
 
-export const videoFilterPopularAddUploaderWhite = async (uploader: string) => {
-    uploader = uploader.trim()
-    if (!uploader) {
-        return
+    const menus: FilterContextMenu[] = []
+    // UP主
+    if (target.closest('.up-name')) {
+        const uploader = target.textContent?.trim()
+        if (uploader) {
+            if (mainFilter.videoUploaderFilter.isEnable) {
+                menus.push({
+                    name: `屏蔽UP主：${uploader}`,
+                    fn: async () => {
+                        try {
+                            mainFilter.videoUploaderFilter.addParam(uploader)
+                            mainFilter.check('full').then().catch()
+                            const arr: string[] = GM_getValue(GM_KEYS.black.uploader.valueKey, [])
+                            arr.unshift(uploader)
+                            GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
+                        } catch (err) {
+                            error(`videoFilterPopularHandler add uploader ${uploader} failed`, err)
+                        }
+                    },
+                })
+            }
+            if (mainFilter.videoUploaderWhiteFilter.isEnable) {
+                menus.push({
+                    name: `将UP主加入白名单`,
+                    fn: async () => {
+                        try {
+                            mainFilter.videoUploaderWhiteFilter.addParam(uploader)
+                            mainFilter.check('full').then().catch()
+                            const arr: string[] = GM_getValue(GM_KEYS.white.uploader.valueKey, [])
+                            arr.unshift(uploader)
+                            GM_setValue(GM_KEYS.white.uploader.valueKey, orderedUniq(arr))
+                        } catch (err) {
+                            error(`videoFilterPopularHandler add white uploader ${uploader} failed`, err)
+                        }
+                    },
+                })
+            }
+        }
     }
-    try {
-        mainFilter.videoUploaderWhiteFilter.addParam(uploader)
-        mainFilter.check('full').then().catch()
-        const arr: string[] = GM_getValue(GM_KEYS.white.uploader.valueKey, [])
-        arr.unshift(uploader)
-        GM_setValue(GM_KEYS.white.uploader.valueKey, orderedUniq(arr))
-    } catch (err) {
-        error(`videoFilterPopularAddUploaderWhite add uploader ${uploader} failed`, err)
+    // BVID
+    if (
+        (target.classList.contains('title') && target.closest('.info a')) ||
+        target.classList.contains('video-name') ||
+        target.classList.contains('lazy-image')
+    ) {
+        let url = target.getAttribute('href') || target.parentElement?.getAttribute('href')
+        if (!url) {
+            url = target.closest('.video-card')?.querySelector('.video-card__content > a')?.getAttribute('href')
+        }
+        if (url && mainFilter.videoBvidFilter.isEnable) {
+            const bvid = matchBvid(url)
+            if (bvid) {
+                menus.push({
+                    name: `屏蔽视频 ${bvid}`,
+                    fn: async () => {
+                        try {
+                            mainFilter.videoBvidFilter.addParam(bvid)
+                            mainFilter.check('full').then().catch()
+                            const arr: string[] = GM_getValue(GM_KEYS.black.bvid.valueKey, [])
+                            arr.unshift(bvid)
+                            GM_setValue(GM_KEYS.black.bvid.valueKey, orderedUniq(arr))
+                        } catch (err) {
+                            error(`videoFilterPopularHandler add bvid ${bvid} failed`, err)
+                        }
+                    },
+                })
+                menus.push({
+                    name: '复制视频链接',
+                    fn: () => navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).then().catch(),
+                })
+            }
+        }
     }
-}
-
-export const videoFilterPopularAddBvid = async (bvid: string) => {
-    bvid = bvid.trim()
-    if (!bvid) {
-        return
-    }
-    try {
-        mainFilter.videoBvidFilter.addParam(bvid)
-        mainFilter.check('full').then().catch()
-        const arr: string[] = GM_getValue(GM_KEYS.black.bvid.valueKey, [])
-        arr.unshift(bvid)
-        GM_setValue(GM_KEYS.black.bvid.valueKey, orderedUniq(arr))
-    } catch (err) {
-        error(`videoFilterPopularAddBvid add bvid ${bvid} failed`, err)
-    }
+    return menus
 }

@@ -1,8 +1,15 @@
 import { GM_getValue, GM_setValue } from '$'
 import settings from '../../../../../settings'
 import { Group } from '../../../../../types/collection'
-import { IMainFilter, SelectorResult, SubFilterPair } from '../../../../../types/filter'
+import {
+    ContextMenuTargetHandler,
+    FilterContextMenu,
+    IMainFilter,
+    SelectorResult,
+    SubFilterPair,
+} from '../../../../../types/filter'
 import { error, log } from '../../../../../utils/logger'
+import { isPageDynamic } from '../../../../../utils/pageType'
 import ShadowInstance from '../../../../../utils/shadow'
 import { orderedUniq, showEle } from '../../../../../utils/tool'
 import { coreCheck } from '../../../core/core'
@@ -723,4 +730,37 @@ export const commentFilterDynamicAddUsername = async (username: string) => {
     } catch (err) {
         error(`commentFilterDynamicAddUsername add username ${username} failed`, err)
     }
+}
+
+// 右键菜单handler
+export const commentFilterDynamicHandler: ContextMenuTargetHandler = (target: HTMLElement): FilterContextMenu[] => {
+    if (!isPageDynamic()) {
+        return []
+    }
+
+    const menus: FilterContextMenu[] = []
+    if (
+        target.parentElement?.id === 'user-name' ||
+        target.classList.contains('user-name') ||
+        target.classList.contains('sub-user-name')
+    ) {
+        const username = target.textContent?.trim()
+        if (username && mainFilter.commentUsernameFilter.isEnable) {
+            menus.push({
+                name: `屏蔽用户：${username}`,
+                fn: async () => {
+                    try {
+                        mainFilter.commentUsernameFilter.addParam(username)
+                        mainFilter.check('full').then().catch()
+                        const arr: string[] = GM_getValue(GM_KEYS.black.username.valueKey, [])
+                        arr.unshift(username)
+                        GM_setValue(GM_KEYS.black.username.valueKey, orderedUniq(arr))
+                    } catch (err) {
+                        error(`commentFilterDynamicHandler add username ${username} failed`, err)
+                    }
+                },
+            })
+        }
+    }
+    return menus
 }

@@ -1,8 +1,15 @@
 import { GM_getValue, GM_setValue } from '$'
 import settings from '../../../../../settings'
 import { Group } from '../../../../../types/collection'
-import { IMainFilter, SelectorResult, SubFilterPair } from '../../../../../types/filter'
+import {
+    ContextMenuTargetHandler,
+    FilterContextMenu,
+    IMainFilter,
+    SelectorResult,
+    SubFilterPair,
+} from '../../../../../types/filter'
 import { error, log } from '../../../../../utils/logger'
+import { isPageDynamic } from '../../../../../utils/pageType'
 import { convertTimeToSec, orderedUniq, showEle, waitForEle } from '../../../../../utils/tool'
 import { coreCheck } from '../../../core/core'
 import { DynDurationFilter, DynUploaderFilter, DynVideoTitleFilter } from '../subFilters/black'
@@ -243,19 +250,30 @@ export const dynamicFilterDynamicGroups: Group[] = [
     },
 ]
 
-// 右键菜单回调
-export const dynamicFilterDynamicAddUploader = async (uploader: string) => {
-    uploader = uploader.trim()
-    if (!uploader) {
-        return
+// 右键菜单handler
+export const dynamicFilterDynamicHandler: ContextMenuTargetHandler = (target: HTMLElement): FilterContextMenu[] => {
+    if (!isPageDynamic()) {
+        return []
     }
-    try {
-        mainFilter.dynUploaderFilter.addParam(uploader)
-        mainFilter.check('full').then().catch()
-        const arr: string[] = GM_getValue(GM_KEYS.black.uploader.valueKey, [])
-        arr.unshift(uploader)
-        GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
-    } catch (err) {
-        error(`dynamicFilterDynamicAddUploader add uploader ${uploader} failed`, err)
+    const menus: FilterContextMenu[] = []
+    if (target.classList.contains('bili-dyn-title__text')) {
+        const uploader = target.textContent?.trim()
+        if (uploader && mainFilter.dynUploaderFilter.isEnable) {
+            menus.push({
+                name: `隐藏用户动态：${uploader}`,
+                fn: async () => {
+                    try {
+                        mainFilter.dynUploaderFilter.addParam(uploader)
+                        mainFilter.check('full').then().catch()
+                        const arr: string[] = GM_getValue(GM_KEYS.black.uploader.valueKey, [])
+                        arr.unshift(uploader)
+                        GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
+                    } catch (err) {
+                        error(`dynamicFilterDynamicHandler add uploader ${uploader} failed`, err)
+                    }
+                },
+            })
+        }
     }
+    return menus
 }

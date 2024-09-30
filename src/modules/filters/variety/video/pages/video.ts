@@ -1,7 +1,14 @@
 import { GM_getValue, GM_setValue, unsafeWindow } from '$'
 import { Group } from '../../../../../types/collection'
-import { IMainFilter, SelectorResult, SubFilterPair } from '../../../../../types/filter'
+import {
+    ContextMenuTargetHandler,
+    FilterContextMenu,
+    IMainFilter,
+    SelectorResult,
+    SubFilterPair,
+} from '../../../../../types/filter'
 import { error, log } from '../../../../../utils/logger'
+import { isPageBangumi, isPagePlaylist, isPageVideo } from '../../../../../utils/pageType'
 import { convertTimeToSec, isEleHide, matchBvid, orderedUniq, showEle, waitForEle } from '../../../../../utils/tool'
 import { coreCheck } from '../../../core/core'
 import {
@@ -463,51 +470,94 @@ export const videoFilterVideoGroups: Group[] = [
     },
 ]
 
-// 右键菜单回调
-export const videoFilterVideoAddUploader = async (uploader: string) => {
-    uploader = uploader.trim()
-    if (!uploader) {
-        return
+// 右键菜单handler
+export const videoFilterVideoHandler: ContextMenuTargetHandler = (target: HTMLElement): FilterContextMenu[] => {
+    if (!(isPageVideo() || isPagePlaylist() || isPageBangumi())) {
+        return []
     }
-    try {
-        mainFilter.videoUploaderFilter.addParam(uploader)
-        mainFilter.check('full').then().catch()
-        const arr: string[] = GM_getValue(GM_KEYS.black.uploader.valueKey, [])
-        arr.unshift(uploader)
-        GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
-    } catch (err) {
-        error(`videoFilterVideoAddUploader add uploader ${uploader} failed`, err)
-    }
-}
 
-export const videoFilterVideoAddUploaderWhite = async (uploader: string) => {
-    uploader = uploader.trim()
-    if (!uploader) {
-        return
-    }
-    try {
-        mainFilter.videoUploaderWhiteFilter.addParam(uploader)
-        mainFilter.check('full').then().catch()
-        const arr: string[] = GM_getValue(GM_KEYS.white.uploader.valueKey, [])
-        arr.unshift(uploader)
-        GM_setValue(GM_KEYS.white.uploader.valueKey, orderedUniq(arr))
-    } catch (err) {
-        error(`videoFilterVideoAddUploaderWhite add uploader ${uploader} failed`, err)
-    }
-}
+    const menus: FilterContextMenu[] = []
+    // UP主
+    if (
+        target.classList.contains('name') ||
+        target.classList.contains('up-name') ||
+        target.parentElement?.classList.contains('up-name') ||
+        target.closest('.staff-info')
+    ) {
+        const uploader =
+            target.closest('.staff-info')?.querySelector('.staff-name')?.textContent?.trim() ||
+            target.textContent?.trim() ||
+            target.parentElement?.textContent?.trim()
+        const url = target.closest('.upname')?.querySelector(':scope a')?.getAttribute('href')
+        const spaceUrl = url?.match(/space\.bilibili\.com\/\d+/)?.[0]
 
-export const videoFilterVideoAddBvid = async (bvid: string) => {
-    bvid = bvid.trim()
-    if (!bvid) {
-        return
+        if (uploader) {
+            if (mainFilter.videoUploaderFilter.isEnable) {
+                menus.push({
+                    name: `屏蔽UP主：${uploader}`,
+                    fn: async () => {
+                        try {
+                            mainFilter.videoUploaderFilter.addParam(uploader)
+                            mainFilter.check('full').then().catch()
+                            const arr: string[] = GM_getValue(GM_KEYS.black.uploader.valueKey, [])
+                            arr.unshift(uploader)
+                            GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
+                        } catch (err) {
+                            error(`videoFilterVideoHandler add uploader ${uploader} failed`, err)
+                        }
+                    },
+                })
+            }
+            if (mainFilter.videoUploaderWhiteFilter.isEnable) {
+                menus.push({
+                    name: `将UP主加入白名单`,
+                    fn: async () => {
+                        try {
+                            mainFilter.videoUploaderWhiteFilter.addParam(uploader)
+                            mainFilter.check('full').then().catch()
+                            const arr: string[] = GM_getValue(GM_KEYS.white.uploader.valueKey, [])
+                            arr.unshift(uploader)
+                            GM_setValue(GM_KEYS.white.uploader.valueKey, orderedUniq(arr))
+                        } catch (err) {
+                            error(`videoFilterVideoHandler add white uploader ${uploader} failed`, err)
+                        }
+                    },
+                })
+            }
+        }
+        if (spaceUrl && (mainFilter.videoUploaderFilter.isEnable || mainFilter.videoUploaderWhiteFilter.isEnable)) {
+            menus.push({
+                name: `复制主页链接`,
+                fn: () => navigator.clipboard.writeText(`https://${spaceUrl}`),
+            })
+        }
     }
-    try {
-        mainFilter.videoBvidFilter.addParam(bvid)
-        mainFilter.check('full').then().catch()
-        const arr: string[] = GM_getValue(GM_KEYS.black.bvid.valueKey, [])
-        arr.unshift(bvid)
-        GM_setValue(GM_KEYS.black.bvid.valueKey, orderedUniq(arr))
-    } catch (err) {
-        error(`videoFilterVideoAddBvid add bvid ${bvid} failed`, err)
+    // BVID
+    if (target.classList.contains('title')) {
+        const url = target.parentElement?.getAttribute('href')
+        if (url && mainFilter.videoBvidFilter.isEnable) {
+            const bvid = matchBvid(url)
+            if (bvid) {
+                menus.push({
+                    name: `屏蔽视频 ${bvid}`,
+                    fn: async () => {
+                        try {
+                            mainFilter.videoBvidFilter.addParam(bvid)
+                            mainFilter.check('full').then().catch()
+                            const arr: string[] = GM_getValue(GM_KEYS.black.bvid.valueKey, [])
+                            arr.unshift(bvid)
+                            GM_setValue(GM_KEYS.black.bvid.valueKey, orderedUniq(arr))
+                        } catch (err) {
+                            error(`videoFilterVideoHandler add bvid ${bvid} failed`, err)
+                        }
+                    },
+                })
+                menus.push({
+                    name: '复制视频链接',
+                    fn: () => navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).then().catch(),
+                })
+            }
+        }
     }
+    return menus
 }

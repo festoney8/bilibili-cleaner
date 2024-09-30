@@ -12,16 +12,44 @@ import {
     isPageSpace,
     isPageVideo,
 } from '../../utils/pageType'
-import { commentFilterDynamicEntry, commentFilterDynamicGroups } from './variety/comment/pages/dynamic'
-import { commentFilterSpaceEntry, commentFilterSpaceGroups } from './variety/comment/pages/space'
-import { commentFilterVideoEntry, commentFilterVideoGroups } from './variety/comment/pages/video'
-import { dynamicFilterDynamicEntry, dynamicFilterDynamicGroups } from './variety/dynamic/pages/dynamic'
-import { videoFilterChannelEntry, videoFilterChannelGroups } from './variety/video/pages/channel'
-import { videoFilterHomepageEntry, videoFilterHomepageGroups } from './variety/video/pages/homepage'
-import { videoFilterPopularEntry, videoFilterPopularGroups } from './variety/video/pages/popular'
-import { videoFilterSearchEntry, videoFilterSearchGroups } from './variety/video/pages/search'
+import {
+    commentFilterDynamicEntry,
+    commentFilterDynamicGroups,
+    commentFilterDynamicHandler,
+} from './variety/comment/pages/dynamic'
+import {
+    commentFilterSpaceEntry,
+    commentFilterSpaceGroups,
+    commentFilterSpaceHandler,
+} from './variety/comment/pages/space'
+import {
+    commentFilterVideoEntry,
+    commentFilterVideoGroups,
+    commentFilterVideoHandler,
+} from './variety/comment/pages/video'
+import {
+    dynamicFilterDynamicEntry,
+    dynamicFilterDynamicGroups,
+    dynamicFilterDynamicHandler,
+} from './variety/dynamic/pages/dynamic'
+import {
+    videoFilterChannelEntry,
+    videoFilterChannelGroups,
+    videoFilterChannelHandler,
+} from './variety/video/pages/channel'
+import {
+    videoFilterHomepageEntry,
+    videoFilterHomepageGroups,
+    videoFilterHomepageHandler,
+} from './variety/video/pages/homepage'
+import {
+    videoFilterPopularEntry,
+    videoFilterPopularGroups,
+    videoFilterPopularHandler,
+} from './variety/video/pages/popular'
+import { videoFilterSearchEntry, videoFilterSearchGroups, videoFilterSearchHandler } from './variety/video/pages/search'
 import { videoFilterSpaceEntry, videoFilterSpaceGroups } from './variety/video/pages/space'
-import { videoFilterVideoEntry, videoFilterVideoGroups } from './variety/video/pages/video'
+import { videoFilterVideoEntry, videoFilterVideoGroups, videoFilterVideoHandler } from './variety/video/pages/video'
 
 /** 视频过滤器 */
 export const videoFilters: Filter[] = [
@@ -139,3 +167,16 @@ const loadNumberItem = (item: INumberItem) => {
         item.fn(value)?.then().catch()
     }
 }
+
+/** 右键菜单功能 */
+export const filterContextMenuHandlers = [
+    videoFilterVideoHandler,
+    videoFilterSearchHandler,
+    videoFilterChannelHandler,
+    videoFilterPopularHandler,
+    videoFilterHomepageHandler,
+    dynamicFilterDynamicHandler,
+    commentFilterVideoHandler,
+    commentFilterDynamicHandler,
+    commentFilterSpaceHandler,
+]

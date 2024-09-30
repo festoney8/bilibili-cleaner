@@ -2,7 +2,7 @@
     <div class="mx-auto w-full bg-white p-1.5">
         <Disclosure v-slot="{ open }" :default-open="true">
             <DisclosureButton
-                class="flex w-full justify-between rounded-lg bg-blue-100/40 px-4 py-1.5 text-left font-bold text-blue-900 outline-none hover:bg-blue-100/80"
+                class="flex w-full justify-between rounded-lg bg-blue-100/60 px-4 py-1.5 text-left font-bold text-blue-900 outline-none hover:bg-blue-100"
             >
                 <span>{{ title || 'Disclosure Title' }}</span>
                 <ChevronUpIcon :class="open ? 'rotate-180 transform' : 'rotate-90'" class="h-6 w-6 text-blue-500" />

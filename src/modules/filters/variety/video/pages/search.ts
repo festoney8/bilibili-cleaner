@@ -1,7 +1,14 @@
 import { GM_getValue, GM_setValue } from '$'
 import { Group } from '../../../../../types/collection'
-import { IMainFilter, SelectorResult, SubFilterPair } from '../../../../../types/filter'
+import {
+    ContextMenuTargetHandler,
+    FilterContextMenu,
+    IMainFilter,
+    SelectorResult,
+    SubFilterPair,
+} from '../../../../../types/filter'
 import { error, log } from '../../../../../utils/logger'
+import { isPageSearch } from '../../../../../utils/pageType'
 import { convertTimeToSec, matchBvid, orderedUniq, showEle, waitForEle } from '../../../../../utils/tool'
 import { coreCheck } from '../../../core/core'
 import {
@@ -413,51 +420,89 @@ export const videoFilterSearchGroups: Group[] = [
     },
 ]
 
-// 右键菜单回调
-export const videoFilterSearchAddUploader = async (uploader: string) => {
-    uploader = uploader.trim()
-    if (!uploader) {
-        return
+// 右键菜单handler
+export const videoFilterSearchHandler: ContextMenuTargetHandler = (target: HTMLElement): FilterContextMenu[] => {
+    if (!isPageSearch()) {
+        return []
     }
-    try {
-        mainFilter.videoUploaderFilter.addParam(uploader)
-        mainFilter.check('full').then().catch()
-        const arr: string[] = GM_getValue(GM_KEYS.black.uploader.valueKey, [])
-        arr.unshift(uploader)
-        GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
-    } catch (err) {
-        error(`videoFilterSearchAddUploader add uploader ${uploader} failed`, err)
-    }
-}
 
-export const videoFilterSearchAddUploaderWhite = async (uploader: string) => {
-    uploader = uploader.trim()
-    if (!uploader) {
-        return
-    }
-    try {
-        mainFilter.videoUploaderWhiteFilter.addParam(uploader)
-        mainFilter.check('full').then().catch()
-        const arr: string[] = GM_getValue(GM_KEYS.white.uploader.valueKey, [])
-        arr.unshift(uploader)
-        GM_setValue(GM_KEYS.white.uploader.valueKey, orderedUniq(arr))
-    } catch (err) {
-        error(`videoFilterSearchAddUploaderWhite add uploader ${uploader} failed`, err)
-    }
-}
+    const menus: FilterContextMenu[] = []
+    // UP主
+    if (target.closest('.bili-video-card__info--owner')) {
+        const uploader = target
+            .closest('.bili-video-card__info--owner')
+            ?.querySelector('.bili-video-card__info--author')
+            ?.textContent?.trim()
+        const url = target.closest<HTMLAnchorElement>('.bili-video-card__info--owner')?.href.trim()
+        const spaceUrl = url?.match(/space\.bilibili\.com\/\d+/)?.[0]
 
-export const videoFilterSearchAddBvid = async (bvid: string) => {
-    bvid = bvid.trim()
-    if (!bvid) {
-        return
+        if (uploader) {
+            if (mainFilter.videoUploaderFilter.isEnable) {
+                menus.push({
+                    name: `屏蔽UP主：${uploader}`,
+                    fn: async () => {
+                        try {
+                            mainFilter.videoUploaderFilter.addParam(uploader)
+                            mainFilter.check('full').then().catch()
+                            const arr: string[] = GM_getValue(GM_KEYS.black.uploader.valueKey, [])
+                            arr.unshift(uploader)
+                            GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
+                        } catch (err) {
+                            error(`videoFilterSearchHandler add uploader ${uploader} failed`, err)
+                        }
+                    },
+                })
+            }
+            if (mainFilter.videoUploaderWhiteFilter.isEnable) {
+                menus.push({
+                    name: `将UP主加入白名单`,
+                    fn: async () => {
+                        try {
+                            mainFilter.videoUploaderWhiteFilter.addParam(uploader)
+                            mainFilter.check('full').then().catch()
+                            const arr: string[] = GM_getValue(GM_KEYS.white.uploader.valueKey, [])
+                            arr.unshift(uploader)
+                            GM_setValue(GM_KEYS.white.uploader.valueKey, orderedUniq(arr))
+                        } catch (err) {
+                            error(`videoFilterSearchHandler add white uploader ${uploader} failed`, err)
+                        }
+                    },
+                })
+            }
+        }
+        if (spaceUrl && (mainFilter.videoUploaderFilter.isEnable || mainFilter.videoUploaderWhiteFilter.isEnable)) {
+            menus.push({
+                name: `复制主页链接`,
+                fn: () => navigator.clipboard.writeText(`https://${spaceUrl}`),
+            })
+        }
     }
-    try {
-        mainFilter.videoBvidFilter.addParam(bvid)
-        mainFilter.check('full').then().catch()
-        const arr: string[] = GM_getValue(GM_KEYS.black.bvid.valueKey, [])
-        arr.unshift(bvid)
-        GM_setValue(GM_KEYS.black.bvid.valueKey, orderedUniq(arr))
-    } catch (err) {
-        error(`videoFilterSearchAddBvid add bvid ${bvid} failed`, err)
+    // BVID
+    if (target.classList.contains('bili-video-card__info--tit')) {
+        const url = (target.parentNode as HTMLAnchorElement)?.href
+        if (url && mainFilter.videoBvidFilter.isEnable) {
+            const bvid = matchBvid(url)
+            if (bvid) {
+                menus.push({
+                    name: `屏蔽视频 ${bvid}`,
+                    fn: async () => {
+                        try {
+                            mainFilter.videoBvidFilter.addParam(bvid)
+                            mainFilter.check('full').then().catch()
+                            const arr: string[] = GM_getValue(GM_KEYS.black.bvid.valueKey, [])
+                            arr.unshift(bvid)
+                            GM_setValue(GM_KEYS.black.bvid.valueKey, orderedUniq(arr))
+                        } catch (err) {
+                            error(`videoFilterSearchHandler add bvid ${bvid} failed`, err)
+                        }
+                    },
+                })
+                menus.push({
+                    name: '复制视频链接',
+                    fn: () => navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).then().catch(),
+                })
+            }
+        }
     }
+    return menus
 }

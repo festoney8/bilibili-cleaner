@@ -45,3 +45,22 @@ export interface IMainFilter {
      */
     check(mode?: 'full' | 'incr'): void
 }
+
+// 右键菜单项
+export type FilterContextMenu = {
+    /**
+     * 功能名
+     */
+    name: string
+
+    /**
+     * 功能回调
+     */
+    fn: () => Promise<void> | void
+}
+
+/**
+ * 右键单击target检测函数
+ * target: 右键命中的target
+ */
+export type ContextMenuTargetHandler = (target: HTMLElement) => FilterContextMenu[]

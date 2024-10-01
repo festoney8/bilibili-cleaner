@@ -37,6 +37,10 @@ if (isPageHomepage()) {
                 .bili-header .right-entry__outside .right-entry-text {
                     color: var(--text2, #61666d) !important;
                 }
+                /* 动画 */
+                .bili-feed4 .bili-header .slide-down {
+                    animation: headerSlideDown .3s linear forwards !important;
+                }
                 /* 分区菜单 第一排按钮的二级菜单下置  */
                 .v-popover.is-top {padding-top: 5px; padding-bottom: unset !important; bottom: unset !important;}
                 @media (min-width: 2200px) {.v-popover.is-top {top:32px;}}
@@ -185,13 +189,16 @@ if (isPageHomepage()) {
             itemID: 'homepage-hide-sticky-subarea',
             description: '隐藏 滚动页面时 顶部吸附分区栏',
             defaultStatus: true,
-            itemCSS: `#i_cecream .header-channel {display: none !important;}
-                /* 吸附分区栏的动效转移给吸附header, 滚动后渐变出现 */
-                #i_cecream .bili-header__bar.slide-down {
-                    transition: background-color 0.3s ease-out, box-shadow 0.3s ease-out !important;
+            itemCSS: `
+                #i_cecream .header-channel {
+                    display: none !important;
+                }
+                /* 动画 */
+                .bili-feed4 .bili-header .slide-down {
+                    animation: headerSlideDown .3s linear forwards !important;
                 }
                 #i_cecream .bili-header__bar:not(.slide-down) {
-                    transition: background-color 0.3s ease-out;
+                    transition: background-color 0.2s linear;
                 }`,
         }),
         // 隐藏 顶部adblock提示, 默认开启

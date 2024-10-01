@@ -42,9 +42,7 @@ html[common-hide-nav-search-trending] {
 
 // 修复 搜索框居中
 html[common-nav-search-middle-justify] {
-    @media (width >= 1100px) and (width <= 1366.9px) {
-        .mini-header .center-search-container .center-search__bar {
-            margin: 0 auto;
-        }
+    .center-search__bar {
+        margin: 0 auto !important;
     }
 }

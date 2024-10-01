@@ -753,12 +753,7 @@ if (!isPageLiveHome()) {
         new CheckboxItem({
             itemID: 'common-nav-search-middle-justify',
             description: '修复 搜索框居中',
-            itemCSS: `
-                @media (min-width: 1100px) and (max-width: 1366.9px) {
-                    .mini-header .center-search-container .center-search__bar {
-                        margin: 0 auto;
-                    }
-                }`,
+            itemCSS: `.center-search__bar {margin: 0 auto !important;}`,
         }),
     ]
     commonGroupList.push(new Group('common-header-center', '全站通用项 顶栏 搜索框', headerCenterItems))

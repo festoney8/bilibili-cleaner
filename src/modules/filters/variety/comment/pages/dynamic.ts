@@ -715,23 +715,6 @@ export const commentFilterDynamicGroups: Group[] = [
     },
 ]
 
-// 右键菜单回调
-export const commentFilterDynamicAddUsername = async (username: string) => {
-    username = username.trim()
-    if (!username) {
-        return
-    }
-    try {
-        mainFilter.commentUsernameFilter.addParam(username)
-        mainFilter.check('full').then().catch()
-        const arr: string[] = GM_getValue(GM_KEYS.black.username.valueKey, [])
-        arr.unshift(username)
-        GM_setValue(GM_KEYS.black.username.valueKey, orderedUniq(arr))
-    } catch (err) {
-        error(`commentFilterDynamicAddUsername add username ${username} failed`, err)
-    }
-}
-
 // 右键菜单handler
 export const commentFilterDynamicHandler: ContextMenuTargetHandler = (target: HTMLElement): FilterContextMenu[] => {
     if (!isPageDynamic()) {

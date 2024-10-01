@@ -16,6 +16,9 @@ importers:
             '@vueuse/core':
                 specifier: ^11.0.3
                 version: 11.0.3(vue@3.5.4(typescript@5.6.2))
+            pinia:
+                specifier: ^2.2.3
+                version: 2.2.3(typescript@5.6.2)(vue@3.5.4(typescript@5.6.2))
             vue:
                 specifier: ^3.5.4
                 version: 3.5.4(typescript@5.6.2)
@@ -830,6 +833,12 @@ packages:
         resolution:
             {
                 integrity: sha512-qYC3Psj9S/mfu9uVi5WvNZIzq+xnXMhOwbTFKKDD7b1lhpnn71jXSFdTQ+WsIEk0ONCd7VV2IMm7ONl6tbQ86A==,
+            }
+
+    '@vue/devtools-api@6.6.4':
+        resolution:
+            {
+                integrity: sha512-sGhTPMuXqZ1rVOk32RylztWkfXTRhuS7vgAKv0zjqk8gbsHkJ7xfFf+jbySxt7tWObEJwyKaHMikV/WGDiQm8g==,
             }
 
     '@vue/language-core@2.1.6':
@@ -2514,6 +2523,21 @@ packages:
             }
         engines: { node: '>=0.10.0' }
 
+    pinia@2.2.3:
+        resolution:
+            {
+                integrity: sha512-t2X9y1FT0h5zHmi9PsVr0LMNC0DXdPiYxX6zM5IyZHoWFjLq/LGpM1OVpGhXTPHjUh0XaFlsQd3GvPvGGNLQnw==,
+            }
+        peerDependencies:
+            '@vue/composition-api': ^1.4.0
+            typescript: '>=4.4.4'
+            vue: ^2.6.14 || ^3.3.0
+        peerDependenciesMeta:
+            '@vue/composition-api':
+                optional: true
+            typescript:
+                optional: true
+
     pirates@4.0.6:
         resolution:
             {
@@ -3942,6 +3966,8 @@ snapshots:
             de-indent: 1.0.2
             he: 1.2.0
 
+    '@vue/devtools-api@6.6.4': {}
+
     '@vue/language-core@2.1.6(typescript@5.6.2)':
         dependencies:
             '@volar/language-core': 2.4.4
@@ -4874,6 +4900,14 @@ snapshots:
     pidtree@0.6.0: {}
 
     pify@2.3.0: {}
+
+    pinia@2.2.3(typescript@5.6.2)(vue@3.5.4(typescript@5.6.2)):
+        dependencies:
+            '@vue/devtools-api': 6.6.4
+            vue: 3.5.4(typescript@5.6.2)
+            vue-demi: 0.14.10(vue@3.5.4(typescript@5.6.2))
+        optionalDependencies:
+            typescript: 5.6.2
 
     pirates@4.0.6: {}
 

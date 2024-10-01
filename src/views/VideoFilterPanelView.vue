@@ -7,8 +7,8 @@
             minWidth: 360,
             minHeight: 600,
         }"
-        v-if="isShow"
-        @close="isShow = false"
+        v-if="store.isShow"
+        @close="store.hide"
     >
         <div v-for="(group, index) in currPageGroups" :key="index">
             <DisclosureComp v-bind="{ title: group.name }">
@@ -24,7 +24,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import DisclosureComp from '../components/DisclosureComp.vue'
 import EditorComp from '../components/items/EditorComp.vue'
 import ListComp from '../components/items/ListComp.vue'
@@ -32,9 +31,10 @@ import NumberComp from '../components/items/NumberComp.vue'
 import SwitchComp from '../components/items/SwitchComp.vue'
 import PanelComp from '../components/PanelComp.vue'
 import { videoFilters } from '../modules/filters'
+import { useVideoFilterPanelStore } from '../stores/panel'
 import { Group } from '../types/collection'
 
-const isShow = ref(true)
+const store = useVideoFilterPanelStore()
 
 let currPageGroups: Group[] = []
 

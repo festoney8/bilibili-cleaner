@@ -136,7 +136,7 @@ export const loadRules = () => {
                                 break
                         }
                     } catch (err) {
-                        error('load item failed', err)
+                        error(`load item failed, type=${item.type}, name=${item.name}`, err)
                     }
                 }
             }

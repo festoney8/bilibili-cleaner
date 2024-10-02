@@ -1,37 +1,28 @@
 <template>
-    <div class="my-1 flex items-center py-1 text-black">
+    <div class="mb-0.5 mt-1 flex items-center py-1 text-black">
         <div>{{ name }}</div>
         <input
-            type="number"
-            step="0.01"
+            type="text"
             v-model="currValue"
-            class="ml-auto block w-1/5 rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-sm outline-none invalid:border-red-500 focus:border-gray-500 focus:invalid:border-red-500"
+            class="ml-4 block flex-1 rounded-md border border-gray-300 bg-white p-1.5 text-sm outline-none invalid:border-red-500 focus:border-gray-500 focus:invalid:border-red-500"
         />
-        <div v-if="addonText" class="ml-2">{{ addonText }}</div>
     </div>
-    <DescriptionComp class="pl-1" v-if="description?.length" :description="description"></DescriptionComp>
+    <DescriptionComp v-if="description?.length" :description="description"></DescriptionComp>
 </template>
 
 <script setup lang="ts">
 import { GM_getValue, GM_setValue } from '$'
 import { ref, watch } from 'vue'
-import { INumberItem } from '../../types/item'
+import { IStringItem } from '../../types/item'
 import { error } from '../../utils/logger'
 import DescriptionComp from './DescriptionComp.vue'
 
-const item = defineProps<INumberItem>()
+const item = defineProps<IStringItem>()
 
 const currValue = ref(GM_getValue(item.id, item.defaultValue))
 
 watch(currValue, (newValue, oldValue) => {
     try {
-        if (newValue > item.maxValue) {
-            currValue.value = item.maxValue
-        }
-        if (newValue < item.minValue) {
-            currValue.value = item.minValue
-        }
-
         // 样式生效、失效
         if (oldValue === item.disableValue) {
             if (!item.noStyle) {
@@ -43,6 +34,7 @@ watch(currValue, (newValue, oldValue) => {
                 document.documentElement.removeAttribute(item.attrName ?? item.id)
             }
         } else if (currValue.value !== oldValue) {
+            console.log(newValue, oldValue)
             item
                 .fn(currValue.value)
                 ?.then()
@@ -52,7 +44,7 @@ watch(currValue, (newValue, oldValue) => {
         }
         GM_setValue(item.id, currValue.value)
     } catch (err) {
-        error(`number item ${item.id} error`, err)
+        error(`string item ${item.id} error`, err)
     }
 })
 </script>

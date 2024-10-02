@@ -8,6 +8,7 @@ import { videoPlayerControlItems } from './groups/playerControl'
 import { videoPlayerLayoutItems } from './groups/playerLayout'
 import { videoRightItems } from './groups/right'
 import { videoSidebarItems } from './groups/sidebar'
+import { videoSubtitleItems } from './groups/subtitle'
 import { videoToolbarItems } from './groups/toolbar'
 import { videoUpInfoItems } from './groups/upInfo'
 
@@ -27,6 +28,10 @@ export const videoGroups: Group[] = [
     {
         name: '播放器',
         items: videoPlayerItems,
+    },
+    {
+        name: 'CC 字幕',
+        items: videoSubtitleItems,
     },
     {
         name: '播放控制栏',

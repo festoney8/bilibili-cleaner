@@ -1,4 +1,4 @@
-export type Item = ISwitchItem | INumberItem | IListItem | IEditorItem
+export type Item = ISwitchItem | INumberItem | IListItem | IEditorItem | IStringItem
 
 interface IBaseItem {
     type: 'switch' | 'number' | 'radio' | 'editor'
@@ -83,6 +83,39 @@ export interface INumberItem extends IBaseItem {
      * @param value 当前数值
      */
     fn: (value: number) => Promise<void> | void
+}
+
+// 文本设定功能
+export interface IStringItem extends IBaseItem {
+    // 功能类型
+    type: 'string'
+
+    // item id, 与GM key对应，记录当前功能值
+    id: string
+
+    // 功能名
+    name: string
+
+    // 功能补充介绍，每个string显示为一行
+    description?: string[]
+
+    // 默认值
+    defaultValue: string
+
+    // 禁用值
+    disableValue: string
+
+    // 是否无样式
+    noStyle?: boolean
+
+    // 在html节点注册用attribute名，控制样式是否生效，缺省时默认使用id
+    attrName?: string
+
+    /**
+     * 值生效/值变动时触发函数
+     * @param value 当前内容
+     */
+    fn: (value: string) => Promise<void> | void
 }
 
 // 单选功能

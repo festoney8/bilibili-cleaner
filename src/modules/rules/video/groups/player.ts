@@ -104,14 +104,4 @@ export const videoPlayerItems: Item[] = [
         id: 'video-page-bpx-player-bili-dm-vip-white',
         name: '彩色渐变弹幕 变成白色',
     },
-    {
-        type: 'switch',
-        id: 'video-page-bpx-player-subtitle-font-family',
-        name: 'CC字幕 字体优化 (实验性)',
-    },
-    {
-        type: 'switch',
-        id: 'video-page-bpx-player-subtitle-text-stroke',
-        name: 'CC字幕 字体描边 (实验性)',
-    },
 ]

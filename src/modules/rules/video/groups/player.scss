@@ -186,23 +186,3 @@ html[video-page-bpx-player-bili-dm-vip-white] {
         -ms-text-stroke: none !important;
     }
 }
-
-// CC字幕 字体优化 (实验性)
-html[video-page-bpx-player-subtitle-font-family] {
-    #bilibili-player .bpx-player-subtitle-panel-text {
-        font-family: inherit;
-    }
-}
-
-// CC字幕 字体描边 (实验性)
-html[video-page-bpx-player-subtitle-text-stroke] {
-    #bilibili-player .bpx-player-subtitle-panel-text {
-        background: unset !important;
-        background-color: rgb(0 0 0 / 0.7) !important;
-        background-clip: text !important;
-        text-shadow: none !important;
-        -webkit-text-stroke: 3px transparent;
-        -moz-text-stroke: 3px transparent;
-        -ms-text-stroke: 3px transparent;
-    }
-}

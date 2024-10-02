@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="text-base">
         <RulePanelView></RulePanelView>
         <VideoFilterPanelView></VideoFilterPanelView>
         <CommentFilterPanelView></CommentFilterPanelView>

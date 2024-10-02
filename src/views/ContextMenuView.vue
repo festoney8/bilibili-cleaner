@@ -1,7 +1,7 @@
 <template>
     <div
         v-if="show"
-        class="fixed z-50 block cursor-pointer overflow-hidden rounded-md bg-white font-[15px] text-black shadow-lg shadow-black/20"
+        class="fixed z-50 block cursor-pointer overflow-hidden rounded-md bg-white text-base text-black shadow-lg shadow-black/20"
         :style="{ left: pos.left + 'px', top: pos.top + 'px' }"
     >
         <div v-for="(menu, index) in menuList" :key="index">

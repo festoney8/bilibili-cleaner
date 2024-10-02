@@ -15,6 +15,7 @@
                 <div v-for="(item, innerIndex) in group.items" :key="innerIndex">
                     <SwitchComp v-if="item.type === 'switch'" v-bind="item"></SwitchComp>
                     <NumberComp v-else-if="item.type === 'number'" v-bind="item"></NumberComp>
+                    <StringComp v-else-if="item.type === 'string'" v-bind="item"></StringComp>
                     <EditorComp v-else-if="item.type === 'editor'" v-bind="item"></EditorComp>
                     <ListComp v-else-if="item.type === 'list'" v-bind="item"></ListComp>
                 </div>
@@ -28,6 +29,7 @@ import DisclosureComp from '../components/DisclosureComp.vue'
 import EditorComp from '../components/items/EditorComp.vue'
 import ListComp from '../components/items/ListComp.vue'
 import NumberComp from '../components/items/NumberComp.vue'
+import StringComp from '../components/items/StringComp.vue'
 import SwitchComp from '../components/items/SwitchComp.vue'
 import PanelComp from '../components/PanelComp.vue'
 import { videoFilters } from '../modules/filters'

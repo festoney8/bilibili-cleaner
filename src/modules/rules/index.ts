@@ -25,7 +25,7 @@ import { spaceGroups } from './space'
 import { videoGroups } from './video'
 
 import { GM_getValue } from '$'
-import { IListItem, INumberItem, ISwitchItem } from '../../types/item'
+import { IListItem, INumberItem, IStringItem, ISwitchItem } from '../../types/item'
 import { error } from '../../utils/logger'
 import bangumiStyle from './bangumi/index.scss?inline'
 import channelStyle from './channel/index.scss?inline'
@@ -134,9 +134,12 @@ export const loadRules = () => {
                             case 'list':
                                 loadListItem(item)
                                 break
+                            case 'string':
+                                loadStringItem(item)
+                                break
                         }
                     } catch (err) {
-                        error(`load item failed, type=${item.type}, name=${item.name}`, err)
+                        error(`load item failed, type=${item.type}, name=${item.name}, id=${item.id}`, err)
                     }
                 }
             }
@@ -147,11 +150,15 @@ export const loadRules = () => {
 /** 载入css, 注入在html节点下, 需在head节点出现后(html节点可插入时)执行 */
 export const loadStyles = () => {
     for (const rule of rules) {
-        if (rule.checkFn() && rule.style) {
-            const style = document.createElement('style')
-            style.className = 'bili-cleaner-css'
-            style.textContent = rule.style
-            document.documentElement?.appendChild(style)
+        try {
+            if (rule.checkFn() && rule.style) {
+                const style = document.createElement('style')
+                style.className = 'bili-cleaner-css'
+                style.textContent = rule.style
+                document.documentElement?.appendChild(style)
+            }
+        } catch (err) {
+            error(`loadStyles error, name=${rule.name}`, err)
         }
     }
 }
@@ -175,6 +182,16 @@ const loadSwitchItem = (item: ISwitchItem) => {
 }
 
 const loadNumberItem = (item: INumberItem) => {
+    const value = GM_getValue(item.id, item.defaultValue)
+    if (value !== item.disableValue) {
+        if (!item.noStyle) {
+            document.documentElement.setAttribute(item.attrName ?? item.id, '')
+        }
+        item.fn(value)?.then().catch()
+    }
+}
+
+const loadStringItem = (item: IStringItem) => {
     const value = GM_getValue(item.id, item.defaultValue)
     if (value !== item.disableValue) {
         if (!item.noStyle) {

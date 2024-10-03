@@ -33,7 +33,7 @@ import StringComp from '../components/items/StringComp.vue'
 import SwitchComp from '../components/items/SwitchComp.vue'
 import PanelComp from '../components/PanelComp.vue'
 import { videoFilters } from '../modules/filters'
-import { useVideoFilterPanelStore } from '../stores/panel'
+import { useVideoFilterPanelStore } from '../stores/view'
 import { Group } from '../types/collection'
 
 const store = useVideoFilterPanelStore()

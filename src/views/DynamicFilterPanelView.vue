@@ -33,7 +33,7 @@ import StringComp from '../components/items/StringComp.vue'
 import SwitchComp from '../components/items/SwitchComp.vue'
 import PanelComp from '../components/PanelComp.vue'
 import { dynamicFilters } from '../modules/filters'
-import { useDynamicFilterPanelStore } from '../stores/panel'
+import { useDynamicFilterPanelStore } from '../stores/view'
 import { Group } from '../types/collection'
 
 const store = useDynamicFilterPanelStore()

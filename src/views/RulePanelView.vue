@@ -27,7 +27,7 @@ import StringComp from '../components/items/StringComp.vue'
 import SwitchComp from '../components/items/SwitchComp.vue'
 import PanelComp from '../components/PanelComp.vue'
 import { rules } from '../modules/rules'
-import { useRulePanelStore } from '../stores/panel'
+import { useRulePanelStore } from '../stores/view'
 import { Group } from '../types/collection'
 
 const store = useRulePanelStore()

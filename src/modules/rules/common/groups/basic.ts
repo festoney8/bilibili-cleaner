@@ -58,7 +58,7 @@ export const commonBasicItems: Item[] = [
         type: 'switch',
         id: 'url-cleaner',
         name: 'URL参数净化',
-        description: ['给 UP 充电时若报错，尝试关闭本功能并刷新页面'],
+        description: ['给 UP 充电时若报错，尝试关闭本功能并刷新'],
         defaultEnable: true,
         noStyle: true,
         /**

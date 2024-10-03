@@ -33,7 +33,7 @@ import StringComp from '../components/items/StringComp.vue'
 import SwitchComp from '../components/items/SwitchComp.vue'
 import PanelComp from '../components/PanelComp.vue'
 import { commentFilters } from '../modules/filters'
-import { useCommentFilterPanelStore } from '../stores/panel'
+import { useCommentFilterPanelStore } from '../stores/view'
 import { Group } from '../types/collection'
 
 const store = useCommentFilterPanelStore()

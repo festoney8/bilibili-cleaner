@@ -7,8 +7,9 @@ import {
     useCommentFilterPanelStore,
     useDynamicFilterPanelStore,
     useRulePanelStore,
+    useSideBtnStore,
     useVideoFilterPanelStore,
-} from './stores/panel'
+} from './stores/view'
 import css from './style.css?inline'
 import { waitForBody } from './utils/init'
 import { log } from './utils/logger'
@@ -53,7 +54,24 @@ app.mount(
     })(),
 )
 
-GM_registerMenuCommand('✅页面净化优化', () => useRulePanelStore().show())
-GM_registerMenuCommand('✅视频过滤设置', () => useVideoFilterPanelStore().show())
-GM_registerMenuCommand('✅评论过滤设置', () => useCommentFilterPanelStore().show())
-GM_registerMenuCommand('✅动态过滤设置', () => useDynamicFilterPanelStore().show())
+const ruleStore = useRulePanelStore()
+const videoStore = useVideoFilterPanelStore()
+const commentStore = useCommentFilterPanelStore()
+const dynamicStore = useDynamicFilterPanelStore()
+const sideBtnStore = useSideBtnStore()
+
+GM_registerMenuCommand('✅ 页面净化优化', () => {
+    ruleStore.isShow ? ruleStore.hide() : ruleStore.show()
+})
+GM_registerMenuCommand('✅ 视频过滤设置', () => {
+    videoStore.isShow ? videoStore.hide() : videoStore.show()
+})
+GM_registerMenuCommand('✅ 评论过滤设置', () => {
+    commentStore.isShow ? commentStore.hide() : commentStore.show()
+})
+GM_registerMenuCommand('✅ 动态过滤设置', () => {
+    dynamicStore.isShow ? dynamicStore.hide() : dynamicStore.show()
+})
+GM_registerMenuCommand('⚡ 快捷按钮开关', () => {
+    sideBtnStore.isShow ? sideBtnStore.hide() : sideBtnStore.show()
+})

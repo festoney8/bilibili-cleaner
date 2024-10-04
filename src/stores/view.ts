@@ -52,7 +52,7 @@ export const useDynamicFilterPanelStore = defineStore('DynamicFilterPanel', () =
 
 // 快捷按钮
 export const useSideBtnStore = defineStore('SideBtn', () => {
-    const isShow = useStorage('bili-cleaner-side-btn', false, localStorage)
+    const isShow = useStorage('bili-cleaner-side-btn-show', false, localStorage)
     const show = () => {
         isShow.value = true
     }

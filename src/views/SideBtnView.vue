@@ -5,6 +5,7 @@
         class="group fixed z-[10000] flex flex-col justify-end text-black text-opacity-50 hover:text-opacity-100"
     >
         <div
+            v-if="isPageDynamic()"
             class="mt-1 hidden h-10 w-10 cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white transition-colors hover:border-none hover:bg-[#00AEEC] hover:text-white group-hover:flex"
             @click="dynamicStore.isShow ? dynamicStore.hide() : dynamicStore.show()"
         >
@@ -14,6 +15,7 @@
             </div>
         </div>
         <div
+            v-if="isPageVideo() || isPageBangumi() || isPagePlaylist() || isPageDynamic() || isPageSpace()"
             class="mt-1 hidden h-10 w-10 cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white transition-colors hover:border-none hover:bg-[#00AEEC] hover:text-white group-hover:flex"
             @click="commentStore.isShow ? commentStore.hide() : commentStore.show()"
         >
@@ -23,6 +25,14 @@
             </div>
         </div>
         <div
+            v-if="
+                isPageVideo() ||
+                isPageChannel() ||
+                isPageHomepage() ||
+                isPagePlaylist() ||
+                isPageSearch() ||
+                isPagePopular()
+            "
             class="mt-1 hidden h-10 w-10 cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white transition-colors hover:border-none hover:bg-[#00AEEC] hover:text-white group-hover:flex"
             @click="videoStore.isShow ? videoStore.hide() : videoStore.show()"
         >
@@ -53,6 +63,17 @@ import {
     useSideBtnStore,
     useVideoFilterPanelStore,
 } from '../stores/view'
+import {
+    isPageBangumi,
+    isPageChannel,
+    isPageDynamic,
+    isPageHomepage,
+    isPagePlaylist,
+    isPagePopular,
+    isPageSearch,
+    isPageSpace,
+    isPageVideo,
+} from '../utils/pageType'
 
 const ruleStore = useRulePanelStore()
 const videoStore = useVideoFilterPanelStore()
@@ -67,13 +88,13 @@ const btnPos = useStorage('bili-cleaner-side-btn-pos', { right: 6, bottom: 165 }
 
 useDraggable(target, {
     initialValue: {
-        x: innerWidth - btnPos.value.right,
-        y: innerHeight - btnPos.value.bottom,
+        x: document.documentElement.clientWidth - btnPos.value.right,
+        y: document.documentElement.clientHeight - btnPos.value.bottom,
     },
     preventDefault: true,
     onMove: (position: Position) => {
-        btnPos.value.right = innerWidth - position.x - width.value
-        btnPos.value.bottom = innerHeight - position.y - height.value
+        btnPos.value.right = document.documentElement.clientWidth - position.x - width.value
+        btnPos.value.bottom = document.documentElement.clientHeight - position.y - height.value
     },
     handle: computed(() => target.value),
 })
@@ -86,11 +107,11 @@ watch(btnPos.value, (newBtnPosition) => {
     if (newBtnPosition.bottom < 0) {
         btnPos.value.bottom = 0
     }
-    if (newBtnPosition.bottom + height.value > innerHeight) {
-        btnPos.value.bottom = innerHeight - height.value
+    if (newBtnPosition.bottom + height.value > document.documentElement.clientHeight) {
+        btnPos.value.bottom = document.documentElement.clientHeight - height.value
     }
-    if (newBtnPosition.right + width.value > innerWidth) {
-        btnPos.value.right = innerWidth - width.value
+    if (newBtnPosition.right + width.value > document.documentElement.clientWidth) {
+        btnPos.value.right = document.documentElement.clientWidth - width.value
     }
 })
 </script>

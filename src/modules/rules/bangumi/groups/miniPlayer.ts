@@ -1,4 +1,4 @@
-import { GM_getValue, GM_setValue } from '$'
+import { useStorage } from '@vueuse/core'
 import { Item } from '../../../../types/item'
 import { error } from '../../../../utils/logger'
 import { waitForEle } from '../../../../utils/tool'
@@ -21,9 +21,8 @@ export const bangumiMiniPlayerItems: Item[] = [
         name: '滚轮调节大小',
         enableFn: async () => {
             try {
-                // 载入上次缩放
-                const oldZoom = GM_getValue('video-page-bpx-player-mini-mode-zoom', 1)
-                document.documentElement.style.setProperty('--mini-player-zoom', oldZoom + '')
+                const zoom = useStorage('bili-cleaner-mini-player-zoom', 1, localStorage)
+                document.documentElement.style.setProperty('--mini-player-zoom', zoom.value + '')
                 // 等player出现
                 let cnt = 0
                 const interval = setInterval(() => {
@@ -40,20 +39,18 @@ export const bangumiMiniPlayerItems: Item[] = [
                         player.addEventListener('mouseleave', () => {
                             flag = false
                         })
-                        let lastZoom = oldZoom || 1
                         // 监听滚轮
                         player.addEventListener('wheel', (e) => {
                             if (flag) {
                                 e.stopPropagation()
                                 e.preventDefault()
                                 const scaleSpeed = 5
-                                let zoom = lastZoom - (Math.sign(e.deltaY) * scaleSpeed) / 100
-                                zoom = zoom < 0.5 ? 0.5 : zoom
-                                zoom = zoom > 3 ? 3 : zoom
-                                if (zoom !== lastZoom) {
-                                    lastZoom = zoom
-                                    document.documentElement.style.setProperty('--mini-player-zoom', zoom + '')
-                                    GM_setValue('video-page-bpx-player-mini-mode-zoom', zoom)
+                                let newZoom = zoom.value - (Math.sign(e.deltaY) * scaleSpeed) / 100
+                                newZoom = newZoom < 0.5 ? 0.5 : newZoom
+                                newZoom = newZoom > 3 ? 3 : newZoom
+                                if (newZoom !== zoom.value) {
+                                    zoom.value = newZoom
+                                    document.documentElement.style.setProperty('--mini-player-zoom', newZoom + '')
                                 }
                             }
                         })
@@ -75,18 +72,11 @@ export const bangumiMiniPlayerItems: Item[] = [
         id: 'video-page-bpx-player-mini-mode-position-record',
         name: '记录小窗位置',
         enableFn: async () => {
-            const keys = {
-                tx: 'video-page-bpx-player-mini-mode-position-record-translate-x',
-                ty: 'video-page-bpx-player-mini-mode-position-record-translate-y',
-            }
+            const pos = useStorage('bili-cleaner-mini-player-pos', { tx: 0, ty: 0 }, localStorage)
 
-            // 设置初始位置
-            const x = GM_getValue(keys.tx, 0)
-            const y = GM_getValue(keys.ty, 0)
-            if (x && y) {
-                document.documentElement.style.setProperty('--mini-player-translate-x', x)
-                document.documentElement.style.setProperty('--mini-player-translate-y', y)
-            }
+            // 注入样式
+            document.documentElement.style.setProperty('--mini-player-translate-x', pos.value.tx + 'px')
+            document.documentElement.style.setProperty('--mini-player-translate-y', pos.value.ty + 'px')
 
             waitForEle(document.body, `#bilibili-player [class^="bpx-player-video"]`, (node: HTMLElement) => {
                 return node.className.startsWith('bpx-player-video')
@@ -97,10 +87,8 @@ export const bangumiMiniPlayerItems: Item[] = [
                     player.addEventListener('mouseup', () => {
                         if (player.getAttribute('data-screen') === 'mini') {
                             const rect = player.getBoundingClientRect()
-                            const dx = document.documentElement.clientWidth - rect.right
-                            const dy = document.documentElement.clientHeight - rect.bottom
-                            GM_setValue(keys.tx, 84 - dx)
-                            GM_setValue(keys.ty, 48 - dy)
+                            pos.value.tx = 84 - (document.documentElement.clientWidth - rect.right)
+                            pos.value.ty = 48 - (document.documentElement.clientHeight - rect.bottom)
                         }
                     })
                 }

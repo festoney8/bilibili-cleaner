@@ -3,7 +3,7 @@
         <div>{{ name }}</div>
         <input
             type="number"
-            step="0.01"
+            :step="step"
             v-model="currValue"
             class="ml-auto block w-1/5 rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-sm outline-none invalid:border-red-500 focus:border-gray-500 focus:invalid:border-red-500"
         />

@@ -40,6 +40,7 @@ export const videoSubtitleItems: Item[] = [
         name: '描边宽度 (0为禁用)',
         minValue: 0,
         maxValue: 10,
+        step: 0.01,
         defaultValue: 4,
         disableValue: 0,
         addonText: 'px',

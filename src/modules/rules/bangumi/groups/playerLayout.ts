@@ -134,6 +134,7 @@ export const bangumiPlayerLayoutItems: Item[] = [
         name: '普通播放 视频宽度调节（-1禁用）',
         minValue: -1,
         maxValue: 100,
+        step: 0.1,
         defaultValue: -1,
         disableValue: -1,
         addonText: 'vw',

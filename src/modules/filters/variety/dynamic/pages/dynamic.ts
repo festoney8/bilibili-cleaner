@@ -203,6 +203,7 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 name: '设定最低时长（0~300s）',
                 minValue: 0,
                 maxValue: 300,
+                step: 1,
                 defaultValue: 60,
                 disableValue: 0,
                 addonText: '秒',

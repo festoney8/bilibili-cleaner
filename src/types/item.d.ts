@@ -63,6 +63,9 @@ export interface INumberItem extends IBaseItem {
     // 最大值
     maxValue: number
 
+    // 步进
+    step: number
+
     // 默认值
     defaultValue: number
 

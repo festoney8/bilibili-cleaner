@@ -614,6 +614,7 @@ export const commentFilterVideoGroups: Group[] = [
                 name: '设定最低等级 (0~6)',
                 minValue: 0,
                 maxValue: 6,
+                step: 1,
                 defaultValue: 0,
                 disableValue: 0,
                 fn: (value: number) => {

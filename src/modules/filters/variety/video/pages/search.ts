@@ -216,6 +216,7 @@ export const videoFilterSearchGroups: Group[] = [
                 noStyle: true,
                 minValue: 0,
                 maxValue: 300,
+                step: 1,
                 defaultValue: 60,
                 disableValue: 0,
                 addonText: '秒',

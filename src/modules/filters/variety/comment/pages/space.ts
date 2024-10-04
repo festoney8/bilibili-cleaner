@@ -8,6 +8,7 @@ import {
     SelectorResult,
     SubFilterPair,
 } from '../../../../../types/filter'
+import fetchHook from '../../../../../utils/fetch'
 import { error, log } from '../../../../../utils/logger'
 import { isPageSpace } from '../../../../../utils/pageType'
 import { orderedUniq, showEle, waitForEle } from '../../../../../utils/tool'
@@ -48,6 +49,9 @@ const GM_KEYS = {
         },
         callUserOnly: {
             statusKey: 'dynamic-comment-call-user-only-filter-status',
+        },
+        isAD: {
+            statusKey: 'video-comment-ad-filter-status',
         },
     },
     white: {
@@ -482,6 +486,49 @@ export const commentFilterSpaceGroups: Group[] = [
                 disableFn: () => {
                     mainFilter.commentBotFilter.disable()
                     mainFilter.check('full').then().catch()
+                },
+            },
+            {
+                type: 'switch',
+                id: GM_KEYS.black.isAD.statusKey,
+                name: '过滤 带货评论 (实验功能)',
+                defaultEnable: false,
+                noStyle: true,
+                enableFn: () => {
+                    fetchHook.addPostFn(
+                        async (
+                            input: RequestInfo | URL,
+                            init: RequestInit | undefined,
+                            resp?: Response,
+                        ): Promise<Response | void> => {
+                            if (!resp) {
+                                return
+                            }
+                            if (
+                                typeof input === 'string' &&
+                                init?.method?.toUpperCase() === 'GET' &&
+                                input.includes('api.bilibili.com/x/v2/reply/wbi/main')
+                            ) {
+                                try {
+                                    const respData = await resp.clone().json()
+                                    const msg = respData?.data?.top?.upper?.content?.message
+                                    if (msg && /b23\.tv\/mall-|领券|gaoneng\.bilibili\.com/.test(msg)) {
+                                        respData.data.top = null
+                                        respData.data.top_replies = null
+                                        const newResp = new Response(JSON.stringify(respData), {
+                                            status: resp.status,
+                                            statusText: resp.statusText,
+                                            headers: resp.headers,
+                                        })
+                                        return newResp
+                                    }
+                                } catch {
+                                    return resp
+                                }
+                                return resp
+                            }
+                        },
+                    )
                 },
             },
             {

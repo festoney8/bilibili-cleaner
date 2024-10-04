@@ -7,7 +7,11 @@ class FetchHook {
     // 根据input和init对input进行预处理
     private preFnArr: ((input: RequestInfo | URL, init: RequestInit | undefined) => RequestInfo | URL)[] = []
     // 根据input,init,resp做返回resp前的后处理, 如克隆resp
-    private postFnArr: ((input: RequestInfo | URL, init: RequestInit | undefined, resp?: Response) => void)[] = []
+    private postFnArr: ((
+        input: RequestInfo | URL,
+        init: RequestInit | undefined,
+        resp?: Response,
+    ) => Response | void | Promise<Response | void>)[] = []
 
     private constructor() {
         try {
@@ -28,7 +32,13 @@ class FetchHook {
         this.preFnArr.push(fn)
     }
 
-    addPostFn(fn: (input: RequestInfo | URL, init: RequestInit | undefined, resp?: Response) => void) {
+    addPostFn(
+        fn: (
+            input: RequestInfo | URL,
+            init: RequestInit | undefined,
+            resp?: Response,
+        ) => Response | void | Promise<Response | void>,
+    ) {
         this.postFnArr.push(fn)
     }
 
@@ -44,13 +54,20 @@ class FetchHook {
                 return origFetch(input, init)
             }
             // 获取resp
-            const resp = await origFetch(input, init)
+            let resp = await origFetch(input, init)
+            const origResp = resp.clone()
             try {
                 // 后处理
-                this.postFnArr.forEach((fn) => {
-                    fn(input, init, resp)
-                })
-            } catch {}
+                for (const fn of this.postFnArr) {
+                    const ans = await fn(input, init, resp)
+                    if (ans) {
+                        resp = ans
+                    }
+                }
+            } catch (err) {
+                error('fetch hook postFnArr', err)
+                return origResp
+            }
             return resp
         }
     }

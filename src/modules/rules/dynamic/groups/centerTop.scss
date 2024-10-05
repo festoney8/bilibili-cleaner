@@ -1,15 +1,3 @@
-// 扩增 中栏宽度
-html[expand-dynamic-page-bili-dyn-width] {
-    main {
-        flex-grow: 0.8 !important;
-    }
-
-    // 限制查看图片时img高度
-    .bili-album__watch__content img {
-        max-height: 80vh !important;
-    }
-}
-
 // 双行显示 UP 主列表
 html[dynamic-page-up-list-dual-line-mode] {
     .bili-dyn-up-list__content {

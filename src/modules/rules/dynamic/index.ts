@@ -2,6 +2,7 @@ import { Group } from '../../../types/collection'
 import { dynamicBasicItems } from './groups/basic'
 import { dynamicCenterDynItems } from './groups/centerDyn'
 import { dynamicCenterTopItems } from './groups/centerTop'
+import { dynamicLayoutItems } from './groups/layout'
 import { dynamicLeftItems } from './groups/left'
 import { dynamicRightItems } from './groups/right'
 import { dynamicSidebar } from './groups/sidebar'
@@ -26,6 +27,10 @@ export const dynamicGroups: Group[] = [
     {
         name: '中栏 动态列表',
         items: dynamicCenterDynItems,
+    },
+    {
+        name: '动态宽度调节',
+        items: dynamicLayoutItems,
     },
     {
         name: '页面右下角 小按钮',

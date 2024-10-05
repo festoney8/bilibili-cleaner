@@ -44,7 +44,7 @@
         <div
             ref="target"
             class="mt-1 flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white transition-colors hover:border-none hover:bg-[#00AEEC] hover:text-white"
-            @click="ruleStore.isShow ? ruleStore.hide() : ruleStore.show()"
+            @click="!isDragging && (ruleStore.isShow ? ruleStore.hide() : ruleStore.show())"
         >
             <div>
                 <p class="select-none text-center text-[13px] leading-4">页面</p>
@@ -86,17 +86,25 @@ const { width, height } = useElementBounding(target, { windowScroll: false })
 
 const btnPos = useStorage('bili-cleaner-side-btn-pos', { right: 6, bottom: 165 }, localStorage)
 
+const isDragging = ref(false)
+
 useDraggable(target, {
     initialValue: {
         x: document.documentElement.clientWidth - btnPos.value.right,
         y: document.documentElement.clientHeight - btnPos.value.bottom,
     },
     preventDefault: true,
+    handle: computed(() => target.value),
     onMove: (position: Position) => {
+        isDragging.value = true
         btnPos.value.right = document.documentElement.clientWidth - position.x - width.value
         btnPos.value.bottom = document.documentElement.clientHeight - position.y - height.value
     },
-    handle: computed(() => target.value),
+    onEnd: () => {
+        setTimeout(() => {
+            isDragging.value = false
+        }, 100)
+    },
 })
 
 // 限制拖拽范围

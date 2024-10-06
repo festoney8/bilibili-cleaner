@@ -11,15 +11,15 @@
 </template>
 
 <script setup lang="ts">
-import { GM_getValue, GM_setValue } from '$'
 import { ref, watch } from 'vue'
 import { IStringItem } from '../../types/item'
 import { error } from '../../utils/logger'
 import DescriptionComp from './DescriptionComp.vue'
+import { BiliCleanerStorage } from '../../utils/storage'
 
 const item = defineProps<IStringItem>()
 
-const currValue = ref(GM_getValue(item.id, item.defaultValue))
+const currValue = ref(BiliCleanerStorage.get(item.id, item.defaultValue))
 
 watch(currValue, (newValue, oldValue) => {
     try {
@@ -42,7 +42,7 @@ watch(currValue, (newValue, oldValue) => {
                     throw err
                 })
         }
-        GM_setValue(item.id, currValue.value)
+        BiliCleanerStorage.set<string>(item.id, currValue.value)
     } catch (err) {
         error(`string item ${item.id} error`, err)
     }

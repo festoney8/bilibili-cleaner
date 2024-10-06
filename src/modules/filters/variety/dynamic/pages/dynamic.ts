@@ -1,4 +1,3 @@
-import { GM_getValue, GM_setValue } from '$'
 import settings from '../../../../../settings'
 import { Group } from '../../../../../types/collection'
 import {
@@ -10,6 +9,7 @@ import {
 } from '../../../../../types/filter'
 import { error, log } from '../../../../../utils/logger'
 import { isPageDynamic } from '../../../../../utils/pageType'
+import { BiliCleanerStorage } from '../../../../../utils/storage'
 import { convertTimeToSec, orderedUniq, showEle, waitForEle } from '../../../../../utils/tool'
 import { coreCheck } from '../../../core/core'
 import { DynDurationFilter, DynUploaderFilter, DynVideoTitleFilter } from '../subFilters/black'
@@ -59,9 +59,9 @@ class DynamicFilterDynamic implements IMainFilter {
 
     init() {
         // 黑名单
-        this.dynUploaderFilter.setParam(GM_getValue(GM_KEYS.black.uploader.valueKey, []))
-        this.dynDurationFilter.setParam(GM_getValue(GM_KEYS.black.duration.valueKey, 0))
-        this.dynVideoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
+        this.dynUploaderFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.uploader.valueKey, []))
+        this.dynDurationFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.duration.valueKey, 0))
+        this.dynVideoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.title.valueKey, []))
     }
 
     observe() {
@@ -173,7 +173,7 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 description: ['右键屏蔽的用户会出现在首行'],
                 editorDescription: ['一行一个用户名，保存时自动去重'],
                 saveFn: async () => {
-                    mainFilter.dynUploaderFilter.setParam(GM_getValue(GM_KEYS.black.uploader.valueKey, []))
+                    mainFilter.dynUploaderFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.uploader.valueKey, []))
                     mainFilter.check('full').then().catch()
                 },
             },
@@ -243,7 +243,7 @@ export const dynamicFilterDynamicGroups: Group[] = [
                     '正则默认iu模式，无需flag，语法：/abc|\\d+/',
                 ],
                 saveFn: async () => {
-                    mainFilter.dynVideoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
+                    mainFilter.dynVideoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.title.valueKey, []))
                     mainFilter.check('full').then().catch()
                 },
             },
@@ -266,9 +266,9 @@ export const dynamicFilterDynamicHandler: ContextMenuTargetHandler = (target: HT
                     try {
                         mainFilter.dynUploaderFilter.addParam(uploader)
                         mainFilter.check('full').then().catch()
-                        const arr: string[] = GM_getValue(GM_KEYS.black.uploader.valueKey, [])
+                        const arr: string[] = BiliCleanerStorage.get(GM_KEYS.black.uploader.valueKey, [])
                         arr.unshift(uploader)
-                        GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
+                        BiliCleanerStorage.set<string[]>(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
                     } catch (err) {
                         error(`dynamicFilterDynamicHandler add uploader ${uploader} failed`, err)
                     }

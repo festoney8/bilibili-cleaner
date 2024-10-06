@@ -24,9 +24,9 @@ import { searchGroups } from './search'
 import { spaceGroups } from './space'
 import { videoGroups } from './video'
 
-import { GM_getValue } from '$'
 import { IListItem, INumberItem, IStringItem, ISwitchItem } from '../../types/item'
 import { error } from '../../utils/logger'
+import { BiliCleanerStorage } from '../../utils/storage'
 import bangumiStyle from './bangumi/index.scss?inline'
 import channelStyle from './channel/index.scss?inline'
 import commentStyle from './comment/index.scss?inline'
@@ -164,7 +164,7 @@ export const loadStyles = () => {
 }
 
 const loadSwitchItem = (item: ISwitchItem) => {
-    const enable = GM_getValue(item.id, item.defaultEnable)
+    const enable = BiliCleanerStorage.get(item.id, item.defaultEnable)
     if (enable) {
         if (!item.noStyle) {
             document.documentElement.setAttribute(item.attrName ?? item.id, '')
@@ -182,7 +182,7 @@ const loadSwitchItem = (item: ISwitchItem) => {
 }
 
 const loadNumberItem = (item: INumberItem) => {
-    const value = GM_getValue(item.id, item.defaultValue)
+    const value = BiliCleanerStorage.get(item.id, item.defaultValue)
     if (value !== item.disableValue) {
         if (!item.noStyle) {
             document.documentElement.setAttribute(item.attrName ?? item.id, '')
@@ -192,7 +192,7 @@ const loadNumberItem = (item: INumberItem) => {
 }
 
 const loadStringItem = (item: IStringItem) => {
-    const value = GM_getValue(item.id, item.defaultValue)
+    const value = BiliCleanerStorage.get(item.id, item.defaultValue)
     if (value !== item.disableValue) {
         if (!item.noStyle) {
             document.documentElement.setAttribute(item.attrName ?? item.id, '')
@@ -202,7 +202,7 @@ const loadStringItem = (item: IStringItem) => {
 }
 
 const loadListItem = (item: IListItem) => {
-    const value = GM_getValue(item.id, item.defaultValue)
+    const value = BiliCleanerStorage.get(item.id, item.defaultValue)
     if (value !== item.disableValue) {
         document.documentElement.setAttribute(value, '')
     }

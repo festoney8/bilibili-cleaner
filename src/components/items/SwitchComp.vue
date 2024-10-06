@@ -16,20 +16,20 @@
             </SwitchLabel>
         </div>
     </SwitchGroup>
-    <DescriptionComp class="pl-8" v-if="description?.length" :description="description"></DescriptionComp>
+    <DescriptionComp class="pl-9" v-if="description?.length" :description="description"></DescriptionComp>
 </template>
 
 <script setup lang="ts">
-import { GM_getValue, GM_setValue } from '$'
 import { Switch, SwitchGroup, SwitchLabel } from '@headlessui/vue'
 import { ref, watch } from 'vue'
 import { ISwitchItem } from '../../types/item'
 import { error } from '../../utils/logger'
+import { BiliCleanerStorage } from '../../utils/storage'
 import DescriptionComp from './DescriptionComp.vue'
 
 const item = defineProps<ISwitchItem>()
 
-const enabled = ref(GM_getValue(item.id, item.defaultEnable))
+const enabled = ref(BiliCleanerStorage.get(item.id, item.defaultEnable))
 
 watch(enabled, () => {
     try {
@@ -40,7 +40,7 @@ watch(enabled, () => {
             if (item.enableFn) {
                 item.enableFn()?.then().catch()
             }
-            GM_setValue(item.id, true)
+            BiliCleanerStorage.set<boolean>(item.id, true)
         } else {
             if (!item.noStyle) {
                 document.documentElement.removeAttribute(item.attrName ?? item.id)
@@ -53,7 +53,7 @@ watch(enabled, () => {
                         throw err
                     })
             }
-            GM_setValue(item.id, false)
+            BiliCleanerStorage.set<boolean>(item.id, false)
         }
     } catch (err) {
         error(`switch item ${item.id} error`, err)

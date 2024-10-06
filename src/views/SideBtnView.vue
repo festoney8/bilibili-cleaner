@@ -2,7 +2,7 @@
     <div
         v-if="sideBtnStore.isShow"
         :style="{ right: btnPos.right + 'px', bottom: btnPos.bottom + 'px' }"
-        class="group fixed z-[10000] flex flex-col justify-end text-black text-opacity-50 hover:text-opacity-100"
+        class="group fixed z-[100] flex flex-col justify-end text-black text-opacity-50 hover:text-opacity-100"
     >
         <div
             v-if="isPageDynamic()"
@@ -84,7 +84,7 @@ const sideBtnStore = useSideBtnStore()
 const target = ref<HTMLElement | null>(null)
 const { width, height } = useElementBounding(target, { windowScroll: false })
 
-const btnPos = useStorage('bili-cleaner-side-btn-pos', { right: 6, bottom: 165 }, localStorage)
+const btnPos = useStorage('bili-cleaner-side-btn-pos', { right: 10, bottom: 180 }, localStorage)
 
 const isDragging = ref(false)
 

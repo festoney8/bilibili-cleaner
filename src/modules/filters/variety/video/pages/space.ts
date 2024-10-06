@@ -1,7 +1,7 @@
-import { GM_getValue } from '$'
 import { Group } from '../../../../../types/collection'
 import { IMainFilter, SelectorResult, SubFilterPair } from '../../../../../types/filter'
 import { log } from '../../../../../utils/logger'
+import { BiliCleanerStorage } from '../../../../../utils/storage'
 import { convertTimeToSec, matchBvid, showEle, waitForEle } from '../../../../../utils/tool'
 import { coreCheck } from '../../../core/core'
 import { VideoBvidFilter, VideoDurationFilter, VideoTitleFilter } from '../subFilters/black'
@@ -58,11 +58,11 @@ class VideoFilterSpace implements IMainFilter {
 
     init() {
         // 黑名单
-        this.videoBvidFilter.setParam(GM_getValue(GM_KEYS.black.bvid.valueKey, []))
-        this.videoDurationFilter.setParam(GM_getValue(GM_KEYS.black.duration.valueKey, 0))
-        this.videoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
+        this.videoBvidFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.bvid.valueKey, []))
+        this.videoDurationFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.duration.valueKey, 0))
+        this.videoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.title.valueKey, []))
         // 白名单
-        this.videoTitleWhiteFilter.setParam(GM_getValue(GM_KEYS.white.title.valueKey, []))
+        this.videoTitleWhiteFilter.setParam(BiliCleanerStorage.get(GM_KEYS.white.title.valueKey, []))
     }
 
     observe() {
@@ -221,7 +221,7 @@ export const videoFilterSpaceGroups: Group[] = [
                     '正则默认iu模式，无需flag，语法：/abc|\\d+/',
                 ],
                 saveFn: async () => {
-                    mainFilter.videoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
+                    mainFilter.videoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.title.valueKey, []))
                     mainFilter.check('full').then().catch()
                 },
             },
@@ -253,7 +253,7 @@ export const videoFilterSpaceGroups: Group[] = [
     //             editorTitle: 'BV号 黑名单',
     //             editorDescription: ['每行一个BV号，保存时自动去重'],
     //             saveFn: async () => {
-    //                 mainFilter.videoBvidFilter.setParam(GM_getValue(GM_KEYS.black.bvid.valueKey, []))
+    //                 mainFilter.videoBvidFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.bvid.valueKey, []))
     //                 mainFilter.check('full').then().catch()
     //             },
     //         },
@@ -288,7 +288,7 @@ export const videoFilterSpaceGroups: Group[] = [
                     '正则默认iu模式，无需flag，语法：/abc|\\d+/',
                 ],
                 saveFn: async () => {
-                    mainFilter.videoTitleWhiteFilter.setParam(GM_getValue(GM_KEYS.white.title.valueKey, []))
+                    mainFilter.videoTitleWhiteFilter.setParam(BiliCleanerStorage.get(GM_KEYS.white.title.valueKey, []))
                     mainFilter.check('full').then().catch()
                 },
             },

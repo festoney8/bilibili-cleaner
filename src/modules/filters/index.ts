@@ -1,4 +1,3 @@
-import { GM_getValue } from '$'
 import { Filter } from '../../types/collection'
 import { INumberItem, ISwitchItem } from '../../types/item'
 import {
@@ -12,6 +11,7 @@ import {
     isPageSpace,
     isPageVideo,
 } from '../../utils/pageType'
+import { BiliCleanerStorage } from '../../utils/storage'
 import {
     commentFilterDynamicEntry,
     commentFilterDynamicGroups,
@@ -147,7 +147,7 @@ export const loadFilters = () => {
 }
 
 const loadSwitchItem = (item: ISwitchItem) => {
-    const enable = GM_getValue(item.id, item.defaultEnable)
+    const enable = BiliCleanerStorage.get(item.id, item.defaultEnable)
     if (enable) {
         if (item.enableFn) {
             if (item.enableFnRunAt === 'document-end' && document.readyState === 'loading') {
@@ -162,7 +162,7 @@ const loadSwitchItem = (item: ISwitchItem) => {
 }
 
 const loadNumberItem = (item: INumberItem) => {
-    const value = GM_getValue(item.id, item.defaultValue)
+    const value = BiliCleanerStorage.get(item.id, item.defaultValue)
     if (value !== item.disableValue) {
         item.fn(value)?.then().catch()
     }

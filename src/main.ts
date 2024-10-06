@@ -13,11 +13,8 @@ import {
 import css from './style.css?inline'
 import { waitForBody } from './utils/init'
 import { log } from './utils/logger'
-import { upgrade } from './utils/upgrade'
 
 log(`start, mode: ${import.meta.env.MODE}, url: ${location.href}`)
-
-upgrade()
 
 loadModules()
 

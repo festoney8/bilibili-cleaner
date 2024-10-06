@@ -14,7 +14,7 @@
         </button>
         <div class="ml-2 self-center text-black">{{ name }}</div>
     </label>
-    <DescriptionComp class="pl-8" v-if="description?.length" :description="description"></DescriptionComp>
+    <DescriptionComp class="pl-9" v-if="description?.length" :description="description"></DescriptionComp>
 
     <PanelComp
         ref="panel"
@@ -62,10 +62,10 @@
 </template>
 
 <script setup lang="ts">
-import { GM_getValue, GM_setValue } from '$'
 import { ref } from 'vue'
 import { IEditorItem } from '../../types/item'
 import { error } from '../../utils/logger'
+import { BiliCleanerStorage } from '../../utils/storage'
 import { orderedUniq } from '../../utils/tool'
 import PanelComp from '../PanelComp.vue'
 import DescriptionComp from './DescriptionComp.vue'
@@ -79,13 +79,13 @@ const saveSuccess = ref(false)
 const editorData = ref('')
 
 const updateData = () => {
-    editorData.value = GM_getValue(item.id, []).join('\n') + '\n' // 末尾空行
+    editorData.value = BiliCleanerStorage.get<string[]>(item.id, []).join('\n') + '\n' // 末尾空行
 }
 
 const saveData = () => {
     try {
         const data = editorData.value.split('\n').filter((v) => v.trim() !== '')
-        GM_setValue(item.id, orderedUniq(data))
+        BiliCleanerStorage.set<string[]>(item.id, orderedUniq(data))
         saveSuccess.value = true
         item.saveFn()
         setTimeout(() => {

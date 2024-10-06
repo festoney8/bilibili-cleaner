@@ -30,7 +30,7 @@
                             <li
                                 :class="[
                                     active ? 'bg-purple-100 text-black' : 'text-gray-900',
-                                    'relative cursor-default py-2 pl-10 pr-4',
+                                    'relative cursor-default py-2 pl-10 pr-4 transition-colors duration-200',
                                 ]"
                             >
                                 <span :class="[selected ? 'font-medium' : 'font-normal', 'block truncate']">{{
@@ -56,15 +56,15 @@
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/vue'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid'
 import { ref, watch } from 'vue'
+import { BiliCleanerStorage } from '../../utils/storage'
 
-import { GM_getValue, GM_setValue } from '$'
 import { IListItem } from '../../types/item'
 import { error } from '../../utils/logger'
 import DescriptionComp from './DescriptionComp.vue'
 
 const item = defineProps<IListItem>()
 const options = item.options
-const currValue = GM_getValue(item.id, item.defaultValue)
+const currValue = BiliCleanerStorage.get(item.id, item.defaultValue)
 const currOption = options.find((v) => v.id === currValue)
 const selectedOption = ref(currOption ?? options[0])
 
@@ -77,7 +77,7 @@ watch(selectedOption, (newSelected) => {
                 document.documentElement.removeAttribute(option.id)
             }
         }
-        GM_setValue(item.id, newSelected.id)
+        BiliCleanerStorage.set<string>(item.id, newSelected.id)
     } catch (err) {
         error(`list item ${item.id} error`, err)
     }

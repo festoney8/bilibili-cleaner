@@ -1,4 +1,3 @@
-import { GM_getValue, GM_setValue } from '$'
 import settings from '../../../../../settings'
 import { Group } from '../../../../../types/collection'
 import {
@@ -12,6 +11,7 @@ import fetchHook from '../../../../../utils/fetch'
 import { error, log } from '../../../../../utils/logger'
 import { isPageDynamic } from '../../../../../utils/pageType'
 import ShadowInstance from '../../../../../utils/shadow'
+import { BiliCleanerStorage } from '../../../../../utils/storage'
 import { orderedUniq, showEle } from '../../../../../utils/tool'
 import { coreCheck } from '../../../core/core'
 import {
@@ -231,9 +231,9 @@ class CommentFilterDynamic implements IMainFilter {
             'AI总结视频',
             'AI工具集',
         ]
-        this.commentUsernameFilter.setParam(GM_getValue(GM_KEYS.black.username.valueKey, []))
-        this.commentContentFilter.setParam(GM_getValue(GM_KEYS.black.content.valueKey, []))
-        this.commentLevelFilter.setParam(GM_getValue(GM_KEYS.black.level.valueKey, 0))
+        this.commentUsernameFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.username.valueKey, []))
+        this.commentContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))
+        this.commentLevelFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.level.valueKey, 0))
         this.commentBotFilter.setParam(bots)
         this.commentCallBotFilter.setParam(bots)
         this.commentCallUserFilter.setParam([`/./`])
@@ -483,7 +483,9 @@ export const commentFilterDynamicGroups: Group[] = [
                 editorTitle: '评论区 用户黑名单',
                 editorDescription: ['每行一个用户名，保存时自动去重'],
                 saveFn: async () => {
-                    mainFilter.commentUsernameFilter.setParam(GM_getValue(GM_KEYS.black.username.valueKey, []))
+                    mainFilter.commentUsernameFilter.setParam(
+                        BiliCleanerStorage.get(GM_KEYS.black.username.valueKey, []),
+                    )
                     mainFilter.check('full').then().catch()
                 },
             },
@@ -518,7 +520,7 @@ export const commentFilterDynamicGroups: Group[] = [
                     '正则默认iu模式，无需flag，语法：/abc|\\d+/',
                 ],
                 saveFn: async () => {
-                    mainFilter.commentContentFilter.setParam(GM_getValue(GM_KEYS.black.content.valueKey, []))
+                    mainFilter.commentContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))
                     mainFilter.check('full').then().catch()
                 },
             },
@@ -783,9 +785,9 @@ export const commentFilterDynamicHandler: ContextMenuTargetHandler = (target: HT
                     try {
                         mainFilter.commentUsernameFilter.addParam(username)
                         mainFilter.check('full').then().catch()
-                        const arr: string[] = GM_getValue(GM_KEYS.black.username.valueKey, [])
+                        const arr: string[] = BiliCleanerStorage.get(GM_KEYS.black.username.valueKey, [])
                         arr.unshift(username)
-                        GM_setValue(GM_KEYS.black.username.valueKey, orderedUniq(arr))
+                        BiliCleanerStorage.set<string[]>(GM_KEYS.black.username.valueKey, orderedUniq(arr))
                     } catch (err) {
                         error(`commentFilterDynamicHandler add username ${username} failed`, err)
                     }

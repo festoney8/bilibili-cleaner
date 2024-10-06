@@ -80,7 +80,7 @@ export const homepageRcmdItems: Item[] = [
         id: 'homepage-hide-skeleton-before-anchor',
         name: '隐藏 加载锚点之前的骨架',
         defaultEnable: true,
-        description: ['会让视频列表加载更快一些'],
+        description: ['会让视频列表加载更早一些'],
     },
     {
         type: 'switch',

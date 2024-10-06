@@ -13,15 +13,15 @@
 </template>
 
 <script setup lang="ts">
-import { GM_getValue, GM_setValue } from '$'
 import { ref, watch } from 'vue'
 import { INumberItem } from '../../types/item'
 import { error } from '../../utils/logger'
+import { BiliCleanerStorage } from '../../utils/storage'
 import DescriptionComp from './DescriptionComp.vue'
 
 const item = defineProps<INumberItem>()
 
-const currValue = ref(GM_getValue(item.id, item.defaultValue))
+const currValue = ref(BiliCleanerStorage.get(item.id, item.defaultValue))
 
 watch(currValue, (newValue, oldValue) => {
     try {
@@ -50,7 +50,7 @@ watch(currValue, (newValue, oldValue) => {
                     throw err
                 })
         }
-        GM_setValue(item.id, currValue.value)
+        BiliCleanerStorage.set<number>(item.id, currValue.value)
     } catch (err) {
         error(`number item ${item.id} error`, err)
     }

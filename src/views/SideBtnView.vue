@@ -2,7 +2,11 @@
     <div
         v-if="sideBtnStore.isShow"
         :style="{ right: btnPos.right + 'px', bottom: btnPos.bottom + 'px' }"
-        class="group fixed z-[100] flex flex-col justify-end text-black text-opacity-50 hover:text-opacity-100"
+        class="group fixed flex flex-col justify-end text-black text-opacity-50 hover:text-opacity-100"
+        :class="{
+            'z-[100]': !isPageLive(),
+            'z-[1000]': isPageLive(),
+        }"
     >
         <div
             v-if="isPageDynamic()"
@@ -68,6 +72,7 @@ import {
     isPageChannel,
     isPageDynamic,
     isPageHomepage,
+    isPageLive,
     isPagePlaylist,
     isPagePopular,
     isPageSearch,

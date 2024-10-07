@@ -1,6 +1,7 @@
+import settings from '../../../../../settings'
 import { Group } from '../../../../../types/collection'
 import { IMainFilter, SelectorResult, SubFilterPair } from '../../../../../types/filter'
-import { log } from '../../../../../utils/logger'
+import { debugFilter as debug, error } from '../../../../../utils/logger'
 import { BiliCleanerStorage } from '../../../../../utils/storage'
 import { convertTimeToSec, matchBvid, showEle, waitForEle } from '../../../../../utils/tool'
 import { coreCheck } from '../../../core/core'
@@ -65,24 +66,6 @@ class VideoFilterSpace implements IMainFilter {
         this.videoTitleWhiteFilter.setParam(BiliCleanerStorage.get(GM_KEYS.white.title.valueKey, []))
     }
 
-    observe() {
-        waitForEle(document, '#app', (node: HTMLElement): boolean => {
-            return node.id === 'app'
-        }).then((ele) => {
-            if (!ele) {
-                return
-            }
-
-            this.target = ele
-            log('VideoFilterSpace target appear')
-            this.check('full').then().catch()
-
-            new MutationObserver(() => {
-                this.check('full').then().catch() // 空间页始终全量check
-            }).observe(this.target, { childList: true, subtree: true })
-        })
-    }
-
     async check(mode?: 'full' | 'incr') {
         if (!this.target) {
             return
@@ -119,16 +102,18 @@ class VideoFilterSpace implements IMainFilter {
             return
         }
 
-        // videos.forEach((v) => {
-        //     log(
-        //         [
-        //             `space video`,
-        //             `bvid: ${selectorFns.bvid(v)}`,
-        //             `duration: ${selectorFns.duration(v)}`,
-        //             `title: ${selectorFns.title(v)}`,
-        //         ].join('\n'),
-        //     )
-        // })
+        if (settings.enableDebugFilter) {
+            videos.forEach((v) => {
+                debug(
+                    [
+                        `VideoFilterSpace`,
+                        `bvid: ${selectorFns.bvid(v)}`,
+                        `duration: ${selectorFns.duration(v)}`,
+                        `title: ${selectorFns.title(v)}`,
+                    ].join('\n'),
+                )
+            })
+        }
 
         // 构建黑白检测任务
         const blackPairs: SubFilterPair[] = []
@@ -142,7 +127,41 @@ class VideoFilterSpace implements IMainFilter {
         // 检测
         const blackCnt = await coreCheck(videos, false, blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
-        log(`VideoFilterSpace hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
+        debug(`VideoFilterSpace hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
+    }
+
+    checkFull() {
+        this.check('full')
+            .then()
+            .catch((err) => {
+                error('VideoFilterSpace check full error', err)
+            })
+    }
+
+    // checkIncr() {
+    //     this.check('incr')
+    //         .then()
+    //         .catch((err) => {
+    //             error('VideoFilterSpace check incr error', err)
+    //         })
+    // }
+
+    observe() {
+        waitForEle(document, '#app', (node: HTMLElement): boolean => {
+            return node.id === 'app'
+        }).then((ele) => {
+            if (!ele) {
+                return
+            }
+
+            debug('VideoFilterSpace target appear')
+            this.target = ele
+            this.checkFull()
+
+            new MutationObserver(() => {
+                this.checkFull() // 空间页始终全量check
+            }).observe(this.target, { childList: true, subtree: true })
+        })
     }
 }
 
@@ -167,11 +186,11 @@ export const videoFilterSpaceGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoDurationFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.videoDurationFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -187,7 +206,7 @@ export const videoFilterSpaceGroups: Group[] = [
                 addonText: '秒',
                 fn: (value: number) => {
                     mainFilter.videoDurationFilter.setParam(value)
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
         ],
@@ -203,11 +222,11 @@ export const videoFilterSpaceGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoTitleFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.videoTitleFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -222,7 +241,7 @@ export const videoFilterSpaceGroups: Group[] = [
                 ],
                 saveFn: async () => {
                     mainFilter.videoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.title.valueKey, []))
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
         ],
@@ -238,11 +257,11 @@ export const videoFilterSpaceGroups: Group[] = [
     //             noStyle: true,
     //             enableFn: () => {
     //                 mainFilter.videoBvidFilter.enable()
-    //                 mainFilter.check('full').then().catch()
+    //                 mainFilter.checkFull()
     //             },
     //             disableFn: () => {
     //                 mainFilter.videoBvidFilter.disable()
-    //                 mainFilter.check('full').then().catch()
+    //                 mainFilter.checkFull()
     //             },
     //         },
     //         {
@@ -254,7 +273,7 @@ export const videoFilterSpaceGroups: Group[] = [
     //             editorDescription: ['每行一个BV号，保存时自动去重'],
     //             saveFn: async () => {
     //                 mainFilter.videoBvidFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.bvid.valueKey, []))
-    //                 mainFilter.check('full').then().catch()
+    //                 mainFilter.checkFull()
     //             },
     //         },
     //     ],
@@ -270,11 +289,11 @@ export const videoFilterSpaceGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoTitleWhiteFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.videoTitleWhiteFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -289,7 +308,7 @@ export const videoFilterSpaceGroups: Group[] = [
                 ],
                 saveFn: async () => {
                     mainFilter.videoTitleWhiteFilter.setParam(BiliCleanerStorage.get(GM_KEYS.white.title.valueKey, []))
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
         ],

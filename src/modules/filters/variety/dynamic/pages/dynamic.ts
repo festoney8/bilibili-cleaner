@@ -7,7 +7,7 @@ import {
     SelectorResult,
     SubFilterPair,
 } from '../../../../../types/filter'
-import { error, log } from '../../../../../utils/logger'
+import { debugFilter as debug, error } from '../../../../../utils/logger'
 import { isPageDynamic } from '../../../../../utils/pageType'
 import { BiliCleanerStorage } from '../../../../../utils/storage'
 import { convertTimeToSec, orderedUniq, showEle, waitForEle } from '../../../../../utils/tool'
@@ -64,26 +64,6 @@ class DynamicFilterDynamic implements IMainFilter {
         this.dynVideoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.title.valueKey, []))
     }
 
-    observe() {
-        waitForEle(
-            document,
-            '.bili-dyn-home--member',
-            (node: HTMLElement): boolean => node.className === 'bili-dyn-home--member',
-        ).then((ele) => {
-            if (!ele) {
-                return
-            }
-
-            this.target = ele
-            log('DynamicFilterDynamic target appear')
-            this.check('full').then().catch()
-
-            new MutationObserver(() => {
-                this.check('incr').then().catch()
-            }).observe(this.target, { childList: true, subtree: true })
-        })
-    }
-
     async check(mode?: 'full' | 'incr') {
         if (!this.target) {
             return
@@ -113,16 +93,18 @@ class DynamicFilterDynamic implements IMainFilter {
             return
         }
 
-        // dyns.forEach((v) => {
-        //     log(
-        //         [
-        //             `dynamic`,
-        //             `uploader: ${selectorFns.uploader(v)}`,
-        //             `title: ${selectorFns.title(v)}`,
-        //             `duration: ${selectorFns.duration(v)}`,
-        //         ].join('\n'),
-        //     )
-        // })
+        if (settings.enableDebugFilter) {
+            dyns.forEach((v) => {
+                debug(
+                    [
+                        `DynamicFilterDynamic`,
+                        `uploader: ${selectorFns.uploader(v)}`,
+                        `title: ${selectorFns.title(v)}`,
+                        `duration: ${selectorFns.duration(v)}`,
+                    ].join('\n'),
+                )
+            })
+        }
 
         // 构建黑白检测任务
         const blackPairs: SubFilterPair[] = []
@@ -133,7 +115,43 @@ class DynamicFilterDynamic implements IMainFilter {
         // 检测
         const blackCnt = await coreCheck(dyns, true, blackPairs, [])
         const time = (performance.now() - timer).toFixed(1)
-        log(`DynamicFilterDynamic hide ${blackCnt} in ${dyns.length} dyns, mode=${mode}, time=${time}`)
+        debug(`DynamicFilterDynamic hide ${blackCnt} in ${dyns.length} dyns, mode=${mode}, time=${time}`)
+    }
+
+    checkFull() {
+        this.check('full')
+            .then()
+            .catch((err) => {
+                error('DynamicFilterDynamic check full error', err)
+            })
+    }
+
+    checkIncr() {
+        this.check('incr')
+            .then()
+            .catch((err) => {
+                error('DynamicFilterDynamic check incr error', err)
+            })
+    }
+
+    observe() {
+        waitForEle(
+            document,
+            '.bili-dyn-home--member',
+            (node: HTMLElement): boolean => node.className === 'bili-dyn-home--member',
+        ).then((ele) => {
+            if (!ele) {
+                return
+            }
+
+            debug('DynamicFilterDynamic target appear')
+            this.target = ele
+            this.checkFull()
+
+            new MutationObserver(() => {
+                this.checkIncr()
+            }).observe(this.target, { childList: true, subtree: true })
+        })
     }
 }
 
@@ -158,11 +176,11 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.dynUploaderFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.dynUploaderFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -174,7 +192,7 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 editorDescription: ['一行一个用户名，保存时自动去重'],
                 saveFn: async () => {
                     mainFilter.dynUploaderFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.uploader.valueKey, []))
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
         ],
@@ -190,11 +208,11 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.dynDurationFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.dynDurationFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -209,7 +227,7 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 addonText: '秒',
                 fn: (value: number) => {
                     mainFilter.dynDurationFilter.setParam(value)
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
         ],
@@ -225,11 +243,11 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.dynVideoTitleFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.dynVideoTitleFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -244,7 +262,7 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 ],
                 saveFn: async () => {
                     mainFilter.dynVideoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.title.valueKey, []))
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
         ],
@@ -265,7 +283,7 @@ export const dynamicFilterDynamicHandler: ContextMenuTargetHandler = (target: HT
                 fn: async () => {
                     try {
                         mainFilter.dynUploaderFilter.addParam(uploader)
-                        mainFilter.check('full').then().catch()
+                        mainFilter.checkFull()
                         const arr: string[] = BiliCleanerStorage.get(GM_KEYS.black.uploader.valueKey, [])
                         arr.unshift(uploader)
                         BiliCleanerStorage.set<string[]>(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))

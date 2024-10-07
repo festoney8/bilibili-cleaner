@@ -31,6 +31,7 @@ import bangumiStyle from './bangumi/index.scss?inline'
 import channelStyle from './channel/index.scss?inline'
 import commentStyle from './comment/index.scss?inline'
 import commonStyle from './common/index.scss?inline'
+import { debugGroups } from './debug'
 import dynamicStyle from './dynamic/index.scss?inline'
 import homepageStyle from './homepage/index.scss?inline'
 import liveStyle from './live/index.scss?inline'
@@ -117,6 +118,12 @@ export const rules: Rule[] = [
         isSpecial: true,
         checkFn: () => true,
     },
+    {
+        name: '调试开关',
+        groups: debugGroups,
+        style: undefined,
+        checkFn: isPageSpace,
+    },
 ]
 
 /** 载入当前页面规则列表 */
@@ -141,7 +148,7 @@ export const loadRules = () => {
                                 break
                         }
                     } catch (err) {
-                        error(`load item failed, type=${item.type}, name=${item.name}, id=${item.id}`, err)
+                        error(`loadRules load item failed, id=${item.id}, name=${item.name}, type=${item.type}`, err)
                     }
                 }
             }
@@ -152,15 +159,15 @@ export const loadRules = () => {
 /** 载入css, 注入在html节点下, 需在head节点出现后(html节点可插入时)执行 */
 export const loadStyles = () => {
     for (const rule of rules) {
-        try {
-            if (rule.checkFn() && rule.style) {
+        if (rule.checkFn() && rule.style) {
+            try {
                 const style = document.createElement('style')
                 style.className = 'bili-cleaner-css'
                 style.textContent = rule.style
                 document.documentElement?.appendChild(style)
+            } catch (err) {
+                error(`loadStyles error, name=${rule.name}`, err)
             }
-        } catch (err) {
-            error(`loadStyles error, name=${rule.name}`, err)
         }
     }
 }

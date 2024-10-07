@@ -34,7 +34,6 @@ watch(currValue, (newValue, oldValue) => {
                 document.documentElement.removeAttribute(item.attrName ?? item.id)
             }
         } else if (currValue.value !== oldValue) {
-            console.log(newValue, oldValue)
             item
                 .fn(currValue.value)
                 ?.then()
@@ -44,7 +43,7 @@ watch(currValue, (newValue, oldValue) => {
         }
         BiliCleanerStorage.set<string>(item.id, currValue.value)
     } catch (err) {
-        error(`string item ${item.id} error`, err)
+        error(`StringComp ${item.id} error`, err)
     }
 })
 </script>

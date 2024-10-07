@@ -8,7 +8,7 @@ import {
     SubFilterPair,
 } from '../../../../../types/filter'
 import fetchHook from '../../../../../utils/fetch'
-import { error, log } from '../../../../../utils/logger'
+import { debugFilter as debug, error } from '../../../../../utils/logger'
 import { isPageSpace } from '../../../../../utils/pageType'
 import { BiliCleanerStorage } from '../../../../../utils/storage'
 import { orderedUniq, showEle, waitForEle } from '../../../../../utils/tool'
@@ -269,36 +269,38 @@ class CommentFilterSpace implements IMainFilter {
         const rootComments = Array.from(this.target.querySelectorAll<HTMLElement>(rootSelector))
         const subComments = Array.from(this.target.querySelectorAll<HTMLElement>(subSelector))
 
-        // rootComments.forEach((v) => {
-        //     log(
-        //         [
-        //             `root comment`,
-        //             `username: ${selectorFns.root.username(v)}`,
-        //             `content: ${selectorFns.root.content(v)}`,
-        //             `callUser: ${selectorFns.root.callUser(v)}`,
-        //             `callUserOnly: ${selectorFns.root.callUserOnly(v)}`,
-        //             `level: ${selectorFns.root.level(v)}`,
-        //             `isUp: ${selectorFns.root.isUp(v)}`,
-        //             `isPin: ${selectorFns.root.isPin(v)}`,
-        //             `isNote: ${selectorFns.root.isNote(v)}`,
-        //             `isLink: ${selectorFns.root.isLink(v)}`,
-        //         ].join('\n'),
-        //     )
-        // })
-        // subComments.forEach((v) => {
-        //     log(
-        //         [
-        //             `sub comment`,
-        //             `username: ${selectorFns.sub.username(v)}`,
-        //             `content: ${selectorFns.sub.content(v)}`,
-        //             `callUser: ${selectorFns.sub.callUser(v)}`,
-        //             `callUserOnly: ${selectorFns.sub.callUserOnly(v)}`,
-        //             `level: ${selectorFns.sub.level(v)}`,
-        //             `isUp: ${selectorFns.sub.isUp(v)}`,
-        //             `isLink: ${selectorFns.sub.isLink(v)}`,
-        //         ].join('\n'),
-        //     )
-        // })
+        if (settings.enableDebugFilter) {
+            rootComments.forEach((v) => {
+                debug(
+                    [
+                        `CommentFilterSpace rootComments`,
+                        `username: ${selectorFns.root.username(v)}`,
+                        `content: ${selectorFns.root.content(v)}`,
+                        `callUser: ${selectorFns.root.callUser(v)}`,
+                        `callUserOnly: ${selectorFns.root.callUserOnly(v)}`,
+                        `level: ${selectorFns.root.level(v)}`,
+                        `isUp: ${selectorFns.root.isUp(v)}`,
+                        `isPin: ${selectorFns.root.isPin(v)}`,
+                        `isNote: ${selectorFns.root.isNote(v)}`,
+                        `isLink: ${selectorFns.root.isLink(v)}`,
+                    ].join('\n'),
+                )
+            })
+            subComments.forEach((v) => {
+                debug(
+                    [
+                        `CommentFilterSpace subComments`,
+                        `username: ${selectorFns.sub.username(v)}`,
+                        `content: ${selectorFns.sub.content(v)}`,
+                        `callUser: ${selectorFns.sub.callUser(v)}`,
+                        `callUserOnly: ${selectorFns.sub.callUserOnly(v)}`,
+                        `level: ${selectorFns.sub.level(v)}`,
+                        `isUp: ${selectorFns.sub.isUp(v)}`,
+                        `isLink: ${selectorFns.sub.isLink(v)}`,
+                    ].join('\n'),
+                )
+            })
+        }
 
         if (!rootComments.length && !subComments.length) {
             return
@@ -359,9 +361,25 @@ class CommentFilterSpace implements IMainFilter {
         }
 
         const time = (performance.now() - timer).toFixed(1)
-        log(
+        debug(
             `CommentFilterSpace hide ${rootBlackCnt} in ${rootComments.length} root, ${subBlackCnt} in ${subComments.length} sub, mode=${mode}, time=${time}`,
         )
+    }
+
+    checkFull() {
+        this.check('full')
+            .then()
+            .catch((err) => {
+                error('CommentFilterSpace check full error', err)
+            })
+    }
+
+    checkIncr() {
+        this.check('incr')
+            .then()
+            .catch((err) => {
+                error('CommentFilterSpace check incr error', err)
+            })
     }
 
     observe() {
@@ -369,11 +387,11 @@ class CommentFilterSpace implements IMainFilter {
             return node.id === 'app'
         }).then((ele) => {
             if (ele) {
+                debug('CommentFilterSpace target appear')
                 this.target = ele
-                log('CommentFilterSpace target appear')
-                this.check('full').then().catch()
+                this.checkFull()
                 const commentObserver = new MutationObserver(() => {
-                    this.check('incr').then().catch()
+                    this.checkIncr()
                 })
                 commentObserver.observe(this.target, { childList: true, subtree: true })
             }
@@ -401,11 +419,11 @@ export const commentFilterSpaceGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentUsernameFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.commentUsernameFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -419,7 +437,7 @@ export const commentFilterSpaceGroups: Group[] = [
                     mainFilter.commentUsernameFilter.setParam(
                         BiliCleanerStorage.get(GM_KEYS.black.username.valueKey, []),
                     )
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
         ],
@@ -435,11 +453,11 @@ export const commentFilterSpaceGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentContentFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.commentContentFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -454,7 +472,7 @@ export const commentFilterSpaceGroups: Group[] = [
                 ],
                 saveFn: async () => {
                     mainFilter.commentContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
         ],
@@ -470,11 +488,11 @@ export const commentFilterSpaceGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentCallBotFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.commentCallBotFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -485,11 +503,11 @@ export const commentFilterSpaceGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentBotFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.commentBotFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -519,12 +537,11 @@ export const commentFilterSpaceGroups: Group[] = [
                                     if (msg && /b23\.tv\/mall-|领券|gaoneng\.bilibili\.com/.test(msg)) {
                                         respData.data.top = null
                                         respData.data.top_replies = null
-                                        const newResp = new Response(JSON.stringify(respData), {
+                                        return new Response(JSON.stringify(respData), {
                                             status: resp.status,
                                             statusText: resp.statusText,
                                             headers: resp.headers,
                                         })
-                                        return newResp
                                     }
                                 } catch {
                                     return resp
@@ -543,11 +560,11 @@ export const commentFilterSpaceGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentCallUserOnlyFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.commentCallUserOnlyFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -558,11 +575,11 @@ export const commentFilterSpaceGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentCallUserFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.commentCallUserFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
         ],
@@ -578,11 +595,11 @@ export const commentFilterSpaceGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentLevelFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.commentLevelFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -596,7 +613,7 @@ export const commentFilterSpaceGroups: Group[] = [
                 disableValue: 0,
                 fn: (value: number) => {
                     mainFilter.commentLevelFilter.setParam(value)
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
         ],
@@ -612,11 +629,11 @@ export const commentFilterSpaceGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     isRootWhite = true
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     isRootWhite = false
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -627,11 +644,11 @@ export const commentFilterSpaceGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     isSubWhite = true
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     isSubWhite = false
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -642,11 +659,11 @@ export const commentFilterSpaceGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentIsUpFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.commentIsUpFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -657,11 +674,11 @@ export const commentFilterSpaceGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentIsPinFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.commentIsPinFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -672,11 +689,11 @@ export const commentFilterSpaceGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentIsNoteFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.commentIsNoteFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -687,11 +704,11 @@ export const commentFilterSpaceGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentIsLinkFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.commentIsLinkFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
         ],
@@ -717,7 +734,7 @@ export const commentFilterSpaceHandler: ContextMenuTargetHandler = (target: HTML
                 fn: async () => {
                     try {
                         mainFilter.commentUsernameFilter.addParam(username)
-                        mainFilter.check('full').then().catch()
+                        mainFilter.checkFull()
                         const arr: string[] = BiliCleanerStorage.get(GM_KEYS.black.username.valueKey, [])
                         arr.unshift(username)
                         BiliCleanerStorage.set<string[]>(GM_KEYS.black.username.valueKey, orderedUniq(arr))

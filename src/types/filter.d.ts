@@ -43,7 +43,7 @@ export interface IMainFilter {
      * 提取target内元素列表，用子过滤器检测元素
      * @param mode full: 全量检测 incr: 增量检测
      */
-    check(mode?: 'full' | 'incr'): void
+    check(mode?: 'full' | 'incr'): void | Promise<void>
 }
 
 // 右键菜单项

@@ -52,7 +52,7 @@ watch(currValue, (newValue, oldValue) => {
         }
         BiliCleanerStorage.set<number>(item.id, currValue.value)
     } catch (err) {
-        error(`number item ${item.id} error`, err)
+        error(`NumberComp ${item.id} error`, err)
     }
 })
 </script>

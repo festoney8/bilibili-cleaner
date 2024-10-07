@@ -1,5 +1,6 @@
 import { Filter } from '../../types/collection'
 import { INumberItem, ISwitchItem } from '../../types/item'
+import { error } from '../../utils/logger'
 import {
     isPageBangumi,
     isPageChannel,
@@ -129,18 +130,22 @@ export const loadFilters = () => {
     const filters = [...videoFilters, ...commentFilters, ...dynamicFilters]
     for (const filter of filters) {
         if (filter.checkFn()) {
-            filter.entry()
-            for (const group of filter.groups) {
-                for (const item of group.items) {
-                    switch (item.type) {
-                        case 'switch':
-                            loadSwitchItem(item)
-                            break
-                        case 'number':
-                            loadNumberItem(item)
-                            break
+            try {
+                filter.entry()
+                for (const group of filter.groups) {
+                    for (const item of group.items) {
+                        switch (item.type) {
+                            case 'switch':
+                                loadSwitchItem(item)
+                                break
+                            case 'number':
+                                loadNumberItem(item)
+                                break
+                        }
                     }
                 }
+            } catch (err) {
+                error(`loadFilters filter ${filter.name} error`, err)
             }
         }
     }

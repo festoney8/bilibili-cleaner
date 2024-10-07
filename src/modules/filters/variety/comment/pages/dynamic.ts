@@ -8,7 +8,7 @@ import {
     SubFilterPair,
 } from '../../../../../types/filter'
 import fetchHook from '../../../../../utils/fetch'
-import { error, log } from '../../../../../utils/logger'
+import { debugFilter as debug, error } from '../../../../../utils/logger'
 import { isPageDynamic } from '../../../../../utils/pageType'
 import ShadowInstance from '../../../../../utils/shadow'
 import { BiliCleanerStorage } from '../../../../../utils/storage'
@@ -274,22 +274,24 @@ class CommentFilterDynamic implements IMainFilter {
             return
         }
 
-        // rootComments.forEach((v) => {
-        //     log(
-        //         [
-        //             `rootComments`,
-        //             `username: ${selectorFns.root.username(v)}`,
-        //             `content: ${selectorFns.root.content(v)}`,
-        //             `callUser: ${selectorFns.root.callUser(v)}`,
-        //             `callUserOnly: ${selectorFns.root.callUserOnly(v)}`,
-        //             `level: ${selectorFns.root.level(v)}`,
-        //             `isUp: ${selectorFns.root.isUp(v)}`,
-        //             `isPin: ${selectorFns.root.isPin(v)}`,
-        //             `isNote: ${selectorFns.root.isNote(v)}`,
-        //             `isLink: ${selectorFns.root.isLink(v)}`,
-        //         ].join('\n'),
-        //     )
-        // })
+        if (settings.enableDebugFilter) {
+            rootComments.forEach((v) => {
+                debug(
+                    [
+                        `CommentFilterDynamic rootComments`,
+                        `username: ${selectorFns.root.username(v)}`,
+                        `content: ${selectorFns.root.content(v)}`,
+                        `callUser: ${selectorFns.root.callUser(v)}`,
+                        `callUserOnly: ${selectorFns.root.callUserOnly(v)}`,
+                        `level: ${selectorFns.root.level(v)}`,
+                        `isUp: ${selectorFns.root.isUp(v)}`,
+                        `isPin: ${selectorFns.root.isPin(v)}`,
+                        `isNote: ${selectorFns.root.isNote(v)}`,
+                        `isLink: ${selectorFns.root.isLink(v)}`,
+                    ].join('\n'),
+                )
+            })
+        }
 
         if (isRootWhite || revertAll) {
             rootComments.forEach((el) => showEle(el))
@@ -314,7 +316,7 @@ class CommentFilterDynamic implements IMainFilter {
 
         const rootBlackCnt = await coreCheck(rootComments, true, blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
-        log(
+        debug(
             `CommentFilterDynamic hide ${rootBlackCnt} in ${rootComments.length} root comments, mode=${mode}, time=${time}`,
         )
     }
@@ -354,20 +356,22 @@ class CommentFilterDynamic implements IMainFilter {
             return
         }
 
-        // subComments.forEach((v) => {
-        //     log(
-        //         [
-        //             `subComments`,
-        //             `username: ${selectorFns.sub.username(v)}`,
-        //             `content: ${selectorFns.sub.content(v)}`,
-        //             `callUser: ${selectorFns.sub.callUser(v)}`,
-        //             `callUserOnly: ${selectorFns.sub.callUserOnly(v)}`,
-        //             `level: ${selectorFns.sub.level(v)}`,
-        //             `isUp: ${selectorFns.sub.isUp(v)}`,
-        //             `isLink: ${selectorFns.sub.isLink(v)}`,
-        //         ].join('\n'),
-        //     )
-        // })
+        if (settings.enableDebugFilter) {
+            subComments.forEach((v) => {
+                debug(
+                    [
+                        `CommentFilterDynamic subComments`,
+                        `username: ${selectorFns.sub.username(v)}`,
+                        `content: ${selectorFns.sub.content(v)}`,
+                        `callUser: ${selectorFns.sub.callUser(v)}`,
+                        `callUserOnly: ${selectorFns.sub.callUserOnly(v)}`,
+                        `level: ${selectorFns.sub.level(v)}`,
+                        `isUp: ${selectorFns.sub.isUp(v)}`,
+                        `isLink: ${selectorFns.sub.isLink(v)}`,
+                    ].join('\n'),
+                )
+            })
+        }
 
         if (isSubWhite || revertAll) {
             subComments.forEach((el) => showEle(el))
@@ -390,12 +394,12 @@ class CommentFilterDynamic implements IMainFilter {
 
         const subBlackCnt = await coreCheck(subComments, false, blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
-        log(
+        debug(
             `CommentFilterDynamic hide ${subBlackCnt} in ${subComments.length} sub comments, mode=${mode}, time=${time}`,
         )
     }
 
-    async check(mode?: 'full' | 'incr') {
+    check(mode?: 'full' | 'incr') {
         this.checkRoot(mode)
             .then()
             .catch((err) => {
@@ -409,9 +413,10 @@ class CommentFilterDynamic implements IMainFilter {
     }
 
     /**
-     * 监听一级评论container
+     * 监听一级/二级评论container
+     * 使用同一Observer监视所有二级评论上级节点，所有变化只触发一次回调
      */
-    observeRoot() {
+    observe() {
         ShadowInstance.addShadowObserver(
             'BILI-COMMENTS',
             new MutationObserver(() => {
@@ -422,13 +427,7 @@ class CommentFilterDynamic implements IMainFilter {
                 childList: true,
             },
         )
-    }
 
-    /**
-     * 监听二级评论container
-     * 使用同一Observer监视所有二级评论上级节点，所有变化只触发一次回调
-     */
-    observeSub() {
         ShadowInstance.addShadowObserver(
             'BILI-COMMENT-REPLIES-RENDERER',
             new MutationObserver(() => {
@@ -439,11 +438,6 @@ class CommentFilterDynamic implements IMainFilter {
                 childList: true,
             },
         )
-    }
-
-    observe() {
-        this.observeRoot()
-        this.observeSub()
     }
 }
 
@@ -468,11 +462,11 @@ export const commentFilterDynamicGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentUsernameFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
                 disableFn: () => {
                     mainFilter.commentUsernameFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
             },
             {
@@ -486,7 +480,7 @@ export const commentFilterDynamicGroups: Group[] = [
                     mainFilter.commentUsernameFilter.setParam(
                         BiliCleanerStorage.get(GM_KEYS.black.username.valueKey, []),
                     )
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
             },
         ],
@@ -502,11 +496,11 @@ export const commentFilterDynamicGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentContentFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
                 disableFn: () => {
                     mainFilter.commentContentFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
             },
             {
@@ -521,7 +515,7 @@ export const commentFilterDynamicGroups: Group[] = [
                 ],
                 saveFn: async () => {
                     mainFilter.commentContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
             },
         ],
@@ -537,11 +531,11 @@ export const commentFilterDynamicGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentCallBotFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
                 disableFn: () => {
                     mainFilter.commentCallBotFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
             },
             {
@@ -552,11 +546,11 @@ export const commentFilterDynamicGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentBotFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
                 disableFn: () => {
                     mainFilter.commentBotFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
             },
             {
@@ -586,12 +580,11 @@ export const commentFilterDynamicGroups: Group[] = [
                                     if (msg && /b23\.tv\/mall-|领券|gaoneng\.bilibili\.com/.test(msg)) {
                                         respData.data.top = null
                                         respData.data.top_replies = null
-                                        const newResp = new Response(JSON.stringify(respData), {
+                                        return new Response(JSON.stringify(respData), {
                                             status: resp.status,
                                             statusText: resp.statusText,
                                             headers: resp.headers,
                                         })
-                                        return newResp
                                     }
                                 } catch {
                                     return resp
@@ -610,11 +603,11 @@ export const commentFilterDynamicGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentCallUserOnlyFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
                 disableFn: () => {
                     mainFilter.commentCallUserOnlyFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
             },
             {
@@ -625,11 +618,11 @@ export const commentFilterDynamicGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentCallUserFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
                 disableFn: () => {
                     mainFilter.commentCallUserFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
             },
         ],
@@ -645,11 +638,11 @@ export const commentFilterDynamicGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentLevelFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
                 disableFn: () => {
                     mainFilter.commentLevelFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
             },
             {
@@ -663,7 +656,7 @@ export const commentFilterDynamicGroups: Group[] = [
                 disableValue: 0,
                 fn: (value: number) => {
                     mainFilter.commentLevelFilter.setParam(value)
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
             },
         ],
@@ -679,11 +672,11 @@ export const commentFilterDynamicGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     isRootWhite = true
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
                 disableFn: () => {
                     isRootWhite = false
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
             },
             {
@@ -694,11 +687,11 @@ export const commentFilterDynamicGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     isSubWhite = true
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
                 disableFn: () => {
                     isSubWhite = false
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
             },
             {
@@ -709,11 +702,11 @@ export const commentFilterDynamicGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentIsUpFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
                 disableFn: () => {
                     mainFilter.commentIsUpFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
             },
             {
@@ -724,11 +717,11 @@ export const commentFilterDynamicGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentIsPinFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
                 disableFn: () => {
                     mainFilter.commentIsPinFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
             },
             {
@@ -739,11 +732,11 @@ export const commentFilterDynamicGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentIsNoteFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
                 disableFn: () => {
                     mainFilter.commentIsNoteFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
             },
             {
@@ -754,11 +747,11 @@ export const commentFilterDynamicGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentIsLinkFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
                 disableFn: () => {
                     mainFilter.commentIsLinkFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.check('full')
                 },
             },
         ],
@@ -784,7 +777,7 @@ export const commentFilterDynamicHandler: ContextMenuTargetHandler = (target: HT
                 fn: async () => {
                     try {
                         mainFilter.commentUsernameFilter.addParam(username)
-                        mainFilter.check('full').then().catch()
+                        mainFilter.check('full')
                         const arr: string[] = BiliCleanerStorage.get(GM_KEYS.black.username.valueKey, [])
                         arr.unshift(username)
                         BiliCleanerStorage.set<string[]>(GM_KEYS.black.username.valueKey, orderedUniq(arr))

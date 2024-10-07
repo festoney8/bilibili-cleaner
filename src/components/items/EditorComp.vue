@@ -12,7 +12,7 @@
         >
             编辑
         </button>
-        <div class="ml-2 self-center text-black">{{ name }}</div>
+        <span class="ml-2 self-center text-black">{{ name }}</span>
     </label>
     <DescriptionComp class="pl-9" v-if="description?.length" :description="description"></DescriptionComp>
 
@@ -38,7 +38,6 @@
                 v-model="editorData"
                 class="flex-1 resize-none overscroll-none rounded-md border-2 border-gray-300 p-2 text-[15px] outline-none focus:border-gray-400"
                 style="scrollbar-width: thin; scrollbar-color: #999 #00000000"
-                autocorrect="off"
                 spellcheck="false"
                 placeholder="请输入内容..."
             ></textarea>
@@ -92,7 +91,7 @@ const saveData = () => {
             saveSuccess.value = false
         }, 1500)
     } catch (err) {
-        error(`editor item ${item.id} saveData error`, err)
+        error(`EditorComp ${item.id} saveData error`, err)
     }
 }
 </script>

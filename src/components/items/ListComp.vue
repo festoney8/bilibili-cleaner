@@ -79,7 +79,7 @@ watch(selectedOption, (newSelected) => {
         }
         BiliCleanerStorage.set<string>(item.id, newSelected.id)
     } catch (err) {
-        error(`list item ${item.id} error`, err)
+        error(`ListComp ${item.id} error`, err)
     }
 })
 </script>

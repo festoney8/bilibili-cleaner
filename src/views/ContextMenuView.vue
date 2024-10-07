@@ -59,7 +59,7 @@ const handleTarget = (target: HTMLElement) => {
         try {
             menuList.value = menuList.value.concat(handler(target))
         } catch (err) {
-            error('handleTarget failed', err)
+            error('ContextMenuVuew handleTarget failed', err)
         }
     }
 }

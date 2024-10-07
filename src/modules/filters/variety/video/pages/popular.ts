@@ -1,3 +1,4 @@
+import settings from '../../../../../settings'
 import { Group } from '../../../../../types/collection'
 import {
     ContextMenuTargetHandler,
@@ -6,7 +7,7 @@ import {
     SelectorResult,
     SubFilterPair,
 } from '../../../../../types/filter'
-import { error, log } from '../../../../../utils/logger'
+import { debugFilter as debug, error } from '../../../../../utils/logger'
 import { isPagePopular } from '../../../../../utils/pageType'
 import { BiliCleanerStorage } from '../../../../../utils/storage'
 import { calcQuality, matchBvid, orderedUniq, showEle, waitForEle } from '../../../../../utils/tool'
@@ -138,24 +139,6 @@ class VideoFilterPopular implements IMainFilter {
         this.videoTitleWhiteFilter.setParam(BiliCleanerStorage.get(GM_KEYS.white.title.valueKey, []))
     }
 
-    observe() {
-        waitForEle(document, '#app', (node: HTMLElement): boolean => {
-            return node.id === 'app'
-        }).then((ele) => {
-            if (!ele) {
-                return
-            }
-
-            this.target = ele
-            log('VideoFilterPopular target appear')
-            this.check('full').then().catch()
-
-            new MutationObserver(() => {
-                this.check('full').then().catch() // 始终全量
-            }).observe(this.target, { childList: true, subtree: true })
-        })
-    }
-
     async check(mode?: 'full' | 'incr') {
         if (!this.target) {
             return
@@ -187,18 +170,20 @@ class VideoFilterPopular implements IMainFilter {
             return
         }
 
-        // videos.forEach((v) => {
-        //     log(
-        //         [
-        //             `popular video`,
-        //             `bvid: ${selectorFns.bvid(v)}`,
-        //             `duration: ${selectorFns.duration(v)}`,
-        //             `title: ${selectorFns.title(v)}`,
-        //             `uploader: ${selectorFns.uploader(v)}`,
-        //             `quality: ${selectorFns.quality(v)}`,
-        //         ].join('\n'),
-        //     )
-        // })
+        if (settings.enableDebugFilter) {
+            videos.forEach((v) => {
+                debug(
+                    [
+                        `VideoFilterPopular`,
+                        `bvid: ${selectorFns.bvid(v)}`,
+                        `duration: ${selectorFns.duration(v)}`,
+                        `title: ${selectorFns.title(v)}`,
+                        `uploader: ${selectorFns.uploader(v)}`,
+                        `quality: ${selectorFns.quality(v)}`,
+                    ].join('\n'),
+                )
+            })
+        }
 
         // 构建黑白检测任务
         const blackPairs: SubFilterPair[] = []
@@ -218,7 +203,41 @@ class VideoFilterPopular implements IMainFilter {
         // 检测
         const blackCnt = await coreCheck(videos, true, blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
-        log(`VideoFilterPopular hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
+        debug(`VideoFilterPopular hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
+    }
+
+    checkFull() {
+        this.check('full')
+            .then()
+            .catch((err) => {
+                error('VideoFilterPopular check full error', err)
+            })
+    }
+
+    // checkIncr() {
+    //     this.check('incr')
+    //         .then()
+    //         .catch((err) => {
+    //             error('VideoFilterPopular check incr error', err)
+    //         })
+    // }
+
+    observe() {
+        waitForEle(document, '#app', (node: HTMLElement): boolean => {
+            return node.id === 'app'
+        }).then((ele) => {
+            if (!ele) {
+                return
+            }
+
+            debug('VideoFilterPopular target appear')
+            this.target = ele
+            this.checkFull()
+
+            new MutationObserver(() => {
+                this.checkFull() // 始终全量
+            }).observe(this.target, { childList: true, subtree: true })
+        })
     }
 }
 
@@ -243,11 +262,11 @@ export const videoFilterPopularGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoDurationFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.videoDurationFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -263,7 +282,7 @@ export const videoFilterPopularGroups: Group[] = [
                 addonText: '秒',
                 fn: (value: number) => {
                     mainFilter.videoDurationFilter.setParam(value)
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
         ],
@@ -279,11 +298,11 @@ export const videoFilterPopularGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoUploaderFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.videoUploaderFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -295,7 +314,7 @@ export const videoFilterPopularGroups: Group[] = [
                 editorDescription: ['每行一个UP主昵称，保存时自动去重'],
                 saveFn: async () => {
                     mainFilter.videoUploaderFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.uploader.valueKey, []))
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -306,11 +325,11 @@ export const videoFilterPopularGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoUploaderKeywordFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.videoUploaderKeywordFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -327,7 +346,7 @@ export const videoFilterPopularGroups: Group[] = [
                     mainFilter.videoUploaderKeywordFilter.setParam(
                         BiliCleanerStorage.get(GM_KEYS.black.uploaderKeyword.valueKey, []),
                     )
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
         ],
@@ -343,11 +362,11 @@ export const videoFilterPopularGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoDimensionFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.videoDimensionFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -358,11 +377,11 @@ export const videoFilterPopularGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoQualityFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.videoQualityFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -378,7 +397,7 @@ export const videoFilterPopularGroups: Group[] = [
                 addonText: '%',
                 fn: (value: number) => {
                     mainFilter.videoQualityFilter.setParam(value)
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
         ],
@@ -394,11 +413,11 @@ export const videoFilterPopularGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoTitleFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.videoTitleFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -413,7 +432,7 @@ export const videoFilterPopularGroups: Group[] = [
                 ],
                 saveFn: async () => {
                     mainFilter.videoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.title.valueKey, []))
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
         ],
@@ -429,11 +448,11 @@ export const videoFilterPopularGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoBvidFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.videoBvidFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -445,7 +464,7 @@ export const videoFilterPopularGroups: Group[] = [
                 editorDescription: ['每行一个BV号，保存时自动去重'],
                 saveFn: async () => {
                     mainFilter.videoBvidFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.bvid.valueKey, []))
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
         ],
@@ -461,11 +480,11 @@ export const videoFilterPopularGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoUploaderWhiteFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.videoUploaderWhiteFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -478,7 +497,7 @@ export const videoFilterPopularGroups: Group[] = [
                     mainFilter.videoUploaderWhiteFilter.setParam(
                         BiliCleanerStorage.get(GM_KEYS.white.uploader.valueKey, []),
                     )
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -489,11 +508,11 @@ export const videoFilterPopularGroups: Group[] = [
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoTitleWhiteFilter.enable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
                 disableFn: () => {
                     mainFilter.videoTitleWhiteFilter.disable()
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
             {
@@ -508,7 +527,7 @@ export const videoFilterPopularGroups: Group[] = [
                 ],
                 saveFn: async () => {
                     mainFilter.videoTitleWhiteFilter.setParam(BiliCleanerStorage.get(GM_KEYS.white.title.valueKey, []))
-                    mainFilter.check('full').then().catch()
+                    mainFilter.checkFull()
                 },
             },
         ],
@@ -532,7 +551,7 @@ export const videoFilterPopularHandler: ContextMenuTargetHandler = (target: HTML
                     fn: async () => {
                         try {
                             mainFilter.videoUploaderFilter.addParam(uploader)
-                            mainFilter.check('full').then().catch()
+                            mainFilter.checkFull()
                             const arr: string[] = BiliCleanerStorage.get(GM_KEYS.black.uploader.valueKey, [])
                             arr.unshift(uploader)
                             BiliCleanerStorage.set<string[]>(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
@@ -548,7 +567,7 @@ export const videoFilterPopularHandler: ContextMenuTargetHandler = (target: HTML
                     fn: async () => {
                         try {
                             mainFilter.videoUploaderWhiteFilter.addParam(uploader)
-                            mainFilter.check('full').then().catch()
+                            mainFilter.checkFull()
                             const arr: string[] = BiliCleanerStorage.get(GM_KEYS.white.uploader.valueKey, [])
                             arr.unshift(uploader)
                             BiliCleanerStorage.set<string[]>(GM_KEYS.white.uploader.valueKey, orderedUniq(arr))
@@ -578,7 +597,7 @@ export const videoFilterPopularHandler: ContextMenuTargetHandler = (target: HTML
                     fn: async () => {
                         try {
                             mainFilter.videoBvidFilter.addParam(bvid)
-                            mainFilter.check('full').then().catch()
+                            mainFilter.checkFull()
                             const arr: string[] = BiliCleanerStorage.get(GM_KEYS.black.bvid.valueKey, [])
                             arr.unshift(bvid)
                             BiliCleanerStorage.set<string[]>(GM_KEYS.black.bvid.valueKey, orderedUniq(arr))

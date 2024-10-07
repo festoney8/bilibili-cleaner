@@ -56,7 +56,7 @@ watch(enabled, () => {
             BiliCleanerStorage.set<boolean>(item.id, false)
         }
     } catch (err) {
-        error(`switch item ${item.id} error`, err)
+        error(`SwitchComp ${item.id} error`, err)
     }
 })
 </script>

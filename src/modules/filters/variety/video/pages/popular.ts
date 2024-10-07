@@ -94,7 +94,7 @@ const selectorFns = {
     },
     quality: (video: HTMLElement): SelectorResult => {
         const stat = getVideoData(video)?.stat
-        if (stat) {
+        if (stat && typeof stat.coin === 'number' && typeof stat.like === 'number') {
             return calcQuality(stat.coin / stat.like)
         }
         return undefined
@@ -102,7 +102,7 @@ const selectorFns = {
     // true竖屏, false横屏
     dimension: (video: HTMLElement): SelectorResult => {
         const dimension = getVideoData(video)?.dimension
-        if (dimension) {
+        if (dimension && typeof dimension.height === 'number' && typeof dimension.width === 'number') {
             return dimension?.height > dimension?.width
         }
         return undefined

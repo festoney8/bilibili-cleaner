@@ -42,7 +42,7 @@ export const liveBasicItems: Item[] = [
     {
         type: 'switch',
         id: 'auto-best-quality',
-        name: '自动切换最高画质 (实验功能)',
+        name: '自动切换最高画质 (不稳定功能)',
         noStyle: true,
         enableFn: async () => {
             const qualityFn = () => {

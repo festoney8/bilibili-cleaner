@@ -7,23 +7,28 @@ import { commonHeaderWidthItems } from './groups/headerWidth'
 
 export const commonGroups: Group[] = [
     {
-        name: '基本功能',
+        name: '全站通用 - 基本功能',
+        fold: true,
         items: commonBasicItems,
     },
     {
-        name: '顶栏 左侧',
+        name: '全站通用 - 顶栏 左侧',
+        fold: true,
         items: commonHeaderLeftItems,
     },
     {
-        name: '顶栏 搜索框',
+        name: '全站通用 - 顶栏 搜索框',
+        fold: true,
         items: commonHeaderCenterItems,
     },
     {
-        name: '顶栏 右侧',
+        name: '全站通用 - 顶栏 右侧',
+        fold: true,
         items: commonHeaderRightItems,
     },
     {
-        name: '顶栏 数值设定',
+        name: '全站通用 - 顶栏 数值设定',
+        fold: true,
         items: commonHeaderWidthItems,
     },
 ]

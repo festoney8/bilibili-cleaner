@@ -3,7 +3,8 @@ import { commentBasicItems } from './groups/basic'
 
 export const commentGroups: Group[] = [
     {
-        name: '评论区',
+        name: '全站通用 - 评论区',
+        fold: true,
         items: commentBasicItems,
     },
 ]

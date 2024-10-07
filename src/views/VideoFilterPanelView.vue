@@ -7,11 +7,11 @@
             minWidth: 360,
             minHeight: 600,
         }"
-        v-if="store.isShow"
+        v-show="store.isShow"
         @close="store.hide"
     >
         <div v-for="(group, index) in currPageGroups" :key="index">
-            <DisclosureComp v-bind="{ title: group.name }">
+            <DisclosureComp v-bind="{ title: group.name, isFold: group.fold }">
                 <div v-for="(item, innerIndex) in group.items" :key="innerIndex">
                     <SwitchComp v-if="item.type === 'switch'" v-bind="item"></SwitchComp>
                     <NumberComp v-else-if="item.type === 'number'" v-bind="item"></NumberComp>

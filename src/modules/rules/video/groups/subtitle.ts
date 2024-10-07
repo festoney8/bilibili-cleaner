@@ -5,7 +5,7 @@ export const videoSubtitleItems: Item[] = [
         type: 'string',
         id: 'video-page-subtitle-font-color',
         name: '字幕颜色',
-        description: ['遵循 CSS 的 color 语法，留空为禁用'],
+        description: ['遵循 CSS color 语法，留空为禁用'],
         defaultValue: '',
         disableValue: '',
         fn: (value: string) => {
@@ -16,7 +16,7 @@ export const videoSubtitleItems: Item[] = [
         type: 'string',
         id: 'video-page-subtitle-font-family',
         name: '字体设定',
-        description: ['遵循 CSS 的 font-family 语法，留空为禁用', '请确保本地已安装字体，检查家族名是否正确'],
+        description: ['遵循 CSS font-family 语法，留空为禁用', '请确保本地已安装字体，检查家族名是否正确'],
         defaultValue: 'PingFang SC,HarmonyOS_Regular,Helvetica Neue,Microsoft YaHei,sans-serif',
         disableValue: '',
         fn: (value: string) => {
@@ -27,7 +27,7 @@ export const videoSubtitleItems: Item[] = [
         type: 'string',
         id: 'video-page-subtitle-text-stroke-color',
         name: '描边颜色',
-        description: ['遵循 CSS 的 color 语法，留空为禁用', '会覆盖官方字幕设定'],
+        description: ['遵循 CSS color 语法，留空为禁用', '会覆盖官方字幕设定'],
         defaultValue: '#444',
         disableValue: '',
         fn: (value: string) => {

@@ -24,6 +24,7 @@ export const homepageGroups: Group[] = [
     },
     {
         name: '适配插件 bilibili-app-recommend',
+        fold: true,
         items: homepagePluginItems,
     },
 ]

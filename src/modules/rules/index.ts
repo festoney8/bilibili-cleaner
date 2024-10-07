@@ -107,12 +107,14 @@ export const rules: Rule[] = [
         name: '评论区',
         groups: commentGroups,
         style: commentStyle,
+        isSpecial: true,
         checkFn: () => isPageVideo() || isPageBangumi() || isPageDynamic() || isPageSpace() || isPagePlaylist(),
     },
     {
         name: '全站通用功能',
         groups: commonGroups,
         style: commonStyle,
+        isSpecial: true,
         checkFn: () => true,
     },
 ]

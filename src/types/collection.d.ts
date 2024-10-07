@@ -4,6 +4,9 @@ export type Group = {
     // group name
     name: string
 
+    // default unfold
+    fold?: boolean
+
     // item list
     items: Item[]
 }
@@ -17,6 +20,9 @@ export type Rule = {
 
     // 附加样式
     style?: string
+
+    // 特殊规则
+    isSpecial?: boolean
 
     // 检测当前是否生效
     checkFn: () => boolean

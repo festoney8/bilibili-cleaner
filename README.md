@@ -16,13 +16,13 @@
 
 ## 功能：页面净化优化、视频过滤、评论过滤、动态过滤
 
--   **页面净化优化**：隐藏各种元素，净化顶栏、播放器、评论区等，去除无用元素，优化部分功能
+-   **页面净化优化**：净化顶栏、视频列表、播放器、评论区等，去除无用元素，优化部分功能
 
--   **视频过滤**：根据视频时长、UP 主、标题关键词、BV 号等筛选视频推荐
+-   **视频过滤**：根据时长、UP 主、标题关键词、BV 号等筛选视频推荐
 
 -   **评论过滤**：根据用户名、关键词、评论类型、用户等级筛选评论
 
--   **动态过滤**：根据用户名、动态视频标题等筛选动态
+-   **动态过滤**：根据用户名、视频标题等筛选动态
 
 ![](images/preview.png)
 
@@ -35,14 +35,19 @@
 
 ### 测试版：[Release 安装](https://github.com/festoney8/bilibili-cleaner/releases/)
 
--   开发版：[CI Build](https://github.com/festoney8/bilibili-cleaner/actions/workflows/dev-ci.yml?query=is%3Asuccess)
+-   开发版：[CI Build](https://github.com/festoney8/bilibili-cleaner/actions/workflows/dev-v4-ci.yml?query=is%3Asuccess)
 
 ## 使用
+
+> [!CAUTION]
+>
+> -   **如果启用了大量功能、或屏蔽了大量内容，请定期备份**
+> -   **更换电脑或浏览器务必备份，[备份方法](#数据导入与导出)**
 
 > [!IMPORTANT]
 >
 > -   **重要：下列页面均有独立菜单，不同页面菜单不同，请在相应页面打开菜单进行设置**
-> -   **页面净化：**「首页、播放页、番剧播放页、直播间、搜索页、动态页、热门页、分区页」
+> -   **页面净化优化：**「首页、播放页、番剧播放页、直播间、搜索页、动态页、热门页、分区页」
 > -   **视频过滤：**「首页、播放页、搜索页、热门页、分区页、空间页」
 > -   **评论过滤：**「播放页、番剧播放页、动态页、空间页」
 > -   **动态过滤：**「动态页」
@@ -51,11 +56,6 @@
 ![](images/usage.png)
 
 ## 功能介绍
-
-> [!CAUTION]
->
-> -   **如果启用了大量功能、或屏蔽了大量内容，请定时备份**
-> -   **更换电脑或浏览器务必备份，[备份方法](#数据导入与导出)**
 
 ### 1. 页面净化
 
@@ -246,6 +246,18 @@
 ![](images/how-to-backup-to-cloud-drive.png)
 
 </details>
+<details>
+<summary><b>复制 JSON 数据</b></summary>
+<br>
+
+-   可通过开启插件管理器的高级模式，复制脚本 JSON 数据，可用于保存或快速在另一设备导入
+-   请勿在未知后果的情况下编辑 JSON 数据
+
+![](images/how-to-edit-1.png)
+![](images/how-to-edit-2.png)
+![](images/how-to-edit-3.png)
+
+</details>
 
 ## 鸣谢
 
@@ -259,4 +271,4 @@
 ## Contribution
 
 -   main branch 只用于发布测试版和稳定版
--   dev branch 用于开发
+-   dev-v4 branch 用于开发

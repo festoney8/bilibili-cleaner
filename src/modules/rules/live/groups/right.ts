@@ -5,6 +5,7 @@ export const liveRightItems: Item[] = [
         type: 'switch',
         id: 'live-page-rank-list-vm-fold',
         name: '折叠 排行榜/大航海',
+        defaultEnable: true,
     },
     {
         type: 'switch',

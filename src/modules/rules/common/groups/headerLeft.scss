@@ -187,26 +187,6 @@ html[common-hide-nav-match] {
     }
 }
 
-// 隐藏 活动/活动直播
-html[common-hide-nav-moveclip] {
-    .bili-header__bar li:has(.loc-mc-box) {
-        display: none !important;
-    }
-    .bili-header__bar .left-entry li.left-loc-entry:not(:has(.v-popover)):has([href^="https://live.bilibili.com/"])
-    {
-        display: none !important;
-    }
-    .bili-header__bar .left-entry li:not(:has(.v-popover)):has([href^="https://www.bilibili.com/bangumi/play/ss"])
-    {
-        display: none !important;
-    }
-
-    // 旧版header
-    #internationalHeader li.nav-link-item:has(a[href*='live.bilibili.com/blackboard']) {
-        display: none !important;
-    }
-}
-
 // 隐藏 百大评选
 html[common-hide-nav-bdu] {
     .bili-header__bar .left-entry li:has(> div > a[href*='bilibili.com/BPU20']) {
@@ -240,7 +220,7 @@ html[common-hide-nav-download-app] {
     }
 }
 
-// 隐藏 所有官方活动(强制)
+// 隐藏 所有官方活动/活动直播
 html[common-hide-nav-blackboard] {
     .bili-header__bar .left-entry .v-popover-wrap.left-loc-entry {
         display: none !important;

@@ -53,6 +53,7 @@ export const homepageRcmdItems: Item[] = [
         type: 'switch',
         id: 'homepage-hide-live-card-recommend',
         name: '隐藏 直播间推荐',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -72,15 +73,15 @@ export const homepageRcmdItems: Item[] = [
     },
     {
         type: 'switch',
-        id: 'homepage-hide-skeleton',
-        name: '隐藏 视频载入 骨架',
-    },
-    {
-        type: 'switch',
         id: 'homepage-hide-skeleton-before-anchor',
         name: '隐藏 加载锚点之前的骨架',
         defaultEnable: true,
-        description: ['会让视频列表加载更早一些'],
+        description: ['推荐，会让视频列表加载更早一些'],
+    },
+    {
+        type: 'switch',
+        id: 'homepage-hide-skeleton',
+        name: '隐藏 全部加载骨架',
     },
     {
         type: 'switch',
@@ -104,7 +105,7 @@ export const homepageRcmdItems: Item[] = [
         type: 'switch',
         id: 'homepage-rcmd-video-preload',
         name: '启用 视频列表预加载 (不稳定功能)',
-        description: ['建议开启 "增大视频载入数量"', '若影响视频载入或造成卡顿，请关闭本功能'],
+        description: ['会默认隐藏分区视频', '建议开启 "增大视频载入数量"', '若影响视频载入或造成卡顿，请关闭本功能'],
         enableFn: async () => {
             let cnt = 0
             const id = setInterval(() => {

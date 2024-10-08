@@ -20,6 +20,7 @@ export const dynamicCenterTopItems: Item[] = [
         type: 'switch',
         id: 'hide-dynamic-page-bili-dyn-publishing',
         name: '隐藏 动态发布框',
+        defaultEnable: true,
     },
     {
         type: 'switch',

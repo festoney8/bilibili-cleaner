@@ -145,6 +145,7 @@ export const commonBasicItems: Item[] = [
         type: 'switch',
         id: 'hide-footer',
         name: '修复字体 (实验功能)',
+        defaultEnable: true,
         // 根据当前页面选定attribute name
         attrName: ((): string | undefined => {
             if (isPageLive()) {

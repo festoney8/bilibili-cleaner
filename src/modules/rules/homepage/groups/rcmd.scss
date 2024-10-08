@@ -178,21 +178,21 @@ html[homepage-hide-skeleton-animation] {
     }
 }
 
-// 隐藏 视频载入 骨架
-html[homepage-hide-skeleton] {
-    .bili-video-card:has(.loading_animation),
-    .load-more-anchor {
-        visibility: hidden;
-    }
-    .floor-single-card:has(.skeleton, .skeleton-item) {
-        visibility: hidden;
-    }
-}
-
 // 隐藏 加载锚点之前的骨架
 html[homepage-hide-skeleton-before-anchor] {
     .bili-video-card:not(.is-rcmd):has(~ .load-more-anchor) {
         display: none !important;
+    }
+}
+
+// 隐藏 全部加载骨架
+html[homepage-hide-skeleton] {
+    .load-more-anchor {
+        visibility: hidden;
+    }
+    .bili-video-card:not(.is-rcmd),
+    .floor-single-card:has(.skeleton, .skeleton-item) {
+        display: none;
     }
 }
 

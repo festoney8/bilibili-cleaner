@@ -103,6 +103,6 @@ export const videoBasicItems: Item[] = [
     {
         type: 'switch',
         id: 'video-page-hide-fixed-header',
-        name: '顶栏 滚动页面后不再吸附顶部',
+        name: '顶栏 滚动页面后 不再吸附顶部',
     },
 ]

@@ -28,7 +28,7 @@ export const videoSubtitleItems: Item[] = [
         id: 'video-page-subtitle-text-stroke-color',
         name: '描边颜色',
         description: ['遵循 CSS color 语法，留空为禁用', '官方字幕设定请选择 "无描边"'],
-        defaultValue: '#444',
+        defaultValue: '',
         disableValue: '',
         fn: (value: string) => {
             document.documentElement.style.setProperty('--video-page-subtitle-text-stroke-color', value)
@@ -41,7 +41,7 @@ export const videoSubtitleItems: Item[] = [
         minValue: 0,
         maxValue: 10,
         step: 0.01,
-        defaultValue: 4,
+        defaultValue: 3.5,
         disableValue: 0,
         addonText: 'px',
         fn: (value: number) => {

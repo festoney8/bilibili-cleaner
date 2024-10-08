@@ -73,8 +73,6 @@ export const bangumiMiniPlayerItems: Item[] = [
         name: '记录小窗位置',
         enableFn: async () => {
             const pos = useStorage('bili-cleaner-mini-player-pos', { tx: 0, ty: 0 }, localStorage)
-
-            // 注入样式
             document.documentElement.style.setProperty('--mini-player-translate-x', pos.value.tx + 'px')
             document.documentElement.style.setProperty('--mini-player-translate-y', pos.value.ty + 'px')
 

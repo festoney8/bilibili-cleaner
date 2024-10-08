@@ -14,7 +14,7 @@ html[video-page-simple-share] {
     }
 }
 
-// 顶栏 滚动页面后不再吸附顶部
+// 顶栏 滚动页面后 不再吸附顶部
 html[video-page-hide-fixed-header] {
     .fixed-header .bili-header__bar {
         position: relative !important;

@@ -43,11 +43,6 @@ export const commonHeaderLeftItems: Item[] = [
     },
     {
         type: 'switch',
-        id: 'common-hide-nav-moveclip',
-        name: '隐藏 活动/活动直播',
-    },
-    {
-        type: 'switch',
         id: 'common-hide-nav-bdu',
         name: '隐藏 百大评选',
     },
@@ -65,7 +60,7 @@ export const commonHeaderLeftItems: Item[] = [
     {
         type: 'switch',
         id: 'common-hide-nav-blackboard',
-        name: '隐藏 所有官方活动(强制)',
+        name: '隐藏 所有官方活动/活动直播',
     },
     {
         type: 'switch',

@@ -38,6 +38,9 @@ html[border-radius-dynamic] {
 
 // 圆角化 直播页
 html[border-radius-live] {
+    .live-player-ctnr.minimal,
+    .card-box .card-list .card-item,
+    .room-info-cntr,
     #nav-searchform,
     #player-ctnr,
     .nav-search-content,

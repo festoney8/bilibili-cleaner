@@ -14,7 +14,7 @@ html[live-page-rank-list-vm-fold] {
     }
 
     // 弹幕栏
-    #aside-area-vm {
+    body:not(.hide-aside-area.player-full-win) #aside-area-vm {
         display: flex;
         flex-direction: column;
     }
@@ -33,7 +33,7 @@ html[live-page-rank-list-vm] {
     }
 
     // 弹幕栏
-    #aside-area-vm {
+    body:not(.hide-aside-area.player-full-win) #aside-area-vm {
         display: flex;
         flex-direction: column;
     }
@@ -184,7 +184,7 @@ html[live-page-control-panel-icon-row] {
     }
 
     // 弹幕栏
-    #aside-area-vm {
+    body:not(.hide-aside-area.player-full-win) #aside-area-vm {
         display: flex;
         flex-direction: column;
     }
@@ -216,7 +216,7 @@ html[live-page-chat-input-ctnr-send-btn] {
     }
 
     // 弹幕栏
-    #aside-area-vm {
+    body:not(.hide-aside-area.player-full-win) #aside-area-vm {
         display: flex;
         flex-direction: column;
     }
@@ -239,7 +239,7 @@ html[live-page-chat-input-ctnr] {
     }
 
     // 弹幕栏
-    #aside-area-vm {
+    body:not(.hide-aside-area.player-full-win) #aside-area-vm {
         display: flex;
         flex-direction: column;
     }
@@ -258,7 +258,7 @@ html[live-page-chat-control-panel] {
     }
 
     // 弹幕栏
-    #aside-area-vm {
+    body:not(.hide-aside-area.player-full-win) #aside-area-vm {
         display: flex;
         flex-direction: column;
     }

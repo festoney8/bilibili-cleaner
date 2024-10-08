@@ -95,14 +95,6 @@ html[live-page-gift-control-vm] {
     #gift-control-vm {
         display: none !important;
     }
-    #sections-vm {
-        margin-top: 100px !important;
-    }
-
-    // 壁纸高度
-    #room-background-vm {
-        min-height: calc(100vh - 64px) !important;
-    }
 
     // 补齐圆角, 不可important
     #player-ctnr {

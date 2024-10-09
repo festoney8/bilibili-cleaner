@@ -16,7 +16,22 @@ html[homepage-increase-rcmd-list-font-size] {
     }
 }
 
-// 隐藏 视频负反馈 恢复标题宽度
+// 移动 负反馈按钮 恢复标题宽度
+html[homepage-move-no-interest] {
+    .bili-video-card__info--no-interest {
+        top: unset !important;
+        bottom: 0 !important;
+    }
+    .bili-video-card__info--bottom {
+        padding-right: 20px !important;
+    }
+    .bili-video-card.enable-no-interest,
+    .bili-live-card.enable-no-interest {
+        --title-padding-right: 0;
+    }
+}
+
+// 隐藏 负反馈按钮 恢复标题宽度
 html[homepage-hide-no-interest] {
     .bili-video-card.enable-no-interest,
     .bili-live-card.enable-no-interest {

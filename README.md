@@ -14,17 +14,17 @@
 
 </div>
 
-## 主要功能：页面净化、视频过滤、评论过滤、动态过滤
+## 功能：页面净化优化、视频过滤、评论过滤、动态过滤
 
--   **页面净化**：隐藏网页内各种元素，去除无用功能，净化顶栏、播放器、评论区等，提供 300+ 功能开关
+-   **页面净化优化**：净化顶栏、视频列表、播放器、评论区等，去除无用元素，优化部分功能
 
--   **视频过滤**：根据视频时长、UP 主、标题关键词、BV 号等筛选视频推荐
+-   **视频过滤**：根据时长、UP 主、标题关键词、BV 号等筛选视频推荐
 
 -   **评论过滤**：根据用户名、关键词、评论类型、用户等级筛选评论
 
--   **动态过滤**：根据用户名、动态视频标题等筛选动态
+-   **动态过滤**：根据用户名、视频标题等筛选动态
 
-![](images/preview.jpg)
+![](images/preview.png)
 
 ## 安装
 
@@ -33,19 +33,25 @@
 -   **Firefox** 浏览器请查看 [**浏览器适配**](#浏览器适配)
 -   稳定版持续在 Greasyfork 发布，油猴插件会定期检查，自动更新
 
-### 测试版：[Release安装](https://github.com/festoney8/bilibili-cleaner/releases/)
+### 测试版：[Release 安装](https://github.com/festoney8/bilibili-cleaner/releases/)
 
--   开发版：[CI Build](https://github.com/festoney8/bilibili-cleaner/actions/workflows/dev-ci.yml?query=is%3Asuccess)
+-   开发版：[CI Build](https://github.com/festoney8/bilibili-cleaner/actions/workflows/dev-v4-ci.yml?query=is%3Asuccess)
 
 ## 使用
 
+> [!CAUTION]
+>
+> -   **如果启用了大量功能、或屏蔽了大量内容，请定期备份**
+> -   **更换电脑或浏览器务必备份，[备份方法](#数据导入与导出)**
+
 > [!IMPORTANT]
 >
-> -   **重要：下列页面均有独立菜单，不同页面菜单不同**，按下图打开菜单进行设置，实时生效
-> -   **页面净化：「首页、播放页、影视番剧播放页、直播间、搜索页、动态页、热门页、分区页」**
-> -   **视频过滤：「首页、播放页、搜索页、热门页、分区页、空间页」**
-> -   **评论过滤：「播放页、影视番剧播放页、动态页、空间页」**
-> -   **动态过滤：「动态页」**
+> -   **重要：下列页面均有独立菜单，不同页面菜单不同，请在相应页面打开菜单进行设置**
+> -   **页面净化优化：**「首页、播放页、番剧播放页、直播间、搜索页、动态页、热门页、分区页」
+> -   **视频过滤：**「首页、播放页、搜索页、热门页、分区页、空间页」
+> -   **评论过滤：**「播放页、番剧播放页、动态页、空间页」
+> -   **动态过滤：**「动态页」
+> -   **快捷按钮：** 显示在页面侧栏的快捷组件，需手动启用
 
 ![](images/usage.png)
 
@@ -53,78 +59,75 @@
 
 ### 1. 页面净化
 
--   适用于净化新版 bilibili 网页，不适配老版本页面，默认用户已登录，大会员体验最佳
+-   净化新版 bilibili 网页，不适配老版本页面，默认用户已登录，大会员体验最佳
 -   混搭各种功能，调节浏览器缩放比例，可得到满意的页面效果
--   「影视番剧播放页」多数功能与「播放页」一致且同步，「动态页」评论区功能与「播放页」一致且同步
 -   **已知问题：**
+    -   部分功能不支持 Firefox 浏览器
     -   给 UP 主充电时，若出现 **充电窗口载入失败 (报错NaN)**，请关闭通用项「URL参数净化」，刷新页面再充电
     -   特殊活动直播，调节脚本设置后需刷新页面才生效，弹幕净化不生效
 
 ### 2. 视频过滤
-
-> [!CAUTION]
->
-> -   **如果屏蔽了大量内容，请定时备份，更换电脑或浏览器务必备份，[备份方法](#数据导入与导出)**
-> -   如果你在意推送质量，不要点开不喜欢的视频，不要点开不喜欢的 UP 主的个人页，请在无痕浏览打开
 
 -   **每个页面有独立的功能开关，但黑名单、白名单全站共用一份**
 -   **白名单权限高于黑名单，命中白名单的视频不会被隐藏**
 -   启用 UP 主过滤后，右键单击 UP 主即可屏蔽
 -   启用 BV 号过滤后，右键单击视频标题即可屏蔽
 -   「标题关键词过滤」和「标题关键词白名单」大小写不敏感。均支持正则，正则用 `/ ... /` 括起来，如：`/abc|\d+/`，无需flag（一律默认`iu`模式，大小写不敏感）
--   已知问题：视频过滤在带`index.html`后缀的首页不生效，请使用无后缀首页 `https://www.bilibili.com/`
+-   已知问题：视频过滤在带 `index.html` 后缀的首页不生效，请使用无后缀首页 https://www.bilibili.com/
 
 > [!NOTE]
 >
-> -   **时长过滤不宜过长**，会错过优质视频，推荐设定 60~90 秒
-> -   **关键词不宜过于简单**，可能造成误伤
+> -   **时长过滤不宜过长，推荐 60~90 秒**，否则会错过优质视频
+> -   **关键词不宜过于简单**，可能造成误伤，屏蔽过多视频影响浏览体验
 > -   **编写正则要慎重**，可能造成大量视频屏蔽和频繁载入
 > -   **编写白名单注意影响范围**，白名单权限高，可能会让不喜欢的视频出现
 > -   **屏蔽后，如果视频没有消失，很可能命中了白名单**
 > -   你不喜欢的低创 UP 主可能在「热门视频、每周必看、排行榜」出没，记得去热门页屏蔽一波
-> -   遇到高质量 UP 主，可以顺手把他加入白名单
+> -   遇到喜欢的高质量 UP 主，可以顺手加入白名单
 > -   这里有一些常见标题关键词整理：[查看](./NOTE.md)
 
 ### 3. 评论过滤
 
 -   启用用户名过滤后，在评论区右键单击用户名即可屏蔽
--   关键词黑名单大小写不敏感。支持正则，语法：`/abc|\d+/`，无需flag（一律默认`iu`模式，大小写不敏感）
+-   关键词黑名单大小写不敏感。支持正则，语法：`/abc|\d+/`，无需flag（一律默认`iu`模式）
 -   **白名单权限高于黑名单，命中白名单的评论不会被隐藏**
 -   **关键词不宜过于简单**，会误伤很多评论
 -   **编写正则要慎重**，可能造成大量评论屏蔽和频繁载入
 -   **屏蔽后，如果评论没有消失，很可能命中了白名单**
 
-### 4. 快捷键
-
--   支持使用快捷键 `Alt + B` 或 `Ctrl + Alt + B` 快速开启/关闭 页面净化，可用于临时使用一些功能（Firefox 仅支持 `Ctrl + Alt + B`）
-
 ## 浏览器适配
 
 ### Chrome / Edge / 其他 Chromium 内核浏览器
 
--   **要求 Chromium 内核版本 >= 105**，内核版本过低会导致部分功能失效，如：无法净化顶栏
+-   **要求 Chromium 内核版本 >= 105**，内核版本过低会导致大量功能失效，如：无法净化顶栏
 
-    > 鉴于 Google 在推行 [Manifest V3](https://developer.chrome.com/docs/extensions/migrating/checklist)，未来会影响油猴插件，参考[Tampermonkey changelog](https://www.tampermonkey.net/changelog.php#v5.0.0)。
-    > 可考虑启用浏览器开发者模式，Chrome 和 Edge 均可在插件管理页找到开关。
+    > -   鉴于 Google 在推行 [Manifest V3](https://developer.chrome.com/docs/extensions/migrating/checklist)，影响油猴插件，建议启用浏览器开发者模式。
+    > -   Chrome 和 Edge 均可在插件管理页找到开发者模式开关。
 
 ### Firefox
 
--   **Firefox版本 103~120，按如下步骤开启高级设定**
-    -   在浏览器内打开网址 [about:config](about:config)，若出现风险提示，点击「接受风险并继续」
-    -   搜索 `layout.css.has-selector.enabled` ，将这一项的开关改为 `true`，并刷新标签页
--   **Firefox版本 > 121，无需修改设定**
+-   **Firefox 103~120，按如下步骤开启高级设定**
+    -   打开网址 [about:config](about:config)，若出现风险提示，点击「接受风险并继续」
+    -   搜索 `layout.css.has-selector.enabled` ，将这一项的开关改为 `true`，并刷新网页
+-   **Firefox >= 121，无需修改设定**
 
 ### Safari
 
--   完全未测试
+-   要求 Safari 版本 >= 15.4
+-   未测试功能可用性
 
-### 脚本管理插件
+### 移动端
 
--   **[Tampermonkey](https://www.tampermonkey.net/)（油猴插件）：已测试，推荐**
+-   本插件专注 PC 端网页，不做移动端网页适配
+-   若强行使用，建议 Firefox手机版 + 篡改猴扩展
 
--   **[Violentmonkey](https://violentmonkey.github.io/)（暴力猴）：支持，部分测试**
+### 脚本管理器
 
--   [Greasemonkey](https://www.greasespot.net/) 和 [ScriptCat](https://docs.scriptcat.org/) 未测试
+-   **[Tampermonkey](https://www.tampermonkey.net/)（篡改猴）：已测试，推荐**
+
+-   **[Violentmonkey](https://violentmonkey.github.io/)（暴力猴）：已测试，推荐**
+
+-   [Greasemonkey](https://www.greasespot.net/) 和 [ScriptCat](https://docs.scriptcat.org/) 未测试，不推荐
 
 ## 净化效果对比
 
@@ -212,7 +215,8 @@
 
 ### 5. 与 [BewlyBewly](https://github.com/hakadao/BewlyBewly) 的兼容性
 
--   **不兼容 BewlyBewly 新版首页**，只兼容 BewlyBewly 使用原版 B 站首页
+-   不兼容 BewlyBewly 新版首页
+-   兼容 BewlyBewly 使用原版 B 站首页
 
 ## 数据导入与导出
 
@@ -255,13 +259,16 @@
 
 </details>
 
-## Ref
+## 鸣谢
 
 -   [vite-plugin-monkey](https://github.com/lisonge/vite-plugin-monkey)
--   [Manifest V3](https://developer.chrome.com/docs/extensions/migrating/checklist)
--   [TamperMonkey 5.0](https://www.tampermonkey.net/changelog.php#v5.0.0)
+-   [vue.js](https://vuejs.org/)
+-   [vueuse](https://github.com/vueuse/vueuse)
+-   [pinia](https://github.com/vuejs/pinia)
+-   [tailwindcss](https://github.com/tailwindlabs/tailwindcss)
+-   [headlessui](https://github.com/tailwindlabs/headlessui)
 
 ## Contribution
 
 -   main branch 只用于发布测试版和稳定版
--   dev branch 用于开发
+-   dev-v4 branch 用于开发

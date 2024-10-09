@@ -3,11 +3,11 @@ on:
     push:
         paths-ignore:
             - '**/*.md'
-        branches:
-            - dev
+        branches-ignore:
+            - main
     pull_request:
-        branches:
-            - dev
+        branches-ignore:
+            - main
 
 jobs:
     dev-build:

@@ -1,0 +1,27 @@
+// 隐藏 新版反馈 ★
+html[bangumi-page-hide-sidenav-issue] {
+    [class*='navTools_navMenu'] [title='新版反馈'] {
+        display: none !important;
+    }
+}
+
+// 隐藏 小窗播放开关
+html[video-page-hide-sidenav-mini] {
+    [class*='navTools_navMenu'] [title*='迷你播放器'] {
+        display: none !important;
+    }
+}
+
+// 隐藏 客服
+html[video-page-hide-sidenav-customer-service] {
+    [class*='navTools_navMenu'] [title='帮助反馈'] {
+        display: none !important;
+    }
+}
+
+// 隐藏 回顶部
+html[video-page-hide-sidenav-back-to-top] {
+    [class*='navTools_navMenu'] [title='返回顶部'] {
+        display: none !important;
+    }
+}

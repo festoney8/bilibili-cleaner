@@ -1,0 +1,22 @@
+// 净化分享功能
+html[video-page-simple-share] {
+    #share-container-id [class^='Share_boxBottom'] {
+        display: none !important;
+    }
+    #share-container-id [class^='Share_boxTop'] {
+        padding: 15px !important;
+    }
+    #share-container-id [class^='Share_boxTopRight'] {
+        display: none !important;
+    }
+    #share-container-id [class^='Share_boxTopLeft'] {
+        padding: 0 !important;
+    }
+}
+
+// 顶栏 滚动页面后不再吸附顶部
+html[video-page-hide-fixed-header] {
+    .fixed-header .bili-header__bar {
+        position: relative !important;
+    }
+}

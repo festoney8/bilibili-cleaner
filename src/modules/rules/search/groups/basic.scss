@@ -1,0 +1,48 @@
+// 顶栏 滚动页面后 不再吸附顶部
+html[hide-search-page-search-sticky-header] {
+    .search-sticky-header {
+        display: none !important;
+    }
+}
+
+// 隐藏 搜索结果中的广告
+html[hide-search-page-ad] {
+    .video-list.row > div:has([href*='cm.bilibili.com']) {
+        display: none !important;
+    }
+}
+
+// 隐藏 搜索结果顶部 版权作品
+html[hide-search-page-bangumi-pgc-list] {
+    .bangumi-pgc-list {
+        display: none !important;
+    }
+}
+
+// 隐藏 搜索结果顶部 游戏、热搜话题
+html[hide-search-page-activity-game-list] {
+    .activity-game-list {
+        display: none !important;
+    }
+}
+
+// 隐藏 弹幕数量
+html[hide-search-page-danmaku-count] {
+    .bili-video-card .bili-video-card__stats--left .bili-video-card__stats--item:nth-child(2) {
+        display: none !important;
+    }
+}
+
+// 隐藏 视频日期
+html[hide-search-page-date] {
+    .bili-video-card .bili-video-card__info--date {
+        display: none !important;
+    }
+}
+
+// 隐藏 稍后再看按钮
+html[hide-search-page-bili-watch-later] {
+    .bili-video-card .bili-watch-later {
+        display: none !important;
+    }
+}

@@ -1,0 +1,13 @@
+// 隐藏 新版反馈
+html[channel-hide-feedback] {
+    .palette-button-wrap .feedback {
+        display: none !important;
+    }
+}
+
+// 隐藏 回顶部
+html[channel-hide-top-btn] {
+    .palette-button-wrap .top-btn-wrap {
+        display: none !important;
+    }
+}

@@ -1,0 +1,396 @@
+// 圆角化 动态页
+html[border-radius-dynamic] {
+    #nav-searchform,
+    .nav-search-content,
+    .header-upload-entry,
+    .v-popover-content,
+    .van-popover,
+    .v-popover-wrap,
+    .v-popover,
+    .topic-panel,
+    .bili-header .header-upload-entry,
+    .bili-dyn-up-list,
+    .bili-dyn-publishing,
+    .bili-dyn-publishing__action,
+    .bili-dyn-sidebar *,
+    .bili-dyn-up-list__window,
+    .bili-dyn-live-users,
+    .bili-dyn-topic-box,
+    .bili-dyn-list-notification,
+    .bili-dyn-item,
+    .bili-dyn-banner,
+    .bili-dyn-banner__img,
+    .bili-dyn-my-info,
+    .bili-dyn-card-video,
+    .bili-dyn-list-tabs,
+    .bili-album__preview__picture__gif,
+    .bili-album__preview__picture__img {
+        border-radius: 3px !important;
+    }
+    .bili-dyn-card-video__cover__mask,
+    .bili-dyn-card-video__cover {
+        border-radius: 3px 0 0 3px !important;
+    }
+    .bili-dyn-card-video__body {
+        border-radius: 0 3px 3px 0 !important;
+    }
+}
+
+// 圆角化 直播页
+html[border-radius-live] {
+    .live-player-ctnr.minimal,
+    .card-box .card-list .card-item,
+    .room-info-cntr,
+    #nav-searchform,
+    #player-ctnr,
+    .nav-search-content,
+    .header-upload-entry,
+    .v-popover-content,
+    .van-popover,
+    .v-popover-wrap,
+    .v-popover,
+    .aside-area,
+    .lower-row .right-ctnr *,
+    .panel-main-ctnr,
+    .startlive-btn,
+    .flip-view,
+    .content-wrapper,
+    .chat-input-ctnr,
+    .announcement-cntr,
+    .bl-button--primary {
+        border-radius: 3px !important;
+    }
+    #rank-list-vm,
+    .head-info-section {
+        border-radius: 3px 3px 0 0 !important;
+    }
+    .gift-control-section {
+        border-radius: 0 0 3px 3px !important;
+    }
+    .follow-ctnr .right-part {
+        border-radius: 0 3px 3px 0 !important;
+    }
+    .chat-control-panel {
+        border-radius: 0 0 3px 3px !important;
+    }
+    .follow-ctnr .left-part,
+    #rank-list-ctnr-box.bgStyle {
+        border-radius: 3px 0 0 3px !important;
+    }
+}
+
+// 圆角化 搜索页
+html[border-radius-search] {
+    #nav-searchform,
+    .nav-search-content,
+    .v-popover-content,
+    .van-popover,
+    .v-popover-wrap,
+    .v-popover,
+    .search-sticky-header *,
+    .vui_button,
+    .header-upload-entry,
+    .search-input-wrap *,
+    .search-input-container .search-input-wrap,
+    .bili-video-card__cover {
+        border-radius: 3px !important;
+    }
+}
+
+// 圆角化 播放页
+html[border-radius-video] {
+    #nav-searchform,
+    .nav-search-content,
+    .v-popover-content,
+    .van-popover,
+    .v-popover,
+    .pic-box,
+    .action-list-container,
+    .actionlist-item-inner .main .cover,
+    .recommend-video-card .card-box .pic-box,
+    .recommend-video-card .card-box .pic-box .rcmd-cover .rcmd-cover-img .b-img__inner img,
+    .actionlist-item-inner .main .cover .cover-img .b-img__inner img,
+    .card-box .pic-box .pic,
+    .bui-collapse-header,
+    .base-video-sections-v1,
+    .bili-header .search-panel,
+    .bili-header .header-upload-entry,
+    .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar,
+    .video-tag-container .tag-panel .tag-link,
+    .video-tag-container .tag-panel .show-more-btn,
+    .vcd .cover img,
+    .vcd *,
+    .upinfo-btn-panel *,
+    .fixed-sidenav-storage div,
+    .fixed-sidenav-storage a,
+    .reply-box-textarea,
+    .reply-box-send,
+    .reply-box-send::after {
+        border-radius: 3px !important;
+    }
+    .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar .bpx-player-dm-btn-send,
+    .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar-wrap {
+        border-radius: 0 3px 3px 0 !important;
+    }
+    .bpx-player-dm-btn-send .bui-button {
+        border-radius: 3px 0 0 3px !important;
+    }
+}
+
+// 圆角化 番剧页
+html[border-radius-bangumi] {
+    a[class^='mediainfo_mediaCover'],
+    a[class^='mediainfo_btnHome'],
+    [class^='follow_btnFollow'],
+    [class^='vipPaybar_textWrap__QARKv'],
+    [class^='eplist_ep_list_wrapper'],
+    [class^='RecommendItem_cover'],
+    [class^='imageListItem_wrap'] [class^='imageListItem_coverWrap'],
+    [class^='navTools_navMenu'] > *,
+    [class^='navTools_item'],
+    #nav-searchform,
+    .nav-search-content,
+    .v-popover-content,
+    .van-popover,
+    .v-popover,
+    .pic-box,
+    .card-box .pic-box .pic,
+    .bui-collapse-header,
+    .base-video-sections-v1,
+    .bili-header .search-panel,
+    .bili-header .header-upload-entry,
+    .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar,
+    .video-tag-container .tag-panel .tag-link,
+    .video-tag-container .tag-panel .show-more-btn,
+    .vcd .cover img,
+    .vcd *,
+    .upinfo-btn-panel *,
+    .fixed-sidenav-storage div,
+    .reply-box-textarea,
+    .reply-box-send,
+    .reply-box-send::after {
+        border-radius: 3px !important;
+    }
+    .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar .bpx-player-dm-btn-send,
+    .bpx-player-container .bpx-player-sending-bar .bpx-player-video-inputbar-wrap {
+        border-radius: 0 3px 3px 0 !important;
+    }
+    .bpx-player-dm-btn-send .bui-button {
+        border-radius: 3px 0 0 3px !important;
+    }
+}
+
+// 圆角化 首页
+html[border-radius-homepage] {
+    #nav-searchform,
+    .nav-search-content,
+    .history-item,
+    .header-upload-entry,
+    .bili-header .search-panel,
+    .bili-header .header-upload-entry,
+    .bili-header__channel .channel-link,
+    .channel-entry-more__link,
+    .header-channel-fixed-right-item,
+    .recommended-swipe-body,
+    .bili-video-card .bili-video-card__cover,
+    .bili-video-card .bili-video-card__image,
+    .bili-video-card .bili-video-card__info--icon-text,
+    .bili-live-card,
+    .floor-card,
+    .floor-card .badge,
+    .single-card.floor-card .floor-card-inner,
+    .single-card.floor-card .cover-container,
+    .primary-btn,
+    .flexible-roll-btn,
+    .palette-button-wrap .flexible-roll-btn-inner,
+    .palette-button-wrap .storage-box,
+    .palette-button-wrap,
+    .v-popover-content {
+        border-radius: 3px !important;
+    }
+    .bili-video-card__stats {
+        border-bottom-left-radius: 3px !important;
+        border-bottom-right-radius: 3px !important;
+    }
+    .floor-card .layer {
+        display: none !important;
+    }
+    .single-card.floor-card {
+        border: none !important;
+    }
+}
+
+// 圆角化 热门页
+html[border-radius-popular] {
+    #nav-searchform,
+    .nav-search-content,
+    .v-popover-content,
+    .van-popover,
+    .v-popover,
+    .bili-header .search-panel,
+    .bili-header .header-upload-entry,
+    .upinfo-btn-panel *,
+    .rank-list .rank-item > .content > .img,
+    .card-list .video-card .video-card__content,
+    .video-list .video-card .video-card__content,
+    .fixed-sidenav-storage div,
+    .fixed-sidenav-storage a {
+        border-radius: 3px !important;
+    }
+}
+
+// 圆角化 分区页
+html[border-radius-channel] {
+    #nav-searchform,
+    .nav-search-content,
+    .history-item,
+    .header-upload-entry,
+    .bili-header .search-panel,
+    .bili-header .header-upload-entry,
+    .bili-header__channel .channel-link,
+    .channel-entry-more__link,
+    .header-channel-fixed-right-item,
+    .recommended-swipe-body,
+    .bili-video-card .bili-video-card__cover,
+    .bili-video-card .bili-video-card__image,
+    .bili-video-card .bili-video-card__info--icon-text,
+    .bili-live-card,
+    .floor-card,
+    .floor-card .badge,
+    .single-card.floor-card .floor-card-inner,
+    .single-card.floor-card .cover-container,
+    .primary-btn,
+    .flexible-roll-btn,
+    .palette-button-wrap .flexible-roll-btn-inner,
+    .palette-button-wrap .storage-box,
+    .palette-button-wrap,
+    .v-popover-content {
+        border-radius: 3px !important;
+    }
+    .bili-video-card__stats {
+        border-bottom-left-radius: 3px !important;
+        border-bottom-right-radius: 3px !important;
+    }
+    .floor-card .layer {
+        display: none !important;
+    }
+    .single-card.floor-card {
+        border: none !important;
+    }
+}
+
+// 美化页面滚动条
+html[beauty-scrollbar] {
+    // Chrome 121+支持sidebar新属性，但难看，继续用webkit
+    // https://developer.chrome.com/docs/css-ui/scrollbar-styling
+    ::-webkit-scrollbar {
+        width: 8px !important;
+        height: 8px !important;
+        background: transparent !important;
+    }
+    ::-webkit-scrollbar:hover {
+        background: rgb(128 128 128 / 0.4) !important;
+    }
+    ::-webkit-scrollbar-thumb {
+        border: 1px solid rgb(255 255 255 / 0.4) !important;
+        background-color: rgb(0 0 0 / 0.4) !important;
+        z-index: 2147483647;
+        border-radius: 8px !important;
+        background-clip: content-box !important;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: rgb(0 0 0 / 0.8) !important;
+    }
+    ::-webkit-scrollbar-thumb:active {
+        background-color: rgb(0 0 0 / 0.6) !important;
+    }
+}
+
+// 美化页面滚动条 Firefox
+@supports (-moz-appearance: none) {
+    html[beauty-scrollbar] {
+        &,
+        * {
+            scrollbar-color: #cdcdcd transparent !important;
+            scrollbar-width: thin;
+        }
+    }
+}
+
+// 隐藏 页底footer
+html[hide-footer] {
+    .footer.bili-footer,
+    .international-footer,
+    #biliMainFooter,
+    .biliMainFooterWrapper,
+    .link-footer-ctnr {
+        display: none !important;
+    }
+}
+
+// 修复字体
+html[font-patch-live] {
+    body,
+    .gift-item,
+    .feed-card,
+    .bb-comment,
+    .comment-bilibili-fold {
+        font-family: 'PingFang SC', 'HarmonyOS_Regular', 'Helvetica Neue', 'Microsoft YaHei', sans-serif !important;
+        font-weight: 400;
+    }
+}
+html[font-patch-dynamic] {
+    .reply-item .root-reply-container .content-warp .user-info .user-name {
+        font-family: 'PingFang SC', 'HarmonyOS_Medium', 'Helvetica Neue', 'Microsoft YaHei', sans-serif !important;
+        font-weight: 500 !important;
+        font-size: 14px !important;
+    }
+    body {
+        font-family: 'PingFang SC', 'HarmonyOS_Regular', 'Helvetica Neue', 'Microsoft YaHei', sans-serif !important;
+        font-weight: 400;
+    }
+}
+html[font-patch-popular] {
+    #internationalHeader,
+    .international-header,
+    .suggest-wrap,
+    .van-popover {
+        font-family: 'PingFang SC', 'HarmonyOS_Regular', 'Helvetica Neue', 'Microsoft YaHei', sans-serif !important;
+        font-weight: 400 !important;
+    }
+    #app,
+    .video-card .video-name {
+        font-family: 'PingFang SC', 'HarmonyOS_Medium', 'Helvetica Neue', 'Microsoft YaHei', sans-serif !important;
+        font-weight: 500 !important;
+    }
+}
+html[font-patch-watchlater] {
+    body {
+        font-family: 'PingFang SC', 'HarmonyOS_Regular', 'Helvetica Neue', 'Microsoft YaHei', sans-serif !important;
+        font-weight: 400;
+        font-size: 14px;
+    }
+    .av-item .av-about .t {
+        font-family: 'PingFang SC', 'HarmonyOS_Medium', 'Helvetica Neue', 'Microsoft YaHei', sans-serif !important;
+        font-weight: 500 !important;
+    }
+}
+html[font-patch-space] {
+    body,
+    .h .h-sign,
+    .reply-item .root-reply-container .content-warp .user-info .user-name,
+    .bili-comment.browser-pc * {
+        font-family: 'PingFang SC', 'HarmonyOS_Regular', 'Helvetica Neue', 'Microsoft YaHei', sans-serif !important;
+        font-weight: 400;
+    }
+    body,
+    .n .n-text {
+        font-size: 14px;
+    }
+    #page-index .channel .channel-item .small-item,
+    #page-video .page-head__left .be-tab-item,
+    .n .n-data .n-data-k,
+    .n .n-data .n-data-v {
+        font-size: 13px;
+    }
+}

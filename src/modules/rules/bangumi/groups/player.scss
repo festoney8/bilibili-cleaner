@@ -1,0 +1,73 @@
+// 隐藏 播放器内标题
+html[video-page-hide-bpx-player-top-left-title] {
+    .bpx-player-top-title {
+        display: none !important;
+    }
+
+    // 播放器上方阴影渐变
+    .bpx-player-top-mask {
+        display: none !important;
+    }
+}
+
+// 隐藏 追番/追剧按钮 ★
+html[bangumi-page-hide-bpx-player-top-follow] {
+    .bpx-player-top-follow {
+        display: none !important;
+    }
+}
+
+// 隐藏 反馈按钮
+html[video-page-hide-bpx-player-top-issue] {
+    .bpx-player-top-issue {
+        display: none !important;
+    }
+}
+
+// 隐藏 视频暂停时大Logo
+html[video-page-hide-bpx-player-state-wrap] {
+    .bpx-player-state-wrap {
+        display: none !important;
+    }
+}
+
+// 隐藏 视频内封审核号(非内嵌) ★
+html[bangumi-page-hide-bpx-player-record-item-wrap] {
+    .bpx-player-record-item-wrap {
+        display: none !important;
+    }
+}
+
+// 隐藏 弹幕悬停 点赞/复制/举报
+html[video-page-hide-bpx-player-dialog-wrap] {
+    .bpx-player-dialog-wrap {
+        display: none !important;
+    }
+}
+
+// 隐藏 高赞弹幕前点赞按钮
+html[video-page-bpx-player-bili-high-icon] {
+    .bili-high-icon,
+    .bili-danmaku-x-high-icon {
+        display: none !important;
+    }
+}
+
+// 彩色渐变弹幕 变成白色
+html[video-page-bpx-player-bili-dm-vip-white] {
+    .bili-dm > .bili-dm-vip,
+    .bili-danmaku-x-dm-vip {
+        background: unset !important;
+        background-size: unset !important;
+
+        // 父元素未指定 var(--textShadow), 默认重墨描边凑合用
+        text-shadow:
+            1px 0 1px #000,
+            0 1px 1px #000,
+            0 -1px 1px #000,
+            -1px 0 1px #000 !important;
+        -webkit-text-stroke: none !important;
+        -moz-text-stroke: none !important;
+        -ms-text-stroke: none !important;
+    }
+}

@@ -1,0 +1,40 @@
+// 隐藏底边进度
+html[video-page-hide-bpx-player-mini-mode-process] {
+    .bpx-player-container[data-screen='mini']:not(:hover) .bpx-player-mini-progress {
+        display: none;
+    }
+}
+
+// 隐藏弹幕
+html[video-page-hide-bpx-player-mini-mode-danmaku] {
+    .bpx-player-container[data-screen='mini'] .bpx-player-row-dm-wrap {
+        visibility: hidden !important;
+    }
+}
+
+// 滚轮调节大小
+html[video-page-bpx-player-mini-mode-wheel-adjust] {
+    .bpx-player-container[data-screen='mini'] {
+        height: calc(225px * var(--mini-player-zoom, 1)) !important;
+        width: calc(400px * var(--mini-player-zoom, 1)) !important;
+    }
+    .bpx-player-container[data-revision='1'][data-screen='mini'],
+    .bpx-player-container[data-revision='2'][data-screen='mini'] {
+        height: calc(180px * var(--mini-player-zoom, 1)) !important;
+        width: calc(320px * var(--mini-player-zoom, 1)) !important;
+    }
+    @media screen and (width >= 1681px) {
+        .bpx-player-container[data-revision='1'][data-screen='mini'],
+        .bpx-player-container[data-revision='2'][data-screen='mini'] {
+            height: calc(203px * var(--mini-player-zoom, 1)) !important;
+            width: calc(360px * var(--mini-player-zoom, 1)) !important;
+        }
+    }
+}
+
+// 记录小窗位置
+html[video-page-bpx-player-mini-mode-position-record] {
+    .bpx-player-container[data-screen='mini'] {
+        transform: translateX(var(--mini-player-translate-x, 1)) translateY(var(--mini-player-translate-y, 1));
+    }
+}

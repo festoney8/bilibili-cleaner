@@ -3,19 +3,21 @@
         "target": "ESNext",
         "useDefineForClassFields": true,
         "module": "ESNext",
-        // https://stackoverflow.com/questions/63310897
-        "lib": ["ESNext", "DOM", "dom.iterable"],
         "moduleResolution": "Node",
         "strict": true,
-        "sourceMap": true,
+        "jsx": "preserve",
         "resolveJsonModule": true,
         "isolatedModules": true,
         "esModuleInterop": true,
-        "noEmit": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "noImplicitReturns": true,
-        "skipLibCheck": true
+        // https://stackoverflow.com/questions/63310897
+        "lib": ["ESNext", "dom.iterable", "DOM"],
+        "skipLibCheck": true,
+        "noEmit": true
     },
-    "include": ["src"]
+    "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+    "references": [
+        {
+            "path": "./tsconfig.node.json"
+        }
+    ]
 }

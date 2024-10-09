@@ -1,0 +1,53 @@
+// 展开 多行视频标题
+html[video-page-unfold-video-info-title] {
+    .video-info-container:has(.show-more) {
+        height: fit-content !important;
+        margin-bottom: 12px;
+    }
+    .video-info-container .video-info-title-inner-overflow .video-title {
+        margin-right: unset !important;
+        text-wrap: wrap !important;
+    }
+    .video-info-container .video-info-title-inner .video-title .video-title-href {
+        text-wrap: wrap !important;
+    }
+    .video-info-container .show-more {
+        display: none !important;
+    }
+}
+
+// 隐藏 弹幕数
+html[video-page-hide-video-info-danmaku-count] {
+    :is(.video-info-detail, .video-info-meta) .dm {
+        display: none !important;
+    }
+}
+
+// 隐藏 发布日期
+html[video-page-hide-video-info-pubdate] {
+    :is(.video-info-detail, .video-info-meta) .pubdate-ip {
+        display: none !important;
+    }
+}
+
+// 隐藏 版权声明
+html[video-page-hide-video-info-copyright] {
+    :is(.video-info-detail, .video-info-meta) .copyright {
+        display: none !important;
+    }
+}
+
+// 隐藏 视频荣誉(排行榜/每周必看)
+html[video-page-hide-video-info-honor] {
+    :is(.video-info-detail, .video-info-meta) .honor-rank,
+    .v:is(ideo-info-detail, ideo-info-meta) .honor-weekly {
+        display: none !important;
+    }
+}
+
+// 隐藏 温馨提示(饮酒/危险/AI生成)
+html[video-page-hide-video-info-argue] {
+    :is(.video-info-detail, .video-info-meta) :is(.argue, .video-argue) {
+        display: none !important;
+    }
+}

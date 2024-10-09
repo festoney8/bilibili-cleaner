@@ -1,0 +1,81 @@
+// 隐藏 页面右侧按钮 实验室/关注
+html[live-page-sidebar-vm] {
+    #sidebar-vm {
+        display: none !important;
+    }
+}
+
+// 禁用 播放器皮肤
+html[live-page-default-skin] {
+    #head-info-vm {
+        background-image: unset !important;
+
+        // color不加important, 适配Evolved黑暗模式
+        background-color: white;
+    }
+    .live-title .text {
+        color: #61666d !important;
+    }
+    .header-info-ctnr .rows-ctnr .upper-row .room-owner-username {
+        color: var(--text1, #18191c) !important;
+    }
+
+    // 高权限覆盖
+    #head-info-vm .live-skin-coloration-area .live-skin-normal-a-text {
+        color: unset !important;
+    }
+    #head-info-vm .live-skin-coloration-area .live-skin-main-text {
+        color: #61666d !important;
+        fill: #61666d !important;
+    }
+
+    // 礼物栏
+    #gift-control-vm {
+        background-image: unset !important;
+    }
+
+    // 右侧弹幕框背景
+    #rank-list-vm,
+    #rank-list-ctnr-box {
+        background-image: unset !important;
+        background-color: #efefef;
+    }
+    #rank-list-ctnr-box *:not(.fans-medal-content),
+    #rank-list-ctnr-box .tabs .pilot .hasOne .text-style,
+    #rank-list-ctnr-box .tabs .pilot .hasNot .text-style,
+    #rank-list-ctnr-box .live-skin-coloration-area .live-skin-main-text,
+    #rank-list-ctnr-box .guard-skin .nameBox a {
+        color: black !important;
+    }
+    #chat-control-panel-vm .live-skin-coloration-area .live-skin-main-text {
+        color: #c9ccd0 !important;
+        fill: #c9ccd0 !important;
+    }
+    #chat-control-panel-vm {
+        background-image: unset !important;
+        background-color: #f6f7f8;
+    }
+    #chat-control-panel-vm .bl-button--primary {
+        background-color: #23ade5;
+    }
+    #chat-control-panel-vm .icon-left-part svg > path {
+        fill: #c9ccd0;
+    }
+    #chat-control-panel-vm .icon-left-part > div:hover svg > path {
+        fill: #00aeec;
+    }
+}
+
+// 禁用 直播背景
+html[live-page-remove-wallpaper] {
+    .room-bg {
+        background-image: unset !important;
+    }
+    #player-ctnr {
+        box-shadow: 0 0 12px rgb(0 0 0 / 0.2);
+        border-radius: 12px;
+    }
+    #aside-area-vm {
+        box-shadow: 0 0 12px rgb(0 0 0 / 0.2);
+    }
+}

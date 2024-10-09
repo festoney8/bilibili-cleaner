@@ -1,0 +1,31 @@
+// 左边界距离
+html[common-header-bar-padding-left] {
+    .bili-header .bili-header__bar,
+    .mini-header__content,
+    [class^='BiliHeaderV3_biliHeaderBar___'] {
+        padding-left: var(--common-header-bar-padding-left) !important;
+    }
+}
+
+// 搜索框宽度
+html[common-header-bar-search-width] {
+    .bili-header .center-search-container .center-search__bar,
+    .bili-header-m .nav-search-box,
+    .international-header .nav-search-box {
+        width: var(--common-header-bar-search-width) !important;
+        max-width: var(--common-header-bar-search-width) !important;
+        min-width: 0 !important;
+    }
+    .center-search__bar {
+        margin: 0 auto;
+    }
+}
+
+// 右边界距离
+html[common-header-bar-padding-right] {
+    .bili-header .bili-header__bar,
+    .mini-header__content,
+    [class^='BiliHeaderV3_biliHeaderBar___'] {
+        padding-right: var(--common-header-bar-padding-right) !important;
+    }
+}

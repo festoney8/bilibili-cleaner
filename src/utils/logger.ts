@@ -28,9 +28,5 @@ const wrapper = (loggingFunc: (..._args: any[]) => void | undefined, isEnable: b
 
 export const log = wrapper(console.log, true)
 export const error = wrapper(console.error, true)
-export const debugMain = wrapper(console.log, settings.enableDebugMain)
-export const debugComponents = wrapper(console.log, settings.enableDebugComponents)
 export const debugRules = wrapper(console.log, settings.enableDebugRules)
-export const debugVideoFilter = wrapper(console.log, settings.enableDebugVideoFilter)
-export const debugCommentFilter = wrapper(console.log, settings.enableDebugCommentFilter)
-export const debugDynFilter = wrapper(console.log, settings.enableDebugDynFilter)
+export const debugFilter = wrapper(console.log, settings.enableDebugFilter)

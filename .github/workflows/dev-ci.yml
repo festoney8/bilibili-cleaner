@@ -1,11 +1,16 @@
-name: main-ci
+name: dev-ci
 on:
+    push:
+        paths-ignore:
+            - '**/*.md'
+        branches-ignore:
+            - main
     pull_request:
-        branches:
+        branches-ignore:
             - main
 
 jobs:
-    main-build:
+    dev-build:
         runs-on: ubuntu-latest
         permissions:
             contents: write

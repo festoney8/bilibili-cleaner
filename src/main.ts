@@ -13,6 +13,17 @@ import {
 import css from './style.css?inline'
 import { waitForBody } from './utils/init'
 import { error, log } from './utils/logger'
+import {
+    isPageBangumi,
+    isPageChannel,
+    isPageDynamic,
+    isPageHomepage,
+    isPagePlaylist,
+    isPagePopular,
+    isPageSearch,
+    isPageSpace,
+    isPageVideo,
+} from './utils/pageType'
 
 const main = () => {
     // 创建插件面板用shadowDOM节点
@@ -65,15 +76,41 @@ const menu = () => {
     GM_registerMenuCommand('✅ 页面净化优化', () => {
         ruleStore.isShow ? ruleStore.hide() : ruleStore.show()
     })
-    GM_registerMenuCommand('✅ 视频过滤设置', () => {
-        videoStore.isShow ? videoStore.hide() : videoStore.show()
-    })
-    GM_registerMenuCommand('✅ 评论过滤设置', () => {
-        commentStore.isShow ? commentStore.hide() : commentStore.show()
-    })
-    GM_registerMenuCommand('✅ 动态过滤设置', () => {
-        dynamicStore.isShow ? dynamicStore.hide() : dynamicStore.show()
-    })
+    if (
+        isPageHomepage() ||
+        isPageVideo() ||
+        isPagePlaylist() ||
+        isPagePopular() ||
+        isPageChannel() ||
+        isPageSearch() ||
+        isPageSpace()
+    ) {
+        GM_registerMenuCommand('✅ 视频过滤设置', () => {
+            videoStore.isShow ? videoStore.hide() : videoStore.show()
+        })
+    } else {
+        GM_registerMenuCommand('🚫 视频过滤设置', () => {
+            alert('[bilibili-cleaner] 本页面不支持视频过滤')
+        })
+    }
+    if (isPageVideo() || isPageBangumi() || isPageDynamic() || isPageSpace() || isPagePlaylist()) {
+        GM_registerMenuCommand('✅ 评论过滤设置', () => {
+            commentStore.isShow ? commentStore.hide() : commentStore.show()
+        })
+    } else {
+        GM_registerMenuCommand('🚫 评论过滤设置', () => {
+            alert('[bilibili-cleaner] 本页面不支持评论过滤')
+        })
+    }
+    if (isPageDynamic()) {
+        GM_registerMenuCommand('✅ 动态过滤设置', () => {
+            dynamicStore.isShow ? dynamicStore.hide() : dynamicStore.show()
+        })
+    } else {
+        GM_registerMenuCommand('🚫 动态过滤设置', () => {
+            alert('[bilibili-cleaner] 本页面不支持动态过滤')
+        })
+    }
     GM_registerMenuCommand('⚡ 快捷按钮开关', () => {
         sideBtnStore.isShow ? sideBtnStore.hide() : sideBtnStore.show()
     })

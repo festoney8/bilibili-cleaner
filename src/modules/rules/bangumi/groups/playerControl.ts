@@ -83,4 +83,9 @@ export const bangumiPlayerControlItems: Item[] = [
         name: '隐藏 底边mini视频进度',
         defaultEnable: true,
     },
+    {
+        type: 'switch',
+        id: 'video-page-show-bpx-player-pbp',
+        name: '控制栏收起时 显示高能进度条',
+    },
 ]

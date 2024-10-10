@@ -108,4 +108,14 @@ html[video-page-hide-bpx-player-shadow-progress-area] {
     .bpx-player-shadow-progress-area {
         display: none !important;
     }
+    .bpx-player-pbp:not(.show) {
+        bottom: 0 !important;
+    }
+}
+
+// 控制栏收起时 显示高能进度条
+html[video-page-show-bpx-player-pbp] {
+    .bpx-player-pbp:not(.show) {
+        opacity: 1 !important;
+    }
 }

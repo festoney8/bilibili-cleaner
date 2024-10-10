@@ -9,8 +9,13 @@ export const homepageRcmdItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'homepage-move-no-interest',
+        name: '移动 负反馈按钮 恢复标题宽度',
+    },
+    {
+        type: 'switch',
         id: 'homepage-hide-no-interest',
-        name: '隐藏 视频负反馈 恢复标题宽度',
+        name: '隐藏 负反馈按钮 恢复标题宽度',
     },
     {
         type: 'switch',

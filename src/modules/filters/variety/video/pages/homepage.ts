@@ -452,7 +452,7 @@ export const videoFilterHomepageGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.white.isFollow.statusKey,
                 name: '标有 [已关注] 的视频免过滤',
-                defaultEnable: false,
+                defaultEnable: true,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoIsFollowWhiteFilter.enable()
@@ -467,7 +467,7 @@ export const videoFilterHomepageGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.white.uploader.statusKey,
                 name: '启用 UP主白名单',
-                defaultEnable: false,
+                defaultEnable: true,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoUploaderWhiteFilter.enable()

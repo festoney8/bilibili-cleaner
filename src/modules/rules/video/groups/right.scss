@@ -32,23 +32,26 @@ html[video-page-right-container-sticky-disable] {
 
 // 隐藏 广告
 html[video-page-hide-right-container-ad] {
-    #slide_ad {
-        display: none !important;
-    }
-    .ad-report.video-card-ad-small {
-        display: none !important;
-    }
-    .video-page-special-card-small {
-        display: none !important;
-    }
-    #reco_list {
-        margin-top: 0 !important;
+    .right-container {
+        #slide_ad {
+            display: none !important;
+        }
+        .ad-report.video-card-ad-small {
+            display: none !important;
+        }
+        .video-page-special-card-small {
+            display: none !important;
+        }
+        #reco_list,
+        .recommend-list-v1 {
+            margin-top: 0 !important;
+        }
     }
 }
 
 // 隐藏 游戏推荐
 html[video-page-hide-right-container-video-page-game-card-small] {
-    #reco_list .video-page-game-card-small {
+    .right-container .video-page-game-card-small {
         display: none !important;
     }
 }
@@ -65,28 +68,28 @@ html[video-page-hide-right-container-danmaku] {
 
 // 隐藏 自动连播按钮
 html[video-page-hide-right-container-reco-list-next-play-next-button] {
-    #reco_list .next-play .next-button {
-        display: none !important;
+    .right-container .next-play {
+        .next-button,
+        .continuous-btn {
+            display: none !important;
+        }
     }
 }
 
 // 隐藏 接下来播放
 html[video-page-hide-right-container-reco-list-next-play] {
-    #reco_list .next-play {
+    .right-container .next-play {
         display: none !important;
     }
-    #reco_list .rec-list {
+    .right-container .rec-list {
         margin-top: 0 !important;
     }
 }
 
 // 优化 视频合集列表高度
 html[video-page-hide-right-container-section-height] {
-    .base-video-sections-v1 .video-sections-content-list {
-        height: fit-content !important;
-        max-height: 350px !important;
-    }
-    .video-sections-v1 .video-sections-content-list {
+    .video-sections-content-list,
+    .video-pod__body {
         height: fit-content !important;
         max-height: 350px !important;
     }
@@ -176,7 +179,7 @@ html[video-page-right-container-set-info-bottom] {
 
 // 隐藏 相关视频 视频时长
 html[video-page-hide-right-container-duration] {
-    #reco_list .duration {
+    .right-container .card-box .duration {
         display: none !important;
     }
 
@@ -188,7 +191,7 @@ html[video-page-hide-right-container-duration] {
 
 // 隐藏 相关视频 稍后再看按钮
 html[video-page-hide-right-container-reco-list-watch-later-video] {
-    #reco_list .watch-later-video {
+    .right-container .watch-later-video {
         display: none !important;
     }
 
@@ -200,20 +203,22 @@ html[video-page-hide-right-container-reco-list-watch-later-video] {
 
 // 隐藏 相关视频 UP主
 html[video-page-hide-right-container-reco-list-rec-list-info-up] {
-    #reco_list .info .upname {
-        visibility: hidden !important;
-    }
-    #reco_list .info {
+    .right-container .info {
+        .upname {
+            visibility: hidden !important;
+        }
+
         display: flex;
         flex-direction: column;
         justify-content: space-between;
     }
 
     // 适配watchlater, favlist
-    .recommend-list-container .info .upname {
-        display: none !important;
-    }
     .recommend-list-container .info {
+        .upname {
+            display: none !important;
+        }
+
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -222,10 +227,11 @@ html[video-page-hide-right-container-reco-list-rec-list-info-up] {
 
 // 隐藏 相关视频 播放和弹幕
 html[video-page-hide-right-container-reco-list-rec-list-info-plays] {
-    #reco_list .info .playinfo {
-        display: none !important;
-    }
-    #reco_list .info {
+    .right-container .info {
+        .playinfo {
+            display: none !important;
+        }
+
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -244,22 +250,23 @@ html[video-page-hide-right-container-reco-list-rec-list-info-plays] {
 
 // 隐藏 全部相关视频
 html[video-page-hide-right-container-reco-list-rec-list] {
-    #reco_list .rec-list {
-        display: none !important;
-    }
-    #reco_list .rec-footer {
-        display: none !important;
+    .right-container {
+        .rec-list,
+        .rec-footer {
+            display: none !important;
+        }
     }
 
     // 适配watchlater, favlist
-    .recommend-list-container {
+    .playlist-container--right .recommend-list-container {
         display: none !important;
     }
 }
 
 // 隐藏 活动banner
 html[video-page-hide-right-container-right-bottom-banner] {
-    #right-bottom-banner {
+    #right-bottom-banner,
+    .right-container .right-bottom-banner {
         display: none !important;
     }
 

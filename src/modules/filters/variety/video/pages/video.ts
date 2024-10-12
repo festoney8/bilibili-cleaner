@@ -208,9 +208,16 @@ class VideoFilterVideo implements IMainFilter {
     // }
 
     observe() {
-        waitForEle(document, '#reco_list, .recommend-list-container', (node: HTMLElement): boolean => {
-            return node.id === 'reco_list' || node.className === 'recommend-list-container'
-        }).then((ele) => {
+        waitForEle(
+            document,
+            '#reco_list, .recommend-list-v1, .recommend-list-container',
+            (node: HTMLElement): boolean => {
+                return (
+                    node.id === 'reco_list' ||
+                    ['recommend-list-v1', 'recommend-list-container'].includes(node.className)
+                )
+            },
+        ).then((ele) => {
             if (!ele) {
                 return
             }

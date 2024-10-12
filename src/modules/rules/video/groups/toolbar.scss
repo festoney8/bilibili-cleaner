@@ -57,14 +57,16 @@ html[video-page-hide-below-info-tag] {
 
 // 隐藏 活动宣传
 html[video-page-hide-below-activity-vote] {
-    #activity_vote {
+    #activity_vote,
+    .activity-m-v1 {
         display: none !important;
     }
 }
 
 // 隐藏 广告banner
 html[video-page-hide-below-bannerAd] {
-    #bannerAd {
+    #bannerAd,
+    .left-container .left-banner {
         display: none !important;
     }
 }

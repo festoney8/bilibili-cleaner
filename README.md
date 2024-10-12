@@ -35,7 +35,7 @@
 
 ### 测试版：[Release 安装](https://github.com/festoney8/bilibili-cleaner/releases/)
 
--   开发版：[CI Build](https://github.com/festoney8/bilibili-cleaner/actions/workflows/dev-v4-ci.yml?query=is%3Asuccess)
+-   开发版：[CI Build](https://github.com/festoney8/bilibili-cleaner/actions/workflows/dev-ci.yml?query=is%3Asuccess)
 
 ## 使用
 
@@ -270,5 +270,5 @@
 
 ## Contribution
 
--   main branch 只用于发布测试版和稳定版
--   dev-v4 branch 用于开发
+-   main 分支只用于发布测试版和稳定版
+-   dev 分支用于开发

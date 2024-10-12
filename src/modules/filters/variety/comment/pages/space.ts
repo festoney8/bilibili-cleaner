@@ -229,11 +229,9 @@ class CommentFilterSpace implements IMainFilter {
             'AI总结视频',
             'AI工具集',
         ]
-        this.commentUsernameFilter.setParam(
-            BiliCleanerStorage.get(`BILICLEANER_${GM_KEYS.black.username.valueKey}`, []),
-        )
-        this.commentContentFilter.setParam(BiliCleanerStorage.get(`BILICLEANER_${GM_KEYS.black.content.valueKey}`, []))
-        this.commentLevelFilter.setParam(BiliCleanerStorage.get(`BILICLEANER_${GM_KEYS.black.level.valueKey}`, 0))
+        this.commentUsernameFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.username.valueKey, []))
+        this.commentContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))
+        this.commentLevelFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.level.valueKey, 0))
         this.commentBotFilter.setParam(bots)
         this.commentCallBotFilter.setParam(bots)
         this.commentCallUserFilter.setParam([`/./`])

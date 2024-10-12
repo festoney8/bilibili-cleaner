@@ -181,6 +181,7 @@ html[live-page-control-panel-icon-row] {
     }
     #chat-control-panel-vm {
         height: 115px;
+        min-height: unset !important;
     }
 
     // 弹幕栏
@@ -213,6 +214,7 @@ html[live-page-chat-input-ctnr-send-btn] {
     }
     #chat-control-panel-vm {
         height: fit-content !important;
+        min-height: unset !important;
     }
 
     // 弹幕栏
@@ -236,6 +238,7 @@ html[live-page-chat-input-ctnr] {
     }
     #chat-control-panel-vm {
         height: fit-content !important;
+        min-height: unset !important;
     }
 
     // 弹幕栏
@@ -255,6 +258,7 @@ html[live-page-chat-input-ctnr] {
 html[live-page-chat-control-panel] {
     #chat-control-panel-vm {
         display: none !important;
+        min-height: unset !important;
     }
 
     // 弹幕栏

@@ -1,15 +1,7 @@
 <template>
     <div
         ref="panel"
-        :style="[
-            {
-                width: widthPercent + 'vw',
-                height: heightPercent + 'vh',
-                minWidth: minWidth + 'px',
-                minHeight: minHeight + 'px',
-            },
-            style,
-        ]"
+        :style="[panelStyle, style]"
         class="no-scrollbar fixed z-[10000000] select-none overflow-auto overscroll-none rounded-xl bg-white shadow-lg"
     >
         <div ref="bar" class="sticky top-0 z-10 w-full cursor-move bg-[#00AEEC] py-1.5 text-center">
@@ -37,8 +29,10 @@
 </template>
 
 <script setup lang="ts">
-import { useDraggable, useElementBounding } from '@vueuse/core'
-import { computed, ref, watch } from 'vue'
+import { Position, useDraggable, useElementBounding, useWindowSize } from '@vueuse/core'
+import { computed, ref } from 'vue'
+
+const emit = defineEmits(['close'])
 
 const props = defineProps<{
     title: string
@@ -48,34 +42,52 @@ const props = defineProps<{
     minHeight: number // 单位px
 }>()
 
-const emit = defineEmits(['close'])
-
 const panel = ref<HTMLElement | null>(null)
 const bar = ref<HTMLElement | null>(null)
+
+const windowSize = useWindowSize({ includeScrollbar: false })
 const { width, height } = useElementBounding(bar, { windowScroll: false }) // bar元素长宽
 
-const { x, y, style } = useDraggable(panel, {
+const maxPos = computed(() => {
+    return {
+        x: windowSize.width.value - width.value,
+        y: windowSize.height.value - height.value,
+    }
+})
+const { style } = useDraggable(panel, {
     initialValue: {
-        x: innerWidth / 2 - Math.max((innerWidth * props.widthPercent) / 100, props.minWidth) / 2,
-        y: innerHeight / 2 - Math.max((innerHeight * props.heightPercent) / 100, props.minHeight) / 2,
+        x:
+            windowSize.width.value / 2 -
+            Math.max((windowSize.width.value * props.widthPercent) / 100, props.minWidth) / 2,
+        y:
+            windowSize.height.value / 2 -
+            Math.max((windowSize.height.value * props.heightPercent) / 100, props.minHeight) / 2,
     },
     handle: computed(() => bar.value),
     preventDefault: true,
+    // 限制拖拽范围
+    onEnd: (pos: Position) => {
+        if (pos.x < 0) {
+            pos.x = 0
+        }
+        if (pos.y < 0) {
+            pos.y = 0
+        }
+        if (pos.x > maxPos.value.x) {
+            pos.x = maxPos.value.x
+        }
+        if (pos.y > maxPos.value.y) {
+            pos.y = maxPos.value.y
+        }
+    },
 })
 
-// 限制拖拽范围
-watch([x, y], ([newX, newY]) => {
-    if (newX < 0) {
-        x.value = 0
-    }
-    if (newY < 0) {
-        y.value = 0
-    }
-    if (newY + height.value > innerHeight) {
-        y.value = innerHeight - height.value
-    }
-    if (newX + width.value > innerWidth) {
-        x.value = innerWidth - width.value
+const panelStyle = computed(() => {
+    return {
+        width: props.widthPercent + 'vw',
+        height: props.heightPercent + 'vh',
+        minWidth: props.minWidth + 'px',
+        minHeight: props.minHeight + 'px',
     }
 })
 </script>

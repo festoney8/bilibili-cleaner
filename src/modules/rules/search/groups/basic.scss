@@ -7,7 +7,8 @@ html[hide-search-page-search-sticky-header] {
 
 // 隐藏 搜索结果中的广告
 html[hide-search-page-ad] {
-    .video-list.row > div:has([href*='cm.bilibili.com']) {
+    .video-list.row
+        > div:has([href*='cm.bilibili.com'], .bili-video-card__info--ad, .bili-video-card__info--ad-creative) {
         display: none !important;
     }
 }

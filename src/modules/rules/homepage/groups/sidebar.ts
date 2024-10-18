@@ -25,8 +25,13 @@ export const homepageSidebarItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'homepage-hide-flexible-roll-btn-text',
+        name: '隐藏 刷新按钮 文字提示',
+    },
+    {
+        type: 'switch',
         id: 'homepage-hide-flexible-roll-btn',
-        name: '隐藏 刷新',
+        name: '隐藏 刷新按钮',
     },
     {
         type: 'switch',

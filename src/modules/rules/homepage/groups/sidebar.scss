@@ -26,7 +26,14 @@ html[homepage-hide-watchlater-pip-button] {
     }
 }
 
-// 隐藏 刷新
+// 隐藏 刷新按钮文字提示
+html[homepage-hide-flexible-roll-btn-text] {
+    .palette-button-wrap .flexible-roll-btn .btn-text {
+        display: none !important;
+    }
+}
+
+// 隐藏 刷新按钮
 html[homepage-hide-flexible-roll-btn] {
     .palette-button-wrap .flexible-roll-btn {
         display: none !important;

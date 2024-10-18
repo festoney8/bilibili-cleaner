@@ -1,63 +1,14 @@
-// 使用 双列布局
-html[watchlater-page-layout-2-column] {
-    .list-box > span {
-        display: grid !important;
-        grid-template-columns: repeat(2, calc(50% - 10px)) !important;
-        gap: 16px 20px !important;
+// 增大 视频信息字号
+html[watchlater-increase-font-size] {
+    .bili-video-card {
+        --bili-video-card-title-padding-right: 0;
+        --bili-video-card-title-font-size: 16px;
+        --bili-video-card-subtitle-font-size: 14px;
     }
-    .watch-later-list {
-        margin-bottom: 50px !important;
+    .bili-cover-card__stat {
+        --bili-cover-card-stat-font-size: 14px;
     }
-    .watch-later-list header {
-        margin: 8px 0 16px !important;
-    }
-    .av-item {
-        width: unset !important;
-        margin: 0 !important;
-        border-radius: 8px !important;
-        padding: 8px 8px 8px 32px !important;
-    }
-    .av-item:hover {
-        box-shadow: 0 0 8px rgb(0 0 0 / 0.2) !important;
-        transition: box-shadow 0.1s linear;
-    }
-    .av-item .av-about {
-        display: flex !important;
-        flex-direction: column !important;
-        border-bottom: none !important;
-    }
-    .av-item .av-pic .branch,
-    .av-item .av-pic .corner {
-        font-size: 13px !important;
-    }
-    .av-item .av-about .t {
-        font-size: 15px !important;
-        font-weight: 500 !important;
-        width: unset !important;
-        overflow: unset !important;
-        text-wrap: wrap !important;
-        line-height: 1.4em !important;
-    }
-    .av-item .av-about .info .state {
-        margin-left: auto !important;
-    }
-    .av-item .av-about .info .state .looked {
-        font-size: 14px !important;
-        margin-right: unset !important;
-    }
-    .info.clearfix {
-        margin-top: auto !important;
-        display: flex !important;
-        flex-direction: initial !important;
-        align-items: center !important;
-    }
-    .info.clearfix .user {
-        display: flex !important;
-        align-items: center !important;
-    }
-    .info.clearfix .user span:last-child {
-        margin: 0 0 0 6px !important;
-        font-size: 14px !important;
-        float: unset !important;
+    .bili-cover-card__progress {
+        --bili-cover-card-progress-height: 3.5px;
     }
 }

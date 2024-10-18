@@ -54,6 +54,7 @@ const maxPos = computed(() => {
         y: windowSize.height.value - height.value,
     }
 })
+let rAF = 0
 const { style } = useDraggable(panel, {
     initialValue: {
         x:
@@ -66,19 +67,22 @@ const { style } = useDraggable(panel, {
     handle: computed(() => bar.value),
     preventDefault: true,
     // 限制拖拽范围
-    onEnd: (pos: Position) => {
-        if (pos.x < 0) {
-            pos.x = 0
-        }
-        if (pos.y < 0) {
-            pos.y = 0
-        }
-        if (pos.x > maxPos.value.x) {
-            pos.x = maxPos.value.x
-        }
-        if (pos.y > maxPos.value.y) {
-            pos.y = maxPos.value.y
-        }
+    onMove: (pos: Position) => {
+        cancelAnimationFrame(rAF)
+        rAF = requestAnimationFrame(() => {
+            if (pos.x < 0) {
+                pos.x = 0
+            }
+            if (pos.y < 0) {
+                pos.y = 0
+            }
+            if (pos.x > maxPos.value.x) {
+                pos.x = maxPos.value.x
+            }
+            if (pos.y > maxPos.value.y) {
+                pos.y = maxPos.value.y
+            }
+        })
     },
 })
 

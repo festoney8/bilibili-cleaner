@@ -15,5 +15,6 @@ export const popularGroups: Group[] = [
     {
         name: '其他功能',
         items: popularOtherItems,
+        fold: true,
     },
 ]

@@ -58,8 +58,8 @@
     </div>
 </template>
 <script setup lang="ts">
-import { Position, useDraggable, useElementBounding, useStorage } from '@vueuse/core'
-import { computed, ref, watch } from 'vue'
+import { Position, useDraggable, useElementBounding, useStorage, useWindowSize } from '@vueuse/core'
+import { computed, ref } from 'vue'
 import {
     useCommentFilterPanelStore,
     useDynamicFilterPanelStore,
@@ -93,38 +93,49 @@ const btnPos = useStorage('bili-cleaner-side-btn-pos', { right: 10, bottom: 180 
 
 const isDragging = ref(false)
 
+const windowSize = useWindowSize({ includeScrollbar: false })
+
+const maxPos = computed(() => {
+    return {
+        x: windowSize.width.value - width.value,
+        y: windowSize.height.value - height.value,
+    }
+})
+
+let rAF = 0
 useDraggable(target, {
     initialValue: {
-        x: document.documentElement.clientWidth - btnPos.value.right,
-        y: document.documentElement.clientHeight - btnPos.value.bottom,
+        x: windowSize.width.value - btnPos.value.right,
+        y: windowSize.height.value - btnPos.value.bottom,
     },
     preventDefault: true,
     handle: computed(() => target.value),
-    onMove: (position: Position) => {
+    onMove: (pos: Position) => {
         isDragging.value = true
-        btnPos.value.right = document.documentElement.clientWidth - position.x - width.value
-        btnPos.value.bottom = document.documentElement.clientHeight - position.y - height.value
+        btnPos.value.right = maxPos.value.x - pos.x
+        btnPos.value.bottom = maxPos.value.y - pos.y
+
+        // 限制拖拽范围
+        cancelAnimationFrame(rAF)
+        rAF = requestAnimationFrame(() => {
+            if (btnPos.value.right < 0) {
+                btnPos.value.right = 0
+            }
+            if (btnPos.value.bottom < 0) {
+                btnPos.value.bottom = 0
+            }
+            if (btnPos.value.bottom > maxPos.value.y) {
+                btnPos.value.bottom = maxPos.value.y
+            }
+            if (btnPos.value.right > maxPos.value.x) {
+                btnPos.value.right = maxPos.value.x
+            }
+        })
     },
     onEnd: () => {
         setTimeout(() => {
             isDragging.value = false
-        }, 100)
+        }, 50)
     },
-})
-
-// 限制拖拽范围
-watch(btnPos.value, (newBtnPosition) => {
-    if (newBtnPosition.right < 0) {
-        btnPos.value.right = 0
-    }
-    if (newBtnPosition.bottom < 0) {
-        btnPos.value.bottom = 0
-    }
-    if (newBtnPosition.bottom + height.value > document.documentElement.clientHeight) {
-        btnPos.value.bottom = document.documentElement.clientHeight - height.value
-    }
-    if (newBtnPosition.right + width.value > document.documentElement.clientWidth) {
-        btnPos.value.right = document.documentElement.clientWidth - width.value
-    }
 })
 </script>

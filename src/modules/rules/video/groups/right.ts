@@ -27,7 +27,6 @@ export const videoRightItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-right-container-danmaku',
         name: '隐藏 弹幕列表',
-        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -70,6 +69,12 @@ export const videoRightItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-right-container-multi-page-next-btn',
         name: '隐藏 分P视频 自动连播',
+    },
+    {
+        type: 'switch',
+        id: 'video-page-hide-right-container-multi-page-add-counter',
+        name: '恢复 分P视频 编号',
+        defaultEnable: true,
     },
     {
         type: 'switch',

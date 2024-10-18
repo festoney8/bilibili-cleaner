@@ -165,7 +165,7 @@ html[video-page-exchange-player-position] {
     body:not(.webscreen-fix) :is(.left-container, .playlist-container--left) {
         display: flex !important;
         flex-direction: column !important;
-        padding-top: 35px !important;
+        padding-top: 30px !important;
     }
     body:not(.webscreen-fix) :is(.left-container, .playlist-container--left) > * {
         order: 1;

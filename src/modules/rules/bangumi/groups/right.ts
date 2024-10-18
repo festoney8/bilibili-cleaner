@@ -11,7 +11,6 @@ export const bangumiRightItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-right-container-danmaku',
         name: '隐藏 弹幕列表',
-        defaultEnable: true,
     },
     {
         type: 'switch',

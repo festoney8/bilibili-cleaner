@@ -72,6 +72,12 @@ export const videoRightItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'video-page-hide-right-container-multi-page-add-counter',
+        name: '恢复 分P视频 编号',
+        defaultEnable: true,
+    },
+    {
+        type: 'switch',
         id: 'video-page-right-container-set-info-bottom',
         name: '相关视频 视频信息置底',
         defaultEnable: true,

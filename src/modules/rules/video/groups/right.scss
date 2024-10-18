@@ -166,6 +166,27 @@ html[video-page-hide-right-container-multi-page-next-btn] {
     }
 }
 
+// 恢复 分P视频 编号
+html[video-page-hide-right-container-multi-page-add-counter] {
+    .video-pod__list.multip.list {
+        counter-reset: section-counter;
+
+        .video-pod__item {
+            &::before {
+                counter-increment: section-counter;
+                content: 'P' counter(section-counter);
+                font-size: 15px;
+                margin-right: 8px;
+                transition: color 0.2s;
+            }
+            &.active::before,
+            &:hover::before {
+                color: var(--brand_blue);
+            }
+        }
+    }
+}
+
 // 相关视频 视频信息置底
 html[video-page-right-container-set-info-bottom] {
     :is(.video-page-card-small, .video-page-operator-card-small) .card-box .info {

@@ -1,3 +1,19 @@
+// 4 列布局
+html[watchlater-layout-4-column] {
+    .watchlater-list-container:not(.watchlater-list-container--list) {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 25px 16px !important;
+    }
+}
+
+// 5 列布局
+html[watchlater-layout-5-column] {
+    .watchlater-list-container:not(.watchlater-list-container--list) {
+        grid-template-columns: repeat(5, 1fr) !important;
+        gap: 25px 16px !important;
+    }
+}
+
 // 增大 视频信息字号
 html[watchlater-increase-font-size] {
     .bili-video-card {
@@ -10,5 +26,12 @@ html[watchlater-increase-font-size] {
     }
     .bili-cover-card__progress {
         --bili-cover-card-progress-height: 3.5px;
+    }
+}
+
+// 隐藏 新版反馈按钮
+html[watchlater-hide-feedback] {
+    .feed_back {
+        display: none !important;
     }
 }

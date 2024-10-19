@@ -1,6 +1,7 @@
 import { Group } from '../../../types/collection'
 import { videoBasicItems } from './groups/basic'
 import { videoDanmakuItems } from './groups/danmaku'
+import { videoDanmakuControlItems } from './groups/danmakuControl'
 import { videoInfoItems } from './groups/info'
 import { videoMiniPlayerItems } from './groups/miniPlayer'
 import { videoPlayerItems } from './groups/player'
@@ -39,12 +40,17 @@ export const videoGroups: Group[] = [
         items: videoPlayerControlItems,
     },
     {
-        name: '弹幕栏',
+        name: '弹幕控制栏',
+        fold: true,
+        items: videoDanmakuControlItems,
+    },
+    {
+        name: '弹幕样式',
         fold: true,
         items: videoDanmakuItems,
     },
     {
-        name: 'CC 字幕',
+        name: '字幕样式',
         fold: true,
         items: videoSubtitleItems,
     },

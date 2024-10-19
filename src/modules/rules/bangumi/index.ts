@@ -1,6 +1,7 @@
 import { Group } from '../../../types/collection'
 import { bangumiBasicItems } from './groups/basic'
 import { bangumiDanmakuItems } from './groups/danmaku'
+import { bangumiDanmakuControlItems } from './groups/danmakuControl'
 import { bangumiMiniPlayerItems } from './groups/miniPlayer'
 import { bangumiPlayerItems } from './groups/player'
 import { bangumiPlayerControlItems } from './groups/playerControl'
@@ -32,6 +33,11 @@ export const bangumiGroups: Group[] = [
     },
     {
         name: '弹幕栏',
+        fold: true,
+        items: bangumiDanmakuControlItems,
+    },
+    {
+        name: '弹幕样式',
         fold: true,
         items: bangumiDanmakuItems,
     },

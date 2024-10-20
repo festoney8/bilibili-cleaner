@@ -2,7 +2,24 @@ import { unsafeWindow } from '$'
 import { Item } from '../../../../types/item'
 import { waitForEle } from '../../../../utils/tool'
 
-const disableAdjustVolume = () => {}
+/**
+ * Firefox DOMMouseScroll无法被stopImmediatePropagation
+ */
+let webScroll = false
+let fullScroll = false
+const fn = () => (event: Event) => event.stopImmediatePropagation()
+const disableTuneVolume = () => {
+    if (!webScroll && !fullScroll) {
+        window.addEventListener('mousewheel', fn, { capture: true })
+        // window.addEventListener('DOMMouseScroll', fn, { capture: true })
+    }
+}
+const enableTuneVolume = () => {
+    if (!(webScroll && fullScroll)) {
+        window.removeEventListener('mousewheel', fn)
+        // window.removeEventListener('DOMMouseScroll', fn)
+    }
+}
 
 export const bangumiPlayerLayoutItems: Item[] = [
     {
@@ -35,8 +52,8 @@ export const bangumiPlayerLayoutItems: Item[] = [
         description: ['播放器内滚轮调节音量失效', 'Firefox 不适用'],
         enableFn: async () => {
             // 禁用滚动调音量
-            document.removeEventListener('wheel', disableAdjustVolume)
-            document.addEventListener('wheel', disableAdjustVolume)
+            disableTuneVolume()
+            webScroll = true
 
             // 监听网页全屏按钮出现
             waitForEle(document.body, '.bpx-player-ctrl-web', (node: HTMLElement): boolean => {
@@ -51,7 +68,7 @@ export const bangumiPlayerLayoutItems: Item[] = [
                 }
             })
         },
-        disableFn: async () => document.removeEventListener('wheel', disableAdjustVolume),
+        disableFn: enableTuneVolume,
         enableFnRunAt: 'document-end',
     },
     {
@@ -65,8 +82,8 @@ export const bangumiPlayerLayoutItems: Item[] = [
             }
 
             // 禁用滚动调音量
-            document.removeEventListener('wheel', disableAdjustVolume)
-            document.addEventListener('wheel', disableAdjustVolume)
+            disableTuneVolume()
+            fullScroll = true
 
             let cnt = 0
             const id = setInterval(() => {
@@ -125,7 +142,7 @@ export const bangumiPlayerLayoutItems: Item[] = [
                 }
             }, 200)
         },
-        disableFn: async () => document.removeEventListener('wheel', disableAdjustVolume),
+        disableFn: enableTuneVolume,
         enableFnRunAt: 'document-end',
     },
     {

@@ -1,7 +1,7 @@
 import { waitForHead } from '../utils/init'
 import { log } from '../utils/logger'
 import { loadFilters } from './filters'
-import { loadRules, loadStyles } from './rules'
+import { loadRules, loadRulesHotKey, loadStyles } from './rules'
 
 export const loadModules = () => {
     waitForHead().then(() => {
@@ -10,6 +10,7 @@ export const loadModules = () => {
     })
 
     loadRules()
+    loadRulesHotKey()
     log('loadRules done')
 
     loadFilters()

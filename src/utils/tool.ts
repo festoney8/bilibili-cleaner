@@ -134,3 +134,11 @@ export const waitForEle = async (
 export const orderedUniq = <T = unknown>(arr: T[]): T[] => {
     return Array.from(new Set(arr))
 }
+
+/**
+ * 判断是否为 Firefox 浏览器
+ * @returns boolean
+ */
+export const isFirefox = (): boolean => {
+    return navigator.userAgent.toLocaleLowerCase().includes('firefox')
+}

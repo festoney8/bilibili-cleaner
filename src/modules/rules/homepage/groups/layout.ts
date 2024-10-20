@@ -21,10 +21,6 @@ export const homepageLayoutItems: Item[] = [
                 id: 'homepage-layout-5-column',
                 name: '5 列布局',
             },
-            {
-                id: 'homepage-layout-6-column',
-                name: '6 列布局',
-            },
         ],
     },
     {

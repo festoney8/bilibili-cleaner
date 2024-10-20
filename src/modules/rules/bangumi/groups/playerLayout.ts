@@ -1,6 +1,6 @@
 import { unsafeWindow } from '$'
 import { Item } from '../../../../types/item'
-import { waitForEle } from '../../../../utils/tool'
+import { isFirefox, waitForEle } from '../../../../utils/tool'
 
 /**
  * Firefox DOMMouseScroll无法被stopImmediatePropagation
@@ -77,7 +77,7 @@ export const bangumiPlayerLayoutItems: Item[] = [
         name: '全屏时 页面可滚动 (实验功能)',
         description: ['播放器内滚轮调节音量失效', '点击全屏按钮生效，双击全屏无效', 'Firefox 不适用'],
         enableFn: async () => {
-            if (!navigator.userAgent.toLocaleLowerCase().includes('chrome')) {
+            if (isFirefox()) {
                 return
             }
 

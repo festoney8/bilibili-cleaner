@@ -4,7 +4,7 @@ export const bangumiPlayerItems: Item[] = [
     {
         type: 'switch',
         id: 'video-page-hide-bpx-player-top-left-title',
-        name: '隐藏 播放器内标题',
+        name: '隐藏 全屏下 播放器内标题',
     },
     {
         type: 'switch',

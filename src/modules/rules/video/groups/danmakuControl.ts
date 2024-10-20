@@ -52,6 +52,7 @@ export const videoDanmakuControlItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-bpx-player-sending-area',
         name: '非全屏下 关闭弹幕栏',
+        description: ['字母 D 是弹幕开关快捷键'],
     },
     {
         type: 'switch',

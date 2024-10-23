@@ -34,6 +34,9 @@ const currPage = (): string => {
     if (host === 'space.bilibili.com') {
         return 'space'
     }
+    if (host === 'message.bilibili.com') {
+        return 'message'
+    }
     // 分区子分类
     if (!href.includes('bilibili.com/v/popular/') && href.includes('bilibili.com/v/')) {
         return 'channel'
@@ -62,3 +65,4 @@ export const isPageFestival = () => ans === 'festival'
 export const isPageChannel = () => ans === 'channel'
 export const isPageSpace = () => ans === 'space'
 export const isPageWatchlater = () => ans === 'watchlater'
+export const isPageMessage = () => ans === 'message'

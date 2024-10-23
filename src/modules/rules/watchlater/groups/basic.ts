@@ -21,10 +21,6 @@ export const watchlaterBasicItems: Item[] = [
                 id: 'watchlater-layout-5-column',
                 name: '5 列布局',
             },
-            {
-                id: 'watchlater-layout-6-column',
-                name: '6 列布局',
-            },
         ],
     },
     {

@@ -9,29 +9,52 @@ export const videoSubtitleItems: Item[] = [
         defaultValue: '',
         disableValue: '',
         fn: (value: string) => {
-            document.documentElement.style.setProperty('--video-page-subtitle-font-color', value)
+            document.documentElement.style.setProperty(
+                '--video-page-subtitle-font-color',
+                value.trim().replace(/;$/, ''),
+            )
         },
     },
     {
         type: 'string',
         id: 'video-page-subtitle-font-family',
-        name: '字体设定',
-        description: ['遵循 CSS font-family 语法，留空为禁用', '请确保本地已安装字体，检查家族名是否正确'],
+        name: '字幕字体',
+        description: ['遵循 CSS font-family 语法，留空为禁用', '确保本地已安装该字体，检查家族名是否正确'],
         defaultValue: 'PingFang SC,HarmonyOS_Regular,Helvetica Neue,Microsoft YaHei,sans-serif',
         disableValue: '',
         fn: (value: string) => {
-            document.documentElement.style.setProperty('--video-page-subtitle-font-family', value)
+            document.documentElement.style.setProperty(
+                '--video-page-subtitle-font-family',
+                value.trim().replace(/;$/, ''),
+            )
+        },
+    },
+    {
+        type: 'string',
+        id: 'video-page-subtitle-font-weight',
+        name: '字幕字重',
+        description: ['遵循 CSS font-weight 语法，留空为禁用', '确保本地字体支持该字重'],
+        defaultValue: '',
+        disableValue: '',
+        fn: (value: string) => {
+            document.documentElement.style.setProperty(
+                '--video-page-subtitle-font-weight',
+                value.trim().replace(/;$/, ''),
+            )
         },
     },
     {
         type: 'string',
         id: 'video-page-subtitle-text-stroke-color',
         name: '描边颜色',
-        description: ['遵循 CSS color 语法，留空为禁用', '官方字幕设定请选择 "无描边"'],
+        description: ['遵循 CSS color 语法，留空为禁用', '官方字幕设定需选择 "无描边"'],
         defaultValue: '',
         disableValue: '',
         fn: (value: string) => {
-            document.documentElement.style.setProperty('--video-page-subtitle-text-stroke-color', value)
+            document.documentElement.style.setProperty(
+                '--video-page-subtitle-text-stroke-color',
+                value.trim().replace(/;$/, ''),
+            )
         },
     },
     {

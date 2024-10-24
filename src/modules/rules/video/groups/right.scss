@@ -176,7 +176,7 @@ html[video-page-hide-right-container-multi-page-add-counter] {
                 counter-increment: section-counter;
                 content: 'P' counter(section-counter);
                 font-size: 15px;
-                margin-right: 8px;
+                margin-right: 10px;
                 transition: color 0.2s;
             }
             &.active::before,

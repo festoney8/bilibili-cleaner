@@ -12,6 +12,13 @@ html[video-page-subtitle-font-family] {
     }
 }
 
+// 字重设定
+html[video-page-subtitle-font-weight] {
+    .bpx-player-subtitle-panel-text {
+        font-weight: var(--video-page-subtitle-font-weight) !important;
+    }
+}
+
 // 描边颜色
 html[video-page-subtitle-text-stroke-color] {
     .bpx-player-subtitle-panel-text {

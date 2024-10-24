@@ -11,6 +11,7 @@ export const homepageRcmdItems: Item[] = [
         type: 'switch',
         id: 'homepage-move-no-interest',
         name: '移动 负反馈按钮 恢复标题宽度',
+        description: ['负反馈报文可能被其他插件阻断而失效', '可 F12 检查负反馈时有无报错'],
     },
     {
         type: 'switch',

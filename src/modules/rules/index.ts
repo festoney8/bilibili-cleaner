@@ -31,6 +31,7 @@ import { spaceGroups } from './space'
 import { videoGroups } from './video'
 import { watchlaterGroups } from './watchlater'
 
+import { useMagicKeys } from '@vueuse/core'
 import bangumiStyle from './bangumi/index.scss?inline'
 import channelStyle from './channel/index.scss?inline'
 import commentStyle from './comment/index.scss?inline'
@@ -335,5 +336,81 @@ const loadListItem = (item: IListItem) => {
     const value = BiliCleanerStorage.get(item.id, item.defaultValue)
     if (value !== item.disableValue) {
         document.documentElement.setAttribute(value, '')
+    }
+}
+
+/**
+ * 快捷键 Alt + B，快速禁用无函数作用的 rule item
+ */
+export const loadRulesHotKey = () => {
+    try {
+        const availableItemIds = new Set<string>()
+        for (const rule of rules) {
+            if (!rule.checkFn()) {
+                continue
+            }
+            for (const group of rule.groups) {
+                for (const item of group.items) {
+                    switch (item.type) {
+                        case 'switch':
+                            if (!item.enableFn) {
+                                availableItemIds.add(item.id)
+                            }
+                            break
+                        case 'number':
+                        case 'string':
+                            availableItemIds.add(item.id)
+                            break
+                        case 'list':
+                            item.options.forEach((v) => {
+                                availableItemIds.add(v.id)
+                            })
+                            break
+                    }
+                }
+            }
+        }
+
+        // 管理 html 节点的 attributes
+        let isOn = false
+        const disableSign = '_bili_cleaner_disable_'
+        const toggle = () => {
+            if (!isOn) {
+                const attrs: string[] = []
+                for (const attr of document.documentElement.attributes) {
+                    if (availableItemIds.has(attr.name)) {
+                        attrs.push(attr.name)
+                    }
+                }
+                for (const attr of attrs) {
+                    document.documentElement.removeAttribute(attr)
+                    document.documentElement.setAttribute(disableSign + attr, '')
+                }
+            } else {
+                const attrs: string[] = []
+                for (const attr of document.documentElement.attributes) {
+                    if (attr.name.includes(disableSign)) {
+                        attrs.push(attr.name)
+                    }
+                }
+                for (const attr of attrs) {
+                    document.documentElement.removeAttribute(attr)
+                    document.documentElement.setAttribute(attr.replace(disableSign, ''), '')
+                }
+            }
+            isOn = !isOn
+        }
+
+        useMagicKeys({
+            passive: false,
+            onEventFired(e) {
+                if (e.type === 'keydown' && e.altKey && e.key.toLocaleLowerCase() === 'b') {
+                    e.preventDefault()
+                    toggle()
+                }
+            },
+        })
+    } catch (err) {
+        error(`loadRulesHotKey error`, err)
     }
 }

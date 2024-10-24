@@ -5,7 +5,7 @@ export const popularLayoutItems: Item[] = [
         type: 'list',
         id: 'popular-layout',
         name: '强制修改视频列数',
-        defaultValue: 'popular-layout-disable',
+        defaultValue: 'popular-layout-2-column',
         disableValue: 'popular-layout-disable',
         description: [
             '默认隐藏视频简介、标签',
@@ -14,7 +14,7 @@ export const popularLayoutItems: Item[] = [
         ],
         options: [
             {
-                id: 'popular-layout-disable',
+                id: 'popular-layout-2-column',
                 name: '未启用',
             },
             {

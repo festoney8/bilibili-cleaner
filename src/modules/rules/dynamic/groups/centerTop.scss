@@ -1,3 +1,13 @@
+// 隐藏 动态发布框
+html[hide-dynamic-page-bili-dyn-publishing] {
+    .bili-dyn-publishing {
+        display: none !important;
+    }
+    main section:nth-child(1) {
+        margin-bottom: 0 !important;
+    }
+}
+
 // 双行显示 UP 主列表
 html[dynamic-page-up-list-dual-line-mode] {
     .bili-dyn-up-list__content {
@@ -79,16 +89,6 @@ html[dynamic-page-up-list-checked-item-hide] {
             ) {
             display: none;
         }
-    }
-}
-
-// 隐藏 动态发布框
-html[hide-dynamic-page-bili-dyn-publishing] {
-    .bili-dyn-publishing {
-        display: none !important;
-    }
-    main section:nth-child(1) {
-        margin-bottom: 0 !important;
     }
 }
 

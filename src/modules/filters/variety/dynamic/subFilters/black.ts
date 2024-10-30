@@ -7,3 +7,5 @@ export class DynUploaderFilter extends StringFilter {}
 export class DynDurationFilter extends NumberMinFilter {}
 
 export class DynVideoTitleFilter extends KeywordFilter {}
+
+export class DynContentFilter extends KeywordFilter {}

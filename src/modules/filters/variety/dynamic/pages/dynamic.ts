@@ -12,7 +12,7 @@ import { isPageDynamic } from '../../../../../utils/pageType'
 import { BiliCleanerStorage } from '../../../../../utils/storage'
 import { convertTimeToSec, orderedUniq, showEle, waitForEle } from '../../../../../utils/tool'
 import { coreCheck } from '../../../core/core'
-import { DynDurationFilter, DynUploaderFilter, DynVideoTitleFilter } from '../subFilters/black'
+import { DynContentFilter, DynDurationFilter, DynUploaderFilter, DynVideoTitleFilter } from '../subFilters/black'
 
 const GM_KEYS = {
     black: {
@@ -27,6 +27,10 @@ const GM_KEYS = {
         title: {
             statusKey: 'dyn-title-keyword-filter-status',
             valueKey: 'global-title-keyword-filter-value',
+        },
+        content: {
+            statusKey: 'dyn-content-keyword-filter-status',
+            valueKey: 'global-content-keyword-filter-value',
         },
     },
 }
@@ -47,6 +51,16 @@ const selectorFns = {
     title: (dyn: HTMLElement): SelectorResult => {
         return dyn.querySelector('.bili-dyn-card-video__title')?.textContent?.trim()
     },
+    content: (dyn: HTMLElement): SelectorResult => {
+        return Array.from(
+            dyn.querySelectorAll(
+                '.bili-dyn-content :is(.dyn-card-opus__title, .bili-rich-text__content > span:not(.bili-rich-text-module.at))',
+            ),
+        )
+            .map((v) => v?.textContent?.trim())
+            .filter((v) => v?.trim())
+            .join(' ')
+    },
 }
 
 class DynamicFilterDynamic implements IMainFilter {
@@ -56,12 +70,14 @@ class DynamicFilterDynamic implements IMainFilter {
     dynUploaderFilter = new DynUploaderFilter()
     dynDurationFilter = new DynDurationFilter()
     dynVideoTitleFilter = new DynVideoTitleFilter()
+    dynContentFilter = new DynContentFilter()
 
     init() {
         // 黑名单
         this.dynUploaderFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.uploader.valueKey, []))
         this.dynDurationFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.duration.valueKey, 0))
         this.dynVideoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.title.valueKey, []))
+        this.dynContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))
     }
 
     async check(mode?: 'full' | 'incr') {
@@ -70,7 +86,12 @@ class DynamicFilterDynamic implements IMainFilter {
         }
         let revertAll = false
         if (
-            !(this.dynUploaderFilter.isEnable || this.dynDurationFilter.isEnable || this.dynVideoTitleFilter.isEnable)
+            !(
+                this.dynUploaderFilter.isEnable ||
+                this.dynDurationFilter.isEnable ||
+                this.dynVideoTitleFilter.isEnable ||
+                this.dynContentFilter.isEnable
+            )
         ) {
             revertAll = true
         }
@@ -101,6 +122,7 @@ class DynamicFilterDynamic implements IMainFilter {
                         `uploader: ${selectorFns.uploader(v)}`,
                         `title: ${selectorFns.title(v)}`,
                         `duration: ${selectorFns.duration(v)}`,
+                        `content: ${selectorFns.content(v)}`,
                     ].join('\n'),
                 )
             })
@@ -111,6 +133,7 @@ class DynamicFilterDynamic implements IMainFilter {
         this.dynUploaderFilter.isEnable && blackPairs.push([this.dynUploaderFilter, selectorFns.uploader])
         this.dynDurationFilter.isEnable && blackPairs.push([this.dynDurationFilter, selectorFns.duration])
         this.dynVideoTitleFilter.isEnable && blackPairs.push([this.dynVideoTitleFilter, selectorFns.title])
+        this.dynContentFilter.isEnable && blackPairs.push([this.dynContentFilter, selectorFns.content])
 
         // 检测
         const blackCnt = await coreCheck(dyns, true, blackPairs, [])
@@ -262,6 +285,42 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 ],
                 saveFn: async () => {
                     mainFilter.dynVideoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.title.valueKey, []))
+                    mainFilter.checkFull()
+                },
+            },
+        ],
+    },
+    {
+        name: '动态内容过滤',
+        items: [
+            {
+                type: 'switch',
+                id: GM_KEYS.black.content.statusKey,
+                name: '启用 动态内容关键词过滤',
+                description: ['包含被转发动态内容', '不含动态内视频信息'],
+                defaultEnable: false,
+                noStyle: true,
+                enableFn: () => {
+                    mainFilter.dynContentFilter.enable()
+                    mainFilter.checkFull()
+                },
+                disableFn: () => {
+                    mainFilter.dynContentFilter.disable()
+                    mainFilter.checkFull()
+                },
+            },
+            {
+                type: 'editor',
+                id: GM_KEYS.black.content.valueKey,
+                name: '编辑 动态内容关键词黑名单',
+                editorTitle: '动态内容关键词 黑名单',
+                editorDescription: [
+                    '每行一个关键词或正则，不区分大小写',
+                    '请勿使用过于激进的关键词或正则',
+                    '正则默认 iu 模式，无需 flag，语法：/abc|\\d+/',
+                ],
+                saveFn: async () => {
+                    mainFilter.dynContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))
                     mainFilter.checkFull()
                 },
             },

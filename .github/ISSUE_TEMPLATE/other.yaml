@@ -1,0 +1,10 @@
+name: 其他问题
+description: 其他问题
+title: "[Other] "
+body:
+  - type: textarea
+    id: feature_description
+    attributes:
+      label: 文字说明
+    validations:
+      required: true

@@ -25,6 +25,12 @@ export const homepageSidebarItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'homepage-hide-adcard-button',
+        defaultEnable: true,
+        name: '隐藏 广告',
+    },
+    {
+        type: 'switch',
         id: 'homepage-hide-flexible-roll-btn-text',
         name: '隐藏 刷新按钮 文字提示',
     },

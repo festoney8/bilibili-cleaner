@@ -79,7 +79,8 @@ const saveSuccess = ref(false)
 const editorData = ref('')
 
 const updateData = () => {
-    editorData.value = BiliCleanerStorage.get<string[]>(item.id, []).join('\n') + '\n' // 末尾空行
+    const val = BiliCleanerStorage.get<string[]>(item.id, []).join('\n')
+    editorData.value = val ? val + '\n' : val // 末尾空行
 }
 
 const saveData = () => {

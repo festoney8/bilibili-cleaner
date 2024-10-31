@@ -67,6 +67,12 @@ export const videoToolbarItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'video-page-unfold-below-info-desc',
+        name: '展开 视频简介',
+        description: ['自动隐藏 [展开/收起] 按钮'],
+    },
+    {
+        type: 'switch',
         id: 'video-page-hide-below-info-desc',
         name: '隐藏 视频简介',
     },

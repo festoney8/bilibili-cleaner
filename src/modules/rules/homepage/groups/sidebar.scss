@@ -26,6 +26,14 @@ html[homepage-hide-watchlater-pip-button] {
     }
 }
 
+// 隐藏 广告
+html[homepage-hide-adcard-button] {
+    .adcard,
+    .palette-button-wrap .adcard-content {
+        display: none !important;
+    }
+}
+
 // 隐藏 刷新按钮文字提示
 html[homepage-hide-flexible-roll-btn-text] {
     .palette-button-wrap .flexible-roll-btn .btn-text {

@@ -1,0 +1,19 @@
+name: 新功能
+description: 提出新功能需求
+title: "[FR] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### 本插件专注于页面净化和优化，新功能以让页面更精简、更好用为主
+        ### 暂不考虑给 B 站扩展功能、增加页面组件等工具性需求
+        ---
+
+  - type: textarea
+    id: feature_description
+    attributes:
+      label: 功能描述
+      description: 在此介绍需要的功能
+    validations:
+      required: true

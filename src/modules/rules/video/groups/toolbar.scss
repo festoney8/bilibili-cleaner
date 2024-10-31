@@ -33,6 +33,20 @@ html[video-page-hide-below-info-video-report-menu] {
     }
 }
 
+// 展开 视频简介
+html[video-page-unfold-below-info-desc] {
+    #v_desc,
+    .video-desc-container {
+        margin-bottom: 0 !important;
+        .basic-desc-info {
+            height: auto !important;
+        }
+        .toggle-btn {
+            display: none !important;
+        }
+    }
+}
+
 // 隐藏 视频简介
 html[video-page-hide-below-info-desc] {
     #v_desc {

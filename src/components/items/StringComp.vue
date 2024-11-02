@@ -12,39 +12,44 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { watchDebounced } from '@vueuse/core'
+import { ref } from 'vue'
 import { IStringItem } from '../../types/item'
 import { error } from '../../utils/logger'
-import DescriptionComp from './DescriptionComp.vue'
 import { BiliCleanerStorage } from '../../utils/storage'
+import DescriptionComp from './DescriptionComp.vue'
 
 const item = defineProps<IStringItem>()
 
 const currValue = ref(BiliCleanerStorage.get(item.id, item.defaultValue))
 
-watch(currValue, (newValue, oldValue) => {
-    try {
-        // 样式生效、失效
-        if (oldValue === item.disableValue) {
-            if (!item.noStyle) {
-                document.documentElement.setAttribute(item.attrName ?? item.id, '')
+watchDebounced(
+    currValue,
+    (newValue, oldValue) => {
+        try {
+            // 样式生效、失效
+            if (oldValue === item.disableValue) {
+                if (!item.noStyle) {
+                    document.documentElement.setAttribute(item.attrName ?? item.id, '')
+                }
             }
-        }
-        if (newValue === item.disableValue) {
-            if (!item.noStyle) {
-                document.documentElement.removeAttribute(item.attrName ?? item.id)
+            if (newValue === item.disableValue) {
+                if (!item.noStyle) {
+                    document.documentElement.removeAttribute(item.attrName ?? item.id)
+                }
+            } else if (currValue.value !== oldValue) {
+                item
+                    .fn(currValue.value)
+                    ?.then()
+                    .catch((err) => {
+                        throw err
+                    })
             }
-        } else if (currValue.value !== oldValue) {
-            item
-                .fn(currValue.value)
-                ?.then()
-                .catch((err) => {
-                    throw err
-                })
+            BiliCleanerStorage.set<string>(item.id, currValue.value)
+        } catch (err) {
+            error(`StringComp ${item.id} error`, err)
         }
-        BiliCleanerStorage.set<string>(item.id, currValue.value)
-    } catch (err) {
-        error(`StringComp ${item.id} error`, err)
-    }
-})
+    },
+    { debounce: 100 },
+)
 </script>

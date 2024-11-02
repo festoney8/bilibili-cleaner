@@ -14,7 +14,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { watchDebounced } from '@vueuse/core'
+import { ref } from 'vue'
 import { INumberItem } from '../../types/item'
 import { error } from '../../utils/logger'
 import { BiliCleanerStorage } from '../../utils/storage'
@@ -24,36 +25,40 @@ const item = defineProps<INumberItem>()
 
 const currValue = ref(BiliCleanerStorage.get(item.id, item.defaultValue))
 
-watch(currValue, (newValue, oldValue) => {
-    try {
-        if (newValue > item.maxValue) {
-            currValue.value = item.maxValue
-        }
-        if (newValue < item.minValue) {
-            currValue.value = item.minValue
-        }
+watchDebounced(
+    currValue,
+    (newValue, oldValue) => {
+        try {
+            if (newValue > item.maxValue) {
+                currValue.value = item.maxValue
+            }
+            if (newValue < item.minValue) {
+                currValue.value = item.minValue
+            }
 
-        // 样式生效、失效
-        if (oldValue === item.disableValue) {
-            if (!item.noStyle) {
-                document.documentElement.setAttribute(item.attrName ?? item.id, '')
+            // 样式生效、失效
+            if (oldValue === item.disableValue) {
+                if (!item.noStyle) {
+                    document.documentElement.setAttribute(item.attrName ?? item.id, '')
+                }
             }
-        }
-        if (newValue === item.disableValue) {
-            if (!item.noStyle) {
-                document.documentElement.removeAttribute(item.attrName ?? item.id)
+            if (newValue === item.disableValue) {
+                if (!item.noStyle) {
+                    document.documentElement.removeAttribute(item.attrName ?? item.id)
+                }
+            } else if (currValue.value !== oldValue) {
+                item
+                    .fn(currValue.value)
+                    ?.then()
+                    .catch((err) => {
+                        throw err
+                    })
             }
-        } else if (currValue.value !== oldValue) {
-            item
-                .fn(currValue.value)
-                ?.then()
-                .catch((err) => {
-                    throw err
-                })
+            BiliCleanerStorage.set<number>(item.id, currValue.value)
+        } catch (err) {
+            error(`NumberComp ${item.id} error`, err)
         }
-        BiliCleanerStorage.set<number>(item.id, currValue.value)
-    } catch (err) {
-        error(`NumberComp ${item.id} error`, err)
-    }
-})
+    },
+    { debounce: 100 },
+)
 </script>

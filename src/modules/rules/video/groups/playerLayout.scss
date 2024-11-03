@@ -30,7 +30,6 @@ html[webscreen-scrollable] {
     .webscreen-fix :is(.left-container, .playlist-container--left) {
         position: static !important;
         padding-top: 100vh;
-        min-width: 56vw !important;
     }
     .webscreen-fix :is(.left-container, .playlist-container--left) .video-info-container {
         height: fit-content;
@@ -107,7 +106,6 @@ html[fullscreen-scrollable] {
     .webscreen-fix :is(.left-container, .playlist-container--left) {
         position: static !important;
         padding-top: 100vh;
-        min-width: 56vw !important;
     }
     .webscreen-fix :is(.left-container, .playlist-container--left) .video-info-container {
         height: fit-content;
@@ -200,48 +198,74 @@ html[video-page-exchange-player-position] {
 
 // 普通播放 视频宽度调节
 html[normalscreen-width] {
-    /*
-        需避免右侧视频预览 inline player 影响
-        data-screen变化慢, 播放模式判断一律用:not(), 使用html元素的player-is-wide加快wide模式判断
-    */
+    $normal-width: min(calc(100vw - 400px), var(--normalscreen-width));
 
-    // 左列宽度
-    &:not([player-is-wide])
-        :is(.left-container, .playlist-container--left):has(
-            .bpx-player-container:not([data-screen='wide'], [data-screen='web'], [data-screen='full'])
+    // normal 调节评论宽度、播放器宽度，data-screen未赋值时按normal处理
+    &:not([player-is-wide]):has(
+            #bilibili-player [data-screen='normal'],
+            #bilibili-player .bpx-player-container:not([data-screen])
         ) {
-        flex-basis: min(calc(100vw - 400px), var(--normalscreen-width)) !important;
+        #playerWrap {
+            height: fit-content !important;
+
+            // placeholder
+            #bilibili-player-placeholder-top {
+                width: $normal-width !important;
+                aspect-ratio: 16 / 9 !important;
+            }
+
+            // player
+            #bilibili-player {
+                width: $normal-width !important;
+                height: fit-content;
+                .bpx-player-video-area {
+                    width: $normal-width !important;
+                    aspect-ratio: 16 / 9 !important;
+                }
+            }
+        }
+
+        // comment
+        .left-container,
+        .playlist-container--left {
+            width: min(calc(100vw - 400px), var(--normalscreen-width)) !important;
+        }
     }
 
-    // 播放器长宽
-    &:not([player-is-wide])
-        :is(.left-container, .playlist-container--left):has(
-            .bpx-player-container:not(
-                    [data-screen='wide'],
-                    [data-screen='web'],
-                    [data-screen='full'],
-                    [data-screen='mini']
-                )
-        )
-        :is(.bpx-player-video-area, video) {
-        width: 100% !important;
-        height: unset !important;
-        aspect-ratio: 16 / 9 !important;
+    // web + full 全屏滚动时调节评论宽度
+    &:has(#bilibili-player :is([data-screen='web'], [data-screen='full'])) {
+        .left-container,
+        .playlist-container--left {
+            width: min(calc(100vw - 400px), var(--normalscreen-width)) !important;
+        }
     }
 
-    // 播放器外层
-    &:not([player-is-wide])
-        :is(.left-container, .playlist-container--left):has(
-            .bpx-player-container:not(
-                    [data-screen='wide'],
-                    [data-screen='web'],
-                    [data-screen='full'],
-                    [data-screen='mini']
-                )
-        )
-        :is(.bpx-player-primary-area, .bpx-player-container, .bpx-docker-major, #bilibili-player, #playerWrap) {
-        width: min(calc(100vw - 400px), var(--normalscreen-width)) !important;
-        height: unset !important;
-        min-height: calc(min(calc(100vw - 400px), var(--normalscreen-width)) * 9 / 16) !important;
+    // mini 仅normal mini模式下调节宽度
+    &:not([player-is-wide]):has(#bilibili-player [data-screen='mini']) {
+        .left-container,
+        .playlist-container--left {
+            width: min(calc(100vw - 400px), var(--normalscreen-width)) !important;
+        }
+
+        // 高度填充
+        #playerWrap {
+            width: $normal-width !important;
+            height: fit-content !important;
+            #bilibili-player-placeholder {
+                position: static;
+                width: $normal-width !important;
+                height: fit-content !important;
+                #bilibili-player-placeholder-top {
+                    width: $normal-width !important;
+                    aspect-ratio: 16 / 9 !important;
+                }
+            }
+            #bilibili-player {
+                width: $normal-width !important;
+                height: fit-content !important;
+            }
+        }
     }
+
+    // wide 不调节任何宽度
 }

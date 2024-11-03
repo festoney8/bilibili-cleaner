@@ -1,23 +1,20 @@
 import { unsafeWindow } from '$'
 import { Item } from '../../../../types/item'
-import { isFirefox, waitForEle } from '../../../../utils/tool'
+import { waitForEle } from '../../../../utils/tool'
 
-/**
- * Firefox DOMMouseScroll无法被stopImmediatePropagation
- */
 let webScroll = false
 let fullScroll = false
-const fn = () => (event: Event) => event.stopImmediatePropagation()
+const fn = (event: Event) => event.stopImmediatePropagation()
 const disableTuneVolume = () => {
     if (!webScroll && !fullScroll) {
         window.addEventListener('mousewheel', fn, { capture: true })
-        // window.addEventListener('DOMMouseScroll', fn, { capture: true })
+        window.addEventListener('DOMMouseScroll', fn, { capture: true })
     }
 }
 const enableTuneVolume = () => {
     if (!(webScroll && fullScroll)) {
-        window.removeEventListener('mousewheel', fn)
-        // window.removeEventListener('DOMMouseScroll', fn)
+        window.removeEventListener('mousewheel', fn, { capture: true })
+        window.removeEventListener('DOMMouseScroll', fn, { capture: true })
     }
 }
 
@@ -49,9 +46,8 @@ export const bangumiPlayerLayoutItems: Item[] = [
         type: 'switch',
         id: 'webscreen-scrollable',
         name: '网页全屏时 页面可滚动',
-        description: ['播放器内滚轮调节音量失效', 'Firefox 不适用'],
+        description: ['播放器内滚轮调节音量失效'],
         enableFn: async () => {
-            // 禁用滚动调音量
             disableTuneVolume()
             webScroll = true
 
@@ -68,20 +64,18 @@ export const bangumiPlayerLayoutItems: Item[] = [
                 }
             })
         },
-        disableFn: enableTuneVolume,
+        disableFn: () => {
+            enableTuneVolume()
+            webScroll = false
+        },
         enableFnRunAt: 'document-end',
     },
     {
         type: 'switch',
         id: 'fullscreen-scrollable',
         name: '全屏时 页面可滚动 (实验功能)',
-        description: ['播放器内滚轮调节音量失效', '点击全屏按钮生效，双击全屏无效', 'Firefox 不适用'],
+        description: ['播放器内滚轮调节音量失效', '点击全屏按钮生效，双击全屏无效'],
         enableFn: async () => {
-            if (isFirefox()) {
-                return
-            }
-
-            // 禁用滚动调音量
             disableTuneVolume()
             fullScroll = true
 
@@ -142,7 +136,10 @@ export const bangumiPlayerLayoutItems: Item[] = [
                 }
             }, 200)
         },
-        disableFn: enableTuneVolume,
+        disableFn: () => {
+            enableTuneVolume()
+            fullScroll = false
+        },
         enableFnRunAt: 'document-end',
     },
     {

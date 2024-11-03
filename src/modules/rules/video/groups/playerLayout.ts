@@ -1,9 +1,24 @@
 import { unsafeWindow } from '$'
 import { Item } from '../../../../types/item'
-import { isFirefox, waitForEle } from '../../../../utils/tool'
+import { waitForEle } from '../../../../utils/tool'
 import { wideScreenManager } from '../../../../utils/widePlayer'
 
-const disableAdjustVolume = () => {}
+// 禁用滚动调音量
+let webScroll = false
+let fullScroll = false
+const fn = (event: Event) => event.stopImmediatePropagation()
+const disableTuneVolume = () => {
+    if (!webScroll && !fullScroll) {
+        window.addEventListener('mousewheel', fn, { capture: true })
+        window.addEventListener('DOMMouseScroll', fn, { capture: true })
+    }
+}
+const enableTuneVolume = () => {
+    if (!(webScroll && fullScroll)) {
+        window.removeEventListener('mousewheel', fn, { capture: true })
+        window.removeEventListener('DOMMouseScroll', fn, { capture: true })
+    }
+}
 
 export const videoPlayerLayoutItems: Item[] = [
     {
@@ -32,11 +47,10 @@ export const videoPlayerLayoutItems: Item[] = [
         type: 'switch',
         id: 'webscreen-scrollable',
         name: '网页全屏时 页面可滚动',
-        description: ['播放器内滚轮调节音量失效', 'Firefox 不适用'],
+        description: ['播放器内滚轮调节音量失效'],
         enableFn: async () => {
-            // 禁用滚动调音量, firefox不生效
-            document.removeEventListener('wheel', disableAdjustVolume)
-            document.addEventListener('wheel', disableAdjustVolume)
+            disableTuneVolume()
+            webScroll = true
 
             // 监听网页全屏按钮出现
             waitForEle(document.body, '.bpx-player-ctrl-web', (node: HTMLElement): boolean => {
@@ -51,21 +65,20 @@ export const videoPlayerLayoutItems: Item[] = [
                 }
             })
         },
-        disableFn: async () => document.removeEventListener('wheel', disableAdjustVolume),
+        disableFn: () => {
+            enableTuneVolume()
+            webScroll = false
+        },
         enableFnRunAt: 'document-end',
     },
     {
         type: 'switch',
         id: 'fullscreen-scrollable',
         name: '全屏时 页面可滚动 (实验功能)',
-        description: ['播放器内滚轮调节音量失效', '点击全屏按钮时生效，双击全屏无效', 'Firefox 不适用'],
+        description: ['播放器内滚轮调节音量失效', '点击全屏按钮时生效，双击全屏无效'],
         enableFn: async () => {
-            if (isFirefox()) {
-                return
-            }
-            // 禁用滚动调音量
-            document.removeEventListener('wheel', disableAdjustVolume)
-            document.addEventListener('wheel', disableAdjustVolume)
+            disableTuneVolume()
+            fullScroll = true
 
             let cnt = 0
             const id = setInterval(() => {
@@ -124,7 +137,10 @@ export const videoPlayerLayoutItems: Item[] = [
                 }
             }, 200)
         },
-        disableFn: async () => document.removeEventListener('wheel', disableAdjustVolume),
+        disableFn: () => {
+            enableTuneVolume()
+            fullScroll = false
+        },
         enableFnRunAt: 'document-end',
     },
     {

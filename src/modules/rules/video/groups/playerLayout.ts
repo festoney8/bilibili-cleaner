@@ -1,6 +1,6 @@
 import { unsafeWindow } from '$'
 import { Item } from '../../../../types/item'
-import { isFirefox, waitForEle } from '../../../../utils/tool'
+import { waitForEle } from '../../../../utils/tool'
 import { wideScreenManager } from '../../../../utils/widePlayer'
 
 // 禁用滚动调音量
@@ -75,12 +75,8 @@ export const videoPlayerLayoutItems: Item[] = [
         type: 'switch',
         id: 'fullscreen-scrollable',
         name: '全屏时 页面可滚动 (实验功能)',
-        description: ['播放器内滚轮调节音量失效', '点击全屏按钮时生效，双击全屏无效', 'Firefox 不适用'],
+        description: ['播放器内滚轮调节音量失效', '点击全屏按钮时生效，双击全屏无效'],
         enableFn: async () => {
-            if (isFirefox()) {
-                return
-            }
-
             disableTuneVolume()
             fullScroll = true
 

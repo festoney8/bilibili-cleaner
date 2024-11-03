@@ -458,7 +458,6 @@ export const commentFilterDynamicGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.username.statusKey,
                 name: '启用 评论用户过滤 (右键单击用户名)',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentUsernameFilter.enable()
@@ -492,7 +491,6 @@ export const commentFilterDynamicGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.content.statusKey,
                 name: '启用 评论关键词过滤',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentContentFilter.enable()
@@ -527,7 +525,6 @@ export const commentFilterDynamicGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.callBot.statusKey,
                 name: '过滤 召唤AI的评论',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentCallBotFilter.enable()
@@ -542,7 +539,6 @@ export const commentFilterDynamicGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.bot.statusKey,
                 name: '过滤 AI发布的评论',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentBotFilter.enable()
@@ -557,7 +553,6 @@ export const commentFilterDynamicGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.isAD.statusKey,
                 name: '过滤 带货评论 (实验功能)',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     fetchHook.addPostFn(
@@ -599,7 +594,6 @@ export const commentFilterDynamicGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.callUserOnly.statusKey,
                 name: '过滤 只含 @其他用户 的评论',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentCallUserOnlyFilter.enable()
@@ -614,7 +608,6 @@ export const commentFilterDynamicGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.callUser.statusKey,
                 name: '过滤 包含 @其他用户 的评论',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentCallUserFilter.enable()
@@ -634,7 +627,6 @@ export const commentFilterDynamicGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.level.statusKey,
                 name: '启用 用户等级过滤',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentLevelFilter.enable()
@@ -668,7 +660,6 @@ export const commentFilterDynamicGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.white.root.statusKey,
                 name: '一级评论(主评论) 免过滤',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     isRootWhite = true
@@ -683,7 +674,6 @@ export const commentFilterDynamicGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.white.sub.statusKey,
                 name: '二级评论(回复) 免过滤',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     isSubWhite = true
@@ -698,7 +688,6 @@ export const commentFilterDynamicGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.white.isUp.statusKey,
                 name: 'UP主的评论 免过滤',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentIsUpFilter.enable()
@@ -713,7 +702,6 @@ export const commentFilterDynamicGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.white.isPin.statusKey,
                 name: '置顶评论 免过滤',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentIsPinFilter.enable()
@@ -728,7 +716,6 @@ export const commentFilterDynamicGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.white.isNote.statusKey,
                 name: '笔记/图片评论 免过滤',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentIsNoteFilter.enable()
@@ -743,7 +730,6 @@ export const commentFilterDynamicGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.white.isLink.statusKey,
                 name: '含超链接的评论 免过滤',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentIsLinkFilter.enable()

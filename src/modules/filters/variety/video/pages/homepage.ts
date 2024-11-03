@@ -26,6 +26,7 @@ import {
     VideoTitleFilter,
     VideoUploaderFilter,
     VideoUploaderKeywordFilter,
+    VideoViewsFilter,
 } from '../subFilters/black'
 import { VideoIsFollowWhiteFilter, VideoTitleWhiteFilter, VideoUploaderWhiteFilter } from '../subFilters/white'
 
@@ -34,6 +35,10 @@ const GM_KEYS = {
         duration: {
             statusKey: 'homepage-duration-filter-status',
             valueKey: 'global-duration-filter-value',
+        },
+        views: {
+            statusKey: 'homepage-views-filter-status',
+            valueKey: 'global-views-filter-value',
         },
         uploader: {
             statusKey: 'homepage-uploader-filter-status',
@@ -77,6 +82,18 @@ const selectorFns = {
         const duration = video.querySelector('.bili-video-card__stats__duration')?.textContent?.trim()
         return duration && convertTimeToSec(duration)
     },
+    views: (video: HTMLElement): SelectorResult => {
+        const text = video.querySelector('.bili-video-card__stats--text')?.textContent?.trim()
+        if (text) {
+            if (/\d+(?:\.\d+)?万/.test(text)) {
+                return parseFloat(text.replace('万', '')) * 10000
+            }
+            if (/^\d+$/.test(text)) {
+                return parseFloat(text)
+            }
+        }
+        return undefined
+    },
     title: (video: HTMLElement): SelectorResult => {
         return video.querySelector('.bili-video-card__info--tit a')?.textContent?.trim()
     },
@@ -104,6 +121,7 @@ class VideoFilterHomepage implements IMainFilter {
     // 黑名单
     videoBvidFilter = new VideoBvidFilter()
     videoDurationFilter = new VideoDurationFilter()
+    videoViewsFilter = new VideoViewsFilter()
     videoTitleFilter = new VideoTitleFilter()
     videoPubdateFilter = new VideoPubdateFilter()
     videoUploaderFilter = new VideoUploaderFilter()
@@ -118,6 +136,7 @@ class VideoFilterHomepage implements IMainFilter {
         // 黑名单
         this.videoBvidFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.bvid.valueKey, []))
         this.videoDurationFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.duration.valueKey, 0))
+        this.videoViewsFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.views.valueKey, 0))
         this.videoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.title.valueKey, []))
         this.videoPubdateFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.pubdate.valueKey, 0))
         this.videoUploaderFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.uploader.valueKey, []))
@@ -136,6 +155,7 @@ class VideoFilterHomepage implements IMainFilter {
             !(
                 this.videoBvidFilter.isEnable ||
                 this.videoDurationFilter.isEnable ||
+                this.videoViewsFilter.isEnable ||
                 this.videoTitleFilter.isEnable ||
                 this.videoUploaderFilter.isEnable ||
                 this.videoUploaderKeywordFilter.isEnable ||
@@ -167,6 +187,7 @@ class VideoFilterHomepage implements IMainFilter {
                         `VideoFilterHomepage`,
                         `bvid: ${selectorFns.bvid(v)}`,
                         `duration: ${selectorFns.duration(v)}`,
+                        `views: ${selectorFns.views(v)}`,
                         `title: ${selectorFns.title(v)}`,
                         `uploader: ${selectorFns.uploader(v)}`,
                         `pubdate: ${selectorFns.pubdate(v)}`,
@@ -180,6 +201,7 @@ class VideoFilterHomepage implements IMainFilter {
         const blackPairs: SubFilterPair[] = []
         this.videoBvidFilter.isEnable && blackPairs.push([this.videoBvidFilter, selectorFns.bvid])
         this.videoDurationFilter.isEnable && blackPairs.push([this.videoDurationFilter, selectorFns.duration])
+        this.videoViewsFilter.isEnable && blackPairs.push([this.videoViewsFilter, selectorFns.views])
         this.videoTitleFilter.isEnable && blackPairs.push([this.videoTitleFilter, selectorFns.title])
         this.videoPubdateFilter.isEnable && blackPairs.push([this.videoPubdateFilter, selectorFns.pubdate])
         this.videoUploaderFilter.isEnable && blackPairs.push([this.videoUploaderFilter, selectorFns.uploader])
@@ -249,7 +271,6 @@ export const videoFilterHomepageGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.duration.statusKey,
                 name: '启用 时长过滤',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoDurationFilter.enable()
@@ -312,7 +333,6 @@ export const videoFilterHomepageGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.uploaderKeyword.statusKey,
                 name: '启用 UP主昵称关键词过滤',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoUploaderKeywordFilter.enable()
@@ -349,7 +369,6 @@ export const videoFilterHomepageGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.title.statusKey,
                 name: '启用 标题关键词过滤',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoTitleFilter.enable()
@@ -384,7 +403,6 @@ export const videoFilterHomepageGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.bvid.statusKey,
                 name: '启用 BV号过滤 (右键单击标题)',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoBvidFilter.enable()
@@ -416,7 +434,6 @@ export const videoFilterHomepageGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.pubdate.statusKey,
                 name: '启用 发布日期过滤',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoPubdateFilter.enable()
@@ -440,6 +457,43 @@ export const videoFilterHomepageGroups: Group[] = [
                 addonText: '天',
                 fn: (value: number) => {
                     mainFilter.videoPubdateFilter.setParam(value)
+                    mainFilter.checkFull()
+                },
+            },
+        ],
+    },
+    {
+        name: '播放量过滤',
+        fold: true,
+        items: [
+            {
+                type: 'switch',
+                id: GM_KEYS.black.views.statusKey,
+                name: '启用 播放量过滤',
+                description: ['不推荐启用', '会导致刚发布的优质视频被过滤'],
+                noStyle: true,
+                enableFn: () => {
+                    mainFilter.videoViewsFilter.enable()
+                    mainFilter.checkFull()
+                },
+                disableFn: () => {
+                    mainFilter.videoViewsFilter.disable()
+                    mainFilter.checkFull()
+                },
+            },
+            {
+                type: 'number',
+                id: GM_KEYS.black.views.valueKey,
+                name: '设定最低播放量（0~10万）',
+                noStyle: true,
+                minValue: 0,
+                maxValue: 100000,
+                step: 1,
+                defaultValue: 0,
+                disableValue: 0,
+                addonText: '次',
+                fn: (value: number) => {
+                    mainFilter.videoViewsFilter.setParam(value)
                     mainFilter.checkFull()
                 },
             },
@@ -495,7 +549,6 @@ export const videoFilterHomepageGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.white.title.statusKey,
                 name: '启用 标题关键词白名单',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoTitleWhiteFilter.enable()

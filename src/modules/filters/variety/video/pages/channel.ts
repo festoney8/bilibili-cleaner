@@ -398,6 +398,7 @@ export const videoFilterChannelGroups: Group[] = [
     },
     {
         name: '发布日期过滤',
+        fold: true,
         items: [
             {
                 type: 'switch',

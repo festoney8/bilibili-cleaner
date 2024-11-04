@@ -48,7 +48,7 @@ body:
     id: env_os
     attributes:
       label: 操作系统
-      placeholder: 如 Win10 / Win11 / MacOS
+      placeholder: 如 Windows 10 / Windows 11 / MacOS
     validations:
       required: true
 
@@ -108,7 +108,7 @@ body:
   - type: dropdown
     id: check_plugin_conflict
     attributes:
-      label: 禁用掉对 B 站生效的浏览器插件后，仍出现问题
+      label: 禁用掉对 B 站生效的其他浏览器插件（不含暴力猴/篡改猴），仍出现问题
       options:
         - 是
         - 否

@@ -240,7 +240,6 @@ export const videoFilterChannelGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.duration.statusKey,
                 name: '启用 时长过滤',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoDurationFilter.enable()
@@ -303,7 +302,6 @@ export const videoFilterChannelGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.uploaderKeyword.statusKey,
                 name: '启用 UP主昵称关键词过滤',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoUploaderKeywordFilter.enable()
@@ -340,7 +338,6 @@ export const videoFilterChannelGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.title.statusKey,
                 name: '启用 标题关键词过滤',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoTitleFilter.enable()
@@ -375,7 +372,6 @@ export const videoFilterChannelGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.bvid.statusKey,
                 name: '启用 BV号过滤 (右键单击标题)',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoBvidFilter.enable()
@@ -402,12 +398,12 @@ export const videoFilterChannelGroups: Group[] = [
     },
     {
         name: '发布日期过滤',
+        fold: true,
         items: [
             {
                 type: 'switch',
                 id: GM_KEYS.black.pubdate.statusKey,
                 name: '启用 发布日期过滤',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoPubdateFilter.enable()
@@ -471,7 +467,6 @@ export const videoFilterChannelGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.white.title.statusKey,
                 name: '启用 标题关键词白名单',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoTitleWhiteFilter.enable()

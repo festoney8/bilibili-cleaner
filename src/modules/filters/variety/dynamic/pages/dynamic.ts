@@ -195,7 +195,6 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.uploader.statusKey,
                 name: '启用 动态发布人过滤 (右键单击用户名)',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.dynUploaderFilter.enable()
@@ -227,7 +226,6 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.duration.statusKey,
                 name: '启用 时长过滤',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.dynDurationFilter.enable()
@@ -262,7 +260,6 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.title.statusKey,
                 name: '启用 标题关键词过滤',
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.dynVideoTitleFilter.enable()
@@ -298,7 +295,6 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 id: GM_KEYS.black.content.statusKey,
                 name: '启用 动态内容关键词过滤',
                 description: ['包含被转发动态内容', '不含动态内视频信息'],
-                defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.dynContentFilter.enable()

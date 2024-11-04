@@ -251,6 +251,7 @@ html[normalscreen-width] {
         #playerWrap {
             width: $normal-width !important;
             height: fit-content !important;
+            display: flex !important;
             #bilibili-player-placeholder {
                 position: static;
                 width: $normal-width !important;

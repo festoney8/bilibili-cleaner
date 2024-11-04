@@ -91,11 +91,11 @@ html[video-page-hide-right-container-section-height] {
     .video-sections-content-list,
     .video-pod__body {
         height: fit-content !important;
-        max-height: 350px !important;
+        max-height: 370px !important;
     }
 }
 
-// 隐藏 视频合集 自动连播
+// 隐藏 视频合集 自动连播开关
 html[video-page-hide-right-container-section-next-btn] {
     .base-video-sections-v1 .next-button {
         display: none !important;
@@ -155,13 +155,6 @@ html[video-page-hide-right-container-section-subscribe] {
         display: none !important;
     }
     .video-pod__header .subscribe-btn {
-        display: none !important;
-    }
-}
-
-// 隐藏 分P视频 自动连播
-html[video-page-hide-right-container-multi-page-next-btn] {
-    #multi_page .next-button {
         display: none !important;
     }
 }

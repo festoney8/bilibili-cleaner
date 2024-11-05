@@ -1,24 +1,27 @@
-// 优化 右栏底部吸附 (实验功能) 搭配“全屏时页面可滚动”使用
+// 优化 右栏底部吸附
 html[video-page-right-container-sticky-optimize] {
-    // 修复右栏底部吸附计算top时位置跳变
-    .video-container-v1 .right-container {
+    .right-container {
         display: flex !important;
-    }
-    .video-container-v1 .right-container .right-container-inner {
-        position: sticky !important;
-        top: unset !important;
-        align-self: flex-end !important;
+        .right-container-inner {
+            width: 100% !important;
+            position: sticky !important;
+            top: unset !important;
+            align-self: flex-end !important;
+            min-height: calc(100vh - 64px) !important;
 
-        // fix #87, #84
-        max-width: 100% !important;
-        padding-bottom: 0 !important;
+            // fix #87, #84
+            max-width: 100% !important;
+            padding-bottom: 0 !important;
+        }
     }
 
     // 小窗播放器挡住下方视频 #87
-    body:has(.mini-player-window.on) .video-container-v1 .right-container .right-container-inner {
+    body:has(.mini-player-window.on) .right-container .right-container-inner {
+        min-height: calc(100vh - 304px) !important;
         bottom: 240px !important;
     }
-    body:has(.mini-player-window:not(.on)) .video-container-v1 .right-container .right-container-inner {
+    body:has(.mini-player-window:not(.on)) .right-container .right-container-inner {
+        min-height: calc(100vh - 74px) !important;
         bottom: 10px !important;
     }
 }

@@ -268,5 +268,10 @@ html[normalscreen-width] {
         }
     }
 
-    // wide 不调节任何宽度
+    // wide 仅wide mini模式下调节背景色，去除切换小窗模式时宽度跳变
+    &[player-is-wide]:has(#bilibili-player [data-screen='mini']) {
+        #bilibili-player {
+            background-color: black !important;
+        }
+    }
 }

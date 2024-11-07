@@ -49,10 +49,10 @@ const GM_KEYS = {
             statusKey: 'dynamic-comment-call-user-filter-status',
         },
         callUserOnly: {
-            statusKey: 'video-comment-call-user-only-filter-status',
+            statusKey: 'dynamic-comment-call-user-only-filter-status',
         },
         isAD: {
-            statusKey: 'video-comment-ad-filter-status',
+            statusKey: 'dynamic-comment-ad-filter-status',
         },
     },
     white: {

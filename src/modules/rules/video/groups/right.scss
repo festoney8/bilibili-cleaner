@@ -1,24 +1,27 @@
-// 优化 右栏底部吸附 (实验功能) 搭配“全屏时页面可滚动”使用
+// 优化 右栏底部吸附
 html[video-page-right-container-sticky-optimize] {
-    // 修复右栏底部吸附计算top时位置跳变
-    .video-container-v1 .right-container {
+    .right-container {
         display: flex !important;
-    }
-    .video-container-v1 .right-container .right-container-inner {
-        position: sticky !important;
-        top: unset !important;
-        align-self: flex-end !important;
+        .right-container-inner {
+            width: 100% !important;
+            position: sticky !important;
+            top: unset !important;
+            align-self: flex-end !important;
+            min-height: calc(100vh - 64px) !important;
 
-        // fix #87, #84
-        max-width: 100% !important;
-        padding-bottom: 0 !important;
+            // fix #87, #84
+            max-width: 100% !important;
+            padding-bottom: 0 !important;
+        }
     }
 
     // 小窗播放器挡住下方视频 #87
-    body:has(.mini-player-window.on) .video-container-v1 .right-container .right-container-inner {
+    body:has(.mini-player-window.on) .right-container .right-container-inner {
+        min-height: calc(100vh - 304px) !important;
         bottom: 240px !important;
     }
-    body:has(.mini-player-window:not(.on)) .video-container-v1 .right-container .right-container-inner {
+    body:has(.mini-player-window:not(.on)) .right-container .right-container-inner {
+        min-height: calc(100vh - 74px) !important;
         bottom: 10px !important;
     }
 }
@@ -91,11 +94,11 @@ html[video-page-hide-right-container-section-height] {
     .video-sections-content-list,
     .video-pod__body {
         height: fit-content !important;
-        max-height: 350px !important;
+        max-height: 340px !important;
     }
 }
 
-// 隐藏 视频合集 自动连播
+// 隐藏 视频合集 自动连播开关
 html[video-page-hide-right-container-section-next-btn] {
     .base-video-sections-v1 .next-button {
         display: none !important;
@@ -155,13 +158,6 @@ html[video-page-hide-right-container-section-subscribe] {
         display: none !important;
     }
     .video-pod__header .subscribe-btn {
-        display: none !important;
-    }
-}
-
-// 隐藏 分P视频 自动连播
-html[video-page-hide-right-container-multi-page-next-btn] {
-    #multi_page .next-button {
         display: none !important;
     }
 }

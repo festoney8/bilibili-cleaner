@@ -4,8 +4,7 @@ export const videoRightItems: Item[] = [
     {
         type: 'switch',
         id: 'video-page-right-container-sticky-optimize',
-        name: '优化 全屏滚动时右栏底部吸附 (实验功能)',
-        description: ['搭配 "全屏时页面可滚动" 使用'],
+        name: '优化 右栏底部吸附',
     },
     {
         type: 'switch',
@@ -31,7 +30,7 @@ export const videoRightItems: Item[] = [
     {
         type: 'switch',
         id: 'video-page-hide-right-container-reco-list-next-play-next-button',
-        name: '隐藏 自动连播按钮',
+        name: '隐藏 自动连播开关',
     },
     {
         type: 'switch',
@@ -40,14 +39,14 @@ export const videoRightItems: Item[] = [
     },
     {
         type: 'switch',
-        id: 'video-page-hide-right-container-section-height',
-        name: '优化 视频合集列表高度',
-        defaultEnable: true,
+        id: 'video-page-hide-right-container-section-next-btn',
+        name: '隐藏 视频合集 自动连播开关',
     },
     {
         type: 'switch',
-        id: 'video-page-hide-right-container-section-next-btn',
-        name: '隐藏 视频合集 自动连播',
+        id: 'video-page-hide-right-container-section-height',
+        name: '优化 视频合集列表高度',
+        defaultEnable: true,
     },
     {
         type: 'switch',
@@ -64,11 +63,6 @@ export const videoRightItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-right-container-section-subscribe',
         name: '隐藏 视频合集 订阅合集',
-    },
-    {
-        type: 'switch',
-        id: 'video-page-hide-right-container-multi-page-next-btn',
-        name: '隐藏 分P视频 自动连播',
     },
     {
         type: 'switch',

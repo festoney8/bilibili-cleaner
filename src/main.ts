@@ -29,7 +29,7 @@ const main = () => {
     // 创建插件面板用shadowDOM节点
     const wrap = document.createElement('div')
     wrap.id = 'bili-cleaner'
-    const root = wrap.attachShadow({ mode: 'open' })
+    const root = wrap.attachShadow({ mode: 'closed' })
     const style = document.createElement('style')
     style.textContent = css
     root.appendChild(style)

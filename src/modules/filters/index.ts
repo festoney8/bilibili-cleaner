@@ -102,13 +102,13 @@ export const commentFilters: Filter[] = [
         checkFn: () => isPageVideo() || isPageBangumi() || isPagePlaylist(),
     },
     {
-        name: '动态页/空间页 动态评论过滤', // 新版空间页评论区
+        name: '动态页 动态评论过滤',
         groups: commentFilterDynamicGroups,
         entry: commentFilterDynamicEntry,
-        checkFn: () => isPageDynamic() || isPageSpace(),
+        checkFn: () => isPageDynamic(),
     },
     {
-        name: '空间页 动态评论过滤', // 旧版空间页评论区
+        name: '空间页 动态评论过滤',
         groups: commentFilterSpaceGroups,
         entry: commentFilterSpaceEntry,
         checkFn: () => isPageSpace(),

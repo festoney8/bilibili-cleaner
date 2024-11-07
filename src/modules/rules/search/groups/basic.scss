@@ -27,6 +27,13 @@ html[hide-search-page-activity-game-list] {
     }
 }
 
+// 隐藏 搜索结果中的直播
+html[hide-search-page-live-room-result] {
+    .video-list > div:has([href*='live.bilibili.com']) {
+        display: none !important;
+    }
+}
+
 // 隐藏 弹幕数量
 html[hide-search-page-danmaku-count] {
     .bili-video-card .bili-video-card__stats--left .bili-video-card__stats--item:nth-child(2) {

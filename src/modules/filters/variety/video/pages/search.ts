@@ -100,14 +100,22 @@ const selectorFns = {
             return false
         }
         // 标题 Unicode Normalization
-        if (
-            video
-                .querySelector('.bili-video-card__info--tit')
-                ?.textContent?.trim()
-                .normalize('NFKD')
-                .toLowerCase()
-                .includes(searchKeyword)
-        ) {
+        const title = video
+            .querySelector('.bili-video-card__info--tit')
+            ?.textContent?.trim()
+            .normalize('NFKD')
+            .toLowerCase()
+        if (!title) {
+            return true
+        }
+        if (title.replaceAll(' ', '').includes(searchKeyword.replaceAll(' ', ''))) {
+            return false
+        }
+        // 尽量少筛点
+        const titleSet = new Set(title.replaceAll(' ', ''))
+        const keywordSet = new Set(searchKeyword.replaceAll(' ', ''))
+        const same = keywordSet.intersection(titleSet)
+        if (same.size > keywordSet.size * 0.7) {
             return false
         }
         return true // 不相关视频
@@ -262,7 +270,7 @@ export const videoFilterSearchGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.relativity.statusKey,
                 name: '启用 相关性过滤 (实验功能)',
-                description: ['过滤搜索结果，仅保留标题、昵称相关', '比较激进，会误伤同义词'],
+                description: ['过滤搜索结果，仅保留标题、昵称相关', '非常激进，会误伤同义词和相似话题'],
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.videoRelativityFilter.enable()

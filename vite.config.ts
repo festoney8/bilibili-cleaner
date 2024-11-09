@@ -42,6 +42,7 @@ export default defineConfig({
                     '*://live.bilibili.com/p/html/*',
                     '*://live.bilibili.com/live-room-play-game-together',
                     '*://www.bilibili.com/blackboard/comment-detail.html*',
+                    '*://www.bilibili.com/blackboard/newplayer.html*',
                 ],
                 icon: 'https://www.bilibili.com/favicon.ico',
                 'run-at': 'document-start',

@@ -15,7 +15,6 @@ import { coreCheck } from '../../../core/core'
 import {
     VideoBvidFilter,
     VideoDurationFilter,
-    VideoRelativityFilter,
     VideoTitleFilter,
     VideoUploaderFilter,
     VideoUploaderKeywordFilter,
@@ -43,10 +42,6 @@ const GM_KEYS = {
         title: {
             statusKey: 'search-title-keyword-filter-status',
             valueKey: 'global-title-keyword-filter-value',
-        },
-        // 视频与搜索关键词的相关性
-        relativity: {
-            statusKey: 'search-relativity-filter-status',
         },
     },
     white: {
@@ -80,46 +75,6 @@ const selectorFns = {
     uploader: (video: HTMLElement): SelectorResult => {
         return video.querySelector('.bili-video-card__info--author')?.textContent?.trim()
     },
-    relativity: (video: HTMLElement): SelectorResult => {
-        // 骨架
-        if (video.querySelector('.bili-video-card__skeleton:not(.hide)')) {
-            return false
-        }
-        // 标题含关键词
-        if (video.querySelector('.bili-video-card__info--tit .keyword')) {
-            return false
-        }
-        // UP 昵称包含关键词
-        if (
-            video
-                .querySelector('.bili-video-card__info--author')
-                ?.textContent?.trim()
-                .toLowerCase()
-                .includes(searchKeyword)
-        ) {
-            return false
-        }
-        // 标题 Unicode Normalization
-        const title = video
-            .querySelector('.bili-video-card__info--tit')
-            ?.textContent?.trim()
-            .normalize('NFKD')
-            .toLowerCase()
-        if (!title) {
-            return true
-        }
-        if (title.replaceAll(' ', '').includes(searchKeyword.replaceAll(' ', ''))) {
-            return false
-        }
-        // 尽量少筛点
-        const titleSet = new Set(title.replaceAll(' ', ''))
-        const keywordSet = new Set(searchKeyword.replaceAll(' ', ''))
-        const same = keywordSet.intersection(titleSet)
-        if (same.size > keywordSet.size * 0.7) {
-            return false
-        }
-        return true // 不相关视频
-    },
 }
 
 class VideoFilterSearch implements IMainFilter {
@@ -131,7 +86,6 @@ class VideoFilterSearch implements IMainFilter {
     videoTitleFilter = new VideoTitleFilter()
     videoUploaderFilter = new VideoUploaderFilter()
     videoUploaderKeywordFilter = new VideoUploaderKeywordFilter()
-    videoRelativityFilter = new VideoRelativityFilter()
 
     // 白名单
     videoUploaderWhiteFilter = new VideoUploaderWhiteFilter()
@@ -160,8 +114,7 @@ class VideoFilterSearch implements IMainFilter {
                 this.videoDurationFilter.isEnable ||
                 this.videoTitleFilter.isEnable ||
                 this.videoUploaderFilter.isEnable ||
-                this.videoUploaderKeywordFilter.isEnable ||
-                this.videoRelativityFilter.isEnable
+                this.videoUploaderKeywordFilter.isEnable
             )
         ) {
             revertAll = true
@@ -192,7 +145,6 @@ class VideoFilterSearch implements IMainFilter {
                         `duration: ${selectorFns.duration(v)}`,
                         `title: ${selectorFns.title(v)}`,
                         `uploader: ${selectorFns.uploader(v)}`,
-                        `relativity: ${selectorFns.relativity(v)}`,
                     ].join('\n'),
                 )
             })
@@ -206,7 +158,6 @@ class VideoFilterSearch implements IMainFilter {
         this.videoUploaderFilter.isEnable && blackPairs.push([this.videoUploaderFilter, selectorFns.uploader])
         this.videoUploaderKeywordFilter.isEnable &&
             blackPairs.push([this.videoUploaderKeywordFilter, selectorFns.uploader])
-        this.videoRelativityFilter.isEnable && blackPairs.push([this.videoRelativityFilter, selectorFns.relativity])
 
         const whitePairs: SubFilterPair[] = []
         this.videoUploaderWhiteFilter.isEnable && whitePairs.push([this.videoUploaderWhiteFilter, selectorFns.uploader])
@@ -263,26 +214,6 @@ export const videoFilterSearchEntry = async () => {
 }
 
 export const videoFilterSearchGroups: Group[] = [
-    {
-        name: '相关性过滤',
-        items: [
-            {
-                type: 'switch',
-                id: GM_KEYS.black.relativity.statusKey,
-                name: '启用 相关性过滤 (实验功能)',
-                description: ['过滤搜索结果，仅保留标题、昵称相关', '非常激进，会误伤同义词和相似话题'],
-                noStyle: true,
-                enableFn: () => {
-                    mainFilter.videoRelativityFilter.enable()
-                    mainFilter.checkFull()
-                },
-                disableFn: () => {
-                    mainFilter.videoRelativityFilter.disable()
-                    mainFilter.checkFull()
-                },
-            },
-        ],
-    },
     {
         name: '时长过滤',
         items: [

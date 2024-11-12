@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { watchDebounced } from '@vueuse/core'
+import { watchThrottled } from '@vueuse/core'
 import { ref } from 'vue'
 import { IStringItem } from '../../types/item'
 import { error } from '../../utils/logger'
@@ -23,7 +23,7 @@ const item = defineProps<IStringItem>()
 
 const currValue = ref(BiliCleanerStorage.get(item.id, item.defaultValue))
 
-watchDebounced(
+watchThrottled(
     currValue,
     (newValue, oldValue) => {
         try {
@@ -50,6 +50,6 @@ watchDebounced(
             error(`StringComp ${item.id} error`, err)
         }
     },
-    { debounce: 100 },
+    { throttle: 50 },
 )
 </script>

@@ -24,6 +24,11 @@ export const searchBasicItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'hide-search-page-live-room-result',
+        name: '隐藏 搜索结果中的直播',
+    },
+    {
+        type: 'switch',
         id: 'hide-search-page-danmaku-count',
         name: '隐藏 弹幕数量',
         defaultEnable: true,

@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { watchDebounced } from '@vueuse/core'
+import { watchThrottled } from '@vueuse/core'
 import { ref } from 'vue'
 import { INumberItem } from '../../types/item'
 import { error } from '../../utils/logger'
@@ -25,7 +25,7 @@ const item = defineProps<INumberItem>()
 
 const currValue = ref(BiliCleanerStorage.get(item.id, item.defaultValue))
 
-watchDebounced(
+watchThrottled(
     currValue,
     (newValue, oldValue) => {
         try {
@@ -59,6 +59,6 @@ watchDebounced(
             error(`NumberComp ${item.id} error`, err)
         }
     },
-    { debounce: 100 },
+    { throttle: 50 },
 )
 </script>

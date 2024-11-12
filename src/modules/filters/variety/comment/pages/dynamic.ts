@@ -14,6 +14,7 @@ import ShadowInstance from '../../../../../utils/shadow'
 import { BiliCleanerStorage } from '../../../../../utils/storage'
 import { orderedUniq, showEle } from '../../../../../utils/tool'
 import { coreCheck } from '../../../core/core'
+import { bots } from '../extra/bots'
 import {
     CommentBotFilter,
     CommentCallBotFilter,
@@ -190,47 +191,6 @@ class CommentFilterDynamic implements IMainFilter {
 
     init() {
         // 黑名单
-        const bots = [
-            // 8455326 @机器工具人
-            // 234978716 @有趣的程序员
-            // 1141159409 @AI视频小助理
-            // 437175450 @AI视频小助理总结一下 (误伤)
-            // 1692825065 @AI笔记侠
-            // 690155730 @AI视频助手
-            // 689670224 @哔哩哔理点赞姬
-            // 3494380876859618 @课代表猫
-            // 1168527940 @AI课代表呀
-            // 439438614 @木几萌Moe
-            // 1358327273 @星崽丨StarZai
-            // 3546376048741135 @AI沈阳美食家
-            // 1835753760 @AI识片酱 // 听歌识曲，免除过滤
-            // 9868463 @AI头脑风暴
-            // 358243654 @GPT_5
-            // 393788832 @Juice_AI
-            // 91394217 @AI全文总结
-            // 473018527 @AI视频总结
-            // 3546639035795567 @AI总结视频
-            // 605801219 @AI工具集
-            '机器工具人',
-            '有趣的程序员',
-            'AI视频小助理',
-            'AI视频小助理总结一下',
-            'AI笔记侠',
-            'AI视频助手',
-            '哔哩哔理点赞姬',
-            '课代表猫',
-            'AI课代表呀',
-            '木几萌Moe',
-            '星崽丨StarZai',
-            'AI沈阳美食家',
-            'AI头脑风暴',
-            'GPT_5',
-            'Juice_AI',
-            'AI全文总结',
-            'AI视频总结',
-            'AI总结视频',
-            'AI工具集',
-        ]
         this.commentUsernameFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.username.valueKey, []))
         this.commentContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))
         this.commentLevelFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.level.valueKey, 0))

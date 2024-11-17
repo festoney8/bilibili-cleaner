@@ -19,7 +19,9 @@ import {
     CommentBotFilter,
     CommentCallBotFilter,
     CommentCallUserFilter,
+    CommentCallUserNoReplyFilter,
     CommentCallUserOnlyFilter,
+    CommentCallUserOnlyNoReplyFilter,
     CommentContentFilter,
     CommentLevelFilter,
     CommentUsernameFilter,
@@ -49,8 +51,14 @@ const GM_KEYS = {
         callUser: {
             statusKey: 'dynamic-comment-call-user-filter-status',
         },
+        callUserNoReply: {
+            statusKey: 'dynamic-comment-call-user-noreply-filter-status',
+        },
         callUserOnly: {
             statusKey: 'dynamic-comment-call-user-only-filter-status',
+        },
+        callUserOnlyNoReply: {
+            statusKey: 'dynamic-comment-call-user-only-noreply-filter-status',
         },
         isAD: {
             statusKey: 'dynamic-comment-ad-filter-status',
@@ -90,7 +98,19 @@ const selectorFns = {
         callUser: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.content?.members[0]?.uname
         },
+        callUserNoReply: (comment: HTMLElement): SelectorResult => {
+            if ((comment as any).__data?.rcount !== 0) {
+                return undefined
+            }
+            return (comment as any).__data?.content?.members[0]?.uname
+        },
         callUserOnly: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.content?.message?.replace(/@[^@\s]+/g, ' ').trim() === ''
+        },
+        callUserOnlyNoReply: (comment: HTMLElement): SelectorResult => {
+            if ((comment as any).__data?.rcount !== 0) {
+                return undefined
+            }
             return (comment as any).__data?.content?.message?.replace(/@[^@\s]+/g, ' ').trim() === ''
         },
         level: (comment: HTMLElement): SelectorResult => {
@@ -182,7 +202,9 @@ class CommentFilterDynamic implements IMainFilter {
     commentBotFilter = new CommentBotFilter()
     commentCallBotFilter = new CommentCallBotFilter()
     commentCallUserFilter = new CommentCallUserFilter()
+    commentCallUserNoReplyFilter = new CommentCallUserNoReplyFilter()
     commentCallUserOnlyFilter = new CommentCallUserOnlyFilter()
+    commentCallUserOnlyNoReplyFilter = new CommentCallUserOnlyNoReplyFilter()
     // 白名单
     commentIsUpFilter = new CommentIsUpFilter()
     commentIsPinFilter = new CommentIsPinFilter()
@@ -197,6 +219,7 @@ class CommentFilterDynamic implements IMainFilter {
         this.commentBotFilter.setParam(bots)
         this.commentCallBotFilter.setParam(bots)
         this.commentCallUserFilter.setParam([`/./`])
+        this.commentCallUserNoReplyFilter.setParam([`/./`])
     }
 
     /**
@@ -215,7 +238,9 @@ class CommentFilterDynamic implements IMainFilter {
                 this.commentBotFilter.isEnable ||
                 this.commentCallBotFilter.isEnable ||
                 this.commentCallUserFilter.isEnable ||
-                this.commentCallUserOnlyFilter.isEnable
+                this.commentCallUserNoReplyFilter.isEnable ||
+                this.commentCallUserOnlyFilter.isEnable ||
+                this.commentCallUserOnlyNoReplyFilter.isEnable
             )
         ) {
             revertAll = true
@@ -242,7 +267,9 @@ class CommentFilterDynamic implements IMainFilter {
                         `username: ${selectorFns.root.username(v)}`,
                         `content: ${selectorFns.root.content(v)}`,
                         `callUser: ${selectorFns.root.callUser(v)}`,
+                        `callUserNoReply: ${selectorFns.root.callUserNoReply(v)}`,
                         `callUserOnly: ${selectorFns.root.callUserOnly(v)}`,
+                        `callUserOnlyNoReply: ${selectorFns.root.callUserOnlyNoReply(v)}`,
                         `level: ${selectorFns.root.level(v)}`,
                         `isUp: ${selectorFns.root.isUp(v)}`,
                         `isPin: ${selectorFns.root.isPin(v)}`,
@@ -265,8 +292,12 @@ class CommentFilterDynamic implements IMainFilter {
         this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns.root.username])
         this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.root.callUser])
         this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns.root.callUser])
+        this.commentCallUserNoReplyFilter.isEnable &&
+            blackPairs.push([this.commentCallUserNoReplyFilter, selectorFns.root.callUserNoReply])
         this.commentCallUserOnlyFilter.isEnable &&
             blackPairs.push([this.commentCallUserOnlyFilter, selectorFns.root.callUserOnly])
+        this.commentCallUserOnlyNoReplyFilter.isEnable &&
+            blackPairs.push([this.commentCallUserOnlyNoReplyFilter, selectorFns.root.callUserOnlyNoReply])
 
         const whitePairs: SubFilterPair[] = []
         this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns.root.isUp])
@@ -553,7 +584,7 @@ export const commentFilterDynamicGroups: Group[] = [
             {
                 type: 'switch',
                 id: GM_KEYS.black.callUserOnly.statusKey,
-                name: '过滤 只含 @其他用户 的评论',
+                name: '过滤 只含 @其他用户 的全部评论',
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentCallUserOnlyFilter.enable()
@@ -566,8 +597,22 @@ export const commentFilterDynamicGroups: Group[] = [
             },
             {
                 type: 'switch',
+                id: GM_KEYS.black.callUserOnlyNoReply.statusKey,
+                name: '过滤 只含 @其他用户 的无回复评论',
+                noStyle: true,
+                enableFn: () => {
+                    mainFilter.commentCallUserOnlyNoReplyFilter.enable()
+                    mainFilter.check('full')
+                },
+                disableFn: () => {
+                    mainFilter.commentCallUserOnlyNoReplyFilter.disable()
+                    mainFilter.check('full')
+                },
+            },
+            {
+                type: 'switch',
                 id: GM_KEYS.black.callUser.statusKey,
-                name: '过滤 包含 @其他用户 的评论',
+                name: '过滤 包含 @其他用户 的全部评论',
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentCallUserFilter.enable()
@@ -575,6 +620,20 @@ export const commentFilterDynamicGroups: Group[] = [
                 },
                 disableFn: () => {
                     mainFilter.commentCallUserFilter.disable()
+                    mainFilter.check('full')
+                },
+            },
+            {
+                type: 'switch',
+                id: GM_KEYS.black.callUserNoReply.statusKey,
+                name: '过滤 包含 @其他用户 的无回复评论',
+                noStyle: true,
+                enableFn: () => {
+                    mainFilter.commentCallUserNoReplyFilter.enable()
+                    mainFilter.check('full')
+                },
+                disableFn: () => {
+                    mainFilter.commentCallUserNoReplyFilter.disable()
                     mainFilter.check('full')
                 },
             },

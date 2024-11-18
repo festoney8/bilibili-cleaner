@@ -147,6 +147,11 @@ html[fullscreen-scrollable] {
     .webscreen-fix::-webkit-scrollbar {
         display: none !important;
     }
+
+    // msg bubble
+    .bili-msg {
+        z-index: 100001 !important;
+    }
 }
 
 // 全屏时 页面可滚动 firefox滚动条
@@ -193,6 +198,11 @@ html[video-page-exchange-player-position] {
     }
     &[player-is-wide] body:not(.webscreen-fix) #danmukuBox {
         margin-top: 0 !important;
+    }
+
+    // msg bubble
+    .bili-msg {
+        z-index: 100001 !important;
     }
 }
 

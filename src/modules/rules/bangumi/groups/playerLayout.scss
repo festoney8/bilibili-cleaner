@@ -18,6 +18,11 @@ html[webscreen-scrollable] {
             display: none !important;
         }
     }
+
+    // msg bubble
+    .bili-msg {
+        z-index: 100001 !important;
+    }
 }
 
 // 网页全屏时 页面可滚动 firefox
@@ -54,6 +59,11 @@ html[fullscreen-scrollable] {
         &::-webkit-scrollbar {
             display: none !important;
         }
+    }
+
+    // msg bubble
+    .bili-msg {
+        z-index: 100001 !important;
     }
 }
 

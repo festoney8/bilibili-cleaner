@@ -56,6 +56,7 @@ export const videoPlayerItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-bpx-player-cmd-dm-wrap',
         name: '隐藏 播放器内所有弹窗 (强制)',
+        description: ['启用本项时 无需开启上述功能'],
     },
     {
         type: 'switch',

@@ -438,7 +438,7 @@ export const videoFilterChannelGroups: Group[] = [
             {
                 type: 'switch',
                 id: GM_KEYS.white.uploader.statusKey,
-                name: '启用 UP主白名单',
+                name: '启用 UP主白名单 (右键单击UP主)',
                 defaultEnable: true,
                 noStyle: true,
                 enableFn: () => {

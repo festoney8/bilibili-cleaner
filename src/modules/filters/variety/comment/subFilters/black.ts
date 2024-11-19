@@ -15,4 +15,8 @@ export class CommentCallBotFilter extends StringFilter {}
 
 export class CommentCallUserFilter extends KeywordFilter {}
 
+export class CommentCallUserNoReplyFilter extends KeywordFilter {}
+
 export class CommentCallUserOnlyFilter extends BooleanFilter {}
+
+export class CommentCallUserOnlyNoReplyFilter extends BooleanFilter {}

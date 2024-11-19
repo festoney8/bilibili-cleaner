@@ -14,11 +14,14 @@ import ShadowInstance from '../../../../../utils/shadow'
 import { BiliCleanerStorage } from '../../../../../utils/storage'
 import { orderedUniq, showEle } from '../../../../../utils/tool'
 import { coreCheck } from '../../../core/core'
+import { bots } from '../extra/bots'
 import {
     CommentBotFilter,
     CommentCallBotFilter,
     CommentCallUserFilter,
+    CommentCallUserNoReplyFilter,
     CommentCallUserOnlyFilter,
+    CommentCallUserOnlyNoReplyFilter,
     CommentContentFilter,
     CommentLevelFilter,
     CommentUsernameFilter,
@@ -48,8 +51,14 @@ const GM_KEYS = {
         callUser: {
             statusKey: 'video-comment-call-user-filter-status',
         },
+        callUserNoReply: {
+            statusKey: 'video-comment-call-user-noreply-filter-status',
+        },
         callUserOnly: {
             statusKey: 'video-comment-call-user-only-filter-status',
+        },
+        callUserOnlyNoReply: {
+            statusKey: 'video-comment-call-user-only-noreply-filter-status',
         },
         isAD: {
             statusKey: 'video-comment-ad-filter-status',
@@ -96,7 +105,19 @@ const selectorFns = {
         callUser: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.content?.members[0]?.uname
         },
+        callUserNoReply: (comment: HTMLElement): SelectorResult => {
+            if ((comment as any).__data?.rcount !== 0) {
+                return undefined
+            }
+            return (comment as any).__data?.content?.members[0]?.uname
+        },
         callUserOnly: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.content?.message?.replace(/@[^@\s]+/g, ' ').trim() === ''
+        },
+        callUserOnlyNoReply: (comment: HTMLElement): SelectorResult => {
+            if ((comment as any).__data?.rcount !== 0) {
+                return undefined
+            }
             return (comment as any).__data?.content?.message?.replace(/@[^@\s]+/g, ' ').trim() === ''
         },
         level: (comment: HTMLElement): SelectorResult => {
@@ -189,7 +210,9 @@ class CommentFilterVideo implements IMainFilter {
     commentBotFilter = new CommentBotFilter()
     commentCallBotFilter = new CommentCallBotFilter()
     commentCallUserFilter = new CommentCallUserFilter()
+    commentCallUserNoReplyFilter = new CommentCallUserNoReplyFilter()
     commentCallUserOnlyFilter = new CommentCallUserOnlyFilter()
+    commentCallUserOnlyNoReplyFilter = new CommentCallUserOnlyNoReplyFilter()
     // 白名单
     commentIsUpFilter = new CommentIsUpFilter()
     commentIsPinFilter = new CommentIsPinFilter()
@@ -198,53 +221,13 @@ class CommentFilterVideo implements IMainFilter {
 
     init() {
         // 黑名单
-        const bots = [
-            // 8455326 @机器工具人
-            // 234978716 @有趣的程序员
-            // 1141159409 @AI视频小助理
-            // 437175450 @AI视频小助理总结一下 (误伤)
-            // 1692825065 @AI笔记侠
-            // 690155730 @AI视频助手
-            // 689670224 @哔哩哔理点赞姬
-            // 3494380876859618 @课代表猫
-            // 1168527940 @AI课代表呀
-            // 439438614 @木几萌Moe
-            // 1358327273 @星崽丨StarZai
-            // 3546376048741135 @AI沈阳美食家
-            // 1835753760 @AI识片酱 // 听歌识曲，免除过滤
-            // 9868463 @AI头脑风暴
-            // 358243654 @GPT_5
-            // 393788832 @Juice_AI
-            // 91394217 @AI全文总结
-            // 473018527 @AI视频总结
-            // 3546639035795567 @AI总结视频
-            // 605801219 @AI工具集
-            '机器工具人',
-            '有趣的程序员',
-            'AI视频小助理',
-            'AI视频小助理总结一下',
-            'AI笔记侠',
-            'AI视频助手',
-            '哔哩哔理点赞姬',
-            '课代表猫',
-            'AI课代表呀',
-            '木几萌Moe',
-            '星崽丨StarZai',
-            'AI沈阳美食家',
-            'AI头脑风暴',
-            'GPT_5',
-            'Juice_AI',
-            'AI全文总结',
-            'AI视频总结',
-            'AI总结视频',
-            'AI工具集',
-        ]
         this.commentUsernameFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.username.valueKey, []))
         this.commentContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))
         this.commentLevelFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.level.valueKey, 0))
         this.commentBotFilter.setParam(bots)
         this.commentCallBotFilter.setParam(bots)
         this.commentCallUserFilter.setParam([`/./`])
+        this.commentCallUserNoReplyFilter.setParam([`/./`])
     }
 
     /**
@@ -263,7 +246,9 @@ class CommentFilterVideo implements IMainFilter {
                 this.commentBotFilter.isEnable ||
                 this.commentCallBotFilter.isEnable ||
                 this.commentCallUserFilter.isEnable ||
-                this.commentCallUserOnlyFilter.isEnable
+                this.commentCallUserNoReplyFilter.isEnable ||
+                this.commentCallUserOnlyFilter.isEnable ||
+                this.commentCallUserOnlyNoReplyFilter.isEnable
             )
         ) {
             revertAll = true
@@ -290,7 +275,9 @@ class CommentFilterVideo implements IMainFilter {
                         `username: ${selectorFns.root.username(v)}`,
                         `content: ${selectorFns.root.content(v)}`,
                         `callUser: ${selectorFns.root.callUser(v)}`,
+                        `callUserNoReply: ${selectorFns.root.callUserNoReply(v)}`,
                         `callUserOnly: ${selectorFns.root.callUserOnly(v)}`,
+                        `callUserOnlyNoReply: ${selectorFns.root.callUserOnlyNoReply(v)}`,
                         `level: ${selectorFns.root.level(v)}`,
                         `isUp: ${selectorFns.root.isUp(v)}`,
                         `isPin: ${selectorFns.root.isPin(v)}`,
@@ -313,8 +300,12 @@ class CommentFilterVideo implements IMainFilter {
         this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns.root.username])
         this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.root.callUser])
         this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns.root.callUser])
+        this.commentCallUserNoReplyFilter.isEnable &&
+            blackPairs.push([this.commentCallUserNoReplyFilter, selectorFns.root.callUserNoReply])
         this.commentCallUserOnlyFilter.isEnable &&
             blackPairs.push([this.commentCallUserOnlyFilter, selectorFns.root.callUserOnly])
+        this.commentCallUserOnlyNoReplyFilter.isEnable &&
+            blackPairs.push([this.commentCallUserOnlyNoReplyFilter, selectorFns.root.callUserOnlyNoReply])
 
         const whitePairs: SubFilterPair[] = []
         this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns.root.isUp])
@@ -601,7 +592,7 @@ export const commentFilterVideoGroups: Group[] = [
             {
                 type: 'switch',
                 id: GM_KEYS.black.callUserOnly.statusKey,
-                name: '过滤 只含 @其他用户 的评论',
+                name: '过滤 只含 @其他用户 的全部评论',
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentCallUserOnlyFilter.enable()
@@ -614,8 +605,22 @@ export const commentFilterVideoGroups: Group[] = [
             },
             {
                 type: 'switch',
+                id: GM_KEYS.black.callUserOnlyNoReply.statusKey,
+                name: '过滤 只含 @其他用户 的无回复评论',
+                noStyle: true,
+                enableFn: () => {
+                    mainFilter.commentCallUserOnlyNoReplyFilter.enable()
+                    mainFilter.check('full')
+                },
+                disableFn: () => {
+                    mainFilter.commentCallUserOnlyNoReplyFilter.disable()
+                    mainFilter.check('full')
+                },
+            },
+            {
+                type: 'switch',
                 id: GM_KEYS.black.callUser.statusKey,
-                name: '过滤 包含 @其他用户 的评论',
+                name: '过滤 包含 @其他用户 的全部评论',
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentCallUserFilter.enable()
@@ -623,6 +628,20 @@ export const commentFilterVideoGroups: Group[] = [
                 },
                 disableFn: () => {
                     mainFilter.commentCallUserFilter.disable()
+                    mainFilter.check('full')
+                },
+            },
+            {
+                type: 'switch',
+                id: GM_KEYS.black.callUserNoReply.statusKey,
+                name: '过滤 包含 @其他用户 的无回复评论',
+                noStyle: true,
+                enableFn: () => {
+                    mainFilter.commentCallUserNoReplyFilter.enable()
+                    mainFilter.check('full')
+                },
+                disableFn: () => {
+                    mainFilter.commentCallUserNoReplyFilter.disable()
                     mainFilter.check('full')
                 },
             },

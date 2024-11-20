@@ -28,51 +28,51 @@ import { CommentIsLinkFilter, CommentIsNoteFilter, CommentIsPinFilter, CommentIs
 const GM_KEYS = {
     black: {
         username: {
-            statusKey: 'dynamic-comment-username-filter-status',
+            statusKey: 'video-comment-username-filter-status',
             valueKey: 'global-comment-username-filter-value',
         },
         content: {
-            statusKey: 'dynamic-comment-content-filter-status',
+            statusKey: 'video-comment-content-filter-status',
             valueKey: 'global-comment-content-filter-value',
         },
         level: {
-            statusKey: 'dynamic-comment-level-filter-status',
+            statusKey: 'video-comment-level-filter-status',
             valueKey: 'global-comment-level-filter-value',
         },
         bot: {
-            statusKey: 'dynamic-comment-bot-filter-status',
+            statusKey: 'video-comment-bot-filter-status',
         },
         callBot: {
-            statusKey: 'dynamic-comment-call-bot-filter-status',
+            statusKey: 'video-comment-call-bot-filter-status',
         },
         callUser: {
-            statusKey: 'dynamic-comment-call-user-filter-status',
+            statusKey: 'video-comment-call-user-filter-status',
         },
         callUserOnly: {
-            statusKey: 'dynamic-comment-call-user-only-filter-status',
+            statusKey: 'video-comment-call-user-only-filter-status',
         },
         isAD: {
-            statusKey: 'dynamic-comment-ad-filter-status',
+            statusKey: 'video-comment-ad-filter-status',
         },
     },
     white: {
         root: {
-            statusKey: 'dynamic-comment-root-whitelist-status',
+            statusKey: 'video-comment-root-whitelist-status',
         },
         sub: {
-            statusKey: 'dynamic-comment-sub-whitelist-status',
+            statusKey: 'video-comment-sub-whitelist-status',
         },
         isUp: {
-            statusKey: 'dynamic-comment-uploader-whitelist-status',
+            statusKey: 'video-comment-uploader-whitelist-status',
         },
         isPin: {
-            statusKey: 'dynamic-comment-pinned-whitelist-status',
+            statusKey: 'video-comment-pinned-whitelist-status',
         },
         isNote: {
-            statusKey: 'dynamic-comment-note-whitelist-status',
+            statusKey: 'video-comment-note-whitelist-status',
         },
         isLink: {
-            statusKey: 'dynamic-comment-link-whitelist-status',
+            statusKey: 'video-comment-link-whitelist-status',
         },
     },
 }
@@ -170,7 +170,7 @@ const selectorFns = {
 let isRootWhite = false
 let isSubWhite = false
 
-class CommentFilterSpace implements IMainFilter {
+class CommentFilterLegacy implements IMainFilter {
     target: HTMLElement | undefined
 
     // 黑名单
@@ -231,7 +231,7 @@ class CommentFilterSpace implements IMainFilter {
             rootComments.forEach((v) => {
                 debug(
                     [
-                        `CommentFilterSpace rootComments`,
+                        `CommentFilterLegacy rootComments`,
                         `username: ${selectorFns.root.username(v)}`,
                         `content: ${selectorFns.root.content(v)}`,
                         `callUser: ${selectorFns.root.callUser(v)}`,
@@ -247,7 +247,7 @@ class CommentFilterSpace implements IMainFilter {
             subComments.forEach((v) => {
                 debug(
                     [
-                        `CommentFilterSpace subComments`,
+                        `CommentFilterLegacy subComments`,
                         `username: ${selectorFns.sub.username(v)}`,
                         `content: ${selectorFns.sub.content(v)}`,
                         `callUser: ${selectorFns.sub.callUser(v)}`,
@@ -320,7 +320,7 @@ class CommentFilterSpace implements IMainFilter {
 
         const time = (performance.now() - timer).toFixed(1)
         debug(
-            `CommentFilterSpace hide ${rootBlackCnt} in ${rootComments.length} root, ${subBlackCnt} in ${subComments.length} sub, mode=${mode}, time=${time}`,
+            `CommentFilterLegacy hide ${rootBlackCnt} in ${rootComments.length} root, ${subBlackCnt} in ${subComments.length} sub, mode=${mode}, time=${time}`,
         )
     }
 
@@ -328,7 +328,7 @@ class CommentFilterSpace implements IMainFilter {
         this.check('full')
             .then()
             .catch((err) => {
-                error('CommentFilterSpace check full error', err)
+                error('CommentFilterLegacy check full error', err)
             })
     }
 
@@ -336,7 +336,7 @@ class CommentFilterSpace implements IMainFilter {
         this.check('incr')
             .then()
             .catch((err) => {
-                error('CommentFilterSpace check incr error', err)
+                error('CommentFilterLegacy check incr error', err)
             })
     }
 
@@ -345,7 +345,7 @@ class CommentFilterSpace implements IMainFilter {
             return node.id === 'app'
         }).then((ele) => {
             if (ele) {
-                debug('CommentFilterSpace target appear')
+                debug('CommentFilterLegacy target appear')
                 this.target = ele
                 this.checkFull()
                 const commentObserver = new MutationObserver(() => {
@@ -358,14 +358,14 @@ class CommentFilterSpace implements IMainFilter {
 }
 //==================================================================================================
 
-const mainFilter = new CommentFilterSpace()
+const mainFilter = new CommentFilterLegacy()
 
-export const commentFilterSpaceEntry = async () => {
+export const commentFilterLegacyEntry = async () => {
     mainFilter.init()
     mainFilter.observe()
 }
 
-export const commentFilterSpaceGroups: Group[] = [
+export const commentFilterLegacyGroups: Group[] = [
     {
         name: '评论用户过滤',
         items: [
@@ -660,7 +660,7 @@ export const commentFilterSpaceGroups: Group[] = [
 ]
 
 // 右键菜单handler
-export const commentFilterSpaceHandler: ContextMenuTargetHandler = (target: HTMLElement): FilterContextMenu[] => {
+export const commentFilterLegacyHandler: ContextMenuTargetHandler = (target: HTMLElement): FilterContextMenu[] => {
     if (!isPageSpace()) {
         return []
     }
@@ -683,7 +683,7 @@ export const commentFilterSpaceHandler: ContextMenuTargetHandler = (target: HTML
                         arr.unshift(username)
                         BiliCleanerStorage.set<string[]>(GM_KEYS.black.username.valueKey, orderedUniq(arr))
                     } catch (err) {
-                        error(`commentFilterSpaceHandler add username ${username} failed`, err)
+                        error(`commentFilterLegacyHandler add username ${username} failed`, err)
                     }
                 },
             })

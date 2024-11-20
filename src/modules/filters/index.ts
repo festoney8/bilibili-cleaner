@@ -19,10 +19,10 @@ import {
     commentFilterCommonHandler,
 } from './variety/comment/pages/common'
 import {
-    commentFilterSpaceEntry,
-    commentFilterSpaceGroups,
-    commentFilterSpaceHandler,
-} from './variety/comment/pages/space'
+    commentFilterLegacyEntry,
+    commentFilterLegacyGroups,
+    commentFilterLegacyHandler,
+} from './variety/comment/pages/legacy'
 import {
     dynamicFilterDynamicEntry,
     dynamicFilterDynamicGroups,
@@ -98,8 +98,8 @@ export const commentFilters: Filter[] = [
     },
     {
         name: '空间页 动态评论过滤',
-        groups: commentFilterSpaceGroups,
-        entry: commentFilterSpaceEntry,
+        groups: commentFilterLegacyGroups,
+        entry: commentFilterLegacyEntry,
         checkFn: () => isPageSpace(),
     },
 ]
@@ -171,5 +171,5 @@ export const filterContextMenuHandlers = [
     videoFilterHomepageHandler,
     dynamicFilterDynamicHandler,
     commentFilterCommonHandler,
-    commentFilterSpaceHandler,
+    commentFilterLegacyHandler,
 ]

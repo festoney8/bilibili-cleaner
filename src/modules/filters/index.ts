@@ -14,20 +14,15 @@ import {
 } from '../../utils/pageType'
 import { BiliCleanerStorage } from '../../utils/storage'
 import {
-    commentFilterDynamicEntry,
-    commentFilterDynamicGroups,
-    commentFilterDynamicHandler,
-} from './variety/comment/pages/dynamic'
+    commentFilterCommonEntry,
+    commentFilterCommonGroups,
+    commentFilterCommonHandler,
+} from './variety/comment/pages/common'
 import {
     commentFilterSpaceEntry,
     commentFilterSpaceGroups,
     commentFilterSpaceHandler,
 } from './variety/comment/pages/space'
-import {
-    commentFilterVideoEntry,
-    commentFilterVideoGroups,
-    commentFilterVideoHandler,
-} from './variety/comment/pages/video'
 import {
     dynamicFilterDynamicEntry,
     dynamicFilterDynamicGroups,
@@ -96,16 +91,10 @@ export const videoFilters: Filter[] = [
 /** 评论过滤器 */
 export const commentFilters: Filter[] = [
     {
-        name: '视频页/番剧页 视频评论过滤',
-        groups: commentFilterVideoGroups,
-        entry: commentFilterVideoEntry,
-        checkFn: () => isPageVideo() || isPageBangumi() || isPagePlaylist(),
-    },
-    {
-        name: '动态页 动态评论过滤',
-        groups: commentFilterDynamicGroups,
-        entry: commentFilterDynamicEntry,
-        checkFn: () => isPageDynamic(),
+        name: '视频页/番剧页/动态页 视频评论过滤',
+        groups: commentFilterCommonGroups,
+        entry: commentFilterCommonEntry,
+        checkFn: () => isPageVideo() || isPageBangumi() || isPagePlaylist() || isPageDynamic(),
     },
     {
         name: '空间页 动态评论过滤',
@@ -181,7 +170,6 @@ export const filterContextMenuHandlers = [
     videoFilterPopularHandler,
     videoFilterHomepageHandler,
     dynamicFilterDynamicHandler,
-    commentFilterVideoHandler,
-    commentFilterDynamicHandler,
+    commentFilterCommonHandler,
     commentFilterSpaceHandler,
 ]

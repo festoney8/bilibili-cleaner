@@ -9,7 +9,7 @@ import {
 } from '../../../../../types/filter'
 import fetchHook from '../../../../../utils/fetch'
 import { debugFilter as debug, error } from '../../../../../utils/logger'
-import { isPageDynamic } from '../../../../../utils/pageType'
+import { isPageBangumi, isPageDynamic, isPagePlaylist, isPageVideo } from '../../../../../utils/pageType'
 import ShadowInstance from '../../../../../utils/shadow'
 import { BiliCleanerStorage } from '../../../../../utils/storage'
 import { orderedUniq, showEle } from '../../../../../utils/tool'
@@ -26,68 +26,81 @@ import {
     CommentLevelFilter,
     CommentUsernameFilter,
 } from '../subFilters/black'
-import { CommentIsLinkFilter, CommentIsNoteFilter, CommentIsPinFilter, CommentIsUpFilter } from '../subFilters/white'
+import {
+    CommentIsLinkFilter,
+    CommentIsMeFilter,
+    CommentIsNoteFilter,
+    CommentIsPinFilter,
+    CommentIsUpFilter,
+} from '../subFilters/white'
 
 const GM_KEYS = {
     black: {
         username: {
-            statusKey: 'dynamic-comment-username-filter-status',
+            statusKey: 'video-comment-username-filter-status',
             valueKey: 'global-comment-username-filter-value',
         },
         content: {
-            statusKey: 'dynamic-comment-content-filter-status',
+            statusKey: 'video-comment-content-filter-status',
             valueKey: 'global-comment-content-filter-value',
         },
         level: {
-            statusKey: 'dynamic-comment-level-filter-status',
+            statusKey: 'video-comment-level-filter-status',
             valueKey: 'global-comment-level-filter-value',
         },
         bot: {
-            statusKey: 'dynamic-comment-bot-filter-status',
+            statusKey: 'video-comment-bot-filter-status',
         },
         callBot: {
-            statusKey: 'dynamic-comment-call-bot-filter-status',
+            statusKey: 'video-comment-call-bot-filter-status',
         },
         callUser: {
-            statusKey: 'dynamic-comment-call-user-filter-status',
+            statusKey: 'video-comment-call-user-filter-status',
         },
         callUserNoReply: {
-            statusKey: 'dynamic-comment-call-user-noreply-filter-status',
+            statusKey: 'video-comment-call-user-noreply-filter-status',
         },
         callUserOnly: {
-            statusKey: 'dynamic-comment-call-user-only-filter-status',
+            statusKey: 'video-comment-call-user-only-filter-status',
         },
         callUserOnlyNoReply: {
-            statusKey: 'dynamic-comment-call-user-only-noreply-filter-status',
+            statusKey: 'video-comment-call-user-only-noreply-filter-status',
         },
         isAD: {
-            statusKey: 'dynamic-comment-ad-filter-status',
+            statusKey: 'video-comment-ad-filter-status',
         },
     },
     white: {
         root: {
-            statusKey: 'dynamic-comment-root-whitelist-status',
+            statusKey: 'video-comment-root-whitelist-status',
         },
         sub: {
-            statusKey: 'dynamic-comment-sub-whitelist-status',
+            statusKey: 'video-comment-sub-whitelist-status',
         },
         isUp: {
-            statusKey: 'dynamic-comment-uploader-whitelist-status',
+            statusKey: 'video-comment-uploader-whitelist-status',
         },
         isPin: {
-            statusKey: 'dynamic-comment-pinned-whitelist-status',
+            statusKey: 'video-comment-pinned-whitelist-status',
         },
         isNote: {
-            statusKey: 'dynamic-comment-note-whitelist-status',
+            statusKey: 'video-comment-note-whitelist-status',
         },
         isLink: {
-            statusKey: 'dynamic-comment-link-whitelist-status',
+            statusKey: 'video-comment-link-whitelist-status',
         },
     },
 }
 
 // 一二级评论信息提取
 const selectorFns = {
+    // 测试视频：
+    // https://b23.tv/av810872
+    // https://b23.tv/av1855797296
+    // https://b23.tv/av1706101190
+    // https://b23.tv/av1705573085
+    // https://b23.tv/av1350214762
+    // https://b23.tv/av113195607985861
     root: {
         username: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.member?.uname?.trim()
@@ -135,6 +148,20 @@ const selectorFns = {
                         return true
                     }
                 }
+            }
+            return false
+        },
+        // 自己发布 or @自己 的评论
+        isMe: (comment: HTMLElement): SelectorResult => {
+            const me = (comment as any).__user?.uname
+            if (!me) {
+                return false
+            }
+            if (
+                (comment as any).__data?.member?.uname === me ||
+                (comment as any).__data?.content?.message?.includes(`@${me}`)
+            ) {
+                return true
             }
             return false
         },
@@ -186,13 +213,31 @@ const selectorFns = {
             }
             return false
         },
+        // 自己发布 or @自己 的评论
+        isMe: (comment: HTMLElement): SelectorResult => {
+            const me = (comment as any).__user?.uname
+            if (!me) {
+                return false
+            }
+            if (
+                (comment as any).__data?.member?.uname === me ||
+                (comment as any).__data?.content?.message
+                    ?.trim()
+                    ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
+                    .includes(`@${me}`)
+            ) {
+                return true
+            }
+            return false
+        },
     },
 }
+
 // 一二级评论是否检测
 let isRootWhite = false
 let isSubWhite = false
 
-class CommentFilterDynamic implements IMainFilter {
+class CommentFilterCommon implements IMainFilter {
     target: HTMLElement | undefined
 
     // 黑名单
@@ -210,6 +255,7 @@ class CommentFilterDynamic implements IMainFilter {
     commentIsPinFilter = new CommentIsPinFilter()
     commentIsNoteFilter = new CommentIsNoteFilter()
     commentIsLinkFilter = new CommentIsLinkFilter()
+    commentIsMeFilter = new CommentIsMeFilter()
 
     init() {
         // 黑名单
@@ -263,7 +309,7 @@ class CommentFilterDynamic implements IMainFilter {
             rootComments.forEach((v) => {
                 debug(
                     [
-                        `CommentFilterDynamic rootComments`,
+                        `CommentFilterCommon rootComments`,
                         `username: ${selectorFns.root.username(v)}`,
                         `content: ${selectorFns.root.content(v)}`,
                         `callUser: ${selectorFns.root.callUser(v)}`,
@@ -275,6 +321,7 @@ class CommentFilterDynamic implements IMainFilter {
                         `isPin: ${selectorFns.root.isPin(v)}`,
                         `isNote: ${selectorFns.root.isNote(v)}`,
                         `isLink: ${selectorFns.root.isLink(v)}`,
+                        `isMe: ${selectorFns.root.isMe(v)}`,
                     ].join('\n'),
                 )
             })
@@ -304,11 +351,12 @@ class CommentFilterDynamic implements IMainFilter {
         this.commentIsPinFilter.isEnable && whitePairs.push([this.commentIsPinFilter, selectorFns.root.isPin])
         this.commentIsNoteFilter.isEnable && whitePairs.push([this.commentIsNoteFilter, selectorFns.root.isNote])
         this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns.root.isLink])
+        this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns.root.isMe])
 
         const rootBlackCnt = await coreCheck(rootComments, true, blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
         debug(
-            `CommentFilterDynamic hide ${rootBlackCnt} in ${rootComments.length} root comments, mode=${mode}, time=${time}`,
+            `CommentFilterCommon hide ${rootBlackCnt} in ${rootComments.length} root comments, mode=${mode}, time=${time}`,
         )
     }
 
@@ -351,7 +399,7 @@ class CommentFilterDynamic implements IMainFilter {
             subComments.forEach((v) => {
                 debug(
                     [
-                        `CommentFilterDynamic subComments`,
+                        `CommentFilterCommon subComments`,
                         `username: ${selectorFns.sub.username(v)}`,
                         `content: ${selectorFns.sub.content(v)}`,
                         `callUser: ${selectorFns.sub.callUser(v)}`,
@@ -359,6 +407,7 @@ class CommentFilterDynamic implements IMainFilter {
                         `level: ${selectorFns.sub.level(v)}`,
                         `isUp: ${selectorFns.sub.isUp(v)}`,
                         `isLink: ${selectorFns.sub.isLink(v)}`,
+                        `isMe: ${selectorFns.sub.isMe(v)}`,
                     ].join('\n'),
                 )
             })
@@ -382,11 +431,12 @@ class CommentFilterDynamic implements IMainFilter {
         const whitePairs: SubFilterPair[] = []
         this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns.sub.isUp])
         this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns.sub.isLink])
+        this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns.sub.isMe])
 
         const subBlackCnt = await coreCheck(subComments, false, blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
         debug(
-            `CommentFilterDynamic hide ${subBlackCnt} in ${subComments.length} sub comments, mode=${mode}, time=${time}`,
+            `CommentFilterCommon hide ${subBlackCnt} in ${subComments.length} sub comments, mode=${mode}, time=${time}`,
         )
     }
 
@@ -394,12 +444,12 @@ class CommentFilterDynamic implements IMainFilter {
         this.checkRoot(mode)
             .then()
             .catch((err) => {
-                error('checkRoot failed', err)
+                error(`CommentFilterCommon checkRoot mode=${mode} error`, err)
             })
         this.checkSub(mode)
             .then()
             .catch((err) => {
-                error('checkSub failed', err)
+                error(`CommentFilterCommon checkSub mode=${mode} error`, err)
             })
     }
 
@@ -434,14 +484,15 @@ class CommentFilterDynamic implements IMainFilter {
 
 //==================================================================================================
 
-const mainFilter = new CommentFilterDynamic()
+const mainFilter = new CommentFilterCommon()
 
-export const commentFilterDynamicEntry = async () => {
+export const commentFilterCommonEntry = async () => {
     mainFilter.init()
+    mainFilter.commentIsMeFilter.enable()
     mainFilter.observe()
 }
 
-export const commentFilterDynamicGroups: Group[] = [
+export const commentFilterCommonGroups: Group[] = [
     {
         name: '评论用户过滤',
         items: [
@@ -764,8 +815,8 @@ export const commentFilterDynamicGroups: Group[] = [
 ]
 
 // 右键菜单handler
-export const commentFilterDynamicHandler: ContextMenuTargetHandler = (target: HTMLElement): FilterContextMenu[] => {
-    if (!isPageDynamic()) {
+export const commentFilterCommonHandler: ContextMenuTargetHandler = (target: HTMLElement): FilterContextMenu[] => {
+    if (!(isPageVideo() || isPagePlaylist() || isPageBangumi() || isPageDynamic())) {
         return []
     }
 
@@ -787,7 +838,7 @@ export const commentFilterDynamicHandler: ContextMenuTargetHandler = (target: HT
                         arr.unshift(username)
                         BiliCleanerStorage.set<string[]>(GM_KEYS.black.username.valueKey, orderedUniq(arr))
                     } catch (err) {
-                        error(`commentFilterDynamicHandler add username ${username} failed`, err)
+                        error(`commentFilterCommonHandler add username ${username} failed`, err)
                     }
                 },
             })

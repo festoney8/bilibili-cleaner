@@ -7,3 +7,5 @@ export class CommentIsPinFilter extends BooleanFilter {}
 export class CommentIsNoteFilter extends BooleanFilter {}
 
 export class CommentIsLinkFilter extends BooleanFilter {}
+
+export class CommentIsMeFilter extends BooleanFilter {}

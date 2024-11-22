@@ -1,7 +1,7 @@
 <template>
     <PanelComp
         v-bind="{
-            title: '评论过滤',
+            title: '评论过滤（全站通用）',
             widthPercent: 28,
             heightPercent: 85,
             minWidth: 360,

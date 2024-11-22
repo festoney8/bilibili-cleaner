@@ -185,7 +185,24 @@ const selectorFns = {
                 .replace('@', '')
                 .trim()
         },
+        callUserNoReply: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.content?.message
+                ?.trim()
+                ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
+                ?.match(/@[^@\s]+/)?.[0]
+                .replace('@', '')
+                .trim()
+        },
         callUserOnly: (comment: HTMLElement): SelectorResult => {
+            return (
+                (comment as any).__data?.content?.message
+                    ?.trim()
+                    ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
+                    ?.replace(/@[^@\s]+/g, ' ')
+                    .trim() === ''
+            )
+        },
+        callUserOnlyNoReply: (comment: HTMLElement): SelectorResult => {
             return (
                 (comment as any).__data?.content?.message
                     ?.trim()
@@ -376,7 +393,9 @@ class CommentFilterCommon implements IMainFilter {
                 this.commentBotFilter.isEnable ||
                 this.commentCallBotFilter.isEnable ||
                 this.commentCallUserFilter.isEnable ||
-                this.commentCallUserOnlyFilter.isEnable
+                this.commentCallUserNoReplyFilter.isEnable ||
+                this.commentCallUserOnlyFilter.isEnable ||
+                this.commentCallUserOnlyNoReplyFilter.isEnable
             )
         ) {
             revertAll = true
@@ -403,7 +422,9 @@ class CommentFilterCommon implements IMainFilter {
                         `username: ${selectorFns.sub.username(v)}`,
                         `content: ${selectorFns.sub.content(v)}`,
                         `callUser: ${selectorFns.sub.callUser(v)}`,
+                        `callUserNoReply: ${selectorFns.sub.callUserNoReply(v)}`,
                         `callUserOnly: ${selectorFns.sub.callUserOnly(v)}`,
+                        `callUserOnlyNoReply: ${selectorFns.sub.callUserOnlyNoReply(v)}`,
                         `level: ${selectorFns.sub.level(v)}`,
                         `isUp: ${selectorFns.sub.isUp(v)}`,
                         `isLink: ${selectorFns.sub.isLink(v)}`,
@@ -425,8 +446,12 @@ class CommentFilterCommon implements IMainFilter {
         this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns.sub.username])
         this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.sub.callUser])
         this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns.sub.callUser])
+        this.commentCallUserNoReplyFilter.isEnable &&
+            blackPairs.push([this.commentCallUserNoReplyFilter, selectorFns.sub.callUserNoReply])
         this.commentCallUserOnlyFilter.isEnable &&
             blackPairs.push([this.commentCallUserOnlyFilter, selectorFns.sub.callUserOnly])
+        this.commentCallUserOnlyNoReplyFilter.isEnable &&
+            blackPairs.push([this.commentCallUserOnlyNoReplyFilter, selectorFns.sub.callUserOnlyNoReply])
 
         const whitePairs: SubFilterPair[] = []
         this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns.sub.isUp])

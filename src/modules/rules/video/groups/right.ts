@@ -39,14 +39,25 @@ export const videoRightItems: Item[] = [
     },
     {
         type: 'switch',
-        id: 'video-page-hide-right-container-section-next-btn',
-        name: '隐藏 视频合集 自动连播开关',
+        id: 'video-page-hide-right-container-multi-page-add-counter',
+        name: '恢复 分P视频 编号',
+        defaultEnable: true,
+    },
+    {
+        type: 'switch',
+        id: 'video-page-right-container-section-unfold-title',
+        name: '展开 视频合集 第二行标题',
     },
     {
         type: 'switch',
         id: 'video-page-hide-right-container-section-height',
-        name: '优化 视频合集列表高度',
+        name: '优化 视频合集 列表高度',
         defaultEnable: true,
+    },
+    {
+        type: 'switch',
+        id: 'video-page-hide-right-container-section-next-btn',
+        name: '隐藏 视频合集 自动连播开关',
     },
     {
         type: 'switch',
@@ -63,12 +74,6 @@ export const videoRightItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-right-container-section-subscribe',
         name: '隐藏 视频合集 订阅合集',
-    },
-    {
-        type: 'switch',
-        id: 'video-page-hide-right-container-multi-page-add-counter',
-        name: '恢复 分P视频 编号',
-        defaultEnable: true,
     },
     {
         type: 'switch',

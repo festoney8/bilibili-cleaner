@@ -89,7 +89,43 @@ html[video-page-hide-right-container-reco-list-next-play] {
     }
 }
 
-// 优化 视频合集列表高度
+// 恢复 分P视频 编号
+html[video-page-hide-right-container-multi-page-add-counter] {
+    .video-pod__list.multip.list {
+        counter-reset: section-counter;
+
+        .video-pod__item {
+            &::before {
+                counter-increment: section-counter;
+                content: 'P' counter(section-counter);
+                font-size: 15px;
+                margin-right: 10px;
+                transition: color 0.2s;
+            }
+            &.active::before,
+            &:hover::before {
+                color: var(--brand_blue);
+            }
+        }
+    }
+}
+
+// 展开 视频合集 第二行标题
+html[video-page-right-container-section-unfold-title] {
+    .video-pod.video-pod .section .video-pod__item {
+        .title {
+            height: fit-content !important;
+        }
+        .title-txt {
+            -webkit-line-clamp: 2 !important;
+            line-height: 21px !important;
+            margin-top: 4px !important;
+            margin-bottom: 4px !important;
+        }
+    }
+}
+
+// 优化 视频合集 列表高度
 html[video-page-hide-right-container-section-height] {
     .video-sections-content-list,
     .video-pod__body {
@@ -159,27 +195,6 @@ html[video-page-hide-right-container-section-subscribe] {
     }
     .video-pod__header .subscribe-btn {
         display: none !important;
-    }
-}
-
-// 恢复 分P视频 编号
-html[video-page-hide-right-container-multi-page-add-counter] {
-    .video-pod__list.multip.list {
-        counter-reset: section-counter;
-
-        .video-pod__item {
-            &::before {
-                counter-increment: section-counter;
-                content: 'P' counter(section-counter);
-                font-size: 15px;
-                margin-right: 10px;
-                transition: color 0.2s;
-            }
-            &.active::before,
-            &:hover::before {
-                color: var(--brand_blue);
-            }
-        }
     }
 }
 

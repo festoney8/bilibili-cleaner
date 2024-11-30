@@ -11,11 +11,11 @@ export class CommentLevelFilter extends NumberMinFilter {}
 
 export class CommentBotFilter extends StringFilter {}
 
-export class CommentCallBotFilter extends StringFilter {}
+export class CommentCallBotFilter extends BooleanFilter {}
 
-export class CommentCallUserFilter extends KeywordFilter {}
+export class CommentCallUserFilter extends BooleanFilter {}
 
-export class CommentCallUserNoReplyFilter extends KeywordFilter {}
+export class CommentCallUserNoReplyFilter extends BooleanFilter {}
 
 export class CommentCallUserOnlyFilter extends BooleanFilter {}
 

@@ -8,7 +8,7 @@ import { isPageBangumi, isPageDynamic, isPagePlaylist, isPageVideo } from '@/uti
 import ShadowInstance from '@/utils/shadow'
 import { BiliCleanerStorage } from '@/utils/storage'
 import { orderedUniq, showEle } from '@/utils/tool'
-import { bots } from '../extra/bots'
+import { bots, botsSet } from '../extra/bots'
 import {
     CommentBotFilter,
     CommentCallBotFilter,
@@ -87,14 +87,14 @@ const GM_KEYS = {
 }
 
 // 一二级评论信息提取
+// 测试视频：
+// https://b23.tv/av810872
+// https://b23.tv/av1855797296
+// https://b23.tv/av1706101190
+// https://b23.tv/av1705573085
+// https://b23.tv/av1350214762
+// https://b23.tv/av113195607985861
 const selectorFns = {
-    // 测试视频：
-    // https://b23.tv/av810872
-    // https://b23.tv/av1855797296
-    // https://b23.tv/av1706101190
-    // https://b23.tv/av1705573085
-    // https://b23.tv/av1350214762
-    // https://b23.tv/av113195607985861
     root: {
         username: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.member?.uname?.trim()
@@ -102,21 +102,28 @@ const selectorFns = {
         content: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.content?.message?.replace(/@[^@\s]+/g, ' ').trim()
         },
+        callBot: (comment: HTMLElement): SelectorResult => {
+            const members = (comment as any).__data?.content?.members
+            if (members?.length) {
+                return members.some((v: { uname: string }) => botsSet.has(v.uname))
+            }
+            return false
+        },
         callUser: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.content?.members[0]?.uname
+            return !!(comment as any).__data?.content?.members?.[0]
         },
         callUserNoReply: (comment: HTMLElement): SelectorResult => {
             if ((comment as any).__data?.rcount !== 0) {
-                return undefined
+                return false
             }
-            return (comment as any).__data?.content?.members[0]?.uname
+            return !!(comment as any).__data?.content?.members?.[0]
         },
         callUserOnly: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.content?.message?.replace(/@[^@\s]+/g, ' ').trim() === ''
         },
         callUserOnlyNoReply: (comment: HTMLElement): SelectorResult => {
             if ((comment as any).__data?.rcount !== 0) {
-                return undefined
+                return false
             }
             return (comment as any).__data?.content?.message?.replace(/@[^@\s]+/g, ' ').trim() === ''
         },
@@ -171,21 +178,24 @@ const selectorFns = {
                 ?.replace(/@[^@\s]+/g, ' ')
                 .trim()
         },
+        callBot: (comment: HTMLElement): SelectorResult => {
+            const members = (comment as any).__data?.content?.members
+            if (members.length) {
+                return members.some((v: { uname: string }) => botsSet.has(v.uname))
+            }
+            return false
+        },
         callUser: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.content?.message
+            return !!(comment as any).__data?.content?.message
                 ?.trim()
                 ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
-                ?.match(/@[^@\s]+/)?.[0]
-                .replace('@', '')
-                .trim()
+                ?.match(/@[^@\s]+/)
         },
         callUserNoReply: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.content?.message
+            return !!(comment as any).__data?.content?.message
                 ?.trim()
                 ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
-                ?.match(/@[^@\s]+/)?.[0]
-                .replace('@', '')
-                .trim()
+                ?.match(/@[^@\s]+/)
         },
         callUserOnly: (comment: HTMLElement): SelectorResult => {
             return (
@@ -274,9 +284,6 @@ class CommentFilterCommon implements IMainFilter {
         this.commentContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))
         this.commentLevelFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.level.valueKey, 0))
         this.commentBotFilter.setParam(bots)
-        this.commentCallBotFilter.setParam(bots)
-        this.commentCallUserFilter.setParam([`/./`])
-        this.commentCallUserNoReplyFilter.setParam([`/./`])
     }
 
     /**
@@ -348,7 +355,7 @@ class CommentFilterCommon implements IMainFilter {
         this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns.root.content])
         this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns.root.level])
         this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns.root.username])
-        this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.root.callUser])
+        this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.root.callBot])
         this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns.root.callUser])
         this.commentCallUserNoReplyFilter.isEnable &&
             blackPairs.push([this.commentCallUserNoReplyFilter, selectorFns.root.callUserNoReply])
@@ -438,7 +445,7 @@ class CommentFilterCommon implements IMainFilter {
         this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns.sub.content])
         this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns.sub.level])
         this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns.sub.username])
-        this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.sub.callUser])
+        this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.sub.callBot])
         this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns.sub.callUser])
         this.commentCallUserNoReplyFilter.isEnable &&
             blackPairs.push([this.commentCallUserNoReplyFilter, selectorFns.sub.callUserNoReply])

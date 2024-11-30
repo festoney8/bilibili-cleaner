@@ -126,7 +126,9 @@
 
 -   **[Violentmonkey](https://violentmonkey.github.io/)（暴力猴）：已测试，推荐**
 
--   [Greasemonkey](https://www.greasespot.net/) 和 [ScriptCat](https://docs.scriptcat.org/) 未测试，不推荐
+-   **[ScriptCat](https://docs.scriptcat.org/)（脚本猫）：支持，部分测试**
+
+-   [Greasemonkey](https://www.greasespot.net/) 未测试，不推荐
 
 ## 净化效果对比
 

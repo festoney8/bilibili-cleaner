@@ -570,7 +570,7 @@ export const commentFilterCommonGroups: Group[] = [
                 editorDescription: [
                     '每行一个关键词或正则，不区分大小写',
                     '请勿使用过于激进的关键词或正则',
-                    '正则默认 iu 模式，无需 flag，语法：/abc|\\d+/',
+                    '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
                 ],
                 saveFn: async () => {
                     mainFilter.commentContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))

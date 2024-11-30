@@ -1,7 +1,7 @@
-import settings from '../../../settings'
-import { SubFilterPair } from '../../../types/filter'
-import { error } from '../../../utils/logger'
-import { hideEle, showEle } from '../../../utils/tool'
+import settings from '@/settings'
+import { SubFilterPair } from '@/types/filter'
+import { error } from '@/utils/logger'
+import { hideEle, showEle } from '@/utils/tool'
 
 /**
  * 检测元素列表中每个元素是否合法, 隐藏不合法的元素

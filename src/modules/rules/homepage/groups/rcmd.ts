@@ -1,5 +1,5 @@
-import { Item } from '../../../../types/item'
-import fetchHook from '../../../../utils/fetch'
+import { Item } from '@/types/item'
+import fetchHook from '@/utils/fetch'
 
 export const homepageRcmdItems: Item[] = [
     {

@@ -1,8 +1,8 @@
-import { BooleanFilter } from '../../../core/subFilters/booleanFilter'
-import { KeywordFilter } from '../../../core/subFilters/keywordFilter'
-import { NumberMaxFilter } from '../../../core/subFilters/numberMaxFilter'
-import { NumberMinFilter } from '../../../core/subFilters/numberMinFilter'
-import { StringFilter } from '../../../core/subFilters/stringFilter'
+import { BooleanFilter } from '@/modules/filters/core/subFilters/booleanFilter'
+import { KeywordFilter } from '@/modules/filters/core/subFilters/keywordFilter'
+import { NumberMaxFilter } from '@/modules/filters/core/subFilters/numberMaxFilter'
+import { NumberMinFilter } from '@/modules/filters/core/subFilters/numberMinFilter'
+import { StringFilter } from '@/modules/filters/core/subFilters/stringFilter'
 
 export class VideoBvidFilter extends StringFilter {}
 

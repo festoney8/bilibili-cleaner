@@ -1,5 +1,5 @@
-import { waitForHead } from '../utils/init'
-import { log } from '../utils/logger'
+import { waitForHead } from '@/utils/init'
+import { log } from '@/utils/logger'
 import { loadFilters } from './filters'
 import { loadRules, loadRulesHotKey, loadStyles } from './rules'
 

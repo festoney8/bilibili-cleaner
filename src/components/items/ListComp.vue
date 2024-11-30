@@ -53,13 +53,12 @@
 </template>
 
 <script setup lang="ts">
+import { IListItem } from '@/types/item'
+import { error } from '@/utils/logger'
+import { BiliCleanerStorage } from '@/utils/storage'
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/vue'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid'
 import { ref, watch } from 'vue'
-import { BiliCleanerStorage } from '../../utils/storage'
-
-import { IListItem } from '../../types/item'
-import { error } from '../../utils/logger'
 import DescriptionComp from './DescriptionComp.vue'
 
 const item = defineProps<IListItem>()

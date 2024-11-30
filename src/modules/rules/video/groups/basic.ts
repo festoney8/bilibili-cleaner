@@ -1,6 +1,6 @@
-import { Item } from '../../../../types/item'
-import { matchAvidBvid, matchBvid } from '../../../../utils/tool'
-import URLCleanerInstance from '../../../../utils/urlCleaner'
+import { Item } from '@/types/item'
+import { matchAvidBvid, matchBvid } from '@/utils/tool'
+import URLCleanerInstance from '@/utils/urlCleaner'
 
 export const videoBasicItems: Item[] = [
     {

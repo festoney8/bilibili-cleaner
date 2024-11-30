@@ -1,4 +1,4 @@
-import { BooleanFilter } from '../../../core/subFilters/booleanFilter'
+import { BooleanFilter } from '@/modules/filters/core/subFilters/booleanFilter'
 
 export class CommentIsUpFilter extends BooleanFilter {}
 

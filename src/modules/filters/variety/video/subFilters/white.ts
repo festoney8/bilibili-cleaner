@@ -1,6 +1,6 @@
-import { BooleanFilter } from '../../../core/subFilters/booleanFilter'
-import { KeywordFilter } from '../../../core/subFilters/keywordFilter'
-import { StringFilter } from '../../../core/subFilters/stringFilter'
+import { BooleanFilter } from '@/modules/filters/core/subFilters/booleanFilter'
+import { KeywordFilter } from '@/modules/filters/core/subFilters/keywordFilter'
+import { StringFilter } from '@/modules/filters/core/subFilters/stringFilter'
 
 export class VideoUploaderWhiteFilter extends StringFilter {}
 

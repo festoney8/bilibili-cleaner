@@ -1,18 +1,12 @@
 import { unsafeWindow } from '$'
-import settings from '../../../../../settings'
-import { Group } from '../../../../../types/collection'
-import {
-    ContextMenuTargetHandler,
-    FilterContextMenu,
-    IMainFilter,
-    SelectorResult,
-    SubFilterPair,
-} from '../../../../../types/filter'
-import { debugFilter as debug, error } from '../../../../../utils/logger'
-import { isPageBangumi, isPagePlaylist, isPageVideo } from '../../../../../utils/pageType'
-import { BiliCleanerStorage } from '../../../../../utils/storage'
-import { convertTimeToSec, isEleHide, matchBvid, orderedUniq, showEle, waitForEle } from '../../../../../utils/tool'
-import { coreCheck } from '../../../core/core'
+import { coreCheck } from '@/modules/filters/core/core'
+import settings from '@/settings'
+import { Group } from '@/types/collection'
+import { ContextMenuTargetHandler, FilterContextMenu, IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
+import { debugFilter as debug, error } from '@/utils/logger'
+import { isPageBangumi, isPagePlaylist, isPageVideo } from '@/utils/pageType'
+import { BiliCleanerStorage } from '@/utils/storage'
+import { convertTimeToSec, isEleHide, matchBvid, orderedUniq, showEle, waitForEle } from '@/utils/tool'
 import {
     VideoBvidFilter,
     VideoDurationFilter,

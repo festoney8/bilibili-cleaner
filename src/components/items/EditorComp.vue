@@ -62,11 +62,11 @@
 </template>
 
 <script setup lang="ts">
+import { IEditorItem } from '@/types/item'
+import { error } from '@/utils/logger'
+import { BiliCleanerStorage } from '@/utils/storage'
+import { orderedUniq } from '@/utils/tool'
 import { ref } from 'vue'
-import { IEditorItem } from '../../types/item'
-import { error } from '../../utils/logger'
-import { BiliCleanerStorage } from '../../utils/storage'
-import { orderedUniq } from '../../utils/tool'
 import PanelComp from '../PanelComp.vue'
 import DescriptionComp from './DescriptionComp.vue'
 

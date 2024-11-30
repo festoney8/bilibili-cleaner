@@ -58,15 +58,13 @@
     </div>
 </template>
 <script setup lang="ts">
-import { Position, useDraggable, useElementBounding, useStorage, useWindowSize } from '@vueuse/core'
-import { computed, ref } from 'vue'
 import {
     useCommentFilterPanelStore,
     useDynamicFilterPanelStore,
     useRulePanelStore,
     useSideBtnStore,
     useVideoFilterPanelStore,
-} from '../stores/view'
+} from '@/stores/view'
 import {
     isPageBangumi,
     isPageChannel,
@@ -78,7 +76,9 @@ import {
     isPageSearch,
     isPageSpace,
     isPageVideo,
-} from '../utils/pageType'
+} from '@/utils/pageType'
+import { Position, useDraggable, useElementBounding, useStorage, useWindowSize } from '@vueuse/core'
+import { computed, ref } from 'vue'
 
 const ruleStore = useRulePanelStore()
 const videoStore = useVideoFilterPanelStore()

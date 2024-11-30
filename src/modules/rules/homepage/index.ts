@@ -1,4 +1,4 @@
-import { Group } from '../../../types/collection'
+import { Group } from '@/types/collection'
 import { homepageBasicItems } from './groups/basic'
 import { homepageLayoutItems } from './groups/layout'
 import { homepagePluginItems } from './groups/plugin'

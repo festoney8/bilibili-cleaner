@@ -1,6 +1,6 @@
 import { unsafeWindow } from '$'
-import { Item } from '../../../../types/item'
-import { waitForEle } from '../../../../utils/tool'
+import { Item } from '@/types/item'
+import { waitForEle } from '@/utils/tool'
 
 let webScroll = false
 let fullScroll = false

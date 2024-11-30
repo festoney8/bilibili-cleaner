@@ -1,4 +1,4 @@
-import { Group } from '../../../types/collection'
+import { Group } from '@/types/collection'
 import { channelBasicItems } from './groups/basic'
 import { channelRcmdItems } from './groups/rcmd'
 import { channelSidebarItems } from './groups/sidebar'

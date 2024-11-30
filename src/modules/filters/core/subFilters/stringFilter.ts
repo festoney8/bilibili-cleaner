@@ -1,4 +1,4 @@
-import { ISubFilter, SelectorFn } from '../../../../types/filter'
+import { ISubFilter, SelectorFn } from '@/types/filter'
 
 export class StringFilter implements ISubFilter {
     isEnable = false

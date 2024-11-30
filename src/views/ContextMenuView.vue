@@ -14,11 +14,11 @@
     </div>
 </template>
 <script setup lang="ts">
+import { filterContextMenuHandlers } from '@/modules/filters'
+import { FilterContextMenu } from '@/types/filter'
+import { error } from '@/utils/logger'
 import { useEventListener } from '@vueuse/core'
 import { reactive, ref } from 'vue'
-import { filterContextMenuHandlers } from '../modules/filters'
-import { FilterContextMenu } from '../types/filter'
-import { error } from '../utils/logger'
 
 const show = ref(false)
 const pos = reactive({

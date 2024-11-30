@@ -1,4 +1,4 @@
-import { Group } from '../../../types/collection'
+import { Group } from '@/types/collection'
 import { liveBasicItems } from './groups/basic'
 import { liveBelowItems } from './groups/below'
 import { liveHeaderCenterItems } from './groups/headerCenter'

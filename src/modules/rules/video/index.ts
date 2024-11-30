@@ -1,4 +1,4 @@
-import { Group } from '../../../types/collection'
+import { Group } from '@/types/collection'
 import { videoBasicItems } from './groups/basic'
 import { videoDanmakuItems } from './groups/danmaku'
 import { videoDanmakuControlItems } from './groups/danmakuControl'

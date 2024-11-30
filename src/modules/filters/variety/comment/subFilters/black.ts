@@ -1,7 +1,7 @@
-import { BooleanFilter } from '../../../core/subFilters/booleanFilter'
-import { KeywordFilter } from '../../../core/subFilters/keywordFilter'
-import { NumberMinFilter } from '../../../core/subFilters/numberMinFilter'
-import { StringFilter } from '../../../core/subFilters/stringFilter'
+import { BooleanFilter } from '@/modules/filters/core/subFilters/booleanFilter'
+import { KeywordFilter } from '@/modules/filters/core/subFilters/keywordFilter'
+import { NumberMinFilter } from '@/modules/filters/core/subFilters/numberMinFilter'
+import { StringFilter } from '@/modules/filters/core/subFilters/stringFilter'
 
 export class CommentUsernameFilter extends StringFilter {}
 

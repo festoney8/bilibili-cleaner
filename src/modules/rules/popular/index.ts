@@ -1,4 +1,4 @@
-import { Group } from '../../../types/collection'
+import { Group } from '@/types/collection'
 import { popularBasicItems } from './groups/basic'
 import { popularLayoutItems } from './groups/layout'
 import { popularOtherItems } from './groups/other'

@@ -1,5 +1,5 @@
-import { ISubFilter, SelectorFn } from '../../../../types/filter'
-import { error } from '../../../../utils/logger'
+import { ISubFilter, SelectorFn } from '@/types/filter'
+import { error } from '@/utils/logger'
 
 export class KeywordFilter implements ISubFilter {
     isEnable = false

@@ -25,16 +25,16 @@
 </template>
 
 <script setup lang="ts">
-import DisclosureComp from '../components/DisclosureComp.vue'
-import EditorComp from '../components/items/EditorComp.vue'
-import ListComp from '../components/items/ListComp.vue'
-import NumberComp from '../components/items/NumberComp.vue'
-import StringComp from '../components/items/StringComp.vue'
-import SwitchComp from '../components/items/SwitchComp.vue'
-import PanelComp from '../components/PanelComp.vue'
-import { commentFilters } from '../modules/filters'
-import { useCommentFilterPanelStore } from '../stores/view'
-import { Group } from '../types/collection'
+import DisclosureComp from '@/components/DisclosureComp.vue'
+import EditorComp from '@/components/items/EditorComp.vue'
+import ListComp from '@/components/items/ListComp.vue'
+import NumberComp from '@/components/items/NumberComp.vue'
+import StringComp from '@/components/items/StringComp.vue'
+import SwitchComp from '@/components/items/SwitchComp.vue'
+import PanelComp from '@/components/PanelComp.vue'
+import { commentFilters } from '@/modules/filters'
+import { useCommentFilterPanelStore } from '@/stores/view'
+import { Group } from '@/types/collection'
 
 const store = useCommentFilterPanelStore()
 

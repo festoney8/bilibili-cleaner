@@ -1,4 +1,4 @@
-import { Group } from '../../../types/collection'
+import { Group } from '@/types/collection'
 import { searchBasicItems } from './groups/basic'
 import { searchSidebarItems } from './groups/sidebar'
 

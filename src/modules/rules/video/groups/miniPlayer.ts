@@ -1,7 +1,7 @@
+import { Item } from '@/types/item'
 import { useStorage } from '@vueuse/core'
-import { Item } from '../../../../types/item'
-import { error } from '../../../../utils/logger'
-import { waitForEle } from '../../../../utils/tool'
+import { error } from '@/utils/logger'
+import { waitForEle } from '@/utils/tool'
 
 export const videoMiniPlayerItems: Item[] = [
     {

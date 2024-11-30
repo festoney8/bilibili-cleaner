@@ -1,4 +1,4 @@
-import { Group } from '../../../types/collection'
+import { Group } from '@/types/collection'
 import { bangumiBasicItems } from './groups/basic'
 import { bangumiDanmakuItems } from './groups/danmaku'
 import { bangumiDanmakuControlItems } from './groups/danmakuControl'

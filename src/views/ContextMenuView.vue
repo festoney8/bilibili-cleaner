@@ -1,7 +1,7 @@
 <template>
     <div
         v-if="show"
-        class="fixed z-50 block cursor-pointer overflow-hidden rounded-md bg-white text-[15px] text-black shadow-lg shadow-black/20"
+        class="fixed z-[100000] block cursor-pointer overflow-hidden rounded-md bg-white text-[15px] text-black shadow-lg shadow-black/20"
         :style="{ left: pos.left + 'px', top: pos.top + 'px' }"
     >
         <div v-for="(menu, index) in menuList" :key="index">
@@ -14,11 +14,11 @@
     </div>
 </template>
 <script setup lang="ts">
+import { filterContextMenuHandlers } from '@/modules/filters'
+import { FilterContextMenu } from '@/types/filter'
+import { error } from '@/utils/logger'
 import { useEventListener } from '@vueuse/core'
 import { reactive, ref } from 'vue'
-import { filterContextMenuHandlers } from '../modules/filters'
-import { FilterContextMenu } from '../types/filter'
-import { error } from '../utils/logger'
 
 const show = ref(false)
 const pos = reactive({

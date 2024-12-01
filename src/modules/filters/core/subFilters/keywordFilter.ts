@@ -1,5 +1,5 @@
-import { ISubFilter, SelectorFn } from '../../../../types/filter'
-import { error } from '../../../../utils/logger'
+import { ISubFilter, SelectorFn } from '@/types/filter'
+import { error } from '@/utils/logger'
 
 export class KeywordFilter implements ISubFilter {
     isEnable = false
@@ -30,7 +30,7 @@ export class KeywordFilter implements ISubFilter {
                 word = word.replace(/[*+?^${}().|[\]\\]/g, '\\$&') // 转义
             }
             try {
-                new RegExp(word, 'iu') // check syntax
+                new RegExp(word, 'ius') // check syntax
 
                 if (/\\\d|\\k</.test(word.replaceAll('\\\\', ''))) {
                     validBackrefParts.push(word) // check backreference
@@ -41,10 +41,10 @@ export class KeywordFilter implements ISubFilter {
         }
         try {
             if (validNormalParts.length) {
-                this.mergedRegExp.push(new RegExp(validNormalParts.join('|'), 'iu'))
+                this.mergedRegExp.push(new RegExp(validNormalParts.join('|'), 'ius'))
             }
             for (const regex of validBackrefParts) {
-                this.mergedRegExp.push(new RegExp(regex, 'iu'))
+                this.mergedRegExp.push(new RegExp(regex, 'ius'))
             }
         } catch (err) {
             error('keyword filter build RegExp error', err)

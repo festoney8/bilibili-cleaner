@@ -1,3 +1,5 @@
+/* stylelint-disable scss/at-rule-no-unknown */
+/* stylelint-disable property-no-vendor-prefix */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -18,12 +20,7 @@
 @layer base {
     /* change 1rem for live.bilibili.com */
     :host {
-        font-family:
-            PingFang SC,
-            HarmonyOS_Regular,
-            Helvetica Neue,
-            Microsoft YaHei,
-            sans-serif !important;
+        font-family: 'PingFang SC', 'HarmonyOS_Regular', 'Helvetica Neue', 'Microsoft YaHei', sans-serif !important;
     }
 
     input[type='number']::-webkit-inner-spin-button,

@@ -1,6 +1,6 @@
-import { Filter } from '../../types/collection'
-import { INumberItem, ISwitchItem } from '../../types/item'
-import { error } from '../../utils/logger'
+import { Filter } from '@/types/collection'
+import { INumberItem, ISwitchItem } from '@/types/item'
+import { error } from '@/utils/logger'
 import {
     isPageBangumi,
     isPageChannel,
@@ -11,8 +11,8 @@ import {
     isPageSearch,
     isPageSpace,
     isPageVideo,
-} from '../../utils/pageType'
-import { BiliCleanerStorage } from '../../utils/storage'
+} from '@/utils/pageType'
+import { BiliCleanerStorage } from '@/utils/storage'
 import {
     commentFilterCommonEntry,
     commentFilterCommonGroups,

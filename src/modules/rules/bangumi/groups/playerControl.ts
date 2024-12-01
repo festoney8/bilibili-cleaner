@@ -1,4 +1,4 @@
-import { Item } from '../../../../types/item'
+import { Item } from '@/types/item'
 
 export const bangumiPlayerControlItems: Item[] = [
     {

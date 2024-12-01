@@ -1,4 +1,4 @@
-import { Group } from '../../../types/collection'
+import { Group } from '@/types/collection'
 import { commentBasicItems } from './groups/basic'
 
 export const commentGroups: Group[] = [

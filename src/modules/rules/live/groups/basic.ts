@@ -1,6 +1,6 @@
 import { unsafeWindow } from '$'
-import { Item } from '../../../../types/item'
-import { error } from '../../../../utils/logger'
+import { Item } from '@/types/item'
+import { error } from '@/utils/logger'
 
 export const liveBasicItems: Item[] = [
     {

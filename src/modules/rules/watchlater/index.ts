@@ -1,4 +1,4 @@
-import { Group } from '../../../types/collection'
+import { Group } from '@/types/collection'
 import { watchlaterBasicItems } from './groups/basic'
 
 export const watchlaterGroups: Group[] = [

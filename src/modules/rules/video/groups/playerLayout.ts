@@ -1,7 +1,7 @@
 import { unsafeWindow } from '$'
-import { Item } from '../../../../types/item'
-import { waitForEle } from '../../../../utils/tool'
-import { wideScreenManager } from '../../../../utils/widePlayer'
+import { Item } from '@/types/item'
+import { waitForEle } from '@/utils/tool'
+import { wideScreenManager } from '@/utils/widePlayer'
 
 // 禁用滚动调音量
 let webScroll = false

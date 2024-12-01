@@ -1,4 +1,4 @@
-import { Item } from '../../../../types/item'
+import { Item } from '@/types/item'
 import {
     isPageBangumi,
     isPageChannel,
@@ -11,8 +11,8 @@ import {
     isPageSpace,
     isPageVideo,
     isPageWatchlater,
-} from '../../../../utils/pageType'
-import URLCleanerInstance from '../../../../utils/urlCleaner'
+} from '@/utils/pageType'
+import URLCleanerInstance from '@/utils/urlCleaner'
 
 export const commonBasicItems: Item[] = [
     {

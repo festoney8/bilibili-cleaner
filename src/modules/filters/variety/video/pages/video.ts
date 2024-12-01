@@ -1,18 +1,12 @@
 import { unsafeWindow } from '$'
-import settings from '../../../../../settings'
-import { Group } from '../../../../../types/collection'
-import {
-    ContextMenuTargetHandler,
-    FilterContextMenu,
-    IMainFilter,
-    SelectorResult,
-    SubFilterPair,
-} from '../../../../../types/filter'
-import { debugFilter as debug, error } from '../../../../../utils/logger'
-import { isPageBangumi, isPagePlaylist, isPageVideo } from '../../../../../utils/pageType'
-import { BiliCleanerStorage } from '../../../../../utils/storage'
-import { convertTimeToSec, isEleHide, matchBvid, orderedUniq, showEle, waitForEle } from '../../../../../utils/tool'
-import { coreCheck } from '../../../core/core'
+import { coreCheck } from '@/modules/filters/core/core'
+import settings from '@/settings'
+import { Group } from '@/types/collection'
+import { ContextMenuTargetHandler, FilterContextMenu, IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
+import { debugFilter as debug, error } from '@/utils/logger'
+import { isPageBangumi, isPagePlaylist, isPageVideo } from '@/utils/pageType'
+import { BiliCleanerStorage } from '@/utils/storage'
+import { convertTimeToSec, isEleHide, matchBvid, orderedUniq, showEle, waitForEle } from '@/utils/tool'
 import {
     VideoBvidFilter,
     VideoDurationFilter,
@@ -330,7 +324,7 @@ export const videoFilterVideoGroups: Group[] = [
                 editorDescription: [
                     '每行一个关键词或正则，不区分大小写',
                     '请勿使用过于激进的关键词或正则',
-                    '正则默认 iu 模式，无需 flag，语法：/abc|\\d+/',
+                    '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
                 ],
                 saveFn: async () => {
                     mainFilter.videoUploaderKeywordFilter.setParam(
@@ -366,7 +360,7 @@ export const videoFilterVideoGroups: Group[] = [
                 editorDescription: [
                     '每行一个关键词或正则，不区分大小写',
                     '请勿使用过于激进的关键词或正则',
-                    '正则默认 iu 模式，无需 flag，语法：/abc|\\d+/',
+                    '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
                 ],
                 saveFn: async () => {
                     mainFilter.videoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.title.valueKey, []))
@@ -483,7 +477,7 @@ export const videoFilterVideoGroups: Group[] = [
                 editorDescription: [
                     '每行一个关键词或正则，不区分大小写',
                     '请勿使用过于激进的关键词或正则',
-                    '正则默认 iu 模式，无需 flag，语法：/abc|\\d+/',
+                    '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
                 ],
                 saveFn: async () => {
                     mainFilter.videoTitleWhiteFilter.setParam(BiliCleanerStorage.get(GM_KEYS.white.title.valueKey, []))

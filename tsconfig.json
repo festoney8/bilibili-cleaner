@@ -12,7 +12,10 @@
         // https://stackoverflow.com/questions/63310897
         "lib": ["ESNext", "dom.iterable", "DOM"],
         "skipLibCheck": true,
-        "noEmit": true
+        "noEmit": true,
+        "paths": {
+            "@/*": ["./src/*"]
+        }
     },
     "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
     "references": [

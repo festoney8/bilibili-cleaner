@@ -1,19 +1,13 @@
-import settings from '../../../../../settings'
-import { Group } from '../../../../../types/collection'
-import {
-    ContextMenuTargetHandler,
-    FilterContextMenu,
-    IMainFilter,
-    SelectorResult,
-    SubFilterPair,
-} from '../../../../../types/filter'
-import fetchHook from '../../../../../utils/fetch'
-import { debugFilter as debug, error } from '../../../../../utils/logger'
-import { isPageSpace } from '../../../../../utils/pageType'
-import { BiliCleanerStorage } from '../../../../../utils/storage'
-import { orderedUniq, showEle, waitForEle } from '../../../../../utils/tool'
-import { coreCheck } from '../../../core/core'
-import { bots } from '../extra/bots'
+import { coreCheck } from '@/modules/filters/core/core'
+import settings from '@/settings'
+import { Group } from '@/types/collection'
+import { ContextMenuTargetHandler, FilterContextMenu, IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
+import fetchHook from '@/utils/fetch'
+import { debugFilter as debug, error } from '@/utils/logger'
+import { isPageSpace } from '@/utils/pageType'
+import { BiliCleanerStorage } from '@/utils/storage'
+import { orderedUniq, showEle, waitForEle } from '@/utils/tool'
+import { bots, botsSet } from '../extra/bots'
 import {
     CommentBotFilter,
     CommentCallBotFilter,
@@ -90,6 +84,12 @@ const selectorFns = {
                 .replace(/@[^@\s]+/g, ' ')
                 .trim()
         },
+        callBot: (comment: HTMLElement): SelectorResult => {
+            const members = Array.from(
+                comment.querySelectorAll<HTMLElement>('.root-reply-container .reply-content .jump-link.user'),
+            )
+            return members.some((v: HTMLElement) => botsSet.has(v.textContent!.replace('@', '')))
+        },
         callUser: (comment: HTMLElement): SelectorResult => {
             return comment
                 .querySelector('.root-reply-container .reply-content .jump-link.user')
@@ -133,6 +133,10 @@ const selectorFns = {
                 ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
                 ?.replace(/@[^@\s]+/g, ' ')
                 .trim()
+        },
+        callBot: (comment: HTMLElement): SelectorResult => {
+            const members = Array.from(comment.querySelectorAll<HTMLElement>('.reply-content .jump-link.user'))
+            return members.some((v: HTMLElement) => botsSet.has(v.textContent!.replace('@', '')))
         },
         callUser: (comment: HTMLElement): SelectorResult => {
             return comment
@@ -193,8 +197,6 @@ class CommentFilterLegacy implements IMainFilter {
         this.commentContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))
         this.commentLevelFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.level.valueKey, 0))
         this.commentBotFilter.setParam(bots)
-        this.commentCallBotFilter.setParam(bots)
-        this.commentCallUserFilter.setParam([`/./`])
     }
 
     async check(mode?: 'full' | 'incr') {
@@ -283,8 +285,7 @@ class CommentFilterLegacy implements IMainFilter {
             this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns.root.content])
             this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns.root.level])
             this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns.root.username])
-            this.commentCallBotFilter.isEnable &&
-                blackPairs.push([this.commentCallBotFilter, selectorFns.root.callUser])
+            this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.root.callBot])
             this.commentCallUserFilter.isEnable &&
                 blackPairs.push([this.commentCallUserFilter, selectorFns.root.callUser])
             this.commentCallUserOnlyFilter.isEnable &&
@@ -305,7 +306,7 @@ class CommentFilterLegacy implements IMainFilter {
             this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns.sub.content])
             this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns.sub.level])
             this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns.sub.username])
-            this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.sub.callUser])
+            this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.sub.callBot])
             this.commentCallUserFilter.isEnable &&
                 blackPairs.push([this.commentCallUserFilter, selectorFns.sub.callUser])
             this.commentCallUserOnlyFilter.isEnable &&
@@ -424,7 +425,7 @@ export const commentFilterLegacyGroups: Group[] = [
                 editorDescription: [
                     '每行一个关键词或正则，不区分大小写',
                     '请勿使用过于激进的关键词或正则',
-                    '正则默认 iu 模式，无需 flag，语法：/abc|\\d+/',
+                    '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
                 ],
                 saveFn: async () => {
                     mainFilter.commentContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))

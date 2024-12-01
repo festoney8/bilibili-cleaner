@@ -12,11 +12,11 @@
 </template>
 
 <script setup lang="ts">
+import { IStringItem } from '@/types/item'
+import { error } from '@/utils/logger'
+import { BiliCleanerStorage } from '@/utils/storage'
 import { watchThrottled } from '@vueuse/core'
 import { ref } from 'vue'
-import { IStringItem } from '../../types/item'
-import { error } from '../../utils/logger'
-import { BiliCleanerStorage } from '../../utils/storage'
 import DescriptionComp from './DescriptionComp.vue'
 
 const item = defineProps<IStringItem>()

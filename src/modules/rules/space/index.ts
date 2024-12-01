@@ -1,4 +1,4 @@
-import { Group } from '../../../types/collection'
+import { Group } from '@/types/collection'
 import { spaceBasicItems } from './groups/basic'
 import { spaceDynamicItems } from './groups/dynamic'
 

@@ -1,5 +1,5 @@
-import { Item } from '../../../../types/item'
-import shadow from '../../../../utils/shadow'
+import { Item } from '@/types/item'
+import shadow from '@/utils/shadow'
 
 export const commentBasicItems: Item[] = [
     {

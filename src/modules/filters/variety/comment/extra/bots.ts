@@ -20,4 +20,7 @@ export const bots = [
     'AI工具集', // 605801219
     'Ai的评论', // 3546740500204293
     'AI识片酱', // 1835753760
+    'AI知识总结', // 3546765074630961
 ]
+
+export const botsSet = new Set(bots)

@@ -1,4 +1,4 @@
-import { Rule } from '../../types/collection'
+import { Rule } from '@/types/collection'
 import {
     isPageBangumi,
     isPageChannel,
@@ -11,11 +11,11 @@ import {
     isPageSpace,
     isPageVideo,
     isPageWatchlater,
-} from '../../utils/pageType'
+} from '@/utils/pageType'
 
-import { IListItem, INumberItem, IStringItem, ISwitchItem } from '../../types/item'
-import { error } from '../../utils/logger'
-import { BiliCleanerStorage } from '../../utils/storage'
+import { IListItem, INumberItem, IStringItem, ISwitchItem } from '@/types/item'
+import { error } from '@/utils/logger'
+import { BiliCleanerStorage } from '@/utils/storage'
 
 import { bangumiGroups } from './bangumi'
 import { channelGroups } from './channel'

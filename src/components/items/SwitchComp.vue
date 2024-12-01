@@ -20,11 +20,11 @@
 </template>
 
 <script setup lang="ts">
+import { ISwitchItem } from '@/types/item'
+import { error } from '@/utils/logger'
+import { BiliCleanerStorage } from '@/utils/storage'
 import { Switch, SwitchGroup, SwitchLabel } from '@headlessui/vue'
 import { ref, watch } from 'vue'
-import { ISwitchItem } from '../../types/item'
-import { error } from '../../utils/logger'
-import { BiliCleanerStorage } from '../../utils/storage'
 import DescriptionComp from './DescriptionComp.vue'
 
 const item = defineProps<ISwitchItem>()

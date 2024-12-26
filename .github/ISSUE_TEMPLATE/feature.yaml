@@ -1,5 +1,5 @@
-name: 新功能
-description: 提出新功能需求
+name: 新功能 / 改进功能
+description: 提出新功能需求 / 改进现有的功能
 title: "[FR] "
 labels: ["enhancement"]
 body:

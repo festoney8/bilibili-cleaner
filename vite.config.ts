@@ -5,14 +5,6 @@ import monkey, { cdn } from 'vite-plugin-monkey'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    // https://github.com/sass/dart-sass/issues/2352
-    css: {
-        preprocessorOptions: {
-            scss: {
-                api: 'modern-compiler',
-            },
-        },
-    },
     plugins: [
         vue(),
         monkey({
@@ -20,7 +12,7 @@ export default defineConfig({
             userscript: {
                 name: 'bilibili 页面净化大师',
                 namespace: 'http://tampermonkey.net/',
-                version: '4.0.13',
+                version: '4.1.0',
                 description:
                     '净化 B站/哔哩哔哩 页面，支持「精简功能、播放器净化、过滤视频、过滤评论、全站黑白名单」，提供 300+ 功能，定制自己的 B 站',
                 author: 'festoney8',

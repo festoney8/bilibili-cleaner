@@ -99,7 +99,7 @@
 
 ## 浏览器适配
 
-### Chrome / Edge / 其他 Chromium 内核浏览器
+### Chrome / Edge 等 Chromium 内核浏览器
 
 - **要求 Chromium 内核版本 >= 105**，内核版本过低会导致大量功能失效，如：无法净化顶栏
 
@@ -189,6 +189,9 @@
 
 ## 与其他 bilibili 插件的兼容性
 
+<details>
+<summary><b>展开查看</b></summary>
+
 ### 1. 与 [Bilibili-Evolved](https://github.com/the1812/Bilibili-Evolved) 的兼容性
 
 - 绝大多数功能兼容，小部分功能重复，均不会产生崩坏
@@ -218,6 +221,8 @@
 
 - 不兼容 BewlyBewly 新版首页
 - 兼容 BewlyBewly 使用原版 B 站首页
+
+</details>
 
 ## 数据导入与导出
 
@@ -269,7 +274,22 @@
 - [tailwindcss](https://github.com/tailwindlabs/tailwindcss)
 - [headlessui](https://github.com/tailwindlabs/headlessui)
 
-## Contribution
+## 开发
 
-- main 分支只用于发布测试版和稳定版
-- dev 分支用于开发
+- 分支介绍
+
+    - main 分支只用于发布测试版和稳定版
+    - dev 分支用于开发
+
+- 环境要求
+
+    - node.js >= 22
+    - pnpm >= 9.0
+    - 使用新版 Chrome / Edge / Firefox，安装 tampermonkey 或 violentmonkey
+
+- 编译运行
+
+    1. clone 项目，`pnpm i` 安装依赖
+    2. 使用 `pnpm dev` 进入 dev 模式，会自动打开浏览器安装开发用脚本（由 vite-plugin-monkey 控制）
+        - dev 模式下，修改 vue/scss 代码可实时生效，修改 typescript 会触发页面自动刷新
+    3. 使用 `pnpm build` 构建，产物在 `dist` 文件夹内

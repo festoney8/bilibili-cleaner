@@ -34,14 +34,21 @@ const GM_KEYS = {
 // 视频列表信息提取
 const selectorFns = {
     duration: (video: HTMLElement): SelectorResult => {
-        const duration = video.querySelector('span.length')?.textContent?.trim()
+        const duration =
+            video.querySelector('span.length')?.textContent?.trim() ||
+            video.querySelector('.bili-cover-card__stats .bili-cover-card__stat:nth-last-child(1)')?.textContent?.trim()
         return (duration && convertTimeToSec(duration)) ?? undefined
     },
     title: (video: HTMLElement): SelectorResult => {
-        return video.querySelector('a.title')?.textContent?.trim()
+        return (
+            video.querySelector('a.title')?.textContent?.trim() ||
+            video.querySelector('.bili-video-card__title a')?.textContent?.trim()
+        )
     },
     bvid: (video: HTMLElement): SelectorResult => {
-        const href = video.querySelector('a.title')?.getAttribute('href')?.trim()
+        const href =
+            video.querySelector('a.title')?.getAttribute('href')?.trim() ||
+            video.querySelector('.bili-video-card__title a')?.getAttribute('href')?.trim()
         return (href && matchBvid(href)) ?? undefined
     },
 }
@@ -80,15 +87,19 @@ class VideoFilterSpace implements IMainFilter {
         let selector
         // 主页视频
         if (/^\/\d+$/.test(location.pathname)) {
-            selector = `#page-index .small-item`
+            selector = `#page-index .small-item, .section-wrap.video-section .items__item, .section-wrap.lists-section .video-list__item`
         }
         // 投稿视频
-        if (/^\/\d+\/video$/.test(location.pathname)) {
-            selector = `#submit-video :is(.small-item,.list-item)`
+        if (/^\/\d+\/(?:upload\/)?video$/.test(location.pathname)) {
+            selector = `#submit-video :is(.small-item,.list-item), .video-list .upload-video-card`
         }
-        // 视频合集、视频系列
+        // 旧版空间页 视频合集、视频系列
         if (/^\/\d+\/channel\/(collectiondetail|seriesdetail)/.test(location.pathname)) {
             selector = `:is(#page-collection-detail,#page-series-detail) li.small-item`
+        }
+        // 新版空间页 视频合集内视频
+        if (/^\/\d+\/lists/.test(location.pathname)) {
+            selector = `.space-lists .video-list .video-list__item, .space-list-details .list-video-item`
         }
         if (!selector) {
             return

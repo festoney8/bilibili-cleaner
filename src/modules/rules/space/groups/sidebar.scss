@@ -1,0 +1,19 @@
+// 隐藏 新版反馈
+html[hide-space-page-sidebar-feedback] {
+    #app .space-float {
+        height: fit-content !important;
+        .float-button:nth-last-child(3) {
+            display: none !important;
+        }
+    }
+}
+
+// 隐藏 返回旧版
+html[hide-space-page-sidebar-revert] {
+    #app .space-float {
+        height: fit-content !important;
+        .float-button:nth-last-child(2) {
+            display: none !important;
+        }
+    }
+}

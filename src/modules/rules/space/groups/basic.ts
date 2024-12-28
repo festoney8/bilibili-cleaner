@@ -10,9 +10,21 @@ export const spaceBasicItems: Item[] = [
             if (/\/\d+\/?($|\?)/.test(location.pathname)) {
                 const userid = location.pathname.match(/\d+/)?.[0]
                 if (userid) {
+                    // 新版space会自动重定向到 /upload/video
                     location.href = `https://space.bilibili.com/${userid}/video`
                 }
             }
         },
+    },
+    {
+        type: 'switch',
+        id: 'hide-space-page-video-card-danmaku-count',
+        name: '隐藏 视频信息 弹幕数',
+        defaultEnable: true,
+    },
+    {
+        type: 'switch',
+        id: 'increase-space-page-video-card-font-size',
+        name: '增大 视频信息 字号',
     },
 ]

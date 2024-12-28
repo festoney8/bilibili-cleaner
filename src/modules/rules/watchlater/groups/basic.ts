@@ -28,9 +28,4 @@ export const watchlaterBasicItems: Item[] = [
         id: 'watchlater-increase-font-size',
         name: '增大 视频信息字号',
     },
-    {
-        type: 'switch',
-        id: 'watchlater-hide-feedback',
-        name: '隐藏 新版反馈按钮',
-    },
 ]

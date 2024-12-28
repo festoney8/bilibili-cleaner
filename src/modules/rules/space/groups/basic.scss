@@ -1,0 +1,20 @@
+// 隐藏 视频信息 弹幕数
+html[hide-space-page-video-card-danmaku-count] {
+    .bili-video-card .bili-cover-card__stats .bili-cover-card__stat:nth-child(2):not(:last-child) {
+        display: none !important;
+    }
+}
+
+// 增大 视频信息 字号
+html[increase-space-page-video-card-font-size] {
+    .bili-cover-card {
+        --bili-cover-card-stat-icon-size: 16px !important;
+        --bili-cover-card-stat-font-size: 13px !important;
+    }
+    .bili-video-card {
+        --bili-video-card-title-font-size: 15px !important;
+        --bili-video-card-title-line-height: 23px !important;
+        --bili-video-card-subtitle-font-size: 14px !important;
+        --bili-video-card-subtitle-line-height: 16px !important;
+    }
+}

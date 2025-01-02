@@ -46,6 +46,9 @@ export const liveBasicItems: Item[] = [
         name: '默认网页全屏播放 (实验功能)',
         noStyle: true,
         enableFn: async () => {
+            if (window.self !== window.top) {
+                return
+            }
             waitForBody().then(() => {
                 document.body.classList.add('player-full-win')
                 document.body.classList.add('over-hidden')

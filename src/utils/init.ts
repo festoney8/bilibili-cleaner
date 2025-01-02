@@ -3,6 +3,7 @@ export const waitForHead = () => {
     return new Promise<void>((resolve) => {
         if (document.head) {
             resolve()
+            return
         }
         const observer = new MutationObserver(() => {
             if (document.head) {
@@ -19,6 +20,7 @@ export const waitForBody = () => {
     return new Promise<void>((resolve) => {
         if (document.body) {
             resolve()
+            return
         }
         const observer = new MutationObserver(() => {
             if (document.body) {

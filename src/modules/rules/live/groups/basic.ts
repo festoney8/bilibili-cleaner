@@ -1,5 +1,6 @@
 import { unsafeWindow } from '$'
 import { Item } from '@/types/item'
+import { waitForBody } from '@/utils/init'
 import { error } from '@/utils/logger'
 
 export const liveBasicItems: Item[] = [
@@ -22,7 +23,7 @@ export const liveBasicItems: Item[] = [
     {
         type: 'switch',
         id: 'activity-live-auto-jump',
-        name: '活动直播页 自动跳转普通直播 (实验功能)',
+        name: '活动直播自动跳转普通直播 (实验功能)',
         noStyle: true,
         enableFn: async () => {
             let cnt = 0
@@ -38,6 +39,40 @@ export const liveBasicItems: Item[] = [
             }, 200)
         },
         enableFnRunAt: 'document-end',
+    },
+    {
+        type: 'switch',
+        id: 'live-page-default-webscreen',
+        name: '默认网页全屏播放 (实验功能)',
+        noStyle: true,
+        enableFn: async () => {
+            if (window.self !== window.top) {
+                return
+            }
+            waitForBody().then(() => {
+                document.body.classList.add('player-full-win')
+                document.body.classList.add('over-hidden')
+            })
+            document.addEventListener('DOMContentLoaded', () => {
+                let cnt = 0
+                const id = setInterval(() => {
+                    const player = unsafeWindow.EmbedPlayer?.instance || unsafeWindow.livePlayer
+                    if (player) {
+                        requestAnimationFrame(() => {
+                            document.body.classList.remove('player-full-win')
+                            document.body.classList.remove('over-hidden')
+                            player.setFullscreenStatus(1)
+                        })
+                        clearInterval(id)
+                    } else {
+                        cnt++
+                        if (cnt > 10) {
+                            clearInterval(id)
+                        }
+                    }
+                }, 1000)
+            })
+        },
     },
     {
         type: 'switch',

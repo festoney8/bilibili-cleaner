@@ -17,6 +17,7 @@ export declare global {
                     }[]
                 }
                 switchQuality?: function
+                setFullscreenStatus?: function
             }
         }
         livePlayer?: {
@@ -28,6 +29,7 @@ export declare global {
                 }[]
             }
             switchQuality?: function
+            setFullscreenStatus?: function
         }
     }
 }

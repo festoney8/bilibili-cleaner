@@ -36,12 +36,9 @@ html[video-page-right-container-sticky-disable] {
 // 隐藏 广告
 html[video-page-hide-right-container-ad] {
     .right-container {
-        #slide_ad {
-            display: none !important;
-        }
-        .ad-report.video-card-ad-small {
-            display: none !important;
-        }
+        #slide_ad,
+        .video-card-ad-small,
+        .video-card-ad-small-inner,
         .video-page-special-card-small {
             display: none !important;
         }

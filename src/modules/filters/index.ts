@@ -19,11 +19,6 @@ import {
     commentFilterCommonHandler,
 } from './variety/comment/pages/common'
 import {
-    commentFilterLegacyEntry,
-    commentFilterLegacyGroups,
-    commentFilterLegacyHandler,
-} from './variety/comment/pages/legacy'
-import {
     dynamicFilterDynamicEntry,
     dynamicFilterDynamicGroups,
     dynamicFilterDynamicHandler,
@@ -91,16 +86,10 @@ export const videoFilters: Filter[] = [
 /** 评论过滤器 */
 export const commentFilters: Filter[] = [
     {
-        name: '视频页/番剧页/动态页 视频评论过滤',
+        name: '视频页/番剧页/动态页/空间页 视频评论过滤',
         groups: commentFilterCommonGroups,
         entry: commentFilterCommonEntry,
-        checkFn: () => isPageVideo() || isPageBangumi() || isPagePlaylist() || isPageDynamic(),
-    },
-    {
-        name: '空间页 动态评论过滤',
-        groups: commentFilterLegacyGroups,
-        entry: commentFilterLegacyEntry,
-        checkFn: () => isPageSpace(),
+        checkFn: () => isPageVideo() || isPageBangumi() || isPagePlaylist() || isPageDynamic() || isPageSpace(),
     },
 ]
 
@@ -171,5 +160,4 @@ export const filterContextMenuHandlers = [
     videoFilterHomepageHandler,
     dynamicFilterDynamicHandler,
     commentFilterCommonHandler,
-    commentFilterLegacyHandler,
 ]

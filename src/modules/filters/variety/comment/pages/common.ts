@@ -4,7 +4,7 @@ import { Group } from '@/types/collection'
 import { ContextMenuTargetHandler, FilterContextMenu, IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
 import fetchHook from '@/utils/fetch'
 import { debugFilter as debug, error } from '@/utils/logger'
-import { isPageBangumi, isPageDynamic, isPagePlaylist, isPageVideo } from '@/utils/pageType'
+import { isPageBangumi, isPageDynamic, isPagePlaylist, isPageSpace, isPageVideo } from '@/utils/pageType'
 import ShadowInstance from '@/utils/shadow'
 import { BiliCleanerStorage } from '@/utils/storage'
 import { orderedUniq, showEle } from '@/utils/tool'
@@ -842,7 +842,7 @@ export const commentFilterCommonGroups: Group[] = [
 
 // 右键菜单handler
 export const commentFilterCommonHandler: ContextMenuTargetHandler = (target: HTMLElement): FilterContextMenu[] => {
-    if (!(isPageVideo() || isPagePlaylist() || isPageBangumi() || isPageDynamic())) {
+    if (!(isPageVideo() || isPagePlaylist() || isPageBangumi() || isPageDynamic() || isPageSpace())) {
         return []
     }
 

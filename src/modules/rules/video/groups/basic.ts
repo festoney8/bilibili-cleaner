@@ -1,4 +1,5 @@
 import { Item } from '@/types/item'
+import { BiliCleanerStorage } from '@/utils/storage'
 import { matchAvidBvid, matchBvid } from '@/utils/tool'
 import URLCleanerInstance from '@/utils/urlCleaner'
 
@@ -82,9 +83,11 @@ export const videoBasicItems: Item[] = [
                         }
                         // 匹配av号, BV号, 分P号
                         const avbv = matchAvidBvid(location.href)
-                        let shareText = title
-                            ? `${title} \nhttps://www.bilibili.com/video/${avbv}`
-                            : `https://www.bilibili.com/video/${avbv}`
+                        let domain = BiliCleanerStorage.get('video-page-simple-share-domain')
+                        if (!domain || domain === 'disable') {
+                            domain = 'www.bilibili.com/video'
+                        }
+                        let shareText = title ? `${title} \nhttps://${domain}/${avbv}` : `https://${domain}/${avbv}`
                         const urlObj = new URL(location.href)
                         const params = new URLSearchParams(urlObj.search)
                         if (params.has('p')) {
@@ -99,6 +102,43 @@ export const videoBasicItems: Item[] = [
             }, 200)
         },
         enableFnRunAt: 'document-end',
+    },
+    {
+        type: 'list',
+        id: 'video-page-simple-share-domain',
+        name: '使用短域名分享',
+        defaultValue: 'disable',
+        disableValue: 'disable',
+        options: [
+            {
+                id: 'disable',
+                name: '不使用',
+            },
+            {
+                id: 'b23.tv',
+                name: 'b23.tv',
+            },
+            {
+                id: 'bili22.cn',
+                name: 'bili22.cn',
+            },
+            {
+                id: 'bili33.cn',
+                name: 'bili33.cn',
+            },
+            {
+                id: 'bili23.cn',
+                name: 'bili23.cn',
+            },
+            {
+                id: 'bili2233.cn',
+                name: 'bili2233.cn',
+            },
+            {
+                id: 'bilibili.com',
+                name: 'bilibili.com',
+            },
+        ],
     },
     {
         type: 'switch',

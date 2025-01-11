@@ -1,15 +1,19 @@
-/* 测试视频 https://www.bilibili.com/video/av487000361/ */
+/* 测试视频 https://www.bilibili.com/festival/bnj2024?bvid=BV1iU421d7aG/ */
 
 // 弹幕字体
 html[video-page-danmaku-font-family] {
-    .bili-danmaku-x-dm {
-        --fontFamily: var(--video-page-danmaku-font-family) !important;
+    .bili-danmaku-x-dm,
+    .bili-dm,
+    .bili-dm * {
+        font-family: var(--video-page-danmaku-font-family) !important;
     }
 }
 
 // 弹幕字重
 html[video-page-danmaku-font-weight] {
-    .bili-danmaku-x-dm {
-        --fontWeight: var(--video-page-danmaku-font-weight) !important;
+    .bili-danmaku-x-dm,
+    .bili-dm,
+    .bili-dm * {
+        font-weight: var(--video-page-danmaku-font-weight) !important;
     }
 }

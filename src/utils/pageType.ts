@@ -41,8 +41,8 @@ const currPage = (): string => {
     if (!href.includes('bilibili.com/v/popular/') && href.includes('bilibili.com/v/')) {
         return 'channel'
     }
-    // 拜年祭等活动
-    if (href.includes('www.bilibili.com/festival/')) {
+    // 拜年祭等活动播放页
+    if (/www\.bilibili\.com\/festival\/.*bvid/.test(href)) {
         return 'festival'
     }
     if (href.includes('bilibili.com/watchlater')) {

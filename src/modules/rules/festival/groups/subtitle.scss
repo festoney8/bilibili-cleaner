@@ -1,0 +1,43 @@
+// 字幕颜色
+html[video-page-subtitle-font-color] {
+    .bpx-player-subtitle-panel-text {
+        color: var(--video-page-subtitle-font-color) !important;
+    }
+}
+
+// 字体设定
+html[video-page-subtitle-font-family] {
+    .bpx-player-subtitle-panel-text {
+        font-family: var(--video-page-subtitle-font-family) !important;
+    }
+}
+
+// 字重设定
+html[video-page-subtitle-font-weight] {
+    .bpx-player-subtitle-panel-text {
+        font-weight: var(--video-page-subtitle-font-weight) !important;
+    }
+}
+
+// 描边颜色
+html[video-page-subtitle-text-stroke-color] {
+    .bpx-player-subtitle-panel-text {
+        background: unset !important;
+        background-color: var(--video-page-subtitle-text-stroke-color) !important;
+        background-clip: text !important;
+    }
+}
+
+// 描边宽度
+html[video-page-subtitle-text-stroke-width] {
+    .bpx-player-container:where([data-screen='normal'], [data-screen='wide']) .bpx-player-subtitle-panel-text {
+        -webkit-text-stroke: calc(0.6 * var(--video-page-subtitle-text-stroke-width)) transparent !important;
+        -moz-text-stroke: calc(0.6 * var(--video-page-subtitle-text-stroke-width)) transparent !important;
+        -ms-text-stroke: calc(0.6 * var(--video-page-subtitle-text-stroke-width)) transparent !important;
+    }
+    .bpx-player-container:where([data-screen='web'], [data-screen='full']) .bpx-player-subtitle-panel-text {
+        -webkit-text-stroke: var(--video-page-subtitle-text-stroke-width) transparent !important;
+        -moz-text-stroke: var(--video-page-subtitle-text-stroke-width) transparent !important;
+        -ms-text-stroke: var(--video-page-subtitle-text-stroke-width) transparent !important;
+    }
+}

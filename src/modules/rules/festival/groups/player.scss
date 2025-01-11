@@ -1,0 +1,188 @@
+// 隐藏 一键三连
+html[video-page-hide-bpx-player-bili-guide-all] {
+    .bili-follow-to-electric,
+    .bili-guide,
+    .bili-guide-all,
+    .bili-guide-animate,
+    .bili-guide-cyc,
+    .bili-guide-electric,
+    .bili-guide-follow,
+    .bili-guide-followed,
+    .bili-danmaku-x-guide,
+    .bili-danmaku-x-guide-all,
+    .bili-danmaku-x-guide-follow,
+    .bili-danmaku-x-guide-gray {
+        display: none !important;
+    }
+}
+
+// 隐藏 投票
+html[video-page-hide-bpx-player-bili-vote] {
+    .bili-vote,
+    .bili-danmaku-x-vote {
+        display: none !important;
+    }
+}
+
+// 隐藏 播放效果调查
+html[video-page-hide-bpx-player-bili-qoe-feedback] {
+    .bpx-player-qoeFeedback,
+    .bili-qoeFeedback,
+    .bili-qoeFeedback-score,
+    .bili-qoeFeedback-vote {
+        display: none !important;
+    }
+}
+
+// 隐藏 评分
+html[video-page-hide-bpx-player-bili-score] {
+    .bili-score,
+    .bili-danmaku-x-score,
+    .bili-danmaku-x-superRating {
+        display: none !important;
+    }
+}
+
+// 隐藏 评分总结
+html[video-page-hide-bpx-player-bili-score-sum] {
+    .bili-scoreSum,
+    .bili-danmaku-x-scoreSum {
+        display: none !important;
+    }
+}
+
+// 隐藏 打卡
+html[video-page-hide-bpx-player-bili-clock] {
+    .bili-clock,
+    .bili-danmaku-x-clock {
+        display: none !important;
+    }
+}
+
+// 隐藏 心动
+html[video-page-hide-bpx-player-bili-cmtime] {
+    .bili-cmtime,
+    .bili-danmaku-x-cmtime {
+        display: none !important;
+    }
+}
+
+// 隐藏 迷你弹窗
+html[video-page-hide-bpx-player-bili-cmd-shrink] {
+    .bili-cmd-shrink,
+    .bili-danmaku-x-cmd-shrink {
+        display: none !important;
+    }
+}
+
+// 隐藏 视频预告
+html[video-page-hide-bpx-player-bili-reserve] {
+    .bili-reserve,
+    .bili-danmaku-x-reserve {
+        display: none !important;
+    }
+}
+
+// 隐藏 视频链接 (稍后再看)
+html[video-page-hide-bpx-player-bili-link] {
+    .bili-link,
+    .bili-danmaku-x-link {
+        display: none !important;
+    }
+}
+
+// 隐藏 播放器内所有弹窗 (强制)
+html[video-page-hide-bpx-player-cmd-dm-wrap] {
+    .bpx-player-cmd-dm-wrap {
+        display: none !important;
+    }
+}
+
+// 隐藏 全屏下 播放器内标题
+html[video-page-hide-bpx-player-top-left-title] {
+    .bpx-player-top-title {
+        display: none !important;
+    }
+    .bpx-player-top-left-title {
+        display: none !important;
+    }
+
+    // 播放器上方阴影渐变
+    .bpx-player-top-mask {
+        display: none !important;
+    }
+}
+
+// 隐藏 视频音乐链接
+html[video-page-hide-bpx-player-top-left-music] {
+    .bpx-player-top-left-music {
+        display: none !important;
+    }
+}
+
+// 隐藏 左上角 关注UP主
+html[video-page-hide-bpx-player-top-left-follow] {
+    .bpx-player-top-left-follow {
+        display: none !important;
+    }
+}
+
+// 隐藏 右上角 反馈按钮
+html[video-page-hide-bpx-player-top-issue] {
+    .bpx-player-top-issue {
+        display: none !important;
+    }
+}
+
+// 隐藏 视频暂停时大Logo
+html[video-page-hide-bpx-player-state-wrap] {
+    .bpx-player-state-wrap {
+        display: none !important;
+    }
+}
+
+// 隐藏 播放结束后视频推荐
+html[video-page-hide-bpx-player-ending-related] {
+    .bpx-player-ending-related {
+        display: none !important;
+    }
+    .bpx-player-ending-content {
+        display: flex !important;
+        align-items: center !important;
+    }
+}
+
+// 隐藏 弹幕悬停点赞/复制/举报
+html[video-page-hide-bpx-player-dialog-wrap] {
+    .bpx-player-dialog-wrap {
+        display: none !important;
+    }
+}
+
+// 隐藏 高赞弹幕前点赞按钮
+html[video-page-bpx-player-bili-high-icon] {
+    .bili-dm .bili-high-icon,
+    .bili-danmaku-x-high-icon {
+        display: none !important;
+    }
+}
+
+// 彩色渐变弹幕 变成白色
+html[video-page-bpx-player-bili-dm-vip-white] {
+    .bili-dm > .bili-dm-vip,
+    .bili-danmaku-x-dm-vip {
+        background: unset !important;
+        background-image: unset !important;
+        background-size: unset !important;
+
+        // 父元素未指定 var(--textShadow), 默认重墨描边凑合用
+        text-shadow:
+            1px 0 1px #000,
+            0 1px 1px #000,
+            0 -1px 1px #000,
+            -1px 0 1px #000 !important;
+        -webkit-text-stroke: none !important;
+        -moz-text-stroke: none !important;
+        -ms-text-stroke: none !important;
+    }
+}

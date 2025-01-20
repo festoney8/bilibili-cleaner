@@ -46,6 +46,9 @@ export const liveBasicItems: Item[] = [
         name: '默认网页全屏播放 (实验功能)',
         noStyle: true,
         enableFn: async () => {
+            if (!/\/\d+|\/blanc\/\d+/.test(location.pathname)) {
+                return
+            }
             if (window.self !== window.top) {
                 return
             }
@@ -64,11 +67,10 @@ export const liveBasicItems: Item[] = [
                             player.setFullscreenStatus(1)
                         })
                         clearInterval(id)
-                    } else {
-                        cnt++
-                        if (cnt > 10) {
-                            clearInterval(id)
-                        }
+                    }
+                    cnt++
+                    if (cnt > 10) {
+                        clearInterval(id)
                     }
                 }, 1000)
             })

@@ -39,12 +39,11 @@ import {
     videoFilterPopularHandler,
 } from './variety/video/pages/popular'
 import { videoFilterSearchEntry, videoFilterSearchGroups, videoFilterSearchHandler } from './variety/video/pages/search'
-import { videoFilterSpaceEntry, videoFilterSpaceGroups } from './variety/video/pages/space'
+import { videoFilterSpaceEntry, videoFilterSpaceGroups, videoFilterSpaceHandler } from './variety/video/pages/space'
 import { videoFilterVideoEntry, videoFilterVideoGroups, videoFilterVideoHandler } from './variety/video/pages/video'
 
 /** 视频过滤器 */
 export const videoFilters: Filter[] = [
-    // 视频过滤
     {
         name: '首页 视频过滤',
         groups: videoFilterHomepageGroups,
@@ -158,6 +157,7 @@ export const filterContextMenuHandlers = [
     videoFilterChannelHandler,
     videoFilterPopularHandler,
     videoFilterHomepageHandler,
+    videoFilterSpaceHandler,
     dynamicFilterDynamicHandler,
     commentFilterCommonHandler,
 ]

@@ -49,7 +49,7 @@ export const liveBasicItems: Item[] = [
             if (!/\/\d+|\/blanc\/\d+/.test(location.pathname)) {
                 return
             }
-            if (window.self !== window.top) {
+            if (self !== top) {
                 return
             }
             waitForBody().then(() => {
@@ -64,7 +64,9 @@ export const liveBasicItems: Item[] = [
                         requestAnimationFrame(() => {
                             document.body.classList.remove('player-full-win')
                             document.body.classList.remove('over-hidden')
-                            player.setFullscreenStatus(1)
+                            if (!document.querySelector('iframe[src*="live.bilibili.com/blanc"]')) {
+                                player.setFullscreenStatus(1)
+                            }
                         })
                         clearInterval(id)
                     }
@@ -82,6 +84,12 @@ export const liveBasicItems: Item[] = [
         name: '自动切换最高画质 (不稳定功能)',
         noStyle: true,
         enableFn: async () => {
+            if (!/\/\d+|\/blanc\/\d+/.test(location.pathname)) {
+                return
+            }
+            if (self !== top) {
+                return
+            }
             const qualityFn = () => {
                 const player = unsafeWindow.EmbedPlayer?.instance || unsafeWindow.livePlayer
                 if (player) {
@@ -105,9 +113,6 @@ export const liveBasicItems: Item[] = [
                 }
             }
             setTimeout(qualityFn, 2000)
-            setTimeout(qualityFn, 4000)
-            setTimeout(qualityFn, 6000)
-            setTimeout(qualityFn, 8000)
         },
         enableFnRunAt: 'document-end',
     },

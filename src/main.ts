@@ -67,6 +67,10 @@ const main = () => {
 }
 
 const menu = () => {
+    // skip iframe
+    if (self !== top) {
+        return
+    }
     const ruleStore = useRulePanelStore()
     const videoStore = useVideoFilterPanelStore()
     const commentStore = useCommentFilterPanelStore()

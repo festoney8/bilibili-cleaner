@@ -26,19 +26,25 @@ export const liveBasicItems: Item[] = [
         name: '活动直播自动跳转普通直播 (实验功能)',
         noStyle: true,
         enableFn: async () => {
+            if (!/\/\d+/.test(location.pathname)) {
+                return
+            }
+            if (self !== top) {
+                return
+            }
             let cnt = 0
             const id = setInterval(() => {
-                if (document.querySelector('.rendererRoot, #main.live-activity-full-main, #internationalHeader')) {
-                    if (!location.href.includes('/blanc/')) {
-                        window.location.href = location.href.replace('live.bilibili.com/', 'live.bilibili.com/blanc/')
-                        clearInterval(id)
-                    }
+                if (
+                    document.querySelector(
+                        '.rendererRoot, #main.live-activity-full-main, #internationalHeader, iframe[src*="live.bilibili.com/blanc/"]',
+                    )
+                ) {
+                    location.href = location.href.replace('live.bilibili.com/', 'live.bilibili.com/blanc/')
+                    clearInterval(id)
                 }
-                cnt++
-                cnt > 50 && clearInterval(id)
+                ++cnt > 50 && clearInterval(id)
             }, 200)
         },
-        enableFnRunAt: 'document-end',
     },
     {
         type: 'switch',
@@ -59,7 +65,7 @@ export const liveBasicItems: Item[] = [
             document.addEventListener('DOMContentLoaded', () => {
                 let cnt = 0
                 const id = setInterval(() => {
-                    const player = unsafeWindow.EmbedPlayer?.instance || unsafeWindow.livePlayer
+                    const player = unsafeWindow.livePlayer || unsafeWindow.EmbedPlayer?.instance
                     if (player) {
                         requestAnimationFrame(() => {
                             document.body.classList.remove('player-full-win')
@@ -70,10 +76,7 @@ export const liveBasicItems: Item[] = [
                         })
                         clearInterval(id)
                     }
-                    cnt++
-                    if (cnt > 10) {
-                        clearInterval(id)
-                    }
+                    ++cnt > 10 && clearInterval(id)
                 }, 1000)
             })
         },
@@ -91,7 +94,7 @@ export const liveBasicItems: Item[] = [
                 return
             }
             const qualityFn = () => {
-                const player = unsafeWindow.EmbedPlayer?.instance || unsafeWindow.livePlayer
+                const player = unsafeWindow.livePlayer || unsafeWindow.EmbedPlayer?.instance
                 if (player) {
                     try {
                         const info = player?.getPlayerInfo()

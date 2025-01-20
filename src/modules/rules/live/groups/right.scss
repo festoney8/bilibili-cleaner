@@ -145,7 +145,8 @@ html[live-page-brush-prompt] {
 
 // 隐藏 互动框 (倒计时互动)
 html[live-page-combo-card-countdown] {
-    #combo-card:has(.countDownBtn) {
+    #combo-card:has(.countDownBtn),
+    .gift-wish-card-root {
         display: none !important;
     }
     .chat-history-panel {

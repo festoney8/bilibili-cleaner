@@ -66,7 +66,7 @@ export const liveBasicItems: Item[] = [
                 let cnt = 0
                 const id = setInterval(() => {
                     const player = unsafeWindow.livePlayer || unsafeWindow.EmbedPlayer?.instance
-                    if (player) {
+                    if (player && player.getPlayerInfo()?.playerStatus !== 1) {
                         requestAnimationFrame(() => {
                             document.body.classList.remove('player-full-win')
                             document.body.classList.remove('over-hidden')
@@ -76,8 +76,8 @@ export const liveBasicItems: Item[] = [
                         })
                         clearInterval(id)
                     }
-                    ++cnt > 10 && clearInterval(id)
-                }, 1000)
+                    ++cnt > 20 && clearInterval(id)
+                }, 500)
             })
         },
     },

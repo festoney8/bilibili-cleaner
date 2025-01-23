@@ -63,17 +63,26 @@ export const liveBasicItems: Item[] = [
                 document.body.classList.add('over-hidden')
             })
             document.addEventListener('DOMContentLoaded', () => {
+                setInterval(() => {
+                    const player = unsafeWindow.livePlayer || unsafeWindow.EmbedPlayer?.instance
+                    console.log(
+                        performance.now(),
+                        player?.getPlayerInfo()?.playerStatus,
+                        document.body.classList.toString(),
+                    )
+                }, 50)
                 let cnt = 0
                 const id = setInterval(() => {
                     const player = unsafeWindow.livePlayer || unsafeWindow.EmbedPlayer?.instance
-                    if (player && player.getPlayerInfo()?.playerStatus !== 1) {
+                    const status = player?.getPlayerInfo()?.playerStatus
+                    if (player && status === 0) {
                         requestAnimationFrame(() => {
-                            document.body.classList.remove('player-full-win')
-                            document.body.classList.remove('over-hidden')
                             if (!document.querySelector('iframe[src*="live.bilibili.com/blanc"]')) {
                                 player.setFullscreenStatus(1)
                             }
                         })
+                        // classList去重
+                        document.body.className = [...new Set(document.body.classList)].join(' ')
                         clearInterval(id)
                     }
                     ++cnt > 20 && clearInterval(id)

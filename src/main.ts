@@ -67,8 +67,8 @@ const main = () => {
 }
 
 const menu = () => {
-    // skip iframe
-    if (self !== top) {
+    // skip iframe except homepage, adapt bewly
+    if (!isPageHomepage() && self !== top) {
         return
     }
     const ruleStore = useRulePanelStore()

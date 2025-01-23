@@ -42,6 +42,9 @@ export const commonBasicItems: Item[] = [
             if (isPagePopular()) {
                 return 'border-radius-popular'
             }
+            if (isPageSpace()) {
+                return 'border-radius-space'
+            }
             if (isPageChannel()) {
                 return 'border-radius-channel'
             }

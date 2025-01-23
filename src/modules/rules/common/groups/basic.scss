@@ -239,6 +239,23 @@ html[border-radius-popular] {
     }
 }
 
+// 圆角化 热门页
+html[border-radius-space] {
+    #nav-searchform,
+    .home-aside-section > *,
+    .living-section__follow,
+    .side-nav__item,
+    .radio-filter__item,
+    .vui_button,
+    .space-follow-btn,
+    .message-btn,
+    .more-actions__trigger,
+    .bili-cover-card *,
+    .bili-video-card * {
+        border-radius: 3px !important;
+    }
+}
+
 // 圆角化 分区页
 html[border-radius-channel] {
     #nav-searchform,

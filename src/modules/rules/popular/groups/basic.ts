@@ -20,11 +20,6 @@ export const popularBasicItems: Item[] = [
     },
     {
         type: 'switch',
-        id: 'popular-hide-watchlater',
-        name: '隐藏 稍后再看按钮',
-    },
-    {
-        type: 'switch',
         id: 'popular-hide-danmaku-count',
         name: '隐藏 弹幕数',
     },

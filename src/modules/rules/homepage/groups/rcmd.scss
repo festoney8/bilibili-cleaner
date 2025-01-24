@@ -91,13 +91,6 @@ html[homepage-hide-bili-watch-later-tip] main {
     }
 }
 
-// 隐藏 稍后再看按钮
-html[homepage-hide-bili-watch-later] main {
-    .bili-watch-later {
-        display: none !important;
-    }
-}
-
 // 隐藏 视频预览中的弹幕
 html[homepage-hide-inline-player-danmaku] main {
     .bpx-player-row-dm-wrap,

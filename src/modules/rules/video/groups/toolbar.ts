@@ -63,7 +63,7 @@ export const videoToolbarItems: Item[] = [
     {
         type: 'switch',
         id: 'video-page-hide-below-info-video-report-menu',
-        name: '隐藏 举报/笔记/稍后再看',
+        name: '隐藏 折叠菜单',
     },
     {
         type: 'switch',

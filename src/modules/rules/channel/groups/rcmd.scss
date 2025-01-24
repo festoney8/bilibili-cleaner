@@ -201,13 +201,6 @@ html[channel-hide-danmaku-count] {
     }
 }
 
-// 隐藏 稍后再看按钮
-html[channel-hide-bili-watch-later] {
-    .bili-watch-later {
-        display: none !important;
-    }
-}
-
 // 优化 近期投稿栏目 视频行距
 html[channel-feed-card-body-grid-gap] {
     .feed-card-body {

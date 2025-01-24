@@ -24,11 +24,6 @@ export const dynamicCenterDynItems: Item[] = [
     },
     {
         type: 'switch',
-        id: 'hide-dynamic-page-bili-dyn-watchlater',
-        name: '隐藏 稍后再看按钮',
-    },
-    {
-        type: 'switch',
         id: 'hide-dynamic-page-bili-dyn-official-topic',
         name: '隐藏 官方话题Tag',
     },

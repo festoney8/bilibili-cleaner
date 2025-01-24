@@ -35,11 +35,6 @@ export const channelRcmdItems: Item[] = [
     },
     {
         type: 'switch',
-        id: 'channel-hide-bili-watch-later',
-        name: '隐藏 稍后再看按钮',
-    },
-    {
-        type: 'switch',
         id: 'channel-feed-card-body-grid-gap',
         name: '优化 近期投稿栏目 视频行距',
         defaultEnable: true,

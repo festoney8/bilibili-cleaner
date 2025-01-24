@@ -41,11 +41,6 @@ export const homepageRcmdItems: Item[] = [
     },
     {
         type: 'switch',
-        id: 'homepage-hide-bili-watch-later',
-        name: '隐藏 稍后再看按钮',
-    },
-    {
-        type: 'switch',
         id: 'homepage-hide-inline-player-danmaku',
         name: '隐藏 视频预览中的弹幕',
     },

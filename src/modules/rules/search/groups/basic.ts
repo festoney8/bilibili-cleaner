@@ -38,9 +38,4 @@ export const searchBasicItems: Item[] = [
         id: 'hide-search-page-date',
         name: '隐藏 视频日期',
     },
-    {
-        type: 'switch',
-        id: 'hide-search-page-bili-watch-later',
-        name: '隐藏 稍后再看按钮',
-    },
 ]

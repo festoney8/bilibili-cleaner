@@ -47,10 +47,3 @@ html[hide-search-page-date] {
         display: none !important;
     }
 }
-
-// 隐藏 稍后再看按钮
-html[hide-search-page-bili-watch-later] {
-    .bili-video-card .bili-watch-later {
-        display: none !important;
-    }
-}

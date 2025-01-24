@@ -36,13 +36,6 @@ html[hide-dynamic-page-bili-dyn-dispute] {
     }
 }
 
-// 隐藏 稍后再看按钮
-html[hide-dynamic-page-bili-dyn-watchlater] {
-    .bili-dyn-card-video__mark {
-        display: none !important;
-    }
-}
-
 // 隐藏 官方话题Tag
 html[hide-dynamic-page-bili-dyn-official-topic] {
     .bili-dyn-content__orig__topic,

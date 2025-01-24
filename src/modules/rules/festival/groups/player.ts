@@ -50,7 +50,7 @@ export const festivalPlayerItems: Item[] = [
     {
         type: 'switch',
         id: 'video-page-hide-bpx-player-bili-link',
-        name: '隐藏 视频链接 (稍后再看)',
+        name: '隐藏 视频链接',
     },
     {
         type: 'switch',

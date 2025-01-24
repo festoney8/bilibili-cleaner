@@ -19,11 +19,6 @@ import {
     commentFilterCommonHandler,
 } from './variety/comment/pages/common'
 import {
-    commentFilterLegacyEntry,
-    commentFilterLegacyGroups,
-    commentFilterLegacyHandler,
-} from './variety/comment/pages/legacy'
-import {
     dynamicFilterDynamicEntry,
     dynamicFilterDynamicGroups,
     dynamicFilterDynamicHandler,
@@ -44,12 +39,11 @@ import {
     videoFilterPopularHandler,
 } from './variety/video/pages/popular'
 import { videoFilterSearchEntry, videoFilterSearchGroups, videoFilterSearchHandler } from './variety/video/pages/search'
-import { videoFilterSpaceEntry, videoFilterSpaceGroups } from './variety/video/pages/space'
+import { videoFilterSpaceEntry, videoFilterSpaceGroups, videoFilterSpaceHandler } from './variety/video/pages/space'
 import { videoFilterVideoEntry, videoFilterVideoGroups, videoFilterVideoHandler } from './variety/video/pages/video'
 
 /** 视频过滤器 */
 export const videoFilters: Filter[] = [
-    // 视频过滤
     {
         name: '首页 视频过滤',
         groups: videoFilterHomepageGroups,
@@ -91,16 +85,10 @@ export const videoFilters: Filter[] = [
 /** 评论过滤器 */
 export const commentFilters: Filter[] = [
     {
-        name: '视频页/番剧页/动态页 视频评论过滤',
+        name: '视频页/番剧页/动态页/空间页 视频评论过滤',
         groups: commentFilterCommonGroups,
         entry: commentFilterCommonEntry,
-        checkFn: () => isPageVideo() || isPageBangumi() || isPagePlaylist() || isPageDynamic(),
-    },
-    {
-        name: '空间页 动态评论过滤',
-        groups: commentFilterLegacyGroups,
-        entry: commentFilterLegacyEntry,
-        checkFn: () => isPageSpace(),
+        checkFn: () => isPageVideo() || isPageBangumi() || isPagePlaylist() || isPageDynamic() || isPageSpace(),
     },
 ]
 
@@ -169,7 +157,7 @@ export const filterContextMenuHandlers = [
     videoFilterChannelHandler,
     videoFilterPopularHandler,
     videoFilterHomepageHandler,
+    videoFilterSpaceHandler,
     dynamicFilterDynamicHandler,
     commentFilterCommonHandler,
-    commentFilterLegacyHandler,
 ]

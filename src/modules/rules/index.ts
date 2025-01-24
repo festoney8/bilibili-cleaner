@@ -3,6 +3,7 @@ import {
     isPageBangumi,
     isPageChannel,
     isPageDynamic,
+    isPageFestival,
     isPageHomepage,
     isPageLive,
     isPagePlaylist,
@@ -23,6 +24,7 @@ import { commentGroups } from './comment'
 import { commonGroups } from './common'
 import { debugGroups } from './debug'
 import { dynamicGroups } from './dynamic'
+import { festivalGroups } from './festival'
 import { homepageGroups } from './homepage'
 import { liveGroups } from './live'
 import { popularGroups } from './popular'
@@ -37,6 +39,7 @@ import channelStyle from './channel/index.scss?inline'
 import commentStyle from './comment/index.scss?inline'
 import commonStyle from './common/index.scss?inline'
 import dynamicStyle from './dynamic/index.scss?inline'
+import festivalStyle from './festival/index.scss?inline'
 import homepageStyle from './homepage/index.scss?inline'
 import liveStyle from './live/index.scss?inline'
 import popularStyle from './popular/index.scss?inline'
@@ -58,6 +61,12 @@ export const rules: Rule[] = [
         groups: videoGroups,
         style: videoStyle,
         checkFn: () => isPageVideo() || isPagePlaylist(),
+    },
+    {
+        name: 'festival',
+        groups: festivalGroups,
+        style: festivalStyle,
+        checkFn: isPageFestival,
     },
     {
         name: 'bangumi',
@@ -180,6 +189,7 @@ export const loadStyles = () => {
             [
                 './homepage/index.scss?inline',
                 './video/index.scss?inline',
+                './festival/index.scss?inline',
                 './bangumi/index.scss?inline',
                 './dynamic/index.scss?inline',
                 './live/index.scss?inline',
@@ -194,6 +204,7 @@ export const loadStyles = () => {
             ([
                 homepageModule,
                 videoModule,
+                festivalModule,
                 bangumiModule,
                 dynamicModule,
                 liveModule,
@@ -215,6 +226,13 @@ export const loadStyles = () => {
                 if (videoModule) {
                     const newCSS = videoModule.default as string
                     const style = document.querySelector('style.bili-cleaner-css.video')
+                    if (style && newCSS) {
+                        style.textContent = newCSS
+                    }
+                }
+                if (festivalModule) {
+                    const newCSS = festivalModule.default as string
+                    const style = document.querySelector('style.bili-cleaner-css.festival')
                     if (style && newCSS) {
                         style.textContent = newCSS
                     }

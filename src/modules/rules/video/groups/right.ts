@@ -88,11 +88,6 @@ export const videoRightItems: Item[] = [
     },
     {
         type: 'switch',
-        id: 'video-page-hide-right-container-reco-list-watch-later-video',
-        name: '隐藏 相关视频 稍后再看按钮',
-    },
-    {
-        type: 'switch',
         id: 'video-page-hide-right-container-reco-list-rec-list-info-up',
         name: '隐藏 相关视频 UP主',
     },

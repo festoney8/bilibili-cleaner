@@ -18,7 +18,7 @@
                     leave-to-class="opacity-0"
                 >
                     <ListboxOptions
-                        class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
+                        class="no-scrollbar absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
                     >
                         <ListboxOption
                             v-slot="{ active, selected }"

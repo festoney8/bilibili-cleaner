@@ -1,10 +1,11 @@
 import { coreCheck } from '@/modules/filters/core/core'
 import settings from '@/settings'
 import { Group } from '@/types/collection'
-import { IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
+import { ContextMenuTargetHandler, FilterContextMenu, IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
 import { debugFilter as debug, error } from '@/utils/logger'
+import { isPageSpace } from '@/utils/pageType'
 import { BiliCleanerStorage } from '@/utils/storage'
-import { convertTimeToSec, matchBvid, showEle, waitForEle } from '@/utils/tool'
+import { convertTimeToSec, matchBvid, orderedUniq, showEle, waitForEle } from '@/utils/tool'
 import { VideoBvidFilter, VideoDurationFilter, VideoTitleFilter } from '../subFilters/black'
 import { VideoTitleWhiteFilter } from '../subFilters/white'
 
@@ -255,37 +256,37 @@ export const videoFilterSpaceGroups: Group[] = [
             },
         ],
     },
-    // {
-    //     name: 'BV号过滤',
-    //     items: [
-    //         {
-    //             type: 'switch',
-    //             id: GM_KEYS.black.bvid.statusKey,
-    //             name: '启用 BV号过滤 (右键单击标题)',
-    //             noStyle: true,
-    //             enableFn: () => {
-    //                 mainFilter.videoBvidFilter.enable()
-    //                 mainFilter.checkFull()
-    //             },
-    //             disableFn: () => {
-    //                 mainFilter.videoBvidFilter.disable()
-    //                 mainFilter.checkFull()
-    //             },
-    //         },
-    //         {
-    //             type: 'editor',
-    //             id: GM_KEYS.black.bvid.valueKey,
-    //             name: '编辑 BV号黑名单',
-    //             description: ['右键屏蔽的BV号会出现在首行'],
-    //             editorTitle: 'BV号 黑名单',
-    //             editorDescription: ['每行一个BV号，保存时自动去重'],
-    //             saveFn: async () => {
-    //                 mainFilter.videoBvidFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.bvid.valueKey, []))
-    //                 mainFilter.checkFull()
-    //             },
-    //         },
-    //     ],
-    // },
+    {
+        name: 'BV号过滤',
+        items: [
+            {
+                type: 'switch',
+                id: GM_KEYS.black.bvid.statusKey,
+                name: '启用 BV号过滤 (右键单击标题)',
+                noStyle: true,
+                enableFn: () => {
+                    mainFilter.videoBvidFilter.enable()
+                    mainFilter.checkFull()
+                },
+                disableFn: () => {
+                    mainFilter.videoBvidFilter.disable()
+                    mainFilter.checkFull()
+                },
+            },
+            {
+                type: 'editor',
+                id: GM_KEYS.black.bvid.valueKey,
+                name: '编辑 BV号黑名单',
+                description: ['右键屏蔽的BV号会出现在首行'],
+                editorTitle: 'BV号 黑名单',
+                editorDescription: ['每行一个BV号，保存时自动去重'],
+                saveFn: async () => {
+                    mainFilter.videoBvidFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.bvid.valueKey, []))
+                    mainFilter.checkFull()
+                },
+            },
+        ],
+    },
     {
         name: '白名单 免过滤',
         items: [
@@ -321,3 +322,40 @@ export const videoFilterSpaceGroups: Group[] = [
         ],
     },
 ]
+
+// 右键菜单handler
+export const videoFilterSpaceHandler: ContextMenuTargetHandler = (target: HTMLElement): FilterContextMenu[] => {
+    if (!isPageSpace()) {
+        return []
+    }
+
+    const menus: FilterContextMenu[] = []
+    // BVID
+    if (target.closest('.bili-video-card__title')) {
+        const url = (target as HTMLAnchorElement).href
+        if (url && mainFilter.videoBvidFilter.isEnable) {
+            const bvid = matchBvid(url)
+            if (bvid) {
+                menus.push({
+                    name: `屏蔽视频 ${bvid}`,
+                    fn: async () => {
+                        try {
+                            mainFilter.videoBvidFilter.addParam(bvid)
+                            mainFilter.checkFull()
+                            const arr: string[] = BiliCleanerStorage.get(GM_KEYS.black.bvid.valueKey, [])
+                            arr.unshift(bvid)
+                            BiliCleanerStorage.set<string[]>(GM_KEYS.black.bvid.valueKey, orderedUniq(arr))
+                        } catch (err) {
+                            error(`videoFilterSearchHandler add bvid ${bvid} failed`, err)
+                        }
+                    },
+                })
+                menus.push({
+                    name: '复制视频链接',
+                    fn: () => navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).then().catch(),
+                })
+            }
+        }
+    }
+    return menus
+}

@@ -10,6 +10,7 @@ export declare global {
         EmbedPlayer?: {
             instance?: {
                 getPlayerInfo: () => {
+                    playerStatus?: number
                     quality?: string
                     qualityCandidates?: {
                         qn?: string
@@ -22,6 +23,7 @@ export declare global {
         }
         livePlayer?: {
             getPlayerInfo: () => {
+                playerStatus?: number
                 quality?: string
                 qualityCandidates?: {
                     qn?: string

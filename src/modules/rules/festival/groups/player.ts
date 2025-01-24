@@ -1,6 +1,6 @@
 import { Item } from '@/types/item'
 
-export const videoPlayerItems: Item[] = [
+export const festivalPlayerItems: Item[] = [
     {
         type: 'switch',
         id: 'video-page-hide-bpx-player-bili-guide-all',

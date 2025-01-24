@@ -239,6 +239,23 @@ html[border-radius-popular] {
     }
 }
 
+// 圆角化 热门页
+html[border-radius-space] {
+    #nav-searchform,
+    .home-aside-section > *,
+    .living-section__follow,
+    .side-nav__item,
+    .radio-filter__item,
+    .vui_button,
+    .space-follow-btn,
+    .message-btn,
+    .more-actions__trigger,
+    .bili-cover-card *,
+    .bili-video-card * {
+        border-radius: 3px !important;
+    }
+}
+
 // 圆角化 分区页
 html[border-radius-channel] {
     #nav-searchform,
@@ -314,6 +331,41 @@ html[beauty-scrollbar] {
             scrollbar-color: #cdcdcd transparent !important;
             scrollbar-width: thin;
         }
+    }
+}
+
+// 隐藏 视频卡片 稍后再看按钮
+html[hide-watchlater-button] {
+    .bili-watch-later {
+        display: none !important;
+    }
+    .bili-dyn-card-video__mark {
+        display: none !important;
+    }
+
+    // 播放页
+    .right-container .watch-later-video {
+        display: none !important;
+    }
+    .recommend-list-container .watch-later-video {
+        display: none !important;
+    }
+
+    // 热门排行榜页
+    .rank-container .rank-item .van-watchlater,
+    .history-list .video-card .van-watchlater,
+    .history-list .video-card .watch-later,
+    .weekly-list .video-card .van-watchlater,
+    .weekly-list .video-card .watch-later,
+    .popular-list .video-card .van-watchlater,
+    .popular-list .video-card .watch-later {
+        display: none !important;
+    }
+
+    // 空间页
+    .i-watchlater,
+    .bili-card-watch-later {
+        display: none !important;
     }
 }
 

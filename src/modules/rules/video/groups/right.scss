@@ -218,18 +218,6 @@ html[video-page-hide-right-container-duration] {
     }
 }
 
-// 隐藏 相关视频 稍后再看按钮
-html[video-page-hide-right-container-reco-list-watch-later-video] {
-    .right-container .watch-later-video {
-        display: none !important;
-    }
-
-    // 适配watchlater, favlist
-    .recommend-list-container .watch-later-video {
-        display: none !important;
-    }
-}
-
 // 隐藏 相关视频 UP主
 html[video-page-hide-right-container-reco-list-rec-list-info-up] {
     .right-container .info {

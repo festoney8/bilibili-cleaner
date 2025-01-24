@@ -42,6 +42,9 @@ export const commonBasicItems: Item[] = [
             if (isPagePopular()) {
                 return 'border-radius-popular'
             }
+            if (isPageSpace()) {
+                return 'border-radius-space'
+            }
             if (isPageChannel()) {
                 return 'border-radius-channel'
             }
@@ -53,6 +56,11 @@ export const commonBasicItems: Item[] = [
         id: 'beauty-scrollbar',
         name: '美化页面滚动条',
         defaultEnable: true,
+    },
+    {
+        type: 'switch',
+        id: 'hide-watchlater-button',
+        name: '隐藏 视频卡片 稍后再看按钮',
     },
     {
         type: 'switch',

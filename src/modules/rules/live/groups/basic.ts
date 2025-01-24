@@ -23,54 +23,63 @@ export const liveBasicItems: Item[] = [
     {
         type: 'switch',
         id: 'activity-live-auto-jump',
-        name: '活动直播自动跳转普通直播 (实验功能)',
+        name: '活动直播自动跳转普通直播',
         noStyle: true,
         enableFn: async () => {
+            if (!/\/\d+/.test(location.pathname)) {
+                return
+            }
+            if (self !== top) {
+                return
+            }
             let cnt = 0
             const id = setInterval(() => {
-                if (document.querySelector('.rendererRoot, #main.live-activity-full-main, #internationalHeader')) {
-                    if (!location.href.includes('/blanc/')) {
-                        window.location.href = location.href.replace('live.bilibili.com/', 'live.bilibili.com/blanc/')
-                        clearInterval(id)
-                    }
+                if (
+                    document.querySelector(
+                        '.rendererRoot, #main.live-activity-full-main, #internationalHeader, iframe[src*="live.bilibili.com/blanc/"]',
+                    )
+                ) {
+                    location.href = location.href.replace('live.bilibili.com/', 'live.bilibili.com/blanc/')
+                    clearInterval(id)
                 }
-                cnt++
-                cnt > 50 && clearInterval(id)
+                ++cnt > 50 && clearInterval(id)
             }, 200)
         },
-        enableFnRunAt: 'document-end',
     },
     {
         type: 'switch',
         id: 'live-page-default-webscreen',
-        name: '默认网页全屏播放 (实验功能)',
+        name: '默认网页全屏播放',
+        description: ['实验功能，偶尔会失效'],
         noStyle: true,
         enableFn: async () => {
-            if (window.self !== window.top) {
+            if (!/\/\d+|\/blanc\/\d+/.test(location.pathname)) {
+                return
+            }
+            if (self !== top) {
                 return
             }
             waitForBody().then(() => {
-                document.body.classList.add('player-full-win')
-                document.body.classList.add('over-hidden')
+                requestAnimationFrame(() => {
+                    document.body.classList.add('player-full-win')
+                    document.body.classList.add('over-hidden')
+                })
             })
             document.addEventListener('DOMContentLoaded', () => {
                 let cnt = 0
                 const id = setInterval(() => {
-                    const player = unsafeWindow.EmbedPlayer?.instance || unsafeWindow.livePlayer
-                    if (player) {
-                        requestAnimationFrame(() => {
-                            document.body.classList.remove('player-full-win')
-                            document.body.classList.remove('over-hidden')
+                    const player = unsafeWindow.livePlayer || unsafeWindow.EmbedPlayer?.instance
+                    const status = player?.getPlayerInfo()?.playerStatus
+                    if (player && status === 0) {
+                        document.body.classList.remove('player-full-win')
+                        document.body.classList.remove('over-hidden')
+                        if (!document.querySelector('iframe[src*="live.bilibili.com/blanc"]')) {
                             player.setFullscreenStatus(1)
-                        })
-                        clearInterval(id)
-                    } else {
-                        cnt++
-                        if (cnt > 10) {
-                            clearInterval(id)
                         }
+                        clearInterval(id)
                     }
-                }, 1000)
+                    ++cnt > 20 && clearInterval(id)
+                }, 500)
             })
         },
     },
@@ -80,8 +89,14 @@ export const liveBasicItems: Item[] = [
         name: '自动切换最高画质 (不稳定功能)',
         noStyle: true,
         enableFn: async () => {
+            if (!/\/\d+|\/blanc\/\d+/.test(location.pathname)) {
+                return
+            }
+            if (self !== top) {
+                return
+            }
             const qualityFn = () => {
-                const player = unsafeWindow.EmbedPlayer?.instance || unsafeWindow.livePlayer
+                const player = unsafeWindow.livePlayer || unsafeWindow.EmbedPlayer?.instance
                 if (player) {
                     try {
                         const info = player?.getPlayerInfo()
@@ -103,9 +118,6 @@ export const liveBasicItems: Item[] = [
                 }
             }
             setTimeout(qualityFn, 2000)
-            setTimeout(qualityFn, 4000)
-            setTimeout(qualityFn, 6000)
-            setTimeout(qualityFn, 8000)
         },
         enableFnRunAt: 'document-end',
     },

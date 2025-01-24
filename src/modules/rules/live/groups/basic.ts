@@ -23,7 +23,7 @@ export const liveBasicItems: Item[] = [
     {
         type: 'switch',
         id: 'activity-live-auto-jump',
-        name: '活动直播自动跳转普通直播 (实验功能)',
+        name: '活动直播自动跳转普通直播',
         noStyle: true,
         enableFn: async () => {
             if (!/\/\d+/.test(location.pathname)) {
@@ -49,7 +49,8 @@ export const liveBasicItems: Item[] = [
     {
         type: 'switch',
         id: 'live-page-default-webscreen',
-        name: '默认网页全屏播放 (实验功能)',
+        name: '默认网页全屏播放',
+        description: ['实验功能，偶尔会失效'],
         noStyle: true,
         enableFn: async () => {
             if (!/\/\d+|\/blanc\/\d+/.test(location.pathname)) {
@@ -70,13 +71,11 @@ export const liveBasicItems: Item[] = [
                     const player = unsafeWindow.livePlayer || unsafeWindow.EmbedPlayer?.instance
                     const status = player?.getPlayerInfo()?.playerStatus
                     if (player && status === 0) {
-                        requestAnimationFrame(() => {
-                            document.body.classList.remove('player-full-win')
-                            document.body.classList.remove('over-hidden')
-                            if (!document.querySelector('iframe[src*="live.bilibili.com/blanc"]')) {
-                                player.setFullscreenStatus(1)
-                            }
-                        })
+                        document.body.classList.remove('player-full-win')
+                        document.body.classList.remove('over-hidden')
+                        if (!document.querySelector('iframe[src*="live.bilibili.com/blanc"]')) {
+                            player.setFullscreenStatus(1)
+                        }
                         clearInterval(id)
                     }
                     ++cnt > 20 && clearInterval(id)

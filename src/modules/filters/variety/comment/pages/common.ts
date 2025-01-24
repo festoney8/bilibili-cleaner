@@ -640,7 +640,10 @@ export const commentFilterCommonGroups: Group[] = [
                                 try {
                                     const respData = await resp.clone().json()
                                     const msg = respData?.data?.top?.upper?.content?.message
-                                    if (msg && /b23\.tv\/mall-|领券|gaoneng\.bilibili\.com/.test(msg)) {
+                                    if (
+                                        msg &&
+                                        /(bili2233\.cn|b23\.tv)\/(mall-|cm-)|领券|gaoneng\.bilibili\.com/.test(msg)
+                                    ) {
                                         respData.data.top = null
                                         respData.data.top_replies = null
                                         return new Response(JSON.stringify(respData), {

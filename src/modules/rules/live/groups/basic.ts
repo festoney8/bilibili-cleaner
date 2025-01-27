@@ -77,7 +77,6 @@ export const liveBasicItems: Item[] = [
                             if (!document.querySelector('iframe[src*="live.bilibili.com/blanc"]')) {
                                 player.setFullscreenStatus(1)
                             }
-                            w
                         })
                         clearInterval(id)
                     }

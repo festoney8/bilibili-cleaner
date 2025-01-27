@@ -31,6 +31,7 @@ export default defineConfig({
                     '*://api.*.bilibili.com/*',
                     '*://*.chat.bilibili.com/*',
                     '*://member.bilibili.com/*',
+                    '*://www.bilibili.com/tensou/*',
                     '*://www.bilibili.com/correspond/*',
                     '*://live.bilibili.com/p/html/*',
                     '*://live.bilibili.com/live-room-play-game-together',

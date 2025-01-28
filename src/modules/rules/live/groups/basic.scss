@@ -6,7 +6,7 @@ html[live-page-sidebar-vm] {
 }
 
 // 禁用 播放器皮肤
-html[live-page-default-skin] {
+html[live-page-default-skin]:not([lab-style*='dark']) {
     #head-info-vm {
         background-image: unset !important;
 

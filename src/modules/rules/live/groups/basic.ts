@@ -71,11 +71,13 @@ export const liveBasicItems: Item[] = [
                     const player = unsafeWindow.livePlayer || unsafeWindow.EmbedPlayer?.instance
                     const status = player?.getPlayerInfo()?.playerStatus
                     if (player && status === 0) {
-                        document.body.classList.remove('player-full-win')
-                        document.body.classList.remove('over-hidden')
-                        if (!document.querySelector('iframe[src*="live.bilibili.com/blanc"]')) {
-                            player.setFullscreenStatus(1)
-                        }
+                        requestAnimationFrame(() => {
+                            document.body.classList.remove('player-full-win')
+                            document.body.classList.remove('over-hidden')
+                            if (!document.querySelector('iframe[src*="live.bilibili.com/blanc"]')) {
+                                player.setFullscreenStatus(1)
+                            }
+                        })
                         clearInterval(id)
                     }
                     ++cnt > 20 && clearInterval(id)

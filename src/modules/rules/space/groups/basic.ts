@@ -10,8 +10,7 @@ export const spaceBasicItems: Item[] = [
             if (/\/\d+\/?($|\?)/.test(location.pathname)) {
                 const userid = location.pathname.match(/\d+/)?.[0]
                 if (userid) {
-                    // 新版space会自动重定向到 /upload/video
-                    location.href = `https://space.bilibili.com/${userid}/video`
+                    location.href = `https://space.bilibili.com/${userid}/upload/video`
                 }
             }
         },

@@ -16,19 +16,19 @@ html[video-page-right-container-sticky-optimize] {
     }
 
     // 小窗播放器挡住下方视频 #87
-    body:has(.mini-player-window.on) .right-container .right-container-inner {
-        min-height: calc(100vh - 304px) !important;
-        bottom: 240px !important;
-    }
-    body:has(.mini-player-window:not(.on)) .right-container .right-container-inner {
+    .right-container-inner {
         min-height: calc(100vh - 74px) !important;
         bottom: 10px !important;
+    }
+    body:has(.mini-player-window.on) .right-container-inner {
+        min-height: calc(100vh - 304px) !important;
+        bottom: 240px !important;
     }
 }
 
 // 禁用 右栏底部吸附
 html[video-page-right-container-sticky-disable] {
-    .right-container .right-container-inner {
+    .right-container-inner {
         position: static !important;
     }
 }
@@ -283,16 +283,16 @@ html[video-page-hide-right-container-reco-list-rec-list] {
 // 隐藏 活动banner
 html[video-page-hide-right-container-right-bottom-banner] {
     #right-bottom-banner,
-    .right-container .right-bottom-banner {
+    .right-bottom-banner {
         display: none !important;
     }
 
     // 小窗视频防挡 #87
-    body:has(.mini-player-window.on) .video-container-v1 .right-container .right-container-inner {
-        padding-bottom: 240px;
+    .right-container-inner {
+        padding-bottom: 10px !important;
     }
-    body:has(.mini-player-window:not(.on)) .video-container-v1 .right-container .right-container-inner {
-        padding-bottom: 10px;
+    body:has(.mini-player-window.on) .right-container-inner {
+        padding-bottom: 240px !important;
     }
 }
 
@@ -303,11 +303,11 @@ html[video-page-hide-right-container-live] {
     }
 
     // 小窗视频防挡 #87
-    body:has(.mini-player-window.on) .video-container-v1 .right-container .right-container-inner {
-        padding-bottom: 240px;
+    .right-container-inner {
+        padding-bottom: 10px !important;
     }
-    body:has(.mini-player-window:not(.on)) .video-container-v1 .right-container .right-container-inner {
-        padding-bottom: 10px;
+    body:has(.mini-player-window.on) .right-container-inner {
+        padding-bottom: 240px !important;
     }
 }
 

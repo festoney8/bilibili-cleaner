@@ -98,6 +98,11 @@ export const videoRightItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'video-page-hide-right-container-reco-list-rec-footer',
+        name: '隐藏 展开按钮',
+    },
+    {
+        type: 'switch',
         id: 'video-page-hide-right-container-reco-list-rec-list',
         name: '隐藏 全部相关视频',
     },

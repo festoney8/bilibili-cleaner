@@ -212,7 +212,7 @@ html[normalscreen-width] {
 
     // normal 调节评论宽度、播放器宽度，data-screen未赋值时按normal处理
     &:not([player-is-wide]):has(
-            #bilibili-player [data-screen='normal'],
+            #bilibili-player .bpx-player-container[data-screen='normal'],
             #bilibili-player .bpx-player-container:not([data-screen])
         ) {
         #playerWrap {
@@ -243,7 +243,7 @@ html[normalscreen-width] {
     }
 
     // web + full 全屏滚动时调节评论宽度
-    &:has(#bilibili-player :is([data-screen='web'], [data-screen='full'])) {
+    .webscreen-fix {
         .left-container,
         .playlist-container--left {
             width: min(calc(100vw - 400px), var(--normalscreen-width)) !important;
@@ -251,7 +251,7 @@ html[normalscreen-width] {
     }
 
     // mini 仅normal mini模式下调节宽度
-    &:not([player-is-wide]):has(#bilibili-player [data-screen='mini']) {
+    &:not([player-is-wide]):has(.bpx-player-container[data-screen='mini']) {
         .left-container,
         .playlist-container--left {
             width: min(calc(100vw - 400px), var(--normalscreen-width)) !important;
@@ -279,7 +279,7 @@ html[normalscreen-width] {
     }
 
     // wide 仅wide mini模式下调节背景色，去除切换小窗模式时宽度跳变
-    &[player-is-wide]:has(#bilibili-player [data-screen='mini']) {
+    &[player-is-wide]:has(.bpx-player-container[data-screen='mini']) {
         #bilibili-player {
             background-color: black !important;
         }

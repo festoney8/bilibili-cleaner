@@ -267,8 +267,11 @@ html[video-page-hide-right-container-reco-list-rec-list-info-plays] {
 
 // 隐藏 展开按钮
 html[video-page-hide-right-container-reco-list-rec-footer] {
-    .right-container .rec-footer {
-        display: none;
+    .right-container,
+    .playlist-container--right {
+        .rec-footer {
+            display: none !important;
+        }
     }
 }
 

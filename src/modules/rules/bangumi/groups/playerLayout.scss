@@ -1,6 +1,6 @@
 // 网页全屏时 页面可滚动
 html[webscreen-scrollable] {
-    body:has(#bilibili-player-wrap[class*='video_playerFullScreen']) {
+    body:has(#bilibili-player-wrap[class^='video_playerFullScreen']) {
         overflow: auto !important;
         position: relative !important;
 
@@ -30,7 +30,7 @@ html[webscreen-scrollable] {
     html[webscreen-scrollable] {
         &,
         body {
-            &:has(#bilibili-player-wrap[class*='video_playerFullScreen']) {
+            &:has(#bilibili-player-wrap[class^='video_playerFullScreen']) {
                 scrollbar-width: none !important;
             }
         }
@@ -39,7 +39,7 @@ html[webscreen-scrollable] {
 
 // 全屏时 页面可滚动
 html[fullscreen-scrollable] {
-    body:has(#bilibili-player-wrap[class*='video_playerFullScreen']) {
+    body:has(#bilibili-player-wrap[class^='video_playerFullScreen']) {
         overflow: auto !important;
         position: relative !important;
 
@@ -72,7 +72,7 @@ html[fullscreen-scrollable] {
     html[fullscreen-scrollable] {
         &,
         body {
-            &:has(#bilibili-player-wrap[class*='video_playerFullScreen']) {
+            &:has(#bilibili-player-wrap[class^='video_playerFullScreen']) {
                 scrollbar-width: none !important;
             }
         }

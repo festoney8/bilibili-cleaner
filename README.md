@@ -28,6 +28,14 @@
 
 ## 安装
 
+### 前提：启用开发者模式
+
+> 由于 Google 推行 Manifest V3，现在 Tampermonkey 需在开发者模式使用
+
+- Chrome 打开网址 `chrome://extensions/`，在右上角启用 "开发者模式"
+- Edge 打开网址 `edge://extensions/`，在左侧启用 "开发人员模式"
+- Firefox 无需操作
+
 ### 稳定版：[前往 Greasyfork 安装](https://greasyfork.org/zh-CN/scripts/479861)
 
 - 请查看 [**浏览器适配**](#浏览器适配)

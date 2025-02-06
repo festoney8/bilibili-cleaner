@@ -56,3 +56,20 @@ jobs:
                   generateReleaseNotes: true
                   body: '## [更新日志](https://github.com/festoney8/bilibili-cleaner/blob/main/CHANGELOG.md#${{ steps.get_vernum.outputs.VERSION_NUM }})'
                   token: ${{ secrets.GITHUB_TOKEN }}
+
+            # commit to release branch
+            - name: configure git
+              run: |
+                git config user.name "GitHub Actions"
+                git config user.email "actions@github.com"
+
+            - name: checkout and add
+              run: |
+                git checkout -B release
+                cp build-release/*.js ./
+                git add *.js
+
+            - name: commit and push
+              run: |
+                git commit -m "release ${{ github.ref_name }}"
+                git push origin release -f

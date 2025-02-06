@@ -56,3 +56,38 @@ jobs:
                   generateReleaseNotes: true
                   body: '## [更新日志](https://github.com/festoney8/bilibili-cleaner/blob/main/CHANGELOG.md#${{ steps.get_vernum.outputs.VERSION_NUM }})'
                   token: ${{ secrets.GITHUB_TOKEN }}
+
+            # commit to release branch
+            - name: configure git
+              run: |
+                git config user.name "GitHub Actions"
+                git config user.email "actions@github.com"
+
+            - name: checkout
+              run: |
+                git checkout -B release
+                cp build-release/*.js ./
+
+            - name: jsdelivr version
+              run: |
+                cp bilibili-cleaner.user.js bilibili-cleaner.jsdelivr.user.js
+                sed -i '/^\/\/ @downloadURL/ c\// @downloadURL  https://cdn.jsdelivr.net/gh/festoney8/bilibili-cleaner@release/bilibili-cleaner.jsdelivr.user.js' bilibili-cleaner.jsdelivr.user.js
+                sed -i '/^\/\/ @updateURL/ c\// @updateURL    https://cdn.jsdelivr.net/gh/festoney8/bilibili-cleaner@release/bilibili-cleaner.jsdelivr.user.js' bilibili-cleaner.jsdelivr.user.js
+                cp bilibili-cleaner.min.user.js bilibili-cleaner.jsdelivr.min.user.js
+                sed -i '/^\/\/ @downloadURL/ c\// @downloadURL  https://cdn.jsdelivr.net/gh/festoney8/bilibili-cleaner@release/bilibili-cleaner.jsdelivr.min.user.js' bilibili-cleaner.jsdelivr.min.user.js
+                sed -i '/^\/\/ @updateURL/ c\// @updateURL    https://cdn.jsdelivr.net/gh/festoney8/bilibili-cleaner@release/bilibili-cleaner.jsdelivr.min.user.js' bilibili-cleaner.jsdelivr.min.user.js
+
+            - name: github version
+              run: |
+                cp bilibili-cleaner.user.js bilibili-cleaner.github.user.js
+                sed -i '/^\/\/ @downloadURL/ c\// @downloadURL  https://raw.githubusercontent.com/festoney8/bilibili-cleaner/release/bilibili-cleaner.github.user.js' bilibili-cleaner.github.user.js
+                sed -i '/^\/\/ @updateURL/ c\// @updateURL    https://raw.githubusercontent.com/festoney8/bilibili-cleaner/release/bilibili-cleaner.github.user.js' bilibili-cleaner.github.user.js
+                cp bilibili-cleaner.min.user.js bilibili-cleaner.github.min.user.js
+                sed -i '/^\/\/ @downloadURL/ c\// @downloadURL  https://raw.githubusercontent.com/festoney8/bilibili-cleaner/release/bilibili-cleaner.github.min.user.js' bilibili-cleaner.github.min.user.js
+                sed -i '/^\/\/ @updateURL/ c\// @updateURL    https://raw.githubusercontent.com/festoney8/bilibili-cleaner/release/bilibili-cleaner.github.min.user.js' bilibili-cleaner.github.min.user.js
+
+            - name: commit and push
+              run: |
+                git add *.js
+                git commit -m "release ${{ github.ref_name }}"
+                git push origin release -f

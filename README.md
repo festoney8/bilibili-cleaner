@@ -212,10 +212,9 @@
 
 - **清爽首页、极简首页** 会接管首页布局，本脚本对其无效
 
-### 2. 与 [bilibili-app-recommend](https://greasyfork.org/zh-CN/scripts/443530) 的兼容性
+### 2. 与 [Bilibili-Gate](https://github.com/magicdawn/bilibili-gate) 的兼容性
 
-- **兼容**，提供 **隐藏 视频tag / 隐藏 弹幕数 / 隐藏 点赞数** 功能，在首页功能菜单末尾
-- bilibili-app-recommend 自带 UP 主黑名单、标题关键词过滤，在首页无需使用本插件的过滤功能
+- **兼容**，Bilibili-Gate 自带 UP 主黑名单、标题关键词过滤，在首页无需使用本插件的过滤功能
 
 ### 3. 与 [Bilibili 旧播放页](https://github.com/MotooriKashin/Bilibili-Old) 的兼容性
 
@@ -288,6 +287,7 @@
 
     - main 分支只用于发布测试版和稳定版
     - dev 分支用于开发，可 PR 到本分支
+    - release 分支由 CI 管理，存储产物，作为 Github/JsDelivr 源文件
 
 - 环境要求
 

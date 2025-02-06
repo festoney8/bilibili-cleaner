@@ -287,7 +287,6 @@
 
     - main 分支只用于发布测试版和稳定版
     - dev 分支用于开发，可 PR 到本分支
-    - release 分支由 CI 管理，存储产物，作为 Github/JsDelivr 源文件
 
 - 环境要求
 

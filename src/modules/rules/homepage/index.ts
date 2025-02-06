@@ -1,7 +1,6 @@
 import { Group } from '@/types/collection'
 import { homepageBasicItems } from './groups/basic'
 import { homepageLayoutItems } from './groups/layout'
-import { homepagePluginItems } from './groups/plugin'
 import { homepageRcmdItems } from './groups/rcmd'
 import { homepageSidebarItems } from './groups/sidebar'
 
@@ -21,10 +20,5 @@ export const homepageGroups: Group[] = [
     {
         name: '页面侧栏 小组件',
         items: homepageSidebarItems,
-    },
-    {
-        name: '适配插件 bilibili-app-recommend',
-        fold: true,
-        items: homepagePluginItems,
     },
 ]

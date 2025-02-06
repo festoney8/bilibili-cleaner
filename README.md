@@ -14,7 +14,7 @@
 
 </div>
 
-## 功能：页面净化优化、视频过滤、评论过滤、动态过滤
+## 功能：页面净化优化、视频/评论/动态过滤
 
 - **页面净化优化**：净化顶栏、视频列表、播放器、评论区等，去除无用元素，优化部分功能
 
@@ -32,19 +32,20 @@
 
 > 由于 Google 推行 Manifest V3，现在 Tampermonkey 需在开发者模式使用
 
-- Chrome 打开网址 `chrome://extensions/`，在右上角启用 "开发者模式"
-- Edge 打开网址 `edge://extensions/`，在左侧启用 "开发人员模式"
+- Chrome 打开网址 `chrome://extensions/`，在右上角启用 "开发者模式"，重启浏览器
+- Edge 打开网址 `edge://extensions/`，在左侧启用 "开发人员模式"，重启浏览器
 - Firefox 无需操作
 
-### 稳定版：[前往 Greasyfork 安装](https://greasyfork.org/zh-CN/scripts/479861)
+### 版本选择
 
 - 请查看 [**浏览器适配**](#浏览器适配)
-- Chromium 系浏览器，建议在浏览器扩展管理页启用开发者模式
-- 稳定版持续在 Greasyfork 发布，油猴插件会定期检查，自动更新
+- 油猴插件会定期检查更新源，自动更新
 
-### 测试版：[Release 安装](https://github.com/festoney8/bilibili-cleaner/releases/)
-
-- 开发版：[CI Build](https://github.com/festoney8/bilibili-cleaner/actions/workflows/dev-ci.yml?query=is%3Asuccess)
+| **更新源**        | **链接**                                                                                                     | **介绍**                                   |
+| ----------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
+| Greasyfork 源     | [前往 Greasyfork 安装](https://greasyfork.org/zh-CN/scripts/479861)                                          | 稳定版                                     |
+| Github 源         | [点击安装](https://github.com/festoney8/bilibili-cleaner/release/bilibili-cleaner.github.user.js)            | 测试版                                     |
+| JSDelivr CDN 分发 | [点击安装](https://cdn.jsdelivr.net/gh/festoney8/bilibili-cleaner@release/bilibili-cleaner.jsdelivr.user.js) | 测试版，若 Greasyfork 连通性差，使用此版本 |
 
 ## 使用
 
@@ -287,7 +288,7 @@
 
     - main 分支只用于发布测试版和稳定版
     - dev 分支用于开发，可 PR 到本分支
-    - release 分支由 CI 管理，存储产物，作为 Github/JsDelivr 源文件
+    - release 分支由 CI 管理，用于存储 Github/JSDelivr 源
 
 - 环境要求
 

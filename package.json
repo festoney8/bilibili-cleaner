@@ -40,8 +40,8 @@
         "vue-tsc": "^2.2.0"
     },
     "lint-staged": {
-        "**/*": "prettier --write --ignore-unknown",
-        "**/*.{js,mjs,cjs,ts,vue}": "npx eslint src/** --fix",
-        "**/*.{scss}": "npx stylelint src/**/*.scss --fix"
+        "src/**/*": "prettier --write --ignore-unknown",
+        "src/**/*.{js,mjs,cjs,ts,vue}": "npx eslint --fix",
+        "src/**/*.scss": "npx stylelint --fix"
     }
 }

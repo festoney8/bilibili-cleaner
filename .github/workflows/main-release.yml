@@ -68,6 +68,12 @@ jobs:
                 git checkout -B release
                 cp build-release/*.js ./
 
+            - name: print info
+              run: |
+                pwd
+                ls -lah
+                git status
+
             - name: jsdelivr version
               run: |
                 cp bilibili-cleaner.user.js bilibili-cleaner.jsdelivr.user.js
@@ -85,6 +91,12 @@ jobs:
                 cp bilibili-cleaner.min.user.js bilibili-cleaner.github.min.user.js
                 sed -i '/^\/\/ @downloadURL/ c\// @downloadURL  https://raw.githubusercontent.com/festoney8/bilibili-cleaner/release/bilibili-cleaner.github.min.user.js' bilibili-cleaner.github.min.user.js
                 sed -i '/^\/\/ @updateURL/ c\// @updateURL    https://raw.githubusercontent.com/festoney8/bilibili-cleaner/release/bilibili-cleaner.github.min.user.js' bilibili-cleaner.github.min.user.js
+
+            - name: print info
+              run: |
+                pwd
+                ls -lah
+                git status
 
             - name: commit and push
               run: |

@@ -31,6 +31,20 @@ export const commonHeaderWidthItems: Item[] = [
     },
     {
         type: 'number',
+        id: 'common-header-bar-search-margin-left',
+        name: '搜索框与左侧距离（-1禁用）',
+        minValue: -1,
+        maxValue: 2000,
+        step: 1,
+        defaultValue: -1,
+        disableValue: -1,
+        addonText: 'px',
+        fn: (value: number) => {
+            document.documentElement.style.setProperty('--common-header-bar-search-margin-left', `${value}px`)
+        },
+    },
+    {
+        type: 'number',
         id: 'common-header-bar-padding-right',
         name: '右边界距离（-1禁用）',
         minValue: -1,

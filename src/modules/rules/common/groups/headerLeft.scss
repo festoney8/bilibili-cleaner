@@ -38,7 +38,7 @@ html[common-hide-nav-anime] {
 
 // 隐藏 直播
 html[common-hide-nav-live] {
-    .left-entry li > a[href="//live.bilibili.com"],
+    .left-entry li > a[href^="//live.bilibili.com"],
     .left-entry li > a[href="https://live.bilibili.com/"]
     {
         display: none !important;

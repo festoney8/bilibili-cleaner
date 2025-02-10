@@ -8,8 +8,8 @@
 // @icon         https://www.bilibili.com/favicon.ico
 // @homepage     https://github.com/festoney8/bilibili-cleaner
 // @supportURL   https://github.com/festoney8/bilibili-cleaner
-// @downloadURL  https://update.greasyfork.org/scripts/479861/bilibili%20%E9%A1%B5%E9%9D%A2%E5%87%80%E5%8C%96%E5%A4%A7%E5%B8%88.user.js
-// @updateURL    https://update.greasyfork.org/scripts/479861/bilibili%20%E9%A1%B5%E9%9D%A2%E5%87%80%E5%8C%96%E5%A4%A7%E5%B8%88.meta.js
+// @downloadURL  https://update.cn-greasyfork.org/scripts/479861/bilibili%20%E9%A1%B5%E9%9D%A2%E5%87%80%E5%8C%96%E5%A4%A7%E5%B8%88.user.js
+// @updateURL    https://update.cn-greasyfork.org/scripts/479861/bilibili%20%E9%A1%B5%E9%9D%A2%E5%87%80%E5%8C%96%E5%A4%A7%E5%B8%88.meta.js
 // @match        *://*.bilibili.com/*
 // @exclude      *://message.bilibili.com/pages/nav/header_sync
 // @exclude      *://message.bilibili.com/pages/nav/index_new_pc_sync

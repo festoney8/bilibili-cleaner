@@ -30,7 +30,7 @@ export const liveGroups: Group[] = [
         items: liveRightItems,
     },
     {
-        name: '下方页面 主播动态/直播公告',
+        name: '下方页面（动态/公告）',
         fold: true,
         items: liveBelowItems,
     },

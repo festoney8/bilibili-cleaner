@@ -22,7 +22,7 @@ html[live-page-header-recharge] {
 // 隐藏 下载客户端
 html[live-page-header-bili-download-panel] {
     #right-part .shortcut-item:has(.bili-download-panel) {
-        visibility: hidden;
+        display: none;
     }
 }
 

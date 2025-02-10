@@ -1,8 +1,7 @@
 // 左边界距离
 html[common-header-bar-padding-left] {
     .bili-header .bili-header__bar,
-    .mini-header__content,
-    [class^='BiliHeaderV3_biliHeaderBar___'] {
+    .mini-header__content {
         padding-left: var(--common-header-bar-padding-left) !important;
     }
 }
@@ -21,11 +20,17 @@ html[common-header-bar-search-width] {
     }
 }
 
+// 搜索框与左侧距离
+html[common-header-bar-search-margin-left] {
+    .center-search__bar {
+        margin-left: var(--common-header-bar-search-margin-left) !important;
+    }
+}
+
 // 右边界距离
 html[common-header-bar-padding-right] {
     .bili-header .bili-header__bar,
-    .mini-header__content,
-    [class^='BiliHeaderV3_biliHeaderBar___'] {
+    .mini-header__content {
         padding-right: var(--common-header-bar-padding-right) !important;
     }
 }

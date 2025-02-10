@@ -41,11 +41,12 @@
 - 请查看 [**浏览器适配**](#浏览器适配)
 - 油猴插件会定期检查更新源，自动更新
 
-| **更新源**        | **链接**                                                                                                         | **介绍**                                   |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| Greasyfork 源     | [前往 Greasyfork 安装](https://greasyfork.org/zh-CN/scripts/479861)                                              | 稳定版                                     |
-| Github 源         | [点击安装](https://raw.githubusercontent.com/festoney8/bilibili-cleaner/release/bilibili-cleaner.github.user.js) | 测试版                                     |
-| JSDelivr CDN 分发 | [点击安装](https://cdn.jsdelivr.net/gh/festoney8/bilibili-cleaner@release/bilibili-cleaner.jsdelivr.user.js)     | 测试版，若 Greasyfork 连通性差，使用此版本 |
+| **更新源**        | **链接**                                                                                                         | **介绍**               |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| Greasyfork 源     | [前往 Greasyfork 安装](https://greasyfork.org/zh-CN/scripts/479861)                                              | 稳定版                 |
+| Greasyfork CN 源  | [前往 cn-greasyfork 安装](https://cn-greasyfork.org/zh-CN/scripts/479861)                                        | 稳定版，解决连接性问题 |
+| Github 源         | [点击安装](https://raw.githubusercontent.com/festoney8/bilibili-cleaner/release/bilibili-cleaner.github.user.js) | 测试版                 |
+| JSDelivr CDN 分发 | [点击安装](https://cdn.jsdelivr.net/gh/festoney8/bilibili-cleaner@release/bilibili-cleaner.jsdelivr.user.js)     | 测试版，解决连接性问题 |
 
 ## 使用
 
@@ -284,6 +285,10 @@
 
 ## 开发
 
+<details>
+<summary><b>展开查看</b></summary>
+<br>
+
 - 分支介绍
 
     - main 分支只用于发布测试版和稳定版
@@ -302,3 +307,5 @@
     2. 使用 `pnpm dev` 进入 dev 模式，会自动打开浏览器安装开发用脚本（由 vite-plugin-monkey 控制）
         - dev 模式下，修改 vue/scss 代码并保存时可实时生效，修改 typescript 会触发页面自动刷新
     3. 使用 `pnpm build` 构建，产物在 `dist` 文件夹内
+
+</details>

@@ -88,7 +88,8 @@ export const liveBasicItems: Item[] = [
     {
         type: 'switch',
         id: 'auto-best-quality',
-        name: '自动切换最高画质 (不稳定功能)',
+        name: '自动切换最高画质 (实验功能)',
+        description: ['自动画质时也会切换，但仍显示[自动]'],
         noStyle: true,
         enableFn: async () => {
             if (!/\/\d+|\/blanc\/\d+/.test(location.pathname)) {

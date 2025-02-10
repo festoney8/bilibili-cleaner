@@ -42,6 +42,10 @@ jobs:
                 sed -i '/^\/\/ @downloadURL/ c\// @downloadURL  https://raw.githubusercontent.com/festoney8/bilibili-cleaner/release/bilibili-cleaner.github.user.js' bilibili-cleaner.github.user.js
                 sed -i '/^\/\/ @updateURL/ c\// @updateURL    https://raw.githubusercontent.com/festoney8/bilibili-cleaner/release/bilibili-cleaner.github.user.js' bilibili-cleaner.github.user.js
 
+                cp bilibili-cleaner.user.js bilibili-cleaner.cn-greasyfork.user.js
+                sed -i '/^\/\/ @downloadURL/ c\// @downloadURL  https://update.cn-greasyfork.org/scripts/479861/bilibili%20%E9%A1%B5%E9%9D%A2%E5%87%80%E5%8C%96%E5%A4%A7%E5%B8%88.user.js' bilibili-cleaner.cn-greasyfork.user.js
+                sed -i '/^\/\/ @updateURL/ c\// @updateURL    https://update.cn-greasyfork.org/scripts/479861/bilibili%20%E9%A1%B5%E9%9D%A2%E5%87%80%E5%8C%96%E5%A4%A7%E5%B8%88.meta.js' bilibili-cleaner.cn-greasyfork.user.js
+
                 mv bilibili-cleaner.user.js bilibili-cleaner.greasyfork.user.js
                 cd ..
 

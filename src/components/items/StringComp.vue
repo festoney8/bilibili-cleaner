@@ -50,6 +50,6 @@ watchThrottled(
             error(`StringComp ${item.id} error`, err)
         }
     },
-    { throttle: 50 },
+    { throttle: 250, trailing: true },
 )
 </script>

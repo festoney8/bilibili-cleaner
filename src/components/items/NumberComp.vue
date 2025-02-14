@@ -6,7 +6,7 @@
             :step="step"
             v-model="currValue"
             @keydown.stop
-            class="ml-auto block w-1/5 rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-sm outline-none invalid:border-red-500 focus:border-gray-500 focus:invalid:border-red-500"
+            class="ml-auto block w-1/5 rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-sm outline-none invalid:border-2 invalid:border-red-500 focus:border-gray-500 focus:invalid:border-red-500"
         />
         <div v-if="addonText" class="ml-2">{{ addonText }}</div>
     </div>
@@ -59,6 +59,6 @@ watchThrottled(
             error(`NumberComp ${item.id} error`, err)
         }
     },
-    { throttle: 50 },
+    { throttle: 250, trailing: true },
 )
 </script>

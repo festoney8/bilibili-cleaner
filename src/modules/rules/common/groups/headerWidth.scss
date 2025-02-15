@@ -1,7 +1,8 @@
 // 左边界距离
 html[common-header-bar-padding-left] {
     .bili-header .bili-header__bar,
-    .mini-header__content {
+    .mini-header__content,
+    [class^='BiliHeaderV3_biliHeaderBar'] {
         padding-left: var(--common-header-bar-padding-left) !important;
     }
 }
@@ -30,7 +31,8 @@ html[common-header-bar-search-margin-left] {
 // 右边界距离
 html[common-header-bar-padding-right] {
     .bili-header .bili-header__bar,
-    .mini-header__content {
+    .mini-header__content,
+    [class^='BiliHeaderV3_biliHeaderBar'] {
         padding-right: var(--common-header-bar-padding-right) !important;
     }
 }

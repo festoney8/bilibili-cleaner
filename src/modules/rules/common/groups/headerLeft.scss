@@ -8,6 +8,11 @@ html[common-hide-nav-homepage-logo] {
     .left-entry .zhuzhan-icon {
         display: none !important;
     }
+
+    // 番剧页占位
+    [class^='BiliHeaderV3_miniHeaderLogo'] {
+        display: none !important;
+    }
 }
 
 // 隐藏 首页
@@ -25,60 +30,83 @@ html[common-hide-nav-homepage] {
     .left-entry .zhuzhan-icon + span {
         display: none !important;
     }
+
+    // 番剧页占位
+    [class^='BiliHeaderV3_leftEntryTitle'] > div {
+        display: none !important;
+    }
 }
 
 // 隐藏 番剧
 html[common-hide-nav-anime] {
-    .left-entry li > a[href="//www.bilibili.com/anime/"],
-    .left-entry li > a[href="https://www.bilibili.com/anime/"]
-    {
-        display: none !important;
+    .left-entry,
+    [class^='BiliHeaderV3_leftEntry__'] {
+        li > a[href="//www.bilibili.com/anime/"],
+        li > a[href="https://www.bilibili.com/anime/"]
+        {
+            display: none !important;
+        }
     }
 }
 
 // 隐藏 直播
 html[common-hide-nav-live] {
-    .left-entry li > a[href^="//live.bilibili.com"],
-    .left-entry li > a[href="https://live.bilibili.com/"]
-    {
-        display: none !important;
+    .left-entry,
+    [class^='BiliHeaderV3_leftEntry__'] {
+        li > a[href^="//live.bilibili.com"],
+        li > a[href="https://live.bilibili.com/"]
+        {
+            display: none !important;
+        }
     }
 }
 
 // 隐藏 游戏中心
 html[common-hide-nav-game] {
-    .left-entry li > a[href^="//game.bilibili.com"],
-    .left-entry li > a[href^="https://game.bilibili.com"]
-    {
-        display: none !important;
+    .left-entry,
+    [class^='BiliHeaderV3_leftEntry__'] {
+        li > a[href^="//game.bilibili.com"],
+        li > a[href^="https://game.bilibili.com"]
+        {
+            display: none !important;
+        }
     }
 }
 
 // 隐藏 会员购
 html[common-hide-nav-vipshop] {
-    .left-entry li > a[href^="//show.bilibili.com"],
-    .left-entry li > a[href^="https://show.bilibili.com"]
-    {
-        display: none !important;
+    .left-entry,
+    [class^='BiliHeaderV3_leftEntry__'] {
+        li > a[href^="//show.bilibili.com"],
+        li > a[href^="https://show.bilibili.com"]
+        {
+            display: none !important;
+        }
     }
 }
 
 // 隐藏 漫画
 html[common-hide-nav-manga] {
-    .left-entry li > a[href^="//manga.bilibili.com"],
-    .left-entry li > a[href^="https://manga.bilibili.com"]
-    {
-        display: none !important;
+    .left-entry,
+    [class^='BiliHeaderV3_leftEntry__'] {
+        li > a[href^="//manga.bilibili.com"],
+        li > a[href^="https://manga.bilibili.com"]
+        {
+            display: none !important;
+        }
     }
 }
 
 // 隐藏 赛事
 html[common-hide-nav-match] {
-    .left-entry li > a[href="//www.bilibili.com/v/game/match/"],
-    .left-entry li > a[href^="//www.bilibili.com/match/home/"],
-    .left-entry li > a[href^="https://www.bilibili.com/match/home/"]
-    {
-        display: none !important;
+    .left-entry,
+    [class^='BiliHeaderV3_leftEntry__'] {
+        li > a[href="//www.bilibili.com/v/game/match/"],
+        li > a[href^="//www.bilibili.com/match/home/"],
+        li > a[href^="https://www.bilibili.com/match/home/"]
+        {
+            display: none !important;
+        }
     }
 }
 

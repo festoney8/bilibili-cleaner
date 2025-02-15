@@ -12,7 +12,7 @@
     "dependencies": {
         "@headlessui/vue": "^1.7.23",
         "@heroicons/vue": "^2.2.0",
-        "@vueuse/core": "^12.6.0",
+        "@vueuse/core": "^12.7.0",
         "pinia": "^2.3.1",
         "vue": "^3.5.13"
     },

@@ -12,7 +12,7 @@ import {
     isPageVideo,
     isPageWatchlater,
 } from '@/utils/pageType'
-import URLCleanerInstance from '@/utils/urlCleaner'
+import URLHandlerInstance from '@/utils/urlHandler'
 
 export const commonBasicItems: Item[] = [
     {
@@ -140,8 +140,8 @@ export const commonBasicItems: Item[] = [
                     return url
                 }
             }
-            URLCleanerInstance.cleanFnArr.push(cleanParams)
-            URLCleanerInstance.clean()
+            URLHandlerInstance.cleanFnArr.push(cleanParams)
+            URLHandlerInstance.clean()
         },
     },
     {

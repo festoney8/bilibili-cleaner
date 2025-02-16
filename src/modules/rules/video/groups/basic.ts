@@ -1,7 +1,7 @@
 import { Item } from '@/types/item'
 import { BiliCleanerStorage } from '@/utils/storage'
 import { matchAvidBvid, matchBvid } from '@/utils/tool'
-import URLCleanerInstance from '@/utils/urlCleaner'
+import URLHandlerInstance from '@/utils/urlHandler'
 
 export const videoBasicItems: Item[] = [
     {
@@ -55,8 +55,8 @@ export const videoBasicItems: Item[] = [
                     return url
                 }
             }
-            URLCleanerInstance.cleanFnArr.push(bv2av)
-            URLCleanerInstance.clean()
+            URLHandlerInstance.cleanFnArr.push(bv2av)
+            URLHandlerInstance.clean()
         },
     },
     {

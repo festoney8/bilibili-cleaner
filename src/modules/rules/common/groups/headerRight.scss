@@ -71,4 +71,9 @@ html[common-hide-nav-upload] {
     .right-entry li.right-entry-item--upload {
         visibility: hidden !important;
     }
+
+    // 番剧页占位
+    [class^='BiliHeaderV3_headerUploadEntry'] {
+        visibility: hidden !important;
+    }
 }

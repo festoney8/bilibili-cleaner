@@ -23,37 +23,45 @@ export const bangumiMiniPlayerItems: Item[] = [
             try {
                 const zoom = useStorage('bili-cleaner-mini-player-zoom', 1, localStorage)
                 document.documentElement.style.setProperty('--mini-player-zoom', zoom.value + '')
+                waitForEle(document.body, `#bilibili-player [class^="bpx-player-video"]`, (node: HTMLElement) => {
+                    return node.className.startsWith('bpx-player-video')
+                }).then(() => {
+                    const player = document.querySelector('#bilibili-player .bpx-player-container') as HTMLElement
+                    if (!player) {
+                        return
+                    }
+                    // 判断鼠标位置，消除大播放器内下拉页面影响小窗大小的bug
+                    let flag = false
+                    player.addEventListener('mouseenter', () => {
+                        if (player.getAttribute('data-screen') === 'mini') {
+                            flag = true
+                        }
+                    })
+                    player.addEventListener('mouseleave', () => {
+                        flag = false
+                    })
+                    // 监听滚轮
+                    player.addEventListener('wheel', (e) => {
+                        if (flag) {
+                            e.stopPropagation()
+                            e.preventDefault()
+                            const scaleSpeed = 5
+                            let newZoom = zoom.value - (Math.sign(e.deltaY) * scaleSpeed) / 100
+                            newZoom = newZoom < 0.5 ? 0.5 : newZoom
+                            newZoom = newZoom > 3 ? 3 : newZoom
+                            if (newZoom !== zoom.value) {
+                                zoom.value = newZoom
+                                document.documentElement.style.setProperty('--mini-player-zoom', newZoom + '')
+                            }
+                        }
+                    })
+                })
                 // 等player出现
                 let cnt = 0
                 const interval = setInterval(() => {
                     const player = document.querySelector('.bpx-player-container') as HTMLElement | null
                     if (player) {
                         clearInterval(interval)
-                        // 判断鼠标位置，消除大播放器内下拉页面影响小窗大小的bug
-                        let flag = false
-                        player.addEventListener('mouseenter', () => {
-                            if (player.getAttribute('data-screen') === 'mini') {
-                                flag = true
-                            }
-                        })
-                        player.addEventListener('mouseleave', () => {
-                            flag = false
-                        })
-                        // 监听滚轮
-                        player.addEventListener('wheel', (e) => {
-                            if (flag) {
-                                e.stopPropagation()
-                                e.preventDefault()
-                                const scaleSpeed = 5
-                                let newZoom = zoom.value - (Math.sign(e.deltaY) * scaleSpeed) / 100
-                                newZoom = newZoom < 0.5 ? 0.5 : newZoom
-                                newZoom = newZoom > 3 ? 3 : newZoom
-                                if (newZoom !== zoom.value) {
-                                    zoom.value = newZoom
-                                    document.documentElement.style.setProperty('--mini-player-zoom', newZoom + '')
-                                }
-                            }
-                        })
                     } else {
                         cnt++
                         if (cnt > 20) {

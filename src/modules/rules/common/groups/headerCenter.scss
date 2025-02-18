@@ -1,3 +1,13 @@
+// 隐藏 搜索按钮
+html[common-hide-nav-search-btn] {
+    #nav-searchform {
+        padding: 0 4px !important;
+        .nav-search-btn {
+            display: none !important;
+        }
+    }
+}
+
 // 隐藏 推荐搜索
 html[common-hide-nav-search-rcmd] {
     #nav-searchform .nav-search-input::placeholder {

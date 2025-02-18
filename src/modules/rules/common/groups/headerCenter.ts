@@ -3,6 +3,11 @@ import { Item } from '@/types/item'
 export const commonHeaderCenterItems: Item[] = [
     {
         type: 'switch',
+        id: 'common-hide-nav-search-btn',
+        name: '隐藏 搜索按钮',
+    },
+    {
+        type: 'switch',
         id: 'common-hide-nav-search-rcmd',
         name: '隐藏 推荐搜索',
         enableFn: async () => {

@@ -3,6 +3,11 @@ import { Item } from '@/types/item'
 export const liveHeaderCenterItems: Item[] = [
     {
         type: 'switch',
+        id: 'live-page-header-search-btn',
+        name: '隐藏 搜索按钮',
+    },
+    {
+        type: 'switch',
         id: 'live-page-nav-search-rcmd',
         name: '隐藏 推荐搜索',
         enableFn: async () => {

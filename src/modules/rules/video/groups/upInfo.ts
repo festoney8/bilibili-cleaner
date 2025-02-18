@@ -33,4 +33,9 @@ export const videoUpInfoItems: Item[] = [
         name: '隐藏 创作团队header',
         defaultEnable: true,
     },
+    {
+        type: 'switch',
+        id: 'video-page-hide-up-usercard',
+        name: '隐藏 UP主用户卡片',
+    },
 ]

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      4.1.7
+// @version      4.1.8
 // @author       festoney8
 // @description  净化 B站/哔哩哔哩 页面，支持「精简功能、播放器净化、过滤视频、过滤评论、全站黑白名单」，提供 300+ 功能，定制自己的 B 站
 // @license      MIT
@@ -3419,7 +3419,7 @@
   }
   class CommentIsMeFilter extends BooleanFilter {
   }
-  const GM_KEYS$7 = {
+  const GM_KEYS$8 = {
     black: {
       username: {
         statusKey: "video-comment-username-filter-status",
@@ -3476,7 +3476,7 @@
       }
     }
   };
-  const selectorFns$7 = {
+  const selectorFns$8 = {
     root: {
       username: (comment) => {
         var _a, _b, _c;
@@ -3651,9 +3651,9 @@
       __publicField(this, "commentIsMeFilter", new CommentIsMeFilter());
     }
     init() {
-      this.commentUsernameFilter.setParam(BiliCleanerStorage.get(GM_KEYS$7.black.username.valueKey, []));
-      this.commentContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS$7.black.content.valueKey, []));
-      this.commentLevelFilter.setParam(BiliCleanerStorage.get(GM_KEYS$7.black.level.valueKey, 0));
+      this.commentUsernameFilter.setParam(BiliCleanerStorage.get(GM_KEYS$8.black.username.valueKey, []));
+      this.commentContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS$8.black.content.valueKey, []));
+      this.commentLevelFilter.setParam(BiliCleanerStorage.get(GM_KEYS$8.black.level.valueKey, 0));
       this.commentBotFilter.setParam(bots);
     }
     /**
@@ -3684,18 +3684,18 @@
           debugFilter(
             [
               `CommentFilterCommon rootComments`,
-              `username: ${selectorFns$7.root.username(v2)}`,
-              `content: ${selectorFns$7.root.content(v2)}`,
-              `callUser: ${selectorFns$7.root.callUser(v2)}`,
-              `callUserNoReply: ${selectorFns$7.root.callUserNoReply(v2)}`,
-              `callUserOnly: ${selectorFns$7.root.callUserOnly(v2)}`,
-              `callUserOnlyNoReply: ${selectorFns$7.root.callUserOnlyNoReply(v2)}`,
-              `level: ${selectorFns$7.root.level(v2)}`,
-              `isUp: ${selectorFns$7.root.isUp(v2)}`,
-              `isPin: ${selectorFns$7.root.isPin(v2)}`,
-              `isNote: ${selectorFns$7.root.isNote(v2)}`,
-              `isLink: ${selectorFns$7.root.isLink(v2)}`,
-              `isMe: ${selectorFns$7.root.isMe(v2)}`
+              `username: ${selectorFns$8.root.username(v2)}`,
+              `content: ${selectorFns$8.root.content(v2)}`,
+              `callUser: ${selectorFns$8.root.callUser(v2)}`,
+              `callUserNoReply: ${selectorFns$8.root.callUserNoReply(v2)}`,
+              `callUserOnly: ${selectorFns$8.root.callUserOnly(v2)}`,
+              `callUserOnlyNoReply: ${selectorFns$8.root.callUserOnlyNoReply(v2)}`,
+              `level: ${selectorFns$8.root.level(v2)}`,
+              `isUp: ${selectorFns$8.root.isUp(v2)}`,
+              `isPin: ${selectorFns$8.root.isPin(v2)}`,
+              `isNote: ${selectorFns$8.root.isNote(v2)}`,
+              `isLink: ${selectorFns$8.root.isLink(v2)}`,
+              `isMe: ${selectorFns$8.root.isMe(v2)}`
             ].join("\n")
           );
         });
@@ -3705,21 +3705,21 @@
         return;
       }
       const blackPairs = [];
-      this.commentUsernameFilter.isEnable && blackPairs.push([this.commentUsernameFilter, selectorFns$7.root.username]);
-      this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns$7.root.content]);
-      this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns$7.root.level]);
-      this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns$7.root.username]);
-      this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns$7.root.callBot]);
-      this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns$7.root.callUser]);
-      this.commentCallUserNoReplyFilter.isEnable && blackPairs.push([this.commentCallUserNoReplyFilter, selectorFns$7.root.callUserNoReply]);
-      this.commentCallUserOnlyFilter.isEnable && blackPairs.push([this.commentCallUserOnlyFilter, selectorFns$7.root.callUserOnly]);
-      this.commentCallUserOnlyNoReplyFilter.isEnable && blackPairs.push([this.commentCallUserOnlyNoReplyFilter, selectorFns$7.root.callUserOnlyNoReply]);
+      this.commentUsernameFilter.isEnable && blackPairs.push([this.commentUsernameFilter, selectorFns$8.root.username]);
+      this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns$8.root.content]);
+      this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns$8.root.level]);
+      this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns$8.root.username]);
+      this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns$8.root.callBot]);
+      this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns$8.root.callUser]);
+      this.commentCallUserNoReplyFilter.isEnable && blackPairs.push([this.commentCallUserNoReplyFilter, selectorFns$8.root.callUserNoReply]);
+      this.commentCallUserOnlyFilter.isEnable && blackPairs.push([this.commentCallUserOnlyFilter, selectorFns$8.root.callUserOnly]);
+      this.commentCallUserOnlyNoReplyFilter.isEnable && blackPairs.push([this.commentCallUserOnlyNoReplyFilter, selectorFns$8.root.callUserOnlyNoReply]);
       const whitePairs = [];
-      this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns$7.root.isUp]);
-      this.commentIsPinFilter.isEnable && whitePairs.push([this.commentIsPinFilter, selectorFns$7.root.isPin]);
-      this.commentIsNoteFilter.isEnable && whitePairs.push([this.commentIsNoteFilter, selectorFns$7.root.isNote]);
-      this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns$7.root.isLink]);
-      this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns$7.root.isMe]);
+      this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns$8.root.isUp]);
+      this.commentIsPinFilter.isEnable && whitePairs.push([this.commentIsPinFilter, selectorFns$8.root.isPin]);
+      this.commentIsNoteFilter.isEnable && whitePairs.push([this.commentIsNoteFilter, selectorFns$8.root.isNote]);
+      this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns$8.root.isLink]);
+      this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns$8.root.isMe]);
       const rootBlackCnt = await coreCheck(rootComments, true, blackPairs, whitePairs);
       const time = (performance.now() - timer).toFixed(1);
       debugFilter(
@@ -3754,16 +3754,16 @@
           debugFilter(
             [
               `CommentFilterCommon subComments`,
-              `username: ${selectorFns$7.sub.username(v2)}`,
-              `content: ${selectorFns$7.sub.content(v2)}`,
-              `callUser: ${selectorFns$7.sub.callUser(v2)}`,
-              `callUserNoReply: ${selectorFns$7.sub.callUserNoReply(v2)}`,
-              `callUserOnly: ${selectorFns$7.sub.callUserOnly(v2)}`,
-              `callUserOnlyNoReply: ${selectorFns$7.sub.callUserOnlyNoReply(v2)}`,
-              `level: ${selectorFns$7.sub.level(v2)}`,
-              `isUp: ${selectorFns$7.sub.isUp(v2)}`,
-              `isLink: ${selectorFns$7.sub.isLink(v2)}`,
-              `isMe: ${selectorFns$7.sub.isMe(v2)}`
+              `username: ${selectorFns$8.sub.username(v2)}`,
+              `content: ${selectorFns$8.sub.content(v2)}`,
+              `callUser: ${selectorFns$8.sub.callUser(v2)}`,
+              `callUserNoReply: ${selectorFns$8.sub.callUserNoReply(v2)}`,
+              `callUserOnly: ${selectorFns$8.sub.callUserOnly(v2)}`,
+              `callUserOnlyNoReply: ${selectorFns$8.sub.callUserOnlyNoReply(v2)}`,
+              `level: ${selectorFns$8.sub.level(v2)}`,
+              `isUp: ${selectorFns$8.sub.isUp(v2)}`,
+              `isLink: ${selectorFns$8.sub.isLink(v2)}`,
+              `isMe: ${selectorFns$8.sub.isMe(v2)}`
             ].join("\n")
           );
         });
@@ -3773,19 +3773,19 @@
         return;
       }
       const blackPairs = [];
-      this.commentUsernameFilter.isEnable && blackPairs.push([this.commentUsernameFilter, selectorFns$7.sub.username]);
-      this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns$7.sub.content]);
-      this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns$7.sub.level]);
-      this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns$7.sub.username]);
-      this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns$7.sub.callBot]);
-      this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns$7.sub.callUser]);
-      this.commentCallUserNoReplyFilter.isEnable && blackPairs.push([this.commentCallUserNoReplyFilter, selectorFns$7.sub.callUserNoReply]);
-      this.commentCallUserOnlyFilter.isEnable && blackPairs.push([this.commentCallUserOnlyFilter, selectorFns$7.sub.callUserOnly]);
-      this.commentCallUserOnlyNoReplyFilter.isEnable && blackPairs.push([this.commentCallUserOnlyNoReplyFilter, selectorFns$7.sub.callUserOnlyNoReply]);
+      this.commentUsernameFilter.isEnable && blackPairs.push([this.commentUsernameFilter, selectorFns$8.sub.username]);
+      this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns$8.sub.content]);
+      this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns$8.sub.level]);
+      this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns$8.sub.username]);
+      this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns$8.sub.callBot]);
+      this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns$8.sub.callUser]);
+      this.commentCallUserNoReplyFilter.isEnable && blackPairs.push([this.commentCallUserNoReplyFilter, selectorFns$8.sub.callUserNoReply]);
+      this.commentCallUserOnlyFilter.isEnable && blackPairs.push([this.commentCallUserOnlyFilter, selectorFns$8.sub.callUserOnly]);
+      this.commentCallUserOnlyNoReplyFilter.isEnable && blackPairs.push([this.commentCallUserOnlyNoReplyFilter, selectorFns$8.sub.callUserOnlyNoReply]);
       const whitePairs = [];
-      this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns$7.sub.isUp]);
-      this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns$7.sub.isLink]);
-      this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns$7.sub.isMe]);
+      this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns$8.sub.isUp]);
+      this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns$8.sub.isLink]);
+      this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns$8.sub.isMe]);
       const subBlackCnt = await coreCheck(subComments, false, blackPairs, whitePairs);
       const time = (performance.now() - timer).toFixed(1);
       debugFilter(
@@ -3827,11 +3827,11 @@
       );
     }
   }
-  const mainFilter$7 = new CommentFilterCommon();
+  const mainFilter$8 = new CommentFilterCommon();
   const commentFilterCommonEntry = async () => {
-    mainFilter$7.init();
-    mainFilter$7.commentIsMeFilter.enable();
-    mainFilter$7.observe();
+    mainFilter$8.init();
+    mainFilter$8.commentIsMeFilter.enable();
+    mainFilter$8.observe();
   };
   const commentFilterCommonGroups = [
     {
@@ -3839,30 +3839,30 @@
       items: [
         {
           type: "switch",
-          id: GM_KEYS$7.black.username.statusKey,
+          id: GM_KEYS$8.black.username.statusKey,
           name: "启用 评论用户过滤 (右键单击用户名)",
           noStyle: true,
           enableFn: () => {
-            mainFilter$7.commentUsernameFilter.enable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentUsernameFilter.enable();
+            mainFilter$8.check("full");
           },
           disableFn: () => {
-            mainFilter$7.commentUsernameFilter.disable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentUsernameFilter.disable();
+            mainFilter$8.check("full");
           }
         },
         {
           type: "editor",
-          id: GM_KEYS$7.black.username.valueKey,
+          id: GM_KEYS$8.black.username.valueKey,
           name: "编辑 评论用户黑名单",
           description: ["本黑名单与UP主黑名单互不影响", "右键屏蔽的用户会出现在首行"],
           editorTitle: "评论区 用户黑名单",
           editorDescription: ["每行一个用户名，保存时自动去重"],
           saveFn: async () => {
-            mainFilter$7.commentUsernameFilter.setParam(
-              BiliCleanerStorage.get(GM_KEYS$7.black.username.valueKey, [])
+            mainFilter$8.commentUsernameFilter.setParam(
+              BiliCleanerStorage.get(GM_KEYS$8.black.username.valueKey, [])
             );
-            mainFilter$7.check("full");
+            mainFilter$8.check("full");
           }
         }
       ]
@@ -3872,21 +3872,21 @@
       items: [
         {
           type: "switch",
-          id: GM_KEYS$7.black.content.statusKey,
+          id: GM_KEYS$8.black.content.statusKey,
           name: "启用 评论关键词过滤",
           noStyle: true,
           enableFn: () => {
-            mainFilter$7.commentContentFilter.enable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentContentFilter.enable();
+            mainFilter$8.check("full");
           },
           disableFn: () => {
-            mainFilter$7.commentContentFilter.disable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentContentFilter.disable();
+            mainFilter$8.check("full");
           }
         },
         {
           type: "editor",
-          id: GM_KEYS$7.black.content.valueKey,
+          id: GM_KEYS$8.black.content.valueKey,
           name: "编辑 评论关键词黑名单",
           editorTitle: "评论关键词 黑名单",
           editorDescription: [
@@ -3895,8 +3895,8 @@
             "正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
           ],
           saveFn: async () => {
-            mainFilter$7.commentContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS$7.black.content.valueKey, []));
-            mainFilter$7.check("full");
+            mainFilter$8.commentContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS$8.black.content.valueKey, []));
+            mainFilter$8.check("full");
           }
         }
       ]
@@ -3906,35 +3906,35 @@
       items: [
         {
           type: "switch",
-          id: GM_KEYS$7.black.callBot.statusKey,
+          id: GM_KEYS$8.black.callBot.statusKey,
           name: "过滤 召唤AI的评论",
           noStyle: true,
           enableFn: () => {
-            mainFilter$7.commentCallBotFilter.enable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentCallBotFilter.enable();
+            mainFilter$8.check("full");
           },
           disableFn: () => {
-            mainFilter$7.commentCallBotFilter.disable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentCallBotFilter.disable();
+            mainFilter$8.check("full");
           }
         },
         {
           type: "switch",
-          id: GM_KEYS$7.black.bot.statusKey,
+          id: GM_KEYS$8.black.bot.statusKey,
           name: "过滤 AI发布的评论",
           noStyle: true,
           enableFn: () => {
-            mainFilter$7.commentBotFilter.enable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentBotFilter.enable();
+            mainFilter$8.check("full");
           },
           disableFn: () => {
-            mainFilter$7.commentBotFilter.disable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentBotFilter.disable();
+            mainFilter$8.check("full");
           }
         },
         {
           type: "switch",
-          id: GM_KEYS$7.black.isAD.statusKey,
+          id: GM_KEYS$8.black.isAD.statusKey,
           name: "过滤 带货评论 (实验功能)",
           noStyle: true,
           enableFn: () => {
@@ -3968,58 +3968,58 @@
         },
         {
           type: "switch",
-          id: GM_KEYS$7.black.callUserOnly.statusKey,
+          id: GM_KEYS$8.black.callUserOnly.statusKey,
           name: "过滤 只含 @其他用户 的全部评论",
           noStyle: true,
           enableFn: () => {
-            mainFilter$7.commentCallUserOnlyFilter.enable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentCallUserOnlyFilter.enable();
+            mainFilter$8.check("full");
           },
           disableFn: () => {
-            mainFilter$7.commentCallUserOnlyFilter.disable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentCallUserOnlyFilter.disable();
+            mainFilter$8.check("full");
           }
         },
         {
           type: "switch",
-          id: GM_KEYS$7.black.callUserOnlyNoReply.statusKey,
+          id: GM_KEYS$8.black.callUserOnlyNoReply.statusKey,
           name: "过滤 只含 @其他用户 的无回复评论",
           noStyle: true,
           enableFn: () => {
-            mainFilter$7.commentCallUserOnlyNoReplyFilter.enable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentCallUserOnlyNoReplyFilter.enable();
+            mainFilter$8.check("full");
           },
           disableFn: () => {
-            mainFilter$7.commentCallUserOnlyNoReplyFilter.disable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentCallUserOnlyNoReplyFilter.disable();
+            mainFilter$8.check("full");
           }
         },
         {
           type: "switch",
-          id: GM_KEYS$7.black.callUser.statusKey,
+          id: GM_KEYS$8.black.callUser.statusKey,
           name: "过滤 包含 @其他用户 的全部评论",
           noStyle: true,
           enableFn: () => {
-            mainFilter$7.commentCallUserFilter.enable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentCallUserFilter.enable();
+            mainFilter$8.check("full");
           },
           disableFn: () => {
-            mainFilter$7.commentCallUserFilter.disable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentCallUserFilter.disable();
+            mainFilter$8.check("full");
           }
         },
         {
           type: "switch",
-          id: GM_KEYS$7.black.callUserNoReply.statusKey,
+          id: GM_KEYS$8.black.callUserNoReply.statusKey,
           name: "过滤 包含 @其他用户 的无回复评论",
           noStyle: true,
           enableFn: () => {
-            mainFilter$7.commentCallUserNoReplyFilter.enable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentCallUserNoReplyFilter.enable();
+            mainFilter$8.check("full");
           },
           disableFn: () => {
-            mainFilter$7.commentCallUserNoReplyFilter.disable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentCallUserNoReplyFilter.disable();
+            mainFilter$8.check("full");
           }
         }
       ]
@@ -4029,21 +4029,21 @@
       items: [
         {
           type: "switch",
-          id: GM_KEYS$7.black.level.statusKey,
+          id: GM_KEYS$8.black.level.statusKey,
           name: "启用 用户等级过滤",
           noStyle: true,
           enableFn: () => {
-            mainFilter$7.commentLevelFilter.enable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentLevelFilter.enable();
+            mainFilter$8.check("full");
           },
           disableFn: () => {
-            mainFilter$7.commentLevelFilter.disable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentLevelFilter.disable();
+            mainFilter$8.check("full");
           }
         },
         {
           type: "number",
-          id: GM_KEYS$7.black.level.valueKey,
+          id: GM_KEYS$8.black.level.valueKey,
           name: "设定最低等级 (0~6)",
           minValue: 0,
           maxValue: 6,
@@ -4051,8 +4051,8 @@
           defaultValue: 0,
           disableValue: 0,
           fn: (value) => {
-            mainFilter$7.commentLevelFilter.setParam(value);
-            mainFilter$7.check("full");
+            mainFilter$8.commentLevelFilter.setParam(value);
+            mainFilter$8.check("full");
           }
         }
       ]
@@ -4062,86 +4062,86 @@
       items: [
         {
           type: "switch",
-          id: GM_KEYS$7.white.root.statusKey,
+          id: GM_KEYS$8.white.root.statusKey,
           name: "一级评论(主评论) 免过滤",
           noStyle: true,
           enableFn: () => {
             isRootWhite = true;
-            mainFilter$7.check("full");
+            mainFilter$8.check("full");
           },
           disableFn: () => {
             isRootWhite = false;
-            mainFilter$7.check("full");
+            mainFilter$8.check("full");
           }
         },
         {
           type: "switch",
-          id: GM_KEYS$7.white.sub.statusKey,
+          id: GM_KEYS$8.white.sub.statusKey,
           name: "二级评论(回复) 免过滤",
           noStyle: true,
           enableFn: () => {
             isSubWhite = true;
-            mainFilter$7.check("full");
+            mainFilter$8.check("full");
           },
           disableFn: () => {
             isSubWhite = false;
-            mainFilter$7.check("full");
+            mainFilter$8.check("full");
           }
         },
         {
           type: "switch",
-          id: GM_KEYS$7.white.isUp.statusKey,
+          id: GM_KEYS$8.white.isUp.statusKey,
           name: "UP主的评论 免过滤",
           noStyle: true,
           enableFn: () => {
-            mainFilter$7.commentIsUpFilter.enable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentIsUpFilter.enable();
+            mainFilter$8.check("full");
           },
           disableFn: () => {
-            mainFilter$7.commentIsUpFilter.disable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentIsUpFilter.disable();
+            mainFilter$8.check("full");
           }
         },
         {
           type: "switch",
-          id: GM_KEYS$7.white.isPin.statusKey,
+          id: GM_KEYS$8.white.isPin.statusKey,
           name: "置顶评论 免过滤",
           noStyle: true,
           enableFn: () => {
-            mainFilter$7.commentIsPinFilter.enable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentIsPinFilter.enable();
+            mainFilter$8.check("full");
           },
           disableFn: () => {
-            mainFilter$7.commentIsPinFilter.disable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentIsPinFilter.disable();
+            mainFilter$8.check("full");
           }
         },
         {
           type: "switch",
-          id: GM_KEYS$7.white.isNote.statusKey,
+          id: GM_KEYS$8.white.isNote.statusKey,
           name: "笔记/图片评论 免过滤",
           noStyle: true,
           enableFn: () => {
-            mainFilter$7.commentIsNoteFilter.enable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentIsNoteFilter.enable();
+            mainFilter$8.check("full");
           },
           disableFn: () => {
-            mainFilter$7.commentIsNoteFilter.disable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentIsNoteFilter.disable();
+            mainFilter$8.check("full");
           }
         },
         {
           type: "switch",
-          id: GM_KEYS$7.white.isLink.statusKey,
+          id: GM_KEYS$8.white.isLink.statusKey,
           name: "含超链接的评论 免过滤",
           noStyle: true,
           enableFn: () => {
-            mainFilter$7.commentIsLinkFilter.enable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentIsLinkFilter.enable();
+            mainFilter$8.check("full");
           },
           disableFn: () => {
-            mainFilter$7.commentIsLinkFilter.disable();
-            mainFilter$7.check("full");
+            mainFilter$8.commentIsLinkFilter.disable();
+            mainFilter$8.check("full");
           }
         }
       ]
@@ -4155,16 +4155,16 @@
     const menus = [];
     if (((_a = target.parentElement) == null ? void 0 : _a.id) === "user-name" || target.classList.contains("user-name") || target.classList.contains("sub-user-name")) {
       const username = (_b = target.textContent) == null ? void 0 : _b.trim();
-      if (username && mainFilter$7.commentUsernameFilter.isEnable) {
+      if (username && mainFilter$8.commentUsernameFilter.isEnable) {
         menus.push({
           name: `屏蔽用户：${username}`,
           fn: async () => {
             try {
-              mainFilter$7.commentUsernameFilter.addParam(username);
-              mainFilter$7.check("full");
-              const arr = BiliCleanerStorage.get(GM_KEYS$7.black.username.valueKey, []);
+              mainFilter$8.commentUsernameFilter.addParam(username);
+              mainFilter$8.check("full");
+              const arr = BiliCleanerStorage.get(GM_KEYS$8.black.username.valueKey, []);
               arr.unshift(username);
-              BiliCleanerStorage.set(GM_KEYS$7.black.username.valueKey, orderedUniq(arr));
+              BiliCleanerStorage.set(GM_KEYS$8.black.username.valueKey, orderedUniq(arr));
             } catch (err) {
               error(`commentFilterCommonHandler add username ${username} failed`, err);
             }
@@ -4182,7 +4182,7 @@
   }
   class DynContentFilter extends KeywordFilter {
   }
-  const GM_KEYS$6 = {
+  const GM_KEYS$7 = {
     black: {
       uploader: {
         statusKey: "dyn-uploader-filter-status",
@@ -4203,7 +4203,7 @@
     }
   };
   let isAllDyn = true;
-  const selectorFns$6 = {
+  const selectorFns$7 = {
     uploader: (dyn) => {
       var _a, _b;
       if (!isAllDyn) {
@@ -4241,10 +4241,10 @@
       __publicField(this, "dynContentFilter", new DynContentFilter());
     }
     init() {
-      this.dynUploaderFilter.setParam(BiliCleanerStorage.get(GM_KEYS$6.black.uploader.valueKey, []));
-      this.dynDurationFilter.setParam(BiliCleanerStorage.get(GM_KEYS$6.black.duration.valueKey, 0));
-      this.dynVideoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS$6.black.title.valueKey, []));
-      this.dynContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS$6.black.content.valueKey, []));
+      this.dynUploaderFilter.setParam(BiliCleanerStorage.get(GM_KEYS$7.black.uploader.valueKey, []));
+      this.dynDurationFilter.setParam(BiliCleanerStorage.get(GM_KEYS$7.black.duration.valueKey, 0));
+      this.dynVideoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS$7.black.title.valueKey, []));
+      this.dynContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS$7.black.content.valueKey, []));
     }
     async check(mode) {
       if (!this.target) {
@@ -4273,19 +4273,19 @@
           debugFilter(
             [
               `DynamicFilterDynamic`,
-              `uploader: ${selectorFns$6.uploader(v2)}`,
-              `title: ${selectorFns$6.title(v2)}`,
-              `duration: ${selectorFns$6.duration(v2)}`,
-              `content: ${selectorFns$6.content(v2)}`
+              `uploader: ${selectorFns$7.uploader(v2)}`,
+              `title: ${selectorFns$7.title(v2)}`,
+              `duration: ${selectorFns$7.duration(v2)}`,
+              `content: ${selectorFns$7.content(v2)}`
             ].join("\n")
           );
         });
       }
       const blackPairs = [];
-      this.dynUploaderFilter.isEnable && blackPairs.push([this.dynUploaderFilter, selectorFns$6.uploader]);
-      this.dynDurationFilter.isEnable && blackPairs.push([this.dynDurationFilter, selectorFns$6.duration]);
-      this.dynVideoTitleFilter.isEnable && blackPairs.push([this.dynVideoTitleFilter, selectorFns$6.title]);
-      this.dynContentFilter.isEnable && blackPairs.push([this.dynContentFilter, selectorFns$6.content]);
+      this.dynUploaderFilter.isEnable && blackPairs.push([this.dynUploaderFilter, selectorFns$7.uploader]);
+      this.dynDurationFilter.isEnable && blackPairs.push([this.dynDurationFilter, selectorFns$7.duration]);
+      this.dynVideoTitleFilter.isEnable && blackPairs.push([this.dynVideoTitleFilter, selectorFns$7.title]);
+      this.dynContentFilter.isEnable && blackPairs.push([this.dynContentFilter, selectorFns$7.content]);
       const blackCnt = await coreCheck(dyns, true, blackPairs, []);
       const time = (performance.now() - timer).toFixed(1);
       debugFilter(`DynamicFilterDynamic hide ${blackCnt} in ${dyns.length} dyns, mode=${mode}, time=${time}`);
@@ -4318,10 +4318,10 @@
       });
     }
   }
-  const mainFilter$6 = new DynamicFilterDynamic();
+  const mainFilter$7 = new DynamicFilterDynamic();
   const dynamicFilterDynamicEntry = async () => {
-    mainFilter$6.init();
-    mainFilter$6.observe();
+    mainFilter$7.init();
+    mainFilter$7.observe();
   };
   const dynamicFilterDynamicGroups = [
     {
@@ -4329,32 +4329,287 @@
       items: [
         {
           type: "switch",
-          id: GM_KEYS$6.black.uploader.statusKey,
+          id: GM_KEYS$7.black.uploader.statusKey,
           name: "启用 动态发布人过滤 (右键单击用户名)",
           noStyle: true,
           enableFn: () => {
-            mainFilter$6.dynUploaderFilter.enable();
-            mainFilter$6.checkFull();
+            mainFilter$7.dynUploaderFilter.enable();
+            mainFilter$7.checkFull();
           },
           disableFn: () => {
-            mainFilter$6.dynUploaderFilter.disable();
-            mainFilter$6.checkFull();
+            mainFilter$7.dynUploaderFilter.disable();
+            mainFilter$7.checkFull();
           }
         },
         {
           type: "editor",
-          id: GM_KEYS$6.black.uploader.valueKey,
+          id: GM_KEYS$7.black.uploader.valueKey,
           name: "编辑 动态发布用户黑名单",
           editorTitle: "动态发布用户 黑名单",
           description: ["右键屏蔽的用户会出现在首行"],
           editorDescription: ["一行一个用户名，保存时自动去重"],
           saveFn: async () => {
-            mainFilter$6.dynUploaderFilter.setParam(BiliCleanerStorage.get(GM_KEYS$6.black.uploader.valueKey, []));
-            mainFilter$6.checkFull();
+            mainFilter$7.dynUploaderFilter.setParam(BiliCleanerStorage.get(GM_KEYS$7.black.uploader.valueKey, []));
+            mainFilter$7.checkFull();
           }
         }
       ]
     },
+    {
+      name: "动态内视频时长过滤",
+      items: [
+        {
+          type: "switch",
+          id: GM_KEYS$7.black.duration.statusKey,
+          name: "启用 时长过滤",
+          noStyle: true,
+          enableFn: () => {
+            mainFilter$7.dynDurationFilter.enable();
+            mainFilter$7.checkFull();
+          },
+          disableFn: () => {
+            mainFilter$7.dynDurationFilter.disable();
+            mainFilter$7.checkFull();
+          }
+        },
+        {
+          type: "number",
+          id: GM_KEYS$7.black.duration.valueKey,
+          name: "设定最低时长（0~300s）",
+          minValue: 0,
+          maxValue: 300,
+          step: 1,
+          defaultValue: 60,
+          disableValue: 0,
+          addonText: "秒",
+          fn: (value) => {
+            mainFilter$7.dynDurationFilter.setParam(value);
+            mainFilter$7.checkFull();
+          }
+        }
+      ]
+    },
+    {
+      name: "动态内视频标题过滤",
+      items: [
+        {
+          type: "switch",
+          id: GM_KEYS$7.black.title.statusKey,
+          name: "启用 标题关键词过滤",
+          noStyle: true,
+          enableFn: () => {
+            mainFilter$7.dynVideoTitleFilter.enable();
+            mainFilter$7.checkFull();
+          },
+          disableFn: () => {
+            mainFilter$7.dynVideoTitleFilter.disable();
+            mainFilter$7.checkFull();
+          }
+        },
+        {
+          type: "editor",
+          id: GM_KEYS$7.black.title.valueKey,
+          name: "编辑 标题关键词黑名单",
+          editorTitle: "标题关键词 黑名单",
+          editorDescription: [
+            "每行一个关键词或正则，不区分大小写",
+            "请勿使用过于激进的关键词或正则",
+            "正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
+          ],
+          saveFn: async () => {
+            mainFilter$7.dynVideoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS$7.black.title.valueKey, []));
+            mainFilter$7.checkFull();
+          }
+        }
+      ]
+    },
+    {
+      name: "动态内容过滤",
+      items: [
+        {
+          type: "switch",
+          id: GM_KEYS$7.black.content.statusKey,
+          name: "启用 动态内容关键词过滤",
+          description: ["包含被转发动态内容", "不含动态内视频信息"],
+          noStyle: true,
+          enableFn: () => {
+            mainFilter$7.dynContentFilter.enable();
+            mainFilter$7.checkFull();
+          },
+          disableFn: () => {
+            mainFilter$7.dynContentFilter.disable();
+            mainFilter$7.checkFull();
+          }
+        },
+        {
+          type: "editor",
+          id: GM_KEYS$7.black.content.valueKey,
+          name: "编辑 动态内容关键词黑名单",
+          editorTitle: "动态内容关键词 黑名单",
+          editorDescription: [
+            "每行一个关键词或正则，不区分大小写",
+            "请勿使用过于激进的关键词或正则",
+            "正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
+          ],
+          saveFn: async () => {
+            mainFilter$7.dynContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS$7.black.content.valueKey, []));
+            mainFilter$7.checkFull();
+          }
+        }
+      ]
+    }
+  ];
+  const dynamicFilterDynamicHandler = (target) => {
+    var _a;
+    if (!isPageDynamic()) {
+      return [];
+    }
+    const menus = [];
+    if (target.classList.contains("bili-dyn-title__text")) {
+      const uploader = (_a = target.textContent) == null ? void 0 : _a.trim();
+      if (uploader && mainFilter$7.dynUploaderFilter.isEnable) {
+        menus.push({
+          name: `隐藏用户动态：${uploader}`,
+          fn: async () => {
+            try {
+              mainFilter$7.dynUploaderFilter.addParam(uploader);
+              mainFilter$7.checkFull();
+              const arr = BiliCleanerStorage.get(GM_KEYS$7.black.uploader.valueKey, []);
+              arr.unshift(uploader);
+              BiliCleanerStorage.set(GM_KEYS$7.black.uploader.valueKey, orderedUniq(arr));
+            } catch (err) {
+              error(`dynamicFilterDynamicHandler add uploader ${uploader} failed`, err);
+            }
+          }
+        });
+      }
+    }
+    return menus;
+  };
+  const GM_KEYS$6 = {
+    black: {
+      duration: {
+        statusKey: "space-dyn-duration-filter-status",
+        valueKey: "global-duration-filter-value"
+      },
+      title: {
+        statusKey: "space-dyn-title-keyword-filter-status",
+        valueKey: "global-title-keyword-filter-value"
+      },
+      content: {
+        statusKey: "space-dyn-content-keyword-filter-status",
+        valueKey: "global-content-keyword-filter-value"
+      }
+    }
+  };
+  const selectorFns$6 = {
+    duration: (dyn) => {
+      var _a, _b;
+      const time = (_b = (_a = dyn.querySelector(".bili-dyn-card-video__cover-shadow .duration-time")) == null ? void 0 : _a.textContent) == null ? void 0 : _b.trim();
+      return time ? convertTimeToSec(time) : void 0;
+    },
+    title: (dyn) => {
+      var _a, _b;
+      return (_b = (_a = dyn.querySelector(".bili-dyn-card-video__title")) == null ? void 0 : _a.textContent) == null ? void 0 : _b.trim();
+    },
+    content: (dyn) => {
+      return Array.from(
+        dyn.querySelectorAll(
+          ".bili-dyn-content :is(.dyn-card-opus__title, .bili-rich-text__content > span:not(.bili-rich-text-module.at))"
+        )
+      ).map((v2) => {
+        var _a;
+        return (_a = v2 == null ? void 0 : v2.textContent) == null ? void 0 : _a.trim();
+      }).filter((v2) => v2 == null ? void 0 : v2.trim()).join(" ");
+    }
+  };
+  class DynamicFilterSpace {
+    constructor() {
+      __publicField(this, "target");
+      // 黑名单
+      __publicField(this, "dynDurationFilter", new DynDurationFilter());
+      __publicField(this, "dynVideoTitleFilter", new DynVideoTitleFilter());
+      __publicField(this, "dynContentFilter", new DynContentFilter());
+    }
+    init() {
+      this.dynDurationFilter.setParam(BiliCleanerStorage.get(GM_KEYS$6.black.duration.valueKey, 0));
+      this.dynVideoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS$6.black.title.valueKey, []));
+      this.dynContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS$6.black.content.valueKey, []));
+    }
+    async check(mode) {
+      if (!this.target) {
+        return;
+      }
+      if (!/https:\/\/space.bilibili.com\/\d+\/dynamic/.test(location.href)) {
+        return;
+      }
+      let revertAll = false;
+      if (!(this.dynDurationFilter.isEnable || this.dynVideoTitleFilter.isEnable || this.dynContentFilter.isEnable)) {
+        revertAll = true;
+      }
+      const timer = performance.now();
+      let selector = `.bili-dyn-list__item`;
+      if (mode === "incr") {
+        selector += `:not([${settings.filterSign}])`;
+      }
+      const dyns = Array.from(this.target.querySelectorAll(selector));
+      if (!dyns.length) {
+        return;
+      }
+      if (revertAll) {
+        dyns.forEach((v2) => showEle(v2));
+        return;
+      }
+      if (settings.enableDebugFilter) {
+        dyns.forEach((v2) => {
+          debugFilter(
+            [
+              `DynamicFilterSpace`,
+              `title: ${selectorFns$6.title(v2)}`,
+              `duration: ${selectorFns$6.duration(v2)}`,
+              `content: ${selectorFns$6.content(v2)}`
+            ].join("\n")
+          );
+        });
+      }
+      const blackPairs = [];
+      this.dynDurationFilter.isEnable && blackPairs.push([this.dynDurationFilter, selectorFns$6.duration]);
+      this.dynVideoTitleFilter.isEnable && blackPairs.push([this.dynVideoTitleFilter, selectorFns$6.title]);
+      this.dynContentFilter.isEnable && blackPairs.push([this.dynContentFilter, selectorFns$6.content]);
+      const blackCnt = await coreCheck(dyns, true, blackPairs, []);
+      const time = (performance.now() - timer).toFixed(1);
+      debugFilter(`DynamicFilterSpace hide ${blackCnt} in ${dyns.length} dyns, mode=${mode}, time=${time}`);
+    }
+    checkFull() {
+      this.check("full").then().catch((err) => {
+        error("DynamicFilterSpace check full error", err);
+      });
+    }
+    checkIncr() {
+      this.check("incr").then().catch((err) => {
+        error("DynamicFilterSpace check incr error", err);
+      });
+    }
+    observe() {
+      waitForEle(document, "#app", (node) => node.id === "app").then((ele) => {
+        if (!ele) {
+          return;
+        }
+        debugFilter("DynamicFilterSpace target appear");
+        this.target = ele;
+        this.checkFull();
+        new MutationObserver(() => {
+          this.checkIncr();
+        }).observe(this.target, { childList: true, subtree: true });
+      });
+    }
+  }
+  const mainFilter$6 = new DynamicFilterSpace();
+  const dynamicFilterSpaceEntry = async () => {
+    mainFilter$6.init();
+    mainFilter$6.observe();
+  };
+  const dynamicFilterSpaceGroups = [
     {
       name: "动态内视频时长过滤",
       items: [
@@ -4459,33 +4714,6 @@
       ]
     }
   ];
-  const dynamicFilterDynamicHandler = (target) => {
-    var _a;
-    if (!isPageDynamic()) {
-      return [];
-    }
-    const menus = [];
-    if (target.classList.contains("bili-dyn-title__text")) {
-      const uploader = (_a = target.textContent) == null ? void 0 : _a.trim();
-      if (uploader && mainFilter$6.dynUploaderFilter.isEnable) {
-        menus.push({
-          name: `隐藏用户动态：${uploader}`,
-          fn: async () => {
-            try {
-              mainFilter$6.dynUploaderFilter.addParam(uploader);
-              mainFilter$6.checkFull();
-              const arr = BiliCleanerStorage.get(GM_KEYS$6.black.uploader.valueKey, []);
-              arr.unshift(uploader);
-              BiliCleanerStorage.set(GM_KEYS$6.black.uploader.valueKey, orderedUniq(arr));
-            } catch (err) {
-              error(`dynamicFilterDynamicHandler add uploader ${uploader} failed`, err);
-            }
-          }
-        });
-      }
-    }
-    return menus;
-  };
   class NumberMaxFilter {
     constructor() {
       __publicField(this, "isEnable", false);
@@ -7519,6 +7747,12 @@
       groups: dynamicFilterDynamicGroups,
       entry: dynamicFilterDynamicEntry,
       checkFn: isPageDynamic
+    },
+    {
+      name: "空间页 动态过滤",
+      groups: dynamicFilterSpaceGroups,
+      entry: dynamicFilterSpaceEntry,
+      checkFn: isPageSpace
     }
   ];
   const loadFilters = () => {
@@ -7953,34 +8187,42 @@ https://www.bilibili.com${location.pathname}`;
         try {
           const zoom = useStorage("bili-cleaner-mini-player-zoom", 1, localStorage);
           document.documentElement.style.setProperty("--mini-player-zoom", zoom.value + "");
+          waitForEle(document.body, `#bilibili-player [class^="bpx-player-video"]`, (node) => {
+            return node.className.startsWith("bpx-player-video");
+          }).then(() => {
+            const player = document.querySelector("#bilibili-player .bpx-player-container");
+            if (!player) {
+              return;
+            }
+            let flag = false;
+            player.addEventListener("mouseenter", () => {
+              if (player.getAttribute("data-screen") === "mini") {
+                flag = true;
+              }
+            });
+            player.addEventListener("mouseleave", () => {
+              flag = false;
+            });
+            player.addEventListener("wheel", (e2) => {
+              if (flag) {
+                e2.stopPropagation();
+                e2.preventDefault();
+                const scaleSpeed = 5;
+                let newZoom = zoom.value - Math.sign(e2.deltaY) * scaleSpeed / 100;
+                newZoom = newZoom < 0.5 ? 0.5 : newZoom;
+                newZoom = newZoom > 3 ? 3 : newZoom;
+                if (newZoom !== zoom.value) {
+                  zoom.value = newZoom;
+                  document.documentElement.style.setProperty("--mini-player-zoom", newZoom + "");
+                }
+              }
+            });
+          });
           let cnt = 0;
           const interval = setInterval(() => {
             const player = document.querySelector(".bpx-player-container");
             if (player) {
               clearInterval(interval);
-              let flag = false;
-              player.addEventListener("mouseenter", () => {
-                if (player.getAttribute("data-screen") === "mini") {
-                  flag = true;
-                }
-              });
-              player.addEventListener("mouseleave", () => {
-                flag = false;
-              });
-              player.addEventListener("wheel", (e2) => {
-                if (flag) {
-                  e2.stopPropagation();
-                  e2.preventDefault();
-                  const scaleSpeed = 5;
-                  let newZoom = zoom.value - Math.sign(e2.deltaY) * scaleSpeed / 100;
-                  newZoom = newZoom < 0.5 ? 0.5 : newZoom;
-                  newZoom = newZoom > 3 ? 3 : newZoom;
-                  if (newZoom !== zoom.value) {
-                    zoom.value = newZoom;
-                    document.documentElement.style.setProperty("--mini-player-zoom", newZoom + "");
-                  }
-                }
-              });
             } else {
               cnt++;
               if (cnt > 20) {
@@ -8156,7 +8398,11 @@ https://www.bilibili.com${location.pathname}`;
   ];
   let webScroll$1 = false;
   let fullScroll$1 = false;
-  const fn$1 = (event) => event.stopImmediatePropagation();
+  const fn$1 = (e2) => {
+    if (document.querySelector('[data-screen="web"]')) {
+      e2.stopImmediatePropagation();
+    }
+  };
   const disableTuneVolume$1 = () => {
     if (!webScroll$1 && !fullScroll$1) {
       window.addEventListener("mousewheel", fn$1, { capture: true });
@@ -9009,7 +9255,7 @@ https://www.bilibili.com${location.pathname}`;
       items: commentBasicItems
     }
   ];
-  const _URLCleaner = class _URLCleaner {
+  const _URLHandler = class _URLHandler {
     constructor() {
       __publicField(this, "origReplaceState", _unsafeWindow.history.replaceState);
       __publicField(this, "origPushState", _unsafeWindow.history.pushState);
@@ -9018,14 +9264,14 @@ https://www.bilibili.com${location.pathname}`;
       try {
         this.hijack();
       } catch (err) {
-        error("init URLCleaner error", err);
+        error("init URLHandler error", err);
       }
     }
     static getInstance() {
-      if (!_URLCleaner.instance) {
-        _URLCleaner.instance = new _URLCleaner();
+      if (!_URLHandler.instance) {
+        _URLHandler.instance = new _URLHandler();
       }
-      return _URLCleaner.instance;
+      return _URLHandler.instance;
     }
     hijack() {
       _unsafeWindow.history.replaceState = (data, unused, url) => {
@@ -9042,7 +9288,7 @@ https://www.bilibili.com${location.pathname}`;
           }
           return this.origReplaceState.apply(_unsafeWindow.history, [data, unused, url]);
         } catch (err) {
-          error("URLCleaner replaceState error", err);
+          error("URLHandler replaceState error", err);
           return this.origReplaceState.apply(_unsafeWindow.history, [data, unused, url]);
         }
       };
@@ -9060,7 +9306,7 @@ https://www.bilibili.com${location.pathname}`;
           }
           return this.origPushState.apply(_unsafeWindow.history, [data, unused, url]);
         } catch (err) {
-          error("URLCleaner pushState error", err);
+          error("URLHandler pushState error", err);
           return this.origReplaceState.apply(_unsafeWindow.history, [data, unused, url]);
         }
       };
@@ -9072,13 +9318,13 @@ https://www.bilibili.com${location.pathname}`;
           this.origReplaceState.apply(_unsafeWindow.history, [null, "", cleanURL]);
         }
       } catch (err) {
-        error("init URLCleaner error", err);
+        error("init URLHandler error", err);
       }
     }
   };
-  __publicField(_URLCleaner, "instance");
-  let URLCleaner = _URLCleaner;
-  const URLCleanerInstance = URLCleaner.getInstance();
+  __publicField(_URLHandler, "instance");
+  let URLHandler = _URLHandler;
+  const URLHandlerInstance = URLHandler.getInstance();
   const commonBasicItems = [
     {
       type: "switch",
@@ -9202,8 +9448,8 @@ https://www.bilibili.com${location.pathname}`;
             return url;
           }
         };
-        URLCleanerInstance.cleanFnArr.push(cleanParams);
-        URLCleanerInstance.clean();
+        URLHandlerInstance.cleanFnArr.push(cleanParams);
+        URLHandlerInstance.clean();
       }
     },
     {
@@ -9242,7 +9488,30 @@ https://www.bilibili.com${location.pathname}`;
     {
       type: "switch",
       id: "common-hide-nav-search-rcmd",
-      name: "隐藏 推荐搜索"
+      name: "隐藏 推荐搜索",
+      enableFn: async () => {
+        let cnt = 0;
+        const id = setInterval(() => {
+          const el = document.querySelector("input.nav-search-input");
+          if (el) {
+            clearInterval(id);
+            el.title = "";
+            el.placeholder = "";
+            new MutationObserver(() => {
+              if (el.title) {
+                el.title = "";
+              }
+              if (el.placeholder) {
+                el.placeholder = "";
+              }
+            }).observe(el, {
+              attributeFilter: ["placeholder", "title"]
+            });
+          }
+          ++cnt > 20 && clearInterval(id);
+        }, 500);
+      },
+      enableFnRunAt: "document-end"
     },
     {
       type: "switch",
@@ -10663,7 +10932,30 @@ https://www.bilibili.com${location.pathname}`;
     {
       type: "switch",
       id: "live-page-nav-search-rcmd",
-      name: "隐藏 推荐搜索"
+      name: "隐藏 推荐搜索",
+      enableFn: async () => {
+        let cnt = 0;
+        const id = setInterval(() => {
+          const el = document.querySelector("input.nav-search-content");
+          if (el) {
+            clearInterval(id);
+            el.title = "";
+            el.placeholder = "";
+            new MutationObserver(() => {
+              if (el.title) {
+                el.title = "";
+              }
+              if (el.placeholder) {
+                el.placeholder = "";
+              }
+            }).observe(el, {
+              attributeFilter: ["placeholder", "title"]
+            });
+          }
+          ++cnt > 20 && clearInterval(id);
+        }, 500);
+      },
+      enableFnRunAt: "document-end"
     },
     {
       type: "switch",
@@ -11418,8 +11710,8 @@ https://www.bilibili.com${location.pathname}`;
             return url;
           }
         };
-        URLCleanerInstance.cleanFnArr.push(bv2av);
-        URLCleanerInstance.clean();
+        URLHandlerInstance.cleanFnArr.push(bv2av);
+        URLHandlerInstance.clean();
       }
     },
     {
@@ -11650,41 +11942,37 @@ https://${domain}/${avbv}` : `https://${domain}/${avbv}`;
         try {
           const zoom = useStorage("bili-cleaner-mini-player-zoom", 1, localStorage);
           document.documentElement.style.setProperty("--mini-player-zoom", zoom.value + "");
-          let cnt = 0;
-          const interval = setInterval(() => {
-            const player = document.querySelector(".bpx-player-container");
-            if (player) {
-              clearInterval(interval);
-              let flag = false;
-              player.addEventListener("mouseenter", () => {
-                if (player.getAttribute("data-screen") === "mini") {
-                  flag = true;
-                }
-              });
-              player.addEventListener("mouseleave", () => {
-                flag = false;
-              });
-              player.addEventListener("wheel", (e2) => {
-                if (flag) {
-                  e2.stopPropagation();
-                  e2.preventDefault();
-                  const scaleSpeed = 5;
-                  let newZoom = zoom.value - Math.sign(e2.deltaY) * scaleSpeed / 100;
-                  newZoom = newZoom < 0.5 ? 0.5 : newZoom;
-                  newZoom = newZoom > 3 ? 3 : newZoom;
-                  if (newZoom !== zoom.value) {
-                    zoom.value = newZoom;
-                    document.documentElement.style.setProperty("--mini-player-zoom", newZoom + "");
-                  }
-                }
-              });
-            } else {
-              cnt++;
-              if (cnt > 20) {
-                clearInterval(interval);
-              }
+          waitForEle(document, "#bilibili-player .bpx-player-container", (node) => {
+            return node.className.startsWith("bpx-player-container");
+          }).then(() => {
+            const player = document.querySelector("#bilibili-player .bpx-player-container");
+            if (!player) {
+              return;
             }
-          }, 500);
+            let flag = false;
+            player.addEventListener("mouseenter", () => {
+              if (player.getAttribute("data-screen") === "mini") {
+                flag = true;
+              }
+            });
+            player.addEventListener("mouseleave", () => {
+              flag = false;
+            });
+            player.addEventListener("wheel", (e2) => {
+              if (flag) {
+                e2.stopPropagation();
+                e2.preventDefault();
+                const scaleSpeed = 5;
+                let newZoom = zoom.value - Math.sign(e2.deltaY) * scaleSpeed / 100;
+                newZoom = newZoom < 0.5 ? 0.5 : newZoom;
+                newZoom = newZoom > 3 ? 3 : newZoom;
+                if (newZoom !== zoom.value) {
+                  zoom.value = newZoom;
+                  document.documentElement.style.setProperty("--mini-player-zoom", newZoom + "");
+                }
+              }
+            });
+          });
         } catch (err) {
           error("adjust mini player size error", err);
         }
@@ -11953,7 +12241,11 @@ https://${domain}/${avbv}` : `https://${domain}/${avbv}`;
   const wideScreenManager = WideScreenManager.getInstance();
   let webScroll = false;
   let fullScroll = false;
-  const fn = (event) => event.stopImmediatePropagation();
+  const fn = (e2) => {
+    if (document.querySelector('[data-screen="web"]')) {
+      e2.stopImmediatePropagation();
+    }
+  };
   const disableTuneVolume = () => {
     if (!webScroll && !fullScroll) {
       window.addEventListener("mousewheel", fn, { capture: true });
@@ -12194,8 +12486,47 @@ https://${domain}/${avbv}` : `https://${domain}/${avbv}`;
     },
     {
       type: "switch",
+      id: "video-page-unfold-right-container-reco-list",
+      name: "自动展开 相关视频",
+      enableFn: () => {
+        const fn2 = () => {
+          let cnt = 0;
+          const id = setInterval(() => {
+            const btn = document.querySelector(".rec-footer");
+            if (btn) {
+              if (btn.innerText.includes("展开")) {
+                btn.click();
+              }
+              if (btn.innerText.includes("收起")) {
+                clearInterval(id);
+              }
+            }
+            ++cnt > 10 && clearInterval(id);
+          }, 1e3);
+        };
+        fn2();
+        waitForEle(
+          document,
+          ".recommend-list-v1, .recommend-list-container",
+          (node) => ["recommend-list-v1", "recommend-list-container"].includes(node.className)
+        ).then((ele) => {
+          if (ele) {
+            let lastURL = location.href;
+            new MutationObserver(() => {
+              if (lastURL !== location.href) {
+                lastURL = location.href;
+                fn2();
+              }
+            }).observe(ele, { childList: true, subtree: true });
+          }
+        });
+      },
+      enableFnRunAt: "document-end"
+    },
+    {
+      type: "switch",
       id: "video-page-hide-right-container-reco-list-rec-footer",
-      name: "隐藏 展开按钮"
+      name: "隐藏 展开/收起 按钮"
     },
     {
       type: "switch",
@@ -13101,7 +13432,7 @@ https://${domain}/${avbv}` : `https://${domain}/${avbv}`;
         alert("[bilibili-cleaner] 本页面不支持评论过滤");
       });
     }
-    if (isPageDynamic()) {
+    if (isPageDynamic() || isPageSpace()) {
       _GM_registerMenuCommand("✅ 动态过滤设置", () => {
         dynamicStore.isShow ? dynamicStore.hide() : dynamicStore.show();
       });

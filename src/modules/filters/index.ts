@@ -23,6 +23,7 @@ import {
     dynamicFilterDynamicGroups,
     dynamicFilterDynamicHandler,
 } from './variety/dynamic/pages/dynamic'
+import { dynamicFilterSpaceEntry, dynamicFilterSpaceGroups } from './variety/dynamic/pages/space'
 import {
     videoFilterChannelEntry,
     videoFilterChannelGroups,
@@ -99,6 +100,12 @@ export const dynamicFilters: Filter[] = [
         groups: dynamicFilterDynamicGroups,
         entry: dynamicFilterDynamicEntry,
         checkFn: isPageDynamic,
+    },
+    {
+        name: '空间页 动态过滤',
+        groups: dynamicFilterSpaceGroups,
+        entry: dynamicFilterSpaceEntry,
+        checkFn: isPageSpace,
     },
 ]
 

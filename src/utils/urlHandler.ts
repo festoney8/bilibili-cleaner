@@ -1,8 +1,8 @@
 import { unsafeWindow } from '$'
 import { error } from './logger'
 
-class URLCleaner {
-    private static instance: URLCleaner
+class URLHandler {
+    private static instance: URLHandler
 
     private origReplaceState = unsafeWindow.history.replaceState
     private origPushState = unsafeWindow.history.pushState
@@ -14,15 +14,15 @@ class URLCleaner {
         try {
             this.hijack()
         } catch (err) {
-            error('init URLCleaner error', err)
+            error('init URLHandler error', err)
         }
     }
 
     static getInstance() {
-        if (!URLCleaner.instance) {
-            URLCleaner.instance = new URLCleaner()
+        if (!URLHandler.instance) {
+            URLHandler.instance = new URLHandler()
         }
-        return URLCleaner.instance
+        return URLHandler.instance
     }
 
     private hijack() {
@@ -41,7 +41,7 @@ class URLCleaner {
                 }
                 return this.origReplaceState.apply(unsafeWindow.history, [data, unused, url])
             } catch (err) {
-                error('URLCleaner replaceState error', err)
+                error('URLHandler replaceState error', err)
                 return this.origReplaceState.apply(unsafeWindow.history, [data, unused, url])
             }
         }
@@ -59,7 +59,7 @@ class URLCleaner {
                 }
                 return this.origPushState.apply(unsafeWindow.history, [data, unused, url])
             } catch (err) {
-                error('URLCleaner pushState error', err)
+                error('URLHandler pushState error', err)
                 return this.origReplaceState.apply(unsafeWindow.history, [data, unused, url])
             }
         }
@@ -72,10 +72,10 @@ class URLCleaner {
                 this.origReplaceState.apply(unsafeWindow.history, [null, '', cleanURL])
             }
         } catch (err) {
-            error('init URLCleaner error', err)
+            error('init URLHandler error', err)
         }
     }
 }
 
-const URLCleanerInstance = URLCleaner.getInstance()
-export default URLCleanerInstance
+const URLHandlerInstance = URLHandler.getInstance()
+export default URLHandlerInstance

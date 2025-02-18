@@ -4,7 +4,11 @@ import { waitForEle } from '@/utils/tool'
 
 let webScroll = false
 let fullScroll = false
-const fn = (event: Event) => event.stopImmediatePropagation()
+const fn = (e: Event) => {
+    if (document.querySelector('[data-screen="web"]')) {
+        e.stopImmediatePropagation()
+    }
+}
 const disableTuneVolume = () => {
     if (!webScroll && !fullScroll) {
         window.addEventListener('mousewheel', fn, { capture: true })

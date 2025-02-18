@@ -1,4 +1,5 @@
 import { Item } from '@/types/item'
+import { waitForEle } from '@/utils/tool'
 
 export const videoRightItems: Item[] = [
     {
@@ -98,8 +99,47 @@ export const videoRightItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'video-page-unfold-right-container-reco-list',
+        name: '自动展开 相关视频',
+        enableFn: () => {
+            const fn = () => {
+                let cnt = 0
+                const id = setInterval(() => {
+                    const btn = document.querySelector('.rec-footer') as HTMLElement
+                    if (btn) {
+                        if (btn.innerText.includes('展开')) {
+                            btn.click()
+                        }
+                        if (btn.innerText.includes('收起')) {
+                            clearInterval(id)
+                        }
+                    }
+                    ++cnt > 10 && clearInterval(id)
+                }, 1000)
+            }
+            fn()
+
+            // handle soft navigation
+            waitForEle(document, '.recommend-list-v1, .recommend-list-container', (node: HTMLElement): boolean =>
+                ['recommend-list-v1', 'recommend-list-container'].includes(node.className),
+            ).then((ele) => {
+                if (ele) {
+                    let lastURL = location.href
+                    new MutationObserver(() => {
+                        if (lastURL !== location.href) {
+                            lastURL = location.href
+                            fn()
+                        }
+                    }).observe(ele, { childList: true, subtree: true })
+                }
+            })
+        },
+        enableFnRunAt: 'document-end',
+    },
+    {
+        type: 'switch',
         id: 'video-page-hide-right-container-reco-list-rec-footer',
-        name: '隐藏 展开按钮',
+        name: '隐藏 展开/收起 按钮',
     },
     {
         type: 'switch',

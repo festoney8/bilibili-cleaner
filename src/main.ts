@@ -106,7 +106,7 @@ const menu = () => {
             alert('[bilibili-cleaner] 本页面不支持评论过滤')
         })
     }
-    if (isPageDynamic()) {
+    if (isPageDynamic() || isPageSpace()) {
         GM_registerMenuCommand('✅ 动态过滤设置', () => {
             dynamicStore.isShow ? dynamicStore.hide() : dynamicStore.show()
         })

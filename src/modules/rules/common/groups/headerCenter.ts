@@ -9,10 +9,20 @@ export const commonHeaderCenterItems: Item[] = [
             let cnt = 0
             const id = setInterval(() => {
                 const el = document.querySelector('input.nav-search-input') as HTMLInputElement
-                if (el && el.title !== '') {
+                if (el) {
+                    clearInterval(id)
                     el.title = ''
                     el.placeholder = ''
-                    clearInterval(id)
+                    new MutationObserver(() => {
+                        if (el.title) {
+                            el.title = ''
+                        }
+                        if (el.placeholder) {
+                            el.placeholder = ''
+                        }
+                    }).observe(el, {
+                        attributeFilter: ['placeholder', 'title'],
+                    })
                 }
                 ++cnt > 20 && clearInterval(id)
             }, 500)

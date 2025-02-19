@@ -51,12 +51,22 @@ export const festivalDanmakuControlItems: Item[] = [
     {
         type: 'switch',
         id: 'video-page-hide-bpx-player-sending-area',
-        name: '非全屏下 关闭弹幕栏',
+        name: '非全屏时 关闭弹幕栏',
         description: ['字母 D 是弹幕开关快捷键'],
     },
     {
         type: 'switch',
         id: 'video-page-hide-bpx-player-video-inputbar',
-        name: '全屏下 关闭弹幕输入框',
+        name: '全屏时 关闭弹幕输入框',
+    },
+    {
+        type: 'switch',
+        id: 'video-page-show-fullscreen-bpx-player-video-info-online',
+        name: '全屏时 显示同时在看人数',
+    },
+    {
+        type: 'switch',
+        id: 'video-page-show-fullscreen-bpx-player-video-info-dm',
+        name: '全屏时 显示装填弹幕数量',
     },
 ]

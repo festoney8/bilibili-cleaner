@@ -69,6 +69,6 @@ export const livePlayerItems: Item[] = [
     {
         type: 'switch',
         id: 'live-page-fullscreen-danmaku-vm',
-        name: '全屏下 隐藏弹幕发送框',
+        name: '全屏时 隐藏弹幕发送框',
     },
 ]

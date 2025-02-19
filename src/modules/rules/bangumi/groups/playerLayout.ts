@@ -147,6 +147,12 @@ export const bangumiPlayerLayoutItems: Item[] = [
         enableFnRunAt: 'document-end',
     },
     {
+        type: 'switch',
+        id: 'screen-scrollable-move-header-bottom',
+        name: '全屏滚动时 在视频底部显示顶栏',
+        description: ['实验功能，网页/全屏滚动时生效'],
+    },
+    {
         type: 'number',
         id: 'normalscreen-width',
         name: '普通播放 视频宽度调节（-1禁用）',

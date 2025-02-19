@@ -79,6 +79,39 @@ html[fullscreen-scrollable] {
     }
 }
 
+// 全屏滚动时 在视频底部显示顶栏
+// issue #199, 参考 https://greasyfork.org/scripts/445241
+html[screen-scrollable-move-header-bottom] {
+    body:has(#bilibili-player-wrap[class^='video_playerFullScreen']) {
+        #biliMainHeader {
+            display: block !important;
+            top: 100vh !important;
+            width: 100% !important;
+            position: absolute !important;
+        }
+        .home-container {
+            padding-top: 64px !important;
+        }
+
+        // 适配 bilibli evolved
+        .custom-navbar[role='navigation'] {
+            top: 100vh !important;
+            z-index: 1000 !important;
+            .custom-navbar-item[data-name='livesIframe'],
+            .custom-navbar-item[data-name='messages'] {
+                .popup {
+                    top: 100% !important;
+                }
+            }
+        }
+    }
+
+    // 动画闪现问题
+    .custom-navbar[role='navigation'] {
+        transition: unset !important;
+    }
+}
+
 // 普通播放 视频宽度调节
 html[normalscreen-width] {
     .home-container:not(.wide) {

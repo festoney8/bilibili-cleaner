@@ -149,6 +149,12 @@ export const videoPlayerLayoutItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'screen-scrollable-move-header-bottom',
+        name: '全屏滚动时 在视频底部显示顶栏',
+        description: ['实验功能，网页/全屏滚动时生效'],
+    },
+    {
+        type: 'switch',
         id: 'video-page-exchange-player-position',
         name: '播放器和视频信息 交换位置',
     },

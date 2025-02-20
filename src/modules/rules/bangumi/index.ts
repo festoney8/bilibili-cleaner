@@ -17,7 +17,7 @@ export const bangumiGroups: Group[] = [
         items: bangumiBasicItems,
     },
     {
-        name: '播放设定',
+        name: '布局设定',
         fold: true,
         items: bangumiPlayerLayoutItems,
     },
@@ -32,7 +32,7 @@ export const bangumiGroups: Group[] = [
         items: bangumiPlayerControlItems,
     },
     {
-        name: '弹幕栏',
+        name: '弹幕控制栏',
         fold: true,
         items: bangumiDanmakuControlItems,
     },

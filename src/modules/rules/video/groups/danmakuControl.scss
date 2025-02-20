@@ -65,7 +65,7 @@ html[video-page-hide-bpx-player-postpanel] {
     }
 }
 
-// 非全屏下 关闭弹幕栏
+// 非全屏时 关闭弹幕栏
 html[video-page-hide-bpx-player-sending-area] {
     .bpx-player-sending-area {
         display: none !important;
@@ -94,7 +94,7 @@ html[video-page-hide-bpx-player-sending-area] {
     }
 }
 
-// 全屏下 关闭弹幕输入框
+// 全屏时 关闭弹幕输入框
 html[video-page-hide-bpx-player-video-inputbar] {
     .bpx-player-container[data-screen='full'] .bpx-player-control-bottom-center .bpx-player-video-inputbar,
     .bpx-player-container[data-screen='web'] .bpx-player-control-bottom-center .bpx-player-video-inputbar {
@@ -113,5 +113,71 @@ html[video-page-hide-bpx-player-video-inputbar] {
     .bpx-player-container[data-screen='full'] .bpx-player-ctrl-viewpoint,
     .bpx-player-container[data-screen='web'] .bpx-player-ctrl-viewpoint {
         width: fit-content !important;
+    }
+}
+
+// 全屏时 显示同时再看人数
+html[video-page-show-fullscreen-bpx-player-video-info-online] {
+    .bpx-player-container[data-screen='full'],
+    .bpx-player-container[data-screen='web'] {
+        .bpx-player-control-bottom-left {
+            min-width: unset !important;
+        }
+        .bpx-player-video-info {
+            display: flex !important;
+            color: rgba(#fff, 0.8) !important;
+            margin-bottom: 1px !important;
+            margin-right: 16px !important;
+        }
+        .bpx-player-video-info-online {
+            display: flex !important;
+            font-size: 14px !important;
+        }
+        .bpx-player-video-info-dm,
+        .bpx-player-video-info-divide {
+            display: none;
+        }
+        .bpx-player-sending-bar {
+            margin: 0 !important;
+        }
+        .bpx-player-control-bottom-center {
+            padding: 0 8px !important;
+        }
+        .bpx-player-ctrl-viewpoint {
+            width: fit-content !important;
+        }
+    }
+}
+
+// 全屏时 显示装填弹幕数量
+html[video-page-show-fullscreen-bpx-player-video-info-dm] {
+    .bpx-player-container[data-screen='full'],
+    .bpx-player-container[data-screen='web'] {
+        .bpx-player-control-bottom-left {
+            min-width: unset !important;
+        }
+        .bpx-player-video-info {
+            display: flex !important;
+            color: rgba(#fff, 0.8) !important;
+            margin-bottom: 1px !important;
+            margin-right: 16px !important;
+        }
+        .bpx-player-video-info-online {
+            display: none;
+        }
+        .bpx-player-video-info-divide,
+        .bpx-player-video-info-dm {
+            display: flex !important;
+            font-size: 14px !important;
+        }
+        .bpx-player-sending-bar {
+            margin: 0 !important;
+        }
+        .bpx-player-control-bottom-center {
+            padding: 0 8px !important;
+        }
+        .bpx-player-ctrl-viewpoint {
+            width: fit-content !important;
+        }
     }
 }

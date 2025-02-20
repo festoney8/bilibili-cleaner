@@ -1,3 +1,21 @@
+// 隐藏 搜索按钮
+html[live-page-header-search-btn] {
+    #nav-searchform {
+        .search-bar input {
+            margin-right: 0 !important;
+        }
+        .search-bar {
+            padding: 0 3px !important;
+            .nav-search-clean {
+                right: 0 !important;
+            }
+        }
+        .search-btn {
+            display: none !important;
+        }
+    }
+}
+
 // 隐藏 推荐搜索
 html[live-page-nav-search-rcmd] {
     #nav-searchform input::placeholder {

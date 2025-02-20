@@ -358,65 +358,23 @@ const loadListItem = (item: IListItem) => {
 }
 
 /**
- * 快捷键 Alt + B，快速禁用无函数作用的 rule item
+ * 快捷键 Alt + B，快速禁用全部 CSS 样式
  */
 export const loadRulesHotKey = () => {
     try {
-        const availableItemIds = new Set<string>()
-        for (const rule of rules) {
-            if (!rule.checkFn()) {
-                continue
-            }
-            for (const group of rule.groups) {
-                for (const item of group.items) {
-                    switch (item.type) {
-                        case 'switch':
-                            if (!item.enableFn) {
-                                availableItemIds.add(item.id)
-                            }
-                            break
-                        case 'number':
-                        case 'string':
-                            availableItemIds.add(item.id)
-                            break
-                        case 'list':
-                            item.options.forEach((v) => {
-                                availableItemIds.add(v.id)
-                            })
-                            break
-                    }
-                }
-            }
-        }
-
-        // 管理 html 节点的 attributes
-        let isOn = false
-        const disableSign = '_bili_cleaner_disable_'
+        let isEnable = true
         const toggle = () => {
-            if (!isOn) {
-                const attrs: string[] = []
-                for (const attr of document.documentElement.attributes) {
-                    if (availableItemIds.has(attr.name)) {
-                        attrs.push(attr.name)
-                    }
-                }
-                for (const attr of attrs) {
-                    document.documentElement.removeAttribute(attr)
-                    document.documentElement.setAttribute(disableSign + attr, '')
+            const cssNodes = document.querySelectorAll<HTMLStyleElement>('style.bili-cleaner-css')
+            if (isEnable) {
+                for (const node of cssNodes) {
+                    node.innerHTML = '/*' + node.innerHTML + '*/'
                 }
             } else {
-                const attrs: string[] = []
-                for (const attr of document.documentElement.attributes) {
-                    if (attr.name.includes(disableSign)) {
-                        attrs.push(attr.name)
-                    }
-                }
-                for (const attr of attrs) {
-                    document.documentElement.removeAttribute(attr)
-                    document.documentElement.setAttribute(attr.replace(disableSign, ''), '')
+                for (const node of cssNodes) {
+                    node.innerHTML = node.innerHTML.replace(/^\/\*[\s\n]*|[\s\n]*\*\/$/g, '')
                 }
             }
-            isOn = !isOn
+            isEnable = !isEnable
         }
 
         useMagicKeys({

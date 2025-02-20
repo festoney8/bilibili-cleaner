@@ -55,3 +55,10 @@ html[video-page-hide-up-membersinfo-normal-header] {
         display: none !important;
     }
 }
+
+// 隐藏 UP主用户卡片
+html[video-page-hide-up-usercard] {
+    .usercard-wrap {
+        display: none !important;
+    }
+}

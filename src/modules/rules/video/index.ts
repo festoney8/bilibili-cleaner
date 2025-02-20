@@ -20,7 +20,7 @@ export const videoGroups: Group[] = [
         items: videoBasicItems,
     },
     {
-        name: '播放设定',
+        name: '布局设定',
         fold: true,
         items: videoPlayerLayoutItems,
     },

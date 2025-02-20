@@ -108,7 +108,7 @@ html[live-page-gift-control-vm] {
     }
 }
 
-// 全屏下 隐藏弹幕发送框
+// 全屏时 隐藏弹幕发送框
 html[live-page-fullscreen-danmaku-vm] {
     #fullscreen-danmaku-vm {
         display: none !important;

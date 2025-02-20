@@ -163,6 +163,45 @@ html[fullscreen-scrollable] {
     }
 }
 
+// 全屏滚动时 在视频底部显示顶栏
+// issue #199, 参考 https://greasyfork.org/scripts/445241
+html[screen-scrollable-move-header-bottom] {
+    .webscreen-fix {
+        #biliMainHeader {
+            display: block !important;
+            top: 100vh !important;
+            width: 100% !important;
+            position: absolute !important;
+        }
+        .fixed-header .bili-header__bar {
+            position: relative !important;
+        }
+        #mirror-vdcon {
+            padding-top: 64px !important;
+        }
+
+        // 适配 bilibli evolved
+        .custom-navbar[role='navigation'] {
+            top: 100vh !important;
+            z-index: 1000 !important;
+            .custom-navbar-item[data-name='livesIframe'],
+            .custom-navbar-item[data-name='messages'] {
+                .popup {
+                    top: 100% !important;
+                }
+            }
+        }
+        &.fixed-navbar .custom-navbar[role='navigation'] {
+            position: absolute !important;
+        }
+    }
+
+    // 动画闪现问题
+    .custom-navbar[role='navigation'] {
+        transition: unset !important;
+    }
+}
+
 // 播放器和视频信息 交换位置
 html[video-page-exchange-player-position] {
     body:not(.webscreen-fix) :is(.left-container, .playlist-container--left) {

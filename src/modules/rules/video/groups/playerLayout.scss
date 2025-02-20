@@ -173,6 +173,9 @@ html[screen-scrollable-move-header-bottom] {
             width: 100% !important;
             position: absolute !important;
         }
+        .fixed-header .bili-header__bar {
+            position: relative !important;
+        }
         #mirror-vdcon {
             padding-top: 64px !important;
         }
@@ -187,6 +190,9 @@ html[screen-scrollable-move-header-bottom] {
                     top: 100% !important;
                 }
             }
+        }
+        &.fixed-navbar .custom-navbar[role='navigation'] {
+            position: absolute !important;
         }
     }
 

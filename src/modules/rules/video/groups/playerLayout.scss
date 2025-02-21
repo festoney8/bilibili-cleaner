@@ -184,11 +184,8 @@ html[screen-scrollable-move-header-bottom] {
         .custom-navbar[role='navigation'] {
             top: 100vh !important;
             z-index: 1000 !important;
-            .custom-navbar-item[data-name='livesIframe'],
-            .custom-navbar-item[data-name='messages'] {
-                .popup {
-                    top: 100% !important;
-                }
+            .custom-navbar-item .popup {
+                top: 100% !important;
             }
         }
         &.fixed-navbar .custom-navbar[role='navigation'] {

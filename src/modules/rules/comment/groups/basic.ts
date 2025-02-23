@@ -395,24 +395,6 @@ export const commentBasicItems: Item[] = [
     },
     {
         type: 'switch',
-        id: 'video-page-reply-view-image-optimize',
-        name: '笔记图片 查看大图优化',
-        defaultEnable: true,
-        enableFn: () => {
-            shadow.addShadowStyle(
-                'bili-photoswipe',
-                'video-page-reply-view-image-optimize',
-                `#wrap:has(#thumb:empty) :is(#prev, #next) {display: none !important;}
-                #prev, #next {zoom: 1.3;}
-                #thumb {display: none !important;}`,
-            )
-        },
-        disableFn: () => {
-            shadow.removeShadowStyle('bili-photoswipe', 'video-page-reply-view-image-optimize')
-        },
-    },
-    {
-        type: 'switch',
         id: 'video-page-hide-comment',
         name: '隐藏 视频评论区 (播放页/番剧页)',
     },

@@ -70,7 +70,7 @@ export const dynamicCenterDynItems: Item[] = [
     {
         type: 'switch',
         id: 'hide-dynamic-page-bili-dyn-blocked',
-        name: '隐藏 被block的充电动态',
+        name: '隐藏 充电动态/问答动态',
     },
     {
         type: 'switch',

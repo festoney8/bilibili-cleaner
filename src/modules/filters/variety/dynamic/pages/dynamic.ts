@@ -6,7 +6,14 @@ import { debugFilter as debug, error } from '@/utils/logger'
 import { isPageDynamic } from '@/utils/pageType'
 import { BiliCleanerStorage } from '@/utils/storage'
 import { convertTimeToSec, orderedUniq, showEle, waitForEle } from '@/utils/tool'
-import { DynContentFilter, DynDurationFilter, DynUploaderFilter, DynVideoTitleFilter } from '../subFilters/black'
+import {
+    DynContentFilter,
+    DynDurationFilter,
+    DynDynVideoFilter,
+    DynPlaybackFilter,
+    DynUploaderFilter,
+    DynVideoTitleFilter,
+} from '../subFilters/black'
 
 const GM_KEYS = {
     black: {
@@ -25,6 +32,14 @@ const GM_KEYS = {
         content: {
             statusKey: 'dyn-content-keyword-filter-status',
             valueKey: 'global-content-keyword-filter-value',
+        },
+        // 动态视频
+        dynVideo: {
+            statusKey: 'dyn-dyn-video-filter-status',
+        },
+        // 直播回放
+        playback: {
+            statusKey: 'dyn-playback-filter-status',
         },
     },
 }
@@ -55,6 +70,12 @@ const selectorFns = {
             .filter((v) => v?.trim())
             .join(' ')
     },
+    dynVideo: (dyn: HTMLElement): SelectorResult => {
+        return dyn.querySelector('.bili-dyn-time')?.textContent?.includes('动态视频') ? true : false
+    },
+    playback: (dyn: HTMLElement): SelectorResult => {
+        return dyn.querySelector('.bili-dyn-time')?.textContent?.includes('直播回放') ? true : false
+    },
 }
 
 class DynamicFilterDynamic implements IMainFilter {
@@ -65,6 +86,8 @@ class DynamicFilterDynamic implements IMainFilter {
     dynDurationFilter = new DynDurationFilter()
     dynVideoTitleFilter = new DynVideoTitleFilter()
     dynContentFilter = new DynContentFilter()
+    dynDynVideoFilter = new DynDynVideoFilter()
+    dynPlaybackFilter = new DynPlaybackFilter()
 
     init() {
         // 黑名单
@@ -84,7 +107,9 @@ class DynamicFilterDynamic implements IMainFilter {
                 this.dynUploaderFilter.isEnable ||
                 this.dynDurationFilter.isEnable ||
                 this.dynVideoTitleFilter.isEnable ||
-                this.dynContentFilter.isEnable
+                this.dynContentFilter.isEnable ||
+                this.dynDynVideoFilter.isEnable ||
+                this.dynPlaybackFilter.isEnable
             )
         ) {
             revertAll = true
@@ -117,6 +142,8 @@ class DynamicFilterDynamic implements IMainFilter {
                         `title: ${selectorFns.title(v)}`,
                         `duration: ${selectorFns.duration(v)}`,
                         `content: ${selectorFns.content(v)}`,
+                        `shortVideo: ${selectorFns.dynVideo(v)}`,
+                        `playback: ${selectorFns.playback(v)}`,
                     ].join('\n'),
                 )
             })
@@ -128,6 +155,8 @@ class DynamicFilterDynamic implements IMainFilter {
         this.dynDurationFilter.isEnable && blackPairs.push([this.dynDurationFilter, selectorFns.duration])
         this.dynVideoTitleFilter.isEnable && blackPairs.push([this.dynVideoTitleFilter, selectorFns.title])
         this.dynContentFilter.isEnable && blackPairs.push([this.dynContentFilter, selectorFns.content])
+        this.dynDynVideoFilter.isEnable && blackPairs.push([this.dynDynVideoFilter, selectorFns.dynVideo])
+        this.dynPlaybackFilter.isEnable && blackPairs.push([this.dynPlaybackFilter, selectorFns.playback])
 
         // 检测
         const blackCnt = await coreCheck(dyns, true, blackPairs, [])
@@ -311,6 +340,39 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 ],
                 saveFn: async () => {
                     mainFilter.dynContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))
+                    mainFilter.checkFull()
+                },
+            },
+        ],
+    },
+    {
+        name: '按类型过滤',
+        items: [
+            {
+                type: 'switch',
+                id: GM_KEYS.black.dynVideo.statusKey,
+                name: '过滤 动态视频',
+                noStyle: true,
+                enableFn: () => {
+                    mainFilter.dynDynVideoFilter.enable()
+                    mainFilter.checkFull()
+                },
+                disableFn: () => {
+                    mainFilter.dynDynVideoFilter.disable()
+                    mainFilter.checkFull()
+                },
+            },
+            {
+                type: 'switch',
+                id: GM_KEYS.black.playback.statusKey,
+                name: '过滤 直播回放',
+                noStyle: true,
+                enableFn: () => {
+                    mainFilter.dynPlaybackFilter.enable()
+                    mainFilter.checkFull()
+                },
+                disableFn: () => {
+                    mainFilter.dynPlaybackFilter.disable()
                     mainFilter.checkFull()
                 },
             },

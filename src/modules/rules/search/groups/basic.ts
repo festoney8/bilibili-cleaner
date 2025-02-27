@@ -19,13 +19,18 @@ export const searchBasicItems: Item[] = [
     {
         type: 'switch',
         id: 'hide-search-page-ad',
-        name: '隐藏 搜索结果中的广告',
+        name: '隐藏 广告',
         defaultEnable: true,
     },
     {
         type: 'switch',
         id: 'hide-search-page-live-room-result',
-        name: '隐藏 搜索结果中的直播',
+        name: '隐藏 直播',
+    },
+    {
+        type: 'switch',
+        id: 'hide-search-page-cheese-result',
+        name: '隐藏 课堂',
     },
     {
         type: 'switch',

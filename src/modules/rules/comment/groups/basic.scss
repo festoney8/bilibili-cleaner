@@ -207,23 +207,6 @@ html[video-page-reply-user-name-color-default] {
     }
 }
 
-// 笔记图片 查看大图优化
-html[video-page-reply-view-image-optimize] {
-    .reply-view-image .last-image,
-    .reply-view-image .next-image {
-        zoom: 1.4;
-    }
-    .reply-view-image:has(.preview-item-box:only-child) .last-image {
-        display: none !important;
-    }
-    .reply-view-image:has(.preview-item-box:only-child) .next-image {
-        display: none !important;
-    }
-    .reply-view-image .preview-list {
-        display: none !important;
-    }
-}
-
 // 隐藏 视频评论区 (播放页/番剧页)
 html[video-page-hide-comment] {
     #commentapp bili-comments,

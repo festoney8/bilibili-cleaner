@@ -107,9 +107,9 @@ html[hide-dynamic-page-bili-dyn-live] {
     }
 }
 
-// 隐藏 被block的充电动态
+// 隐藏 充电动态/问答动态
 html[hide-dynamic-page-bili-dyn-blocked] {
-    .bili-dyn-list__item:has(.dyn-blocked-mask) {
+    .bili-dyn-list__item:has(.dyn-blocked-mask, .bili-dyn-upower-common) {
         display: none !important;
     }
 }

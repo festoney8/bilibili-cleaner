@@ -19,7 +19,7 @@ html[hide-search-page-activity-game-list] {
     }
 }
 
-// 隐藏 搜索结果中的广告
+// 隐藏 广告
 html[hide-search-page-ad] {
     .video-list.row
         > div:has([href*='cm.bilibili.com'], .bili-video-card__info--ad, .bili-video-card__info--ad-creative) {
@@ -27,9 +27,16 @@ html[hide-search-page-ad] {
     }
 }
 
-// 隐藏 搜索结果中的直播
+// 隐藏 直播
 html[hide-search-page-live-room-result] {
     .video-list > div:has([href*='live.bilibili.com']) {
+        display: none !important;
+    }
+}
+
+// 隐藏 课堂
+html[hide-search-page-cheese-result] {
+    .video-list > div:has(.bili-video-card__info--cheese) {
         display: none !important;
     }
 }

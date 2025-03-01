@@ -84,7 +84,8 @@ html[channel-hide-subarea] {
 
 // 隐藏 大图轮播
 html[channel-hide-carousel] {
-    .banner-carousel {
+    .banner-carousel,
+    .channel-carousel {
         display: none !important;
     }
     .channel-page .channel-page__body .head-cards .head-card {

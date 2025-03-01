@@ -2,6 +2,7 @@ import { Rule } from '@/types/collection'
 import {
     isPageBangumi,
     isPageChannel,
+    isPageChannelNext,
     isPageDynamic,
     isPageFestival,
     isPageHomepage,
@@ -20,6 +21,7 @@ import { BiliCleanerStorage } from '@/utils/storage'
 
 import { bangumiGroups } from './bangumi'
 import { channelGroups } from './channel'
+import { channelNextGroups } from './channel_next'
 import { commentGroups } from './comment'
 import { commonGroups } from './common'
 import { debugGroups } from './debug'
@@ -36,6 +38,7 @@ import { watchlaterGroups } from './watchlater'
 import { useMagicKeys } from '@vueuse/core'
 import bangumiStyle from './bangumi/index.scss?inline'
 import channelStyle from './channel/index.scss?inline'
+import channelNextStyle from './channel_next/index.scss?inline'
 import commentStyle from './comment/index.scss?inline'
 import commonStyle from './common/index.scss?inline'
 import dynamicStyle from './dynamic/index.scss?inline'
@@ -97,6 +100,12 @@ export const rules: Rule[] = [
         groups: channelGroups,
         style: channelStyle,
         checkFn: isPageChannel,
+    },
+    {
+        name: 'channelNext',
+        groups: channelNextGroups,
+        style: channelNextStyle,
+        checkFn: isPageChannelNext,
     },
     {
         name: 'space',

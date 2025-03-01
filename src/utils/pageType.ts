@@ -41,6 +41,10 @@ const currPage = (): string => {
     if (!href.includes('bilibili.com/v/popular/') && href.includes('bilibili.com/v/')) {
         return 'channel'
     }
+    // 新版分区
+    if (href.includes('bilibili.com/c/')) {
+        return 'channelNext'
+    }
     // 拜年祭等活动播放页
     if (/www\.bilibili\.com\/festival\/.*bvid/.test(href)) {
         return 'festival'
@@ -63,6 +67,7 @@ export const isPageBangumi = () => ans === 'bangumi'
 export const isPagePlaylist = () => ans === 'playlist'
 export const isPageFestival = () => ans === 'festival'
 export const isPageChannel = () => ans === 'channel'
+export const isPageChannelNext = () => ans === 'channelNext'
 export const isPageSpace = () => ans === 'space'
 export const isPageWatchlater = () => ans === 'watchlater'
 export const isPageMessage = () => ans === 'message'

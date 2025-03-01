@@ -1,0 +1,13 @@
+// 隐藏 弹幕数
+html[channel-hide-danmaku-count] {
+    .bili-cover-card__stat:nth-child(2) {
+        visibility: hidden;
+    }
+}
+
+// 增大 视频信息字号
+html[channel-increase-rcmd-list-font-size] {
+    .bili-video-card.video-card {
+        font-size: 1.2em;
+    }
+}

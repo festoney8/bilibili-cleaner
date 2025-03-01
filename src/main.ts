@@ -16,6 +16,7 @@ import { error, log } from './utils/logger'
 import {
     isPageBangumi,
     isPageChannel,
+    isPageChannelNext,
     isPageDynamic,
     isPageHomepage,
     isPagePlaylist,
@@ -86,6 +87,7 @@ const menu = () => {
         isPagePlaylist() ||
         isPagePopular() ||
         isPageChannel() ||
+        isPageChannelNext() ||
         isPageSearch() ||
         isPageSpace()
     ) {

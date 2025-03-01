@@ -74,16 +74,21 @@ html[homepage-hide-banner] {
 
 // 隐藏 全站分区栏
 html[channel-hide-subarea] {
-    #i_cecream .bili-header__channel {
-        display: none !important;
+    #biliMainHeader {
+        min-height: 180px !important;
+        .bili-header__channel {
+            display: none !important;
+        }
     }
 }
 
 // 隐藏 大图轮播
 html[channel-hide-carousel] {
-    .channel-swiper,
-    .channel-swiper-client {
+    .banner-carousel {
         display: none !important;
+    }
+    .channel-page .channel-page__body .head-cards .head-card {
+        display: block !important;
     }
 }
 

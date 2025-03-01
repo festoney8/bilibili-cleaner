@@ -204,6 +204,7 @@ export const loadStyles = () => {
                 './live/index.scss?inline',
                 './popular/index.scss?inline',
                 './channel/index.scss?inline',
+                './channel_next/index.scss?inline',
                 './space/index.scss?inline',
                 './search/index.scss?inline',
                 './watchlater/index.scss?inline',
@@ -219,6 +220,7 @@ export const loadStyles = () => {
                 liveModule,
                 popularModule,
                 channelModule,
+                channelNextModule,
                 spaceModule,
                 searchModule,
                 watchlaterModule,
@@ -277,6 +279,13 @@ export const loadStyles = () => {
                 if (channelModule) {
                     const newCSS = channelModule.default as string
                     const style = document.querySelector('style.bili-cleaner-css.channel')
+                    if (style && newCSS) {
+                        style.textContent = newCSS
+                    }
+                }
+                if (channelNextModule) {
+                    const newCSS = channelNextModule.default as string
+                    const style = document.querySelector('style.bili-cleaner-css.channelNext')
                     if (style && newCSS) {
                         style.textContent = newCSS
                     }

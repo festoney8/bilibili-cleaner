@@ -507,12 +507,13 @@ export const videoFilterChannelNextHandler: ContextMenuTargetHandler = (target: 
 
     const menus: FilterContextMenu[] = []
     // UP主
-    if (target.closest('.bili-video-card__info--owner')) {
+    if (target.closest('.bili-video-card__author')) {
         const uploader = target
-            .closest('.bili-video-card__info--owner')
-            ?.querySelector('.bili-video-card__info--author')
-            ?.textContent?.trim()
-        const url = target.closest<HTMLAnchorElement>('.bili-video-card__info--owner')?.href.trim()
+            .closest('.bili-video-card__author')
+            ?.querySelector('.bili-video-card__text:last-child')
+            ?.textContent?.split(' · ')[0]
+            .trim()
+        const url = target.closest<HTMLAnchorElement>('.bili-video-card__author')?.href.trim()
         const spaceUrl = url?.match(/space\.bilibili\.com\/\d+/)?.[0]
 
         if (uploader) {
@@ -559,8 +560,8 @@ export const videoFilterChannelNextHandler: ContextMenuTargetHandler = (target: 
         }
     }
     // BVID
-    if (target instanceof HTMLAnchorElement && target.closest('.bili-video-card__info--tit')) {
-        const url = target.closest('.bili-video-card__info--tit')?.querySelector('a')?.href
+    if (target instanceof HTMLAnchorElement && target.closest('.bili-video-card__title')) {
+        const url = target.closest('.bili-video-card__title')?.querySelector('a')?.href
         if (url && mainFilter.videoBvidFilter.isEnable) {
             const bvid = matchBvid(url)
             if (bvid) {

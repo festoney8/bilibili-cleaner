@@ -30,7 +30,11 @@ import {
     videoFilterChannelGroups,
     videoFilterChannelHandler,
 } from './variety/video/pages/channel'
-import { videoFilterChannelNextEntry, videoFilterChannelNextGroups } from './variety/video/pages/channelNext'
+import {
+    videoFilterChannelNextEntry,
+    videoFilterChannelNextGroups,
+    videoFilterChannelNextHandler,
+} from './variety/video/pages/channelNext'
 import {
     videoFilterHomepageEntry,
     videoFilterHomepageGroups,
@@ -170,6 +174,7 @@ export const filterContextMenuHandlers = [
     videoFilterVideoHandler,
     videoFilterSearchHandler,
     videoFilterChannelHandler,
+    videoFilterChannelNextHandler,
     videoFilterPopularHandler,
     videoFilterHomepageHandler,
     videoFilterSpaceHandler,

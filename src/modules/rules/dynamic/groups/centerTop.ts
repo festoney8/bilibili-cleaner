@@ -9,6 +9,11 @@ export const dynamicCenterTopItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'hide-dynamic-page-up-list',
+        name: '隐藏 UP 主列表',
+    },
+    {
+        type: 'switch',
         id: 'dynamic-page-up-list-dual-line-mode',
         name: '双行显示 UP 主列表',
     },

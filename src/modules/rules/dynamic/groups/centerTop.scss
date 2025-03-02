@@ -8,6 +8,13 @@ html[hide-dynamic-page-bili-dyn-publishing] {
     }
 }
 
+// 隐藏 UP 主列表
+html[hide-dynamic-page-up-list] {
+    section:has(.bili-dyn-up-list) {
+        display: none !important;
+    }
+}
+
 // 双行显示 UP 主列表
 html[dynamic-page-up-list-dual-line-mode] {
     .bili-dyn-up-list__content {
@@ -96,5 +103,8 @@ html[dynamic-page-up-list-checked-item-hide] {
 html[hide-dynamic-page-bili-dyn-list-tabs] {
     .bili-dyn-list-tabs {
         display: none !important;
+    }
+    .bili-dyn-list {
+        margin-top: 0 !important;
     }
 }

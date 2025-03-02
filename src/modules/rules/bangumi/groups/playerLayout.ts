@@ -78,28 +78,25 @@ export const bangumiPlayerLayoutItems: Item[] = [
         type: 'switch',
         id: 'fullscreen-scrollable',
         name: '全屏时 页面可滚动 (实验功能)',
-        description: ['播放器内滚轮调节音量失效', '点击全屏按钮生效，双击全屏无效'],
+        description: ['播放器内滚轮调节音量失效'],
         enableFn: async () => {
             disableTuneVolume()
             fullScroll = true
 
             let cnt = 0
             const id = setInterval(() => {
-                const webBtn = document.body.querySelector('.bpx-player-ctrl-btn.bpx-player-ctrl-web') as HTMLElement
-                const fullBtn = document.body.querySelector('.bpx-player-ctrl-btn.bpx-player-ctrl-full') as HTMLElement
+                const webBtn = document.body.querySelector('#bilibili-player .bpx-player-ctrl-web') as HTMLElement
+                const fullBtn = document.body.querySelector('#bilibili-player .bpx-player-ctrl-full') as HTMLElement
                 if (webBtn && fullBtn) {
                     clearInterval(id)
 
                     const isFullScreen = (): 'ele' | 'f11' | 'not' => {
                         if (document.fullscreenElement) {
-                            // 由元素申请的全屏
-                            return 'ele'
+                            return 'ele' // 由元素申请的全屏
                         } else if (window.innerWidth === screen.width && window.innerHeight === screen.height) {
-                            // 用户F11的全屏
-                            return 'f11'
+                            return 'f11' // 用户F11的全屏
                         } else {
-                            // 非全屏
-                            return 'not'
+                            return 'not' // 非全屏
                         }
                     }
 
@@ -109,7 +106,7 @@ export const bangumiPlayerLayoutItems: Item[] = [
 
                     // 全屏可滚动 = 网页全屏功能 + html/body元素申请全屏
                     const newFullBtn = fullBtn.cloneNode(true)
-                    newFullBtn.addEventListener('click', () => {
+                    const fn = () => {
                         switch (isFullScreen()) {
                             case 'ele':
                                 if (isWebScreen()) {
@@ -132,13 +129,32 @@ export const bangumiPlayerLayoutItems: Item[] = [
                                 window.scrollTo(0, 0)
                                 break
                         }
-                    })
+                    }
+                    newFullBtn.addEventListener('click', fn)
                     fullBtn.parentElement?.replaceChild(newFullBtn, fullBtn)
+
+                    // 双击全屏
+                    let cnt2 = 0
+                    const id2 = setInterval(() => {
+                        const perchEl = document.querySelector('#bilibili-player .bpx-player-video-perch')
+                        if (perchEl) {
+                            clearInterval(id2)
+                            perchEl.addEventListener(
+                                'dblclick',
+                                (event) => {
+                                    document.querySelector<HTMLVideoElement>('#bilibili-player video')?.pause()
+                                    event.stopPropagation()
+                                    fn()
+                                },
+                                true,
+                            )
+                        }
+                        cnt2++ > 40 && clearInterval(id2)
+                    }, 250)
                 } else {
-                    cnt++
-                    cnt > 50 && clearInterval(id)
+                    cnt++ > 40 && clearInterval(id)
                 }
-            }, 200)
+            }, 250)
         },
         disableFn: () => {
             enableTuneVolume()

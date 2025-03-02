@@ -4,6 +4,7 @@ import { error } from '@/utils/logger'
 import {
     isPageBangumi,
     isPageChannel,
+    isPageChannelNext,
     isPageDynamic,
     isPageHomepage,
     isPagePlaylist,
@@ -29,6 +30,11 @@ import {
     videoFilterChannelGroups,
     videoFilterChannelHandler,
 } from './variety/video/pages/channel'
+import {
+    videoFilterChannelNextEntry,
+    videoFilterChannelNextGroups,
+    videoFilterChannelNextHandler,
+} from './variety/video/pages/channelNext'
 import {
     videoFilterHomepageEntry,
     videoFilterHomepageGroups,
@@ -68,6 +74,12 @@ export const videoFilters: Filter[] = [
         groups: videoFilterChannelGroups,
         entry: videoFilterChannelEntry,
         checkFn: isPageChannel,
+    },
+    {
+        name: '新版分区页 视频过滤',
+        groups: videoFilterChannelNextGroups,
+        entry: videoFilterChannelNextEntry,
+        checkFn: isPageChannelNext,
     },
     {
         name: '搜索页 视频过滤',
@@ -162,6 +174,7 @@ export const filterContextMenuHandlers = [
     videoFilterVideoHandler,
     videoFilterSearchHandler,
     videoFilterChannelHandler,
+    videoFilterChannelNextHandler,
     videoFilterPopularHandler,
     videoFilterHomepageHandler,
     videoFilterSpaceHandler,

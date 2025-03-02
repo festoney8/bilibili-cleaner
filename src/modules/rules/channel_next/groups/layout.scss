@@ -1,0 +1,60 @@
+// 使用 4 列布局
+html[channel-layout-4-column] {
+    .channel-page .channel-page__body {
+        .head-cards,
+        .feed-cards,
+        .loading-cards {
+            grid-template-columns: repeat(4, 1fr) !important;
+
+            --row-gap: 20px !important;
+            --column-gap: 20px !important;
+        }
+    }
+    .bili-video-card {
+        --bili-video-card-title-padding-right: 0 !important;
+    }
+}
+
+// 使用 5 列布局
+html[channel-layout-5-column] {
+    .channel-page .channel-page__body {
+        .head-cards,
+        .feed-cards,
+        .loading-cards {
+            grid-template-columns: repeat(5, 1fr) !important;
+
+            --row-gap: 20px !important;
+            --column-gap: 20px !important;
+        }
+    }
+    .bili-video-card {
+        --bili-video-card-title-padding-right: 0 !important;
+    }
+}
+
+// 使用 6 列布局
+html[channel-layout-6-column] {
+    .channel-page .channel-page__body {
+        .head-cards,
+        .feed-cards,
+        .loading-cards {
+            grid-template-columns: repeat(6, 1fr) !important;
+
+            --row-gap: 20px !important;
+            --column-gap: 20px !important;
+        }
+    }
+    .bili-video-card {
+        --bili-video-card-title-padding-right: 0 !important;
+    }
+}
+
+// 修改 页面两侧边距
+html[channel-layout-padding] {
+    .feedchannel .feedchannel-main {
+        --layout-padding: var(--channel-layout-padding) !important;
+    }
+    .bili-header .bili-header__channel {
+        padding: 0 var(--channel-layout-padding) !important;
+    }
+}

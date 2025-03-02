@@ -39,5 +39,6 @@ export const homepageBasicItems: Item[] = [
         type: 'switch',
         id: 'homepage-revert-channel-dynamic-icon',
         name: '恢复 原始动态按钮',
+        description: ['同步生效：首页、分区页'],
     },
 ]

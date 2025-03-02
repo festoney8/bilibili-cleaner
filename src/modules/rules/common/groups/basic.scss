@@ -121,6 +121,7 @@ html[border-radius-video] {
     .vcd .cover img,
     .vcd *,
     .upinfo-btn-panel *,
+    .video-pod,
     .fixed-sidenav-storage div,
     .fixed-sidenav-storage a,
     .reply-box-textarea,
@@ -293,6 +294,33 @@ html[border-radius-channel] {
     }
     .single-card.floor-card {
         border: none !important;
+    }
+}
+
+// 圆角化 新版分区页
+html[border-radius-channel-next] {
+    #nav-searchform,
+    .nav-search-content,
+    .message-entry-popover,
+    .v-popover-content,
+    .bili-header .bili-header__channel .channel-entry-more__link,
+    .bili-header .bili-header__channel .channel-link,
+    .banner-carousel,
+    .float-button {
+        border-radius: 3px !important;
+    }
+    .bili-cover-card__stats {
+        border-bottom-right-radius: 3px !important;
+        border-bottom-left-radius: 3px !important;
+    }
+    .bili-cover-card {
+        --bili-cover-card-border-radius: 3px !important;
+    }
+    .bili-video-card {
+        --bili-video-card-border-radius: 3px !important;
+    }
+    .search-panel {
+        border-radius: 0 0 3px 3px !important;
     }
 }
 

@@ -32,6 +32,7 @@
             v-if="
                 isPageVideo() ||
                 isPageChannel() ||
+                isPageChannelNext() ||
                 isPageHomepage() ||
                 isPagePlaylist() ||
                 isPageSearch() ||
@@ -68,6 +69,7 @@ import {
 import {
     isPageBangumi,
     isPageChannel,
+    isPageChannelNext,
     isPageDynamic,
     isPageHomepage,
     isPageLive,

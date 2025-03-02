@@ -75,7 +75,8 @@ html[homepage-hide-banner] {
 // 隐藏 全站分区栏
 html[channel-hide-subarea] {
     #biliMainHeader {
-        min-height: 180px !important;
+        min-height: unset !important;
+        margin-bottom: 20px !important;
         .bili-header__channel {
             display: none !important;
         }

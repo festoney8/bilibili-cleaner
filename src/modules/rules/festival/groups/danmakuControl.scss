@@ -120,9 +120,6 @@ html[video-page-hide-bpx-player-video-inputbar] {
 html[video-page-show-fullscreen-bpx-player-video-info-online] {
     .bpx-player-container[data-screen='full'],
     .bpx-player-container[data-screen='web'] {
-        .bpx-player-control-bottom-left {
-            min-width: unset !important;
-        }
         .bpx-player-video-info {
             display: flex !important;
             color: rgba(#fff, 0.8) !important;
@@ -143,9 +140,6 @@ html[video-page-show-fullscreen-bpx-player-video-info-online] {
 html[video-page-show-fullscreen-bpx-player-video-info-dm] {
     .bpx-player-container[data-screen='full'],
     .bpx-player-container[data-screen='web'] {
-        .bpx-player-control-bottom-left {
-            min-width: unset !important;
-        }
         .bpx-player-video-info {
             display: flex !important;
             color: rgba(#fff, 0.8) !important;

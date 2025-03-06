@@ -120,13 +120,12 @@ html[video-page-hide-bpx-player-video-inputbar] {
 html[video-page-show-fullscreen-bpx-player-video-info-online] {
     .bpx-player-container[data-screen='full'],
     .bpx-player-container[data-screen='web'] {
-        .bpx-player-control-bottom-left {
-            min-width: unset !important;
-        }
         .bpx-player-video-info {
             display: flex !important;
             color: rgba(#fff, 0.8) !important;
             margin-bottom: 1px !important;
+            margin-right: 16px !important;
+            width: unset !important;
         }
         .bpx-player-video-info-online {
             display: flex !important;
@@ -136,6 +135,12 @@ html[video-page-show-fullscreen-bpx-player-video-info-online] {
         .bpx-player-video-info-divide {
             display: none;
         }
+        .bpx-player-control-bottom-center {
+            padding: 0 16px !important;
+        }
+        .bpx-player-ctrl-viewpoint {
+            width: fit-content !important;
+        }
     }
 }
 
@@ -143,13 +148,12 @@ html[video-page-show-fullscreen-bpx-player-video-info-online] {
 html[video-page-show-fullscreen-bpx-player-video-info-dm] {
     .bpx-player-container[data-screen='full'],
     .bpx-player-container[data-screen='web'] {
-        .bpx-player-control-bottom-left {
-            min-width: unset !important;
-        }
         .bpx-player-video-info {
             display: flex !important;
             color: rgba(#fff, 0.8) !important;
             margin-bottom: 1px !important;
+            margin-right: 16px !important;
+            width: unset !important;
         }
         .bpx-player-video-info-online {
             display: none;
@@ -158,6 +162,12 @@ html[video-page-show-fullscreen-bpx-player-video-info-dm] {
         .bpx-player-video-info-dm {
             display: flex !important;
             font-size: 14px !important;
+        }
+        .bpx-player-control-bottom-center {
+            padding: 0 16px !important;
+        }
+        .bpx-player-ctrl-viewpoint {
+            width: fit-content !important;
         }
     }
 }

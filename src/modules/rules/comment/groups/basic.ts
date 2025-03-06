@@ -7,6 +7,7 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-hide-reply-notice',
         name: '隐藏 活动通知',
         defaultEnable: true,
+        noStyle: true,
         enableFn: () => {
             shadow.addShadowStyle(
                 'bili-comments-header-renderer',
@@ -22,6 +23,7 @@ export const commentBasicItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-main-reply-box',
         name: '隐藏 评论编辑器',
+        noStyle: true,
         enableFn: () => {
             shadow.addShadowStyle(
                 'bili-comments-header-renderer',
@@ -40,6 +42,7 @@ export const commentBasicItems: Item[] = [
         name: '隐藏 评论编辑器内占位文字',
         description: ['同时会隐藏回复评论时的文字提示'],
         defaultEnable: true,
+        noStyle: true,
         enableFn: () => {
             shadow.addShadowStyle(
                 'bili-comment-textarea',
@@ -62,6 +65,7 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-hide-fixed-reply-box',
         name: '隐藏 页面底部 吸附评论框',
         defaultEnable: true,
+        noStyle: true,
         enableFn: () => {
             shadow.addShadowStyle(
                 'bili-comments-header-renderer',
@@ -78,6 +82,7 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-hide-top-vote-card',
         name: '隐藏 投票栏 (红方/蓝方)',
         defaultEnable: true,
+        noStyle: true,
         enableFn: () => {
             shadow.addShadowStyle(
                 'bili-comments-header-renderer',
@@ -94,6 +99,7 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-hide-comment-user-card',
         name: '隐藏 用户卡片',
         description: ['鼠标放在用户名上时不显示卡片'],
+        noStyle: true,
         enableFn: () => {
             shadow.addShadowStyle(
                 'bili-user-profile',
@@ -109,6 +115,7 @@ export const commentBasicItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-reply-decorate',
         name: '隐藏 评论右侧装饰',
+        noStyle: true,
         enableFn: () => {
             shadow.addShadowStyle(
                 'bili-comment-renderer',
@@ -124,6 +131,7 @@ export const commentBasicItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-fan-badge',
         name: '隐藏 粉丝牌',
+        noStyle: true,
         enableFn: () => {
             shadow.addShadowStyle(
                 'bili-comment-user-medal',
@@ -139,6 +147,7 @@ export const commentBasicItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-contractor-box',
         name: '隐藏 老粉、原始粉丝Tag',
+        noStyle: true,
         enableFn: () => {
             shadow.addShadowStyle(
                 'bili-comment-user-medal',
@@ -154,6 +163,7 @@ export const commentBasicItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-user-level',
         name: '隐藏 用户等级',
+        noStyle: true,
         enableFn: () => {
             shadow.addShadowStyle(
                 'bili-comment-user-info',
@@ -170,6 +180,7 @@ export const commentBasicItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-bili-avatar-pendent-dom',
         name: '隐藏 用户头像饰品',
+        noStyle: true,
         enableFn: () => {
             shadow.addShadowStyle(
                 'bili-avatar',
@@ -190,6 +201,7 @@ export const commentBasicItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-bili-avatar-nft-icon',
         name: '隐藏 用户头像徽章',
+        noStyle: true,
         enableFn: () => {
             shadow.addShadowStyle(
                 'bili-avatar',
@@ -206,6 +218,7 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-hide-vote-info',
         name: '隐藏 用户投票 (红方/蓝方)',
         defaultEnable: true,
+        noStyle: true,
         enableFn: () => {
             shadow.addShadowStyle(
                 'bili-comment-renderer',
@@ -222,6 +235,7 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-hide-reply-tag-list',
         name: '隐藏 评论内容下Tag',
         description: ['如：热评、UP主觉得很赞'],
+        noStyle: true,
         enableFn: () => {
             shadow.addShadowStyle(
                 'bili-comment-renderer',
@@ -238,6 +252,7 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-hide-note-prefix',
         name: '隐藏 笔记评论前的小Logo',
         defaultEnable: true,
+        noStyle: true,
         enableFn: () => {
             shadow.addShadowStyle(
                 'bili-comment-renderer',
@@ -254,6 +269,7 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-hide-jump-link-search-word',
         name: '禁用 评论内容搜索关键词高亮',
         defaultEnable: true,
+        noStyle: true,
         enableFn: () => {
             shadow.addShadowStyle(
                 'bili-rich-text',
@@ -272,6 +288,7 @@ export const commentBasicItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-reply-content-user-highlight',
         name: '禁用 评论中的@高亮',
+        noStyle: true,
         enableFn: () => {
             shadow.addShadowStyle(
                 'bili-rich-text',
@@ -290,6 +307,7 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-hide-reply-dislike-reply-btn',
         name: '隐藏 踩/回复 只在hover时显示',
         defaultEnable: true,
+        noStyle: true,
         enableFn: () => {
             /* 借用more button的display样式，改为传透明度值 */
             shadow.addShadowStyle(
@@ -335,6 +353,7 @@ export const commentBasicItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-emoji-large',
         name: '隐藏 大表情',
+        noStyle: true,
         enableFn: () => {
             shadow.addShadowStyle(
                 'bili-rich-text',
@@ -350,6 +369,7 @@ export const commentBasicItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-emoji-large-zoom',
         name: '大表情变成小表情',
+        noStyle: true,
         enableFn: () => {
             shadow.addShadowStyle(
                 'bili-rich-text',
@@ -365,6 +385,7 @@ export const commentBasicItems: Item[] = [
         type: 'switch',
         id: 'video-page-reply-user-name-color-pink',
         name: '用户名 全部大会员色',
+        noStyle: true,
         enableFn: () => {
             shadow.addShadowStyle(
                 'bili-comment-user-info',
@@ -381,6 +402,7 @@ export const commentBasicItems: Item[] = [
         type: 'switch',
         id: 'video-page-reply-user-name-color-default',
         name: '用户名 全部恢复默认色',
+        noStyle: true,
         enableFn: () => {
             shadow.addShadowStyle(
                 'bili-comment-user-info',

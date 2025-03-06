@@ -134,11 +134,8 @@ html[video-page-show-fullscreen-bpx-player-video-info-online] {
         .bpx-player-video-info-divide {
             display: none;
         }
-        .bpx-player-sending-bar {
-            margin: 0 !important;
-        }
         .bpx-player-control-bottom-center {
-            padding: 0 8px !important;
+            padding: 0 16px !important;
         }
         .bpx-player-ctrl-viewpoint {
             width: fit-content !important;
@@ -164,11 +161,8 @@ html[video-page-show-fullscreen-bpx-player-video-info-dm] {
             display: flex !important;
             font-size: 14px !important;
         }
-        .bpx-player-sending-bar {
-            margin: 0 !important;
-        }
         .bpx-player-control-bottom-center {
-            padding: 0 8px !important;
+            padding: 0 16px !important;
         }
         .bpx-player-ctrl-viewpoint {
             width: fit-content !important;

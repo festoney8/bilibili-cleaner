@@ -101,12 +101,12 @@ html[homepage-hide-inline-player-danmaku] main {
 
 // 隐藏 广告
 html[homepage-hide-ad-card] main {
-    :is(.feed-card, .bili-video-card):has(
+    :is(.feed-card, .bili-video-card):not(.bilibili-gate-video-card):has(
             .bili-video-card__info--ad,
             [href*='cm.bilibili.com'],
             .bili-video-card__info--creative-ad,
             .vui_icon.bili-video-card__stats--icon,
-            .bili-video-card__info--owner:not([href^='//space.bilibili.com'])
+            .bili-video-card__info--owner:not([href*='space.bilibili.com'])
         ) {
         display: none !important;
     }

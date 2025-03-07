@@ -29,6 +29,8 @@ html[homepage-hide-watchlater-pip-button] {
 // 隐藏 广告
 html[homepage-hide-adcard-button] {
     .adcard,
+    .fixed-card .btn-ad,
+    .palette-button-adcard,
     .palette-button-wrap .adcard-content {
         display: none !important;
     }

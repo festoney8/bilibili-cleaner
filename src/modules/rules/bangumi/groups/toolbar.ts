@@ -50,7 +50,7 @@ export const bangumiToolbarItems: Item[] = [
     {
         type: 'switch',
         id: 'bangumi-page-hide-toolbar',
-        name: '隐藏 整个工具栏(赞币转) ★',
+        name: '隐藏 工具栏(赞币转) ★',
     },
     {
         type: 'switch',

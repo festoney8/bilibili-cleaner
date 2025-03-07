@@ -87,7 +87,7 @@ export const homepageRcmdItems: Item[] = [
     {
         type: 'switch',
         id: 'homepage-increase-rcmd-load-size',
-        name: '增大 视频载入 视频数量 (实验功能)',
+        name: '增大 视频载入 视频数量',
         enableFn: () => {
             fetchHook.addPreFn((input: RequestInfo | URL, init: RequestInit | undefined): RequestInfo | URL => {
                 if (

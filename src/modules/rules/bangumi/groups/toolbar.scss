@@ -12,7 +12,7 @@ html[bangumi-page-hide-watch-together] {
     }
 }
 
-// 隐藏 整个工具栏(赞币转) ★
+// 隐藏 工具栏(赞币转) ★
 html[bangumi-page-hide-toolbar] {
     .player-left-components .toolbar {
         display: none !important;

@@ -16,7 +16,7 @@ export const homepageBasicItems: Item[] = [
     {
         type: 'switch',
         id: 'homepage-hide-subarea',
-        name: '隐藏 整个分区栏',
+        name: '隐藏 分区栏',
     },
     {
         type: 'switch',

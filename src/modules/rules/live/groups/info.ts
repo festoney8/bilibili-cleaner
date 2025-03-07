@@ -58,6 +58,6 @@ export const liveInfoItems: Item[] = [
     {
         type: 'switch',
         id: 'live-page-head-info-vm',
-        name: '隐藏 整个信息栏',
+        name: '隐藏 信息栏',
     },
 ]

@@ -161,6 +161,6 @@ export const videoRightItems: Item[] = [
     {
         type: 'switch',
         id: 'video-page-hide-right-container',
-        name: '隐藏 整个右栏 (宽屏模式不适用)',
+        name: '隐藏 右栏 (宽屏模式不适用)',
     },
 ]

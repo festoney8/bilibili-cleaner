@@ -14,6 +14,6 @@ export const dynamicLeftItems: Item[] = [
     {
         type: 'switch',
         id: 'hide-dynamic-page-aside-left',
-        name: '隐藏 整个左栏',
+        name: '隐藏 左栏',
     },
 ]

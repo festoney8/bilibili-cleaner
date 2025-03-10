@@ -189,8 +189,10 @@ html[live-page-header-standalone-helpmeplay] {
     .link-navbar-more .search-bar-ctnr {
         margin: 0 auto !important;
     }
-    #prehold-nav-vm .nav-item:has(a[href="//live.bilibili.com/p/eden/area-tags?parentAreaId=301&areaId=0"])
-    {
+    #prehold-nav-vm .nav-item:has(
+        a[href="//live.bilibili.com/p/eden/area-tags?parentAreaId=301&areaId=0"],
+        a[href^="//live.bilibili.com/p/html/play-together-area/"]
+    ) {
         display: none !important;
     }
 }

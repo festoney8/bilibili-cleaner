@@ -89,4 +89,8 @@ html[live-page-head-info-vm] {
         border-top-right-radius: 12px;
         overflow: hidden;
     }
+
+    .z-section-blocks {
+        z-index: 10 !important;
+    }
 }

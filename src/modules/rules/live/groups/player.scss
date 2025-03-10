@@ -106,6 +106,10 @@ html[live-page-gift-control-vm] {
         border-bottom-right-radius: 12px;
         overflow: hidden;
     }
+
+    .z-section-blocks {
+        z-index: 10 !important;
+    }
 }
 
 // 全屏时 隐藏弹幕发送框

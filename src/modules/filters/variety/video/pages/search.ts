@@ -493,8 +493,8 @@ export const videoFilterSearchHandler: ContextMenuTargetHandler = (target: HTMLE
         }
     }
     // BVID
-    if (target.classList.contains('bili-video-card__info--tit')) {
-        const url = (target.parentNode as HTMLAnchorElement)?.href
+    if (target.classList.contains('bili-video-card__info--tit') || target.closest('.bili-video-card__info--tit')) {
+        const url = (target.closest('a') as HTMLAnchorElement)?.href
         if (url && mainFilter.videoBvidFilter.isEnable) {
             const bvid = matchBvid(url)
             if (bvid) {

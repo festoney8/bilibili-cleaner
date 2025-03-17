@@ -78,19 +78,10 @@ html[live-page-head-info-vm] {
         display: none !important;
     }
 
-    // 壁纸高度
-    #room-background-vm {
-        min-height: calc(100vh - 64px) !important;
-    }
-
     // 补齐圆角, 不可important
     #player-ctnr {
         border-top-left-radius: 12px;
         border-top-right-radius: 12px;
         overflow: hidden;
-    }
-
-    .z-section-blocks {
-        z-index: 10 !important;
     }
 }

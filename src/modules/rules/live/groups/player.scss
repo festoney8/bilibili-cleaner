@@ -96,19 +96,11 @@ html[live-page-gift-control-vm] {
         display: none !important;
     }
 
-    #room-background-vm .room-bg {
-        min-height: 99vh !important;
-    }
-
     // 补齐圆角, 不可important
     #player-ctnr {
         border-bottom-left-radius: 12px;
         border-bottom-right-radius: 12px;
         overflow: hidden;
-    }
-
-    .z-section-blocks {
-        z-index: 10 !important;
     }
 }
 

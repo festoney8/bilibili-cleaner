@@ -51,7 +51,6 @@ const GM_KEYS = {
 }
 
 // 视频列表信息提取
-let searchKeyword = ''
 const selectorFns = {
     duration: (video: HTMLElement): SelectorResult => {
         const duration = video.querySelector('.bili-video-card__stats__duration')?.textContent?.trim()
@@ -117,9 +116,6 @@ class VideoFilterSearch implements IMainFilter {
 
         // 提取元素
         const selector = `:where(.video.search-all-list, .search-page-video) .video-list > div`
-
-        // 获取搜索关键词供selectorFn使用
-        searchKeyword = decodeURIComponent(new URL(location.href).searchParams.get('keyword') ?? '').toLowerCase()
 
         const videos = Array.from(this.target.querySelectorAll<HTMLElement>(selector))
         if (!videos.length) {
@@ -493,8 +489,8 @@ export const videoFilterSearchHandler: ContextMenuTargetHandler = (target: HTMLE
         }
     }
     // BVID
-    if (target.classList.contains('bili-video-card__info--tit')) {
-        const url = (target.parentNode as HTMLAnchorElement)?.href
+    if (target.classList.contains('bili-video-card__info--tit') || target.closest('.bili-video-card__info--tit')) {
+        const url = (target.closest('a') as HTMLAnchorElement)?.href
         if (url && mainFilter.videoBvidFilter.isEnable) {
             const bvid = matchBvid(url)
             if (bvid) {

@@ -40,8 +40,17 @@ html[common-hide-nav-search-history] {
 
 // 隐藏 bilibili热搜
 html[common-hide-nav-search-trending] {
-    .search-panel .trending {
-        display: none;
+    .search-panel {
+        padding: 13px 0 4px !important;
+        .trending {
+            display: none;
+        }
+        .histories-wrap {
+            max-height: unset !important;
+        }
+        .history-fold-wrap {
+            display: none !important;
+        }
     }
 
     // 旧版header

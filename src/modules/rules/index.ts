@@ -1,7 +1,6 @@
 import { Rule } from '@/types/collection'
 import {
     isPageBangumi,
-    isPageChannel,
     isPageChannelNext,
     isPageDynamic,
     isPageFestival,
@@ -20,7 +19,6 @@ import { error } from '@/utils/logger'
 import { BiliCleanerStorage } from '@/utils/storage'
 
 import { bangumiGroups } from './bangumi'
-import { channelGroups } from './channel'
 import { channelNextGroups } from './channel_next'
 import { commentGroups } from './comment'
 import { commonGroups } from './common'
@@ -37,7 +35,6 @@ import { watchlaterGroups } from './watchlater'
 
 import { useMagicKeys } from '@vueuse/core'
 import bangumiStyle from './bangumi/index.scss?inline'
-import channelStyle from './channel/index.scss?inline'
 import channelNextStyle from './channel_next/index.scss?inline'
 import commentStyle from './comment/index.scss?inline'
 import commonStyle from './common/index.scss?inline'
@@ -94,12 +91,6 @@ export const rules: Rule[] = [
         groups: popularGroups,
         style: popularStyle,
         checkFn: isPagePopular,
-    },
-    {
-        name: 'channel',
-        groups: channelGroups,
-        style: channelStyle,
-        checkFn: isPageChannel,
     },
     {
         name: 'channelNext',
@@ -203,7 +194,6 @@ export const loadStyles = () => {
                 './dynamic/index.scss?inline',
                 './live/index.scss?inline',
                 './popular/index.scss?inline',
-                './channel/index.scss?inline',
                 './channel_next/index.scss?inline',
                 './space/index.scss?inline',
                 './search/index.scss?inline',
@@ -219,7 +209,6 @@ export const loadStyles = () => {
                 dynamicModule,
                 liveModule,
                 popularModule,
-                channelModule,
                 channelNextModule,
                 spaceModule,
                 searchModule,
@@ -272,13 +261,6 @@ export const loadStyles = () => {
                 if (popularModule) {
                     const newCSS = popularModule.default as string
                     const style = document.querySelector('style.bili-cleaner-css.popular')
-                    if (style && newCSS) {
-                        style.textContent = newCSS
-                    }
-                }
-                if (channelModule) {
-                    const newCSS = channelModule.default as string
-                    const style = document.querySelector('style.bili-cleaner-css.channel')
                     if (style && newCSS) {
                         style.textContent = newCSS
                     }

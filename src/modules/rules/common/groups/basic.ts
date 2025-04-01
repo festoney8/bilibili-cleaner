@@ -1,7 +1,6 @@
 import { Item } from '@/types/item'
 import {
     isPageBangumi,
-    isPageChannel,
     isPageChannelNext,
     isPageDynamic,
     isPageHomepage,
@@ -45,9 +44,6 @@ export const commonBasicItems: Item[] = [
             }
             if (isPageSpace()) {
                 return 'border-radius-space'
-            }
-            if (isPageChannel()) {
-                return 'border-radius-channel'
             }
             if (isPageChannelNext()) {
                 return 'border-radius-channel-next'

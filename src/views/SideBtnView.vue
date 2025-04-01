@@ -31,7 +31,6 @@
         <div
             v-if="
                 isPageVideo() ||
-                isPageChannel() ||
                 isPageChannelNext() ||
                 isPageHomepage() ||
                 isPagePlaylist() ||
@@ -68,7 +67,6 @@ import {
 } from '@/stores/view'
 import {
     isPageBangumi,
-    isPageChannel,
     isPageChannelNext,
     isPageDynamic,
     isPageHomepage,

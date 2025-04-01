@@ -3,7 +3,7 @@ import { INumberItem, ISwitchItem } from '@/types/item'
 import { error } from '@/utils/logger'
 import {
     isPageBangumi,
-    isPageChannelNext,
+    isPageChannel,
     isPageDynamic,
     isPageHomepage,
     isPagePlaylist,
@@ -25,10 +25,10 @@ import {
 } from './variety/dynamic/pages/dynamic'
 import { dynamicFilterSpaceEntry, dynamicFilterSpaceGroups } from './variety/dynamic/pages/space'
 import {
-    videoFilterChannelNextEntry,
-    videoFilterChannelNextGroups,
-    videoFilterChannelNextHandler,
-} from './variety/video/pages/channelNext'
+    videoFilterChannelEntry,
+    videoFilterChannelGroups,
+    videoFilterChannelHandler,
+} from './variety/video/pages/channel'
 import {
     videoFilterHomepageEntry,
     videoFilterHomepageGroups,
@@ -65,9 +65,9 @@ export const videoFilters: Filter[] = [
     },
     {
         name: '新版分区页 视频过滤',
-        groups: videoFilterChannelNextGroups,
-        entry: videoFilterChannelNextEntry,
-        checkFn: isPageChannelNext,
+        groups: videoFilterChannelGroups,
+        entry: videoFilterChannelEntry,
+        checkFn: isPageChannel,
     },
     {
         name: '搜索页 视频过滤',
@@ -161,7 +161,7 @@ const loadNumberItem = (item: INumberItem) => {
 export const filterContextMenuHandlers = [
     videoFilterVideoHandler,
     videoFilterSearchHandler,
-    videoFilterChannelNextHandler,
+    videoFilterChannelHandler,
     videoFilterPopularHandler,
     videoFilterHomepageHandler,
     videoFilterSpaceHandler,

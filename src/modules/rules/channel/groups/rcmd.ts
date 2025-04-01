@@ -1,6 +1,6 @@
 import { Item } from '@/types/item'
 
-export const channelNextRcmdItems: Item[] = [
+export const channelRcmdItems: Item[] = [
     {
         type: 'switch',
         id: 'channel-hide-danmaku-count',

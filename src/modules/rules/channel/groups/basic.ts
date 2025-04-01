@@ -1,6 +1,6 @@
 import { Item } from '@/types/item'
 
-export const channelNextBasicItems: Item[] = [
+export const channelBasicItems: Item[] = [
     {
         type: 'switch',
         id: 'homepage-hide-banner',

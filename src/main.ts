@@ -15,7 +15,7 @@ import { waitForBody } from './utils/init'
 import { error, log } from './utils/logger'
 import {
     isPageBangumi,
-    isPageChannelNext,
+    isPageChannel,
     isPageDynamic,
     isPageHomepage,
     isPagePlaylist,
@@ -85,7 +85,7 @@ const menu = () => {
         isPageVideo() ||
         isPagePlaylist() ||
         isPagePopular() ||
-        isPageChannelNext() ||
+        isPageChannel() ||
         isPageSearch() ||
         isPageSpace()
     ) {

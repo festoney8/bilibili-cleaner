@@ -1,6 +1,6 @@
 import { Item } from '@/types/item'
 
-export const channelNextLayoutItems: Item[] = [
+export const channelLayoutItems: Item[] = [
     {
         type: 'list',
         id: 'channel-layout',

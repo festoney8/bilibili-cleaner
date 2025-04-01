@@ -39,7 +39,7 @@ const currPage = (): string => {
     }
     // 新版分区
     if (href.includes('bilibili.com/c/')) {
-        return 'channelNext'
+        return 'channel'
     }
     // 拜年祭等活动播放页
     if (/www\.bilibili\.com\/festival\/.*bvid/.test(href)) {
@@ -62,7 +62,7 @@ export const isPageLive = () => ans === 'live'
 export const isPageBangumi = () => ans === 'bangumi'
 export const isPagePlaylist = () => ans === 'playlist'
 export const isPageFestival = () => ans === 'festival'
-export const isPageChannelNext = () => ans === 'channelNext'
+export const isPageChannel = () => ans === 'channel'
 export const isPageSpace = () => ans === 'space'
 export const isPageWatchlater = () => ans === 'watchlater'
 export const isPageMessage = () => ans === 'message'

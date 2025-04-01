@@ -3,7 +3,7 @@ import settings from '@/settings'
 import { Group } from '@/types/collection'
 import { ContextMenuTargetHandler, FilterContextMenu, IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
 import { debugFilter as debug, error } from '@/utils/logger'
-import { isPageChannelNext } from '@/utils/pageType'
+import { isPageChannel } from '@/utils/pageType'
 import { BiliCleanerStorage } from '@/utils/storage'
 import { convertDateToDays, convertTimeToSec, matchBvid, orderedUniq, showEle, waitForEle } from '@/utils/tool'
 import {
@@ -95,7 +95,7 @@ const selectorFns = {
     },
 }
 
-class VideoFilterChannelNext implements IMainFilter {
+class VideoFilterChannel implements IMainFilter {
     target: HTMLElement | undefined
 
     // 黑名单
@@ -160,7 +160,7 @@ class VideoFilterChannelNext implements IMainFilter {
             videos.forEach((v) => {
                 debug(
                     [
-                        `VideoFilterChannelNext`,
+                        `VideoFilterChannel`,
                         `bvid: ${selectorFns.bvid(v)}`,
                         `duration: ${selectorFns.duration(v)}`,
                         `title: ${selectorFns.title(v)}`,
@@ -188,14 +188,14 @@ class VideoFilterChannelNext implements IMainFilter {
         // 检测
         const blackCnt = await coreCheck(videos, true, blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
-        debug(`VideoFilterChannelNext hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
+        debug(`VideoFilterChannel hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
     }
 
     checkFull() {
         this.check('full')
             .then()
             .catch((err) => {
-                error('VideoFilterChannelNext check full error', err)
+                error('VideoFilterChannel check full error', err)
             })
     }
 
@@ -203,7 +203,7 @@ class VideoFilterChannelNext implements IMainFilter {
         this.check('incr')
             .then()
             .catch((err) => {
-                error('VideoFilterChannelNext check incr error', err)
+                error('VideoFilterChannel check incr error', err)
             })
     }
 
@@ -215,7 +215,7 @@ class VideoFilterChannelNext implements IMainFilter {
                 return
             }
 
-            debug('VideoFilterChannelNext target appear')
+            debug('VideoFilterChannel target appear')
             this.target = ele
             this.checkFull()
 
@@ -228,14 +228,14 @@ class VideoFilterChannelNext implements IMainFilter {
 
 //==================================================================================================
 
-const mainFilter = new VideoFilterChannelNext()
+const mainFilter = new VideoFilterChannel()
 
-export const videoFilterChannelNextEntry = async () => {
+export const videoFilterChannelEntry = async () => {
     mainFilter.init()
     mainFilter.observe()
 }
 
-export const videoFilterChannelNextGroups: Group[] = [
+export const videoFilterChannelGroups: Group[] = [
     {
         name: '时长过滤',
         items: [
@@ -500,8 +500,8 @@ export const videoFilterChannelNextGroups: Group[] = [
 ]
 
 // 右键菜单handler
-export const videoFilterChannelNextHandler: ContextMenuTargetHandler = (target: HTMLElement): FilterContextMenu[] => {
-    if (!isPageChannelNext()) {
+export const videoFilterChannelHandler: ContextMenuTargetHandler = (target: HTMLElement): FilterContextMenu[] => {
+    if (!isPageChannel()) {
         return []
     }
 
@@ -528,7 +528,7 @@ export const videoFilterChannelNextHandler: ContextMenuTargetHandler = (target: 
                             arr.unshift(uploader)
                             BiliCleanerStorage.set<string[]>(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
                         } catch (err) {
-                            error(`videoFilterChannelNextHandler add uploader ${uploader} failed`, err)
+                            error(`videoFilterChannelHandler add uploader ${uploader} failed`, err)
                         }
                     },
                 })
@@ -544,7 +544,7 @@ export const videoFilterChannelNextHandler: ContextMenuTargetHandler = (target: 
                             arr.unshift(uploader)
                             BiliCleanerStorage.set<string[]>(GM_KEYS.white.uploader.valueKey, orderedUniq(arr))
                         } catch (err) {
-                            error(`videoFilterChannelNextHandler add white uploader ${uploader} failed`, err)
+                            error(`videoFilterChannelHandler add white uploader ${uploader} failed`, err)
                         }
                     },
                 })
@@ -575,7 +575,7 @@ export const videoFilterChannelNextHandler: ContextMenuTargetHandler = (target: 
                             arr.unshift(bvid)
                             BiliCleanerStorage.set<string[]>(GM_KEYS.black.bvid.valueKey, orderedUniq(arr))
                         } catch (err) {
-                            error(`videoFilterChannelNextHandler add bvid ${bvid} failed`, err)
+                            error(`videoFilterChannelHandler add bvid ${bvid} failed`, err)
                         }
                     },
                 })

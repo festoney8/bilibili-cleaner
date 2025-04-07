@@ -11,7 +11,6 @@ export const bangumiRightItems: Item[] = [
         type: 'switch',
         id: 'video-page-unfold-right-container-danmaku',
         name: '自动展开 弹幕列表',
-        noStyle: true,
         enableFn: () => {
             let cnt = 0
             const id = setInterval(() => {

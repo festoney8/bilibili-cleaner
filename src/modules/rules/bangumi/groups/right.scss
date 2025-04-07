@@ -6,6 +6,25 @@ html[bangumi-page-hide-right-container-section-height] {
     }
 }
 
+// 自动展开 弹幕列表
+html[video-page-unfold-right-container-danmaku] {
+    #danmukuBox .bui-collapse-wrap:not(.bui-collapse-wrap-folded) {
+        max-height: fit-content !important;
+        .bui-collapse-body {
+            height: fit-content !important;
+        }
+        .bpx-player-wraplist,
+        .bpx-player-filter-wrap,
+        .bpx-player-dm-wrap,
+        .bpx-player-dm-container,
+        .bui-area,
+        .bui-long-list-wrap {
+            // unavailable in firefox
+            max-height: fit-content !important;
+        }
+    }
+}
+
 // 隐藏 弹幕列表
 html[video-page-hide-right-container-danmaku] {
     #danmukuBox {

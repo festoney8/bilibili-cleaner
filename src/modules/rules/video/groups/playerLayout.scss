@@ -26,6 +26,12 @@ html[webscreen-scrollable] {
     }
     .webscreen-fix #danmukuBox {
         margin-top: 0 !important;
+        .bpx-player-wraplist {
+            max-height: calc(50vh + 75px) !important;
+        }
+        .bpx-player-dm-wrap {
+            max-height: 50vh !important;
+        }
     }
     .webscreen-fix :is(.left-container, .playlist-container--left) {
         position: static !important;
@@ -102,6 +108,12 @@ html[fullscreen-scrollable] {
     }
     .webscreen-fix #danmukuBox {
         margin-top: 0 !important;
+        .bpx-player-wraplist {
+            max-height: calc(50vh + 75px) !important;
+        }
+        .bpx-player-dm-wrap {
+            max-height: 50vh !important;
+        }
     }
     .webscreen-fix :is(.left-container, .playlist-container--left) {
         position: static !important;

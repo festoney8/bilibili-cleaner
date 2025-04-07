@@ -17,6 +17,14 @@ html[webscreen-scrollable] {
         &::-webkit-scrollbar {
             display: none !important;
         }
+        #danmukuBox {
+            .bpx-player-wraplist {
+                max-height: calc(50vh + 75px) !important;
+            }
+            .bpx-player-dm-wrap {
+                max-height: 50vh !important;
+            }
+        }
     }
 
     // msg bubble
@@ -58,6 +66,14 @@ html[fullscreen-scrollable] {
         }
         &::-webkit-scrollbar {
             display: none !important;
+        }
+        #danmukuBox {
+            .bpx-player-wraplist {
+                max-height: calc(50vh + 75px) !important;
+            }
+            .bpx-player-dm-wrap {
+                max-height: 50vh !important;
+            }
         }
     }
 

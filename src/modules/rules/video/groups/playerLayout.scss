@@ -6,8 +6,7 @@ html[default-widescreen] {
     }
 }
 
-// 网页全屏时 页面可滚动
-html[webscreen-scrollable] {
+@mixin video-scrollable() {
     .webscreen-fix {
         position: unset;
         top: unset;
@@ -16,67 +15,83 @@ html[webscreen-scrollable] {
         padding: unset;
         width: unset;
         height: unset;
-    }
-    .webscreen-fix #biliMainHeader {
-        display: none;
-    }
-    .webscreen-fix #mirror-vdcon {
-        box-sizing: content-box;
-        position: relative;
-    }
-    .webscreen-fix #danmukuBox {
-        margin-top: 0 !important;
-        .bpx-player-wraplist {
-            max-height: calc(50vh + 75px) !important;
+
+        #biliMainHeader {
+            display: none;
         }
-        .bpx-player-dm-wrap {
-            max-height: 50vh !important;
+        #mirror-vdcon {
+            box-sizing: content-box;
+            position: relative;
+        }
+
+        #danmukuBox .bui-collapse-wrap:not(.bui-collapse-wrap-folded) {
+            margin-top: 0 !important;
+            .bpx-player-wraplist {
+                max-height: calc(50vh + 75px) !important;
+            }
+            .bpx-player-dm-wrap {
+                max-height: 50vh !important;
+            }
+        }
+        .left-container,
+        .playlist-container--left {
+            position: static !important;
+            padding-top: 100vh;
+
+            .video-info-container {
+                height: fit-content;
+            }
+            #bilibili-player.mode-webscreen {
+                position: static;
+                border-radius: unset;
+                z-index: unset;
+                left: unset;
+                top: unset;
+                width: 100%;
+                height: 100%;
+            }
+            #playerWrap {
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                height: 100vh;
+                width: 100vw;
+                padding-right: 0;
+            }
+        }
+
+        .right-container,
+        .playlist-container--right {
+            padding-top: 100vh;
+        }
+
+        // 隐藏小窗
+        .float-nav-exp .nav-menu .item.mini,
+        .fixed-sidenav-storage .mini-player-window {
+            display: none !important;
+        }
+
+        // 投币收藏弹窗
+        .bili-dialog-m {
+            z-index: 100000 !important;
+        }
+
+        // 滚动条
+        &::-webkit-scrollbar {
+            display: none !important;
         }
     }
-    .webscreen-fix :is(.left-container, .playlist-container--left) {
-        position: static !important;
-        padding-top: 100vh;
-    }
-    .webscreen-fix :is(.left-container, .playlist-container--left) .video-info-container {
-        height: fit-content;
-    }
-    .webscreen-fix :is(.left-container, .playlist-container--left) #bilibili-player.mode-webscreen {
-        position: static;
-        border-radius: unset;
-        z-index: unset;
-        left: unset;
-        top: unset;
-        width: 100%;
-        height: 100%;
-    }
-    .webscreen-fix :is(.left-container, .playlist-container--left) #playerWrap {
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        height: 100vh;
-        width: 100vw;
-        padding-right: 0;
-    }
-    .webscreen-fix :is(.right-container, .playlist-container--right) {
-        padding-top: 100vh;
-    }
 
-    // 隐藏小窗
-    .webscreen-fix .float-nav-exp .nav-menu .item.mini,
-    .webscreen-fix .fixed-sidenav-storage .mini-player-window {
-        display: none !important;
+    // msg bubble
+    .bili-msg {
+        z-index: 100001 !important;
     }
+}
 
-    // 投币收藏弹窗
-    .webscreen-fix .bili-dialog-m {
-        z-index: 100000 !important;
-    }
-
-    // 滚动条
-    .webscreen-fix::-webkit-scrollbar {
-        display: none !important;
-    }
+// 网页全屏时 页面可滚动
+html[webscreen-scrollable] {
+    @include video-scrollable;
 }
 
 // 网页全屏时 页面可滚动 firefox滚动条
@@ -90,80 +105,7 @@ html[webscreen-scrollable] {
 
 // 全屏时 页面可滚动
 html[fullscreen-scrollable] {
-    .webscreen-fix {
-        position: unset;
-        top: unset;
-        left: unset;
-        margin: unset;
-        padding: unset;
-        width: unset;
-        height: unset;
-    }
-    .webscreen-fix #biliMainHeader {
-        display: none;
-    }
-    .webscreen-fix #mirror-vdcon {
-        box-sizing: content-box;
-        position: relative;
-    }
-    .webscreen-fix #danmukuBox {
-        margin-top: 0 !important;
-        .bpx-player-wraplist {
-            max-height: calc(50vh + 75px) !important;
-        }
-        .bpx-player-dm-wrap {
-            max-height: 50vh !important;
-        }
-    }
-    .webscreen-fix :is(.left-container, .playlist-container--left) {
-        position: static !important;
-        padding-top: 100vh;
-    }
-    .webscreen-fix :is(.left-container, .playlist-container--left) .video-info-container {
-        height: fit-content;
-    }
-    .webscreen-fix :is(.left-container, .playlist-container--left) #bilibili-player.mode-webscreen {
-        position: static;
-        border-radius: unset;
-        z-index: unset;
-        left: unset;
-        top: unset;
-        width: 100%;
-        height: 100%;
-    }
-    .webscreen-fix :is(.left-container, .playlist-container--left) #playerWrap {
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        height: 100vh;
-        width: 100vw;
-        padding-right: 0;
-    }
-    .webscreen-fix :is(.right-container, .playlist-container--right) {
-        padding-top: 100vh;
-    }
-
-    // 隐藏小窗
-    .webscreen-fix .float-nav-exp .nav-menu .item.mini,
-    .webscreen-fix .fixed-sidenav-storage .mini-player-window {
-        display: none !important;
-    }
-
-    // 投币收藏弹窗
-    .webscreen-fix .bili-dialog-m {
-        z-index: 100000 !important;
-    }
-
-    // 滚动条
-    .webscreen-fix::-webkit-scrollbar {
-        display: none !important;
-    }
-
-    // msg bubble
-    .bili-msg {
-        z-index: 100001 !important;
-    }
+    @include video-scrollable;
 }
 
 // 全屏时 页面可滚动 firefox滚动条

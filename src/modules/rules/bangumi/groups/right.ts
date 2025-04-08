@@ -9,6 +9,25 @@ export const bangumiRightItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'video-page-unfold-right-container-danmaku',
+        name: '自动展开 弹幕列表',
+        enableFn: () => {
+            let cnt = 0
+            const id = setInterval(() => {
+                const collapseHeader = document.querySelector(
+                    '#danmukuBox .bui-collapse-wrap-folded .bui-collapse-header',
+                ) as HTMLElement
+                if (collapseHeader) {
+                    collapseHeader.click()
+                    clearInterval(id)
+                }
+                ++cnt > 20 && clearInterval(id)
+            }, 500)
+        },
+        enableFnRunAt: 'document-end',
+    },
+    {
+        type: 'switch',
         id: 'video-page-hide-right-container-danmaku',
         name: '隐藏 弹幕列表',
     },

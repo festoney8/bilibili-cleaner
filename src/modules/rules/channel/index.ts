@@ -1,7 +1,7 @@
 import { Group } from '@/types/collection'
 import { channelBasicItems } from './groups/basic'
+import { channelLayoutItems } from './groups/layout'
 import { channelRcmdItems } from './groups/rcmd'
-import { channelSidebarItems } from './groups/sidebar'
 
 export const channelGroups: Group[] = [
     {
@@ -9,11 +9,11 @@ export const channelGroups: Group[] = [
         items: channelBasicItems,
     },
     {
-        name: '视频列表',
-        items: channelRcmdItems,
+        name: '页面布局',
+        items: channelLayoutItems,
     },
     {
-        name: '页面右下角 小按钮',
-        items: channelSidebarItems,
+        name: '视频列表',
+        items: channelRcmdItems,
     },
 ]

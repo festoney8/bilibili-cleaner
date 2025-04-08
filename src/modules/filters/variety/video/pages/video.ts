@@ -497,10 +497,11 @@ export const videoFilterVideoHandler: ContextMenuTargetHandler = (target: HTMLEl
     const menus: FilterContextMenu[] = []
     // UP主
     if (
-        target.classList.contains('name') ||
-        target.classList.contains('up-name') ||
-        target.parentElement?.classList.contains('up-name') ||
-        target.closest('.staff-info')
+        target.closest('.right-container') &&
+        (target.classList.contains('name') ||
+            target.classList.contains('up-name') ||
+            target.parentElement?.classList.contains('up-name') ||
+            target.closest('.staff-info'))
     ) {
         const uploader =
             target.closest('.staff-info')?.querySelector('.staff-name')?.textContent?.trim() ||
@@ -551,7 +552,7 @@ export const videoFilterVideoHandler: ContextMenuTargetHandler = (target: HTMLEl
         }
     }
     // BVID
-    if (target.classList.contains('title')) {
+    if (target.closest('.right-container') && target.classList.contains('title')) {
         const url = target.parentElement?.getAttribute('href')
         if (url && mainFilter.videoBvidFilter.isEnable) {
             const bvid = matchBvid(url)

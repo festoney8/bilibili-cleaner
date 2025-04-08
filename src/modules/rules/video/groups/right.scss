@@ -56,6 +56,25 @@ html[video-page-hide-right-container-video-page-game-card-small] {
     }
 }
 
+// 自动展开 弹幕列表
+html[video-page-unfold-right-container-danmaku] {
+    #danmukuBox .bui-collapse-wrap:not(.bui-collapse-wrap-folded) {
+        max-height: fit-content !important;
+        .bui-collapse-body {
+            height: fit-content !important;
+        }
+        .bpx-player-wraplist,
+        .bpx-player-filter-wrap,
+        .bpx-player-dm-wrap,
+        .bpx-player-dm-container,
+        .bui-area,
+        .bui-long-list-wrap {
+            // unavailable in firefox
+            max-height: fit-content !important;
+        }
+    }
+}
+
 // 隐藏 弹幕列表
 html[video-page-hide-right-container-danmaku] {
     // 不可使用 display:none 否则播放器宽屏模式下danmukuBox的margin-top失效，导致视频覆盖右侧列表

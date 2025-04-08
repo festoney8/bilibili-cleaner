@@ -74,26 +74,23 @@ html[homepage-hide-banner] {
 
 // 隐藏 全站分区栏
 html[channel-hide-subarea] {
-    #i_cecream .bili-header__channel {
-        display: none !important;
+    #biliMainHeader {
+        min-height: unset !important;
+        margin-bottom: 20px !important;
+        .bili-header__channel {
+            display: none !important;
+        }
     }
 }
 
 // 隐藏 大图轮播
 html[channel-hide-carousel] {
-    .channel-swiper,
-    .channel-swiper-client {
+    .banner-carousel,
+    .channel-carousel {
         display: none !important;
     }
-}
-
-// 隐藏 滚动页面时 顶部吸附 分区栏
-html[channel-hide-sticky-subchannel] {
-    .fixed-header-nav-sticky {
-        display: none !important;
-    }
-    .fixed-wrapper-shown {
-        box-shadow: unset !important;
+    .channel-page .channel-page__body .head-cards .head-card {
+        display: block !important;
     }
 }
 
@@ -104,11 +101,21 @@ html[channel-hide-sticky-header] {
     }
 }
 
-// 修改 页面两侧边距
-html[channel-layout-padding] {
-    .go-back-btn,
-    .channel-layout,
-    .channel-outer-nav {
-        padding: 0 var(--channel-layout-padding) !important;
+// 恢复 原始动态按钮
+html[homepage-revert-channel-dynamic-icon] {
+    .bili-header__channel .channel-icons .icon-bg__dynamic {
+        picture,
+        svg {
+            display: none !important;
+        }
+        &::after {
+            content: '';
+            width: 25px;
+            height: 25px;
+            background-image: url('data:image/svg+xml,<svg width="22" height="23" viewBox="0 0 22 23" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-bg--icon" data-v-674f5b07=""> <path d="M6.41659 15.625C3.88528 15.625 1.83325 13.7782 1.83325 11.5H10.9999C10.9999 13.7782 8.94789 15.625 6.41659 15.625Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M15.125 16.0827C15.125 18.614 13.2782 20.666 11 20.666L11 11.4993C13.2782 11.4993 15.125 13.5514 15.125 16.0827Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M6.875 6.91667C6.875 9.44797 8.72183 11.5 11 11.5L11 2.33333C8.72182 2.33333 6.875 4.38536 6.875 6.91667Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M15.5833 7.375C13.052 7.375 11 9.22183 11 11.5H20.1667C20.1667 9.22183 18.1146 7.375 15.5833 7.375Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
     }
 }

@@ -58,24 +58,40 @@ const GM_KEYS = {
 // 视频列表信息提取
 const selectorFns = {
     duration: (video: HTMLElement): SelectorResult => {
-        const duration = video.querySelector('.bili-video-card__stats__duration')?.textContent?.trim()
+        const duration = video
+            .querySelector('.bili-cover-card__stats .bili-cover-card__stat:last-child span')
+            ?.textContent?.trim()
         return (duration && convertTimeToSec(duration)) ?? undefined
     },
     title: (video: HTMLElement): SelectorResult => {
-        return video.querySelector('.bili-video-card__info--tit a')?.textContent?.trim()
+        return video.querySelector('.bili-video-card__title a')?.textContent?.trim()
     },
     pubdate: (video: HTMLElement): SelectorResult => {
-        const pubdate = video.querySelector('.bili-video-card__info--date')?.textContent?.trim()
-        return pubdate && convertDateToDays(pubdate)
+        const text = video
+            .querySelector('.bili-video-card__author .bili-video-card__text:nth-child(2)')
+            ?.textContent?.trim()
+        if (text) {
+            const pubdate = text.split(' · ')[1]?.trim()
+            if (pubdate) {
+                return convertDateToDays(pubdate)
+            }
+        }
+        return undefined
     },
     bvid: (video: HTMLElement): SelectorResult => {
         const href =
-            video.querySelector('.bili-video-card__info--tit a')?.getAttribute('href') ||
-            video.querySelector('.bili-video-card__image--link')?.getAttribute('href')
+            video.querySelector('.bili-video-card__title a')?.getAttribute('href') ||
+            video.querySelector('.bili-cover-card')?.getAttribute('href')
         return (href && matchBvid(href)) ?? undefined
     },
     uploader: (video: HTMLElement): SelectorResult => {
-        return video.querySelector('.bili-video-card__info--author')?.textContent?.trim()
+        const text = video
+            .querySelector('.bili-video-card__author .bili-video-card__text:nth-child(2)')
+            ?.textContent?.trim()
+        if (text) {
+            return text.split(' · ')[0].trim()
+        }
+        return undefined
     },
 }
 
@@ -127,7 +143,7 @@ class VideoFilterChannel implements IMainFilter {
         const timer = performance.now()
 
         // 提取元素
-        let selector = `.bili-video-card[data-report*='.']`
+        let selector = `.feed-card`
         if (mode === 'incr') {
             selector += `:not([${settings.filterSign}])`
         }
@@ -192,8 +208,8 @@ class VideoFilterChannel implements IMainFilter {
     }
 
     observe() {
-        waitForEle(document, 'main', (node: HTMLElement): boolean => {
-            return node.tagName === 'MAIN'
+        waitForEle(document, '.channel-page__body', (node: HTMLElement): boolean => {
+            return node.className === 'channel-page__body'
         }).then((ele) => {
             if (!ele) {
                 return
@@ -491,12 +507,13 @@ export const videoFilterChannelHandler: ContextMenuTargetHandler = (target: HTML
 
     const menus: FilterContextMenu[] = []
     // UP主
-    if (target.closest('.bili-video-card__info--owner')) {
+    if (target.closest('.bili-video-card__author')) {
         const uploader = target
-            .closest('.bili-video-card__info--owner')
-            ?.querySelector('.bili-video-card__info--author')
-            ?.textContent?.trim()
-        const url = target.closest<HTMLAnchorElement>('.bili-video-card__info--owner')?.href.trim()
+            .closest('.bili-video-card__author')
+            ?.querySelector('.bili-video-card__text:last-child')
+            ?.textContent?.split(' · ')[0]
+            .trim()
+        const url = target.closest<HTMLAnchorElement>('.bili-video-card__author')?.href.trim()
         const spaceUrl = url?.match(/space\.bilibili\.com\/\d+/)?.[0]
 
         if (uploader) {
@@ -543,8 +560,8 @@ export const videoFilterChannelHandler: ContextMenuTargetHandler = (target: HTML
         }
     }
     // BVID
-    if (target instanceof HTMLAnchorElement && target.closest('.bili-video-card__info--tit')) {
-        const url = target.closest('.bili-video-card__info--tit')?.querySelector('a')?.href
+    if (target instanceof HTMLAnchorElement && target.closest('.bili-video-card__title')) {
+        const url = target.closest('.bili-video-card__title')?.querySelector('a')?.href
         if (url && mainFilter.videoBvidFilter.isEnable) {
             const bvid = matchBvid(url)
             if (bvid) {

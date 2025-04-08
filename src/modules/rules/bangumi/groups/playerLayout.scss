@@ -1,5 +1,4 @@
-// 网页全屏时 页面可滚动
-html[webscreen-scrollable] {
+@mixin bangumi-scrollable() {
     body:has(#bilibili-player-wrap[class^='video_playerFullScreen']) {
         overflow: auto !important;
         position: relative !important;
@@ -17,12 +16,25 @@ html[webscreen-scrollable] {
         &::-webkit-scrollbar {
             display: none !important;
         }
+        #danmukuBox .bui-collapse-wrap:not(.bui-collapse-wrap-folded) {
+            .bpx-player-wraplist {
+                max-height: calc(50vh + 75px) !important;
+            }
+            .bpx-player-dm-wrap {
+                max-height: 50vh !important;
+            }
+        }
     }
 
     // msg bubble
     .bili-msg {
         z-index: 100001 !important;
     }
+}
+
+// 网页全屏时 页面可滚动
+html[webscreen-scrollable] {
+    @include bangumi-scrollable;
 }
 
 // 网页全屏时 页面可滚动 firefox
@@ -39,32 +51,7 @@ html[webscreen-scrollable] {
 
 // 全屏时 页面可滚动
 html[fullscreen-scrollable] {
-    body:has(#bilibili-player-wrap[class^='video_playerFullScreen']) {
-        overflow: auto !important;
-        position: relative !important;
-
-        .home-container {
-            background-color: white;
-        }
-        #bilibili-player-wrap {
-            position: absolute !important;
-            width: 100vw !important;
-            height: 100vh !important;
-        }
-        .main-container {
-            position: static !important;
-            margin: 0 auto !important;
-            padding-top: calc(100vh + 15px) !important;
-        }
-        &::-webkit-scrollbar {
-            display: none !important;
-        }
-    }
-
-    // msg bubble
-    .bili-msg {
-        z-index: 100001 !important;
-    }
+    @include bangumi-scrollable;
 }
 
 // 全屏时 页面可滚动 firefox

@@ -112,6 +112,7 @@ export const commonBasicItems: Item[] = [
                         'from',
                         'visit_id',
                         'extra_jump_from',
+                        'buvid',
                     ])
                     if (isPageSearch()) {
                         keysToRemove.add('vt')

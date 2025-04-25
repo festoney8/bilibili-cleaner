@@ -54,3 +54,10 @@ html[hide-search-page-date] {
         display: none !important;
     }
 }
+
+// 隐藏 视频加载骨架
+html[hide-search-page-skeleton] {
+    .video-list .video-list-item:not(:has(.bili-video-card__wrap)) {
+        display: none !important;
+    }
+}

@@ -105,4 +105,9 @@ export const festivalPlayerItems: Item[] = [
         id: 'video-page-bpx-player-bili-dm-vip-white',
         name: '彩色渐变弹幕 变成白色',
     },
+    {
+        type: 'switch',
+        id: 'video-page-bpx-player-bili-dm-normal-white',
+        name: '普通彩色弹幕 变成白色',
+    },
 ]

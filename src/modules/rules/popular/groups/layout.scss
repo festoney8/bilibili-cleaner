@@ -152,7 +152,6 @@
                     margin: 0 !important;
                     border-radius: 6px !important;
                     overflow: hidden !important;
-                    aspect-ratio: 16/9 !important;
 
                     .num {
                         font-size: 18px;
@@ -178,6 +177,7 @@
                         justify-content: space-between !important;
                         align-items: center !important;
                         margin-top: 8px !important;
+
                         .up-name {
                             margin: unset !important;
                             font-size: 14px !important;
@@ -185,15 +185,39 @@
                         }
                         .detail-state .data-box {
                             line-height: unset !important;
-                            margin: 0 12px 0 0;
+                            margin: unset !important;
                             font-size: 14px !important;
                             text-wrap: nowrap !important;
                             &:nth-child(2) {
-                                margin: 0 !important;
+                                margin-left: 12px !important;
                             }
                         }
                     }
                 }
+            }
+        }
+
+        // 封面长宽比
+        &:not(.pgc-list) {
+            .content .img {
+                aspect-ratio: 16/9 !important;
+            }
+        }
+        &.pgc-list {
+            .content .img {
+                aspect-ratio: 220/296 !important;
+            }
+        }
+
+        // pgc特殊处理
+        &.pgc-list .rank-item .content .info {
+            .title {
+                margin-top: 0.2em;
+                font-size: 17px !important;
+            }
+            .data-box {
+                margin-top: unset !important;
+                font-size: 14px !important;
             }
         }
     }

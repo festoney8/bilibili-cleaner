@@ -20,4 +20,10 @@ html[hide-dynamic-page-aside-left] {
     aside.left {
         display: none !important;
     }
+    .bili-dyn-home--member {
+        justify-content: center !important;
+    }
+    #app:has(.bili-dyn-home--member) {
+        min-width: fit-content;
+    }
 }

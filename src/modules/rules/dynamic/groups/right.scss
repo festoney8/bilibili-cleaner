@@ -33,4 +33,10 @@ html[hide-dynamic-page-aside-right] {
     aside.right {
         display: none !important;
     }
+    .bili-dyn-home--member {
+        justify-content: center !important;
+    }
+    #app:has(.bili-dyn-home--member) {
+        min-width: fit-content;
+    }
 }

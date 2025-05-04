@@ -187,3 +187,11 @@ html[video-page-bpx-player-bili-dm-vip-white] {
         -ms-text-stroke: none !important;
     }
 }
+
+// 普通彩色弹幕 变成白色
+html[video-page-bpx-player-bili-dm-normal-white] {
+    .bili-danmaku-x-dm,
+    .bili-dm {
+        --color: white !important;
+    }
+}

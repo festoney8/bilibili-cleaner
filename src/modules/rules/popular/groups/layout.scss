@@ -1,8 +1,235 @@
-// 官方默认 2 列布局
-html[popular-layout-2-column] {
+@mixin base() {
     .cm-module {
         display: none !important;
     }
+}
+
+@mixin hide-danmaku() {
+    // 隐藏弹幕数
+    .video-stat .like-text,
+    .rank-list .rank-item .detail-state .data-box:nth-child(2) {
+        display: none !important;
+    }
+    .rank-list .rank-item .detail-state .data-box:nth-child(1) {
+        margin: 0 !important;
+    }
+    .video-card .video-stat .play-text {
+        margin-right: 0 !important;
+    }
+}
+
+@mixin grid($count) {
+    @include base;
+
+    // 页面宽度
+    @media (width >= 1300px) and (width <= 1399.9px) {
+        .popular-container {
+            max-width: 1180px !important;
+        }
+    }
+    @media (width <= 1139.9px) {
+        .popular-container {
+            max-width: 1020px !important;
+        }
+    }
+
+    // 布局高度
+    .rank-container .rank-tab-wrap {
+        margin-bottom: 0 !important;
+        padding: 10px 0 !important;
+    }
+    .nav-tabs {
+        height: 70px !important;
+    }
+    .popular-list {
+        padding: 10px 0 0 !important;
+    }
+    .video-list {
+        margin-top: 15px !important;
+    }
+
+    // 屏蔽 Tips
+    .popular-list .popular-tips,
+    .rank-container .rank-tips,
+    .history-list .history-tips {
+        display: none !important;
+    }
+
+    // 屏蔽 Hint
+    .popular-list .popular-tips,
+    .weekly-list .weekly-hint,
+    .history-list .history-hint {
+        display: none !important;
+    }
+
+    // 通用 grid 布局：综合热门, 每周必看, 入站必刷
+    .card-list,
+    .video-list {
+        width: 100% !important;
+        display: grid !important;
+        grid-gap: 20px !important;
+        grid-column: span $count !important;
+        grid-template-columns: repeat($count, minmax(0, 1fr)) !important;
+
+        .video-card {
+            display: unset !important;
+            width: unset !important;
+            height: unset !important;
+            margin-right: unset !important;
+            margin-bottom: unset !important;
+
+            &__content {
+                background-color: #e7e7e7 !important;
+                width: unset !important;
+                height: unset !important;
+                margin: 0 !important;
+                border-radius: 6px !important;
+                overflow: hidden !important;
+                aspect-ratio: 16/9 !important;
+            }
+
+            &__info {
+                margin-top: 8px !important;
+                font-size: 14px;
+                padding: 0 !important;
+
+                > div {
+                    display: flex !important;
+                    justify-content: space-between !important;
+                }
+                .rcmd-tag {
+                    display: none !important;
+                }
+                .video-name {
+                    font-weight: normal !important;
+                    margin-bottom: 8px !important;
+                    font-size: 15px !important;
+                    line-height: 22px !important;
+                    height: 44px !important;
+                    overflow: hidden !important;
+                }
+                .up-name {
+                    margin: unset !important;
+                    font-size: 14px !important;
+                    text-wrap: nowrap !important;
+                }
+                .video-stat {
+                    .play-text,
+                    .like-text {
+                        text-wrap: nowrap !important;
+                    }
+                }
+            }
+        }
+    }
+
+    // 排行榜, grid布局
+    .rank-list {
+        width: 100% !important;
+        display: grid !important;
+        grid-gap: 20px !important;
+        grid-column: span $count !important;
+        grid-template-columns: repeat($count, minmax(0, 1fr)) !important;
+
+        .rank-item {
+            display: unset !important;
+            width: unset !important;
+            height: unset !important;
+            margin-right: unset !important;
+            margin-bottom: unset !important;
+
+            .content {
+                display: unset !important;
+                padding: unset !important;
+
+                .more-data {
+                    display: none !important;
+                }
+                .img {
+                    background-color: #e7e7e7 !important;
+                    width: unset !important;
+                    height: unset !important;
+                    margin: 0 !important;
+                    border-radius: 6px !important;
+                    overflow: hidden !important;
+
+                    .num {
+                        font-size: 18px;
+                        zoom: 1.2;
+                    }
+                }
+                .info {
+                    margin-top: 8px !important;
+                    margin-left: unset !important;
+                    padding: 0 !important;
+                    font-size: 14px;
+                    height: unset !important;
+
+                    .title {
+                        height: 44px !important;
+                        line-height: 22px !important;
+                        font-weight: 500 !important;
+                        font-size: 15px !important;
+                        overflow: hidden !important;
+                    }
+                    .detail {
+                        display: flex !important;
+                        justify-content: space-between !important;
+                        align-items: center !important;
+                        margin-top: 8px !important;
+
+                        .up-name {
+                            margin: unset !important;
+                            font-size: 14px !important;
+                            text-wrap: nowrap !important;
+                        }
+                        .detail-state .data-box {
+                            line-height: unset !important;
+                            margin: unset !important;
+                            font-size: 14px !important;
+                            text-wrap: nowrap !important;
+                            &:nth-child(2) {
+                                margin-left: 12px !important;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // 封面长宽比
+        &:not(.pgc-list) {
+            .content .img {
+                aspect-ratio: 16/9 !important;
+            }
+        }
+        &.pgc-list {
+            .content .img {
+                aspect-ratio: 220/296 !important;
+            }
+        }
+
+        // pgc特殊处理
+        &.pgc-list .rank-item .content .info {
+            .title {
+                margin-top: 0.2em;
+                font-size: 17px !important;
+            }
+            .data-box {
+                margin-top: unset !important;
+                font-size: 14px !important;
+            }
+        }
+    }
+
+    .no-more {
+        display: none !important;
+    }
+}
+
+// 官方默认 2 列布局
+html[popular-layout-2-column] {
+    @include base;
 
     // grid替代flex做双列布局，屏蔽视频后不产生空白
     .video-list,
@@ -18,539 +245,19 @@ html[popular-layout-2-column] {
     }
 }
 
-// 强制使用 4 列布局 默认屏蔽Tag和简介
+// 强制使用 4 列布局
 html[popular-layout-4-column] {
-    .cm-module {
-        display: none !important;
-    }
-
-    // 页面宽度
-    @media (width >= 1300px) and (width <= 1399.9px) {
-        .popular-container {
-            max-width: 1180px !important;
-        }
-    }
-    @media (width <= 1139.9px) {
-        .popular-container {
-            max-width: 1020px !important;
-        }
-    }
-
-    // 布局高度
-    .rank-container .rank-tab-wrap {
-        margin-bottom: 0 !important;
-        padding: 10px 0 !important;
-    }
-    .nav-tabs {
-        height: 70px !important;
-    }
-    .popular-list {
-        padding: 10px 0 0 !important;
-    }
-    .video-list {
-        margin-top: 15px !important;
-    }
-
-    // 屏蔽 Tips
-    .popular-list .popular-tips,
-    .rank-container .rank-tips,
-    .history-list .history-tips {
-        display: none !important;
-    }
-
-    // 屏蔽 Hint
-    .popular-list .popular-tips,
-    .weekly-list .weekly-hint,
-    .history-list .history-hint {
-        display: none !important;
-    }
-
-    // 通用：综合热门, 每周必看, 入站必刷, grid布局
-    .card-list,
-    .video-list {
-        width: 100% !important;
-        display: grid !important;
-        grid-gap: 20px !important;
-        grid-column: span 4 !important;
-        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-    }
-    .card-list .video-card,
-    .video-list .video-card {
-        display: unset !important;
-        width: unset !important;
-        height: unset !important;
-        margin-right: unset !important;
-        margin-bottom: unset !important;
-    }
-    .card-list .video-card .video-card__content,
-    .video-list .video-card .video-card__content {
-        background: none;
-        width: unset !important;
-        height: unset !important;
-        margin: 0 !important;
-        border-radius: 6px !important;
-        overflow: hidden !important;
-    }
-    .card-list .video-card .video-card__info,
-    .video-list .video-card .video-card__info {
-        margin-top: 8px !important;
-        font-size: 14px;
-        padding: 0 !important;
-    }
-    .card-list .video-card .video-card__info .rcmd-tag,
-    .video-list .video-card .video-card__info .rcmd-tag {
-        display: none !important;
-    }
-    .card-list .video-card .video-card__info .video-name,
-    .video-list .video-card .video-card__info .video-name {
-        font-weight: normal !important;
-        margin-bottom: 8px !important;
-        font-size: 15px !important;
-        line-height: 22px !important;
-        height: 44px !important;
-        overflow: hidden !important;
-    }
-    .card-list .video-card .video-card__info .up-name,
-    .video-list .video-card .video-card__info .up-name {
-        margin: unset !important;
-        font-size: 14px !important;
-        text-wrap: nowrap !important;
-    }
-    .card-list .video-card .video-card__info > div,
-    .video-list .video-card .video-card__info > div {
-        display: flex !important;
-        justify-content: space-between !important;
-    }
-    .card-list .video-card .video-card__info .video-stat .play-text,
-    .video-list .video-card .video-card__info .video-stat .play-text,
-    .card-list .video-card .video-card__info .video-stat .like-text,
-    .video-list .video-card .video-card__info .video-stat .like-text {
-        text-wrap: nowrap !important;
-    }
-
-    // 排行榜, grid布局
-    .rank-list {
-        width: 100% !important;
-        display: grid !important;
-        grid-gap: 20px !important;
-        grid-column: span 4 !important;
-        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-    }
-    .rank-list .rank-item {
-        display: unset !important;
-        width: unset !important;
-        height: unset !important;
-        margin-right: unset !important;
-        margin-bottom: unset !important;
-    }
-    .rank-list .rank-item > .content {
-        display: unset !important;
-        padding: unset !important;
-    }
-    .rank-list .rank-item > .content > .img {
-        background: none;
-        width: unset !important;
-        height: unset !important;
-        margin: 0 !important;
-        border-radius: 6px !important;
-        overflow: hidden !important;
-    }
-    .rank-list .rank-item > .content > .img .num {
-        font-size: 18px;
-        zoom: 1.2;
-    }
-    .rank-list .rank-item > .content > .info {
-        margin-top: 8px !important;
-        margin-left: unset !important;
-        padding: 0 !important;
-        font-size: 14px;
-        height: unset !important;
-    }
-    .rank-list .rank-item > .content > .info .title {
-        height: 44px !important;
-        line-height: 22px !important;
-        font-weight: 500 !important;
-        font-size: 15px !important;
-        overflow: hidden !important;
-    }
-    .rank-list .rank-item > .content > .info .detail {
-        display: flex !important;
-        justify-content: space-between !important;
-        align-items: center !important;
-        margin-top: 8px !important;
-    }
-    .rank-list .rank-item > .content > .info .detail > a .up-name {
-        margin: unset !important;
-        font-size: 14px;
-        text-wrap: nowrap !important;
-    }
-    .rank-list .rank-item > .content > .info .detail > .detail-state .data-box {
-        line-height: unset !important;
-        margin: 0 12px 0 0;
-        text-wrap: nowrap !important;
-    }
-    .rank-list .rank-item > .content > .info .detail > .detail-state .data-box:nth-child(2) {
-        margin: 0 !important;
-    }
-    .rank-list .rank-item > .content .more-data {
-        display: none !important;
-    }
+    @include grid($count: 4);
 }
 
-// 强制使用 5 列布局 默认屏蔽Tag和简介
+// 强制使用 5 列布局
 html[popular-layout-5-column] {
-    .cm-module {
-        display: none !important;
-    }
-
-    // 页面宽度
-    @media (width >= 1300px) and (width <= 1399.9px) {
-        .popular-container {
-            max-width: 1180px !important;
-        }
-    }
-    @media (width <= 1139.9px) {
-        .popular-container {
-            max-width: 1020px !important;
-        }
-    }
-
-    // 布局高度
-    .rank-container .rank-tab-wrap {
-        margin-bottom: 0 !important;
-        padding: 10px 0 !important;
-    }
-    .nav-tabs {
-        height: 70px !important;
-    }
-    .popular-list {
-        padding: 10px 0 0 !important;
-    }
-    .video-list {
-        margin-top: 15px !important;
-    }
-
-    // 屏蔽 Tips
-    .popular-list .popular-tips,
-    .rank-container .rank-tips,
-    .history-list .history-tips {
-        display: none !important;
-    }
-
-    // 屏蔽 Hint
-    .popular-list .popular-tips,
-    .weekly-list .weekly-hint,
-    .history-list .history-hint {
-        display: none !important;
-    }
-
-    // 通用：综合热门, 每周必看, 入站必刷, grid布局
-    .card-list,
-    .video-list {
-        width: 100% !important;
-        display: grid !important;
-        grid-gap: 20px !important;
-        grid-column: span 5 !important;
-        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
-    }
-    .card-list .video-card,
-    .video-list .video-card {
-        display: unset !important;
-        width: unset !important;
-        height: unset !important;
-        margin-right: unset !important;
-        margin-bottom: unset !important;
-    }
-    .card-list .video-card .video-card__content,
-    .video-list .video-card .video-card__content {
-        background: none;
-        width: unset !important;
-        height: unset !important;
-        margin: 0 !important;
-        border-radius: 6px !important;
-        overflow: hidden !important;
-    }
-    .card-list .video-card .video-card__info,
-    .video-list .video-card .video-card__info {
-        margin-top: 8px !important;
-        font-size: 14px;
-        padding: 0 !important;
-    }
-    .card-list .video-card .video-card__info .rcmd-tag,
-    .video-list .video-card .video-card__info .rcmd-tag {
-        display: none !important;
-    }
-    .card-list .video-card .video-card__info .video-name,
-    .video-list .video-card .video-card__info .video-name {
-        font-weight: normal !important;
-        margin-bottom: 8px !important;
-        font-size: 15px !important;
-        line-height: 22px !important;
-        height: 44px !important;
-        overflow: hidden !important;
-    }
-    .card-list .video-card .video-card__info .up-name,
-    .video-list .video-card .video-card__info .up-name {
-        margin: unset !important;
-        font-size: 14px !important;
-        text-wrap: nowrap !important;
-    }
-    .card-list .video-card .video-card__info > div,
-    .video-list .video-card .video-card__info > div {
-        display: flex !important;
-        justify-content: space-between !important;
-    }
-    .card-list .video-card .video-card__info .video-stat .play-text,
-    .video-list .video-card .video-card__info .video-stat .play-text,
-    .card-list .video-card .video-card__info .video-stat .like-text,
-    .video-list .video-card .video-card__info .video-stat .like-text {
-        text-wrap: nowrap !important;
-    }
-
-    // 排行榜, grid布局
-    .rank-list {
-        width: 100% !important;
-        display: grid !important;
-        grid-gap: 20px !important;
-        grid-column: span 5 !important;
-        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
-    }
-    .rank-list .rank-item {
-        display: unset !important;
-        width: unset !important;
-        height: unset !important;
-        margin-right: unset !important;
-        margin-bottom: unset !important;
-    }
-    .rank-list .rank-item > .content {
-        display: unset !important;
-        padding: unset !important;
-    }
-    .rank-list .rank-item > .content > .img {
-        background: none;
-        width: unset !important;
-        height: unset !important;
-        margin: 0 !important;
-        border-radius: 6px !important;
-        overflow: hidden !important;
-    }
-    .rank-list .rank-item > .content > .img .num {
-        font-size: 18px;
-        zoom: 1.2;
-    }
-    .rank-list .rank-item > .content > .info {
-        margin-top: 8px !important;
-        margin-left: unset !important;
-        padding: 0 !important;
-        font-size: 14px;
-        height: unset !important;
-    }
-    .rank-list .rank-item > .content > .info .title {
-        height: 44px !important;
-        line-height: 22px !important;
-        font-weight: 500 !important;
-        font-size: 15px !important;
-        overflow: hidden !important;
-    }
-    .rank-list .rank-item > .content > .info .detail {
-        display: flex !important;
-        justify-content: space-between !important;
-        align-items: center !important;
-        margin-top: 8px !important;
-    }
-    .rank-list .rank-item > .content > .info .detail > a .up-name {
-        margin: unset !important;
-        font-size: 14px;
-        text-wrap: nowrap !important;
-    }
-    .rank-list .rank-item > .content > .info .detail > .detail-state .data-box {
-        line-height: unset !important;
-        margin: 0 12px 0 0;
-        text-wrap: nowrap !important;
-    }
-    .rank-list .rank-item > .content > .info .detail > .detail-state .data-box:nth-child(2) {
-        margin: 0 !important;
-    }
-    .rank-list .rank-item > .content .more-data {
-        display: none !important;
-    }
+    @include grid($count: 5);
+    @include hide-danmaku;
 }
 
-// 强制使用 6 列布局 默认屏蔽Tag和简介
+// 强制使用 6 列布局
 html[popular-layout-6-column] {
-    .cm-module {
-        display: none !important;
-    }
-
-    // 页面宽度
-    @media (width >= 1300px) and (width <= 1399.9px) {
-        .popular-container {
-            max-width: 1180px !important;
-        }
-    }
-    @media (width <= 1139.9px) {
-        .popular-container {
-            max-width: 1020px !important;
-        }
-    }
-
-    // 布局高度
-    .rank-container .rank-tab-wrap {
-        margin-bottom: 0 !important;
-        padding: 10px 0 !important;
-    }
-    .nav-tabs {
-        height: 70px !important;
-    }
-    .popular-list {
-        padding: 10px 0 0 !important;
-    }
-    .video-list {
-        margin-top: 15px !important;
-    }
-
-    // 屏蔽 Tips
-    .popular-list .popular-tips,
-    .rank-container .rank-tips,
-    .history-list .history-tips {
-        display: none !important;
-    }
-
-    // 屏蔽 Hint
-    .popular-list .popular-tips,
-    .weekly-list .weekly-hint,
-    .history-list .history-hint {
-        display: none !important;
-    }
-
-    // 通用：综合热门, 每周必看, 入站必刷, grid布局
-    .card-list,
-    .video-list {
-        width: 100% !important;
-        display: grid !important;
-        grid-gap: 20px !important;
-        grid-column: span 6 !important;
-        grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
-    }
-    .card-list .video-card,
-    .video-list .video-card {
-        display: unset !important;
-        width: unset !important;
-        height: unset !important;
-        margin-right: unset !important;
-        margin-bottom: unset !important;
-    }
-    .card-list .video-card .video-card__content,
-    .video-list .video-card .video-card__content {
-        background: none;
-        width: unset !important;
-        height: unset !important;
-        margin: 0 !important;
-        border-radius: 6px !important;
-        overflow: hidden !important;
-    }
-    .card-list .video-card .video-card__info,
-    .video-list .video-card .video-card__info {
-        margin-top: 8px !important;
-        font-size: 14px;
-        padding: 0 !important;
-    }
-    .card-list .video-card .video-card__info .rcmd-tag,
-    .video-list .video-card .video-card__info .rcmd-tag {
-        display: none !important;
-    }
-    .card-list .video-card .video-card__info .video-name,
-    .video-list .video-card .video-card__info .video-name {
-        font-weight: normal !important;
-        margin-bottom: 8px !important;
-        font-size: 15px !important;
-        line-height: 22px !important;
-        height: 44px !important;
-        overflow: hidden !important;
-    }
-    .card-list .video-card .video-card__info .up-name,
-    .video-list .video-card .video-card__info .up-name {
-        margin: unset !important;
-        font-size: 14px !important;
-        text-wrap: nowrap !important;
-    }
-    .card-list .video-card .video-card__info > div,
-    .video-list .video-card .video-card__info > div {
-        display: flex !important;
-        justify-content: space-between !important;
-    }
-    .card-list .video-card .video-card__info .video-stat .play-text,
-    .video-list .video-card .video-card__info .video-stat .play-text,
-    .card-list .video-card .video-card__info .video-stat .like-text,
-    .video-list .video-card .video-card__info .video-stat .like-text {
-        text-wrap: nowrap !important;
-    }
-
-    // 排行榜, grid布局
-    .rank-list {
-        width: 100% !important;
-        display: grid !important;
-        grid-gap: 20px !important;
-        grid-column: span 6 !important;
-        grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
-    }
-    .rank-list .rank-item {
-        display: unset !important;
-        width: unset !important;
-        height: unset !important;
-        margin-right: unset !important;
-        margin-bottom: unset !important;
-    }
-    .rank-list .rank-item > .content {
-        display: unset !important;
-        padding: unset !important;
-    }
-    .rank-list .rank-item > .content > .img {
-        background: none;
-        width: unset !important;
-        height: unset !important;
-        margin: 0 !important;
-        border-radius: 6px !important;
-        overflow: hidden !important;
-    }
-    .rank-list .rank-item > .content > .img .num {
-        font-size: 18px;
-        zoom: 1.1;
-    }
-    .rank-list .rank-item > .content > .info {
-        margin-top: 8px !important;
-        margin-left: unset !important;
-        padding: 0 !important;
-        font-size: 14px;
-        height: unset !important;
-    }
-    .rank-list .rank-item > .content > .info .title {
-        height: 44px !important;
-        line-height: 22px !important;
-        font-weight: 500 !important;
-        font-size: 15px !important;
-        overflow: hidden !important;
-    }
-    .rank-list .rank-item > .content > .info .detail {
-        display: flex !important;
-        justify-content: space-between !important;
-        align-items: center !important;
-        margin-top: 8px !important;
-    }
-    .rank-list .rank-item > .content > .info .detail > a .up-name {
-        margin: unset !important;
-        font-size: 14px;
-        text-wrap: nowrap !important;
-    }
-    .rank-list .rank-item > .content > .info .detail > .detail-state .data-box {
-        line-height: unset !important;
-        margin: 0 12px 0 0;
-        text-wrap: nowrap !important;
-    }
-    .rank-list .rank-item > .content > .info .detail > .detail-state .data-box:nth-child(2) {
-        margin: 0 !important;
-    }
-    .rank-list .rank-item > .content .more-data {
-        display: none !important;
-    }
+    @include grid($count: 6);
+    @include hide-danmaku;
 }

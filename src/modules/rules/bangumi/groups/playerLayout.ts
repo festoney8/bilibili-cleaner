@@ -1,6 +1,5 @@
 import { unsafeWindow } from '$'
 import { Item } from '@/types/item'
-import { waitForEle } from '@/utils/tool'
 
 let webScroll = false
 let fullScroll = false
@@ -19,6 +18,67 @@ const enableTuneVolume = () => {
     if (!(webScroll && fullScroll)) {
         window.removeEventListener('mousewheel', fn, { capture: true })
         window.removeEventListener('DOMMouseScroll', fn, { capture: true })
+    }
+}
+
+// 全屏可滚动 = 网页全屏功能 + html/body元素申请全屏
+const toggleFullScreen = () => {
+    const fullScreenStatus = (): 'ele' | 'f11' | 'not' => {
+        if (document.fullscreenElement) {
+            return 'ele' // 由元素申请的全屏
+        }
+        if (window.innerWidth === screen.width && window.innerHeight === screen.height) {
+            return 'f11' // 用户F11的全屏
+        }
+        return 'not' // 非全屏
+    }
+
+    const isWebScreen = (): boolean => {
+        return !!document.querySelector("#bilibili-player [data-screen='web']")
+    }
+
+    switch (fullScreenStatus()) {
+        case 'ele':
+            document.exitFullscreen().then().catch()
+            if (isWebScreen()) {
+                unsafeWindow.player?.requestStatue(0)
+            }
+            break
+        case 'f11':
+            unsafeWindow.player?.requestStatue(0)
+            break
+        case 'not':
+            document.documentElement.requestFullscreen().then().catch()
+            if (!isWebScreen()) {
+                unsafeWindow.player?.requestStatue(2)
+            }
+            window.scrollTo(0, 0)
+            break
+    }
+}
+
+// 拦截全屏按钮单击
+const handleFullScreenClick = (e: MouseEvent) => {
+    const target = e.target as HTMLElement
+    if (
+        target.closest('#bilibili-player .bpx-player-ctrl-full') ||
+        (target.classList.contains('bpx-player-ctrl-full') && target.classList.contains('#bilibili-player'))
+    ) {
+        e.stopImmediatePropagation()
+        toggleFullScreen()
+    }
+}
+
+// 拦截双击全屏
+const handleFullScreenDblClick = (e: MouseEvent) => {
+    const target = e.target as HTMLElement
+    if (
+        target.closest('#bilibili-player .bpx-player-video-perch') ||
+        (target.classList.contains('bpx-player-video-perch') && target.closest('#bilibili-player'))
+    ) {
+        e.stopImmediatePropagation()
+        document.querySelector<HTMLVideoElement>('#bilibili-player video')?.pause()
+        toggleFullScreen()
     }
 }
 
@@ -54,19 +114,6 @@ export const bangumiPlayerLayoutItems: Item[] = [
         enableFn: async () => {
             disableTuneVolume()
             webScroll = true
-
-            // 监听网页全屏按钮出现
-            waitForEle(document.body, '.bpx-player-ctrl-web', (node: HTMLElement): boolean => {
-                return node.className.includes('bpx-player-ctrl-web')
-            }).then((webBtn) => {
-                if (webBtn) {
-                    webBtn.addEventListener('click', () => {
-                        if (webBtn.classList.contains('bpx-state-entered')) {
-                            window.scrollTo(0, 0)
-                        }
-                    })
-                }
-            })
         },
         disableFn: () => {
             enableTuneVolume()
@@ -82,85 +129,15 @@ export const bangumiPlayerLayoutItems: Item[] = [
         enableFn: async () => {
             disableTuneVolume()
             fullScroll = true
-
-            let cnt = 0
-            const id = setInterval(() => {
-                const webBtn = document.body.querySelector('#bilibili-player .bpx-player-ctrl-web') as HTMLElement
-                const fullBtn = document.body.querySelector('#bilibili-player .bpx-player-ctrl-full') as HTMLElement
-                if (webBtn && fullBtn) {
-                    clearInterval(id)
-
-                    const isFullScreen = (): 'ele' | 'f11' | 'not' => {
-                        if (document.fullscreenElement) {
-                            return 'ele' // 由元素申请的全屏
-                        } else if (window.innerWidth === screen.width && window.innerHeight === screen.height) {
-                            return 'f11' // 用户F11的全屏
-                        } else {
-                            return 'not' // 非全屏
-                        }
-                    }
-
-                    const isWebScreen = (): boolean => {
-                        return webBtn.classList.contains('bpx-state-entered')
-                    }
-
-                    // 全屏可滚动 = 网页全屏功能 + html/body元素申请全屏
-                    const newFullBtn = fullBtn.cloneNode(true)
-                    const fn = () => {
-                        switch (isFullScreen()) {
-                            case 'ele':
-                                if (isWebScreen()) {
-                                    // 退出网页全屏，自动退出全屏
-                                    webBtn.click()
-                                } else {
-                                    document.exitFullscreen().then().catch()
-                                }
-                                break
-                            case 'f11':
-                                // f11全屏模式
-                                webBtn.click()
-                                break
-                            case 'not':
-                                // 申请可滚动全屏
-                                document.documentElement.requestFullscreen().then().catch()
-                                if (!isWebScreen()) {
-                                    webBtn.click()
-                                }
-                                window.scrollTo(0, 0)
-                                break
-                        }
-                    }
-                    newFullBtn.addEventListener('click', fn)
-                    fullBtn.parentElement?.replaceChild(newFullBtn, fullBtn)
-
-                    // 双击全屏
-                    let cnt2 = 0
-                    const id2 = setInterval(() => {
-                        const perchEl = document.querySelector('#bilibili-player .bpx-player-video-perch')
-                        if (perchEl) {
-                            clearInterval(id2)
-                            perchEl.addEventListener(
-                                'dblclick',
-                                (event) => {
-                                    document.querySelector<HTMLVideoElement>('#bilibili-player video')?.pause()
-                                    event.stopPropagation()
-                                    fn()
-                                },
-                                true,
-                            )
-                        }
-                        cnt2++ > 40 && clearInterval(id2)
-                    }, 250)
-                } else {
-                    cnt++ > 40 && clearInterval(id)
-                }
-            }, 250)
+            document.addEventListener('click', handleFullScreenClick, true)
+            document.addEventListener('dblclick', handleFullScreenDblClick, true)
         },
         disableFn: () => {
             enableTuneVolume()
             fullScroll = false
+            document.removeEventListener('click', handleFullScreenClick, true)
+            document.removeEventListener('dblclick', handleFullScreenDblClick, true)
         },
-        enableFnRunAt: 'document-end',
     },
     {
         type: 'switch',

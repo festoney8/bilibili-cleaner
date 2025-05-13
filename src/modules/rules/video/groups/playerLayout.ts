@@ -155,7 +155,7 @@ export const videoPlayerLayoutItems: Item[] = [
     {
         type: 'number',
         id: 'normalscreen-width',
-        name: '普通播放 视频宽度调节（-1禁用）',
+        name: '普通播放宽度调节（-1禁用）',
         minValue: -1,
         maxValue: 100,
         step: 0.1,

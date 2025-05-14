@@ -227,32 +227,30 @@
     --Lb7_rgb: 88, 177, 212;
 }
 
-@mixin bg-dark() {
-    background-color: #17181a;
+@mixin base() {
+    color-scheme: dark;
+    ::selection {
+        background-color: rgb(#51b1ff, 0.5);
+        color: white;
+    }
+    &,
+    body {
+        background-color: #17181a;
+    }
 }
 
 // 通用
 html[common-theme-dark-common] {
-    color-scheme: dark;
-    &,
-    body {
-        @include bg-dark;
-    }
+    @include base;
 }
 
 // 动态页
 html[common-theme-dark-dynamic] {
-    color-scheme: dark;
-
     // 改色
     --bg1: var(--Ga11) !important;
     --bg2: var(--Ga12) !important;
 
-    // 背景
-    &,
-    body {
-        @include bg-dark;
-    }
+    @include base;
 
     // 壁纸
     #app .bg {
@@ -276,7 +274,7 @@ html[common-theme-dark-dynamic] {
 
 // 直播页
 html[common-theme-dark-live] {
-    color-scheme: dark;
+    @include base;
 
     // 顶栏
     .link-navbar-ctnr,
@@ -302,12 +300,7 @@ html[common-theme-dark-live] {
 
 // 消息页
 html[common-theme-dark-message] {
-    color-scheme: dark;
-
-    &,
-    body {
-        @include bg-dark;
-    }
+    @include base;
 
     .message-bg {
         display: none !important;

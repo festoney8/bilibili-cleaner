@@ -70,8 +70,13 @@ const selectedOption = ref(currOption ?? options[0])
 watch(selectedOption, (newSelected) => {
     try {
         for (const option of options) {
-            if (option.value === newSelected.value && newSelected.value !== item.disableValue) {
-                document.documentElement.setAttribute(option.value, '')
+            if (option.value === newSelected.value) {
+                if (option.fn) {
+                    option.fn()?.then().catch()
+                }
+                if (newSelected.value !== item.disableValue) {
+                    document.documentElement.setAttribute(option.value, '')
+                }
             } else {
                 document.documentElement.removeAttribute(option.value)
             }

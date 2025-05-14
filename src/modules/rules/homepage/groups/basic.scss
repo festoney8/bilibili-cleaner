@@ -169,7 +169,7 @@ html[homepage-hide-sticky-header] {
 
     // 不可添加important, 否则与Evolved的黑暗模式冲突
     #nav-searchform {
-        background: #f1f2f3;
+        background: var(--bg3);
     }
     #nav-searchform:hover {
         background-color: var(--bg1) !important;

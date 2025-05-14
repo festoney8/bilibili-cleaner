@@ -1,11 +1,30 @@
 import { Item } from '@/types/item'
 import { isPageDynamic, isPageLive, isPageMessage } from '@/utils/pageType'
+import { BiliCleanerStorage } from '@/utils/storage'
 import { usePreferredDark } from '@vueuse/core'
 import { useCookies } from '@vueuse/integrations/useCookies'
-import { watch } from 'vue'
+import { ref, watch } from 'vue'
+
+// 夜间模式状态
+export const isDarkMode = ref(false)
+export const toggleDarkMode = async () => {
+    if (isDarkMode.value) {
+        await disableDarkMode()
+        if (BiliCleanerStorage.get('common-theme-dark') !== 'common-theme-dark-off') {
+            BiliCleanerStorage.set('common-theme-dark', 'common-theme-dark-off')
+        }
+    } else {
+        await enableDarkMode()
+        if (BiliCleanerStorage.get('common-theme-dark') !== 'common-theme-dark-on') {
+            BiliCleanerStorage.set('common-theme-dark', 'common-theme-dark-on')
+        }
+    }
+}
 
 // 启用夜间模式
 const enableDarkMode = async () => {
+    isDarkMode.value = true
+
     // 直播页设定夜间模式, 拦截其他代码修改lab-style
     if (isPageLive()) {
         document.documentElement.setAttribute('common-theme-dark-live', '')
@@ -45,6 +64,8 @@ const enableDarkMode = async () => {
 
 // 禁用夜间模式
 const disableDarkMode = async () => {
+    isDarkMode.value = false
+
     document.documentElement.removeAttribute('common-theme-dark-live')
     document.documentElement.removeAttribute('common-theme-dark-dynamic')
     document.documentElement.removeAttribute('common-theme-dark-message')

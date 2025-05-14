@@ -3,6 +3,7 @@ import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import App from './App.vue'
 import { loadModules } from './modules'
+import { toggleDarkMode } from './modules/rules/common/groups/theme'
 import {
     useCommentFilterPanelStore,
     useDynamicFilterPanelStore,
@@ -13,17 +14,7 @@ import {
 import css from './style.css?inline'
 import { waitForBody } from './utils/init'
 import { error, log } from './utils/logger'
-import {
-    isPageBangumi,
-    isPageChannel,
-    isPageDynamic,
-    isPageHomepage,
-    isPagePlaylist,
-    isPagePopular,
-    isPageSearch,
-    isPageSpace,
-    isPageVideo,
-} from './utils/pageType'
+import { isPageHomepage } from './utils/pageType'
 
 const main = () => {
     // 创建插件面板用shadowDOM节点
@@ -77,47 +68,24 @@ const menu = () => {
     const dynamicStore = useDynamicFilterPanelStore()
     const sideBtnStore = useSideBtnStore()
 
-    GM_registerMenuCommand('✅ 页面净化优化', () => {
-        ruleStore.isShow ? ruleStore.hide() : ruleStore.show()
-    })
-    if (
-        isPageHomepage() ||
-        isPageVideo() ||
-        isPagePlaylist() ||
-        isPagePopular() ||
-        isPageChannel() ||
-        isPageSearch() ||
-        isPageSpace()
-    ) {
-        GM_registerMenuCommand('✅ 视频过滤设置', () => {
-            videoStore.isShow ? videoStore.hide() : videoStore.show()
-        })
+    GM_registerMenuCommand('✅ 页面净化优化', ruleStore.toggle)
+    if (videoStore.isPageValid()) {
+        GM_registerMenuCommand('✅ 视频过滤设置', videoStore.toggle)
     } else {
-        GM_registerMenuCommand('🚫 视频过滤设置', () => {
-            alert('[bilibili-cleaner] 本页面不支持视频过滤')
-        })
+        GM_registerMenuCommand('🚫 视频过滤设置', () => alert('[bilibili-cleaner] 本页面不支持视频过滤'))
     }
-    if (isPageVideo() || isPageBangumi() || isPageDynamic() || isPageSpace() || isPagePlaylist()) {
-        GM_registerMenuCommand('✅ 评论过滤设置', () => {
-            commentStore.isShow ? commentStore.hide() : commentStore.show()
-        })
+    if (commentStore.isPageValid()) {
+        GM_registerMenuCommand('✅ 评论过滤设置', commentStore.toggle)
     } else {
-        GM_registerMenuCommand('🚫 评论过滤设置', () => {
-            alert('[bilibili-cleaner] 本页面不支持评论过滤')
-        })
+        GM_registerMenuCommand('🚫 评论过滤设置', () => alert('[bilibili-cleaner] 本页面不支持评论过滤'))
     }
-    if (isPageDynamic() || isPageSpace()) {
-        GM_registerMenuCommand('✅ 动态过滤设置', () => {
-            dynamicStore.isShow ? dynamicStore.hide() : dynamicStore.show()
-        })
+    if (dynamicStore.isPageValid()) {
+        GM_registerMenuCommand('✅ 动态过滤设置', dynamicStore.toggle)
     } else {
-        GM_registerMenuCommand('🚫 动态过滤设置', () => {
-            alert('[bilibili-cleaner] 本页面不支持动态过滤')
-        })
+        GM_registerMenuCommand('🚫 动态过滤设置', () => alert('[bilibili-cleaner] 本页面不支持动态过滤'))
     }
-    GM_registerMenuCommand('⚡ 快捷按钮开关', () => {
-        sideBtnStore.isShow ? sideBtnStore.hide() : sideBtnStore.show()
-    })
+    GM_registerMenuCommand('⚡ 夜间模式开关', toggleDarkMode)
+    GM_registerMenuCommand('⚡ 快捷按钮开关', sideBtnStore.toggle)
 }
 
 try {

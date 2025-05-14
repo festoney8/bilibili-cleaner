@@ -1,63 +1,33 @@
 <template>
     <div
+        class="group fixed flex flex-col justify-end text-opacity-50 will-change-[right,bottom] hover:text-opacity-100"
         v-if="sideBtnStore.isShow"
+        ref="target"
         :style="{ right: btnPos.right + 'px', bottom: btnPos.bottom + 'px' }"
-        class="group fixed flex flex-col justify-end text-black text-opacity-50 will-change-[right,bottom] hover:text-opacity-100"
-        :class="{
-            'z-[2000]': isPageLive() || isPageHomepage() || isPageChannel() || isPagePopular(),
-            'z-[100]': !isPageLive() && !isPageHomepage() && !isPageChannel() && !isPagePopular(),
-        }"
+        :class="[isDarkMode ? 'text-white' : 'text-black', isPageBangumi() || isPageVideo() ? 'z-[100]' : 'z-[2000]']"
     >
         <div
-            v-if="isPageDynamic()"
-            class="mt-1 hidden h-10 w-10 cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white transition-colors hover:border-none hover:bg-[#00AEEC] hover:text-white group-hover:flex"
-            @click="dynamicStore.isShow ? dynamicStore.hide() : dynamicStore.show()"
+            class="mt-1 h-10 w-10 cursor-pointer items-center justify-center rounded-lg border transition-colors hover:border-none hover:bg-[#00AEEC] hover:text-white"
+            v-for="(btn, index) in buttons.filter((btn) => btn.isValid)"
+            :key="index"
+            :class="[
+                // 主题
+                isDarkMode ? 'border-[#2f3134] bg-[#242628]' : 'border-gray-200 bg-white',
+                // 显示
+                btn.defaultHidden && !isDragging ? 'hidden group-hover:flex' : 'flex',
+            ]"
+            @click="btn.click()"
         >
             <div>
-                <p class="select-none text-center text-[13px] leading-4">动态</p>
-                <p class="select-none text-center text-[13px] leading-4">过滤</p>
-            </div>
-        </div>
-        <div
-            v-if="isPageVideo() || isPageBangumi() || isPagePlaylist() || isPageDynamic() || isPageSpace()"
-            class="mt-1 hidden h-10 w-10 cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white transition-colors hover:border-none hover:bg-[#00AEEC] hover:text-white group-hover:flex"
-            @click="commentStore.isShow ? commentStore.hide() : commentStore.show()"
-        >
-            <div>
-                <p class="select-none text-center text-[13px] leading-4">评论</p>
-                <p class="select-none text-center text-[13px] leading-4">过滤</p>
-            </div>
-        </div>
-        <div
-            v-if="
-                isPageVideo() ||
-                isPageChannel() ||
-                isPageHomepage() ||
-                isPagePlaylist() ||
-                isPageSearch() ||
-                isPagePopular()
-            "
-            class="mt-1 hidden h-10 w-10 cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white transition-colors hover:border-none hover:bg-[#00AEEC] hover:text-white group-hover:flex"
-            @click="videoStore.isShow ? videoStore.hide() : videoStore.show()"
-        >
-            <div>
-                <p class="select-none text-center text-[13px] leading-4">视频</p>
-                <p class="select-none text-center text-[13px] leading-4">过滤</p>
-            </div>
-        </div>
-        <div
-            ref="target"
-            class="mt-1 flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white transition-colors hover:border-none hover:bg-[#00AEEC] hover:text-white"
-            @click="!isDragging && (ruleStore.isShow ? ruleStore.hide() : ruleStore.show())"
-        >
-            <div>
-                <p class="select-none text-center text-[13px] leading-4">页面</p>
-                <p class="select-none text-center text-[13px] leading-4">净化</p>
+                <p class="select-none text-center text-[13px] leading-4">{{ btn.text.value.substring(0, 2) }}</p>
+                <p class="select-none text-center text-[13px] leading-4">{{ btn.text.value.substring(2, 4) }}</p>
             </div>
         </div>
     </div>
 </template>
+
 <script setup lang="ts">
+import { isDarkMode, toggleDarkMode } from '@/modules/rules/common/groups/theme'
 import {
     useCommentFilterPanelStore,
     useDynamicFilterPanelStore,
@@ -65,20 +35,9 @@ import {
     useSideBtnStore,
     useVideoFilterPanelStore,
 } from '@/stores/view'
-import {
-    isPageBangumi,
-    isPageChannel,
-    isPageDynamic,
-    isPageHomepage,
-    isPageLive,
-    isPagePlaylist,
-    isPagePopular,
-    isPageSearch,
-    isPageSpace,
-    isPageVideo,
-} from '@/utils/pageType'
+import { isPageBangumi, isPageVideo } from '@/utils/pageType'
 import { Position, useDraggable, useElementBounding, useStorage, useWindowSize } from '@vueuse/core'
-import { computed, ref } from 'vue'
+import { computed, Ref, ref } from 'vue'
 
 const ruleStore = useRulePanelStore()
 const videoStore = useVideoFilterPanelStore()
@@ -101,6 +60,49 @@ const maxPos = computed(() => {
         y: windowSize.height.value - height.value,
     }
 })
+
+// 功能按钮列表
+const buttons: {
+    text: Ref<string>
+    defaultHidden: boolean
+    isValid: boolean
+    click: () => void
+}[] = [
+    {
+        text: computed(() => (isDarkMode.value ? '日间模式' : '夜间模式')),
+        defaultHidden: true,
+        isValid: true,
+        click: toggleDarkMode,
+    },
+    {
+        text: ref('动态过滤'),
+        defaultHidden: true,
+        isValid: dynamicStore.isPageValid(),
+        click: () => dynamicStore.toggle(),
+    },
+    {
+        text: ref('评论过滤'),
+        defaultHidden: true,
+        isValid: commentStore.isPageValid(),
+        click: () => commentStore.toggle(),
+    },
+    {
+        text: ref('视频过滤'),
+        defaultHidden: true,
+        isValid: videoStore.isPageValid(),
+        click: () => videoStore.toggle(),
+    },
+    {
+        text: ref('页面净化'),
+        defaultHidden: false,
+        isValid: ruleStore.isPageValid(),
+        click: () => {
+            if (!isDragging.value) {
+                ruleStore.toggle()
+            }
+        },
+    },
+]
 
 let rAF = 0
 useDraggable(target, {

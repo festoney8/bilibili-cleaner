@@ -116,31 +116,31 @@ export const videoBasicItems: Item[] = [
         disableValue: 'disable',
         options: [
             {
-                id: 'disable',
+                value: 'disable',
                 name: '不使用',
             },
             {
-                id: 'b23.tv',
+                value: 'b23.tv',
                 name: 'b23.tv',
             },
             {
-                id: 'bili22.cn',
+                value: 'bili22.cn',
                 name: 'bili22.cn',
             },
             {
-                id: 'bili33.cn',
+                value: 'bili33.cn',
                 name: 'bili33.cn',
             },
             {
-                id: 'bili23.cn',
+                value: 'bili23.cn',
                 name: 'bili23.cn',
             },
             {
-                id: 'bili2233.cn',
+                value: 'bili2233.cn',
                 name: 'bili2233.cn',
             },
             {
-                id: 'bilibili.com',
+                value: 'bilibili.com',
                 name: 'bilibili.com',
             },
         ],

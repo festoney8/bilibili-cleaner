@@ -10,19 +10,19 @@ export const channelLayoutItems: Item[] = [
         disableValue: 'channel-layout-disable',
         options: [
             {
-                id: 'channel-layout-disable',
+                value: 'channel-layout-disable',
                 name: '未启用',
             },
             {
-                id: 'channel-layout-4-column',
+                value: 'channel-layout-4-column',
                 name: '4 列布局',
             },
             {
-                id: 'channel-layout-5-column',
+                value: 'channel-layout-5-column',
                 name: '5 列布局',
             },
             {
-                id: 'channel-layout-6-column',
+                value: 'channel-layout-6-column',
                 name: '6 列布局',
             },
         ],

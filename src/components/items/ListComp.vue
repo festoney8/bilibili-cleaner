@@ -64,19 +64,19 @@ import DescriptionComp from './DescriptionComp.vue'
 const item = defineProps<IListItem>()
 const options = item.options
 const currValue = BiliCleanerStorage.get(item.id, item.defaultValue)
-const currOption = options.find((v) => v.id === currValue)
+const currOption = options.find((v) => v.value === currValue)
 const selectedOption = ref(currOption ?? options[0])
 
 watch(selectedOption, (newSelected) => {
     try {
         for (const option of options) {
-            if (option.id === newSelected.id && newSelected.id !== item.disableValue) {
-                document.documentElement.setAttribute(option.id, '')
+            if (option.value === newSelected.value && newSelected.value !== item.disableValue) {
+                document.documentElement.setAttribute(option.value, '')
             } else {
-                document.documentElement.removeAttribute(option.id)
+                document.documentElement.removeAttribute(option.value)
             }
         }
-        BiliCleanerStorage.set<string>(item.id, newSelected.id)
+        BiliCleanerStorage.set<string>(item.id, newSelected.value)
     } catch (err) {
         error(`ListComp ${item.id} error`, err)
     }

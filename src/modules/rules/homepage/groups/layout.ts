@@ -10,19 +10,19 @@ export const homepageLayoutItems: Item[] = [
         disableValue: 'homepage-layout-disable',
         options: [
             {
-                id: 'homepage-layout-disable',
+                value: 'homepage-layout-disable',
                 name: '未启用',
             },
             {
-                id: 'homepage-layout-4-column',
+                value: 'homepage-layout-4-column',
                 name: '4 列布局',
             },
             {
-                id: 'homepage-layout-5-column',
+                value: 'homepage-layout-5-column',
                 name: '5 列布局',
             },
             {
-                id: 'homepage-layout-6-column',
+                value: 'homepage-layout-6-column',
                 name: '6 列布局',
             },
         ],

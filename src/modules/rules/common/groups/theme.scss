@@ -233,6 +233,7 @@
 
 // 通用
 html[common-theme-dark-common] {
+    color-scheme: dark;
     &,
     body {
         @include bg-dark;
@@ -241,6 +242,8 @@ html[common-theme-dark-common] {
 
 // 动态页
 html[common-theme-dark-dynamic] {
+    color-scheme: dark;
+
     // 改色
     --bg1: var(--Ga11) !important;
     --bg2: var(--Ga12) !important;
@@ -273,6 +276,8 @@ html[common-theme-dark-dynamic] {
 
 // 直播页
 html[common-theme-dark-live] {
+    color-scheme: dark;
+
     // 顶栏
     .link-navbar-ctnr,
     .link-navbar-wrap {
@@ -297,6 +302,8 @@ html[common-theme-dark-live] {
 
 // 消息页
 html[common-theme-dark-message] {
+    color-scheme: dark;
+
     &,
     body {
         @include bg-dark;

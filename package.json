@@ -13,7 +13,9 @@
         "@headlessui/vue": "^1.7.23",
         "@heroicons/vue": "^2.2.0",
         "@vueuse/core": "^12.8.2",
+        "@vueuse/integrations": "^13.1.0",
         "pinia": "^2.3.1",
+        "universal-cookie": "7",
         "vue": "^3.5.13"
     },
     "devDependencies": {

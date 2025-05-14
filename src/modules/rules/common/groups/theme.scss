@@ -1,4 +1,8 @@
-@mixin theme-dark() {
+// 配色方案
+:root[common-theme-dark-common],
+:root[common-theme-dark-dynamic],
+:root[common-theme-dark-live],
+:root[common-theme-dark-message] {
     --Ga0: #101011;
     --Ga0_s: #1e2022;
     --Ga0_t: #1e2022;
@@ -227,16 +231,6 @@
     background-color: #17181a;
 }
 
-// 配色方案
-:root:where(
-        [common-theme-dark-common],
-        [common-theme-dark-dynamic],
-        [common-theme-dark-live],
-        [common-theme-dark-message]
-    ) {
-    @include theme-dark;
-}
-
 // 通用
 html[common-theme-dark-common] {
     &,
@@ -252,6 +246,7 @@ html[common-theme-dark-dynamic] {
     --bg2: var(--Ga12) !important;
 
     // 背景
+    &,
     body {
         @include bg-dark;
     }

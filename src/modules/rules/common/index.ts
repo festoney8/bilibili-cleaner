@@ -8,14 +8,14 @@ import { commonHeaderWidthItems } from './groups/headerWidth'
 
 export const commonGroups: Group[] = [
     {
-        name: '全站通用 - 夜间模式',
-        fold: true,
-        items: commonThemeItems,
-    },
-    {
         name: '全站通用 - 基本功能',
         fold: true,
         items: commonBasicItems,
+    },
+    {
+        name: '全站通用 - 夜间模式',
+        fold: true,
+        items: commonThemeItems,
     },
     {
         name: '全站通用 - 顶栏 左侧',

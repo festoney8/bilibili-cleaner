@@ -1,6 +1,8 @@
 import { Item } from '@/types/item'
 import { isPageDynamic, isPageLive, isPageMessage } from '@/utils/pageType'
+import { usePreferredDark } from '@vueuse/core'
 import { useCookies } from '@vueuse/integrations/useCookies'
+import { watch } from 'vue'
 
 // 启用夜间模式
 const enableDarkMode = async () => {
@@ -15,11 +17,9 @@ const enableDarkMode = async () => {
             }
             return origSetAttribute.call(this, attr, value)
         }
-    }
-    if (isPageDynamic()) {
+    } else if (isPageDynamic()) {
         document.documentElement.setAttribute('common-theme-dark-dynamic', '')
-    }
-    if (isPageMessage()) {
+    } else if (isPageMessage()) {
         document.documentElement.setAttribute('common-theme-dark-message', '')
     } else {
         document.documentElement.setAttribute('common-theme-dark-common', '')
@@ -93,18 +93,18 @@ export const commonThemeItems: Item[] = [
                 value: 'common-theme-dark-auto',
                 name: '跟随系统',
                 fn: async () => {
-                    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                        await enableDarkMode()
-                    } else {
-                        await disableDarkMode()
-                    }
-                    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', async () => {
-                        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                            await enableDarkMode()
-                        } else {
-                            await disableDarkMode()
-                        }
-                    })
+                    const isDark = usePreferredDark()
+                    watch(
+                        isDark,
+                        async (v) => {
+                            if (v) {
+                                await enableDarkMode()
+                            } else {
+                                await disableDarkMode()
+                            }
+                        },
+                        { immediate: true },
+                    )
                 },
             },
         ],

@@ -33,5 +33,8 @@ export declare global {
             switchQuality?: function
             setFullscreenStatus?: function
         }
+        player?: {
+            requestStatue?: function
+        }
     }
 }

@@ -18,8 +18,6 @@ jobs:
                   ref: ${{ github.head_ref }}
             - name: install node and pnpm
               uses: pnpm/action-setup@v4
-              with:
-                  version: 9
             - run: pnpm install
 
             # build and save

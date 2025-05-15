@@ -10,7 +10,7 @@ html[homepage-hide-banner] {
     }
     .bili-header__bar,
     .bili-feed4 .bili-header .slide-down {
-        box-shadow: 0 2px 4px #00000014 !important;
+        box-shadow: 0 2px 4px rgb(128 128 128 / 0.15) !important;
     }
 
     // icon和文字颜色
@@ -169,7 +169,7 @@ html[homepage-hide-sticky-header] {
 
     // 不可添加important, 否则与Evolved的黑暗模式冲突
     #nav-searchform {
-        background: #f1f2f3;
+        background: var(--bg3);
     }
     #nav-searchform:hover {
         background-color: var(--bg1) !important;

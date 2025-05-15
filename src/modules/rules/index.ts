@@ -352,6 +352,11 @@ const loadStringItem = (item: IStringItem) => {
 
 const loadListItem = (item: IListItem) => {
     const value = BiliCleanerStorage.get(item.id, item.defaultValue)
+    for (const option of item.options) {
+        if (option.value === value && option.fn) {
+            option.fn()?.then().catch()
+        }
+    }
     if (value !== item.disableValue) {
         document.documentElement.setAttribute(value, '')
     }

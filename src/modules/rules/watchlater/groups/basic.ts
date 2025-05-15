@@ -10,15 +10,15 @@ export const watchlaterBasicItems: Item[] = [
         disableValue: 'watchlater-layout-disable',
         options: [
             {
-                id: 'watchlater-layout-disable',
+                value: 'watchlater-layout-disable',
                 name: '未启用',
             },
             {
-                id: 'watchlater-layout-4-column',
+                value: 'watchlater-layout-4-column',
                 name: '4 列布局',
             },
             {
-                id: 'watchlater-layout-5-column',
+                value: 'watchlater-layout-5-column',
                 name: '5 列布局',
             },
         ],

@@ -55,7 +55,7 @@ export const commonBasicItems: Item[] = [
         type: 'switch',
         id: 'beauty-scrollbar',
         name: '美化页面滚动条',
-        defaultEnable: true,
+        description: ['适用于旧版本浏览器'],
     },
     {
         type: 'switch',

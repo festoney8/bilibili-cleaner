@@ -1,3 +1,4 @@
+import { commonThemeItems } from '@/modules/rules/common/groups/theme.ts'
 import { Group } from '@/types/collection'
 import { commonBasicItems } from './groups/basic'
 import { commonHeaderCenterItems } from './groups/headerCenter'
@@ -10,6 +11,11 @@ export const commonGroups: Group[] = [
         name: '全站通用 - 基本功能',
         fold: true,
         items: commonBasicItems,
+    },
+    {
+        name: '全站通用 - 夜间模式',
+        fold: true,
+        items: commonThemeItems,
     },
     {
         name: '全站通用 - 顶栏 左侧',

@@ -6,7 +6,7 @@ html[homepage-hide-banner] {
     }
     .bili-header .bili-header__bar:not(.slide-down) {
         position: relative !important;
-        box-shadow: 0 2px 4px #00000014;
+        box-shadow: 0 2px 4px rgb(128 128 128 / 0.15) !important;
     }
     .bili-header__channel {
         margin-top: 5px !important;

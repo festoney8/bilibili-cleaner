@@ -154,7 +154,7 @@ class VideoFilterPopular implements IMainFilter {
         const timer = performance.now()
 
         // 提取元素
-        const selector = `.card-list .video-card, .video-list .video-card, .rank-list .rank-item`
+        const selector = `.card-list .video-card, .video-list .video-card, .rank-list:not(.pgc-list) .rank-item`
         const videos = Array.from(this.target.querySelectorAll<HTMLElement>(selector))
         if (!videos.length) {
             return

@@ -143,11 +143,14 @@ export interface IListItem extends IBaseItem {
 
     // 选项列表
     options: {
-        // id 与 GM value 对应
-        id: string
+        // value 与 GM value 对应
+        value: string
 
         // 选项名
         name: string
+
+        // 功能
+        fn?: () => Promise<void> | void
     }[]
 }
 

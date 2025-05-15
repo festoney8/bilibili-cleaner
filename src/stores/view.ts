@@ -1,3 +1,14 @@
+import {
+    isPageBangumi,
+    isPageChannel,
+    isPageDynamic,
+    isPageHomepage,
+    isPagePlaylist,
+    isPagePopular,
+    isPageSearch,
+    isPageSpace,
+    isPageVideo,
+} from '@/utils/pageType'
 import { useStorage } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
@@ -14,7 +25,11 @@ export const useRulePanelStore = defineStore('RulePanel', () => {
     const hide = () => {
         isShow.value = false
     }
-    return { isShow, show, hide }
+    const toggle = () => {
+        isShow.value = !isShow.value
+    }
+    const isPageValid = () => true
+    return { isShow, show, hide, toggle, isPageValid }
 })
 
 export const useVideoFilterPanelStore = defineStore('VideoFilterPanel', () => {
@@ -25,7 +40,21 @@ export const useVideoFilterPanelStore = defineStore('VideoFilterPanel', () => {
     const hide = () => {
         isShow.value = false
     }
-    return { isShow, show, hide }
+    const toggle = () => {
+        isShow.value = !isShow.value
+    }
+    const isPageValid = () => {
+        return (
+            isPageHomepage() ||
+            isPageVideo() ||
+            isPagePlaylist() ||
+            isPagePopular() ||
+            isPageChannel() ||
+            isPageSearch() ||
+            isPageSpace()
+        )
+    }
+    return { isShow, show, hide, toggle, isPageValid }
 })
 
 export const useCommentFilterPanelStore = defineStore('CommentFilterPanel', () => {
@@ -36,7 +65,13 @@ export const useCommentFilterPanelStore = defineStore('CommentFilterPanel', () =
     const hide = () => {
         isShow.value = false
     }
-    return { isShow, show, hide }
+    const toggle = () => {
+        isShow.value = !isShow.value
+    }
+    const isPageValid = () => {
+        return isPageVideo() || isPageBangumi() || isPageDynamic() || isPageSpace() || isPagePlaylist()
+    }
+    return { isShow, show, hide, toggle, isPageValid }
 })
 
 export const useDynamicFilterPanelStore = defineStore('DynamicFilterPanel', () => {
@@ -47,7 +82,13 @@ export const useDynamicFilterPanelStore = defineStore('DynamicFilterPanel', () =
     const hide = () => {
         isShow.value = false
     }
-    return { isShow, show, hide }
+    const toggle = () => {
+        isShow.value = !isShow.value
+    }
+    const isPageValid = () => {
+        return isPageDynamic() || isPageSpace()
+    }
+    return { isShow, show, hide, toggle, isPageValid }
 })
 
 // 快捷按钮
@@ -59,5 +100,8 @@ export const useSideBtnStore = defineStore('SideBtn', () => {
     const hide = () => {
         isShow.value = false
     }
-    return { isShow, show, hide }
+    const toggle = () => {
+        isShow.value = !isShow.value
+    }
+    return { isShow, show, hide, toggle }
 })

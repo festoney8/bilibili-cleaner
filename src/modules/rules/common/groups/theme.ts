@@ -1,23 +1,29 @@
 import { Item } from '@/types/item'
 import { isPageDynamic, isPageLive, isPageMessage, isPageSpace } from '@/utils/pageType'
 import { BiliCleanerStorage } from '@/utils/storage'
-import { usePreferredDark } from '@vueuse/core'
+import { useBroadcastChannel, usePreferredDark } from '@vueuse/core'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { ref, watch } from 'vue'
 
 // 夜间模式状态
 export const isDarkMode = ref(false)
+
+// 多标签页同步(无法跨二级域名)
+const { data, post } = useBroadcastChannel({ name: 'bili-cleaner-theme-channel' })
+
 export const toggleDarkMode = async () => {
     if (isDarkMode.value) {
         await disableDarkMode()
         if (BiliCleanerStorage.get('common-theme-dark') !== 'common-theme-dark-off') {
             BiliCleanerStorage.set('common-theme-dark', 'common-theme-dark-off')
         }
+        post('off')
     } else {
         await enableDarkMode()
         if (BiliCleanerStorage.get('common-theme-dark') !== 'common-theme-dark-on') {
             BiliCleanerStorage.set('common-theme-dark', 'common-theme-dark-on')
         }
+        post('on')
     }
 }
 
@@ -46,11 +52,15 @@ const enableDarkMode = async () => {
         document.documentElement.setAttribute('common-theme-dark-common', '')
     }
 
+    const style = document.querySelector('head link#__css-map__') as HTMLLinkElement
+    if (style?.href.includes('light.css')) {
+        style.href = style.href.replace('light.css', 'dark.css')
+    }
+
     const cookies = useCookies()
     if (cookies.get('theme_style') === 'dark') {
         return
     }
-    // 首次启用, 设置cookie, 修改样式
     const expires = new Date()
     expires.setDate(expires.getDate() + 3650)
     cookies.set('theme_style', 'dark', {
@@ -58,10 +68,6 @@ const enableDarkMode = async () => {
         domain: '.bilibili.com',
         expires: expires,
     })
-    const style = document.querySelector('head link#__css-map__') as HTMLLinkElement
-    if (style?.href.includes('light.css')) {
-        style.href = style.href.replace('light.css', 'dark.css')
-    }
 }
 
 // 禁用夜间模式
@@ -77,6 +83,11 @@ const disableDarkMode = async () => {
         document.documentElement.removeAttribute('lab-style')
     }
 
+    const style = document.querySelector('head link#__css-map__') as HTMLLinkElement
+    if (style?.href.includes('dark.css')) {
+        style.href = style.href.replace('dark.css', 'light.css')
+    }
+
     const cookies = useCookies()
     if (cookies.get('theme_style') === 'light') {
         return
@@ -88,11 +99,19 @@ const disableDarkMode = async () => {
         domain: '.bilibili.com',
         expires: expires,
     })
-    const style = document.querySelector('head link#__css-map__') as HTMLLinkElement
-    if (style?.href.includes('dark.css')) {
-        style.href = style.href.replace('dark.css', 'light.css')
-    }
 }
+
+// 监听状态切换
+watch(data, async () => {
+    if (data.value === 'on') {
+        isDarkMode.value = true
+        await enableDarkMode()
+    }
+    if (data.value === 'off') {
+        isDarkMode.value = false
+        await disableDarkMode()
+    }
+})
 
 export const commonThemeItems: Item[] = [
     {

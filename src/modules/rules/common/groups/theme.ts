@@ -1,5 +1,5 @@
 import { Item } from '@/types/item'
-import { isPageDynamic, isPageLive, isPageMessage } from '@/utils/pageType'
+import { isPageDynamic, isPageLive, isPageMessage, isPageSpace } from '@/utils/pageType'
 import { BiliCleanerStorage } from '@/utils/storage'
 import { usePreferredDark } from '@vueuse/core'
 import { useCookies } from '@vueuse/integrations/useCookies'
@@ -40,6 +40,8 @@ const enableDarkMode = async () => {
         document.documentElement.setAttribute('common-theme-dark-dynamic', '')
     } else if (isPageMessage()) {
         document.documentElement.setAttribute('common-theme-dark-message', '')
+    } else if (isPageSpace()) {
+        document.documentElement.setAttribute('common-theme-dark-space', '')
     } else {
         document.documentElement.setAttribute('common-theme-dark-common', '')
     }
@@ -69,6 +71,7 @@ const disableDarkMode = async () => {
     document.documentElement.removeAttribute('common-theme-dark-live')
     document.documentElement.removeAttribute('common-theme-dark-dynamic')
     document.documentElement.removeAttribute('common-theme-dark-message')
+    document.documentElement.removeAttribute('common-theme-dark-space')
     document.documentElement.removeAttribute('common-theme-dark-common')
     if (isPageLive()) {
         document.documentElement.removeAttribute('lab-style')

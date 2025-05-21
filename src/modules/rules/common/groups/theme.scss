@@ -253,9 +253,12 @@ html[common-theme-dark-dynamic] {
     @include base;
 
     // 壁纸
-    #app .bg {
-        background-color: var(--Wh0) !important;
-        background-image: unset !important;
+    #app {
+        > .bg,
+        > .bgc {
+            background-color: var(--Wh0) !important;
+            background-image: unset !important;
+        }
     }
 
     // 中栏UP列表文字颜色
@@ -310,5 +313,22 @@ html[common-theme-dark-message] {
     .message-box-shadow,
     .im-box-shadow {
         box-shadow: unset !important;
+    }
+}
+
+// 空间页
+html[common-theme-dark-space] {
+    @include base;
+    .header {
+        .toutu {
+            z-index: 1;
+            filter: brightness(80%);
+        }
+        .header-upinfo-bg-shadow {
+            z-index: 2;
+        }
+        .upinfo {
+            z-index: 3;
+        }
     }
 }

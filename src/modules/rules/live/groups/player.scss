@@ -97,7 +97,7 @@ html[live-page-gift-control-vm] {
     }
 
     // 补齐圆角, 不可important
-    #player-ctnr {
+    body:not(.pure_room_root) #player-ctnr {
         border-bottom-left-radius: 12px;
         border-bottom-right-radius: 12px;
         overflow: hidden;

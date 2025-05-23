@@ -6,6 +6,7 @@ import {
     isPageChannel,
     isPageDynamic,
     isPageHomepage,
+    isPageLive,
     isPagePlaylist,
     isPagePopular,
     isPageSearch,
@@ -23,6 +24,7 @@ import {
     dynamicFilterDynamicGroups,
     dynamicFilterDynamicHandler,
 } from './variety/dynamic/pages/dynamic'
+import { dynamicFilterHeaderEntry } from './variety/dynamic/pages/header'
 import { dynamicFilterSpaceEntry, dynamicFilterSpaceGroups } from './variety/dynamic/pages/space'
 import {
     videoFilterChannelEntry,
@@ -106,6 +108,12 @@ export const dynamicFilters: Filter[] = [
         groups: dynamicFilterSpaceGroups,
         entry: dynamicFilterSpaceEntry,
         checkFn: isPageSpace,
+    },
+    {
+        name: '顶栏 动态过滤',
+        groups: [],
+        entry: dynamicFilterHeaderEntry,
+        checkFn: () => (isPageLive() ? false : true),
     },
 ]
 

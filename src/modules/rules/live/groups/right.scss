@@ -73,6 +73,13 @@ html[live-page-convention-msg] {
     }
 }
 
+// 隐藏 XXX来了
+html[live-page-welcome-msg] {
+    .welcome-section-bottom {
+        display: none;
+    }
+}
+
 // 隐藏 用户排名
 html[live-page-rank-icon] {
     .chat-item .rank-icon {
@@ -113,6 +120,12 @@ html[live-page-chat-item-background-color] {
     .chat-item {
         background-color: unset !important;
         border-image-source: unset !important;
+        > div[style*='height: 62px']:has(+ .danmaku-item-left) {
+            display: none !important;
+        }
+        .danmaku-item-left br {
+            display: none !important;
+        }
     }
 }
 

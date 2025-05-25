@@ -26,6 +26,12 @@ export const liveRightItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'live-page-welcome-msg',
+        name: '隐藏 XXX来了',
+        defaultEnable: true,
+    },
+    {
+        type: 'switch',
         id: 'live-page-rank-icon',
         name: '隐藏 用户排名',
     },

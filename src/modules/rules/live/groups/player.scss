@@ -78,8 +78,11 @@ html[live-page-combo-danmaku] {
 
 // 隐藏 弹幕中的小表情
 html[live-page-clean-all-danmaku-small-emoji] {
-    .danmaku-item-container .bili-dm .bili-dm-emoji {
-        display: none !important;
+    .danmaku-item-container .bili-dm {
+        .bili-dm-emoji,
+        .bili-danmaku-x-dm-emoji {
+            display: none !important;
+        }
     }
 }
 

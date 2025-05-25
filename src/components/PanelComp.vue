@@ -56,13 +56,18 @@ const maxPos = computed(() => {
 })
 let rAF = 0
 const { style } = useDraggable(panel, {
+    // 在bewly首页iframe内位置异常，强制在左上角显示
     initialValue: {
-        x:
+        x: Math.max(
             windowSize.width.value / 2 -
-            Math.max((windowSize.width.value * props.widthPercent) / 100, props.minWidth) / 2,
-        y:
+                Math.max((windowSize.width.value * props.widthPercent) / 100, props.minWidth) / 2,
+            0,
+        ),
+        y: Math.max(
             windowSize.height.value / 2 -
-            Math.max((windowSize.height.value * props.heightPercent) / 100, props.minHeight) / 2,
+                Math.max((windowSize.height.value * props.heightPercent) / 100, props.minHeight) / 2,
+            0,
+        ),
     },
     handle: computed(() => bar.value),
     preventDefault: true,

@@ -28,3 +28,10 @@ html[watchlater-increase-font-size] {
         --bili-cover-card-progress-height: 3.5px;
     }
 }
+
+// 隐藏 新版反馈
+html[watchlater-hide-feedback] {
+    .right-side .feed_back {
+        display: none !important;
+    }
+}

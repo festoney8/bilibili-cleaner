@@ -156,8 +156,9 @@ html[live-page-brush-prompt] {
     }
 }
 
-// 隐藏 互动框 (倒计时互动)
-html[live-page-combo-card-countdown] {
+// 隐藏 互动框
+html[live-page-combo-card] {
+    // 倒计时互动
     #combo-card:has(.countDownBtn),
     .gift-wish-card-root {
         display: none !important;
@@ -165,24 +166,18 @@ html[live-page-combo-card-countdown] {
     .chat-history-panel {
         padding-bottom: 0 !important;
     }
-}
 
-// 隐藏 互动框 (他们都在说)
-html[live-page-combo-card] {
+    // 他们都在说
     #combo-card:has(.combo-tips) {
         display: none !important;
     }
-}
 
-// 隐藏 互动框 (找TA玩)
-html[live-page-service-card-container] {
+    // 找TA玩
     .play-together-service-card-container {
         display: none !important;
     }
-}
 
-// 隐藏 互动框 投票
-html[live-page-vote-card] {
+    // 投票
     .vote-card {
         display: none !important;
     }

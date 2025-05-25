@@ -79,26 +79,9 @@ export const liveRightItems: Item[] = [
     },
     {
         type: 'switch',
-        id: 'live-page-combo-card-countdown',
-        name: '隐藏 互动框 (倒计时互动)',
-        defaultEnable: true,
-    },
-    {
-        type: 'switch',
         id: 'live-page-combo-card',
-        name: '隐藏 互动框 (他们都在说)',
-        defaultEnable: true,
-    },
-    {
-        type: 'switch',
-        id: 'live-page-service-card-container',
-        name: '隐藏 互动框 (找TA玩)',
-        defaultEnable: true,
-    },
-    {
-        type: 'switch',
-        id: 'live-page-vote-card',
-        name: '隐藏 互动框 投票',
+        name: '隐藏 互动框',
+        description: ['包含倒计时、投票、找TA玩等'],
         defaultEnable: true,
     },
     {

@@ -368,8 +368,8 @@ html[hide-footer] {
     }
 }
 
-// 修复字体
-html[font-patch-live] {
+// 统一全站字体
+html[common-unify-font-live] {
     body,
     .gift-item,
     .feed-card,
@@ -379,7 +379,7 @@ html[font-patch-live] {
         font-weight: 400;
     }
 }
-html[font-patch-dynamic] {
+html[common-unify-font-dynamic] {
     .reply-item .root-reply-container .content-warp .user-info .user-name {
         font-family: 'PingFang SC', 'HarmonyOS_Medium', 'Helvetica Neue', 'Microsoft YaHei', sans-serif !important;
         font-weight: 500 !important;
@@ -390,7 +390,7 @@ html[font-patch-dynamic] {
         font-weight: 400;
     }
 }
-html[font-patch-popular] {
+html[common-unify-font-popular] {
     #internationalHeader,
     .international-header,
     .suggest-wrap,
@@ -404,13 +404,13 @@ html[font-patch-popular] {
         font-weight: 500 !important;
     }
 }
-html[font-patch-watchlater] {
+html[common-unify-font-watchlater] {
     body {
         font-family: 'PingFang SC', 'HarmonyOS_Regular', 'Helvetica Neue', 'Microsoft YaHei', sans-serif !important;
         font-weight: 400;
     }
 }
-html[font-patch-space] {
+html[common-unify-font-space] {
     body,
     .h .h-sign,
     .reply-item .root-reply-container .content-warp .user-info .user-name,

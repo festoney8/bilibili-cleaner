@@ -216,11 +216,16 @@ html[video-page-hide-right-container-section-subscribe] {
 
 // 相关视频 视频信息置底
 html[video-page-right-container-set-info-bottom] {
-    :is(.video-page-card-small, .video-page-operator-card-small) .card-box .info {
+    :is(.video-page-card-small, .video-page-operator-card-small, .recommend-list-container .video-card)
+        .card-box
+        .info {
         display: flex !important;
         flex-direction: column !important;
     }
-    :is(.video-page-card-small, .video-page-operator-card-small) .card-box .info .upname {
+    :is(.video-page-card-small, .video-page-operator-card-small, .recommend-list-container .video-card)
+        .card-box
+        .info
+        .upname {
         margin-top: auto !important;
     }
 }

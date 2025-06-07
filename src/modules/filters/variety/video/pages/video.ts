@@ -497,7 +497,7 @@ export const videoFilterVideoHandler: ContextMenuTargetHandler = (target: HTMLEl
     const menus: FilterContextMenu[] = []
     // UP主
     if (
-        target.closest('.right-container') &&
+        target.closest('.right-container, .recommend-list-container, .up-panel-container') &&
         (target.classList.contains('name') ||
             target.classList.contains('up-name') ||
             target.parentElement?.classList.contains('up-name') ||
@@ -552,7 +552,7 @@ export const videoFilterVideoHandler: ContextMenuTargetHandler = (target: HTMLEl
         }
     }
     // BVID
-    if (target.closest('.right-container') && target.classList.contains('title')) {
+    if (target.closest('.right-container, .recommend-list-container') && target.classList.contains('title')) {
         const url = target.parentElement?.getAttribute('href')
         if (url && mainFilter.videoBvidFilter.isEnable) {
             const bvid = matchBvid(url)

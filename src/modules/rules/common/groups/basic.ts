@@ -152,25 +152,24 @@ export const commonBasicItems: Item[] = [
     },
     {
         type: 'switch',
-        id: 'hide-footer',
-        name: '修复字体 (实验功能)',
+        id: 'common-unify-font',
+        name: '统一全站字体',
         defaultEnable: true,
-        // 根据当前页面选定attribute name
         attrName: ((): string | undefined => {
             if (isPageLive()) {
-                return 'font-patch-live'
+                return 'common-unify-font-live'
             }
             if (isPageDynamic()) {
-                return 'font-patch-dynamic'
+                return 'common-unify-font-dynamic'
             }
             if (isPagePopular()) {
-                return 'font-patch-popular'
+                return 'common-unify-font-popular'
             }
             if (isPageWatchlater()) {
-                return 'font-patch-watchlater'
+                return 'common-unify-font-watchlater'
             }
             if (isPageSpace()) {
-                return 'font-patch-space'
+                return 'common-unify-font-space'
             }
             return undefined
         })(),

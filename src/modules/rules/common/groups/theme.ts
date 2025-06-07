@@ -27,6 +27,9 @@ export const toggleDarkMode = async () => {
     }
 }
 
+// 是否禁止修改lab-style属性
+let labStyleLock = false
+
 // 启用夜间模式
 const enableDarkMode = async () => {
     isDarkMode.value = true
@@ -35,9 +38,10 @@ const enableDarkMode = async () => {
     if (isPageLive()) {
         document.documentElement.setAttribute('common-theme-dark-live', '')
         document.documentElement.setAttribute('lab-style', 'dark')
+        labStyleLock = true
         const origSetAttribute = Element.prototype.setAttribute
         Element.prototype.setAttribute = function (attr, value) {
-            if (this === document.documentElement && attr === 'lab-style') {
+            if (labStyleLock && this === document.documentElement && attr === 'lab-style') {
                 return origSetAttribute.call(this, attr, 'dark')
             }
             return origSetAttribute.call(this, attr, value)
@@ -79,8 +83,10 @@ const disableDarkMode = async () => {
     document.documentElement.removeAttribute('common-theme-dark-message')
     document.documentElement.removeAttribute('common-theme-dark-space')
     document.documentElement.removeAttribute('common-theme-dark-common')
+
     if (isPageLive()) {
-        document.documentElement.removeAttribute('lab-style')
+        labStyleLock = false
+        document.documentElement.setAttribute('lab-style', '')
     }
 
     const style = document.querySelector('head link#__css-map__') as HTMLLinkElement

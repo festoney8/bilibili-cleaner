@@ -110,7 +110,7 @@ html[homepage-hide-ad-card] main {
         ) {
         display: none !important;
     }
-    :is(.feed-card, .bili-video-card):not(:has(.bili-video-card__wrap, .bili-video-card__skeleton)) {
+    :is(.feed-card, .bili-video-card, .bili-feed-card):not(:has(.bili-video-card__wrap, .bili-video-card__skeleton)) {
         display: none !important;
     }
 
@@ -132,7 +132,7 @@ html[homepage-hide-ad-card] main {
     .recommended-container_floor-aside .container .feed-card:nth-of-type(n + 9) {
         display: inherit !important;
     }
-    .recommended-container_floor-aside .container.is-version8 > *:nth-of-type(n + 13) {
+    .recommended-container_floor-aside .container > *:nth-of-type(n + 13) {
         margin-top: 0 !important;
     }
     .recommended-container_floor-aside .container .feed-card:nth-of-type(n + 12) {

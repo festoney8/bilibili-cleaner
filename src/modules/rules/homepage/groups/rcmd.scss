@@ -162,8 +162,11 @@ html[homepage-simple-sub-area-card-recommend] main {
         box-shadow: unset !important;
         border: none !important;
     }
-    .single-card.floor-card .floor-card-inner:hover {
-        background: none !important;
+    .single-card.floor-card .floor-card-inner {
+        &,
+        &:hover {
+            background: none !important;
+        }
     }
 }
 

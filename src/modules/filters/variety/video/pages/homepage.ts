@@ -154,7 +154,7 @@ class VideoFilterHomepage implements IMainFilter {
         const timer = performance.now()
 
         // 顶部推荐位 + rcmd视频流
-        let selector = `:scope > :is(.feed-card, .bili-video-card.is-rcmd)`
+        let selector = `:scope > :is(.feed-card, .bili-video-card.is-rcmd, .bili-feed-card)`
         if (mode === 'incr') {
             selector += `:not([${settings.filterSign}])`
         }

@@ -147,7 +147,8 @@ html[homepage-hide-ad-card] main {
 html[homepage-hide-live-card-recommend] main {
     .bili-live-card,
     .bili-feed-card:has(.bili-live-card),
-    .floor-single-card:has(use[*|href$='#channel-live']) {
+    .floor-single-card:has([href^='//live.bilibili.com'], [href^='live.bilibili.com'], [href^='https://live.bilibili.com'])
+    {
         display: none !important;
     }
 }

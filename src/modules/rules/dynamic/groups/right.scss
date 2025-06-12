@@ -20,9 +20,10 @@ html[hide-dynamic-page-bili-dyn-ads] {
     }
 }
 
-// 隐藏 话题列表
+// 隐藏 热搜
 html[hide-dynamic-page-bili-dyn-topic-box] {
     .bili-dyn-topic-box,
+    .bili-dyn-search-trendings,
     .topic-panel {
         display: none !important;
     }

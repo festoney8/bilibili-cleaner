@@ -48,8 +48,10 @@ const enableDarkMode = async () => {
         }
     } else if (isPageDynamic()) {
         document.documentElement.setAttribute('common-theme-dark-dynamic', '')
+        document.documentElement.classList.add('bili_dark')
     } else if (isPageMessage()) {
         document.documentElement.setAttribute('common-theme-dark-message', '')
+        document.documentElement.classList.add('bili_dark')
     } else if (isPageSpace()) {
         document.documentElement.setAttribute('common-theme-dark-space', '')
     } else {
@@ -87,8 +89,9 @@ const disableDarkMode = async () => {
     if (isPageLive()) {
         labStyleLock = false
         document.documentElement.setAttribute('lab-style', '')
+    } else if (isPageDynamic() || isPageMessage()) {
+        document.documentElement.classList.remove('bili_dark')
     }
-
     const style = document.querySelector('head link#__css-map__') as HTMLLinkElement
     if (style?.href.includes('dark.css')) {
         style.href = style.href.replace('dark.css', 'light.css')
@@ -124,19 +127,27 @@ export const commonThemeItems: Item[] = [
         type: 'list',
         id: 'common-theme-dark',
         name: '夜间模式',
-        description: ['实验功能，仅对常用页面生效'],
-        defaultValue: 'common-theme-dark-off',
-        disableValue: 'common-theme-dark-off',
+        description: [
+            '实验功能，仅对常用页面生效',
+            '插件会接管夜间模式，官方默认时不接管',
+            '官方模式在顶栏头像菜单中设定',
+        ],
+        defaultValue: 'common-theme-dark-default',
+        disableValue: 'common-theme-dark-default',
         options: [
             {
                 value: 'common-theme-dark-off',
-                name: '禁用',
+                name: '日间',
                 fn: disableDarkMode,
             },
             {
                 value: 'common-theme-dark-on',
-                name: '启用',
+                name: '夜间',
                 fn: enableDarkMode,
+            },
+            {
+                value: 'common-theme-dark-default',
+                name: '官方默认',
             },
             {
                 value: 'common-theme-dark-auto',

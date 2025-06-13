@@ -37,7 +37,7 @@
             <textarea
                 v-model="editorData"
                 @keydown.stop
-                class="flex-1 resize-none overscroll-none rounded-md border-2 border-gray-300 p-2 text-[15px] outline-none focus:border-gray-400"
+                class="flex-1 resize-none overscroll-none rounded-md border-2 border-gray-300 bg-white p-2 text-[15px] outline-none focus:border-gray-400"
                 style="scrollbar-width: thin; scrollbar-color: #999 #00000000"
                 spellcheck="false"
                 placeholder="请输入内容..."

@@ -74,32 +74,24 @@ html[homepage-hide-recommend-swipe] {
         display: none !important;
     }
 
-    // 布局调整
-    .recommended-container_floor-aside .container > *:nth-of-type(5) {
-        margin-top: 0 !important;
-    }
-    .recommended-container_floor-aside .container > *:nth-of-type(6) {
-        margin-top: 0 !important;
-    }
-    .recommended-container_floor-aside .container > *:nth-of-type(7) {
-        margin-top: 0 !important;
-    }
-    .recommended-container_floor-aside .container > *:nth-of-type(n + 8) {
-        margin-top: 0 !important;
-    }
+    .recommended-container_floor-aside .container {
+        // 布局调整
+        > *:nth-of-type(5),
+        > *:nth-of-type(6),
+        > *:nth-of-type(7),
+        > *:nth-of-type(n + 8) {
+            margin-top: 0 !important;
+        }
 
-    // 完全展示10个推荐项
-    .recommended-container_floor-aside .container .feed-card:nth-of-type(n + 9) {
-        display: inherit !important;
-    }
-    .recommended-container_floor-aside .container.is-version8 > *:nth-of-type(n + 13) {
-        margin-top: 0 !important;
-    }
-    .recommended-container_floor-aside .container .feed-card:nth-of-type(n + 12) {
-        display: inherit !important;
-    }
-    .recommended-container_floor-aside .container .floor-single-card:first-of-type {
-        margin-top: 0 !important;
+        // 完全展示10个推荐项
+        .feed-card:nth-of-type(n + 9),
+        .feed-card:nth-of-type(n + 12) {
+            display: inherit !important;
+        }
+        > *:nth-of-type(n + 13),
+        .floor-single-card:first-of-type {
+            margin-top: 0 !important;
+        }
     }
 }
 
@@ -220,19 +212,19 @@ html[homepage-hide-adblock-tips] {
 
 // 恢复 原始动态按钮
 html[homepage-revert-channel-dynamic-icon] {
-    .bili-header__channel .channel-icons .icon-bg__dynamic picture {
-        display: none !important;
-    }
-    .bili-header__channel .channel-icons .icon-bg__dynamic svg {
-        display: none !important;
-    }
-    .bili-header__channel .channel-icons .icon-bg__dynamic::after {
-        content: '';
-        width: 25px;
-        height: 25px;
-        background-image: url('data:image/svg+xml,<svg width="22" height="23" viewBox="0 0 22 23" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-bg--icon" data-v-674f5b07=""> <path d="M6.41659 15.625C3.88528 15.625 1.83325 13.7782 1.83325 11.5H10.9999C10.9999 13.7782 8.94789 15.625 6.41659 15.625Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M15.125 16.0827C15.125 18.614 13.2782 20.666 11 20.666L11 11.4993C13.2782 11.4993 15.125 13.5514 15.125 16.0827Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M6.875 6.91667C6.875 9.44797 8.72183 11.5 11 11.5L11 2.33333C8.72182 2.33333 6.875 4.38536 6.875 6.91667Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M15.5833 7.375C13.052 7.375 11 9.22183 11 11.5H20.1667C20.1667 9.22183 18.1146 7.375 15.5833 7.375Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>');
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
+    .bili-header__channel .channel-icons .icon-bg__dynamic {
+        svg,
+        picture {
+            display: none !important;
+        }
+        &::after {
+            content: '';
+            width: 25px;
+            height: 25px;
+            background-image: url('data:image/svg+xml,<svg width="22" height="23" viewBox="0 0 22 23" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-bg--icon" data-v-674f5b07=""> <path d="M6.41659 15.625C3.88528 15.625 1.83325 13.7782 1.83325 11.5H10.9999C10.9999 13.7782 8.94789 15.625 6.41659 15.625Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M15.125 16.0827C15.125 18.614 13.2782 20.666 11 20.666L11 11.4993C13.2782 11.4993 15.125 13.5514 15.125 16.0827Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M6.875 6.91667C6.875 9.44797 8.72183 11.5 11 11.5L11 2.33333C8.72182 2.33333 6.875 4.38536 6.875 6.91667Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M15.5833 7.375C13.052 7.375 11 9.22183 11 11.5H20.1667C20.1667 9.22183 18.1146 7.375 15.5833 7.375Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
     }
 }

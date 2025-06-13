@@ -101,7 +101,7 @@ html[homepage-hide-inline-player-danmaku] main {
 
 // 隐藏 广告
 html[homepage-hide-ad-card] main {
-    :is(.feed-card, .bili-video-card):not(.bilibili-gate-video-card):has(
+    :is(.feed-card, .bili-video-card, .bili-feed-card):not(.bilibili-gate-video-card):has(
             .bili-video-card__info--ad,
             [href*='cm.bilibili.com'],
             .bili-video-card__info--creative-ad,
@@ -110,7 +110,7 @@ html[homepage-hide-ad-card] main {
         ) {
         display: none !important;
     }
-    :is(.feed-card, .bili-video-card):not(:has(.bili-video-card__wrap, .bili-video-card__skeleton)) {
+    :is(.feed-card, .bili-video-card, .bili-feed-card):not(:has(.bili-video-card__wrap, .bili-video-card__skeleton)) {
         display: none !important;
     }
 
@@ -132,7 +132,7 @@ html[homepage-hide-ad-card] main {
     .recommended-container_floor-aside .container .feed-card:nth-of-type(n + 9) {
         display: inherit !important;
     }
-    .recommended-container_floor-aside .container.is-version8 > *:nth-of-type(n + 13) {
+    .recommended-container_floor-aside .container > *:nth-of-type(n + 13) {
         margin-top: 0 !important;
     }
     .recommended-container_floor-aside .container .feed-card:nth-of-type(n + 12) {
@@ -146,7 +146,9 @@ html[homepage-hide-ad-card] main {
 // 隐藏 直播间推荐
 html[homepage-hide-live-card-recommend] main {
     .bili-live-card,
-    .floor-single-card:has(use[*|href$='#channel-live']) {
+    .bili-feed-card:has(.bili-live-card),
+    .floor-single-card:has([href^='//live.bilibili.com'], [href^='live.bilibili.com'], [href^='https://live.bilibili.com'])
+    {
         display: none !important;
     }
 }
@@ -160,8 +162,11 @@ html[homepage-simple-sub-area-card-recommend] main {
         box-shadow: unset !important;
         border: none !important;
     }
-    .single-card.floor-card .floor-card-inner:hover {
-        background: none !important;
+    .single-card.floor-card .floor-card-inner {
+        &,
+        &:hover {
+            background: none !important;
+        }
     }
 }
 
@@ -174,17 +179,22 @@ html[homepage-hide-sub-area-card-recommend] main {
 
 // 关闭 视频载入 骨架动效
 html[homepage-hide-skeleton-animation] main {
-    .bili-video-card .loading_animation .bili-video-card__skeleton--light,
-    .bili-video-card .loading_animation .bili-video-card__skeleton--text,
-    .bili-video-card .loading_animation .bili-video-card__skeleton--face,
-    .bili-video-card .loading_animation .bili-video-card__skeleton--cover {
-        animation: none !important;
+    .bili-video-card .loading_animation {
+        .bili-video-card__skeleton--light,
+        .bili-video-card__skeleton--text,
+        .bili-video-card__skeleton--face,
+        .bili-video-card__skeleton--cover {
+            &,
+            &::after {
+                animation: none !important;
+            }
+        }
     }
-    .skeleton .skeleton-item {
-        animation: none !important;
-    }
-    .floor-skeleton .skeleton-item {
-        animation: none !important;
+    :where(.floor-skeleton, .skeleton) .skeleton-item {
+        &,
+        &::after {
+            animation: none !important;
+        }
     }
 }
 
@@ -209,7 +219,7 @@ html[homepage-hide-skeleton] main {
 // 增大 视频载入 视频数量 (实验功能)
 html[homepage-increase-rcmd-load-size] main {
     // 扩增载入后会产生奇怪的骨架空位
-    .container.is-version8 > .floor-single-card:has(.skeleton, .skeleton-item, .floor-skeleton) {
+    .container > .floor-single-card:has(.skeleton, .skeleton-item, .floor-skeleton) {
         display: none;
     }
 }

@@ -16,7 +16,7 @@ export const dynamicRightItems: Item[] = [
     {
         type: 'switch',
         id: 'hide-dynamic-page-bili-dyn-topic-box',
-        name: '隐藏 话题列表',
+        name: '隐藏 热搜',
     },
     {
         type: 'switch',

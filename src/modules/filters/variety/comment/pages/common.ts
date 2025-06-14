@@ -575,7 +575,7 @@ export const commentFilterCommonGroups: Group[] = [
                 name: '编辑 评论关键词黑名单',
                 editorTitle: '评论关键词 黑名单',
                 editorDescription: [
-                    '每行一个关键词或正则，不区分大小写',
+                    '每行一个关键词或正则，不区分大小写、全半角',
                     '请勿使用过于激进的关键词或正则',
                     '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
                 ],

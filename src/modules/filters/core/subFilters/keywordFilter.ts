@@ -1,5 +1,6 @@
 import { ISubFilter, SelectorFn } from '@/types/filter'
 import { error } from '@/utils/logger'
+import { toHalfWidth } from '@/utils/tool'
 
 export class KeywordFilter implements ISubFilter {
     isEnable = false
@@ -20,7 +21,7 @@ export class KeywordFilter implements ISubFilter {
         const validNormalParts = [] // 普通字串、普通正则
         const validBackrefParts = [] // 包含反向引用的正则
         for (let word of this.keywordSet) {
-            word = word.trim()
+            word = toHalfWidth(word).trim()
             if (word === '' || word === '//') {
                 continue
             }
@@ -67,7 +68,7 @@ export class KeywordFilter implements ISubFilter {
             if (this.isEnable) {
                 let value = selectorFn(el)
                 if (typeof value === 'string') {
-                    value = value.trim()
+                    value = toHalfWidth(value).trim()
                     for (const regex of this.mergedRegExp) {
                         if (regex.test(value)) {
                             reject()

@@ -13,6 +13,7 @@ const limit = pLimit(10)
  * @param elements 元素列表
  * @param blackPairs 黑名单过滤器与使用的选择函数列表
  * @param whitePairs 白名单过滤器与使用的选择函数列表
+ * @param forceBlackPairs 高权限黑名单过滤器与使用的选择函数列表
  * @param sign 是否标记已检测过
  */
 export const coreCheck = useThrottleFn(
@@ -21,6 +22,7 @@ export const coreCheck = useThrottleFn(
         sign = true,
         blackPairs: SubFilterPair[],
         whitePairs?: SubFilterPair[],
+        forceBlackPairs?: SubFilterPair[],
     ): Promise<number> => {
         const toHideIdx = new Set<number>()
 
@@ -29,6 +31,10 @@ export const coreCheck = useThrottleFn(
                 const blackTasks: Promise<void>[] = []
                 blackPairs.forEach((pair) => {
                     blackTasks.push(pair[0].check(el, pair[1]))
+                })
+                const forceBlackTasks: Promise<void>[] = []
+                forceBlackPairs?.forEach((pair) => {
+                    forceBlackTasks.push(pair[0].check(el, pair[1]))
                 })
                 await Promise.all(blackTasks).catch(async () => {
                     // 命中黑名单，构建白名单任务
@@ -44,6 +50,10 @@ export const coreCheck = useThrottleFn(
                     } else {
                         toHideIdx.add(idx)
                     }
+                })
+                await Promise.all(forceBlackTasks).catch(() => {
+                    // 命中高权限黑名单
+                    toHideIdx.add(idx)
                 })
             }),
         )

@@ -173,7 +173,6 @@ class VideoFilterChannel implements IMainFilter {
 
         // 构建黑白检测任务
         const blackPairs: SubFilterPair[] = []
-        this.videoBvidFilter.isEnable && blackPairs.push([this.videoBvidFilter, selectorFns.bvid])
         this.videoDurationFilter.isEnable && blackPairs.push([this.videoDurationFilter, selectorFns.duration])
         this.videoTitleFilter.isEnable && blackPairs.push([this.videoTitleFilter, selectorFns.title])
         this.videoPubdateFilter.isEnable && blackPairs.push([this.videoPubdateFilter, selectorFns.pubdate])
@@ -185,8 +184,11 @@ class VideoFilterChannel implements IMainFilter {
         this.videoUploaderWhiteFilter.isEnable && whitePairs.push([this.videoUploaderWhiteFilter, selectorFns.uploader])
         this.videoTitleWhiteFilter.isEnable && whitePairs.push([this.videoTitleWhiteFilter, selectorFns.title])
 
+        const forceBlackPairs: SubFilterPair[] = []
+        this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns.bvid])
+
         // 检测
-        const blackCnt = await coreCheck(videos, true, blackPairs, whitePairs)
+        const blackCnt = await coreCheck(videos, true, blackPairs, whitePairs, forceBlackPairs)
         const time = (performance.now() - timer).toFixed(1)
         debug(`VideoFilterChannel hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
     }

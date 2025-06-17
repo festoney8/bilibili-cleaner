@@ -186,7 +186,6 @@ class VideoFilterHomepage implements IMainFilter {
 
         // 构建黑白检测任务
         const blackPairs: SubFilterPair[] = []
-        this.videoBvidFilter.isEnable && blackPairs.push([this.videoBvidFilter, selectorFns.bvid])
         this.videoDurationFilter.isEnable && blackPairs.push([this.videoDurationFilter, selectorFns.duration])
         this.videoViewsFilter.isEnable && blackPairs.push([this.videoViewsFilter, selectorFns.views])
         this.videoTitleFilter.isEnable && blackPairs.push([this.videoTitleFilter, selectorFns.title])
@@ -200,8 +199,11 @@ class VideoFilterHomepage implements IMainFilter {
         this.videoTitleWhiteFilter.isEnable && whitePairs.push([this.videoTitleWhiteFilter, selectorFns.title])
         this.videoIsFollowWhiteFilter.isEnable && whitePairs.push([this.videoIsFollowWhiteFilter, selectorFns.isFollow])
 
+        const forceBlackPairs: SubFilterPair[] = []
+        this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns.bvid])
+
         // 检测
-        const blackCnt = await coreCheck(videos, true, blackPairs, whitePairs)
+        const blackCnt = await coreCheck(videos, true, blackPairs, whitePairs, forceBlackPairs)
         const time = (performance.now() - timer).toFixed(1)
         debug(`VideoFilterHomepage hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
     }

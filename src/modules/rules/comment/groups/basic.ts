@@ -351,6 +351,24 @@ export const commentBasicItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'video-page-hide-emoji-small',
+        name: '隐藏 小表情',
+        noStyle: true,
+        enableFn: () => {
+            shadow.addShadowStyle(
+                'bili-rich-text',
+                'video-page-hide-emoji-small',
+                `#contents img[style^="width:1.4em"] { display: none !important; }
+                #contents img[style^="width:1.4em"]:not(:first-child) + span { margin-left: 0.5em; }
+                `,
+            )
+        },
+        disableFn: () => {
+            shadow.removeShadowStyle('bili-rich-text', 'video-page-hide-emoji-small')
+        },
+    },
+    {
+        type: 'switch',
         id: 'video-page-hide-emoji-large',
         name: '隐藏 大表情',
         noStyle: true,
@@ -358,7 +376,9 @@ export const commentBasicItems: Item[] = [
             shadow.addShadowStyle(
                 'bili-rich-text',
                 'video-page-hide-emoji-large',
-                `#contents img:is(.emoji-large, [style^="width:50px"]) {display: none !important;}`,
+                `#contents img[style^="width:50px"] {display: none !important; }
+                #contents img[style^="width:50px"] + span {margin-left: 0.5em; }
+                `,
             )
         },
         disableFn: () => {
@@ -374,7 +394,7 @@ export const commentBasicItems: Item[] = [
             shadow.addShadowStyle(
                 'bili-rich-text',
                 'video-page-hide-emoji-large-zoom',
-                `#contents img:is(.emoji-large, [style^="width:50px"]) {zoom: 0.5 !important;}`,
+                `#contents img[style^="width:50px"] {zoom: 0.5 !important;}`,
             )
         },
         disableFn: () => {

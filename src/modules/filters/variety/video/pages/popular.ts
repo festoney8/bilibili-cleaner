@@ -10,7 +10,6 @@ import {
     VideoBvidFilter,
     VideoDimensionFilter,
     VideoDurationFilter,
-    VideoPubdateFilter,
     VideoQualityFilter,
     VideoTitleFilter,
     VideoUploaderFilter,
@@ -111,7 +110,6 @@ class VideoFilterPopular implements IMainFilter {
     videoBvidFilter = new VideoBvidFilter()
     videoDurationFilter = new VideoDurationFilter()
     videoTitleFilter = new VideoTitleFilter()
-    videoPubdateFilter = new VideoPubdateFilter()
     videoUploaderFilter = new VideoUploaderFilter()
     videoUploaderKeywordFilter = new VideoUploaderKeywordFilter()
     videoQualityFilter = new VideoQualityFilter()

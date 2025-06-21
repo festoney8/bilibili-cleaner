@@ -71,10 +71,10 @@ const selectorFns = {
             .join(' ')
     },
     dynVideo: (dyn: HTMLElement): SelectorResult => {
-        return dyn.querySelector('.bili-dyn-time')?.textContent?.includes('动态视频') ? true : false
+        return !!dyn.querySelector('.bili-dyn-time')?.textContent?.includes('动态视频')
     },
     playback: (dyn: HTMLElement): SelectorResult => {
-        return dyn.querySelector('.bili-dyn-time')?.textContent?.includes('直播回放') ? true : false
+        return !!dyn.querySelector('.bili-dyn-time')?.textContent?.includes('直播回放')
     },
 }
 

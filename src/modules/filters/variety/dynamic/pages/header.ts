@@ -97,11 +97,11 @@ class DynamicFilterHeader implements IMainFilter {
         })
     }
 
-    checkIncr() {
-        this.check('incr').catch((err) => {
-            error('DynamicFilterHeader check incr error', err)
-        })
-    }
+    // checkIncr() {
+    //     this.check('incr').catch((err) => {
+    //         error('DynamicFilterHeader check incr error', err)
+    //     })
+    // }
 
     observe() {
         document.addEventListener('DOMContentLoaded', () => {

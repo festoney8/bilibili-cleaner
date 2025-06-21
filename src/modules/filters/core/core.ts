@@ -42,14 +42,12 @@ export const coreCheck = useThrottleFn(
                     whitePairs?.forEach((pair) => {
                         whiteTasks.push(pair[0].check(el, pair[1]))
                     })
-                    if (whiteTasks.length) {
-                        await Promise.all(whiteTasks).then(() => {
+                    await Promise.all(whiteTasks)
+                        .then(() => {
                             // 命中黑名单，未命中白名单
                             toHideIdx.add(idx)
                         })
-                    } else {
-                        toHideIdx.add(idx)
-                    }
+                        .catch(() => {})
                 })
                 await Promise.all(forceBlackTasks).catch(() => {
                     // 命中高权限黑名单
@@ -58,15 +56,17 @@ export const coreCheck = useThrottleFn(
             }),
         )
 
-        await Promise.all(tasks).finally(() => {
-            // 隐藏元素、标记已访问
-            requestAnimationFrame(() => {
-                for (let i = 0; i < elements.length; i++) {
-                    toHideIdx.has(i) ? hideEle(elements[i]) : showEle(elements[i])
-                    sign && elements[i].setAttribute(settings.filterSign, '')
-                }
+        await Promise.all(tasks)
+            .catch(() => {})
+            .finally(() => {
+                // 隐藏元素、标记已访问
+                requestAnimationFrame(() => {
+                    for (let i = 0; i < elements.length; i++) {
+                        toHideIdx.has(i) ? hideEle(elements[i]) : showEle(elements[i])
+                        sign && elements[i].setAttribute(settings.filterSign, '')
+                    }
+                })
             })
-        })
         return toHideIdx.size
     },
     50,

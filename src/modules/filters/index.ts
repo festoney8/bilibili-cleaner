@@ -149,10 +149,10 @@ const loadSwitchItem = (item: ISwitchItem) => {
         if (item.enableFn) {
             if (item.enableFnRunAt === 'document-end' && document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', () => {
-                    item.enableFn!()?.then().catch()
+                    item.enableFn!()?.catch(() => {})
                 })
             } else {
-                item.enableFn()?.then().catch()
+                item.enableFn()?.catch(() => {})
             }
         }
     }
@@ -161,7 +161,7 @@ const loadSwitchItem = (item: ISwitchItem) => {
 const loadNumberItem = (item: INumberItem) => {
     const value = BiliCleanerStorage.get(item.id, item.defaultValue)
     if (value !== item.disableValue) {
-        item.fn(value)?.then().catch()
+        item.fn(value)?.catch(() => {})
     }
 }
 

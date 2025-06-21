@@ -72,7 +72,7 @@ watch(selectedOption, (newSelected) => {
         for (const option of options) {
             if (option.value === newSelected.value) {
                 if (option.fn) {
-                    option.fn()?.then().catch()
+                    option.fn()?.catch(() => {})
                 }
                 if (newSelected.value !== item.disableValue) {
                     document.documentElement.setAttribute(option.value, '')

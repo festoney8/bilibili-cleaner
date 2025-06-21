@@ -98,7 +98,7 @@ export const videoBasicItems: Item[] = [
                         if (params.has('p')) {
                             shareText += `?p=${params.get('p')}`
                         }
-                        navigator.clipboard.writeText(shareText).then().catch()
+                        navigator.clipboard.writeText(shareText).catch(() => {})
                     })
                     clearInterval(id)
                 } else if (counter > 50) {

@@ -194,19 +194,15 @@ class VideoFilterChannel implements IMainFilter {
     }
 
     checkFull() {
-        this.check('full')
-            .then()
-            .catch((err) => {
-                error('VideoFilterChannel check full error', err)
-            })
+        this.check('full').catch((err) => {
+            error('VideoFilterChannel check full error', err)
+        })
     }
 
     checkIncr() {
-        this.check('incr')
-            .then()
-            .catch((err) => {
-                error('VideoFilterChannel check incr error', err)
-            })
+        this.check('incr').catch((err) => {
+            error('VideoFilterChannel check incr error', err)
+        })
     }
 
     observe() {
@@ -556,7 +552,7 @@ export const videoFilterChannelHandler: ContextMenuTargetHandler = (target: HTML
             menus.push({
                 name: `复制主页链接`,
                 fn: async () => {
-                    navigator.clipboard.writeText(`https://${spaceUrl}`).then().catch()
+                    navigator.clipboard.writeText(`https://${spaceUrl}`).catch(() => {})
                 },
             })
         }
@@ -584,7 +580,7 @@ export const videoFilterChannelHandler: ContextMenuTargetHandler = (target: HTML
                 menus.push({
                     name: '复制视频链接',
                     fn: async () => {
-                        navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).then().catch()
+                        navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).catch(() => {})
                     },
                 })
             }

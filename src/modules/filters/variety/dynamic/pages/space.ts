@@ -147,19 +147,15 @@ class DynamicFilterSpace implements IMainFilter {
     }
 
     checkFull() {
-        this.check('full')
-            .then()
-            .catch((err) => {
-                error('DynamicFilterSpace check full error', err)
-            })
+        this.check('full').catch((err) => {
+            error('DynamicFilterSpace check full error', err)
+        })
     }
 
     checkIncr() {
-        this.check('incr')
-            .then()
-            .catch((err) => {
-                error('DynamicFilterSpace check incr error', err)
-            })
+        this.check('incr').catch((err) => {
+            error('DynamicFilterSpace check incr error', err)
+        })
     }
 
     observe() {

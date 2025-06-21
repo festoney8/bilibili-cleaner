@@ -467,16 +467,12 @@ class CommentFilterCommon implements IMainFilter {
     }
 
     check(mode?: 'full' | 'incr') {
-        this.checkRoot(mode)
-            .then()
-            .catch((err) => {
-                error(`CommentFilterCommon checkRoot mode=${mode} error`, err)
-            })
-        this.checkSub(mode)
-            .then()
-            .catch((err) => {
-                error(`CommentFilterCommon checkSub mode=${mode} error`, err)
-            })
+        this.checkRoot(mode).catch((err) => {
+            error(`CommentFilterCommon checkRoot mode=${mode} error`, err)
+        })
+        this.checkSub(mode).catch((err) => {
+            error(`CommentFilterCommon checkSub mode=${mode} error`, err)
+        })
     }
 
     /**
@@ -487,7 +483,7 @@ class CommentFilterCommon implements IMainFilter {
         ShadowInstance.addShadowObserver(
             'BILI-COMMENTS',
             new MutationObserver(() => {
-                this.checkRoot('incr').then().catch()
+                this.checkRoot('incr').catch(() => {})
             }),
             {
                 subtree: true,
@@ -498,7 +494,7 @@ class CommentFilterCommon implements IMainFilter {
         ShadowInstance.addShadowObserver(
             'BILI-COMMENT-REPLIES-RENDERER',
             new MutationObserver(() => {
-                this.checkSub('full').then().catch()
+                this.checkSub('full').catch(() => {})
             }),
             {
                 subtree: true,

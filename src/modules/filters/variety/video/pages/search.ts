@@ -162,16 +162,13 @@ class VideoFilterSearch implements IMainFilter {
     }
 
     checkFull() {
-        this.check('full')
-            .then()
-            .catch((err) => {
-                error('VideoFilterSearch check full error', err)
-            })
+        this.check('full').catch((err) => {
+            error('VideoFilterSearch check full error', err)
+        })
     }
 
     // checkIncr() {
     //     this.check('incr')
-    //         .then()
     //         .catch((err) => {
     //             error('VideoFilterSearch check incr error', err)
     //         })
@@ -512,7 +509,7 @@ export const videoFilterSearchHandler: ContextMenuTargetHandler = (target: HTMLE
                 })
                 menus.push({
                     name: '复制视频链接',
-                    fn: () => navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).then().catch(),
+                    fn: () => navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).catch(() => {}),
                 })
             }
         }

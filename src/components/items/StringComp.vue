@@ -38,12 +38,9 @@ watchThrottled(
                     document.documentElement.removeAttribute(item.attrName ?? item.id)
                 }
             } else if (currValue.value !== oldValue) {
-                item
-                    .fn(currValue.value)
-                    ?.then()
-                    .catch((err) => {
-                        throw err
-                    })
+                item.fn(currValue.value)?.catch((err) => {
+                    throw err
+                })
             }
             BiliCleanerStorage.set<string>(item.id, currValue.value)
         } catch (err) {

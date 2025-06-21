@@ -209,19 +209,15 @@ class VideoFilterHomepage implements IMainFilter {
     }
 
     checkFull() {
-        this.check('full')
-            .then()
-            .catch((err) => {
-                error('VideoFilterHomepage check full error', err)
-            })
+        this.check('full').catch((err) => {
+            error('VideoFilterHomepage check full error', err)
+        })
     }
 
     checkIncr() {
-        this.check('incr')
-            .then()
-            .catch((err) => {
-                error('VideoFilterHomepage check incr error', err)
-            })
+        this.check('incr').catch((err) => {
+            error('VideoFilterHomepage check incr error', err)
+        })
     }
 
     observe() {
@@ -621,7 +617,7 @@ export const videoFilterHomepageHandler: ContextMenuTargetHandler = (target: HTM
         if (spaceUrl && (mainFilter.videoUploaderFilter.isEnable || mainFilter.videoUploaderWhiteFilter.isEnable)) {
             menus.push({
                 name: `复制主页链接`,
-                fn: () => navigator.clipboard.writeText(`https://${spaceUrl}`).then().catch(),
+                fn: () => navigator.clipboard.writeText(`https://${spaceUrl}`).catch(() => {}),
             })
         }
     }
@@ -647,7 +643,7 @@ export const videoFilterHomepageHandler: ContextMenuTargetHandler = (target: HTM
                 })
                 menus.push({
                     name: '复制视频链接',
-                    fn: () => navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).then().catch(),
+                    fn: () => navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).catch(() => {}),
                 })
             }
         }

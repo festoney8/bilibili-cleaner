@@ -113,7 +113,7 @@ export const dynamicFilters: Filter[] = [
         name: '顶栏 动态过滤',
         groups: [],
         entry: dynamicFilterHeaderEntry,
-        checkFn: () => (isPageLive() ? false : true),
+        checkFn: () => !isPageLive(),
     },
 ]
 

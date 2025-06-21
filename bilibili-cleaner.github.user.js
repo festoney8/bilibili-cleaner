@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      4.3.4
+// @version      4.3.5
 // @author       festoney8
 // @description  净化 B站/哔哩哔哩 页面，支持「精简功能、播放器净化、过滤视频、过滤评论、全站黑白名单」，提供 300+ 功能，定制自己的 B 站
 // @license      MIT
@@ -3177,47 +3177,51 @@
     }
   }
   const limit = pLimit(10);
-  const coreCheck = useThrottleFn(
-    async (elements, sign = true, blackPairs, whitePairs, forceBlackPairs) => {
-      const toHideIdx = /* @__PURE__ */ new Set();
-      const tasks = elements.map(
-        (el, idx) => limit(async () => {
-          const blackTasks = [];
-          blackPairs.forEach((pair) => {
-            blackTasks.push(pair[0].check(el, pair[1]));
-          });
-          const forceBlackTasks = [];
-          forceBlackPairs == null ? void 0 : forceBlackPairs.forEach((pair) => {
-            forceBlackTasks.push(pair[0].check(el, pair[1]));
-          });
-          await Promise.all(blackTasks).catch(async () => {
-            const whiteTasks = [];
-            whitePairs == null ? void 0 : whitePairs.forEach((pair) => {
-              whiteTasks.push(pair[0].check(el, pair[1]));
-            });
-            await Promise.all(whiteTasks).then(() => {
-              toHideIdx.add(idx);
-            }).catch(() => {
-            });
-          });
-          await Promise.all(forceBlackTasks).catch(() => {
-            toHideIdx.add(idx);
-          });
-        })
-      );
-      await Promise.all(tasks).catch(() => {
-      }).finally(() => {
-        requestAnimationFrame(() => {
-          for (let i2 = 0; i2 < elements.length; i2++) {
-            toHideIdx.has(i2) ? hideEle(elements[i2]) : showEle(elements[i2]);
-            sign && elements[i2].setAttribute(settings.filterSign, "");
-          }
+  const rawCheck = async (elements, sign = true, blackPairs, whitePairs, forceBlackPairs) => {
+    const toHideIdx = /* @__PURE__ */ new Set();
+    const tasks = elements.map(
+      (el, idx) => limit(async () => {
+        const blackTasks = [];
+        blackPairs.forEach((pair) => {
+          blackTasks.push(pair[0].check(el, pair[1]));
         });
+        const forceBlackTasks = [];
+        forceBlackPairs == null ? void 0 : forceBlackPairs.forEach((pair) => {
+          forceBlackTasks.push(pair[0].check(el, pair[1]));
+        });
+        await Promise.all(blackTasks).catch(async () => {
+          const whiteTasks = [];
+          whitePairs == null ? void 0 : whitePairs.forEach((pair) => {
+            whiteTasks.push(pair[0].check(el, pair[1]));
+          });
+          await Promise.all(whiteTasks).then(() => {
+            toHideIdx.add(idx);
+          }).catch(() => {
+          });
+        });
+        await Promise.all(forceBlackTasks).catch(() => {
+          toHideIdx.add(idx);
+        });
+      })
+    );
+    await Promise.all(tasks).catch(() => {
+    }).finally(() => {
+      requestAnimationFrame(() => {
+        for (let i2 = 0; i2 < elements.length; i2++) {
+          toHideIdx.has(i2) ? hideEle(elements[i2]) : showEle(elements[i2]);
+          sign && elements[i2].setAttribute(settings.filterSign, "");
+        }
       });
-      return toHideIdx.size;
-    },
-    50
-  );
+    });
+    return toHideIdx.size;
+  };
+  const throttledCheck = useThrottleFn(rawCheck, 50);
+  const coreCheck = async (elements, sign = true, blackPairs, whitePairs, forceBlackPairs, noThrottle) => {
+    if (noThrottle) {
+      return rawCheck(elements, sign, blackPairs, whitePairs, forceBlackPairs);
+    }
+    return throttledCheck(elements, sign, blackPairs, whitePairs, forceBlackPairs);
+  };
   const _FetchHook = class _FetchHook {
     constructor() {
       // 根据input和init对input进行预处理
@@ -3955,7 +3959,7 @@
       this.commentIsNoteFilter.isEnable && whitePairs.push([this.commentIsNoteFilter, selectorFns$9.root.isNote]);
       this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns$9.root.isLink]);
       this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns$9.root.isMe]);
-      const rootBlackCnt = await coreCheck(rootComments, true, blackPairs, whitePairs);
+      const rootBlackCnt = await coreCheck(rootComments, true, blackPairs, whitePairs, [], true);
       const time = (performance.now() - timer).toFixed(1);
       debugFilter(
         `CommentFilterCommon hide ${rootBlackCnt} in ${rootComments.length} root comments, mode=${mode}, time=${time}`
@@ -4021,7 +4025,7 @@
       this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns$9.sub.isUp]);
       this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns$9.sub.isLink]);
       this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns$9.sub.isMe]);
-      const subBlackCnt = await coreCheck(subComments, false, blackPairs, whitePairs);
+      const subBlackCnt = await coreCheck(subComments, false, blackPairs, whitePairs, [], true);
       const time = (performance.now() - timer).toFixed(1);
       debugFilter(
         `CommentFilterCommon hide ${subBlackCnt} in ${subComments.length} sub comments, mode=${mode}, time=${time}`
@@ -4481,11 +4485,11 @@
     },
     dynVideo: (dyn) => {
       var _a, _b;
-      return ((_b = (_a = dyn.querySelector(".bili-dyn-time")) == null ? void 0 : _a.textContent) == null ? void 0 : _b.includes("动态视频")) ? true : false;
+      return !!((_b = (_a = dyn.querySelector(".bili-dyn-time")) == null ? void 0 : _a.textContent) == null ? void 0 : _b.includes("动态视频"));
     },
     playback: (dyn) => {
       var _a, _b;
-      return ((_b = (_a = dyn.querySelector(".bili-dyn-time")) == null ? void 0 : _a.textContent) == null ? void 0 : _b.includes("直播回放")) ? true : false;
+      return !!((_b = (_a = dyn.querySelector(".bili-dyn-time")) == null ? void 0 : _a.textContent) == null ? void 0 : _b.includes("直播回放"));
     }
   };
   class DynamicFilterDynamic {
@@ -4863,11 +4867,11 @@
         error("DynamicFilterHeader check full error", err);
       });
     }
-    checkIncr() {
-      this.check("incr").catch((err) => {
-        error("DynamicFilterHeader check incr error", err);
-      });
-    }
+    // checkIncr() {
+    //     this.check('incr').catch((err) => {
+    //         error('DynamicFilterHeader check incr error', err)
+    //     })
+    // }
     observe() {
       document.addEventListener("DOMContentLoaded", () => {
         let cnt = 0;
@@ -4947,11 +4951,11 @@
     },
     dynVideo: (dyn) => {
       var _a, _b;
-      return ((_b = (_a = dyn.querySelector(".bili-dyn-time")) == null ? void 0 : _a.textContent) == null ? void 0 : _b.includes("动态视频")) ? true : false;
+      return !!((_b = (_a = dyn.querySelector(".bili-dyn-time")) == null ? void 0 : _a.textContent) == null ? void 0 : _b.includes("动态视频"));
     },
     playback: (dyn) => {
       var _a, _b;
-      return ((_b = (_a = dyn.querySelector(".bili-dyn-time")) == null ? void 0 : _a.textContent) == null ? void 0 : _b.includes("直播回放")) ? true : false;
+      return !!((_b = (_a = dyn.querySelector(".bili-dyn-time")) == null ? void 0 : _a.textContent) == null ? void 0 : _b.includes("直播回放"));
     }
   };
   class DynamicFilterSpace {
@@ -6451,7 +6455,6 @@
       __publicField(this, "videoBvidFilter", new VideoBvidFilter());
       __publicField(this, "videoDurationFilter", new VideoDurationFilter());
       __publicField(this, "videoTitleFilter", new VideoTitleFilter());
-      __publicField(this, "videoPubdateFilter", new VideoPubdateFilter());
       __publicField(this, "videoUploaderFilter", new VideoUploaderFilter());
       __publicField(this, "videoUploaderKeywordFilter", new VideoUploaderKeywordFilter());
       __publicField(this, "videoQualityFilter", new VideoQualityFilter());
@@ -8247,7 +8250,7 @@
       name: "顶栏 动态过滤",
       groups: [],
       entry: dynamicFilterHeaderEntry,
-      checkFn: () => isPageLive() ? false : true
+      checkFn: () => !isPageLive()
     }
   ];
   const loadFilters = () => {

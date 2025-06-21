@@ -321,10 +321,10 @@ const loadSwitchItem = (item: ISwitchItem) => {
         if (item.enableFn) {
             if (item.enableFnRunAt === 'document-end' && document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', () => {
-                    item.enableFn!()?.then().catch()
+                    item.enableFn!()?.catch(() => {})
                 })
             } else {
-                item.enableFn()?.then().catch()
+                item.enableFn()?.catch(() => {})
             }
         }
     }
@@ -336,7 +336,7 @@ const loadNumberItem = (item: INumberItem) => {
         if (!item.noStyle) {
             document.documentElement.setAttribute(item.attrName ?? item.id, '')
         }
-        item.fn(value)?.then().catch()
+        item.fn(value)?.catch(() => {})
     }
 }
 
@@ -346,7 +346,7 @@ const loadStringItem = (item: IStringItem) => {
         if (!item.noStyle) {
             document.documentElement.setAttribute(item.attrName ?? item.id, '')
         }
-        item.fn(value)?.then().catch()
+        item.fn(value)?.catch(() => {})
     }
 }
 
@@ -354,7 +354,7 @@ const loadListItem = (item: IListItem) => {
     const value = BiliCleanerStorage.get(item.id, item.defaultValue)
     for (const option of item.options) {
         if (option.value === value && option.fn) {
-            option.fn()?.then().catch()
+            option.fn()?.catch(() => {})
         }
     }
     if (value !== item.disableValue) {

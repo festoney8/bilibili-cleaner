@@ -38,7 +38,7 @@ watch(enabled, () => {
                 document.documentElement.setAttribute(item.attrName ?? item.id, '')
             }
             if (item.enableFn) {
-                item.enableFn()?.then().catch()
+                item.enableFn()?.catch(() => {})
             }
             BiliCleanerStorage.set<boolean>(item.id, true)
         } else {
@@ -46,12 +46,9 @@ watch(enabled, () => {
                 document.documentElement.removeAttribute(item.attrName ?? item.id)
             }
             if (item.disableFn) {
-                item
-                    .disableFn()
-                    ?.then()
-                    .catch((err) => {
-                        throw err
-                    })
+                item.disableFn()?.catch((err) => {
+                    throw err
+                })
             }
             BiliCleanerStorage.set<boolean>(item.id, false)
         }

@@ -149,7 +149,6 @@ class VideoFilterVideo implements IMainFilter {
 
         // 构建黑白检测任务
         const blackPairs: SubFilterPair[] = []
-        this.videoBvidFilter.isEnable && blackPairs.push([this.videoBvidFilter, selectorFns.bvid])
         this.videoDurationFilter.isEnable && blackPairs.push([this.videoDurationFilter, selectorFns.duration])
         this.videoTitleFilter.isEnable && blackPairs.push([this.videoTitleFilter, selectorFns.title])
         this.videoUploaderFilter.isEnable && blackPairs.push([this.videoUploaderFilter, selectorFns.uploader])
@@ -160,8 +159,11 @@ class VideoFilterVideo implements IMainFilter {
         this.videoUploaderWhiteFilter.isEnable && whitePairs.push([this.videoUploaderWhiteFilter, selectorFns.uploader])
         this.videoTitleWhiteFilter.isEnable && whitePairs.push([this.videoTitleWhiteFilter, selectorFns.title])
 
+        const forceBlackPairs: SubFilterPair[] = []
+        this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns.bvid])
+
         // 检测
-        const blackCnt = await coreCheck(videos, false, blackPairs, whitePairs)
+        const blackCnt = await coreCheck(videos, true, blackPairs, whitePairs, forceBlackPairs)
 
         // 缓存数据检测，更新__INITIAL_STATE__.related
         // __INITIAL_STATE__.related 与右侧视频列表绑定
@@ -186,16 +188,13 @@ class VideoFilterVideo implements IMainFilter {
     }
 
     checkFull() {
-        this.check('full')
-            .then()
-            .catch((err) => {
-                error('VideoFilterVideo check full error', err)
-            })
+        this.check('full').catch((err) => {
+            error('VideoFilterVideo check full error', err)
+        })
     }
 
     // checkIncr() {
     //     this.check('incr')
-    //         .then()
     //         .catch((err) => {
     //             error('VideoFilterVideo check incr error', err)
     //         })
@@ -322,7 +321,7 @@ export const videoFilterVideoGroups: Group[] = [
                 name: '编辑 UP主昵称关键词黑名单',
                 editorTitle: 'UP主昵称关键词 黑名单',
                 editorDescription: [
-                    '每行一个关键词或正则，不区分大小写',
+                    '每行一个关键词或正则，不区分大小写、全半角',
                     '请勿使用过于激进的关键词或正则',
                     '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
                 ],
@@ -358,7 +357,7 @@ export const videoFilterVideoGroups: Group[] = [
                 name: '编辑 标题关键词黑名单',
                 editorTitle: '标题关键词 黑名单',
                 editorDescription: [
-                    '每行一个关键词或正则，不区分大小写',
+                    '每行一个关键词或正则，不区分大小写、全半角',
                     '请勿使用过于激进的关键词或正则',
                     '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
                 ],
@@ -475,7 +474,7 @@ export const videoFilterVideoGroups: Group[] = [
                 name: '编辑 标题关键词白名单',
                 editorTitle: '标题关键词 白名单',
                 editorDescription: [
-                    '每行一个关键词或正则，不区分大小写',
+                    '每行一个关键词或正则，不区分大小写、全半角',
                     '请勿使用过于激进的关键词或正则',
                     '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
                 ],
@@ -573,7 +572,7 @@ export const videoFilterVideoHandler: ContextMenuTargetHandler = (target: HTMLEl
                 })
                 menus.push({
                     name: '复制视频链接',
-                    fn: () => navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).then().catch(),
+                    fn: () => navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).catch(() => {}),
                 })
             }
         }

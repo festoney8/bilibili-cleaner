@@ -14,6 +14,11 @@
     }
 }
 
+// 使用 3 列布局
+html[channel-layout-3-column] {
+    @include layout(3);
+}
+
 // 使用 4 列布局
 html[channel-layout-4-column] {
     @include layout(4);

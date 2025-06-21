@@ -14,6 +14,10 @@ export const homepageLayoutItems: Item[] = [
                 name: '未启用',
             },
             {
+                value: 'homepage-layout-3-column',
+                name: '3 列布局',
+            },
+            {
                 value: 'homepage-layout-4-column',
                 name: '4 列布局',
             },

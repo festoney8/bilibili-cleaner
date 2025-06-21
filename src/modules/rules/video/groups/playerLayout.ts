@@ -42,7 +42,7 @@ const toggleFullScreen = () => {
 
     switch (fullScreenStatus()) {
         case 'ele':
-            document.exitFullscreen().then().catch()
+            document.exitFullscreen().catch(() => {})
             if (isWebScreen()) {
                 unsafeWindow.player?.requestStatue(0)
             }
@@ -51,7 +51,7 @@ const toggleFullScreen = () => {
             unsafeWindow.player?.requestStatue(0)
             break
         case 'not':
-            document.documentElement.requestFullscreen().then().catch()
+            document.documentElement.requestFullscreen().catch(() => {})
             if (!isWebScreen()) {
                 unsafeWindow.player?.requestStatue(2)
             }

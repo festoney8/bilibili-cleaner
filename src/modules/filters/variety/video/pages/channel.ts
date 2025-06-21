@@ -173,7 +173,6 @@ class VideoFilterChannel implements IMainFilter {
 
         // 构建黑白检测任务
         const blackPairs: SubFilterPair[] = []
-        this.videoBvidFilter.isEnable && blackPairs.push([this.videoBvidFilter, selectorFns.bvid])
         this.videoDurationFilter.isEnable && blackPairs.push([this.videoDurationFilter, selectorFns.duration])
         this.videoTitleFilter.isEnable && blackPairs.push([this.videoTitleFilter, selectorFns.title])
         this.videoPubdateFilter.isEnable && blackPairs.push([this.videoPubdateFilter, selectorFns.pubdate])
@@ -185,26 +184,25 @@ class VideoFilterChannel implements IMainFilter {
         this.videoUploaderWhiteFilter.isEnable && whitePairs.push([this.videoUploaderWhiteFilter, selectorFns.uploader])
         this.videoTitleWhiteFilter.isEnable && whitePairs.push([this.videoTitleWhiteFilter, selectorFns.title])
 
+        const forceBlackPairs: SubFilterPair[] = []
+        this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns.bvid])
+
         // 检测
-        const blackCnt = await coreCheck(videos, true, blackPairs, whitePairs)
+        const blackCnt = await coreCheck(videos, true, blackPairs, whitePairs, forceBlackPairs)
         const time = (performance.now() - timer).toFixed(1)
         debug(`VideoFilterChannel hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
     }
 
     checkFull() {
-        this.check('full')
-            .then()
-            .catch((err) => {
-                error('VideoFilterChannel check full error', err)
-            })
+        this.check('full').catch((err) => {
+            error('VideoFilterChannel check full error', err)
+        })
     }
 
     checkIncr() {
-        this.check('incr')
-            .then()
-            .catch((err) => {
-                error('VideoFilterChannel check incr error', err)
-            })
+        this.check('incr').catch((err) => {
+            error('VideoFilterChannel check incr error', err)
+        })
     }
 
     observe() {
@@ -321,7 +319,7 @@ export const videoFilterChannelGroups: Group[] = [
                 name: '编辑 UP主昵称关键词黑名单',
                 editorTitle: 'UP主昵称关键词 黑名单',
                 editorDescription: [
-                    '每行一个关键词或正则，不区分大小写',
+                    '每行一个关键词或正则，不区分大小写、全半角',
                     '请勿使用过于激进的关键词或正则',
                     '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
                 ],
@@ -357,7 +355,7 @@ export const videoFilterChannelGroups: Group[] = [
                 name: '编辑 标题关键词黑名单',
                 editorTitle: '标题关键词 黑名单',
                 editorDescription: [
-                    '每行一个关键词或正则，不区分大小写',
+                    '每行一个关键词或正则，不区分大小写、全半角',
                     '请勿使用过于激进的关键词或正则',
                     '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
                 ],
@@ -486,7 +484,7 @@ export const videoFilterChannelGroups: Group[] = [
                 name: '编辑 标题关键词白名单',
                 editorTitle: '标题关键词 白名单',
                 editorDescription: [
-                    '每行一个关键词或正则，不区分大小写',
+                    '每行一个关键词或正则，不区分大小写、全半角',
                     '请勿使用过于激进的关键词或正则',
                     '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
                 ],
@@ -554,7 +552,7 @@ export const videoFilterChannelHandler: ContextMenuTargetHandler = (target: HTML
             menus.push({
                 name: `复制主页链接`,
                 fn: async () => {
-                    navigator.clipboard.writeText(`https://${spaceUrl}`).then().catch()
+                    navigator.clipboard.writeText(`https://${spaceUrl}`).catch(() => {})
                 },
             })
         }
@@ -582,7 +580,7 @@ export const videoFilterChannelHandler: ContextMenuTargetHandler = (target: HTML
                 menus.push({
                     name: '复制视频链接',
                     fn: async () => {
-                        navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).then().catch()
+                        navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).catch(() => {})
                     },
                 })
             }

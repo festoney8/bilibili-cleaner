@@ -14,6 +14,10 @@ export const channelLayoutItems: Item[] = [
                 name: '未启用',
             },
             {
+                value: 'channel-layout-3-column',
+                name: '3 列布局',
+            },
+            {
                 value: 'channel-layout-4-column',
                 name: '4 列布局',
             },

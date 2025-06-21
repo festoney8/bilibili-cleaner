@@ -142,3 +142,12 @@ export const orderedUniq = <T = unknown>(arr: T[]): T[] => {
 export const isFirefox = (): boolean => {
     return navigator.userAgent.toLocaleLowerCase().includes('firefox')
 }
+
+/**
+ * 将全角字符转换为半角字符
+ * @param s 输入字符串
+ * @returns 转换后的字符串
+ */
+export const toHalfWidth = (s: string): string => {
+    return s.replace(/\u3000/g, ' ').replace(/[\uFF01-\uFF5E]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - 0xfee0))
+}

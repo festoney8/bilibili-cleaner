@@ -78,7 +78,7 @@ html[live-page-combo-danmaku] {
 
 // 隐藏 弹幕中的小表情
 html[live-page-clean-all-danmaku-small-emoji] {
-    .danmaku-item-container .bili-dm {
+    .danmaku-item-container {
         .bili-dm-emoji,
         .bili-danmaku-x-dm-emoji {
             display: none !important;
@@ -88,7 +88,7 @@ html[live-page-clean-all-danmaku-small-emoji] {
 
 // 隐藏 弹幕中的大表情
 html[live-page-clean-all-danmaku-big-emoji] {
-    .danmaku-item-container .bili-dm img[style*='width:45px'] {
+    .danmaku-item-container .bili-danmaku-x-dm img[style*='width:45px'] {
         display: none !important;
     }
 }

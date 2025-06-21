@@ -5,7 +5,7 @@
         :style="{ left: pos.left + 'px', top: pos.top + 'px' }"
     >
         <div v-for="(menu, index) in menuList" :key="index">
-            <div @click="menu.fn()?.then().catch()" class="px-2.5 py-1 hover:bg-[#00aeec] hover:text-white">
+            <div @click="menu.fn()?.catch(() => {})" class="px-2.5 py-1 hover:bg-[#00aeec] hover:text-white">
                 <span class="mr-0.5">◎</span>
                 {{ menu.name }}
             </div>

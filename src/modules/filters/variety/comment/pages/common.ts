@@ -371,7 +371,7 @@ class CommentFilterCommon implements IMainFilter {
         this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns.root.isLink])
         this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns.root.isMe])
 
-        const rootBlackCnt = await coreCheck(rootComments, true, blackPairs, whitePairs)
+        const rootBlackCnt = await coreCheck(rootComments, true, blackPairs, whitePairs, [], true)
         const time = (performance.now() - timer).toFixed(1)
         debug(
             `CommentFilterCommon hide ${rootBlackCnt} in ${rootComments.length} root comments, mode=${mode}, time=${time}`,
@@ -459,7 +459,7 @@ class CommentFilterCommon implements IMainFilter {
         this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns.sub.isLink])
         this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns.sub.isMe])
 
-        const subBlackCnt = await coreCheck(subComments, false, blackPairs, whitePairs)
+        const subBlackCnt = await coreCheck(subComments, false, blackPairs, whitePairs, [], true)
         const time = (performance.now() - timer).toFixed(1)
         debug(
             `CommentFilterCommon hide ${subBlackCnt} in ${subComments.length} sub comments, mode=${mode}, time=${time}`,

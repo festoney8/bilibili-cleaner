@@ -85,6 +85,12 @@ export const bangumiPlayerControlItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'video-page-show-bpx-player-shadow-progress-area-fullscreen',
+        name: '全屏时 显示底边mini视频进度',
+        defaultEnable: true,
+    },
+    {
+        type: 'switch',
         id: 'video-page-show-bpx-player-pbp',
         name: '控制栏收起时 显示高能进度条',
     },

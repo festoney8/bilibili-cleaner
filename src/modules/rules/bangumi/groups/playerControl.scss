@@ -113,6 +113,16 @@ html[video-page-hide-bpx-player-shadow-progress-area] {
     }
 }
 
+// 全屏时 显示底边mini视频进度
+html[video-page-show-bpx-player-shadow-progress-area-fullscreen] {
+    #bilibili-player [data-screen='full'][data-ctrl-hidden='true'] {
+        .bpx-player-shadow-progress-area {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+    }
+}
+
 // 控制栏收起时 显示高能进度条
 html[video-page-show-bpx-player-pbp] {
     .bpx-player-pbp:not(.show) {

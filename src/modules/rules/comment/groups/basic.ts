@@ -334,7 +334,7 @@ export const commentBasicItems: Item[] = [
             shadow.addShadowStyle(
                 'bili-comment-action-buttons-renderer',
                 'video-page-hide-root-reply-dislike-reply-btn',
-                `#dislike button, #reply button, #more button {
+                `#dislike button:not(:has(bili-icon[icon="BDC/hand_thumbsdown_fill/2"])), #reply button, #more button {
                     display: block !important;
                     opacity: var(--bili-comment-action-buttons-more-display);
                     transition: opacity 0.2s 0.3s;
@@ -343,6 +343,7 @@ export const commentBasicItems: Item[] = [
         },
         disableFn: () => {
             shadow.removeShadowStyle('bili-comment-renderer', 'video-page-hide-root-reply-dislike-reply-btn')
+            shadow.removeShadowStyle('bili-comment-reply-renderer', 'video-page-hide-sub-reply-dislike-reply-btn')
             shadow.removeShadowStyle(
                 'bili-comment-action-buttons-renderer',
                 'video-page-hide-root-reply-dislike-reply-btn',

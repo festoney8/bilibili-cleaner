@@ -92,7 +92,6 @@ export const videoPlayerControlItems: Item[] = [
         type: 'switch',
         id: 'video-page-show-bpx-player-shadow-progress-area-fullscreen',
         name: '全屏时 显示底边mini视频进度',
-        defaultEnable: true,
     },
     {
         type: 'switch',

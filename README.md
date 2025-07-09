@@ -32,9 +32,16 @@
 
 > 由于 Google 推行 Manifest V3，现在 Tampermonkey 需在开发者模式使用
 
-- Chrome 打开网址 `chrome://extensions/`，在右上角启用 "开发者模式"，重启浏览器
 - Edge 打开网址 `edge://extensions/`，在左侧启用 "开发人员模式"，重启浏览器
 - Firefox 无需操作
+- Chrome 操作如图
+
+    1. 右键单击脚本管理器（暴力猴/篡改猴），点击 "管理扩展程序"
+    2. 启用 "允许运行用户脚本"（Chrome 138 新增功能）
+    3. 若未出现 "允许运行用户脚本" 选项，则启用 "开发者模式"
+    4. 重启浏览器
+
+        ![](images/how-to-install-on-chrome.png)
 
 ### 版本选择
 

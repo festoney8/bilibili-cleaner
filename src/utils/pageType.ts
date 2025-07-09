@@ -42,7 +42,7 @@ const currPage = (): string => {
         return 'channel'
     }
     // 拜年祭等活动播放页
-    if (/www\.bilibili\.com\/festival\/.*bvid/.test(href)) {
+    if (/www\.bilibili\.com\/festival\//.test(href)) {
         return 'festival'
     }
     if (href.includes('bilibili.com/watchlater')) {

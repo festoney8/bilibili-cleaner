@@ -14,7 +14,7 @@ import {
 import css from './style.css?inline'
 import { waitForBody } from './utils/init'
 import { error, log } from './utils/logger'
-import { isPageHomepage, isPageLive } from './utils/pageType'
+import { isPageLive } from './utils/pageType'
 
 const main = () => {
     // 创建插件面板用shadowDOM节点
@@ -59,11 +59,7 @@ const main = () => {
 
 const menu = () => {
     // skip live page iframe
-    if (isPageLive() && window.self !== window.top) {
-        return
-    }
-    // skip homepage bewlybewly iframe outside
-    if (isPageHomepage() && document.documentElement.classList.contains('bewly-design') && window.self === window.top) {
+    if (isPageLive() && self !== top) {
         return
     }
     const ruleStore = useRulePanelStore()

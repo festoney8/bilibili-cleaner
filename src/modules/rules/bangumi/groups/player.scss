@@ -1,3 +1,103 @@
+// 隐藏 一键三连
+html[video-page-hide-bpx-player-bili-guide-all] {
+    .bili-follow-to-electric,
+    .bili-guide,
+    .bili-guide-all,
+    .bili-guide-animate,
+    .bili-guide-cyc,
+    .bili-guide-electric,
+    .bili-guide-follow,
+    .bili-guide-followed,
+    .bili-danmaku-x-guide,
+    .bili-danmaku-x-guide-all,
+    .bili-danmaku-x-guide-follow,
+    .bili-danmaku-x-guide-gray {
+        display: none !important;
+    }
+}
+
+// 隐藏 投票
+html[video-page-hide-bpx-player-bili-vote] {
+    .bili-vote,
+    .bili-danmaku-x-vote {
+        display: none !important;
+    }
+}
+
+// 隐藏 播放效果调查
+html[video-page-hide-bpx-player-bili-qoe-feedback] {
+    .bpx-player-qoeFeedback,
+    .bili-qoeFeedback,
+    .bili-qoeFeedback-score,
+    .bili-qoeFeedback-vote {
+        display: none !important;
+    }
+}
+
+// 隐藏 评分
+html[video-page-hide-bpx-player-bili-score] {
+    .bili-score,
+    .bili-danmaku-x-score,
+    .bili-danmaku-x-superRating {
+        display: none !important;
+    }
+}
+
+// 隐藏 评分总结
+html[video-page-hide-bpx-player-bili-score-sum] {
+    .bili-scoreSum,
+    .bili-danmaku-x-scoreSum {
+        display: none !important;
+    }
+}
+
+// 隐藏 打卡
+html[video-page-hide-bpx-player-bili-clock] {
+    .bili-clock,
+    .bili-danmaku-x-clock {
+        display: none !important;
+    }
+}
+
+// 隐藏 心动
+html[video-page-hide-bpx-player-bili-cmtime] {
+    .bili-cmtime,
+    .bili-danmaku-x-cmtime {
+        display: none !important;
+    }
+}
+
+// 隐藏 迷你弹窗
+html[video-page-hide-bpx-player-bili-cmd-shrink] {
+    .bili-cmd-shrink,
+    .bili-danmaku-x-cmd-shrink {
+        display: none !important;
+    }
+}
+
+// 隐藏 视频预告
+html[video-page-hide-bpx-player-bili-reserve] {
+    .bili-reserve,
+    .bili-danmaku-x-reserve {
+        display: none !important;
+    }
+}
+
+// 隐藏 视频链接
+html[video-page-hide-bpx-player-bili-link] {
+    .bili-link,
+    .bili-danmaku-x-link {
+        display: none !important;
+    }
+}
+
+// 隐藏 播放器内所有弹窗 (强制)
+html[video-page-hide-bpx-player-cmd-dm-wrap] {
+    .bpx-player-cmd-dm-wrap {
+        display: none !important;
+    }
+}
+
 // 隐藏 全屏时 播放器内标题
 html[video-page-hide-bpx-player-top-left-title] {
     .bpx-player-top-title {

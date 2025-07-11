@@ -1,3 +1,4 @@
+import settings from '@/settings'
 import { Filter } from '@/types/collection'
 import { INumberItem, ISwitchItem } from '@/types/item'
 import { error } from '@/utils/logger'
@@ -116,6 +117,14 @@ export const dynamicFilters: Filter[] = [
         checkFn: () => !isPageLive(),
     },
 ]
+
+/** 载入过滤器样式 */
+export const loadFilterStyle = () => {
+    const style = document.createElement('style')
+    style.className = `bili-cleaner-css filter`
+    style.textContent = `[${settings.filterHideSign}] {display: none !important;}`
+    document.documentElement?.appendChild(style)
+}
 
 /** 载入全部过滤器 */
 export const loadFilters = () => {

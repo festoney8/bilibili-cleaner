@@ -9,7 +9,8 @@ const limit = pLimit(10)
 
 const rawCheck = async (
     elements: HTMLElement[],
-    sign = true,
+    enableFilterVisitSign = true,
+    hideMode: 'style' | 'sign',
     blackPairs: SubFilterPair[],
     whitePairs?: SubFilterPair[],
     forceBlackPairs?: SubFilterPair[],
@@ -52,8 +53,8 @@ const rawCheck = async (
             // 隐藏元素、标记已访问
             requestAnimationFrame(() => {
                 for (let i = 0; i < elements.length; i++) {
-                    toHideIdx.has(i) ? hideEle(elements[i]) : showEle(elements[i])
-                    sign && elements[i].setAttribute(settings.filterSign, '')
+                    toHideIdx.has(i) ? hideEle(elements[i], hideMode) : showEle(elements[i], hideMode)
+                    enableFilterVisitSign && elements[i].setAttribute(settings.filterVisitSign, '')
                 }
             })
         })
@@ -66,22 +67,24 @@ const throttledCheck = useThrottleFn(rawCheck, 50)
  * 检测元素列表中每个元素是否合法, 隐藏不合法的元素
  * 对选取出的元素内容进行并发检测
  * @param elements 元素列表
+ * @param enableFilterVisitSign 是否标记已检测过
+ * @param hideMode 隐藏模式，style 用display none隐藏，sign 用 attribute 隐藏
  * @param blackPairs 黑名单过滤器与使用的选择函数列表
  * @param whitePairs 白名单过滤器与使用的选择函数列表
  * @param forceBlackPairs 高权限黑名单过滤器与使用的选择函数列表
- * @param sign 是否标记已检测过
  * @param noThrottle 是否节流
  */
 export const coreCheck = async (
     elements: HTMLElement[],
-    sign = true,
+    enableFilterVisitSign = true,
+    hideMode: 'style' | 'sign',
     blackPairs: SubFilterPair[],
     whitePairs?: SubFilterPair[],
     forceBlackPairs?: SubFilterPair[],
     noThrottle?: boolean,
 ): Promise<number> => {
     if (noThrottle) {
-        return rawCheck(elements, sign, blackPairs, whitePairs, forceBlackPairs)
+        return rawCheck(elements, enableFilterVisitSign, hideMode, blackPairs, whitePairs, forceBlackPairs)
     }
-    return throttledCheck(elements, sign, blackPairs, whitePairs, forceBlackPairs)
+    return throttledCheck(elements, enableFilterVisitSign, hideMode, blackPairs, whitePairs, forceBlackPairs)
 }

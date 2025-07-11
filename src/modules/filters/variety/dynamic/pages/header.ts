@@ -59,7 +59,7 @@ class DynamicFilterHeader implements IMainFilter {
         // 提取元素
         let selector = `#biliHeaderDynScrollCon .dynamic-all > a`
         if (mode === 'incr') {
-            selector += `:not([${settings.filterSign}])`
+            selector += `:not([${settings.filterVisitSign}])`
         }
         const dyns = Array.from(this.target.querySelectorAll<HTMLElement>(selector))
         if (!dyns.length) {
@@ -86,7 +86,7 @@ class DynamicFilterHeader implements IMainFilter {
         this.dynContentFilter.isEnable && blackPairs.push([this.dynContentFilter, selectorFns.content])
 
         // 检测
-        const blackCnt = await coreCheck(dyns, true, blackPairs, [])
+        const blackCnt = await coreCheck(dyns, true, 'style', blackPairs, [])
         const time = (performance.now() - timer).toFixed(1)
         debug(`DynamicFilterHeader hide ${blackCnt} in ${dyns.length} dyns, mode=${mode}, time=${time}`)
     }

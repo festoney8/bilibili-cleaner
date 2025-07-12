@@ -122,7 +122,7 @@ export const dynamicFilters: Filter[] = [
 export const loadFilterStyle = () => {
     const style = document.createElement('style')
     style.className = `bili-cleaner-css filter`
-    style.textContent = `[${settings.filterHideSign}] {display: none !important;}`
+    style.textContent = `:is(#app, #i_cecream) [${settings.filterHideSign}] {display: none !important;}`
     document.documentElement?.appendChild(style)
 }
 

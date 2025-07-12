@@ -206,8 +206,8 @@ class VideoFilterChannel implements IMainFilter {
     }
 
     observe() {
-        waitForEle(document, '.channel-page__body', (node: HTMLElement): boolean => {
-            return node.className === 'channel-page__body'
+        waitForEle(document, 'main', (node: HTMLElement): boolean => {
+            return node.tagName === 'MAIN'
         }).then((ele) => {
             if (!ele) {
                 return

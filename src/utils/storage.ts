@@ -1,4 +1,4 @@
-import { GM_getValue, GM_setValue } from '$'
+import { GM_deleteValue, GM_getValue, GM_setValue } from '$'
 
 export const BiliCleanerStorage = {
     get: <T = unknown>(key: string, defaultValue?: T | undefined): T => {
@@ -7,5 +7,9 @@ export const BiliCleanerStorage = {
 
     set: <T = unknown>(key: string, value: T) => {
         GM_setValue(`BILICLEANER_${key}`, value)
+    },
+
+    delete: (key: string) => {
+        GM_deleteValue(`BILICLEANER_${key}`)
     },
 }

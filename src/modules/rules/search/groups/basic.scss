@@ -12,7 +12,7 @@ html[hide-search-page-bangumi-pgc-list] {
     }
 }
 
-// 隐藏 搜索结果顶部 游戏、热搜话题
+// 隐藏 搜索结果顶部 游戏、热搜
 html[hide-search-page-activity-game-list] {
     .activity-game-list {
         display: none !important;
@@ -51,13 +51,6 @@ html[hide-search-page-danmaku-count] {
 // 隐藏 视频日期
 html[hide-search-page-date] {
     .bili-video-card .bili-video-card__info--date {
-        display: none !important;
-    }
-}
-
-// 隐藏 视频加载骨架
-html[hide-search-page-skeleton] {
-    .video-list .video-list-item:not(:has(.bili-video-card__wrap)) {
         display: none !important;
     }
 }

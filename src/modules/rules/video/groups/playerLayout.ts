@@ -89,7 +89,7 @@ export const videoPlayerLayoutItems: Item[] = [
     {
         type: 'switch',
         id: 'default-widescreen',
-        name: '默认宽屏播放 刷新生效',
+        name: '默认宽屏播放',
         enableFn: async () => {
             unsafeWindow.isWide = true
             wideScreenManager.lock() // 锁定宽屏模式

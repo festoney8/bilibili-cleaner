@@ -1,4 +1,4 @@
-// 默认宽屏播放 刷新生效
+// 默认宽屏播放
 html[default-widescreen] {
     // 修复mini播放模式主播放器宽度支撑问题
     &[player-is-wide] #playerWrap:has(.bpx-player-container[data-screen='mini']) {

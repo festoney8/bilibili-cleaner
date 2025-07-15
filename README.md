@@ -28,18 +28,17 @@
 
 ## 安装
 
-### 前提：启用开发者模式
-
-> 由于 Google 推行 Manifest V3，现在 Tampermonkey 需在开发者模式使用
+### 前提：允许运行用户脚本
 
 - Edge 打开网址 `edge://extensions/`，在左侧启用 "开发人员模式"，重启浏览器
 - Firefox 无需操作
 - Chrome 操作如图
 
-    1. 右键单击脚本管理器（暴力猴/篡改猴），点击 "管理扩展程序"
-    2. 若出现 "允许运行用户脚本" 选项，启用即可
-    3. 若未出现 "允许运行用户脚本" 选项，则启用 "开发者模式" 作为代替
-    4. 重启浏览器
+    1. 右键单击脚本管理器（暴力猴/篡改猴/脚本猫）
+    2. 点击 "管理扩展程序"
+    3. 若 Chrome >= 138，会出现 "允许运行用户脚本" 选项，启用即可
+    4. 若未出现 "允许运行用户脚本" 选项，则启用 "开发者模式" 作为替代
+    5. 重启浏览器
 
         ![](images/how-to-install-on-chrome.png)
 
@@ -79,7 +78,7 @@
 - 净化新版 bilibili 网页，默认用户已登录，大会员体验最佳
 - 混搭各种功能，调节浏览器缩放比例，可得到满意的页面效果
 - 不做老版本页面适配，不做未登录状态适配
-- **已知问题：**
+- 已知问题：
     - 给 UP 主充电时，若出现 **充电窗口载入失败 (报错NaN)**，请关闭通用项「URL参数净化」，刷新页面再充电
     - 特殊活动直播，调节脚本设置后需刷新页面才生效，弹幕净化不生效
 
@@ -138,13 +137,13 @@
 
 ### 脚本管理器
 
-- **[Tampermonkey](https://www.tampermonkey.net/)（篡改猴）：已测试，推荐**
-
-- **[Violentmonkey](https://violentmonkey.github.io/)（暴力猴）：已测试，推荐**
-
-- **[ScriptCat](https://docs.scriptcat.org/)（脚本猫）：支持，部分测试**
-
-- [Greasemonkey](https://www.greasespot.net/) 未测试，不推荐
+| 插件管理器                                                 | 是否支持 | MV3 标准 | 备注                             |
+| ---------------------------------------------------------- | -------- | -------- | -------------------------------- |
+| [Tampermonkey (篡改猴)](https://www.tampermonkey.net/)     | ✔️       | ✔️       | 完全测试，推荐                   |
+| [Violentmonkey (暴力猴)](https://violentmonkey.github.io/) | ✔️       | ❌️      | 完全测试，高版本 Chrome 无法运行 |
+| [ScriptCat (脚本猫)](https://docs.scriptcat.org/)          | ✔️       | ✔️       | 部分测试                         |
+| Greasemonkey                                               | ❌️      | /        | 未测试                           |
+| Stay                                                       | ❌️      | /        | 无法运行                         |
 
 ## 净化效果对比
 
@@ -177,29 +176,9 @@
 </details>
 
 <details>
-<summary><b>查看 直播页 对比图</b></summary>
+<summary><b>查看 热门视频/排行榜页 对比图（webp动图）</b></summary>
 
-### before
-
-![](images/screenshot-live-before.png)
-
-### after
-
-![](images/screenshot-live-after.png)
-
-</details>
-
-<details>
-
-<summary><b>查看 热门视频/排行榜页 对比图</b></summary>
-
-### before
-
-![](images/screenshot-popular-before.png)
-
-### after
-
-![](images/screenshot-popular-after.png)
+![](images/screenshot-popular.webp)
 
 </details>
 

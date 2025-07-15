@@ -6,6 +6,11 @@ import URLHandlerInstance from '@/utils/urlHandler'
 export const videoBasicItems: Item[] = [
     {
         type: 'switch',
+        id: 'video-page-hide-fixed-header',
+        name: '顶栏 滚动页面后 不再吸附顶部',
+    },
+    {
+        type: 'switch',
         id: 'video-page-bv2av',
         name: 'BV号转AV号',
         noStyle: true,
@@ -58,11 +63,6 @@ export const videoBasicItems: Item[] = [
             URLHandlerInstance.cleanFnArr.push(bv2av)
             URLHandlerInstance.clean()
         },
-    },
-    {
-        type: 'switch',
-        id: 'video-page-hide-fixed-header',
-        name: '顶栏 滚动页面后 不再吸附顶部',
     },
     {
         type: 'switch',

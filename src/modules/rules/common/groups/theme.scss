@@ -1,6 +1,6 @@
 // 配色方案
-:root[common-theme-dark-common],
-:root[common-theme-dark-live] {
+:root[common-theme-dark='common-theme-dark-common'],
+:root[common-theme-dark='common-theme-dark-live'] {
     --Ga0: #101011;
     --Ga0_s: #1e2022;
     --Ga0_t: #1e2022;
@@ -225,8 +225,8 @@
     --Lb7_rgb: 88, 177, 212;
 }
 
-:root[common-theme-dark-dynamic],
-:root[common-theme-dark-message] {
+:root[common-theme-dark='common-theme-dark-dynamic'],
+:root[common-theme-dark='common-theme-dark-message'] {
     --Ga0: #0d0d0e;
     --Ga0_s: #1e2022;
     --Ga0_t: #1e2022;
@@ -457,7 +457,7 @@
 }
 
 // 通用
-html[common-theme-dark-common] {
+html[common-theme-dark='common-theme-dark-common'] {
     @include base;
 
     // banner亮度
@@ -467,7 +467,7 @@ html[common-theme-dark-common] {
 }
 
 // 动态页
-html[common-theme-dark-dynamic] {
+html[common-theme-dark='common-theme-dark-dynamic'] {
     // 改色
     --bg1: var(--Ga12) !important;
     --bg2: var(--Ga12) !important;
@@ -498,7 +498,7 @@ html[common-theme-dark-dynamic] {
 }
 
 // 直播页
-html[common-theme-dark-live] {
+html[common-theme-dark='common-theme-dark-live'] {
     @include base;
 
     // 顶栏
@@ -524,7 +524,7 @@ html[common-theme-dark-live] {
 }
 
 // 消息页
-html[common-theme-dark-message] {
+html[common-theme-dark='common-theme-dark-message'] {
     color-scheme: dark;
     ::selection {
         background-color: rgb(#51b1ff, 0.5);
@@ -543,7 +543,7 @@ html[common-theme-dark-message] {
 }
 
 // 空间页
-html[common-theme-dark-space] {
+html[common-theme-dark='common-theme-dark-space'] {
     @include base;
     .header {
         .toutu {

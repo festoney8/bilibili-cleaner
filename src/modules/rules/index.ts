@@ -358,7 +358,7 @@ const loadListItem = (item: IListItem) => {
         }
     }
     if (value !== item.disableValue) {
-        document.documentElement.setAttribute(value, '')
+        document.documentElement.setAttribute(item.id, value)
     }
 }
 

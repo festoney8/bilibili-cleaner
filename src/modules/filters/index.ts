@@ -1,7 +1,5 @@
 import settings from '@/settings'
 import { Filter } from '@/types/collection'
-import { INumberItem, ISwitchItem } from '@/types/item'
-import { error } from '@/utils/logger'
 import {
     isPageBangumi,
     isPageChannel,
@@ -14,7 +12,6 @@ import {
     isPageSpace,
     isPageVideo,
 } from '@/utils/pageType'
-import { BiliCleanerStorage } from '@/utils/storage'
 import {
     commentFilterCommonEntry,
     commentFilterCommonGroups,
@@ -122,56 +119,8 @@ export const dynamicFilters: Filter[] = [
 export const loadFilterStyle = () => {
     const style = document.createElement('style')
     style.className = `bili-cleaner-css filter`
-    style.textContent = `:is(#app, #i_cecream) [${settings.filterHideSign}] {display: none !important;}`
+    style.textContent = `:is(body, #app, #i_cecream) [${settings.filterHideSign}] {display: none !important;}`
     document.documentElement?.appendChild(style)
-}
-
-/** 载入全部过滤器 */
-export const loadFilters = () => {
-    const filters = [...videoFilters, ...commentFilters, ...dynamicFilters]
-    for (const filter of filters) {
-        if (filter.checkFn()) {
-            try {
-                filter.entry()
-                for (const group of filter.groups) {
-                    for (const item of group.items) {
-                        switch (item.type) {
-                            case 'switch':
-                                loadSwitchItem(item)
-                                break
-                            case 'number':
-                                loadNumberItem(item)
-                                break
-                        }
-                    }
-                }
-            } catch (err) {
-                error(`loadFilters filter ${filter.name} error`, err)
-            }
-        }
-    }
-}
-
-const loadSwitchItem = (item: ISwitchItem) => {
-    const enable = BiliCleanerStorage.get(item.id, item.defaultEnable)
-    if (enable) {
-        if (item.enableFn) {
-            if (item.enableFnRunAt === 'document-end' && document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', () => {
-                    item.enableFn!()?.catch(() => {})
-                })
-            } else {
-                item.enableFn()?.catch(() => {})
-            }
-        }
-    }
-}
-
-const loadNumberItem = (item: INumberItem) => {
-    const value = BiliCleanerStorage.get(item.id, item.defaultValue)
-    if (value !== item.disableValue) {
-        item.fn(value)?.catch(() => {})
-    }
 }
 
 /** 右键菜单功能 */

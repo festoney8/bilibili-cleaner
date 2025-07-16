@@ -735,6 +735,7 @@ export const commentFilterCommonGroups: Group[] = [
             {
                 type: 'number',
                 id: GM_KEYS.black.level.valueKey,
+                noStyle: true,
                 name: '设定最低等级 (0~6)',
                 minValue: 0,
                 maxValue: 6,

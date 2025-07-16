@@ -14,9 +14,7 @@ import {
     isPageWatchlater,
 } from '@/utils/pageType'
 
-import { IListItem, INumberItem, IStringItem, ISwitchItem } from '@/types/item'
 import { error } from '@/utils/logger'
-import { BiliCleanerStorage } from '@/utils/storage'
 
 import { bangumiGroups } from './bangumi'
 import { channelGroups } from './channel'
@@ -33,7 +31,6 @@ import { spaceGroups } from './space'
 import { videoGroups } from './video'
 import { watchlaterGroups } from './watchlater'
 
-import { useMagicKeys } from '@vueuse/core'
 import bangumiStyle from './bangumi/index.scss?inline'
 import channelStyle from './channel/index.scss?inline'
 import commentStyle from './comment/index.scss?inline'
@@ -138,38 +135,8 @@ export const rules: Rule[] = [
     },
 ]
 
-/** 载入当前页面规则列表 */
-export const loadRules = () => {
-    for (const rule of rules) {
-        if (rule.checkFn()) {
-            for (const group of rule.groups) {
-                for (const item of group.items) {
-                    try {
-                        switch (item.type) {
-                            case 'switch':
-                                loadSwitchItem(item)
-                                break
-                            case 'number':
-                                loadNumberItem(item)
-                                break
-                            case 'list':
-                                loadListItem(item)
-                                break
-                            case 'string':
-                                loadStringItem(item)
-                                break
-                        }
-                    } catch (err) {
-                        error(`loadRules load item failed, id=${item.id}, name=${item.name}, type=${item.type}`, err)
-                    }
-                }
-            }
-        }
-    }
-}
-
 /** 载入css, 注入在html节点下, 需在head节点出现后(html节点可插入时)执行 */
-export const loadStyles = () => {
+export const loadRuleStyle = () => {
     for (const rule of rules) {
         if (rule.checkFn() && rule.style) {
             try {
@@ -178,7 +145,7 @@ export const loadStyles = () => {
                 style.textContent = rule.style
                 document.documentElement?.appendChild(style)
             } catch (err) {
-                error(`loadStyles error, name=${rule.name}`, err)
+                error(`loadRuleStyle error, name=${rule.name}`, err)
             }
         }
     }
@@ -309,89 +276,5 @@ export const loadStyles = () => {
                 }
             },
         )
-    }
-}
-
-const loadSwitchItem = (item: ISwitchItem) => {
-    const enable = BiliCleanerStorage.get(item.id, item.defaultEnable)
-    if (enable) {
-        if (!item.noStyle) {
-            document.documentElement.setAttribute(item.attrName ?? item.id, '')
-        }
-        if (item.enableFn) {
-            if (item.enableFnRunAt === 'document-end' && document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', () => {
-                    item.enableFn!()?.catch(() => {})
-                })
-            } else {
-                item.enableFn()?.catch(() => {})
-            }
-        }
-    }
-}
-
-const loadNumberItem = (item: INumberItem) => {
-    const value = BiliCleanerStorage.get(item.id, item.defaultValue)
-    if (value !== item.disableValue) {
-        if (!item.noStyle) {
-            document.documentElement.setAttribute(item.attrName ?? item.id, '')
-        }
-        item.fn(value)?.catch(() => {})
-    }
-}
-
-const loadStringItem = (item: IStringItem) => {
-    const value = BiliCleanerStorage.get(item.id, item.defaultValue)
-    if (value !== item.disableValue) {
-        if (!item.noStyle) {
-            document.documentElement.setAttribute(item.attrName ?? item.id, '')
-        }
-        item.fn(value)?.catch(() => {})
-    }
-}
-
-const loadListItem = (item: IListItem) => {
-    const value = BiliCleanerStorage.get(item.id, item.defaultValue)
-    for (const option of item.options) {
-        if (option.value === value && option.fn) {
-            option.fn()?.catch(() => {})
-        }
-    }
-    if (value !== item.disableValue) {
-        document.documentElement.setAttribute(item.id, value)
-    }
-}
-
-/**
- * 快捷键 Alt + B，快速禁用全部 CSS 样式
- */
-export const loadRulesHotKey = () => {
-    try {
-        let isEnable = true
-        const toggle = () => {
-            const cssNodes = document.querySelectorAll<HTMLStyleElement>('style.bili-cleaner-css')
-            if (isEnable) {
-                for (const node of cssNodes) {
-                    node.innerHTML = '/*' + node.innerHTML + '*/'
-                }
-            } else {
-                for (const node of cssNodes) {
-                    node.innerHTML = node.innerHTML.replace(/^\/\*[\s\n]*|[\s\n]*\*\/$/g, '')
-                }
-            }
-            isEnable = !isEnable
-        }
-
-        useMagicKeys({
-            passive: false,
-            onEventFired(e) {
-                if (e.type === 'keydown' && e.altKey && e.key.toLocaleLowerCase() === 'b') {
-                    e.preventDefault()
-                    toggle()
-                }
-            },
-        })
-    } catch (err) {
-        error(`loadRulesHotKey error`, err)
     }
 }

@@ -106,14 +106,14 @@ class DynamicFilterSpace implements IMainFilter {
         // 提取元素
         let selector = `.bili-dyn-list__item`
         if (mode === 'incr') {
-            selector += `:not([${settings.filterSign}])`
+            selector += `:not([${settings.filterVisitSign}])`
         }
         const dyns = Array.from(this.target.querySelectorAll<HTMLElement>(selector))
         if (!dyns.length) {
             return
         }
         if (revertAll) {
-            dyns.forEach((v) => showEle(v))
+            dyns.forEach((v) => showEle(v, 'style'))
             return
         }
 
@@ -141,7 +141,7 @@ class DynamicFilterSpace implements IMainFilter {
         this.dynPlaybackFilter.isEnable && blackPairs.push([this.dynPlaybackFilter, selectorFns.playback])
 
         // 检测
-        const blackCnt = await coreCheck(dyns, true, blackPairs, [])
+        const blackCnt = await coreCheck(dyns, true, 'style', blackPairs, [])
         const time = (performance.now() - timer).toFixed(1)
         debug(`DynamicFilterSpace hide ${blackCnt} in ${dyns.length} dyns, mode=${mode}, time=${time}`)
     }
@@ -206,6 +206,7 @@ export const dynamicFilterSpaceGroups: Group[] = [
                 type: 'number',
                 id: GM_KEYS.black.duration.valueKey,
                 name: '设定最低时长（0~300s）',
+                noStyle: true,
                 minValue: 0,
                 maxValue: 300,
                 step: 1,

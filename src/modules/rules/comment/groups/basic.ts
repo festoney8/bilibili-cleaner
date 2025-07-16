@@ -266,6 +266,23 @@ export const commentBasicItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'video-page-fix-note-thumbnail-scale',
+        name: '优化 笔记评论缩略图比例',
+        noStyle: true,
+        enableFn: () => {
+            shadow.addShadowStyle(
+                'bili-comment-pictures-renderer',
+                'video-page-fix-note-thumbnail-scale',
+                `#content img:only-child {width: auto !important;}
+                #content {zoom: 1.1;}`,
+            )
+        },
+        disableFn: () => {
+            shadow.removeShadowStyle('bili-comment-pictures-renderer', 'video-page-fix-note-thumbnail-scale')
+        },
+    },
+    {
+        type: 'switch',
         id: 'video-page-hide-jump-link-search-word',
         name: '禁用 评论内容搜索关键词高亮',
         defaultEnable: true,

@@ -146,10 +146,6 @@ export const commonThemeItems: Item[] = [
                 fn: enableDarkMode,
             },
             {
-                value: 'common-theme-dark-default',
-                name: '官方默认',
-            },
-            {
                 value: 'common-theme-dark-auto',
                 name: '跟随系统',
                 fn: async () => {
@@ -166,6 +162,10 @@ export const commonThemeItems: Item[] = [
                         { immediate: true },
                     )
                 },
+            },
+            {
+                value: 'common-theme-dark-default',
+                name: '官方默认',
             },
         ],
     },

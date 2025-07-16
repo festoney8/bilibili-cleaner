@@ -210,9 +210,11 @@ html[homepage-hide-skeleton] main {
     .load-more-anchor {
         visibility: hidden;
     }
-    .bili-video-card:not(.is-rcmd),
-    .floor-single-card:has(.skeleton, .skeleton-item) {
-        display: none;
+    .container {
+        > .bili-video-card:not(.is-rcmd),
+        > .floor-single-card:has(.skeleton, .skeleton-item) {
+            display: none;
+        }
     }
 }
 

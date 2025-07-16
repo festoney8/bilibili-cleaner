@@ -1,3 +1,5 @@
+import settings from '@/settings'
+
 // 匹配BV号
 const bvidPattern = /(BV[1-9A-HJ-NP-Za-km-z]+)/
 export const matchBvid = (s: string): string | null => {
@@ -76,17 +78,27 @@ export const calcQuality = (ratio: number): number => {
 }
 
 // 隐藏元素
-export const hideEle = (ele: HTMLElement) => {
-    ele.style.setProperty('display', 'none', 'important')
+export const hideEle = (ele: HTMLElement, hideMode: 'style' | 'sign') => {
+    if (hideMode === 'sign') {
+        // 避免和 greasyfork.org/scripts/481629 冲突
+        ele.setAttribute(settings.filterHideSign, '')
+    } else {
+        ele.style.setProperty('display', 'none', 'important')
+    }
 }
 // 显示元素
-export const showEle = (ele: HTMLElement) => {
-    if (ele.style.display === 'none') {
+export const showEle = (ele: HTMLElement, hideMode: 'style' | 'sign') => {
+    if (hideMode === 'sign') {
+        ele.removeAttribute(settings.filterHideSign)
+    } else {
         ele.style.removeProperty('display')
     }
 }
 // 判断是否隐藏中
-export const isEleHide = (ele: HTMLElement) => {
+export const isEleHide = (ele: HTMLElement, hideMode: 'style' | 'sign') => {
+    if (hideMode === 'sign') {
+        return ele.hasAttribute(settings.filterHideSign)
+    }
     return ele.style.display === 'none'
 }
 

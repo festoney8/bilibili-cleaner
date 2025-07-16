@@ -54,7 +54,6 @@
 
 <script setup lang="ts">
 import { IListItem } from '@/types/item'
-import { error } from '@/utils/logger'
 import { BiliCleanerStorage } from '@/utils/storage'
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/vue'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid'
@@ -68,22 +67,17 @@ const currOption = options.find((v) => v.value === currValue)
 const selectedOption = ref(currOption ?? options[0])
 
 watch(selectedOption, (newSelected) => {
-    try {
-        for (const option of options) {
-            if (option.value === newSelected.value) {
-                if (option.fn) {
-                    option.fn()?.catch(() => {})
-                }
-                if (newSelected.value !== item.disableValue) {
-                    document.documentElement.setAttribute(option.value, '')
-                }
-            } else {
-                document.documentElement.removeAttribute(option.value)
+    const value = newSelected.value
+    if (value !== item.disableValue) {
+        document.documentElement.setAttribute(item.id, value)
+        for (const option of item.options) {
+            if (option.value === value && option.fn) {
+                option.fn()?.catch(() => {})
             }
         }
-        BiliCleanerStorage.set<string>(item.id, newSelected.value)
-    } catch (err) {
-        error(`ListComp ${item.id} error`, err)
+    } else {
+        document.documentElement.removeAttribute(item.id)
     }
+    BiliCleanerStorage.set<string>(item.id, value)
 })
 </script>

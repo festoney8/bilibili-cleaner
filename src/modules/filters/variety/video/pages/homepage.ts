@@ -156,14 +156,14 @@ class VideoFilterHomepage implements IMainFilter {
         // 顶部推荐位 + rcmd视频流
         let selector = `:scope > :is(.feed-card, .bili-video-card.is-rcmd, .bili-feed-card)`
         if (mode === 'incr') {
-            selector += `:not([${settings.filterSign}])`
+            selector += `:not([${settings.filterVisitSign}])`
         }
         const videos = Array.from(this.target.querySelectorAll<HTMLElement>(selector))
         if (!videos.length) {
             return
         }
         if (revertAll) {
-            videos.forEach((v) => showEle(v))
+            videos.forEach((v) => showEle(v, 'sign'))
             return
         }
 
@@ -203,7 +203,7 @@ class VideoFilterHomepage implements IMainFilter {
         this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns.bvid])
 
         // 检测
-        const blackCnt = await coreCheck(videos, true, blackPairs, whitePairs, forceBlackPairs)
+        const blackCnt = await coreCheck(videos, true, 'sign', blackPairs, whitePairs, forceBlackPairs)
         const time = (performance.now() - timer).toFixed(1)
         debug(`VideoFilterHomepage hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
     }

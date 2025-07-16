@@ -28,7 +28,7 @@
 ### 3. 软传销视频
 
 ```
-/2024.+风口.+(小时|一天)/
+/20\d\d.+风口.+(小时|一天)/
 /(小时|内耗).+为自己打工/
 ```
 
@@ -56,10 +56,11 @@
 
 - [新浪明星](https://weibo.com/cewebrity)
 - [关注人数最多的新浪微博帐号](https://zh.wikipedia.org/wiki/%E5%85%B3%E6%B3%A8%E4%BA%BA%E6%95%B0%E6%9C%80%E5%A4%9A%E7%9A%84%E6%96%B0%E6%B5%AA%E5%BE%AE%E5%8D%9A%E5%B8%90%E5%8F%B7)
+- [娱乐频道](https://www.bilibili.com/c/ent/)
 
 ### 7. 梗
 
-- 可参考：https://space.bilibili.com/94510621/video
+- 可参考：https://space.bilibili.com/94510621/upload/video
 
 ```
 科目三
@@ -116,6 +117,7 @@
 昵称包含下列关键词的 UP 主绝大多数是营销号
 
 ```
+今日知乎
 今日话题
 话题酱
 大型纪录片

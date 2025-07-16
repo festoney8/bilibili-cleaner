@@ -122,7 +122,7 @@ class VideoFilterSearch implements IMainFilter {
             return
         }
         if (revertAll) {
-            videos.forEach((v) => showEle(v))
+            videos.forEach((v) => showEle(v, 'sign'))
             return
         }
 
@@ -156,7 +156,7 @@ class VideoFilterSearch implements IMainFilter {
         this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns.bvid])
 
         // 检测
-        const blackCnt = await coreCheck(videos, true, blackPairs, whitePairs, forceBlackPairs)
+        const blackCnt = await coreCheck(videos, true, 'sign', blackPairs, whitePairs, forceBlackPairs)
         const time = (performance.now() - timer).toFixed(1)
         debug(`VideoFilterSearch hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
     }

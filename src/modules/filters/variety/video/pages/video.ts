@@ -129,7 +129,7 @@ class VideoFilterVideo implements IMainFilter {
             return
         }
         if (revertAll) {
-            videos.forEach((v) => showEle(v))
+            videos.forEach((v) => showEle(v, 'sign'))
             return
         }
 
@@ -163,14 +163,14 @@ class VideoFilterVideo implements IMainFilter {
         this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns.bvid])
 
         // 检测
-        const blackCnt = await coreCheck(videos, true, blackPairs, whitePairs, forceBlackPairs)
+        const blackCnt = await coreCheck(videos, true, 'sign', blackPairs, whitePairs, forceBlackPairs)
 
         // 缓存数据检测，更新__INITIAL_STATE__.related
         // __INITIAL_STATE__.related 与右侧视频列表绑定
         if (enableRelatedCheck && blackCnt) {
             const blackBvids = new Set<string>()
             for (const video of videos) {
-                if (isEleHide(video)) {
+                if (isEleHide(video, 'sign')) {
                     const url = video.querySelector('.info > a')?.getAttribute('href')
                     if (url) {
                         const bvid = matchBvid(url)

@@ -145,14 +145,14 @@ class VideoFilterChannel implements IMainFilter {
         // 提取元素
         let selector = `.feed-card`
         if (mode === 'incr') {
-            selector += `:not([${settings.filterSign}])`
+            selector += `:not([${settings.filterVisitSign}])`
         }
         const videos = Array.from(this.target.querySelectorAll<HTMLElement>(selector))
         if (!videos.length) {
             return
         }
         if (revertAll) {
-            videos.forEach((v) => showEle(v))
+            videos.forEach((v) => showEle(v, 'sign'))
             return
         }
 
@@ -188,7 +188,7 @@ class VideoFilterChannel implements IMainFilter {
         this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns.bvid])
 
         // 检测
-        const blackCnt = await coreCheck(videos, true, blackPairs, whitePairs, forceBlackPairs)
+        const blackCnt = await coreCheck(videos, true, 'sign', blackPairs, whitePairs, forceBlackPairs)
         const time = (performance.now() - timer).toFixed(1)
         debug(`VideoFilterChannel hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
     }
@@ -206,8 +206,8 @@ class VideoFilterChannel implements IMainFilter {
     }
 
     observe() {
-        waitForEle(document, '.channel-page__body', (node: HTMLElement): boolean => {
-            return node.className === 'channel-page__body'
+        waitForEle(document, '#app', (node: HTMLElement): boolean => {
+            return node.id === 'app'
         }).then((ele) => {
             if (!ele) {
                 return

@@ -316,7 +316,7 @@ class CommentFilterCommon implements IMainFilter {
                 (v) => v.host as HTMLElement,
             )
             if (mode === 'incr') {
-                rootComments = rootComments.filter((v) => !v.hasAttribute(settings.filterSign))
+                rootComments = rootComments.filter((v) => !v.hasAttribute(settings.filterVisitSign))
             }
         }
         if (!rootComments.length) {
@@ -346,7 +346,7 @@ class CommentFilterCommon implements IMainFilter {
         }
 
         if (isRootWhite || revertAll) {
-            rootComments.forEach((el) => showEle(el))
+            rootComments.forEach((el) => showEle(el, 'style'))
             return
         }
 
@@ -371,7 +371,7 @@ class CommentFilterCommon implements IMainFilter {
         this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns.root.isLink])
         this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns.root.isMe])
 
-        const rootBlackCnt = await coreCheck(rootComments, true, blackPairs, whitePairs, [], true)
+        const rootBlackCnt = await coreCheck(rootComments, true, 'style', blackPairs, whitePairs, [], true)
         const time = (performance.now() - timer).toFixed(1)
         debug(
             `CommentFilterCommon hide ${rootBlackCnt} in ${rootComments.length} root comments, mode=${mode}, time=${time}`,
@@ -408,7 +408,7 @@ class CommentFilterCommon implements IMainFilter {
                 (v) => v.host as HTMLElement,
             )
             if (mode === 'incr') {
-                subComments = subComments.filter((v) => !v.hasAttribute(settings.filterSign))
+                subComments = subComments.filter((v) => !v.hasAttribute(settings.filterVisitSign))
             }
         }
         if (!subComments.length) {
@@ -436,7 +436,7 @@ class CommentFilterCommon implements IMainFilter {
         }
 
         if (isSubWhite || revertAll) {
-            subComments.forEach((el) => showEle(el))
+            subComments.forEach((el) => showEle(el, 'style'))
             return
         }
 
@@ -459,7 +459,7 @@ class CommentFilterCommon implements IMainFilter {
         this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns.sub.isLink])
         this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns.sub.isMe])
 
-        const subBlackCnt = await coreCheck(subComments, false, blackPairs, whitePairs, [], true)
+        const subBlackCnt = await coreCheck(subComments, false, 'style', blackPairs, whitePairs, [], true)
         const time = (performance.now() - timer).toFixed(1)
         debug(
             `CommentFilterCommon hide ${subBlackCnt} in ${subComments.length} sub comments, mode=${mode}, time=${time}`,
@@ -735,6 +735,7 @@ export const commentFilterCommonGroups: Group[] = [
             {
                 type: 'number',
                 id: GM_KEYS.black.level.valueKey,
+                noStyle: true,
                 name: '设定最低等级 (0~6)',
                 minValue: 0,
                 maxValue: 6,

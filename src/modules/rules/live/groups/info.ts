@@ -34,6 +34,12 @@ export const liveInfoItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'live-page-head-info-vm-upper-row-cut',
+        name: '隐藏 剪辑',
+        defaultEnable: true,
+    },
+    {
+        type: 'switch',
         id: 'live-page-head-info-vm-upper-row-share',
         name: '隐藏 分享',
         defaultEnable: true,

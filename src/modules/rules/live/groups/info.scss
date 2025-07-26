@@ -41,10 +41,22 @@ html[live-page-head-info-vm-upper-row-report] {
     }
 }
 
+// 隐藏 剪辑
+html[live-page-head-info-vm-upper-row-cut] {
+    #head-info-vm .upper-row .right-ctnr div:has(.cut-icon) {
+        display: none !important;
+    }
+}
+
 // 隐藏 分享
 html[live-page-head-info-vm-upper-row-share] {
-    #head-info-vm .upper-row .right-ctnr div:has(.icon-share, [src*='img/share']) {
-        display: none !important;
+    #head-info-vm .upper-row .right-ctnr {
+        div:has(.icon-share, [src*='img/share']) {
+            display: none !important;
+        }
+        .more {
+            display: none !important;
+        }
     }
     #head-info-vm .header-info-ctnr .rows-ctnr .upper-row .more {
         display: none !important;

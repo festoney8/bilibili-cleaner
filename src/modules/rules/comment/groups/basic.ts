@@ -291,8 +291,12 @@ export const commentBasicItems: Item[] = [
             shadow.addShadowStyle(
                 'bili-rich-text',
                 'video-page-hide-jump-link-search-word',
-                `#contents a[href*="search.bilibili.com"] {color: inherit !important;}
-                #contents a[href*="search.bilibili.com"]:hover {color: #008AC5 !important;}
+                `#contents a[href*="search.bilibili.com"] {
+                    color: inherit !important;
+                    pointer-events: none !important;
+                    cursor: text !important;
+                }
+                #contents a[href*="search.bilibili.com"]:hover {color: inherit !important;}
                 #contents a[href*="search.bilibili.com"] img {display: none !important;}
                 `,
             )

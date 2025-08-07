@@ -68,6 +68,11 @@ export const livePlayerItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'live-page-gift-control-vm-show-lottery',
+        name: '隐藏 礼物栏 显示天选',
+    },
+    {
+        type: 'switch',
         id: 'live-page-fullscreen-danmaku-vm',
         name: '全屏时 隐藏弹幕发送框',
     },

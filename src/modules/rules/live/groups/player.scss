@@ -109,10 +109,10 @@ html[live-page-gift-control-vm] {
 
 // 隐藏 礼物栏 显示天选
 html[live-page-gift-control-vm-show-lottery] {
-    #gift-control-vm:not(:has(.gift-lottery)) {
+    #gift-control-vm:not(:has(.anchor-lottery-entry)) {
         display: none !important;
     }
-    #gift-control-vm:has(.gift-lottery) {
+    #gift-control-vm:has(.anchor-lottery-entry) {
         height: 0 !important;
         .gift-panel {
             display: none;
@@ -125,7 +125,8 @@ html[live-page-gift-control-vm-show-lottery] {
         }
         .left-part-ctnr {
             position: absolute;
-            transform: translate(0, -100px);
+            transform: translate(0, -120px);
+            zoom: 0.6;
         }
     }
 

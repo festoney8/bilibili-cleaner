@@ -107,6 +107,32 @@ html[live-page-gift-control-vm] {
     }
 }
 
+// 隐藏 礼物栏 显示天选
+html[live-page-gift-control-vm-show-lottery] {
+    #gift-control-vm:not(:has(.anchor-lottery-entry, .gift-lottery)) {
+        display: none !important;
+    }
+    #gift-control-vm:has(.anchor-lottery-entry, .gift-lottery) {
+        height: 0 !important;
+        .gift-panel {
+            display: none;
+        }
+        .out-part {
+            padding-right: 10px !important;
+            position: fixed;
+            left: 0;
+            top: calc(100vh - 120px);
+        }
+    }
+
+    // 补齐圆角, 不可important
+    body:not(.pure_room_root) #player-ctnr {
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+        overflow: hidden;
+    }
+}
+
 // 全屏时 隐藏弹幕发送框
 html[live-page-fullscreen-danmaku-vm] {
     #fullscreen-danmaku-vm {

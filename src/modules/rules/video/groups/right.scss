@@ -123,6 +123,9 @@ html[video-page-hide-right-container-multi-page-add-counter] {
                 color: var(--brand_blue);
             }
         }
+        &:has(.video-pod__item:nth-child(10)) .video-pod__item:nth-child(-n + 9)::before {
+            content: 'P0' counter(section-counter) !important;
+        }
     }
 }
 

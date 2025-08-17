@@ -1,14 +1,16 @@
 // 隐藏 头像框
 html[hide-dynamic-page-bili-dyn-avatar-pendent] {
-    .bili-dyn-list {
+    .bili-dyn-list .b-avatar__layers {
         .b-avatar__layer.center {
-            width: 48px !important;
-            height: 48px !important;
+            &:nth-child(1) {
+                width: 48px !important;
+                height: 48px !important;
+            }
+            &:nth-child(2) {
+                display: none !important;
+            }
         }
-        .b-avatar__layers .b-avatar__layer.center:nth-child(2) picture {
-            display: none !important;
-        }
-        .b-avatar__layers:has(.b-avatar__layer__res[style^='background']) {
+        &:nth-child(2) .b-avatar__layer.center {
             display: none !important;
         }
     }
@@ -16,7 +18,7 @@ html[hide-dynamic-page-bili-dyn-avatar-pendent] {
 
 // 隐藏 头像徽章
 html[hide-dynamic-page-bili-dyn-avatar-icon] {
-    .bili-dyn-list .b-avatar__layers .b-avatar__layer:last-child:not(.center) {
+    .bili-dyn-list .b-avatar__layer:not(.center) {
         display: none !important;
     }
 }

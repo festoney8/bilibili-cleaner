@@ -69,17 +69,19 @@ html[homepage-hide-banner] {
 }
 
 // 隐藏 大图活动轮播
+// https://greasyfork.org/zh-CN/scripts/479861/discussions/306649
 html[homepage-hide-recommend-swipe] {
     .recommended-swipe {
-        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        height: 0 !important;
+        width: 0 !important;
+        position: absolute !important;
+        opacity: 0 !important;
     }
-
     .recommended-container_floor-aside .container {
         // 布局调整
-        > *:nth-of-type(5),
-        > *:nth-of-type(6),
-        > *:nth-of-type(7),
-        > *:nth-of-type(n + 8) {
+        > *:nth-of-type(n + 5) {
             margin-top: 0 !important;
         }
 

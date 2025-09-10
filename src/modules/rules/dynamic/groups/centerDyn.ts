@@ -95,4 +95,10 @@ export const dynamicCenterDynItems: Item[] = [
             setInterval(unfold, 500)
         },
     },
+    {
+        type: 'switch',
+        id: 'dynamic-page-unfold-dynamic-content',
+        name: '自动展开 动态文字内容',
+        description: ['自动隐藏 展开 按钮', '对专栏文章不生效'],
+    },
 ]

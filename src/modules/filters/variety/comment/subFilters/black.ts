@@ -5,6 +5,8 @@ import { StringFilter } from '@/modules/filters/core/subFilters/stringFilter'
 
 export class CommentUsernameFilter extends StringFilter {}
 
+export class CommentUsernameKeywordFilter extends KeywordFilter {}
+
 export class CommentContentFilter extends KeywordFilter {}
 
 export class CommentLevelFilter extends NumberMinFilter {}

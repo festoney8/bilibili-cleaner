@@ -19,6 +19,7 @@ import {
     CommentContentFilter,
     CommentLevelFilter,
     CommentUsernameFilter,
+    CommentUsernameKeywordFilter,
 } from '../subFilters/black'
 import {
     CommentIsLinkFilter,
@@ -33,6 +34,10 @@ const GM_KEYS = {
         username: {
             statusKey: 'video-comment-username-filter-status',
             valueKey: 'global-comment-username-filter-value',
+        },
+        usernameKeyword: {
+            statusKey: 'video-comment-username-keyword-filter-status',
+            valueKey: 'global-comment-username-keyword-filter-value',
         },
         content: {
             statusKey: 'video-comment-content-filter-status',
@@ -263,6 +268,7 @@ class CommentFilterCommon implements IMainFilter {
 
     // 黑名单
     commentUsernameFilter = new CommentUsernameFilter()
+    commentUsernameKeywordFilter = new CommentUsernameKeywordFilter()
     commentContentFilter = new CommentContentFilter()
     commentLevelFilter = new CommentLevelFilter()
     commentBotFilter = new CommentBotFilter()
@@ -281,6 +287,7 @@ class CommentFilterCommon implements IMainFilter {
     init() {
         // 黑名单
         this.commentUsernameFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.username.valueKey, []))
+        this.commentUsernameKeywordFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.usernameKeyword.valueKey, []))
         this.commentContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))
         this.commentLevelFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.level.valueKey, 0))
         this.commentBotFilter.setParam(bots)
@@ -297,6 +304,7 @@ class CommentFilterCommon implements IMainFilter {
         if (
             !(
                 this.commentUsernameFilter.isEnable ||
+                this.commentUsernameKeywordFilter.isEnable ||
                 this.commentContentFilter.isEnable ||
                 this.commentLevelFilter.isEnable ||
                 this.commentBotFilter.isEnable ||
@@ -352,6 +360,8 @@ class CommentFilterCommon implements IMainFilter {
 
         const blackPairs: SubFilterPair[] = []
         this.commentUsernameFilter.isEnable && blackPairs.push([this.commentUsernameFilter, selectorFns.root.username])
+        this.commentUsernameKeywordFilter.isEnable &&
+            blackPairs.push([this.commentUsernameKeywordFilter, selectorFns.root.username])
         this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns.root.content])
         this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns.root.level])
         this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns.root.username])
@@ -389,6 +399,7 @@ class CommentFilterCommon implements IMainFilter {
         if (
             !(
                 this.commentUsernameFilter.isEnable ||
+                this.commentUsernameKeywordFilter.isEnable ||
                 this.commentContentFilter.isEnable ||
                 this.commentLevelFilter.isEnable ||
                 this.commentBotFilter.isEnable ||
@@ -442,6 +453,8 @@ class CommentFilterCommon implements IMainFilter {
 
         const blackPairs: SubFilterPair[] = []
         this.commentUsernameFilter.isEnable && blackPairs.push([this.commentUsernameFilter, selectorFns.sub.username])
+        this.commentUsernameKeywordFilter.isEnable &&
+            blackPairs.push([this.commentUsernameKeywordFilter, selectorFns.sub.username])
         this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns.sub.content])
         this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns.sub.level])
         this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns.sub.username])
@@ -542,6 +555,37 @@ export const commentFilterCommonGroups: Group[] = [
                 saveFn: async () => {
                     mainFilter.commentUsernameFilter.setParam(
                         BiliCleanerStorage.get(GM_KEYS.black.username.valueKey, []),
+                    )
+                    mainFilter.check('full')
+                },
+            },
+            {
+                type: 'switch',
+                id: GM_KEYS.black.usernameKeyword.statusKey,
+                name: '启用 评论用户昵称关键词过滤',
+                noStyle: true,
+                enableFn: () => {
+                    mainFilter.commentUsernameKeywordFilter.enable()
+                    mainFilter.check('full')
+                },
+                disableFn: () => {
+                    mainFilter.commentUsernameKeywordFilter.disable()
+                    mainFilter.check('full')
+                },
+            },
+            {
+                type: 'editor',
+                id: GM_KEYS.black.usernameKeyword.valueKey,
+                name: '编辑 评论用户昵称关键词黑名单',
+                editorTitle: '评论区 用户黑名单',
+                editorDescription: [
+                    '每行一个关键词或正则，不区分大小写、全半角',
+                    '请勿使用过于激进的关键词或正则',
+                    '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
+                ],
+                saveFn: async () => {
+                    mainFilter.commentUsernameKeywordFilter.setParam(
+                        BiliCleanerStorage.get(GM_KEYS.black.usernameKeyword.valueKey, []),
                     )
                     mainFilter.check('full')
                 },

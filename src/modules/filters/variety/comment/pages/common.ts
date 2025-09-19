@@ -18,6 +18,7 @@ import {
     CommentCallUserOnlyNoReplyFilter,
     CommentContentFilter,
     CommentLevelFilter,
+    CommentNoFaceFilter,
     CommentUsernameFilter,
     CommentUsernameKeywordFilter,
 } from '../subFilters/black'
@@ -46,6 +47,9 @@ const GM_KEYS = {
         level: {
             statusKey: 'video-comment-level-filter-status',
             valueKey: 'global-comment-level-filter-value',
+        },
+        noface: {
+            statusKey: 'video-comment-noface-filter-status',
         },
         bot: {
             statusKey: 'video-comment-bot-filter-status',
@@ -106,6 +110,12 @@ const selectorFns = {
         },
         content: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.content?.message?.replace(/@[^@\s]+/g, ' ').trim()
+        },
+        noface: (comment: HTMLElement): SelectorResult => {
+            return (
+                (comment as any).__data?.member?.avatar?.endsWith('noface.jpg') &&
+                (comment as any).__data?.member?.vip?.vipStatus === 0
+            )
         },
         callBot: (comment: HTMLElement): SelectorResult => {
             const members = (comment as any).__data?.content?.members
@@ -182,6 +192,12 @@ const selectorFns = {
                 ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
                 ?.replace(/@[^@\s]+/g, ' ')
                 .trim()
+        },
+        noface: (comment: HTMLElement): SelectorResult => {
+            return (
+                (comment as any).__data?.member?.avatar?.endsWith('noface.jpg') &&
+                (comment as any).__data?.member?.vip?.vipStatus === 0
+            )
         },
         callBot: (comment: HTMLElement): SelectorResult => {
             const members = (comment as any).__data?.content?.members
@@ -271,6 +287,7 @@ class CommentFilterCommon implements IMainFilter {
     commentUsernameKeywordFilter = new CommentUsernameKeywordFilter()
     commentContentFilter = new CommentContentFilter()
     commentLevelFilter = new CommentLevelFilter()
+    commentNoFaceFilter = new CommentNoFaceFilter()
     commentBotFilter = new CommentBotFilter()
     commentCallBotFilter = new CommentCallBotFilter()
     commentCallUserFilter = new CommentCallUserFilter()
@@ -307,6 +324,7 @@ class CommentFilterCommon implements IMainFilter {
                 this.commentUsernameKeywordFilter.isEnable ||
                 this.commentContentFilter.isEnable ||
                 this.commentLevelFilter.isEnable ||
+                this.commentNoFaceFilter.isEnable ||
                 this.commentBotFilter.isEnable ||
                 this.commentCallBotFilter.isEnable ||
                 this.commentCallUserFilter.isEnable ||
@@ -343,6 +361,7 @@ class CommentFilterCommon implements IMainFilter {
                         `callUserOnly: ${selectorFns.root.callUserOnly(v)}`,
                         `callUserOnlyNoReply: ${selectorFns.root.callUserOnlyNoReply(v)}`,
                         `level: ${selectorFns.root.level(v)}`,
+                        `noface: ${selectorFns.root.noface(v)}`,
                         `isUp: ${selectorFns.root.isUp(v)}`,
                         `isPin: ${selectorFns.root.isPin(v)}`,
                         `isNote: ${selectorFns.root.isNote(v)}`,
@@ -364,6 +383,7 @@ class CommentFilterCommon implements IMainFilter {
             blackPairs.push([this.commentUsernameKeywordFilter, selectorFns.root.username])
         this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns.root.content])
         this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns.root.level])
+        this.commentNoFaceFilter.isEnable && blackPairs.push([this.commentNoFaceFilter, selectorFns.root.noface])
         this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns.root.username])
         this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.root.callBot])
         this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns.root.callUser])
@@ -402,6 +422,7 @@ class CommentFilterCommon implements IMainFilter {
                 this.commentUsernameKeywordFilter.isEnable ||
                 this.commentContentFilter.isEnable ||
                 this.commentLevelFilter.isEnable ||
+                this.commentNoFaceFilter.isEnable ||
                 this.commentBotFilter.isEnable ||
                 this.commentCallBotFilter.isEnable ||
                 this.commentCallUserFilter.isEnable ||
@@ -438,6 +459,7 @@ class CommentFilterCommon implements IMainFilter {
                         `callUserOnly: ${selectorFns.sub.callUserOnly(v)}`,
                         `callUserOnlyNoReply: ${selectorFns.sub.callUserOnlyNoReply(v)}`,
                         `level: ${selectorFns.sub.level(v)}`,
+                        `noface: ${selectorFns.sub.noface(v)}`,
                         `isUp: ${selectorFns.sub.isUp(v)}`,
                         `isLink: ${selectorFns.sub.isLink(v)}`,
                         `isMe: ${selectorFns.sub.isMe(v)}`,
@@ -457,6 +479,7 @@ class CommentFilterCommon implements IMainFilter {
             blackPairs.push([this.commentUsernameKeywordFilter, selectorFns.sub.username])
         this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns.sub.content])
         this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns.sub.level])
+        this.commentNoFaceFilter.isEnable && blackPairs.push([this.commentNoFaceFilter, selectorFns.sub.noface])
         this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns.sub.username])
         this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.sub.callBot])
         this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns.sub.callUser])
@@ -699,6 +722,20 @@ export const commentFilterCommonGroups: Group[] = [
                             }
                         },
                     )
+                },
+            },
+            {
+                type: 'switch',
+                id: GM_KEYS.black.noface.statusKey,
+                name: '过滤 默认头像非会员用户评论',
+                noStyle: true,
+                enableFn: () => {
+                    mainFilter.commentNoFaceFilter.enable()
+                    mainFilter.check('full')
+                },
+                disableFn: () => {
+                    mainFilter.commentNoFaceFilter.disable()
+                    mainFilter.check('full')
                 },
             },
             {

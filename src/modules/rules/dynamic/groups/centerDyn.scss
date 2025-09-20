@@ -122,3 +122,16 @@ html[hide-dynamic-page-bili-dyn-charge-video] {
         display: none !important;
     }
 }
+
+// 自动展开 动态文字内容
+html[dynamic-page-unfold-dynamic-content] {
+    .bili-dyn-list__item:not(:has(.dyn-card-opus__title)) .bili-rich-text {
+        .bili-rich-text__content {
+            max-height: unset !important;
+            -webkit-line-clamp: unset !important;
+        }
+        .bili-rich-text__action {
+            display: none !important;
+        }
+    }
+}

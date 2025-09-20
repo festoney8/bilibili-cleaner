@@ -115,16 +115,7 @@ html[homepage-hide-ad-card] main {
     }
 
     // 布局调整
-    .recommended-container_floor-aside .container > *:nth-of-type(5) {
-        margin-top: 0 !important;
-    }
-    .recommended-container_floor-aside .container > *:nth-of-type(6) {
-        margin-top: 0 !important;
-    }
-    .recommended-container_floor-aside .container > *:nth-of-type(7) {
-        margin-top: 0 !important;
-    }
-    .recommended-container_floor-aside .container > *:nth-of-type(n + 8) {
+    .recommended-container_floor-aside .container > *:nth-of-type(n + 5) {
         margin-top: 0 !important;
     }
 
@@ -161,6 +152,9 @@ html[homepage-simple-sub-area-card-recommend] main {
     .floor-single-card .floor-card {
         box-shadow: unset !important;
         border: none !important;
+        .info-container {
+            padding: 0 !important;
+        }
     }
     .single-card.floor-card .floor-card-inner {
         &,

@@ -12,7 +12,7 @@ export default defineConfig({
             userscript: {
                 name: 'bilibili 页面净化大师',
                 namespace: 'http://tampermonkey.net/',
-                version: '4.3.9',
+                version: '4.3.10',
                 description:
                     '净化 B站/哔哩哔哩 页面，支持「精简功能、播放器净化、过滤视频、过滤评论、全站黑白名单」，提供 300+ 功能，定制自己的 B 站',
                 author: 'festoney8',
@@ -25,6 +25,7 @@ export default defineConfig({
                     '*://message.bilibili.com/pages/nav/index_new_pc_sync',
                     '*://data.bilibili.com/*',
                     '*://cm.bilibili.com/*',
+                    '*://shop.bilibili.com/*',
                     '*://link.bilibili.com/*',
                     '*://passport.bilibili.com/*',
                     '*://api.bilibili.com/*',

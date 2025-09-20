@@ -5,11 +5,6 @@ html[dynamic-list-width] {
         main {
             width: max(556px, var(--dynamic-list-width)) !important;
         }
-
-        // 限制查看图片时img高度
-        .bili-album__watch__content img {
-            max-height: 80vh !important;
-        }
     }
 }
 

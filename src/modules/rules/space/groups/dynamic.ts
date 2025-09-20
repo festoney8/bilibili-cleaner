@@ -76,4 +76,10 @@ export const spaceDynamicItems: Item[] = [
         id: 'hide-dynamic-page-bili-dyn-charge-video',
         name: '隐藏 全部充电视频(含已充电)',
     },
+    {
+        type: 'switch',
+        id: 'dynamic-page-unfold-dynamic-content',
+        name: '自动展开 动态文字内容',
+        description: ['自动隐藏 展开 按钮', '对专栏文章不生效'],
+    },
 ]

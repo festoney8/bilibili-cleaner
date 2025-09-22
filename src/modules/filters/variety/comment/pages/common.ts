@@ -2,7 +2,6 @@ import { coreCheck } from '@/modules/filters/core/core'
 import settings from '@/settings'
 import { Group } from '@/types/collection'
 import { ContextMenuTargetHandler, FilterContextMenu, IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
-import fetchHook from '@/utils/fetch'
 import { debugFilter as debug, error } from '@/utils/logger'
 import { isPageBangumi, isPageDynamic, isPagePlaylist, isPageSpace, isPageVideo } from '@/utils/pageType'
 import ShadowInstance from '@/utils/shadow'
@@ -10,6 +9,7 @@ import { BiliCleanerStorage } from '@/utils/storage'
 import { orderedUniq, showEle } from '@/utils/tool'
 import { bots, botsSet } from '../extra/bots'
 import {
+    CommentAdFilter,
     CommentBotFilter,
     CommentCallBotFilter,
     CommentCallUserFilter,
@@ -286,6 +286,7 @@ class CommentFilterCommon implements IMainFilter {
     commentUsernameFilter = new CommentUsernameFilter()
     commentUsernameKeywordFilter = new CommentUsernameKeywordFilter()
     commentContentFilter = new CommentContentFilter()
+    commentAdFilter = new CommentAdFilter()
     commentLevelFilter = new CommentLevelFilter()
     commentNoFaceFilter = new CommentNoFaceFilter()
     commentBotFilter = new CommentBotFilter()
@@ -308,6 +309,7 @@ class CommentFilterCommon implements IMainFilter {
         this.commentContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))
         this.commentLevelFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.level.valueKey, 0))
         this.commentBotFilter.setParam(bots)
+        this.commentAdFilter.setParam([`/(bili2233\\.cn|b23\\.tv)\\/(mall-|cm-)|领券|gaoneng\\.bilibili\\.com/`])
     }
 
     /**
@@ -323,6 +325,7 @@ class CommentFilterCommon implements IMainFilter {
                 this.commentUsernameFilter.isEnable ||
                 this.commentUsernameKeywordFilter.isEnable ||
                 this.commentContentFilter.isEnable ||
+                this.commentAdFilter.isEnable ||
                 this.commentLevelFilter.isEnable ||
                 this.commentNoFaceFilter.isEnable ||
                 this.commentBotFilter.isEnable ||
@@ -401,7 +404,10 @@ class CommentFilterCommon implements IMainFilter {
         this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns.root.isLink])
         this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns.root.isMe])
 
-        const rootBlackCnt = await coreCheck(rootComments, true, 'style', blackPairs, whitePairs, [], true)
+        const forceBlackPairs: SubFilterPair[] = []
+        this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns.root.content])
+
+        const rootBlackCnt = await coreCheck(rootComments, true, 'style', blackPairs, whitePairs, forceBlackPairs, true)
         const time = (performance.now() - timer).toFixed(1)
         debug(
             `CommentFilterCommon hide ${rootBlackCnt} in ${rootComments.length} root comments, mode=${mode}, time=${time}`,
@@ -421,6 +427,7 @@ class CommentFilterCommon implements IMainFilter {
                 this.commentUsernameFilter.isEnable ||
                 this.commentUsernameKeywordFilter.isEnable ||
                 this.commentContentFilter.isEnable ||
+                this.commentAdFilter.isEnable ||
                 this.commentLevelFilter.isEnable ||
                 this.commentNoFaceFilter.isEnable ||
                 this.commentBotFilter.isEnable ||
@@ -495,7 +502,10 @@ class CommentFilterCommon implements IMainFilter {
         this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns.sub.isLink])
         this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns.sub.isMe])
 
-        const subBlackCnt = await coreCheck(subComments, false, 'style', blackPairs, whitePairs, [], true)
+        const forceBlackPairs: SubFilterPair[] = []
+        this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns.sub.content])
+
+        const subBlackCnt = await coreCheck(subComments, false, 'style', blackPairs, whitePairs, forceBlackPairs, true)
         const time = (performance.now() - timer).toFixed(1)
         debug(
             `CommentFilterCommon hide ${subBlackCnt} in ${subComments.length} sub comments, mode=${mode}, time=${time}`,
@@ -686,42 +696,12 @@ export const commentFilterCommonGroups: Group[] = [
                 name: '过滤 带货评论 (实验功能)',
                 noStyle: true,
                 enableFn: () => {
-                    fetchHook.addPostFn(
-                        async (
-                            input: RequestInfo | URL,
-                            init: RequestInit | undefined,
-                            resp?: Response,
-                        ): Promise<Response | void> => {
-                            if (!resp) {
-                                return
-                            }
-                            if (
-                                typeof input === 'string' &&
-                                init?.method?.toUpperCase() === 'GET' &&
-                                input.includes('api.bilibili.com/x/v2/reply/wbi/main')
-                            ) {
-                                try {
-                                    const respData = await resp.clone().json()
-                                    const msg = respData?.data?.top?.upper?.content?.message
-                                    if (
-                                        msg &&
-                                        /(bili2233\.cn|b23\.tv)\/(mall-|cm-)|领券|gaoneng\.bilibili\.com/.test(msg)
-                                    ) {
-                                        respData.data.top = null
-                                        respData.data.top_replies = null
-                                        return new Response(JSON.stringify(respData), {
-                                            status: resp.status,
-                                            statusText: resp.statusText,
-                                            headers: resp.headers,
-                                        })
-                                    }
-                                } catch {
-                                    return resp
-                                }
-                                return resp
-                            }
-                        },
-                    )
+                    mainFilter.commentAdFilter.enable()
+                    mainFilter.check('full')
+                },
+                disableFn: () => {
+                    mainFilter.commentAdFilter.disable()
+                    mainFilter.check('full')
                 },
             },
             {

@@ -9,6 +9,8 @@ export class CommentUsernameKeywordFilter extends KeywordFilter {}
 
 export class CommentContentFilter extends KeywordFilter {}
 
+export class CommentAdFilter extends KeywordFilter {}
+
 export class CommentLevelFilter extends NumberMinFilter {}
 
 export class CommentNoFaceFilter extends BooleanFilter {}

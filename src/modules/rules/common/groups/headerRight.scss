@@ -40,8 +40,11 @@ html[common-hide-nav-dynamic] {
 
 // 隐藏 动态小红点
 html[common-hide-nav-dynamic-red-num] {
-    .right-entry > :nth-child(4) .red-num--dynamic {
-        display: none !important;
+    .right-entry > :nth-child(4) {
+        .red-num--dynamic,
+        .red-point--dynamic {
+            display: none !important;
+        }
     }
 }
 

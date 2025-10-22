@@ -114,6 +114,23 @@ export const commonBasicItems: Item[] = [
                         'extra_jump_from',
                         'buvid',
                     ])
+                    // video page new params
+                    if (isPageVideo()) {
+                        keysToRemove.add('image_material_id')
+                        keysToRemove.add('creative_id')
+                        keysToRemove.add('biz_extra')
+                        keysToRemove.add('title_encode')
+                        keysToRemove.add('caid')
+                        keysToRemove.add('resource_id')
+                        keysToRemove.add('source_id')
+                        keysToRemove.add('request_id')
+                        keysToRemove.add('title_material_id')
+                        keysToRemove.add('linked_creative_id')
+                    }
+                    // watchlater page new params
+                    if (isPageWatchlater()) {
+                        keysToRemove.add('watchlater_cfg')
+                    }
                     if (isPageSearch()) {
                         keysToRemove.add('vt')
                     }

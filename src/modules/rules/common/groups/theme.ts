@@ -1,5 +1,5 @@
 import { Item } from '@/types/item'
-import { isPageDynamic, isPageLive, isPageMessage, isPageSpace } from '@/utils/pageType'
+import { isPageDynamic, isPageHomepage, isPageLive, isPageMessage, isPageSpace } from '@/utils/pageType'
 import { BiliCleanerStorage } from '@/utils/storage'
 import { useBroadcastChannel, usePreferredDark } from '@vueuse/core'
 import { useCookies } from '@vueuse/integrations/useCookies'
@@ -52,6 +52,8 @@ const enableDarkMode = async () => {
     } else if (isPageMessage()) {
         document.documentElement.setAttribute('common-theme-dark-message', '')
         document.documentElement.classList.add('bili_dark')
+    } else if (isPageHomepage()) {
+        document.documentElement.classList.add('bili_dark')
     } else if (isPageSpace()) {
         document.documentElement.setAttribute('common-theme-dark-space', '')
     } else {
@@ -89,7 +91,8 @@ const disableDarkMode = async () => {
     if (isPageLive()) {
         labStyleLock = false
         document.documentElement.setAttribute('lab-style', '')
-    } else if (isPageDynamic() || isPageMessage()) {
+    }
+    if (isPageDynamic() || isPageMessage() || isPageHomepage()) {
         document.documentElement.classList.remove('bili_dark')
     }
     const style = document.querySelector('head link#__css-map__') as HTMLLinkElement

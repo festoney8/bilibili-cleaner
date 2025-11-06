@@ -68,6 +68,11 @@ export const liveRightItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'live-page-bulge-danmaku',
+        name: '隐藏 大表情弹幕',
+    },
+    {
+        type: 'switch',
         id: 'live-page-chat-item-top3-notice',
         name: '隐藏 高能用户提示',
     },

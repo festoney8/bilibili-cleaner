@@ -1,5 +1,5 @@
 import { Item } from '@/types/item'
-import { isPageDynamic, isPageLive, isPageMessage, isPageSpace } from '@/utils/pageType'
+import { isPageDynamic, isPageHomepage, isPageLive, isPageMessage, isPageSpace } from '@/utils/pageType'
 import { BiliCleanerStorage } from '@/utils/storage'
 import { useBroadcastChannel, usePreferredDark } from '@vueuse/core'
 import { useCookies } from '@vueuse/integrations/useCookies'
@@ -36,7 +36,7 @@ const enableDarkMode = async () => {
 
     // 直播页设定夜间模式, 拦截其他代码修改lab-style
     if (isPageLive()) {
-        document.documentElement.setAttribute('common-theme-dark-live', '')
+        document.documentElement.setAttribute('common-theme-dark-page', 'live')
         document.documentElement.setAttribute('lab-style', 'dark')
         labStyleLock = true
         const origSetAttribute = Element.prototype.setAttribute
@@ -47,15 +47,17 @@ const enableDarkMode = async () => {
             return origSetAttribute.call(this, attr, value)
         }
     } else if (isPageDynamic()) {
-        document.documentElement.setAttribute('common-theme-dark-dynamic', '')
+        document.documentElement.setAttribute('common-theme-dark-page', 'dynamic')
         document.documentElement.classList.add('bili_dark')
     } else if (isPageMessage()) {
-        document.documentElement.setAttribute('common-theme-dark-message', '')
+        document.documentElement.setAttribute('common-theme-dark-page', 'message')
         document.documentElement.classList.add('bili_dark')
     } else if (isPageSpace()) {
-        document.documentElement.setAttribute('common-theme-dark-space', '')
+        document.documentElement.setAttribute('common-theme-dark-page', 'space')
+    } else if (isPageHomepage()) {
+        document.documentElement.classList.add('bili_dark')
     } else {
-        document.documentElement.setAttribute('common-theme-dark-common', '')
+        document.documentElement.setAttribute('common-theme-dark-page', 'common')
     }
 
     const style = document.querySelector('head link#__css-map__') as HTMLLinkElement
@@ -80,16 +82,13 @@ const enableDarkMode = async () => {
 const disableDarkMode = async () => {
     isDarkMode.value = false
 
-    document.documentElement.removeAttribute('common-theme-dark-live')
-    document.documentElement.removeAttribute('common-theme-dark-dynamic')
-    document.documentElement.removeAttribute('common-theme-dark-message')
-    document.documentElement.removeAttribute('common-theme-dark-space')
-    document.documentElement.removeAttribute('common-theme-dark-common')
+    document.documentElement.removeAttribute('common-theme-dark-page')
 
     if (isPageLive()) {
         labStyleLock = false
         document.documentElement.setAttribute('lab-style', '')
-    } else if (isPageDynamic() || isPageMessage()) {
+    }
+    if (isPageDynamic() || isPageMessage() || isPageHomepage()) {
         document.documentElement.classList.remove('bili_dark')
     }
     const style = document.querySelector('head link#__css-map__') as HTMLLinkElement

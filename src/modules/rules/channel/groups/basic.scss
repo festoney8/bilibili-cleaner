@@ -1,73 +1,69 @@
 // 隐藏 横幅banner
 html[homepage-hide-banner] {
-    .bili-header__banner {
-        min-height: unset !important;
-        height: 64px !important;
-        background: var(--bg1) !important;
-    }
-    .bili-header__banner > * {
-        display: none !important;
-    }
-    .bili-header__bar {
-        box-shadow: 0 2px 4px rgb(128 128 128 / 0.15) !important;
-    }
-
-    // 背景色
-    html {
-        background-color: var(--bg1);
-    }
-
-    // icon和文字颜色
-    .bili-header .right-entry__outside .right-entry-icon {
-        color: var(--text1, #18191c) !important;
-    }
-    .bili-header .left-entry .entry-title,
-    .bili-header .left-entry .download-entry,
-    .bili-header .left-entry .default-entry,
-    .bili-header .left-entry .loc-entry {
-        color: var(--text1, #18191c) !important;
-    }
-    .bili-header .left-entry .entry-title .zhuzhan-icon {
-        color: #00aeec !important;
-    }
-    .bili-header .right-entry__outside .right-entry-text {
-        color: var(--text2, #61666d) !important;
-    }
-
-    // header高度
     #biliMainHeader {
         min-height: unset !important;
     }
+    .bili-header {
+        .bili-header__bar {
+            // 兼容顶栏不吸附，不得使用 important
+            position: fixed;
+            transition: unset !important;
+            background: var(--bg1, white) !important;
+            box-shadow: 0 2px 4px rgb(128 128 128 / 0.15) !important;
+            &.slide-down {
+                animation: none !important;
+                box-shadow: 0 2px 4px rgb(128 128 128 / 0.15) !important;
+            }
+            .left-entry {
+                :is(.entry-title, .download-entry, .default-entry, .loc-entry) {
+                    color: var(--text1, #18191c) !important;
+                }
+                .zhuzhan-icon {
+                    color: #00aeec !important;
+                }
+            }
+            .right-entry .right-entry__outside {
+                .right-entry-icon {
+                    color: var(--text1, #18191c) !important;
+                }
+                .right-entry-text {
+                    color: var(--text2, #61666d) !important;
+                }
+            }
+        }
+        .bili-header__banner {
+            min-height: unset !important;
+            height: 64px !important;
+            background: var(--bg1, white) !important;
+            & > * {
+                display: none !important;
+            }
+        }
+    }
+}
 
-    // 分区菜单 第一排按钮的二级菜单下置
-    .v-popover.is-top {
-        padding-top: 5px;
-        padding-bottom: unset !important;
-        bottom: unset !important;
-    }
-    @media (width >= 2200px) {
-        .v-popover.is-top {
-            top: 32px;
-        }
-    }
-    @media (width >= 1701px) and (width <= 2199.9px) {
-        .v-popover.is-top {
-            top: 32px;
-        }
-    }
-    @media (width >= 1367px) and (width <= 1700.9px) {
-        .v-popover.is-top {
-            top: 28px;
-        }
-    }
-    @media (width >= 1100px) and (width <= 1366.9px) {
-        .v-popover.is-top {
-            top: 28px;
-        }
-    }
-    @media (width <= 1099.9px) {
-        .v-popover.is-top {
-            top: 24px;
+// 隐藏 滚动页面时 顶部吸附 顶栏
+html[channel-hide-sticky-header] {
+    .bili-header {
+        .bili-header__bar {
+            position: absolute !important;
+            background: transparent;
+            transition: none !important;
+            &.slide-down {
+                box-shadow: none !important;
+                animation: none !important;
+            }
+            .left-entry {
+                :is(.entry-title, .download-entry, .default-entry, .loc-entry, .zhuzhan-icon) {
+                    color: white;
+                }
+            }
+            .right-entry .right-entry__outside {
+                .right-entry-icon,
+                .right-entry-text {
+                    color: white;
+                }
+            }
         }
     }
 }
@@ -91,13 +87,6 @@ html[channel-hide-carousel] {
     }
     .channel-page .channel-page__body .head-cards .head-card {
         display: block !important;
-    }
-}
-
-// 隐藏 滚动页面时 顶部吸附 顶栏
-html[channel-hide-sticky-header] {
-    .bili-header__bar.slide-down {
-        display: none !important;
     }
 }
 

@@ -126,6 +126,7 @@ html[common-hide-nav-match] {
 
 // 隐藏 下载客户端
 html[common-hide-nav-download-app] {
+    #i_cecream .left-entry,
     .left-entry {
         .download-entry,
         .download-client-trigger {

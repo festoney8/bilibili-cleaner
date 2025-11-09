@@ -15,7 +15,7 @@ export const channelBasicItems: Item[] = [
     {
         type: 'switch',
         id: 'channel-hide-subarea',
-        name: '隐藏 全站分区栏',
+        name: '隐藏 分区栏',
     },
     {
         type: 'switch',

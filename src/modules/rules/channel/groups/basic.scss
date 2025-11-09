@@ -68,13 +68,16 @@ html[channel-hide-sticky-header] {
     }
 }
 
-// 隐藏 全站分区栏
+// 隐藏 分区栏
 html[channel-hide-subarea] {
     #biliMainHeader {
-        min-height: unset !important;
+        height: fit-content !important;
+        min-height: fit-content !important;
         margin-bottom: 20px !important;
-        .bili-header__channel {
-            display: none !important;
+        .bili-header {
+            .bili-header__channel {
+                display: none !important;
+            }
         }
     }
 }

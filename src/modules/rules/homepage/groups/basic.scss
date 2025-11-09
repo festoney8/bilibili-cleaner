@@ -69,19 +69,21 @@ html[homepage-hide-recommend-swipe] {
 
 // 隐藏 分区栏
 html[homepage-hide-subarea] {
-    #i_cecream .bili-header__channel .channel-icons {
-        display: none !important;
-    }
-    #i_cecream .bili-header__channel .right-channel-container {
-        display: none !important;
+    .bili-header {
+        margin-bottom: 20px !important;
+        .bili-header__channel {
+            display: none !important;
+        }
     }
 
-    // adapt bilibili-app-recommend
-    #i_cecream .bili-header__channel {
-        height: 0 !important;
-    }
-    #i_cecream main.bili-feed4-layout:not(:has(.bilibili-app-recommend-root)) {
-        margin-top: 20px !important;
+    // 适配 Bilibili-Gate
+    body:has(.bilibili-gate-root) {
+        .bili-header {
+            margin-bottom: 15px !important;
+            .bili-header__channel {
+                display: none !important;
+            }
+        }
     }
 }
 
@@ -116,7 +118,7 @@ html[homepage-hide-sticky-header] {
     }
 
     // Bilibili-Gate 顶栏
-    .area-header-wrapper {
+    .bilibili-gate-root [data-role='tab-bar-wrapper'] {
         top: 0 !important;
     }
 }

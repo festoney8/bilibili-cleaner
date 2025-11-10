@@ -4,15 +4,56 @@ html[common-hide-nav-homepage-logo] {
         display: none !important;
     }
 
-    // 首页版本
-    .left-entry .zhuzhan-icon {
-        display: none !important;
-    }
-
     // 番剧页占位
     [class^='BiliHeaderV3_miniHeaderLogo'] {
         display: none !important;
     }
+
+    // 首页版本
+    .zhuzhan-icon {
+        display: none !important;
+    }
+
+    // resolve #284
+    .bili-header__bar.slide-down .left-entry {
+        margin-right: 30px !important;
+        .left-entry__title {
+            .mini-header__title {
+                > span {
+                    margin-right: 0;
+                }
+                > svg {
+                    display: none !important;
+                }
+            }
+        }
+    }
+}
+
+// 消除 .slide-down 出现时的顶栏间距变动 #284
+@mixin slide-down-logo-mr($mr) {
+    html[common-hide-nav-homepage-logo] {
+        // 隐藏logo时
+        .bili-header__bar.slide-down .left-entry .left-entry__title {
+            margin-right: $mr;
+        }
+
+        // 同时隐藏logo和首页时
+        &[common-hide-nav-homepage] {
+            .bili-header__bar .left-entry > li:first-child {
+                display: none;
+            }
+        }
+    }
+}
+@media (width <= 1366.9px) {
+    @include slide-down-logo-mr(10px);
+}
+@media (width >= 1367px) and (width <= 1700.9px) {
+    @include slide-down-logo-mr(15px);
+}
+@media (width >= 1701px) {
+    @include slide-down-logo-mr(20px);
 }
 
 // 隐藏 首页

@@ -2,41 +2,41 @@
 html[homepage-hide-banner] {
     #biliMainHeader {
         min-height: unset !important;
-    }
-    .bili-header {
-        .bili-header__bar {
-            // 兼容顶栏不吸附，不得使用 important
-            position: fixed;
-            transition: unset !important;
-            background: var(--bg1, white) !important;
-            box-shadow: 0 2px 4px rgb(128 128 128 / 0.15) !important;
-            &.slide-down {
-                animation: none !important;
+        .bili-header {
+            .bili-header__bar {
+                // 兼容顶栏不吸附，不得使用 important
+                position: fixed;
+                transition: unset !important;
+                background: var(--bg1, white) !important;
                 box-shadow: 0 2px 4px rgb(128 128 128 / 0.15) !important;
+                &.slide-down {
+                    animation: none !important;
+                    box-shadow: 0 2px 4px rgb(128 128 128 / 0.15) !important;
+                }
+                .left-entry {
+                    :is(.entry-title, .download-entry, .default-entry, .loc-entry) {
+                        color: var(--text1, #18191c) !important;
+                    }
+                    .zhuzhan-icon {
+                        color: #00aeec !important;
+                    }
+                }
+                .right-entry .right-entry__outside {
+                    .right-entry-icon {
+                        color: var(--text1, #18191c) !important;
+                    }
+                    .right-entry-text {
+                        color: var(--text2, #61666d) !important;
+                    }
+                }
             }
-            .left-entry {
-                :is(.entry-title, .download-entry, .default-entry, .loc-entry) {
-                    color: var(--text1, #18191c) !important;
+            .bili-header__banner {
+                min-height: unset !important;
+                height: 64px !important;
+                background: var(--bg1, white) !important;
+                & > * {
+                    display: none !important;
                 }
-                .zhuzhan-icon {
-                    color: #00aeec !important;
-                }
-            }
-            .right-entry .right-entry__outside {
-                .right-entry-icon {
-                    color: var(--text1, #18191c) !important;
-                }
-                .right-entry-text {
-                    color: var(--text2, #61666d) !important;
-                }
-            }
-        }
-        .bili-header__banner {
-            min-height: unset !important;
-            height: 64px !important;
-            background: var(--bg1, white) !important;
-            & > * {
-                display: none !important;
             }
         }
     }

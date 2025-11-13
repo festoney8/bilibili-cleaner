@@ -18,13 +18,13 @@
         "p-limit": "^6.2.0",
         "pinia": "^2.3.1",
         "universal-cookie": "^7.2.2",
-        "vue": "^3.5.23"
+        "vue": "^3.5.24"
     },
     "devDependencies": {
         "@eslint/js": "^9.39.1",
         "@thedutchcoder/postcss-rem-to-px": "^0.0.2",
         "@vitejs/plugin-vue": "^5.2.4",
-        "autoprefixer": "^10.4.21",
+        "autoprefixer": "^10.4.22",
         "eslint": "^9.39.1",
         "eslint-config-prettier": "^9.1.2",
         "eslint-plugin-vue": "^9.33.0",
@@ -38,7 +38,7 @@
         "stylelint-config-standard-scss": "^14.0.0",
         "tailwindcss": "^3.4.18",
         "typescript": "^5.9.3",
-        "typescript-eslint": "^8.46.3",
+        "typescript-eslint": "^8.46.4",
         "vite": "^6.4.1",
         "vite-plugin-monkey": "^5.0.9",
         "vue-tsc": "^2.2.12"

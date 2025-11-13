@@ -14,6 +14,7 @@
         "@heroicons/vue": "^2.2.0",
         "@vueuse/core": "^12.8.2",
         "@vueuse/integrations": "^13.9.0",
+        "emoji-regex-xs": "^2.0.1",
         "p-limit": "^6.2.0",
         "pinia": "^2.3.1",
         "universal-cookie": "^7.2.2",

@@ -1,5 +1,6 @@
 import { coreCheck } from '@/modules/filters/core/core'
 import settings from '@/settings'
+import emojiRegex from 'emoji-regex-xs'
 import { Group } from '@/types/collection'
 import { ContextMenuTargetHandler, FilterContextMenu, IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
 import { debugFilter as debug, error } from '@/utils/logger'
@@ -107,6 +108,7 @@ const GM_KEYS = {
 // https://b23.tv/av1705573085
 // https://b23.tv/av1350214762
 // https://b23.tv/av113195607985861
+const emojiPattern = emojiRegex()
 const selectorFns = {
     root: {
         username: (comment: HTMLElement): SelectorResult => {
@@ -157,6 +159,7 @@ const selectorFns = {
                 (comment as any).__data?.content?.message
                     ?.replace(/@[^@\s]+/g, ' ')
                     ?.replace(/(\[[^[\]]+\])+/g, ' ')
+                    ?.replace(emojiPattern, ' ')
                     .trim() === ''
             )
         },
@@ -261,6 +264,7 @@ const selectorFns = {
                     ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
                     ?.replace(/@[^@\s]+/g, ' ')
                     ?.replace(/(\[[^[\]]+\])+/g, ' ')
+                    ?.replace(emojiPattern, ' ')
                     .trim() === ''
             )
         },

@@ -109,7 +109,10 @@ const selectorFns = {
             return (comment as any).__data?.member?.uname?.trim()
         },
         content: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.content?.message?.replace(/@[^@\s]+/g, ' ').trim()
+            return (comment as any).__data?.content?.message
+                ?.replace(/@[^@\s]+/g, ' ')
+                ?.replace(/(\[[^[\]]+\])+/g, ' ')
+                .trim()
         },
         noface: (comment: HTMLElement): SelectorResult => {
             return (
@@ -191,6 +194,7 @@ const selectorFns = {
                 ?.trim()
                 ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
                 ?.replace(/@[^@\s]+/g, ' ')
+                ?.replace(/(\[[^[\]]+\])+/g, ' ')
                 .trim()
         },
         noface: (comment: HTMLElement): SelectorResult => {

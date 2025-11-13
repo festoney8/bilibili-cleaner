@@ -17,6 +17,7 @@ import {
     CommentCallUserOnlyFilter,
     CommentCallUserOnlyNoReplyFilter,
     CommentContentFilter,
+    CommentEmojiOnlyFilter,
     CommentLevelFilter,
     CommentNoFaceFilter,
     CommentUsernameFilter,
@@ -71,6 +72,9 @@ const GM_KEYS = {
         },
         isAD: {
             statusKey: 'video-comment-ad-filter-status',
+        },
+        emojiOnly: {
+            statusKey: 'video-comment-emoji-only-filter-status',
         },
     },
     white: {
@@ -147,6 +151,14 @@ const selectorFns = {
         },
         level: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.member?.level_info?.current_level
+        },
+        emojiOnly: (comment: HTMLElement): SelectorResult => {
+            return (
+                (comment as any).__data?.content?.message
+                    ?.replace(/@[^@\s]+/g, ' ')
+                    ?.replace(/(\[[^[\]]+\])+/g, ' ')
+                    .trim() === ''
+            )
         },
         isUp: (comment: HTMLElement): SelectorResult => {
             const mid = (comment as any).__data?.mid
@@ -243,6 +255,15 @@ const selectorFns = {
         level: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.member?.level_info?.current_level
         },
+        emojiOnly: (comment: HTMLElement): SelectorResult => {
+            return (
+                (comment as any).__data?.content?.message
+                    ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
+                    ?.replace(/@[^@\s]+/g, ' ')
+                    ?.replace(/(\[[^[\]]+\])+/g, ' ')
+                    .trim() === ''
+            )
+        },
         isUp: (comment: HTMLElement): SelectorResult => {
             const mid = (comment as any).__data?.mid
             const upMid = (comment as any).__upMid
@@ -299,6 +320,7 @@ class CommentFilterCommon implements IMainFilter {
     commentCallUserNoReplyFilter = new CommentCallUserNoReplyFilter()
     commentCallUserOnlyFilter = new CommentCallUserOnlyFilter()
     commentCallUserOnlyNoReplyFilter = new CommentCallUserOnlyNoReplyFilter()
+    commentEmojiOnlyFilter = new CommentEmojiOnlyFilter()
     // 白名单
     commentIsUpFilter = new CommentIsUpFilter()
     commentIsPinFilter = new CommentIsPinFilter()
@@ -337,7 +359,8 @@ class CommentFilterCommon implements IMainFilter {
                 this.commentCallUserFilter.isEnable ||
                 this.commentCallUserNoReplyFilter.isEnable ||
                 this.commentCallUserOnlyFilter.isEnable ||
-                this.commentCallUserOnlyNoReplyFilter.isEnable
+                this.commentCallUserOnlyNoReplyFilter.isEnable ||
+                this.commentEmojiOnlyFilter.isEnable
             )
         ) {
             revertAll = true
@@ -374,6 +397,7 @@ class CommentFilterCommon implements IMainFilter {
                         `isNote: ${selectorFns.root.isNote(v)}`,
                         `isLink: ${selectorFns.root.isLink(v)}`,
                         `isMe: ${selectorFns.root.isMe(v)}`,
+                        `emojiOnly: ${selectorFns.root.emojiOnly(v)}`,
                     ].join('\n'),
                 )
             })
@@ -400,6 +424,8 @@ class CommentFilterCommon implements IMainFilter {
             blackPairs.push([this.commentCallUserOnlyFilter, selectorFns.root.callUserOnly])
         this.commentCallUserOnlyNoReplyFilter.isEnable &&
             blackPairs.push([this.commentCallUserOnlyNoReplyFilter, selectorFns.root.callUserOnlyNoReply])
+        this.commentEmojiOnlyFilter.isEnable &&
+            blackPairs.push([this.commentEmojiOnlyFilter, selectorFns.root.emojiOnly])
 
         const whitePairs: SubFilterPair[] = []
         this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns.root.isUp])
@@ -439,7 +465,8 @@ class CommentFilterCommon implements IMainFilter {
                 this.commentCallUserFilter.isEnable ||
                 this.commentCallUserNoReplyFilter.isEnable ||
                 this.commentCallUserOnlyFilter.isEnable ||
-                this.commentCallUserOnlyNoReplyFilter.isEnable
+                this.commentCallUserOnlyNoReplyFilter.isEnable ||
+                this.commentEmojiOnlyFilter.isEnable
             )
         ) {
             revertAll = true
@@ -474,6 +501,7 @@ class CommentFilterCommon implements IMainFilter {
                         `isUp: ${selectorFns.sub.isUp(v)}`,
                         `isLink: ${selectorFns.sub.isLink(v)}`,
                         `isMe: ${selectorFns.sub.isMe(v)}`,
+                        `emojiOnly: ${selectorFns.sub.emojiOnly(v)}`,
                     ].join('\n'),
                 )
             })
@@ -500,6 +528,8 @@ class CommentFilterCommon implements IMainFilter {
             blackPairs.push([this.commentCallUserOnlyFilter, selectorFns.sub.callUserOnly])
         this.commentCallUserOnlyNoReplyFilter.isEnable &&
             blackPairs.push([this.commentCallUserOnlyNoReplyFilter, selectorFns.sub.callUserOnlyNoReply])
+        this.commentEmojiOnlyFilter.isEnable &&
+            blackPairs.push([this.commentEmojiOnlyFilter, selectorFns.sub.emojiOnly])
 
         const whitePairs: SubFilterPair[] = []
         this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns.sub.isUp])
@@ -697,7 +727,7 @@ export const commentFilterCommonGroups: Group[] = [
             {
                 type: 'switch',
                 id: GM_KEYS.black.isAD.statusKey,
-                name: '过滤 带货评论 (实验功能)',
+                name: '过滤 带货评论',
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.commentAdFilter.enable()
@@ -705,6 +735,20 @@ export const commentFilterCommonGroups: Group[] = [
                 },
                 disableFn: () => {
                     mainFilter.commentAdFilter.disable()
+                    mainFilter.check('full')
+                },
+            },
+            {
+                type: 'switch',
+                id: GM_KEYS.black.emojiOnly.statusKey,
+                name: '过滤 只有表情的评论',
+                noStyle: true,
+                enableFn: () => {
+                    mainFilter.commentEmojiOnlyFilter.enable()
+                    mainFilter.check('full')
+                },
+                disableFn: () => {
+                    mainFilter.commentEmojiOnlyFilter.disable()
                     mainFilter.check('full')
                 },
             },

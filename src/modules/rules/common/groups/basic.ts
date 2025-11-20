@@ -126,6 +126,8 @@ export const commonBasicItems: Item[] = [
                         keysToRemove.add('request_id')
                         keysToRemove.add('title_material_id')
                         keysToRemove.add('linked_creative_id')
+                        keysToRemove.add('bbid')
+                        keysToRemove.add('ts')
                     }
                     // watchlater page new params
                     if (isPageWatchlater()) {

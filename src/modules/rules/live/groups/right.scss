@@ -47,21 +47,23 @@ html[live-page-rank-list-vm] {
 
 // 使弹幕列表紧凑
 html[live-page-compact-danmaku] {
-    .chat-history-panel .chat-history-list .chat-item.danmaku-item.chat-colorful-bubble {
-        margin: 2px 0 !important;
-    }
     .chat-history-panel .chat-history-list .chat-item {
         padding: 3px 5px !important;
         font-size: 15px !important;
-    }
-    .chat-history-panel .chat-history-list .chat-item.danmaku-item .user-name {
-        font-size: 15px !important;
-    }
-    .chat-history-panel .chat-history-list .chat-item.danmaku-item .reply-uname {
-        font-size: 15px !important;
-    }
-    .chat-history-panel .chat-history-list .chat-item.danmaku-item .reply-uname .common-nickname-wrapper {
-        font-size: 15px !important;
+        &.chat-colorful-bubble,
+        &.has-bubble {
+            margin: 2px 0 !important;
+        }
+
+        .user-name {
+            font-size: 15px !important;
+        }
+        .reply-uname {
+            font-size: 15px !important;
+        }
+        .reply-uname .common-nickname-wrapper {
+            font-size: 15px !important;
+        }
     }
 }
 

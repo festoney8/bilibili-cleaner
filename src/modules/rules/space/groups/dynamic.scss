@@ -75,9 +75,7 @@ html[hide-dynamic-page-bili-dyn-card-goods] {
     .bili-dyn-list__item:has(.bili-dyn-card-goods),
     .bili-dyn-list__item:has(.bili-rich-text-module.goods),
     .bili-dyn-list__item:has([data-type='goods']) {
-        visibility: hidden !important;
-        height: 0 !important;
-        margin: 0 !important;
+        display: none !important;
     }
 }
 

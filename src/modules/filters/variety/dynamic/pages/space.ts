@@ -50,12 +50,16 @@ const selectorFns = {
     content: (dyn: HTMLElement): SelectorResult => {
         return Array.from(
             dyn.querySelectorAll(
-                '.bili-dyn-content :is(.dyn-card-opus__title, .bili-rich-text__content > span:not(.bili-rich-text-module.at))',
+                `.bili-dyn-content :is(
+                    .dyn-card-opus__title,
+                    .bili-rich-text__content > span:not(.bili-rich-text-module.at),
+                    .dyn-card-opus__summary span
+                )`,
             ),
         )
             .map((v) => v?.textContent?.trim())
             .filter((v) => v?.trim())
-            .join(' ')
+            .join('\n')
     },
     dynVideo: (dyn: HTMLElement): SelectorResult => {
         return !!dyn.querySelector('.bili-dyn-time')?.textContent?.includes('动态视频')

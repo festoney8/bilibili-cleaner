@@ -58,7 +58,7 @@ html[homepage-hide-recommend-swipe] {
         // 完全展示10个推荐项
         .feed-card:nth-of-type(n + 9),
         .feed-card:nth-of-type(n + 12) {
-            display: inherit !important;
+            display: initial;
         }
         > *:nth-of-type(n + 13),
         .floor-single-card:first-of-type {

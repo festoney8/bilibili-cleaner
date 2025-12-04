@@ -1,38 +1,41 @@
 // 隐藏 横幅banner
 html[homepage-hide-banner] {
-    #i_cecream .bili-header {
-        .bili-header__bar {
-            position: fixed; // 兼容顶栏隐藏，position 不得使用 important
-            transition: unset !important;
-            background: var(--bg1, white) !important;
-            box-shadow: 0 2px 4px rgb(128 128 128 / 0.15) !important;
-            &.slide-down {
-                animation: none !important;
+    #i_cecream,
+    #app {
+        .bili-header {
+            .bili-header__bar {
+                position: fixed; // 兼容顶栏隐藏，position 不得使用 important
+                transition: unset !important;
+                background: var(--bg1, white) !important;
                 box-shadow: 0 2px 4px rgb(128 128 128 / 0.15) !important;
+                &.slide-down {
+                    animation: none !important;
+                    box-shadow: 0 2px 4px rgb(128 128 128 / 0.15) !important;
+                }
+                .left-entry {
+                    :is(.entry-title, .download-entry, .default-entry, .loc-entry) {
+                        color: var(--text1, #18191c) !important;
+                    }
+                    .zhuzhan-icon {
+                        color: #00aeec !important;
+                    }
+                }
+                .right-entry .right-entry__outside {
+                    .right-entry-icon {
+                        color: var(--text1, #18191c) !important;
+                    }
+                    .right-entry-text {
+                        color: var(--text2, #61666d) !important;
+                    }
+                }
             }
-            .left-entry {
-                :is(.entry-title, .download-entry, .default-entry, .loc-entry) {
-                    color: var(--text1, #18191c) !important;
+            .bili-header__banner {
+                min-height: unset !important;
+                height: 64px !important;
+                background: var(--bg1, white) !important;
+                > * {
+                    display: none !important;
                 }
-                .zhuzhan-icon {
-                    color: #00aeec !important;
-                }
-            }
-            .right-entry .right-entry__outside {
-                .right-entry-icon {
-                    color: var(--text1, #18191c) !important;
-                }
-                .right-entry-text {
-                    color: var(--text2, #61666d) !important;
-                }
-            }
-        }
-        .bili-header__banner {
-            min-height: unset !important;
-            height: 64px !important;
-            background: var(--bg1, white) !important;
-            > * {
-                display: none !important;
             }
         }
     }
@@ -113,8 +116,11 @@ html[homepage-hide-sticky-header] {
     }
 
     // 只隐藏吸附header时的吸附分区栏
-    #i_cecream .header-channel {
-        top: 0 !important;
+    #i_cecream,
+    #app {
+        .header-channel {
+            top: 0 !important;
+        }
     }
 
     // Bilibili-Gate 顶栏
@@ -125,16 +131,19 @@ html[homepage-hide-sticky-header] {
 
 // 隐藏 滚动页面时 顶部吸附分区栏
 html[homepage-hide-sticky-subarea] {
-    #i_cecream .header-channel {
-        display: none !important;
-    }
+    #i_cecream,
+    #app {
+        .header-channel {
+            display: none !important;
+        }
 
-    // 动画
-    .bili-feed4 .bili-header .slide-down {
-        animation: headerSlideDown 0.3s linear forwards !important;
-    }
-    #i_cecream .bili-header__bar:not(.slide-down) {
-        transition: background-color 0.2s linear;
+        // 动画
+        .bili-header__bar:not(.slide-down) {
+            transition: background-color 0.2s linear;
+        }
+        .bili-feed4 .bili-header .slide-down {
+            animation: headerSlideDown 0.3s linear forwards !important;
+        }
     }
 }
 

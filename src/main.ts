@@ -68,24 +68,24 @@ const menu = () => {
     const dynamicStore = useDynamicFilterPanelStore()
     const sideBtnStore = useSideBtnStore()
 
-    GM_registerMenuCommand('✅ 页面净化优化', ruleStore.toggle)
+    GM_registerMenuCommand('✅ 页面净化优化', () => ruleStore.toggle())
     if (videoStore.isPageValid()) {
-        GM_registerMenuCommand('✅ 视频过滤设置', videoStore.toggle)
+        GM_registerMenuCommand('✅ 视频过滤设置', () => videoStore.toggle())
     } else {
         GM_registerMenuCommand('🚫 视频过滤设置', () => alert('[bilibili-cleaner] 本页面不支持视频过滤'))
     }
     if (commentStore.isPageValid()) {
-        GM_registerMenuCommand('✅ 评论过滤设置', commentStore.toggle)
+        GM_registerMenuCommand('✅ 评论过滤设置', () => commentStore.toggle())
     } else {
         GM_registerMenuCommand('🚫 评论过滤设置', () => alert('[bilibili-cleaner] 本页面不支持评论过滤'))
     }
     if (dynamicStore.isPageValid()) {
-        GM_registerMenuCommand('✅ 动态过滤设置', dynamicStore.toggle)
+        GM_registerMenuCommand('✅ 动态过滤设置', () => dynamicStore.toggle())
     } else {
         GM_registerMenuCommand('🚫 动态过滤设置', () => alert('[bilibili-cleaner] 本页面不支持动态过滤'))
     }
-    GM_registerMenuCommand('⚡ 夜间模式开关', toggleDarkMode)
-    GM_registerMenuCommand('⚡ 快捷按钮开关', sideBtnStore.toggle)
+    GM_registerMenuCommand('⚡ 夜间模式开关', () => toggleDarkMode())
+    GM_registerMenuCommand('⚡ 快捷按钮开关', () => sideBtnStore.toggle())
 }
 
 try {

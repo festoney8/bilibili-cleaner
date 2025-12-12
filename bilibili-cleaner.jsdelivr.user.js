@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      4.3.14
+// @version      4.3.15
 // @author       festoney8
 // @description  净化 B站/哔哩哔哩 页面，支持「精简功能、播放器净化、过滤视频、过滤评论、全站黑白名单」，提供 300+ 功能，定制自己的 B 站
 // @license      MIT
@@ -8399,7 +8399,8 @@
     return { isShow, show, hide, toggle, isPageValid };
   });
   const useSideBtnStore = /* @__PURE__ */ defineStore("SideBtn", () => {
-    const isShow = useStorage("bili-cleaner-side-btn-show", false, localStorage);
+    const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+    const isShow = useStorage("bili-cleaner-side-btn-show", isSafari, localStorage);
     const show = () => {
       isShow.value = true;
     };
@@ -13764,25 +13765,25 @@ https://${domain}/${avbv}` : `https://${domain}/${avbv}`;
       id: "video-page-hide-right-container-video-page-game-card-small",
       name: "隐藏 游戏推荐"
     },
-    // {
-    //     type: 'switch',
-    //     id: 'video-page-unfold-right-container-danmaku',
-    //     name: '自动展开 弹幕列表',
-    //     enableFn: () => {
-    //         let cnt = 0
-    //         const id = setInterval(() => {
-    //             const collapseHeader = document.querySelector(
-    //                 '#danmukuBox .bui-collapse-wrap-folded .bui-collapse-header',
-    //             ) as HTMLElement
-    //             if (collapseHeader) {
-    //                 collapseHeader.click()
-    //                 clearInterval(id)
-    //             }
-    //             ++cnt > 20 && clearInterval(id)
-    //         }, 500)
-    //     },
-    //     enableFnRunAt: 'document-end',
-    // },
+    {
+      type: "switch",
+      id: "video-page-unfold-right-container-danmaku",
+      name: "自动展开 弹幕列表",
+      enableFn: () => {
+        let cnt = 0;
+        const id = setInterval(() => {
+          const collapseHeader = document.querySelector(
+            "#danmukuBox .bui-collapse-wrap-folded .bui-collapse-header"
+          );
+          if (collapseHeader) {
+            collapseHeader.click();
+            clearInterval(id);
+          }
+          ++cnt > 20 && clearInterval(id);
+        }, 500);
+      },
+      enableFnRunAt: "document-end"
+    },
     {
       type: "switch",
       id: "video-page-hide-right-container-danmaku",
@@ -14847,24 +14848,42 @@ https://${domain}/${avbv}` : `https://${domain}/${avbv}`;
     const commentStore = useCommentFilterPanelStore();
     const dynamicStore = useDynamicFilterPanelStore();
     const sideBtnStore = useSideBtnStore();
-    _GM_registerMenuCommand("✅ 页面净化优化", ruleStore.toggle);
+    _GM_registerMenuCommand("✅ 页面净化优化", () => {
+      ruleStore.toggle();
+    });
     if (videoStore.isPageValid()) {
-      _GM_registerMenuCommand("✅ 视频过滤设置", videoStore.toggle);
+      _GM_registerMenuCommand("✅ 视频过滤设置", () => {
+        videoStore.toggle();
+      });
     } else {
-      _GM_registerMenuCommand("🚫 视频过滤设置", () => alert("[bilibili-cleaner] 本页面不支持视频过滤"));
+      _GM_registerMenuCommand("🚫 视频过滤设置", () => {
+        alert("[bilibili-cleaner] 本页面不支持视频过滤");
+      });
     }
     if (commentStore.isPageValid()) {
-      _GM_registerMenuCommand("✅ 评论过滤设置", commentStore.toggle);
+      _GM_registerMenuCommand("✅ 评论过滤设置", () => {
+        commentStore.toggle();
+      });
     } else {
-      _GM_registerMenuCommand("🚫 评论过滤设置", () => alert("[bilibili-cleaner] 本页面不支持评论过滤"));
+      _GM_registerMenuCommand("🚫 评论过滤设置", () => {
+        alert("[bilibili-cleaner] 本页面不支持评论过滤");
+      });
     }
     if (dynamicStore.isPageValid()) {
-      _GM_registerMenuCommand("✅ 动态过滤设置", dynamicStore.toggle);
+      _GM_registerMenuCommand("✅ 动态过滤设置", () => {
+        dynamicStore.toggle();
+      });
     } else {
-      _GM_registerMenuCommand("🚫 动态过滤设置", () => alert("[bilibili-cleaner] 本页面不支持动态过滤"));
+      _GM_registerMenuCommand("🚫 动态过滤设置", () => {
+        alert("[bilibili-cleaner] 本页面不支持动态过滤");
+      });
     }
-    _GM_registerMenuCommand("⚡ 夜间模式开关", toggleDarkMode);
-    _GM_registerMenuCommand("⚡ 快捷按钮开关", sideBtnStore.toggle);
+    _GM_registerMenuCommand("⚡ 夜间模式开关", () => {
+      toggleDarkMode();
+    });
+    _GM_registerMenuCommand("⚡ 快捷按钮开关", () => {
+      sideBtnStore.toggle();
+    });
   };
   try {
     log(`script start, mode: ${"production"}, url: ${location.href}`);

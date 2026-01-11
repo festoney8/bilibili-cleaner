@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      4.3.15
+// @version      4.3.16
 // @author       festoney8
 // @description  净化 B站/哔哩哔哩 页面，支持「精简功能、播放器净化、过滤视频、过滤评论、全站黑白名单」，提供 300+ 功能，定制自己的 B 站
 // @license      MIT
@@ -28,7 +28,7 @@
 // @exclude      *://live.bilibili.com/live-room-play-game-together
 // @exclude      *://www.bilibili.com/blackboard/comment-detail.html*
 // @exclude      *://www.bilibili.com/blackboard/newplayer.html*
-// @require      https://registry.npmmirror.com/vue/3.5.25/files/dist/vue.global.prod.js
+// @require      https://registry.npmmirror.com/vue/3.5.26/files/dist/vue.global.prod.js
 // @grant        GM_deleteValue
 // @grant        GM_getValue
 // @grant        GM_listValues
@@ -8399,8 +8399,7 @@
     return { isShow, show, hide, toggle, isPageValid };
   });
   const useSideBtnStore = /* @__PURE__ */ defineStore("SideBtn", () => {
-    const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
-    const isShow = useStorage("bili-cleaner-side-btn-show", isSafari, localStorage);
+    const isShow = useStorage("bili-cleaner-side-btn-show", false, localStorage);
     const show = () => {
       isShow.value = true;
     };
@@ -14809,7 +14808,14 @@ https://${domain}/${avbv}` : `https://${domain}/${avbv}`;
     log("loadRules done");
     loadFilters();
     log("loadFilters done");
-    requestIdleCallback(() => {
+    const runIdle = (cb) => {
+      if (typeof window.requestIdleCallback === "function") {
+        window.requestIdleCallback(cb);
+      } else {
+        setTimeout(cb, 1e4);
+      }
+    };
+    runIdle(() => {
       cleanGMKeys();
       log("cleanGMKeys done");
     });
@@ -14885,14 +14891,13 @@ https://${domain}/${avbv}` : `https://${domain}/${avbv}`;
       sideBtnStore.toggle();
     });
   };
-  try {
-    log(`script start, mode: ${"production"}, url: ${location.href}`);
-    loadModules();
-    main();
-    menu();
-    log(`script end`);
-  } catch (err) {
-    error("main.ts error", err);
+  log(`mode: ${"production"}, url: ${location.href}`);
+  for (const fn2 of [loadModules, main, menu]) {
+    try {
+      fn2();
+    } catch (err) {
+      error(`main.ts ${fn2.name} error`, err);
+    }
   }
 
 })(Vue);

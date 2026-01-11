@@ -199,7 +199,15 @@ export const loadModules = () => {
     loadFilters()
     log('loadFilters done')
 
-    requestIdleCallback(() => {
+    // issue #291
+    const runIdle = (cb: any) => {
+        if (typeof window.requestIdleCallback === 'function') {
+            window.requestIdleCallback(cb)
+        } else {
+            setTimeout(cb, 10000)
+        }
+    }
+    runIdle(() => {
         cleanGMKeys()
         log('cleanGMKeys done')
     })

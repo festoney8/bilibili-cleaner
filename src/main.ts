@@ -106,12 +106,11 @@ const menu = () => {
     })
 }
 
-try {
-    log(`script start, mode: ${import.meta.env.MODE}, url: ${location.href}`)
-    loadModules()
-    main()
-    menu()
-    log(`script end`)
-} catch (err) {
-    error('main.ts error', err)
+log(`mode: ${import.meta.env.MODE}, url: ${location.href}`)
+for (const fn of [loadModules, main, menu]) {
+    try {
+        fn()
+    } catch (err) {
+        error(`main.ts ${fn.name} error`, err)
+    }
 }

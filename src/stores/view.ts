@@ -93,9 +93,7 @@ export const useDynamicFilterPanelStore = defineStore('DynamicFilterPanel', () =
 
 // 快捷按钮
 export const useSideBtnStore = defineStore('SideBtn', () => {
-    // turn on sideBtn for safari #291
-    const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent)
-    const isShow = useStorage('bili-cleaner-side-btn-show', isSafari, localStorage)
+    const isShow = useStorage('bili-cleaner-side-btn-show', false, localStorage)
     const show = () => {
         isShow.value = true
     }

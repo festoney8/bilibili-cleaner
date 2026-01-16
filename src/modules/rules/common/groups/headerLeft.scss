@@ -153,7 +153,7 @@ html[common-hide-nav-match] {
 
 // 隐藏 百大评选
 html[common-hide-nav-bdu] {
-    .left-entry li:has(a[href*='bilibili.com/BPU20']) {
+    .left-entry li:has([href*='UP100.html']) {
         display: none !important;
     }
 }

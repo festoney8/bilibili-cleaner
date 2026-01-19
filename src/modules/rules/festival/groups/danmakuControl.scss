@@ -143,37 +143,3 @@ html[video-page-show-fullscreen-bpx-player-video-info-online] {
         }
     }
 }
-
-// 全屏时 显示装填弹幕数量
-html[video-page-show-fullscreen-bpx-player-video-info-dm] {
-    .bpx-player-container[data-screen='full'],
-    .bpx-player-container[data-screen='web'] {
-        .bpx-player-video-info {
-            display: flex !important;
-            color: rgba(#fff, 0.8) !important;
-            margin-bottom: 1px !important;
-            margin-right: 16px !important;
-            width: unset !important;
-        }
-        .bpx-player-video-info-online {
-            display: none;
-        }
-        .bpx-player-video-info-divide {
-            display: flex !important;
-            font-size: 14px !important;
-            width: 0.5em !important;
-            visibility: hidden !important;
-        }
-        .bpx-player-video-info-dm {
-            display: flex !important;
-            font-size: 14px !important;
-            text-indent: -3.3em !important;
-        }
-        .bpx-player-control-bottom-center {
-            padding: 0 16px !important;
-        }
-        .bpx-player-ctrl-viewpoint {
-            width: fit-content !important;
-        }
-    }
-}

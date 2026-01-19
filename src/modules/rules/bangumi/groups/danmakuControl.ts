@@ -59,9 +59,4 @@ export const bangumiDanmakuControlItems: Item[] = [
         id: 'video-page-show-fullscreen-bpx-player-video-info-online',
         name: '全屏时 显示同时在看人数',
     },
-    {
-        type: 'switch',
-        id: 'video-page-show-fullscreen-bpx-player-video-info-dm',
-        name: '全屏时 显示装填弹幕数量',
-    },
 ]

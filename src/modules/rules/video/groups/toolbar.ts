@@ -57,6 +57,11 @@ export const videoToolbarItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'video-page-hide-below-info-video-complaint',
+        name: '隐藏 举报按钮',
+    },
+    {
+        type: 'switch',
         id: 'video-page-hide-below-info-video-note',
         name: '隐藏 记笔记',
     },

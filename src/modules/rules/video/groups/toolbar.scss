@@ -19,6 +19,13 @@ html[video-page-hide-below-info-video-ai-assistant] {
     }
 }
 
+// 隐藏 举报按钮
+html[video-page-hide-below-info-video-complaint] {
+    .video-toolbar-right .video-complaint {
+        display: none !important;
+    }
+}
+
 // 隐藏 记笔记
 html[video-page-hide-below-info-video-note] {
     .video-toolbar-right .video-note {

@@ -42,12 +42,12 @@ export const bangumiGroups: Group[] = [
         items: bangumiDanmakuItems,
     },
     {
-        name: '视频下方 工具栏/作品信息',
+        name: '工具栏/作品信息',
         fold: true,
         items: bangumiToolbarItems,
     },
     {
-        name: '右栏 作品选集/其他推荐',
+        name: '右栏',
         fold: true,
         items: bangumiRightItems,
     },

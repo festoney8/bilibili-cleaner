@@ -41,6 +41,12 @@ export const videoToolbarItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'video-page-simple-video-share-popover',
+        name: '精简 分享按钮弹出菜单',
+        defaultEnable: true,
+    },
+    {
+        type: 'switch',
         id: 'video-page-hide-video-share-popover',
         name: '隐藏 分享按钮弹出菜单',
         defaultEnable: true,

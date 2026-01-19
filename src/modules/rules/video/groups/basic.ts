@@ -69,6 +69,7 @@ export const videoBasicItems: Item[] = [
         id: 'video-page-simple-share',
         name: '净化分享功能',
         description: ['点击分享按钮时，复制纯净链接'],
+        noStyle: true,
         // 净化分享按钮写入剪贴板内容
         enableFn: async () => {
             // 监听shareBtn出现

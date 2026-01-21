@@ -152,13 +152,13 @@ html[common-hide-nav-match] {
 }
 
 // 隐藏 百大评选
-html[common-hide-nav-bdu] {
-    .left-entry li:has(a[href*='bilibili.com/BPU20']) {
-        display: none !important;
-    }
-}
+// html[common-hide-nav-bdu] {
+//     .left-entry li:has([href*='UP100.html']) {
+//         display: none !important;
+//     }
+// }
 
-// // 隐藏 BML
+// 隐藏 BML
 // html[common-hide-nav-bml] {
 //     .left-entry li:has(a[href*='bml.bilibili.com']) {
 //         display: none !important;

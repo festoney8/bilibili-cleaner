@@ -55,7 +55,7 @@ export const videoGroups: Group[] = [
         items: videoSubtitleItems,
     },
     {
-        name: '视频下方信息',
+        name: '工具栏',
         fold: true,
         items: videoToolbarItems,
     },

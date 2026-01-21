@@ -1,3 +1,21 @@
+// 精简 分享按钮弹出菜单
+html[video-page-simple-video-share-popover] {
+    #share-container-id {
+        [class^='Share_boxBottom'] {
+            display: none !important;
+        }
+        [class^='Share_boxTop'] {
+            padding: 15px !important;
+        }
+        [class^='Share_boxTopRight'] {
+            display: none !important;
+        }
+        [class^='Share_boxTopLeft'] {
+            padding: 0 !important;
+        }
+    }
+}
+
 // 隐藏 分享按钮弹出菜单
 html[video-page-hide-video-share-popover] {
     #share-container-id [class^='Share_share'] {

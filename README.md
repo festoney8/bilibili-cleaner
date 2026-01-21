@@ -44,8 +44,7 @@
 
 ### 版本选择
 
-- 请查看 [**浏览器适配**](#浏览器适配)
-- 油猴插件会定期检查更新源，自动更新
+浏览器和脚本管理器需满足 [**浏览器适配**](#浏览器适配) 要求
 
 | **更新源**   | **链接**                                                                                                         | **介绍**               |
 | ------------ | ---------------------------------------------------------------------------------------------------------------- | ---------------------- |
@@ -67,7 +66,8 @@
 > - **视频过滤：**「首页、播放页、搜索页、热门页、分区页、空间页」
 > - **评论过滤：**「播放页、番剧播放页、动态页、空间页」
 > - **动态过滤：**「动态页」
-> - **快捷按钮：** 显示在页面侧栏的快捷组件，需手动启用
+> - **快捷按钮：** 显示在页面角落的快捷组件，需手动启用
+> - **夜间模式开关：** 快速切换日间、夜间模式
 
 ![](images/usage.png)
 
@@ -120,7 +120,7 @@
 
 ### Firefox
 
-- **Firefox 103~120，按如下步骤开启高级设定**
+- **Firefox 103~120，开启高级设定**
     - 打开网址 [about:config](about:config)，若出现风险提示，点击「接受风险并继续」
     - 搜索 `layout.css.has-selector.enabled` ，将这一项的开关改为 `true`，并刷新网页
 - **Firefox >= 121，无需修改设定**
@@ -142,41 +142,21 @@
 | [Tampermonkey (篡改猴)](https://www.tampermonkey.net/)     | ✔️       | ✔️       | 完全测试，推荐                   |
 | [Violentmonkey (暴力猴)](https://violentmonkey.github.io/) | ✔️       | ❌️      | 完全测试，高版本 Chrome 无法运行 |
 | [ScriptCat (脚本猫)](https://docs.scriptcat.org/)          | ✔️       | ✔️       | 部分测试                         |
-| Greasemonkey                                               | ❌️      | /        | 未测试                           |
-| Stay                                                       | ❌️      | /        | 无法运行                         |
+| Greasemonkey                                               | ❌️      | ❌️      | 未测试                           |
+| Stay                                                       | ❌️      | ❌️      | 无法运行                         |
 
 ## 净化效果对比
 
 <details>
-<summary><b>查看 视频过滤 对比图（webp动图）</b></summary>
+<summary><b>展开查看</b></summary>
 
 ![](images/screenshot-filter.webp)
 
-</details>
-
-<details>
-<summary><b>查看 播放页 对比图（webp动图）</b></summary>
-
 ![](images/screenshot-video.webp)
-
-</details>
-
-<details>
-<summary><b>查看 首页 对比图（webp动图）</b></summary>
 
 ![](images/screenshot-homepage.webp)
 
-</details>
-
-<details>
-<summary><b>查看 动态页 对比图（webp动图）</b></summary>
-
 ![](images/screenshot-dynamic.webp)
-
-</details>
-
-<details>
-<summary><b>查看 热门视频/排行榜页 对比图（webp动图）</b></summary>
 
 ![](images/screenshot-popular.webp)
 

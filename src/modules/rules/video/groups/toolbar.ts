@@ -41,6 +41,12 @@ export const videoToolbarItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'video-page-simple-video-share-popover',
+        name: '精简 分享按钮弹出菜单',
+        defaultEnable: true,
+    },
+    {
+        type: 'switch',
         id: 'video-page-hide-video-share-popover',
         name: '隐藏 分享按钮弹出菜单',
         defaultEnable: true,
@@ -54,6 +60,11 @@ export const videoToolbarItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-below-info-video-ai-assistant',
         name: '隐藏 官方AI总结',
+    },
+    {
+        type: 'switch',
+        id: 'video-page-hide-below-info-video-complaint',
+        name: '隐藏 举报按钮',
     },
     {
         type: 'switch',

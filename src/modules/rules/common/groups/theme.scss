@@ -464,6 +464,11 @@ html[common-theme-dark-page='common'] {
     .bili-header__banner {
         filter: brightness(90%);
     }
+
+    // issue #299
+    #bilibili-player .bpx-player-sending-area::before {
+        background-color: #17181a !important;
+    }
 }
 
 // 动态页

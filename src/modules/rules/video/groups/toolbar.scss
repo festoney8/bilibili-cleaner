@@ -1,3 +1,21 @@
+// 精简 分享按钮弹出菜单
+html[video-page-simple-video-share-popover] {
+    .video-share-popover .video-share-dropdown {
+        .dropdown-bottom {
+            display: none !important;
+        }
+        .dropdown-top {
+            padding: 15px !important;
+            .dropdown-top-right {
+                display: none !important;
+            }
+            .dropdown-top-left {
+                padding-right: 0 !important;
+            }
+        }
+    }
+}
+
 // 隐藏 分享按钮弹出菜单
 html[video-page-hide-video-share-popover] {
     .video-share-popover {
@@ -15,6 +33,13 @@ html[video-page-hide-triple-oldfan-entry] {
 // 隐藏 官方AI总结
 html[video-page-hide-below-info-video-ai-assistant] {
     .video-toolbar-right .video-ai-assistant {
+        display: none !important;
+    }
+}
+
+// 隐藏 举报按钮
+html[video-page-hide-below-info-video-complaint] {
+    .video-toolbar-right .video-complaint {
         display: none !important;
     }
 }

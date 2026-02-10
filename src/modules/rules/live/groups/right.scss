@@ -141,8 +141,11 @@ html[live-page-gift-item] {
 
 // 隐藏 大表情弹幕
 html[live-page-bulge-danmaku] {
-    .chat-item.bulge-emoticon {
-        display: none !important;
+    .chat-item {
+        &.bulge-emoticon,
+        &.chat-emoticon {
+            display: none !important;
+        }
     }
 }
 

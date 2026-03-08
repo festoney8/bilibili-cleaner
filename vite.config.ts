@@ -38,6 +38,8 @@ export default defineConfig({
                     '*://live.bilibili.com/live-room-play-game-together',
                     '*://www.bilibili.com/blackboard/comment-detail.html*',
                     '*://www.bilibili.com/blackboard/newplayer.html*',
+                    '*://www.bilibili.com/appeal/*',
+                    '*://www.bilibili.com/pc/community/copyright/*',
                 ],
                 icon: 'https://www.bilibili.com/favicon.ico',
                 'run-at': 'document-start',

@@ -12,6 +12,7 @@ import {
     DynPlaybackFilter,
     DynVideoTitleFilter,
 } from '../subFilters/black'
+import { DynContentWhiteFilter, DynVideoTitleWhiteFilter } from '../subFilters/white'
 
 const GM_KEYS = {
     black: {
@@ -34,6 +35,16 @@ const GM_KEYS = {
         // 直播回放
         playback: {
             statusKey: 'space-playback-filter-status',
+        },
+    },
+    white: {
+        title: {
+            statusKey: 'space-dyn-video-title-white-filter-status',
+            valueKey: 'global-title-keyword-whitelist-filter-value',
+        },
+        content: {
+            statusKey: 'space-dyn-content-white-filter-status',
+            valueKey: 'global-content-keyword-whitelist-filter-value',
         },
     },
 }
@@ -78,12 +89,18 @@ class DynamicFilterSpace implements IMainFilter {
     dynContentFilter = new DynContentFilter()
     dynDynVideoFilter = new DynDynVideoFilter()
     dynPlaybackFilter = new DynPlaybackFilter()
+    // 白名单
+    dynVideoTitleWhiteFilter = new DynVideoTitleWhiteFilter()
+    dynContentWhiteFilter = new DynContentWhiteFilter()
 
     init() {
         // 黑名单
         this.dynDurationFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.duration.valueKey, 0))
         this.dynVideoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.title.valueKey, []))
         this.dynContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))
+        // 白名单
+        this.dynVideoTitleWhiteFilter.setParam(BiliCleanerStorage.get(GM_KEYS.white.title.valueKey, []))
+        this.dynContentWhiteFilter.setParam(BiliCleanerStorage.get(GM_KEYS.white.content.valueKey, []))
     }
 
     async check(mode?: 'full' | 'incr') {
@@ -143,9 +160,13 @@ class DynamicFilterSpace implements IMainFilter {
         this.dynContentFilter.isEnable && blackPairs.push([this.dynContentFilter, selectorFns.content])
         this.dynDynVideoFilter.isEnable && blackPairs.push([this.dynDynVideoFilter, selectorFns.dynVideo])
         this.dynPlaybackFilter.isEnable && blackPairs.push([this.dynPlaybackFilter, selectorFns.playback])
+        // 构建白名单检测任务
+        const whitePairs: SubFilterPair[] = []
+        this.dynVideoTitleWhiteFilter.isEnable && whitePairs.push([this.dynVideoTitleWhiteFilter, selectorFns.title])
+        this.dynContentWhiteFilter.isEnable && whitePairs.push([this.dynContentWhiteFilter, selectorFns.content])
 
         // 检测
-        const blackCnt = await coreCheck(dyns, true, 'style', blackPairs, [])
+        const blackCnt = await coreCheck(dyns, true, 'style', blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
         debug(`DynamicFilterSpace hide ${blackCnt} in ${dyns.length} dyns, mode=${mode}, time=${time}`)
     }
@@ -230,7 +251,7 @@ export const dynamicFilterSpaceGroups: Group[] = [
             {
                 type: 'switch',
                 id: GM_KEYS.black.title.statusKey,
-                name: '启用 标题关键词过滤',
+                name: '启用 视频标题关键词过滤',
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.dynVideoTitleFilter.enable()
@@ -244,8 +265,8 @@ export const dynamicFilterSpaceGroups: Group[] = [
             {
                 type: 'editor',
                 id: GM_KEYS.black.title.valueKey,
-                name: '编辑 标题关键词黑名单',
-                editorTitle: '标题关键词 黑名单',
+                name: '编辑 视频标题关键词黑名单',
+                editorTitle: '视频标题关键词 黑名单',
                 editorDescription: [
                     '每行一个关键词或正则，不区分大小写、全半角',
                     '请勿使用过于激进的关键词或正则',
@@ -265,7 +286,7 @@ export const dynamicFilterSpaceGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.content.statusKey,
                 name: '启用 动态内容关键词过滤',
-                description: ['包含被转发动态内容', '不含动态内视频信息'],
+                description: ['不含动态内视频标题'],
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.dynContentFilter.enable()
@@ -321,6 +342,74 @@ export const dynamicFilterSpaceGroups: Group[] = [
                 },
                 disableFn: () => {
                     mainFilter.dynPlaybackFilter.disable()
+                    mainFilter.checkFull()
+                },
+            },
+        ],
+    },
+    {
+        name: '白名单 免过滤',
+        items: [
+            {
+                type: 'switch',
+                id: GM_KEYS.white.title.statusKey,
+                name: '启用 标题关键词白名单',
+                noStyle: true,
+                enableFn: () => {
+                    mainFilter.dynVideoTitleWhiteFilter.enable()
+                    mainFilter.checkFull()
+                },
+                disableFn: () => {
+                    mainFilter.dynVideoTitleWhiteFilter.disable()
+                    mainFilter.checkFull()
+                },
+            },
+            {
+                type: 'editor',
+                id: GM_KEYS.white.title.valueKey,
+                name: '编辑 标题关键词白名单',
+                editorTitle: '标题关键词 白名单',
+                editorDescription: [
+                    '每行一个关键词或正则，不区分大小写、全半角',
+                    '请勿使用过于激进的关键词或正则',
+                    '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
+                ],
+                saveFn: async () => {
+                    mainFilter.dynVideoTitleWhiteFilter.setParam(
+                        BiliCleanerStorage.get(GM_KEYS.white.title.valueKey, []),
+                    )
+                    mainFilter.checkFull()
+                },
+            },
+            {
+                type: 'switch',
+                id: GM_KEYS.white.content.statusKey,
+                name: '启用 动态内容关键词白名单',
+                description: ['不含动态内视频标题'],
+                noStyle: true,
+                enableFn: () => {
+                    mainFilter.dynContentWhiteFilter.enable()
+                    mainFilter.checkFull()
+                },
+                disableFn: () => {
+                    mainFilter.dynContentWhiteFilter.disable()
+                    mainFilter.checkFull()
+                },
+            },
+            {
+                type: 'editor',
+                id: GM_KEYS.white.content.valueKey,
+                name: '编辑 动态内容关键词白名单',
+                editorTitle: '动态内容关键词 白名单',
+                editorDescription: [
+                    '每行一个关键词或正则，不区分大小写、全半角',
+                    '请勿使用过于激进的关键词或正则',
+                    '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
+                ],
+                saveFn: async () => {
+                    mainFilter.dynContentWhiteFilter.setParam(
+                        BiliCleanerStorage.get(GM_KEYS.white.content.valueKey, []),
+                    )
                     mainFilter.checkFull()
                 },
             },

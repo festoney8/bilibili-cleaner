@@ -4,6 +4,7 @@ import { IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
 import { debugFilter as debug, error } from '@/utils/logger'
 import { BiliCleanerStorage } from '@/utils/storage'
 import { DynContentFilter, DynUploaderFilter, DynVideoTitleFilter } from '../subFilters/black'
+import { DynContentWhiteFilter, DynVideoTitleWhiteFilter } from '../subFilters/white'
 
 const GM_KEYS = {
     black: {
@@ -18,6 +19,16 @@ const GM_KEYS = {
         content: {
             statusKey: 'dyn-content-keyword-filter-status',
             valueKey: 'global-content-keyword-filter-value',
+        },
+    },
+    white: {
+        title: {
+            statusKey: 'dyn-video-title-white-filter-status',
+            valueKey: 'global-title-keyword-whitelist-filter-value',
+        },
+        content: {
+            statusKey: 'dyn-content-white-filter-status',
+            valueKey: 'global-content-keyword-whitelist-filter-value',
         },
     },
 }
@@ -42,12 +53,18 @@ class DynamicFilterHeader implements IMainFilter {
     dynUploaderFilter = new DynUploaderFilter()
     dynVideoTitleFilter = new DynVideoTitleFilter()
     dynContentFilter = new DynContentFilter()
+    // 白名单
+    dynVideoTitleWhiteFilter = new DynVideoTitleWhiteFilter()
+    dynContentWhiteFilter = new DynContentWhiteFilter()
 
     init() {
         // 黑名单
         this.dynUploaderFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.uploader.valueKey, []))
         this.dynVideoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.title.valueKey, []))
         this.dynContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))
+        // 白名单
+        this.dynVideoTitleWhiteFilter.setParam(BiliCleanerStorage.get(GM_KEYS.white.title.valueKey, []))
+        this.dynContentWhiteFilter.setParam(BiliCleanerStorage.get(GM_KEYS.white.content.valueKey, []))
     }
 
     async check(mode?: 'full' | 'incr') {
@@ -84,9 +101,13 @@ class DynamicFilterHeader implements IMainFilter {
         this.dynUploaderFilter.isEnable && blackPairs.push([this.dynUploaderFilter, selectorFns.uploader])
         this.dynVideoTitleFilter.isEnable && blackPairs.push([this.dynVideoTitleFilter, selectorFns.title])
         this.dynContentFilter.isEnable && blackPairs.push([this.dynContentFilter, selectorFns.content])
+        // 构建白名单任务
+        const whitePairs: SubFilterPair[] = []
+        this.dynVideoTitleWhiteFilter.isEnable && whitePairs.push([this.dynVideoTitleWhiteFilter, selectorFns.title])
+        this.dynContentWhiteFilter.isEnable && whitePairs.push([this.dynContentWhiteFilter, selectorFns.content])
 
         // 检测
-        const blackCnt = await coreCheck(dyns, true, 'style', blackPairs, [])
+        const blackCnt = await coreCheck(dyns, true, 'style', blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
         debug(`DynamicFilterHeader hide ${blackCnt} in ${dyns.length} dyns, mode=${mode}, time=${time}`)
     }
@@ -104,23 +125,21 @@ class DynamicFilterHeader implements IMainFilter {
     // }
 
     observe() {
-        document.addEventListener('DOMContentLoaded', () => {
-            let cnt = 0
-            const id = setInterval(() => {
-                const ele = document.querySelector('.right-entry .v-popover-wrap:nth-of-type(3)') as HTMLElement
-                if (ele) {
-                    clearInterval(id)
+        let cnt = 0
+        const id = setInterval(() => {
+            const ele = document.querySelector('.right-entry') as HTMLElement
+            if (ele) {
+                clearInterval(id)
 
-                    debug('DynamicFilterHeader target appear')
-                    this.target = ele
+                debug('DynamicFilterHeader target appear')
+                this.target = ele
+                this.checkFull()
+                new MutationObserver(() => {
                     this.checkFull()
-                    new MutationObserver(() => {
-                        this.checkFull()
-                    }).observe(this.target, { childList: true, subtree: true })
-                }
-                ++cnt > 10 && clearInterval(id)
-            }, 1000)
-        })
+                }).observe(this.target, { childList: true, subtree: true })
+            }
+            ++cnt > 10 && clearInterval(id)
+        }, 1000)
     }
 }
 
@@ -139,5 +158,11 @@ export const dynamicFilterHeaderEntry = async () => {
     }
     if (BiliCleanerStorage.get(GM_KEYS.black.content.statusKey)) {
         mainFilter.dynContentFilter.enable()
+    }
+    if (BiliCleanerStorage.get(GM_KEYS.white.title.statusKey)) {
+        mainFilter.dynVideoTitleWhiteFilter.enable()
+    }
+    if (BiliCleanerStorage.get(GM_KEYS.white.content.statusKey)) {
+        mainFilter.dynContentWhiteFilter.enable()
     }
 }

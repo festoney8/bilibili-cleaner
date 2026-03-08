@@ -338,7 +338,7 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.black.content.statusKey,
                 name: '启用 动态内容关键词过滤',
-                description: ['不含动态内视频标题'],
+                description: ['不覆盖动态内视频标题'],
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.dynContentFilter.enable()
@@ -437,7 +437,7 @@ export const dynamicFilterDynamicGroups: Group[] = [
                 type: 'switch',
                 id: GM_KEYS.white.content.statusKey,
                 name: '启用 动态内容关键词白名单',
-                description: ['不含动态内视频标题'],
+                description: ['不覆盖动态内视频标题'],
                 noStyle: true,
                 enableFn: () => {
                     mainFilter.dynContentWhiteFilter.enable()

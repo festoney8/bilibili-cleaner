@@ -373,6 +373,12 @@ export const commentBasicItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'video-page-hide-emoji-popover',
+        name: '隐藏 大表情弹框',
+        defaultEnable: true,
+    },
+    {
+        type: 'switch',
         id: 'video-page-hide-emoji-small',
         name: '隐藏 小表情',
         noStyle: true,

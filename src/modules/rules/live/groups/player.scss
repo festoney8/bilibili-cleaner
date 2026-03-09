@@ -64,6 +64,10 @@ html[live-page-head-web-player-live-lottery] {
     #anchor-guest-box-id {
         display: none !important;
     }
+    .m-nobar__popup-container:has(iframe[src^="https://live.bilibili.com/p/html/live-lottery/lottery-user.html"])
+    {
+        display: none !important;
+    }
 }
 
 // 隐藏 播放器顶部变动计数弹幕

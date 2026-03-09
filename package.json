@@ -18,27 +18,27 @@
         "p-limit": "^6.2.0",
         "pinia": "^2.3.1",
         "universal-cookie": "^7.2.2",
-        "vue": "^3.5.27"
+        "vue": "^3.5.30"
     },
     "devDependencies": {
-        "@eslint/js": "^9.39.2",
+        "@eslint/js": "^9.39.4",
         "@thedutchcoder/postcss-rem-to-px": "^0.0.2",
         "@vitejs/plugin-vue": "^5.2.4",
-        "autoprefixer": "^10.4.23",
-        "eslint": "^9.39.2",
+        "autoprefixer": "^10.4.27",
+        "eslint": "^9.39.4",
         "eslint-config-prettier": "^9.1.2",
         "eslint-plugin-vue": "^9.33.0",
         "globals": "^15.15.0",
         "husky": "^9.1.7",
         "lint-staged": "^15.5.2",
-        "postcss": "^8.5.6",
+        "postcss": "^8.5.8",
         "prettier": "3.4.2",
         "prettier-plugin-tailwindcss": "^0.6.14",
         "stylelint": "^16.26.1",
         "stylelint-config-standard-scss": "^14.0.0",
         "tailwindcss": "^3.4.19",
         "typescript": "^5.9.3",
-        "typescript-eslint": "^8.53.1",
+        "typescript-eslint": "^8.56.1",
         "vite": "^6.4.1",
         "vite-plugin-monkey": "^5.0.9",
         "vue-tsc": "^2.2.12"
@@ -48,5 +48,5 @@
         "src/**/*.{js,mjs,cjs,ts,vue}": "npx eslint --fix",
         "src/**/*.scss": "npx stylelint --fix"
     },
-    "packageManager": "pnpm@10.20.0+sha512.cf9998222162dd85864d0a8102e7892e7ba4ceadebbf5a31f9c2fce48dfce317a9c53b9f6464d1ef9042cba2e02ae02a9f7c143a2b438cd93c91840f0192b9dd"
+    "packageManager": "pnpm@10.30.3+sha512.c961d1e0a2d8e354ecaa5166b822516668b7f44cb5bd95122d590dd81922f606f5473b6d23ec4a5be05e7fcd18e8488d47d978bbe981872f1145d06e9a740017"
 }

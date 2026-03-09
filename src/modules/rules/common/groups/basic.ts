@@ -80,6 +80,10 @@ export const commonBasicItems: Item[] = [
                     if (url.match(/live\.bilibili\.com\/(p\/html|activity|blackboard)/)) {
                         return url
                     }
+                    // https://www.bilibili.com/pc/community/copyright 页面过滤
+                    if (url.match(/bilibili\.com\/pc\/community\/copyright/)) {
+                        return url
+                    }
                     const keysToRemove = new Set([
                         'from_source',
                         'spm_id_from',

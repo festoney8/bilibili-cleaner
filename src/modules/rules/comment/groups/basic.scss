@@ -1,3 +1,10 @@
+// 隐藏 大表情弹框
+html[video-page-hide-emoji-popover] {
+    bili-emoji-popover {
+        display: none !important;
+    }
+}
+
 // 隐藏 视频评论区 (播放页/番剧页)
 html[video-page-hide-comment] {
     #commentapp bili-comments,

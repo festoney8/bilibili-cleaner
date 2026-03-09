@@ -39,7 +39,6 @@ export default defineConfig({
                     '*://www.bilibili.com/blackboard/comment-detail.html*',
                     '*://www.bilibili.com/blackboard/newplayer.html*',
                     '*://www.bilibili.com/appeal/*',
-                    '*://www.bilibili.com/pc/community/copyright/*',
                 ],
                 icon: 'https://www.bilibili.com/favicon.ico',
                 'run-at': 'document-start',

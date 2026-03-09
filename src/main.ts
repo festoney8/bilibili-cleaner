@@ -38,7 +38,7 @@ const main = () => {
     waitForBody().then(() => document.body.appendChild(wrap))
 
     // 创建插件面板
-    const app = createApp(App)
+    const app = createApp(App as any)
     app.config.errorHandler = (err, vm, info) => {
         error('Vue:', err)
         error('Component:', vm)

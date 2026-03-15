@@ -103,11 +103,19 @@ html[live-page-gift-control-vm] {
         display: none !important;
     }
 
-    // 补齐圆角, 不可important
-    body:not(.pure_room_root) #player-ctnr {
-        border-bottom-left-radius: 12px;
-        border-bottom-right-radius: 12px;
-        overflow: hidden;
+    body:not(.pure_room_root) {
+        .fullscreen-container-paddingbox {
+            height: 0 !important;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            overflow: hidden;
+            #fullscreen-container {
+                grid-template-rows: minmax(0, 1fr) auto !important;
+                .gift-control-section {
+                    display: none !important;
+                }
+            }
+        }
     }
 }
 

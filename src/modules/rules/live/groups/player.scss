@@ -38,6 +38,13 @@ html[live-page-web-player-watermark] {
     }
 }
 
+// 隐藏 播放器背景图
+html[live-page-hide-web-player-background] {
+    #fullscreen-container {
+        --first-frame-bg: unset !important;
+    }
+}
+
 // 隐藏 滚动礼物通告
 html[live-page-head-web-player-announcement-wrapper] {
     #live-player .announcement-wrapper {

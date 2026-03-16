@@ -26,6 +26,12 @@ export const livePlayerItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'live-page-hide-web-player-background',
+        name: '隐藏 播放器背景图',
+        defaultEnable: true,
+    },
+    {
+        type: 'switch',
         id: 'live-page-head-web-player-announcement-wrapper',
         name: '隐藏 滚动礼物通告',
     },

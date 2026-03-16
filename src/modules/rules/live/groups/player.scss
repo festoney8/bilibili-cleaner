@@ -38,6 +38,13 @@ html[live-page-web-player-watermark] {
     }
 }
 
+// 隐藏 播放器背景图
+html[live-page-hide-web-player-background] {
+    #fullscreen-container {
+        --first-frame-bg: unset !important;
+    }
+}
+
 // 隐藏 滚动礼物通告
 html[live-page-head-web-player-announcement-wrapper] {
     #live-player .announcement-wrapper {
@@ -103,37 +110,53 @@ html[live-page-gift-control-vm] {
         display: none !important;
     }
 
-    // 补齐圆角, 不可important
-    body:not(.pure_room_root) #player-ctnr {
-        border-bottom-left-radius: 12px;
-        border-bottom-right-radius: 12px;
-        overflow: hidden;
+    body:not(.pure_room_root) {
+        .fullscreen-container-paddingbox {
+            height: 0 !important;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            overflow: hidden;
+            #fullscreen-container {
+                grid-template-rows: minmax(0, 1fr) auto !important;
+                .gift-control-section {
+                    display: none !important;
+                }
+            }
+        }
     }
 }
 
 // 隐藏 礼物栏 显示天选
 html[live-page-gift-control-vm-show-lottery] {
-    #gift-control-vm:not(:has(.anchor-lottery-entry, .gift-lottery)) {
-        display: none !important;
-    }
-    #gift-control-vm:has(.anchor-lottery-entry, .gift-lottery) {
-        height: 0 !important;
-        .gift-panel {
-            display: none;
+    body:not(.pure_room_root) {
+        #gift-control-vm:not(:has(.anchor-lottery-entry, .gift-lottery)) {
+            display: none !important;
         }
-        .out-part {
-            padding-right: 10px !important;
-            position: fixed;
-            left: 0;
-            top: calc(100vh - 120px);
+        #gift-control-vm:has(.anchor-lottery-entry, .gift-lottery) {
+            height: 0 !important;
+            .gift-panel {
+                display: none;
+            }
+            .out-part {
+                padding-right: 10px !important;
+                position: fixed;
+                left: 0;
+                top: calc(100vh - 120px);
+            }
         }
-    }
+        .fullscreen-container-paddingbox {
+            height: 0 !important;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            overflow: hidden;
+            #fullscreen-container {
+                grid-template-rows: minmax(0, 1fr) auto !important;
 
-    // 补齐圆角, 不可important
-    body:not(.pure_room_root) #player-ctnr {
-        border-bottom-left-radius: 12px;
-        border-bottom-right-radius: 12px;
-        overflow: hidden;
+                // .gift-control-section {
+                //     display: none !important;
+                // }
+            }
+        }
     }
 }
 

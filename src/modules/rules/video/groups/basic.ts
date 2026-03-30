@@ -84,6 +84,10 @@ export const videoBasicItems: Item[] = [
                         let title = document.querySelector(
                             '.video-info-title .video-title, #viewbox_report > h1, .video-title-href',
                         )?.textContent
+                        const prefix = document.querySelector('#categoryPill')?.textContent
+                        if (prefix && title && title.startsWith(prefix)) {
+                            title = title.slice(prefix.length).trim()
+                        }
                         if (title && !title.match(/^[（【［《「＜｛〔〖〈『].*|.*[）】］》」＞｝〕〗〉』]$/)) {
                             title = `【${title}】`
                         }

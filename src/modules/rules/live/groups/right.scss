@@ -64,6 +64,16 @@ html[live-page-compact-danmaku] {
         .reply-uname .common-nickname-wrapper {
             font-size: 15px !important;
         }
+
+        // super chat
+        .card-item-middle-bottom .text {
+            font-size: 14px !important;
+        }
+    }
+
+    // super chat
+    #pay-note-panel-vm .card-item-middle-bottom .text {
+        font-size: 14px !important;
     }
 }
 

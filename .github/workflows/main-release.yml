@@ -11,14 +11,19 @@ jobs:
         permissions:
             contents: write
         steps:
-            # environment
+            # env
             - name: checkout code
-              uses: actions/checkout@v4
-              with:
-                  ref: ${{ github.head_ref }}
-            - name: install node and pnpm
+              uses: actions/checkout@v6
+            - name: setup pnpm
               uses: pnpm/action-setup@v4
-            - run: pnpm install
+            - name: setup node
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 24
+                  cache: pnpm
+                  cache-dependency-path: pnpm-lock.yaml
+            - name: install dependencies
+              run: pnpm install --frozen-lockfile
 
             # build and save
             - name: build and save file

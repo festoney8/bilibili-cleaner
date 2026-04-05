@@ -15,7 +15,7 @@ jobs:
             - name: checkout code
               uses: actions/checkout@v6
             - name: setup pnpm
-              uses: pnpm/action-setup@v4
+              uses: pnpm/action-setup@v5
             - name: setup node
               uses: actions/setup-node@v6
               with:
@@ -69,7 +69,7 @@ jobs:
 
             # commit to release branch
             - name: checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                 ref: release
                 path: branch-release

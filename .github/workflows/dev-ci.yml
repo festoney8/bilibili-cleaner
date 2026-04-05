@@ -19,7 +19,7 @@ jobs:
             - name: checkout code
               uses: actions/checkout@v6
             - name: setup pnpm
-              uses: pnpm/action-setup@v4
+              uses: pnpm/action-setup@v5
             - name: setup node
               uses: actions/setup-node@v6
               with:
@@ -47,7 +47,7 @@ jobs:
 
             # 上传产物
             - name: upload-artifact
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v6
               with:
                   name: bilibili-cleaner
                   path: output/*

@@ -14,6 +14,10 @@ export const popularLayoutItems: Item[] = [
                 name: '未启用',
             },
             {
+                value: 'popular-layout-3-column',
+                name: '3 列布局',
+            },
+            {
                 value: 'popular-layout-4-column',
                 name: '4 列布局',
             },

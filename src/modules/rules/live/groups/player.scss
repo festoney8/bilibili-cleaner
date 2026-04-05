@@ -110,7 +110,7 @@ html[live-page-gift-control-vm] {
         display: none !important;
     }
 
-    body:not(.pure_room_root) {
+    body:not(.pure_room_root, .player-full-win) {
         .fullscreen-container-paddingbox {
             height: 0 !important;
             border-bottom-left-radius: 12px;
@@ -128,7 +128,7 @@ html[live-page-gift-control-vm] {
 
 // 隐藏 礼物栏 显示天选
 html[live-page-gift-control-vm-show-lottery] {
-    body:not(.pure_room_root) {
+    body:not(.pure_room_root, .player-full-win) {
         #gift-control-vm:not(:has(.anchor-lottery-entry, .gift-lottery)) {
             display: none !important;
         }

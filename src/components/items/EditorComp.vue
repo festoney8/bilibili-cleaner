@@ -72,8 +72,6 @@ import DescriptionComp from './DescriptionComp.vue'
 
 const item = defineProps<IEditorItem>()
 
-const panel = ref<HTMLElement | null>(null)
-
 const isEditorShow = ref(false)
 const saveSuccess = ref(false)
 const editorData = ref('')

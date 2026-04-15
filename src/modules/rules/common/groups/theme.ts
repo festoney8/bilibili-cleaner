@@ -1,4 +1,4 @@
-import { useGMValue } from '@/composables/GMValue'
+import { useGMValue } from '@/composables/gmValue'
 import { Item } from '@/types/item'
 import { isPageDynamic, isPageHomepage, isPageLive, isPageMessage, isPageSpace } from '@/utils/pageType'
 

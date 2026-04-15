@@ -1,0 +1,23 @@
+src/modules/rules/common/groups/theme.ts
+  61b7476b76918143 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "5f7f641bdfc236acd6c6e7aa3bf14abd30932cae",
+  "prompts": {
+    "61b7476b76918143": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_26c839186ffeIjwX0AEMousHp1",
+        "model": "unknown"
+      },
+      "human_author": "festoney8",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 0,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    }
+  }
+}

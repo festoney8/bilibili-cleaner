@@ -1,0 +1,25 @@
+.github/workflows/main-ci.yml
+  61b7476b76918143 27-28,31,33,40
+.github/workflows/dev-ci.yml
+  61b7476b76918143 32-33,36,38,45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "395710aa87c22035d75d00c18499edc10bde4b3d",
+  "prompts": {
+    "61b7476b76918143": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_26c839186ffeIjwX0AEMousHp1",
+        "model": "unknown"
+      },
+      "human_author": "festoney8",
+      "messages": [],
+      "total_additions": 99,
+      "total_deletions": 115,
+      "accepted_lines": 79,
+      "overriden_lines": 0
+    }
+  }
+}

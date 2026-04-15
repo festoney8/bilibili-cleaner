@@ -1,0 +1,29 @@
+src/views/DynamicFilterPanelView.vue
+  3de4609476a582e5 19,24,30,40-41,44,46-47
+src/views/CommentFilterPanelView.vue
+  3de4609476a582e5 19,24,30,40-41,44,46-47
+src/views/VideoFilterPanelView.vue
+  3de4609476a582e5 19,24,30,40-41,44,46-47
+src/views/RulePanelView.vue
+  3de4609476a582e5 14,20,26,36-37,40,42-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "e28fbf6285713b3fd3f40551ecf1ba5341505c72",
+  "prompts": {
+    "3de4609476a582e5": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_26d0844c2ffeWxMDEX3yFZHMkq",
+        "model": "unknown"
+      },
+      "human_author": "festoney8",
+      "messages": [],
+      "total_additions": 225,
+      "total_deletions": 165,
+      "accepted_lines": 217,
+      "overriden_lines": 0
+    }
+  }
+}

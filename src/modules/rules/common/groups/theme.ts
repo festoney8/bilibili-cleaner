@@ -1,29 +1,27 @@
 import { Item } from '@/types/item'
 import { isPageDynamic, isPageHomepage, isPageLive, isPageMessage, isPageSpace } from '@/utils/pageType'
-import { BiliCleanerStorage } from '@/utils/storage'
-import { useBroadcastChannel, usePreferredDark } from '@vueuse/core'
+
+import { useGMValue } from '@/composables/gmValue'
+import { usePreferredDark } from '@vueuse/core'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { ref, watch } from 'vue'
 
 // 夜间模式状态
 export const isDarkMode = ref(false)
 
-// 多标签页同步(无法跨二级域名)
-const { data, post } = useBroadcastChannel({ name: 'bili-cleaner-theme-channel' })
+// 同步夜间模式状态
+const themeState = useGMValue('common-theme-dark', 'off', {
+    deep: false,
+    debounce: 1000,
+})
 
 export const toggleDarkMode = async () => {
     if (isDarkMode.value) {
         await disableDarkMode()
-        if (BiliCleanerStorage.get('common-theme-dark') !== 'common-theme-dark-off') {
-            BiliCleanerStorage.set('common-theme-dark', 'common-theme-dark-off')
-        }
-        post('off')
+        themeState.value = 'off'
     } else {
         await enableDarkMode()
-        if (BiliCleanerStorage.get('common-theme-dark') !== 'common-theme-dark-on') {
-            BiliCleanerStorage.set('common-theme-dark', 'common-theme-dark-on')
-        }
-        post('on')
+        themeState.value = 'on'
     }
 }
 
@@ -110,12 +108,12 @@ const disableDarkMode = async () => {
 }
 
 // 监听状态切换
-watch(data, async () => {
-    if (data.value === 'on') {
+watch(themeState, async (value) => {
+    if (value === 'on' && !isDarkMode.value) {
         isDarkMode.value = true
         await enableDarkMode()
     }
-    if (data.value === 'off') {
+    if (value === 'off' && isDarkMode.value) {
         isDarkMode.value = false
         await disableDarkMode()
     }
@@ -131,21 +129,21 @@ export const commonThemeItems: Item[] = [
             '插件会接管夜间模式，官方默认时不接管',
             '官方模式在顶栏头像菜单中设定',
         ],
-        defaultValue: 'common-theme-dark-default',
-        disableValue: 'common-theme-dark-default',
+        defaultValue: 'default',
+        disableValue: 'default',
         options: [
             {
-                value: 'common-theme-dark-off',
+                value: 'off',
                 name: '日间',
                 fn: disableDarkMode,
             },
             {
-                value: 'common-theme-dark-on',
+                value: 'on',
                 name: '夜间',
                 fn: enableDarkMode,
             },
             {
-                value: 'common-theme-dark-auto',
+                value: 'auto',
                 name: '跟随系统',
                 fn: async () => {
                     const isDark = usePreferredDark()
@@ -163,7 +161,7 @@ export const commonThemeItems: Item[] = [
                 },
             },
             {
-                value: 'common-theme-dark-default',
+                value: 'default',
                 name: '官方默认',
             },
         ],

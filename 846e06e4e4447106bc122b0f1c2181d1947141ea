@@ -1,0 +1,58 @@
+src/views/RulePanelView.vue
+  3de4609476a582e5 14,20,26,36-37,40,42-43
+src/components/EditorDialog.vue
+  6fb31b398df4e5f3 37,49,69,74-77,79-81,83
+  fe192092015f010a 36,47,50-52,54-68
+src/views/CommentFilterPanelView.vue
+  3de4609476a582e5 19,24,30,40-41,44,46-47
+src/views/DynamicFilterPanelView.vue
+  3de4609476a582e5 19,24,30,40-41,44,46-47
+src/views/VideoFilterPanelView.vue
+  3de4609476a582e5 19,24,30,40-41,44,46-47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "846e06e4e4447106bc122b0f1c2181d1947141ea",
+  "prompts": {
+    "3de4609476a582e5": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_26d0844c2ffeWxMDEX3yFZHMkq",
+        "model": "unknown"
+      },
+      "human_author": "festoney8",
+      "messages": [],
+      "total_additions": 225,
+      "total_deletions": 165,
+      "accepted_lines": 32,
+      "overriden_lines": 0
+    },
+    "6fb31b398df4e5f3": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_26cf03b5affeq5kkTAGMzP3aLb",
+        "model": "unknown"
+      },
+      "human_author": null,
+      "messages": [],
+      "total_additions": 41,
+      "total_deletions": 44,
+      "accepted_lines": 11,
+      "overriden_lines": 0
+    },
+    "fe192092015f010a": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_26cc263faffepCYt3MIw2izmUr",
+        "model": "unknown"
+      },
+      "human_author": null,
+      "messages": [],
+      "total_additions": 31,
+      "total_deletions": 37,
+      "accepted_lines": 20,
+      "overriden_lines": 0
+    }
+  }
+}

@@ -1,15 +1,13 @@
-import { GM_deleteValue, GM_listValues } from '$'
 import { IListItem, INumberItem, IStringItem, ISwitchItem } from '@/types/item'
 import { waitForHead } from '@/utils/init'
 import { error, log } from '@/utils/logger'
-import { BiliCleanerStorage } from '@/utils/storage'
+import { GM_getValue } from '$'
 import { useMagicKeys } from '@vueuse/core'
 import { commentFilters, dynamicFilters, loadFilterStyle, videoFilters } from './filters'
 import { loadRuleStyle, rules } from './rules'
-import { runInIdle } from '@/utils/tool'
 
 const loadSwitchItem = (item: ISwitchItem) => {
-    const enable = BiliCleanerStorage.get(item.id, item.defaultEnable)
+    const enable = GM_getValue(item.id, item.defaultEnable)
     if (enable) {
         if (!item.noStyle) {
             document.documentElement.setAttribute(item.attrName ?? item.id, '')
@@ -27,7 +25,7 @@ const loadSwitchItem = (item: ISwitchItem) => {
 }
 
 const loadNumberItem = (item: INumberItem) => {
-    const value = BiliCleanerStorage.get(item.id, item.defaultValue)
+    const value = GM_getValue(item.id, item.defaultValue)
     if (value !== item.disableValue) {
         if (!item.noStyle) {
             document.documentElement.setAttribute(item.attrName ?? item.id, '')
@@ -37,7 +35,7 @@ const loadNumberItem = (item: INumberItem) => {
 }
 
 const loadStringItem = (item: IStringItem) => {
-    const value = BiliCleanerStorage.get(item.id, item.defaultValue)
+    const value = GM_getValue(item.id, item.defaultValue)
     if (value !== item.disableValue) {
         if (!item.noStyle) {
             document.documentElement.setAttribute(item.attrName ?? item.id, '')
@@ -47,7 +45,7 @@ const loadStringItem = (item: IStringItem) => {
 }
 
 const loadListItem = (item: IListItem) => {
-    const value = BiliCleanerStorage.get(item.id, item.defaultValue)
+    const value = GM_getValue(item.id, item.defaultValue)
     for (const option of item.options) {
         if (option.value === value && option.fn) {
             option.fn()?.catch(() => {})

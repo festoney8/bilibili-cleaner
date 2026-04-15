@@ -4,7 +4,7 @@ import { Group } from '@/types/collection'
 import { ContextMenuTargetHandler, FilterContextMenu, IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
 import { debugFilter as debug, error } from '@/utils/logger'
 import { isPageChannel } from '@/utils/pageType'
-import { BiliCleanerStorage } from '@/utils/storage'
+import { GM_getValue, GM_setValue } from '$'
 import { convertDateToDays, convertTimeToSec, matchBvid, orderedUniq, showEle, waitForEle } from '@/utils/tool'
 import {
     VideoBvidFilter,
@@ -112,15 +112,15 @@ class VideoFilterChannel implements IMainFilter {
 
     init() {
         // 黑名单
-        this.videoBvidFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.bvid.valueKey, []))
-        this.videoDurationFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.duration.valueKey, 0))
-        this.videoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.title.valueKey, []))
-        this.videoPubdateFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.pubdate.valueKey, 0))
-        this.videoUploaderFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.uploader.valueKey, []))
-        this.videoUploaderKeywordFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.uploaderKeyword.valueKey, []))
+        this.videoBvidFilter.setParam(GM_getValue(GM_KEYS.black.bvid.valueKey, []))
+        this.videoDurationFilter.setParam(GM_getValue(GM_KEYS.black.duration.valueKey, 0))
+        this.videoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
+        this.videoPubdateFilter.setParam(GM_getValue(GM_KEYS.black.pubdate.valueKey, 0))
+        this.videoUploaderFilter.setParam(GM_getValue(GM_KEYS.black.uploader.valueKey, []))
+        this.videoUploaderKeywordFilter.setParam(GM_getValue(GM_KEYS.black.uploaderKeyword.valueKey, []))
         // 白名单
-        this.videoUploaderWhiteFilter.setParam(BiliCleanerStorage.get(GM_KEYS.white.uploader.valueKey, []))
-        this.videoTitleWhiteFilter.setParam(BiliCleanerStorage.get(GM_KEYS.white.title.valueKey, []))
+        this.videoUploaderWhiteFilter.setParam(GM_getValue(GM_KEYS.white.uploader.valueKey, []))
+        this.videoTitleWhiteFilter.setParam(GM_getValue(GM_KEYS.white.title.valueKey, []))
     }
 
     async check(mode?: 'full' | 'incr') {
@@ -295,7 +295,7 @@ export const videoFilterChannelGroups: Group[] = [
                 editorTitle: 'UP主 黑名单',
                 editorDescription: ['每行一个UP主昵称，保存时自动去重'],
                 saveFn: async () => {
-                    mainFilter.videoUploaderFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.uploader.valueKey, []))
+                    mainFilter.videoUploaderFilter.setParam(GM_getValue(GM_KEYS.black.uploader.valueKey, []))
                     mainFilter.checkFull()
                 },
             },
@@ -325,7 +325,7 @@ export const videoFilterChannelGroups: Group[] = [
                 ],
                 saveFn: async () => {
                     mainFilter.videoUploaderKeywordFilter.setParam(
-                        BiliCleanerStorage.get(GM_KEYS.black.uploaderKeyword.valueKey, []),
+                        GM_getValue(GM_KEYS.black.uploaderKeyword.valueKey, []),
                     )
                     mainFilter.checkFull()
                 },
@@ -360,7 +360,7 @@ export const videoFilterChannelGroups: Group[] = [
                     '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
                 ],
                 saveFn: async () => {
-                    mainFilter.videoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.title.valueKey, []))
+                    mainFilter.videoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
                     mainFilter.checkFull()
                 },
             },
@@ -391,7 +391,7 @@ export const videoFilterChannelGroups: Group[] = [
                 editorTitle: 'BV号 黑名单',
                 editorDescription: ['每行一个BV号，保存时自动去重'],
                 saveFn: async () => {
-                    mainFilter.videoBvidFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.bvid.valueKey, []))
+                    mainFilter.videoBvidFilter.setParam(GM_getValue(GM_KEYS.black.bvid.valueKey, []))
                     mainFilter.checkFull()
                 },
             },
@@ -458,9 +458,7 @@ export const videoFilterChannelGroups: Group[] = [
                 editorTitle: 'UP主 白名单',
                 editorDescription: ['每行一个UP主昵称，保存时自动去重'],
                 saveFn: async () => {
-                    mainFilter.videoUploaderWhiteFilter.setParam(
-                        BiliCleanerStorage.get(GM_KEYS.white.uploader.valueKey, []),
-                    )
+                    mainFilter.videoUploaderWhiteFilter.setParam(GM_getValue(GM_KEYS.white.uploader.valueKey, []))
                     mainFilter.checkFull()
                 },
             },
@@ -489,7 +487,7 @@ export const videoFilterChannelGroups: Group[] = [
                     '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
                 ],
                 saveFn: async () => {
-                    mainFilter.videoTitleWhiteFilter.setParam(BiliCleanerStorage.get(GM_KEYS.white.title.valueKey, []))
+                    mainFilter.videoTitleWhiteFilter.setParam(GM_getValue(GM_KEYS.white.title.valueKey, []))
                     mainFilter.checkFull()
                 },
             },
@@ -522,9 +520,9 @@ export const videoFilterChannelHandler: ContextMenuTargetHandler = (target: HTML
                         try {
                             mainFilter.videoUploaderFilter.addParam(uploader)
                             mainFilter.checkFull()
-                            const arr: string[] = BiliCleanerStorage.get(GM_KEYS.black.uploader.valueKey, [])
+                            const arr: string[] = GM_getValue(GM_KEYS.black.uploader.valueKey, [])
                             arr.unshift(uploader)
-                            BiliCleanerStorage.set<string[]>(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
+                            GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
                         } catch (err) {
                             error(`videoFilterChannelHandler add uploader ${uploader} failed`, err)
                         }
@@ -538,9 +536,9 @@ export const videoFilterChannelHandler: ContextMenuTargetHandler = (target: HTML
                         try {
                             mainFilter.videoUploaderWhiteFilter.addParam(uploader)
                             mainFilter.checkFull()
-                            const arr: string[] = BiliCleanerStorage.get(GM_KEYS.white.uploader.valueKey, [])
+                            const arr: string[] = GM_getValue(GM_KEYS.white.uploader.valueKey, [])
                             arr.unshift(uploader)
-                            BiliCleanerStorage.set<string[]>(GM_KEYS.white.uploader.valueKey, orderedUniq(arr))
+                            GM_setValue(GM_KEYS.white.uploader.valueKey, orderedUniq(arr))
                         } catch (err) {
                             error(`videoFilterChannelHandler add white uploader ${uploader} failed`, err)
                         }
@@ -569,9 +567,9 @@ export const videoFilterChannelHandler: ContextMenuTargetHandler = (target: HTML
                         try {
                             mainFilter.videoBvidFilter.addParam(bvid)
                             mainFilter.checkFull()
-                            const arr: string[] = BiliCleanerStorage.get(GM_KEYS.black.bvid.valueKey, [])
+                            const arr: string[] = GM_getValue(GM_KEYS.black.bvid.valueKey, [])
                             arr.unshift(bvid)
-                            BiliCleanerStorage.set<string[]>(GM_KEYS.black.bvid.valueKey, orderedUniq(arr))
+                            GM_setValue(GM_KEYS.black.bvid.valueKey, orderedUniq(arr))
                         } catch (err) {
                             error(`videoFilterChannelHandler add bvid ${bvid} failed`, err)
                         }

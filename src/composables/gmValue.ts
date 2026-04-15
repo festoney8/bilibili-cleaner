@@ -14,7 +14,7 @@ import {
  * @param initialValue 初始值
  * @param options 配置项
  * - deep: 是否深度监听对象/数组变化（默认为 true）
- * - syncFromStorage: 是否监听 GM_valueChange 事件以同步外部修改（默认为 true）
+ * - syncFromStorage: 是否监听 GM value change 事件以同步外部修改（默认为 true）
  * - debounce: 写入 GM_setValue 的防抖时间，单位毫秒（默认 1000，最小 200）
  * @returns 响应式状态
  */

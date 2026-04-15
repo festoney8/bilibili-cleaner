@@ -22,14 +22,14 @@
 <script setup lang="ts">
 import { ISwitchItem } from '@/types/item'
 import { error } from '@/utils/logger'
-import { BiliCleanerStorage } from '@/utils/storage'
+import { GM_getValue, GM_setValue } from '$'
 import { Switch, SwitchGroup, SwitchLabel } from '@headlessui/vue'
 import { ref, watch } from 'vue'
 import DescriptionComp from './DescriptionComp.vue'
 
 const item = defineProps<ISwitchItem>()
 
-const enabled = ref(BiliCleanerStorage.get(item.id, item.defaultEnable))
+const enabled = ref(GM_getValue(item.id, item.defaultEnable))
 
 watch(enabled, () => {
     try {
@@ -40,7 +40,7 @@ watch(enabled, () => {
             if (item.enableFn) {
                 item.enableFn()?.catch(() => {})
             }
-            BiliCleanerStorage.set<boolean>(item.id, true)
+            GM_setValue(item.id, true)
         } else {
             if (!item.noStyle) {
                 document.documentElement.removeAttribute(item.attrName ?? item.id)
@@ -50,7 +50,7 @@ watch(enabled, () => {
                     throw err
                 })
             }
-            BiliCleanerStorage.set<boolean>(item.id, false)
+            GM_setValue(item.id, false)
         }
     } catch (err) {
         error(`SwitchComp ${item.id} error`, err)

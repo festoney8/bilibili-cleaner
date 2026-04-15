@@ -6,7 +6,7 @@ import { ContextMenuTargetHandler, FilterContextMenu, IMainFilter, SelectorResul
 import { debugFilter as debug, error } from '@/utils/logger'
 import { isPageBangumi, isPageDynamic, isPagePlaylist, isPageSpace, isPageVideo } from '@/utils/pageType'
 import ShadowInstance from '@/utils/shadow'
-import { BiliCleanerStorage } from '@/utils/storage'
+import { GM_getValue, GM_setValue } from '$'
 import { orderedUniq, showEle } from '@/utils/tool'
 import { bots, botsSet } from '../extra/bots'
 import {
@@ -334,10 +334,10 @@ class CommentFilterCommon implements IMainFilter {
 
     init() {
         // 黑名单
-        this.commentUsernameFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.username.valueKey, []))
-        this.commentUsernameKeywordFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.usernameKeyword.valueKey, []))
-        this.commentContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))
-        this.commentLevelFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.level.valueKey, 0))
+        this.commentUsernameFilter.setParam(GM_getValue(GM_KEYS.black.username.valueKey, []))
+        this.commentUsernameKeywordFilter.setParam(GM_getValue(GM_KEYS.black.usernameKeyword.valueKey, []))
+        this.commentContentFilter.setParam(GM_getValue(GM_KEYS.black.content.valueKey, []))
+        this.commentLevelFilter.setParam(GM_getValue(GM_KEYS.black.level.valueKey, 0))
         this.commentBotFilter.setParam(bots)
         this.commentAdFilter.setParam([`/(bili2233\\.cn|b23\\.tv)\\/(mall-|cm-)|领券|gaoneng\\.bilibili\\.com/`])
     }
@@ -624,9 +624,7 @@ export const commentFilterCommonGroups: Group[] = [
                 editorTitle: '评论区 用户黑名单',
                 editorDescription: ['每行一个用户名，保存时自动去重'],
                 saveFn: async () => {
-                    mainFilter.commentUsernameFilter.setParam(
-                        BiliCleanerStorage.get(GM_KEYS.black.username.valueKey, []),
-                    )
+                    mainFilter.commentUsernameFilter.setParam(GM_getValue(GM_KEYS.black.username.valueKey, []))
                     mainFilter.check('full')
                 },
             },
@@ -656,7 +654,7 @@ export const commentFilterCommonGroups: Group[] = [
                 ],
                 saveFn: async () => {
                     mainFilter.commentUsernameKeywordFilter.setParam(
-                        BiliCleanerStorage.get(GM_KEYS.black.usernameKeyword.valueKey, []),
+                        GM_getValue(GM_KEYS.black.usernameKeyword.valueKey, []),
                     )
                     mainFilter.check('full')
                 },
@@ -691,7 +689,7 @@ export const commentFilterCommonGroups: Group[] = [
                     '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
                 ],
                 saveFn: async () => {
-                    mainFilter.commentContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))
+                    mainFilter.commentContentFilter.setParam(GM_getValue(GM_KEYS.black.content.valueKey, []))
                     mainFilter.check('full')
                 },
             },
@@ -973,9 +971,9 @@ export const commentFilterCommonHandler: ContextMenuTargetHandler = (target: HTM
                     try {
                         mainFilter.commentUsernameFilter.addParam(username)
                         mainFilter.check('full')
-                        const arr: string[] = BiliCleanerStorage.get(GM_KEYS.black.username.valueKey, [])
+                        const arr: string[] = GM_getValue(GM_KEYS.black.username.valueKey, [])
                         arr.unshift(username)
-                        BiliCleanerStorage.set<string[]>(GM_KEYS.black.username.valueKey, orderedUniq(arr))
+                        GM_setValue(GM_KEYS.black.username.valueKey, orderedUniq(arr))
                     } catch (err) {
                         error(`commentFilterCommonHandler add username ${username} failed`, err)
                     }

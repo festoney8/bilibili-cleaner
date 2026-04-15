@@ -64,7 +64,7 @@
 <script setup lang="ts">
 import { IEditorItem } from '@/types/item'
 import { error } from '@/utils/logger'
-import { BiliCleanerStorage } from '@/utils/storage'
+import { GM_getValue, GM_setValue } from '$'
 import { orderedUniq } from '@/utils/tool'
 import { ref } from 'vue'
 import PanelComp from '../PanelComp.vue'
@@ -77,14 +77,14 @@ const saveSuccess = ref(false)
 const editorData = ref('')
 
 const updateData = () => {
-    const val = BiliCleanerStorage.get<string[]>(item.id, []).join('\n')
+    const val = GM_getValue(item.id, []).join('\n')
     editorData.value = val ? val + '\n' : val // 末尾空行
 }
 
 const saveData = () => {
     try {
         const data = editorData.value.split('\n').filter((v) => v.trim() !== '')
-        BiliCleanerStorage.set<string[]>(item.id, orderedUniq(data))
+        GM_setValue(item.id, orderedUniq(data))
         saveSuccess.value = true
         item.saveFn()
         setTimeout(() => {

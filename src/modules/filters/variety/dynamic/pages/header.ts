@@ -2,7 +2,7 @@ import { coreCheck } from '@/modules/filters/core/core'
 import settings from '@/settings'
 import { IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
 import { debugFilter as debug, error } from '@/utils/logger'
-import { BiliCleanerStorage } from '@/utils/storage'
+import { GM_getValue } from '$'
 import { DynContentFilter, DynUploaderFilter, DynVideoTitleFilter } from '../subFilters/black'
 import { DynContentWhiteFilter, DynVideoTitleWhiteFilter } from '../subFilters/white'
 
@@ -59,12 +59,12 @@ class DynamicFilterHeader implements IMainFilter {
 
     init() {
         // 黑名单
-        this.dynUploaderFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.uploader.valueKey, []))
-        this.dynVideoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.title.valueKey, []))
-        this.dynContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))
+        this.dynUploaderFilter.setParam(GM_getValue(GM_KEYS.black.uploader.valueKey, []))
+        this.dynVideoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
+        this.dynContentFilter.setParam(GM_getValue(GM_KEYS.black.content.valueKey, []))
         // 白名单
-        this.dynVideoTitleWhiteFilter.setParam(BiliCleanerStorage.get(GM_KEYS.white.title.valueKey, []))
-        this.dynContentWhiteFilter.setParam(BiliCleanerStorage.get(GM_KEYS.white.content.valueKey, []))
+        this.dynVideoTitleWhiteFilter.setParam(GM_getValue(GM_KEYS.white.title.valueKey, []))
+        this.dynContentWhiteFilter.setParam(GM_getValue(GM_KEYS.white.content.valueKey, []))
     }
 
     async check(mode?: 'full' | 'incr') {
@@ -150,19 +150,19 @@ const mainFilter = new DynamicFilterHeader()
 export const dynamicFilterHeaderEntry = async () => {
     mainFilter.init()
     mainFilter.observe()
-    if (BiliCleanerStorage.get(GM_KEYS.black.uploader.statusKey)) {
+    if (GM_getValue(GM_KEYS.black.uploader.statusKey)) {
         mainFilter.dynUploaderFilter.enable()
     }
-    if (BiliCleanerStorage.get(GM_KEYS.black.title.statusKey)) {
+    if (GM_getValue(GM_KEYS.black.title.statusKey)) {
         mainFilter.dynVideoTitleFilter.enable()
     }
-    if (BiliCleanerStorage.get(GM_KEYS.black.content.statusKey)) {
+    if (GM_getValue(GM_KEYS.black.content.statusKey)) {
         mainFilter.dynContentFilter.enable()
     }
-    if (BiliCleanerStorage.get(GM_KEYS.white.title.statusKey)) {
+    if (GM_getValue(GM_KEYS.white.title.statusKey)) {
         mainFilter.dynVideoTitleWhiteFilter.enable()
     }
-    if (BiliCleanerStorage.get(GM_KEYS.white.content.statusKey)) {
+    if (GM_getValue(GM_KEYS.white.content.statusKey)) {
         mainFilter.dynContentWhiteFilter.enable()
     }
 }

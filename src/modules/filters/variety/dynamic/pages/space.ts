@@ -3,7 +3,7 @@ import settings from '@/settings'
 import { Group } from '@/types/collection'
 import { IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
 import { debugFilter as debug, error } from '@/utils/logger'
-import { BiliCleanerStorage } from '@/utils/storage'
+import { GM_getValue } from '$'
 import { convertTimeToSec, showEle, waitForEle } from '@/utils/tool'
 import {
     DynContentFilter,
@@ -95,12 +95,12 @@ class DynamicFilterSpace implements IMainFilter {
 
     init() {
         // 黑名单
-        this.dynDurationFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.duration.valueKey, 0))
-        this.dynVideoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.title.valueKey, []))
-        this.dynContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))
+        this.dynDurationFilter.setParam(GM_getValue(GM_KEYS.black.duration.valueKey, 0))
+        this.dynVideoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
+        this.dynContentFilter.setParam(GM_getValue(GM_KEYS.black.content.valueKey, []))
         // 白名单
-        this.dynVideoTitleWhiteFilter.setParam(BiliCleanerStorage.get(GM_KEYS.white.title.valueKey, []))
-        this.dynContentWhiteFilter.setParam(BiliCleanerStorage.get(GM_KEYS.white.content.valueKey, []))
+        this.dynVideoTitleWhiteFilter.setParam(GM_getValue(GM_KEYS.white.title.valueKey, []))
+        this.dynContentWhiteFilter.setParam(GM_getValue(GM_KEYS.white.content.valueKey, []))
     }
 
     async check(mode?: 'full' | 'incr') {
@@ -273,7 +273,7 @@ export const dynamicFilterSpaceGroups: Group[] = [
                     '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
                 ],
                 saveFn: async () => {
-                    mainFilter.dynVideoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.title.valueKey, []))
+                    mainFilter.dynVideoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
                     mainFilter.checkFull()
                 },
             },
@@ -308,7 +308,7 @@ export const dynamicFilterSpaceGroups: Group[] = [
                     '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
                 ],
                 saveFn: async () => {
-                    mainFilter.dynContentFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.content.valueKey, []))
+                    mainFilter.dynContentFilter.setParam(GM_getValue(GM_KEYS.black.content.valueKey, []))
                     mainFilter.checkFull()
                 },
             },
@@ -375,9 +375,7 @@ export const dynamicFilterSpaceGroups: Group[] = [
                     '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
                 ],
                 saveFn: async () => {
-                    mainFilter.dynVideoTitleWhiteFilter.setParam(
-                        BiliCleanerStorage.get(GM_KEYS.white.title.valueKey, []),
-                    )
+                    mainFilter.dynVideoTitleWhiteFilter.setParam(GM_getValue(GM_KEYS.white.title.valueKey, []))
                     mainFilter.checkFull()
                 },
             },
@@ -407,9 +405,7 @@ export const dynamicFilterSpaceGroups: Group[] = [
                     '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
                 ],
                 saveFn: async () => {
-                    mainFilter.dynContentWhiteFilter.setParam(
-                        BiliCleanerStorage.get(GM_KEYS.white.content.valueKey, []),
-                    )
+                    mainFilter.dynContentWhiteFilter.setParam(GM_getValue(GM_KEYS.white.content.valueKey, []))
                     mainFilter.checkFull()
                 },
             },

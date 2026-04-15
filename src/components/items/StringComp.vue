@@ -14,14 +14,14 @@
 <script setup lang="ts">
 import { IStringItem } from '@/types/item'
 import { error } from '@/utils/logger'
-import { BiliCleanerStorage } from '@/utils/storage'
+import { GM_getValue, GM_setValue } from '$'
 import { watchThrottled } from '@vueuse/core'
 import { ref } from 'vue'
 import DescriptionComp from './DescriptionComp.vue'
 
 const item = defineProps<IStringItem>()
 
-const currValue = ref(BiliCleanerStorage.get(item.id, item.defaultValue))
+const currValue = ref(GM_getValue(item.id, item.defaultValue))
 
 watchThrottled(
     currValue,
@@ -42,7 +42,7 @@ watchThrottled(
                     throw err
                 })
             }
-            BiliCleanerStorage.set<string>(item.id, currValue.value)
+            GM_setValue(item.id, currValue.value)
         } catch (err) {
             error(`StringComp ${item.id} error`, err)
         }

@@ -15,8 +15,9 @@ export const migrate = async () => {
         const newKey = key.slice(prefix.length)
         const value = GM_getValue(key)
         GM_setValue(newKey, value)
-        GM_deleteValue(key)
     }
+    // 移除旧key，标记迁移完成
+    keys.forEach((key) => GM_deleteValue(key))
     GM_setValue('__MIGRATED__', '4.4.0')
     log(`Migrated ${keys.length} storage keys`)
 }

@@ -29,25 +29,17 @@ jobs:
             - name: install dependencies
               run: pnpm install --frozen-lockfile
 
-            # build两个版本
-            - name: build minify
-              run: pnpm run build:minify
-            - name: mkdir
-              run: mkdir output
-            - name: move and rename file
-              run: mv dist/bilibili-cleaner.user.js output/bilibili-cleaner.min.user.js
-            - name: build default
+            # build
+            - name: build
               run: pnpm run build
-            - name: copy file
-              run: cp dist/bilibili-cleaner.user.js output/
             - name: add doc
-              run: cp LICENSE README.md CHANGELOG.md output/
+              run: cp LICENSE README.md CHANGELOG.md dist/
             - name: list files
-              run: ls -lah output/
+              run: ls -lah dist/
 
             # 上传产物
             - name: upload-artifact
               uses: actions/upload-artifact@v6
               with:
                   name: bilibili-cleaner
-                  path: output/*
+                  path: dist/*

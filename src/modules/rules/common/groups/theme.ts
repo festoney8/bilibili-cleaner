@@ -1,7 +1,7 @@
+import { useGMValue } from '@/composables/GMValue'
 import { Item } from '@/types/item'
 import { isPageDynamic, isPageHomepage, isPageLive, isPageMessage, isPageSpace } from '@/utils/pageType'
 
-import { useGMValue } from '@/composables/gmValue'
 import { usePreferredDark } from '@vueuse/core'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { ref, watch } from 'vue'

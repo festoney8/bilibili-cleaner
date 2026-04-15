@@ -22,13 +22,16 @@ export class KeywordFilter implements ISubFilter {
         const validBackrefParts = [] // 包含反向引用的正则
         for (let word of this.keywordSet) {
             word = toHalfWidth(word).trim()
-            if (word === '' || word === '//') {
+            if (['', '//', '/'].includes(word)) {
                 continue
             }
             if (word.startsWith('/') && word.endsWith('/')) {
                 word = word.slice(1, -1)
             } else {
                 word = word.replace(/[*+?^${}().|[\]\\]/g, '\\$&') // 转义
+            }
+            if (word.trim() === '') {
+                continue
             }
             try {
                 new RegExp(word, 'ius') // check syntax

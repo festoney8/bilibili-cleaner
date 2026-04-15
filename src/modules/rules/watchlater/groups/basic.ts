@@ -6,19 +6,19 @@ export const watchlaterBasicItems: Item[] = [
         id: 'watchlater-layout',
         name: '修改 视频列表列数',
         description: ['未启用时，B 站自动判断列数'],
-        defaultValue: 'watchlater-layout-disable',
-        disableValue: 'watchlater-layout-disable',
+        defaultValue: '0',
+        disableValue: '0',
         options: [
             {
-                value: 'watchlater-layout-disable',
+                value: '0',
                 name: '未启用',
             },
             {
-                value: 'watchlater-layout-4-column',
+                value: '4',
                 name: '4 列布局',
             },
             {
-                value: 'watchlater-layout-5-column',
+                value: '5',
                 name: '5 列布局',
             },
         ],

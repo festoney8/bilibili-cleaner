@@ -6,31 +6,31 @@ export const homepageLayoutItems: Item[] = [
         id: 'homepage-layout',
         name: '修改 视频列表列数',
         description: ['未启用时，B 站自动判断列数'],
-        defaultValue: 'homepage-layout-disable',
-        disableValue: 'homepage-layout-disable',
+        defaultValue: '0',
+        disableValue: '0',
         options: [
             {
-                value: 'homepage-layout-disable',
+                value: '0',
                 name: '未启用',
             },
             {
-                value: 'homepage-layout-2-column',
+                value: '2',
                 name: '2 列布局',
             },
             {
-                value: 'homepage-layout-3-column',
+                value: '3',
                 name: '3 列布局',
             },
             {
-                value: 'homepage-layout-4-column',
+                value: '4',
                 name: '4 列布局',
             },
             {
-                value: 'homepage-layout-5-column',
+                value: '5',
                 name: '5 列布局',
             },
             {
-                value: 'homepage-layout-6-column',
+                value: '6',
                 name: '6 列布局',
             },
         ],

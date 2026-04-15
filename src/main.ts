@@ -15,6 +15,7 @@ import css from './style.css?inline'
 import { waitForBody } from './utils/init'
 import { error, log } from './utils/logger'
 import { isPageLive } from './utils/pageType'
+import { migrate } from './utils/storage'
 
 const main = () => {
     // 创建插件面板用shadowDOM节点
@@ -30,7 +31,7 @@ const main = () => {
      * @see https://github.com/lisonge/vite-plugin-monkey/blob/47ac609/playground/test-shadow-dom/src/hmr_inline_css.ts
      */
     if (import.meta.env.DEV && import.meta.hot) {
-        import.meta.hot.accept('./style.css?inline', (newModule) => {
+        import.meta.hot.accept('./style.css?inline', (newModule: any) => {
             const newCSS = newModule?.default as string
             style.textContent = newCSS ?? ''
         })
@@ -107,6 +108,13 @@ const menu = () => {
 }
 
 log(`mode: ${import.meta.env.MODE}, url: ${location.href}`)
+
+// 存储升级逻辑
+await migrate().catch((err) => {
+    error('Storage key migration failed', err)
+})
+
+// 加载模块、主逻辑、菜单
 for (const fn of [loadModules, main, menu]) {
     try {
         fn()

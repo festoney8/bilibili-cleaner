@@ -6,6 +6,7 @@ import { BiliCleanerStorage } from '@/utils/storage'
 import { useMagicKeys } from '@vueuse/core'
 import { commentFilters, dynamicFilters, loadFilterStyle, videoFilters } from './filters'
 import { loadRuleStyle, rules } from './rules'
+import { runInIdle } from '@/utils/tool'
 
 const loadSwitchItem = (item: ISwitchItem) => {
     const enable = BiliCleanerStorage.get(item.id, item.defaultEnable)
@@ -151,40 +152,6 @@ const loadRulesHotKey = () => {
     }
 }
 
-/** 清理无用 key */
-const cleanGMKeys = () => {
-    try {
-        const keysInUse = new Set<string>()
-        for (const rule of rules) {
-            for (const group of rule.groups) {
-                for (const item of group.items) {
-                    keysInUse.add(item.id)
-                }
-            }
-        }
-        for (const filter of [...videoFilters, ...commentFilters, ...dynamicFilters]) {
-            for (const group of filter.groups) {
-                for (const item of group.items) {
-                    keysInUse.add(item.id)
-                }
-            }
-        }
-        const keysInStorage = new Set(GM_listValues())
-        for (const key of keysInStorage) {
-            const pureKey = key.replaceAll('BILICLEANER_', '')
-            if (!keysInUse.has(pureKey)) {
-                const value = BiliCleanerStorage.get(pureKey)
-                if (typeof value !== 'object') {
-                    GM_deleteValue(key)
-                    log('delete GM key', key)
-                }
-            }
-        }
-    } catch (err) {
-        error('cleanGMKeys error', err)
-    }
-}
-
 export const loadModules = () => {
     waitForHead().then(() => {
         loadRuleStyle()
@@ -198,17 +165,4 @@ export const loadModules = () => {
 
     loadFilters()
     log('loadFilters done')
-
-    // issue #291
-    const runIdle = (cb: any) => {
-        if (typeof window.requestIdleCallback === 'function') {
-            window.requestIdleCallback(cb)
-        } else {
-            setTimeout(cb, 10000)
-        }
-    }
-    runIdle(() => {
-        cleanGMKeys()
-        log('cleanGMKeys done')
-    })
 }

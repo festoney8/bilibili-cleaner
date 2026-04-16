@@ -90,7 +90,7 @@ export const videoPlayerLayoutItems: Item[] = [
     {
         type: 'switch',
         id: 'default-widescreen',
-        name: '默认宽屏播放',
+        name: '自动宽屏播放',
         enableFn: async () => {
             unsafeWindow.isWide = true
             wideScreenManager.lock() // 锁定宽屏模式
@@ -107,6 +107,34 @@ export const videoPlayerLayoutItems: Item[] = [
                 })
             }
             document.readyState !== 'loading' ? listener() : document.addEventListener('DOMContentLoaded', listener)
+        },
+    },
+    {
+        type: 'switch',
+        id: 'default-webscreen',
+        name: '自动网页全屏播放',
+        description: ['实验功能，不要与自动宽屏同时启用'],
+        enableFn: async () => {
+            const id = setInterval(() => {
+                if (typeof unsafeWindow.player?.requestStatue === 'function') {
+                    unsafeWindow.player
+                        .requestStatue(2)
+                        .then(() => {
+                            clearInterval(id)
+                            const id2 = setInterval(() => {
+                                // video 元素横向占满屏幕时清除临时样式
+                                const video = document.querySelector<HTMLVideoElement>('#bilibili-player video')
+                                if (video && video.offsetWidth / innerWidth > 0.9) {
+                                    clearInterval(id2)
+                                    setTimeout(() => {
+                                        document.documentElement.removeAttribute('default-webscreen')
+                                    }, 500)
+                                }
+                            }, 100)
+                        })
+                        .catch(() => {})
+                }
+            }, 100)
         },
     },
     {

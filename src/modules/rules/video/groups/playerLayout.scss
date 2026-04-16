@@ -1,8 +1,65 @@
-// 默认宽屏播放
+// 自动宽屏播放
 html[default-widescreen] {
     // 修复mini播放模式主播放器宽度支撑问题
     &[player-is-wide] #playerWrap:has(.bpx-player-container[data-screen='mini']) {
         width: fit-content;
+    }
+}
+
+// 自动网页全屏，临时防闪样式
+html[default-webscreen] {
+    background-color: #000 !important;
+    body,
+    #app,
+    .mirror-vdcon {
+        background-color: #000 !important;
+    }
+
+    // 隐藏滚动条
+    scrollbar-width: none !important;
+    &::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    // 隐藏元素
+    .left-container > :not(#playerWrap),
+    #biliMainHeader,
+    #bilibili-player-placeholder,
+    .bpx-player-sending-area,
+    .right-container {
+        visibility: hidden !important;
+    }
+
+    // 载入关灯遮罩
+    @keyframes loading {
+        0% {
+            content: '视频加载中';
+        }
+        25% {
+            content: '视频加载中.';
+        }
+        50% {
+            content: '视频加载中..';
+        }
+        75% {
+            content: '视频加载中...';
+        }
+        100% {
+            content: '视频加载中';
+        }
+    }
+    .bpx-docker-major::before {
+        content: '视频加载中...';
+        color: white;
+        font-size: 1.5em;
+        background-color: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        inset: 0;
+        z-index: 1002;
+        animation: loading 2s steps(4, end) infinite;
     }
 }
 

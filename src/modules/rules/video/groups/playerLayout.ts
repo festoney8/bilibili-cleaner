@@ -113,7 +113,7 @@ export const videoPlayerLayoutItems: Item[] = [
         type: 'switch',
         id: 'default-webscreen',
         name: '自动网页全屏播放',
-        description: ['实验功能，不要与自动宽屏同时启用'],
+        description: ['实验功能，不要与自动宽屏同时启用', '如果遇到黑屏问题，关闭此功能'],
         enableFn: async () => {
             const id = setInterval(() => {
                 if (typeof unsafeWindow.player?.requestStatue === 'function') {
@@ -122,13 +122,16 @@ export const videoPlayerLayoutItems: Item[] = [
                         .then(() => {
                             clearInterval(id)
                             const id2 = setInterval(() => {
-                                // video 元素横向占满屏幕时清除临时样式
+                                // video 占满屏幕时隐藏蒙版
                                 const video = document.querySelector<HTMLVideoElement>('#bilibili-player video')
-                                if (video && video.offsetWidth / innerWidth > 0.9) {
+                                if (
+                                    video &&
+                                    video.offsetWidth / innerWidth > 0.9 &&
+                                    video.offsetHeight / innerHeight > 0.9 &&
+                                    video.offsetHeight / innerHeight <= 1.0
+                                ) {
                                     clearInterval(id2)
-                                    setTimeout(() => {
-                                        document.documentElement.removeAttribute('default-webscreen')
-                                    }, 500)
+                                    document.documentElement.classList.add('webscreen-loaded')
                                 }
                             }, 100)
                         })

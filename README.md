@@ -262,7 +262,7 @@
 
 - 环境要求
 
-    - node.js >= 22
+    - node.js >= 24
     - pnpm >= 10.0
     - 使用新版 Chrome / Edge / Firefox，安装 tampermonkey 或 violentmonkey
 

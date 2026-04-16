@@ -22,7 +22,7 @@ export class KeywordFilter implements ISubFilter {
         const validBackrefParts = [] // 包含反向引用的正则
         for (let word of this.keywordSet) {
             word = toHalfWidth(word).trim()
-            if (['', '//', '/'].includes(word)) {
+            if (word === '' || word === '//' || word === '/') {
                 continue
             }
             if (word.startsWith('/') && word.endsWith('/')) {

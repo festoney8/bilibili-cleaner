@@ -1,14 +1,13 @@
-import { GM_deleteValue, GM_listValues } from '$'
 import { IListItem, INumberItem, IStringItem, ISwitchItem } from '@/types/item'
 import { waitForHead } from '@/utils/init'
 import { error, log } from '@/utils/logger'
-import { BiliCleanerStorage } from '@/utils/storage'
+import { GM_getValue } from '$'
 import { useMagicKeys } from '@vueuse/core'
 import { commentFilters, dynamicFilters, loadFilterStyle, videoFilters } from './filters'
 import { loadRuleStyle, rules } from './rules'
 
 const loadSwitchItem = (item: ISwitchItem) => {
-    const enable = BiliCleanerStorage.get(item.id, item.defaultEnable)
+    const enable = GM_getValue(item.id, item.defaultEnable)
     if (enable) {
         if (!item.noStyle) {
             document.documentElement.setAttribute(item.attrName ?? item.id, '')
@@ -26,7 +25,7 @@ const loadSwitchItem = (item: ISwitchItem) => {
 }
 
 const loadNumberItem = (item: INumberItem) => {
-    const value = BiliCleanerStorage.get(item.id, item.defaultValue)
+    const value = GM_getValue(item.id, item.defaultValue)
     if (value !== item.disableValue) {
         if (!item.noStyle) {
             document.documentElement.setAttribute(item.attrName ?? item.id, '')
@@ -36,7 +35,7 @@ const loadNumberItem = (item: INumberItem) => {
 }
 
 const loadStringItem = (item: IStringItem) => {
-    const value = BiliCleanerStorage.get(item.id, item.defaultValue)
+    const value = GM_getValue(item.id, item.defaultValue)
     if (value !== item.disableValue) {
         if (!item.noStyle) {
             document.documentElement.setAttribute(item.attrName ?? item.id, '')
@@ -46,7 +45,7 @@ const loadStringItem = (item: IStringItem) => {
 }
 
 const loadListItem = (item: IListItem) => {
-    const value = BiliCleanerStorage.get(item.id, item.defaultValue)
+    const value = GM_getValue(item.id, item.defaultValue)
     for (const option of item.options) {
         if (option.value === value && option.fn) {
             option.fn()?.catch(() => {})
@@ -151,40 +150,6 @@ const loadRulesHotKey = () => {
     }
 }
 
-/** 清理无用 key */
-const cleanGMKeys = () => {
-    try {
-        const keysInUse = new Set<string>()
-        for (const rule of rules) {
-            for (const group of rule.groups) {
-                for (const item of group.items) {
-                    keysInUse.add(item.id)
-                }
-            }
-        }
-        for (const filter of [...videoFilters, ...commentFilters, ...dynamicFilters]) {
-            for (const group of filter.groups) {
-                for (const item of group.items) {
-                    keysInUse.add(item.id)
-                }
-            }
-        }
-        const keysInStorage = new Set(GM_listValues())
-        for (const key of keysInStorage) {
-            const pureKey = key.replaceAll('BILICLEANER_', '')
-            if (!keysInUse.has(pureKey)) {
-                const value = BiliCleanerStorage.get(pureKey)
-                if (typeof value !== 'object') {
-                    GM_deleteValue(key)
-                    log('delete GM key', key)
-                }
-            }
-        }
-    } catch (err) {
-        error('cleanGMKeys error', err)
-    }
-}
-
 export const loadModules = () => {
     waitForHead().then(() => {
         loadRuleStyle()
@@ -198,17 +163,4 @@ export const loadModules = () => {
 
     loadFilters()
     log('loadFilters done')
-
-    // issue #291
-    const runIdle = (cb: any) => {
-        if (typeof window.requestIdleCallback === 'function') {
-            window.requestIdleCallback(cb)
-        } else {
-            setTimeout(cb, 10000)
-        }
-    }
-    runIdle(() => {
-        cleanGMKeys()
-        log('cleanGMKeys done')
-    })
 }

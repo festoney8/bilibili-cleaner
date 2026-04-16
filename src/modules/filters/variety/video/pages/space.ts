@@ -4,7 +4,7 @@ import { Group } from '@/types/collection'
 import { ContextMenuTargetHandler, FilterContextMenu, IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
 import { debugFilter as debug, error } from '@/utils/logger'
 import { isPageSpace } from '@/utils/pageType'
-import { BiliCleanerStorage } from '@/utils/storage'
+import { GM_getValue, GM_setValue } from '$'
 import { convertTimeToSec, matchBvid, orderedUniq, showEle, waitForEle } from '@/utils/tool'
 import { VideoBvidFilter, VideoDurationFilter, VideoTitleFilter } from '../subFilters/black'
 import { VideoTitleWhiteFilter } from '../subFilters/white'
@@ -67,11 +67,11 @@ class VideoFilterSpace implements IMainFilter {
 
     init() {
         // 黑名单
-        this.videoBvidFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.bvid.valueKey, []))
-        this.videoDurationFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.duration.valueKey, 0))
-        this.videoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.title.valueKey, []))
+        this.videoBvidFilter.setParam(GM_getValue(GM_KEYS.black.bvid.valueKey, []))
+        this.videoDurationFilter.setParam(GM_getValue(GM_KEYS.black.duration.valueKey, 0))
+        this.videoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
         // 白名单
-        this.videoTitleWhiteFilter.setParam(BiliCleanerStorage.get(GM_KEYS.white.title.valueKey, []))
+        this.videoTitleWhiteFilter.setParam(GM_getValue(GM_KEYS.white.title.valueKey, []))
     }
 
     async check(mode?: 'full' | 'incr') {
@@ -249,7 +249,7 @@ export const videoFilterSpaceGroups: Group[] = [
                     '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
                 ],
                 saveFn: async () => {
-                    mainFilter.videoTitleFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.title.valueKey, []))
+                    mainFilter.videoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
                     mainFilter.checkFull()
                 },
             },
@@ -280,7 +280,7 @@ export const videoFilterSpaceGroups: Group[] = [
                 editorTitle: 'BV号 黑名单',
                 editorDescription: ['每行一个BV号，保存时自动去重'],
                 saveFn: async () => {
-                    mainFilter.videoBvidFilter.setParam(BiliCleanerStorage.get(GM_KEYS.black.bvid.valueKey, []))
+                    mainFilter.videoBvidFilter.setParam(GM_getValue(GM_KEYS.black.bvid.valueKey, []))
                     mainFilter.checkFull()
                 },
             },
@@ -314,7 +314,7 @@ export const videoFilterSpaceGroups: Group[] = [
                     '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
                 ],
                 saveFn: async () => {
-                    mainFilter.videoTitleWhiteFilter.setParam(BiliCleanerStorage.get(GM_KEYS.white.title.valueKey, []))
+                    mainFilter.videoTitleWhiteFilter.setParam(GM_getValue(GM_KEYS.white.title.valueKey, []))
                     mainFilter.checkFull()
                 },
             },
@@ -341,9 +341,9 @@ export const videoFilterSpaceHandler: ContextMenuTargetHandler = (target: HTMLEl
                         try {
                             mainFilter.videoBvidFilter.addParam(bvid)
                             mainFilter.checkFull()
-                            const arr: string[] = BiliCleanerStorage.get(GM_KEYS.black.bvid.valueKey, [])
+                            const arr: string[] = GM_getValue(GM_KEYS.black.bvid.valueKey, [])
                             arr.unshift(bvid)
-                            BiliCleanerStorage.set<string[]>(GM_KEYS.black.bvid.valueKey, orderedUniq(arr))
+                            GM_setValue(GM_KEYS.black.bvid.valueKey, orderedUniq(arr))
                         } catch (err) {
                             error(`videoFilterSearchHandler add bvid ${bvid} failed`, err)
                         }

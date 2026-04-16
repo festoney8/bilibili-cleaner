@@ -1,5 +1,5 @@
 // 4 列布局
-html[watchlater-layout='watchlater-layout-4-column'] {
+html[watchlater-layout='4'] {
     main:not(.watchlater-list--vertical) .watchlater-list-container {
         grid-template-columns: repeat(4, 1fr) !important;
         gap: 25px 16px !important;
@@ -7,7 +7,7 @@ html[watchlater-layout='watchlater-layout-4-column'] {
 }
 
 // 5 列布局
-html[watchlater-layout='watchlater-layout-5-column'] {
+html[watchlater-layout='5'] {
     main:not(.watchlater-list--vertical) .watchlater-list-container {
         grid-template-columns: repeat(5, 1fr) !important;
         gap: 25px 16px !important;

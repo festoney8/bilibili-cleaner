@@ -1,5 +1,5 @@
 import { Item } from '@/types/item'
-import { BiliCleanerStorage } from '@/utils/storage'
+import { GM_getValue } from '$'
 import { matchAvidBvid, matchBvid } from '@/utils/tool'
 import URLHandlerInstance from '@/utils/urlHandler'
 
@@ -93,7 +93,7 @@ export const videoBasicItems: Item[] = [
                         }
                         // 匹配av号, BV号, 分P号
                         const avbv = matchAvidBvid(location.href)
-                        let domain = BiliCleanerStorage.get('video-page-simple-share-domain')
+                        let domain = GM_getValue('video-page-simple-share-domain')
                         if (!domain || domain === 'disable') {
                             domain = 'www.bilibili.com/video'
                         }

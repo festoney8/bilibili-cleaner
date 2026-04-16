@@ -35,6 +35,7 @@ export declare global {
         }
         player?: {
             requestStatue?: function
+            getManifest?: function
         }
     }
 }

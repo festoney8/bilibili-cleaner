@@ -54,7 +54,7 @@
 
 <script setup lang="ts">
 import { IListItem } from '@/types/item'
-import { BiliCleanerStorage } from '@/utils/storage'
+import { GM_getValue, GM_setValue } from '$'
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/vue'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid'
 import { ref, watch } from 'vue'
@@ -62,7 +62,7 @@ import DescriptionComp from './DescriptionComp.vue'
 
 const item = defineProps<IListItem>()
 const options = item.options
-const currValue = BiliCleanerStorage.get(item.id, item.defaultValue)
+const currValue = GM_getValue(item.id, item.defaultValue)
 const currOption = options.find((v) => v.value === currValue)
 const selectedOption = ref(currOption ?? options[0])
 
@@ -78,6 +78,6 @@ watch(selectedOption, (newSelected) => {
     } else {
         document.documentElement.removeAttribute(item.id)
     }
-    BiliCleanerStorage.set<string>(item.id, value)
+    GM_setValue(item.id, value)
 })
 </script>

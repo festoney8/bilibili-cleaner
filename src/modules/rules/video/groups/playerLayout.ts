@@ -2,26 +2,27 @@ import { unsafeWindow } from '$'
 import { Item } from '@/types/item'
 import { waitForEle } from '@/utils/tool'
 import { wideScreenManager } from '@/utils/widePlayer'
+import { useEventListener, useThrottleFn } from '@vueuse/core'
 
 // 禁用滚动调音量
-let webScroll = false
-let fullScroll = false
-const fn = (e: Event) => {
-    if (document.querySelector('[data-screen="web"]')) {
-        e.stopImmediatePropagation()
-    }
-}
-const disableTuneVolume = () => {
-    if (!webScroll && !fullScroll) {
-        window.addEventListener('mousewheel', fn, { capture: true })
-        window.addEventListener('DOMMouseScroll', fn, { capture: true })
-    }
-}
-const enableTuneVolume = () => {
-    if (!(webScroll && fullScroll)) {
-        window.removeEventListener('mousewheel', fn, { capture: true })
-        window.removeEventListener('DOMMouseScroll', fn, { capture: true })
-    }
+let preventVolumeTune = false
+
+const isWebScreen = useThrottleFn(() => {
+    return unsafeWindow.player?.getManifest()?.screenKind === 2
+}, 200)
+
+// 网页全屏或全屏时阻止滚动音量调节
+for (const eventName of ['mousewheel', 'DOMMouseScroll', 'wheel']) {
+    useEventListener(
+        window,
+        eventName,
+        async (e: WheelEvent) => {
+            if (preventVolumeTune && (await isWebScreen())) {
+                e.stopImmediatePropagation()
+            }
+        },
+        { capture: true, passive: true },
+    )
 }
 
 // 全屏可滚动 = 网页全屏功能 + html/body元素申请全屏
@@ -89,7 +90,7 @@ export const videoPlayerLayoutItems: Item[] = [
     {
         type: 'switch',
         id: 'default-widescreen',
-        name: '默认宽屏播放',
+        name: '自动宽屏播放',
         enableFn: async () => {
             unsafeWindow.isWide = true
             wideScreenManager.lock() // 锁定宽屏模式
@@ -110,33 +111,60 @@ export const videoPlayerLayoutItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'default-webscreen',
+        name: '自动网页全屏播放',
+        description: ['实验功能，不要与自动宽屏同时启用', '如果遇到黑屏问题，关闭此功能'],
+        enableFn: async () => {
+            const id = setInterval(() => {
+                if (typeof unsafeWindow.player?.requestStatue === 'function') {
+                    unsafeWindow.player
+                        .requestStatue(2)
+                        .then(() => {
+                            clearInterval(id)
+                            const id2 = setInterval(() => {
+                                // video 占满屏幕时隐藏蒙版
+                                const video = document.querySelector<HTMLVideoElement>('#bilibili-player video')
+                                if (
+                                    video &&
+                                    video.offsetWidth / innerWidth > 0.9 &&
+                                    video.offsetHeight / innerHeight > 0.9 &&
+                                    video.offsetHeight / innerHeight <= 1.0
+                                ) {
+                                    clearInterval(id2)
+                                    document.documentElement.classList.add('webscreen-loaded')
+                                }
+                            }, 100)
+                        })
+                        .catch(() => {})
+                }
+            }, 100)
+        },
+    },
+    {
+        type: 'switch',
         id: 'webscreen-scrollable',
         name: '网页全屏时 页面可滚动',
-        description: ['播放器内滚轮调节音量失效'],
-        enableFn: async () => {
-            disableTuneVolume()
-            webScroll = true
+        description: ['刷新生效，启用后滚轮无法调节音量'],
+        enableFn: () => {
+            preventVolumeTune = true
         },
         disableFn: () => {
-            enableTuneVolume()
-            webScroll = false
+            preventVolumeTune = false
         },
         enableFnRunAt: 'document-end',
     },
     {
         type: 'switch',
         id: 'fullscreen-scrollable',
-        name: '全屏时 页面可滚动 (实验功能)',
-        description: ['播放器内滚轮调节音量失效'],
+        name: '网页全屏/真全屏时 页面可滚动',
+        description: ['刷新生效，启用后滚轮无法调节音量'],
         enableFn: async () => {
-            disableTuneVolume()
-            fullScroll = true
+            preventVolumeTune = true
             document.addEventListener('click', handleFullScreenClick, true)
             document.addEventListener('dblclick', handleFullScreenDblClick, true)
         },
         disableFn: () => {
-            enableTuneVolume()
-            fullScroll = false
+            preventVolumeTune = false
             document.removeEventListener('click', handleFullScreenClick, true)
             document.removeEventListener('dblclick', handleFullScreenDblClick, true)
         },
@@ -145,7 +173,7 @@ export const videoPlayerLayoutItems: Item[] = [
         type: 'switch',
         id: 'screen-scrollable-move-header-bottom',
         name: '全屏滚动时 在视频底部显示顶栏',
-        description: ['实验功能，网页/全屏滚动时生效'],
+        description: ['网页全屏/真全屏滚动时生效'],
     },
     {
         type: 'switch',

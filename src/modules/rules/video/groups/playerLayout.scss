@@ -1,8 +1,58 @@
-// 默认宽屏播放
+// 自动宽屏播放
 html[default-widescreen] {
     // 修复mini播放模式主播放器宽度支撑问题
     &[player-is-wide] #playerWrap:has(.bpx-player-container[data-screen='mini']) {
         width: fit-content;
+    }
+}
+
+// 自动网页全屏，临时防闪样式
+html[default-webscreen] {
+    &:not(.webscreen-loaded) {
+        // 隐藏滚动条
+        scrollbar-width: none !important;
+        &::-webkit-scrollbar {
+            display: none !important;
+        }
+    }
+
+    @keyframes loading {
+        0% {
+            content: '视频加载中';
+        }
+        25% {
+            content: '视频加载中.';
+        }
+        50% {
+            content: '视频加载中..';
+        }
+        75% {
+            content: '视频加载中...';
+        }
+        100% {
+            content: '视频加载中';
+        }
+    }
+    body::after {
+        content: '视频加载中...';
+        color: white;
+        font-size: 1.5em;
+        background-color: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        inset: 0;
+        z-index: 9999999;
+        opacity: 1;
+        transition: opacity 0.25s ease-out;
+        pointer-events: all;
+        animation: loading 2s steps(4, end) infinite;
+    }
+
+    &.webscreen-loaded body::after {
+        opacity: 0;
+        pointer-events: none;
     }
 }
 

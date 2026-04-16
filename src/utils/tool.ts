@@ -163,3 +163,16 @@ export const isFirefox = (): boolean => {
 export const toHalfWidth = (s: string): string => {
     return s.replace(/\u3000/g, ' ').replace(/[\uFF01-\uFF5E]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - 0xfee0))
 }
+
+/**
+ * 在浏览器空闲时执行回调函数
+ * @param callback 回调函数
+ * @param waitTime 等待时间，单位毫秒，用于不支持 requestIdleCallback 的浏览器
+ */
+export const runInIdle = (callback: any, waitTime: number) => {
+    if (typeof window.requestIdleCallback === 'function') {
+        window.requestIdleCallback(callback)
+    } else {
+        setTimeout(callback, waitTime)
+    }
+}

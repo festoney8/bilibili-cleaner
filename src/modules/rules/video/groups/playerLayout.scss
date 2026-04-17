@@ -8,14 +8,6 @@ html[default-widescreen] {
 
 // 自动网页全屏，临时防闪样式
 html[default-webscreen] {
-    &:not(.webscreen-loaded) {
-        // 隐藏滚动条
-        scrollbar-width: none !important;
-        &::-webkit-scrollbar {
-            display: none !important;
-        }
-    }
-
     @keyframes loading {
         0% {
             content: '视频加载中';
@@ -33,6 +25,38 @@ html[default-webscreen] {
             content: '视频加载中';
         }
     }
+
+    // 加载状态
+    &:not(.webscreen-loaded) {
+        // 隐藏滚动条
+        scrollbar-width: none !important;
+        #app {
+            &::-webkit-scrollbar {
+                display: none !important;
+            }
+            #biliMainHeader {
+                display: none !important;
+            }
+            #bilibili-player {
+                position: fixed !important;
+                border-radius: 0 !important;
+                z-index: 100000 !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                video {
+                    height: 100vh !important;
+                    width: fit-content !important;
+                    aspect-ratio: 16 / 9 !important;
+                }
+            }
+            .bpx-player-sending-area {
+                display: none !important;
+            }
+        }
+    }
+
     body::after {
         content: '视频加载中...';
         color: white;
@@ -45,7 +69,7 @@ html[default-webscreen] {
         inset: 0;
         z-index: 9999999;
         opacity: 1;
-        transition: opacity 0.25s ease-out;
+        transition: opacity 0.2s ease-out;
         pointer-events: all;
         animation: loading 2s steps(4, end) infinite;
     }
@@ -53,6 +77,7 @@ html[default-webscreen] {
     &.webscreen-loaded body::after {
         opacity: 0;
         pointer-events: none;
+        animation: none;
     }
 }
 

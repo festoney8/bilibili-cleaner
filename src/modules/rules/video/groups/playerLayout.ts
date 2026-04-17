@@ -121,17 +121,24 @@ export const videoPlayerLayoutItems: Item[] = [
                         .requestStatue(2)
                         .then(() => {
                             clearInterval(id)
+                            // 播放器占满屏幕时隐藏蒙版
                             const id2 = setInterval(() => {
-                                // video 占满屏幕时隐藏蒙版
-                                const video = document.querySelector<HTMLVideoElement>('#bilibili-player video')
-                                if (
-                                    video &&
-                                    video.offsetWidth / innerWidth > 0.9 &&
-                                    video.offsetHeight / innerHeight > 0.9 &&
-                                    video.offsetHeight / innerHeight <= 1.0
-                                ) {
-                                    clearInterval(id2)
-                                    document.documentElement.classList.add('webscreen-loaded')
+                                const container = document.querySelector<HTMLElement>(
+                                    '#bilibili-player .bpx-player-container',
+                                )
+                                const video = document.querySelector<HTMLElement>('#bilibili-player video')
+                                if (container && video && container.getAttribute('data-screen') === 'web') {
+                                    const a = container.offsetHeight / innerHeight
+                                    const b = container.offsetWidth / innerWidth
+                                    const c = video.offsetHeight / innerHeight
+                                    if (a > 0.9 && a < 1.05 && b > 0.9 && b < 1.05 && c > 0.9 && c < 1.05) {
+                                        clearInterval(id2)
+                                        requestAnimationFrame(() => {
+                                            requestAnimationFrame(() => {
+                                                document.documentElement.classList.add('webscreen-loaded')
+                                            })
+                                        })
+                                    }
                                 }
                             }, 100)
                         })

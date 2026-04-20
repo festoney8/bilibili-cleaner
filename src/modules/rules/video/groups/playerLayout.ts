@@ -113,7 +113,7 @@ export const videoPlayerLayoutItems: Item[] = [
         type: 'switch',
         id: 'default-webscreen',
         name: '自动网页全屏播放',
-        description: ['实验功能，不要与自动宽屏同时启用', '如果遇到黑屏问题，关闭此功能'],
+        description: ['实验功能，不要与自动宽屏同时启用', '偶尔会出现载入时闪屏'],
         enableFn: async () => {
             const id = setInterval(() => {
                 if (typeof unsafeWindow.player?.requestStatue === 'function') {
@@ -121,7 +121,7 @@ export const videoPlayerLayoutItems: Item[] = [
                         .requestStatue(2)
                         .then(() => {
                             clearInterval(id)
-                            // 播放器占满屏幕时隐藏蒙版
+                            // 播放器占满屏幕时隐藏临时样式
                             const id2 = setInterval(() => {
                                 const container = document.querySelector<HTMLElement>(
                                     '#bilibili-player .bpx-player-container',
@@ -131,16 +131,14 @@ export const videoPlayerLayoutItems: Item[] = [
                                     const a = container.offsetHeight / innerHeight
                                     const b = container.offsetWidth / innerWidth
                                     const c = video.offsetHeight / innerHeight
-                                    if (a > 0.9 && a < 1.05 && b > 0.9 && b < 1.05 && c > 0.9 && c < 1.05) {
+                                    if (a > 0.9 && a < 1.1 && b > 0.9 && b < 1.1 && c > 0.9 && c < 1.1) {
                                         clearInterval(id2)
-                                        requestAnimationFrame(() => {
-                                            requestAnimationFrame(() => {
-                                                document.documentElement.classList.add('webscreen-loaded')
-                                            })
-                                        })
+                                        setTimeout(() => {
+                                            document.documentElement.classList.add('webscreen-loaded')
+                                        }, 1000)
                                     }
                                 }
-                            }, 100)
+                            }, 200)
                         })
                         .catch(() => {})
                 }

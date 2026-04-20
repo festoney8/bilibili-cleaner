@@ -8,76 +8,68 @@ html[default-widescreen] {
 
 // 自动网页全屏，临时防闪样式
 html[default-webscreen] {
-    @keyframes loading {
-        0% {
-            content: '视频加载中';
-        }
-        25% {
-            content: '视频加载中.';
-        }
-        50% {
-            content: '视频加载中..';
-        }
-        75% {
-            content: '视频加载中...';
-        }
-        100% {
-            content: '视频加载中';
-        }
-    }
-
-    // 加载状态
+    // 加载状态临时样式
     &:not(.webscreen-loaded) {
         // 隐藏滚动条
         scrollbar-width: none !important;
+        &::-webkit-scrollbar {
+            display: none !important;
+        }
+
+        // webscreen-fix
+        body {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+        }
         #app {
-            &::-webkit-scrollbar {
-                display: none !important;
+            #biliMainHeader,
+            .right-container,
+            .fixed-sidenav-storage,
+            .left-container > :not(#playerWrap) {
+                visibility: hidden;
             }
-            #biliMainHeader {
-                display: none !important;
+            .left-container {
+                width: 100vw !important;
             }
-            #bilibili-player {
-                position: fixed !important;
-                border-radius: 0 !important;
-                z-index: 100000 !important;
-                left: 0 !important;
-                top: 0 !important;
+
+            // mode-webscreen
+            #playerWrap {
                 width: 100vw !important;
                 height: 100vh !important;
-                video {
+                #bilibili-player-placeholder {
+                    display: none !important;
+                }
+                #bilibili-player {
+                    position: fixed !important;
+                    border-radius: 0 !important;
+                    z-index: 100000 !important;
+                    left: 0 !important;
+                    top: 0 !important;
+                    width: 100vw !important;
                     height: 100vh !important;
-                    width: fit-content !important;
-                    aspect-ratio: 16 / 9 !important;
+                    video {
+                        height: 100vh !important;
+                        width: fit-content !important;
+                        aspect-ratio: 16 / 9 !important;
+                    }
+                    .bpx-player-sending-area {
+                        display: none !important;
+                    }
+                    .bpx-player-video-area {
+                        width: 100vw !important;
+                        height: 100vh !important;
+                    }
+                    .bpx-player-sending-bar {
+                        background-color: transparent !important;
+                    }
                 }
             }
-            .bpx-player-sending-area {
-                display: none !important;
-            }
         }
-    }
-
-    body::after {
-        content: '视频加载中...';
-        color: white;
-        font-size: 1.5em;
-        background-color: #000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: fixed;
-        inset: 0;
-        z-index: 9999999;
-        opacity: 1;
-        transition: opacity 0.2s ease-out;
-        pointer-events: all;
-        animation: loading 2s steps(4, end) infinite;
-    }
-
-    &.webscreen-loaded body::after {
-        opacity: 0;
-        pointer-events: none;
-        animation: none;
     }
 }
 
@@ -291,11 +283,11 @@ html[normalscreen-width] {
 
             // player
             #bilibili-player {
-                width: $normal-width !important;
+                width: $normal-width;
                 height: fit-content;
                 .bpx-player-video-area {
-                    width: $normal-width !important;
-                    aspect-ratio: 16 / 9 !important;
+                    width: $normal-width;
+                    aspect-ratio: 16 / 9;
                 }
             }
         }

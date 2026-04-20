@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 import { INumberItem } from '@/types/item'
-import { error } from '@/utils/logger'
+import { logger } from '@/utils/logger'
 import { GM_getValue, GM_setValue } from '$'
 import { watchThrottled } from '@vueuse/core'
 import { ref } from 'vue'
@@ -53,7 +53,7 @@ watchThrottled(
             }
             GM_setValue(item.id, currValue.value)
         } catch (err) {
-            error(`NumberComp ${item.id} error`, err)
+            logger.error(`NumberComp ${item.id} error`, err)
         }
     },
     { throttle: 250, trailing: true },

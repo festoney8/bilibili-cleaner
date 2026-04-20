@@ -1,6 +1,6 @@
 import { unsafeWindow } from '$'
 import { Item } from '@/types/item'
-import { error } from '@/utils/logger'
+import { logger } from '@/utils/logger'
 
 export const liveBasicItems: Item[] = [
     {
@@ -76,7 +76,7 @@ export const liveBasicItems: Item[] = [
                             }
                         }
                     } catch (err) {
-                        error('auto-best-quality error', err)
+                        logger.error('auto-best-quality error', err)
                     }
                 }
             }

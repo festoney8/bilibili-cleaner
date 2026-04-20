@@ -1,5 +1,5 @@
 import { unsafeWindow } from '$'
-import { error } from './logger'
+import { logger } from '@/utils/logger'
 
 class URLHandler {
     private static instance: URLHandler
@@ -14,7 +14,7 @@ class URLHandler {
         try {
             this.hijack()
         } catch (err) {
-            error('init URLHandler error', err)
+            logger.error('init URLHandler error', err)
         }
     }
 
@@ -41,7 +41,7 @@ class URLHandler {
                 }
                 return this.origReplaceState.apply(unsafeWindow.history, [data, unused, url])
             } catch (err) {
-                error('URLHandler replaceState error', err)
+                logger.error('URLHandler replaceState error', err)
                 return this.origReplaceState.apply(unsafeWindow.history, [data, unused, url])
             }
         }
@@ -59,7 +59,7 @@ class URLHandler {
                 }
                 return this.origPushState.apply(unsafeWindow.history, [data, unused, url])
             } catch (err) {
-                error('URLHandler pushState error', err)
+                logger.error('URLHandler pushState error', err)
                 return this.origReplaceState.apply(unsafeWindow.history, [data, unused, url])
             }
         }
@@ -72,7 +72,7 @@ class URLHandler {
                 this.origReplaceState.apply(unsafeWindow.history, [null, '', cleanURL])
             }
         } catch (err) {
-            error('init URLHandler error', err)
+            logger.error('init URLHandler error', err)
         }
     }
 }

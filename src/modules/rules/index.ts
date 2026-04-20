@@ -14,7 +14,7 @@ import {
     isPageWatchlater,
 } from '@/utils/pageType'
 
-import { error } from '@/utils/logger'
+import { logger } from '@/utils/logger'
 
 import { bangumiGroups } from './bangumi'
 import { channelGroups } from './channel'
@@ -145,7 +145,7 @@ export const loadRuleStyle = () => {
                 style.textContent = rule.style
                 document.documentElement?.appendChild(style)
             } catch (err) {
-                error(`loadRuleStyle error, name=${rule.name}`, err)
+                logger.error(`loadRuleStyle error, name=${rule.name}`, err)
             }
         }
     }

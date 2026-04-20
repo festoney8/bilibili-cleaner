@@ -1,5 +1,5 @@
 import { Item } from '@/types/item'
-import { error } from '@/utils/logger'
+import { logger } from '@/utils/logger'
 import { waitForEle } from '@/utils/tool'
 import { useStorage } from '@vueuse/core'
 
@@ -57,7 +57,7 @@ export const videoMiniPlayerItems: Item[] = [
                     })
                 })
             } catch (err) {
-                error('adjust mini player size error', err)
+                logger.error('adjust mini player size error', err)
             }
         },
         enableFnRunAt: 'document-end',

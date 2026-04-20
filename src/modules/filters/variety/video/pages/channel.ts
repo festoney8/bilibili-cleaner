@@ -1,8 +1,8 @@
 import { coreCheck } from '@/modules/filters/core/core'
-import settings from '@/settings'
+import config from '@/config'
 import { Group } from '@/types/collection'
 import { ContextMenuTargetHandler, FilterContextMenu, IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
-import { debugFilter as debug, error } from '@/utils/logger'
+import { logger } from '@/utils/logger'
 import { isPageChannel } from '@/utils/pageType'
 import { GM_getValue, GM_setValue } from '$'
 import { convertDateToDays, convertTimeToSec, matchBvid, orderedUniq, showEle, waitForEle } from '@/utils/tool'
@@ -145,7 +145,7 @@ class VideoFilterChannel implements IMainFilter {
         // 提取元素
         let selector = `.feed-card`
         if (mode === 'incr') {
-            selector += `:not([${settings.filterVisitSign}])`
+            selector += `:not([${config.filterVisitSign}])`
         }
         const videos = Array.from(this.target.querySelectorAll<HTMLElement>(selector))
         if (!videos.length) {
@@ -156,9 +156,9 @@ class VideoFilterChannel implements IMainFilter {
             return
         }
 
-        if (settings.enableDebugFilter) {
+        if (config.isDebugMode) {
             videos.forEach((v) => {
-                debug(
+                logger.debug(
                     [
                         `VideoFilterChannel`,
                         `bvid: ${selectorFns.bvid(v)}`,
@@ -190,18 +190,18 @@ class VideoFilterChannel implements IMainFilter {
         // 检测
         const blackCnt = await coreCheck(videos, true, 'sign', blackPairs, whitePairs, forceBlackPairs)
         const time = (performance.now() - timer).toFixed(1)
-        debug(`VideoFilterChannel hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
+        logger.debug(`VideoFilterChannel hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
     }
 
     checkFull() {
         this.check('full').catch((err) => {
-            error('VideoFilterChannel check full error', err)
+            logger.error('VideoFilterChannel check full error', err)
         })
     }
 
     checkIncr() {
         this.check('incr').catch((err) => {
-            error('VideoFilterChannel check incr error', err)
+            logger.error('VideoFilterChannel check incr error', err)
         })
     }
 
@@ -213,7 +213,7 @@ class VideoFilterChannel implements IMainFilter {
                 return
             }
 
-            debug('VideoFilterChannel target appear')
+            logger.debug('VideoFilterChannel target appear')
             this.target = ele
             this.checkFull()
 
@@ -524,7 +524,7 @@ export const videoFilterChannelHandler: ContextMenuTargetHandler = (target: HTML
                             arr.unshift(uploader)
                             GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
                         } catch (err) {
-                            error(`videoFilterChannelHandler add uploader ${uploader} failed`, err)
+                            logger.error(`videoFilterChannelHandler add uploader ${uploader} failed`, err)
                         }
                     },
                 })
@@ -540,7 +540,7 @@ export const videoFilterChannelHandler: ContextMenuTargetHandler = (target: HTML
                             arr.unshift(uploader)
                             GM_setValue(GM_KEYS.white.uploader.valueKey, orderedUniq(arr))
                         } catch (err) {
-                            error(`videoFilterChannelHandler add white uploader ${uploader} failed`, err)
+                            logger.error(`videoFilterChannelHandler add white uploader ${uploader} failed`, err)
                         }
                     },
                 })
@@ -571,7 +571,7 @@ export const videoFilterChannelHandler: ContextMenuTargetHandler = (target: HTML
                             arr.unshift(bvid)
                             GM_setValue(GM_KEYS.black.bvid.valueKey, orderedUniq(arr))
                         } catch (err) {
-                            error(`videoFilterChannelHandler add bvid ${bvid} failed`, err)
+                            logger.error(`videoFilterChannelHandler add bvid ${bvid} failed`, err)
                         }
                     },
                 })

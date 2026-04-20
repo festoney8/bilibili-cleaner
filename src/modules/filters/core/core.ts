@@ -1,4 +1,4 @@
-import settings from '@/settings'
+import config from '@/config'
 import { SubFilterPair } from '@/types/filter'
 import { hideEle, showEle } from '@/utils/tool'
 import { useThrottleFn } from '@vueuse/core'
@@ -54,7 +54,7 @@ const rawCheck = async (
             requestAnimationFrame(() => {
                 for (let i = 0; i < elements.length; i++) {
                     toHideIdx.has(i) ? hideEle(elements[i], hideMode) : showEle(elements[i], hideMode)
-                    enableFilterVisitSign && elements[i].setAttribute(settings.filterVisitSign, '')
+                    enableFilterVisitSign && elements[i].setAttribute(config.filterVisitSign, '')
                 }
             })
         })

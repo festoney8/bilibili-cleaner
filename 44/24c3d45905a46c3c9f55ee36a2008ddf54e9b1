@@ -1,0 +1,18 @@
+src/modules/rules/video/groups/playerLayout.ts
+  h_090999263e14f2 116,124,134,136,138,141
+src/modules/rules/video/groups/playerLayout.scss
+  h_090999263e14f2 11,16-27,30-34,36-37,39,41,44-49,51-53,57,60-69
+CHANGELOG.md
+  h_090999263e14f2 6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.1",
+  "base_commit_sha": "4424c3d45905a46c3c9f55ee36a2008ddf54e9b1",
+  "prompts": {},
+  "humans": {
+    "h_090999263e14f2": {
+      "author": "festoney8"
+    }
+  }
+}

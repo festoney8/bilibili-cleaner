@@ -138,6 +138,9 @@ class DynamicFilterSpace implements IMainFilter {
             return
         }
 
+        // #318
+        const filteredDyns = dyns.filter((dyn) => !!dyn.querySelector('.bili-dyn-item__body, .bili-dyn-item__header'))
+
         if (settings.enableDebugFilter) {
             dyns.forEach((v) => {
                 debug(
@@ -166,9 +169,9 @@ class DynamicFilterSpace implements IMainFilter {
         this.dynContentWhiteFilter.isEnable && whitePairs.push([this.dynContentWhiteFilter, selectorFns.content])
 
         // 检测
-        const blackCnt = await coreCheck(dyns, true, 'style', blackPairs, whitePairs)
+        const blackCnt = await coreCheck(filteredDyns, true, 'sign', blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
-        debug(`DynamicFilterSpace hide ${blackCnt} in ${dyns.length} dyns, mode=${mode}, time=${time}`)
+        debug(`DynamicFilterSpace hide ${blackCnt} in ${filteredDyns.length} dyns, mode=${mode}, time=${time}`)
     }
 
     checkFull() {

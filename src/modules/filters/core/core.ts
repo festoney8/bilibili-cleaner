@@ -61,7 +61,7 @@ const rawCheck = async (
     return toHideIdx.size
 }
 
-const throttledCheck = useThrottleFn(rawCheck, 50)
+const throttledCheck = useThrottleFn(rawCheck, 100, true)
 
 /**
  * 检测元素列表中每个元素是否合法, 隐藏不合法的元素

@@ -1,5 +1,5 @@
 import { unsafeWindow } from '$'
-import { error } from './logger'
+import { logger } from '@/utils/logger'
 
 class FetchHook {
     private static instance: FetchHook
@@ -17,7 +17,7 @@ class FetchHook {
         try {
             this.hook()
         } catch (err) {
-            error('hook fetch error', err)
+            logger.error('hook fetch error', err)
         }
     }
 
@@ -65,7 +65,7 @@ class FetchHook {
                     }
                 }
             } catch (err) {
-                error('fetch hook postFnArr', err)
+                logger.error('fetch hook postFnArr', err)
                 return origResp
             }
             return resp

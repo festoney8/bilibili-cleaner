@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import { filterContextMenuHandlers } from '@/modules/filters'
 import { FilterContextMenu } from '@/types/filter'
-import { error } from '@/utils/logger'
+import { logger } from '@/utils/logger'
 import { useEventListener } from '@vueuse/core'
 import { reactive, ref } from 'vue'
 
@@ -59,7 +59,7 @@ const handleTarget = (target: HTMLElement) => {
         try {
             menuList.value = menuList.value.concat(handler(target))
         } catch (err) {
-            error('ContextMenuVuew handleTarget failed', err)
+            logger.error('ContextMenuVuew handleTarget failed', err)
         }
     }
 }

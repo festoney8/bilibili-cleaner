@@ -1,8 +1,8 @@
 import { coreCheck } from '@/modules/filters/core/core'
-import settings from '@/settings'
+import config from '@/config'
 import { Group } from '@/types/collection'
 import { ContextMenuTargetHandler, FilterContextMenu, IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
-import { debugFilter as debug, error } from '@/utils/logger'
+import { logger } from '@/utils/logger'
 import { isPagePopular } from '@/utils/pageType'
 import { GM_getValue, GM_setValue } from '$'
 import { calcQuality, matchBvid, orderedUniq, showEle, waitForEle } from '@/utils/tool'
@@ -162,9 +162,9 @@ class VideoFilterPopular implements IMainFilter {
             return
         }
 
-        if (settings.enableDebugFilter) {
+        if (config.isDebugMode) {
             videos.forEach((v) => {
-                debug(
+                logger.debug(
                     [
                         `VideoFilterPopular`,
                         `bvid: ${selectorFns.bvid(v)}`,
@@ -197,19 +197,19 @@ class VideoFilterPopular implements IMainFilter {
         // 检测
         const blackCnt = await coreCheck(videos, true, 'sign', blackPairs, whitePairs, forceBlackPairs)
         const time = (performance.now() - timer).toFixed(1)
-        debug(`VideoFilterPopular hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
+        logger.debug(`VideoFilterPopular hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
     }
 
     checkFull() {
         this.check('full').catch((err) => {
-            error('VideoFilterPopular check full error', err)
+            logger.error('VideoFilterPopular check full error', err)
         })
     }
 
     // checkIncr() {
     //     this.check('incr')
     //         .catch((err) => {
-    //             error('VideoFilterPopular check incr error', err)
+    //             logger.error('VideoFilterPopular check incr error', err)
     //         })
     // }
 
@@ -221,7 +221,7 @@ class VideoFilterPopular implements IMainFilter {
                 return
             }
 
-            debug('VideoFilterPopular target appear')
+            logger.debug('VideoFilterPopular target appear')
             this.target = ele
             this.checkFull()
 
@@ -539,7 +539,7 @@ export const videoFilterPopularHandler: ContextMenuTargetHandler = (target: HTML
                             arr.unshift(uploader)
                             GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
                         } catch (err) {
-                            error(`videoFilterPopularHandler add uploader ${uploader} failed`, err)
+                            logger.error(`videoFilterPopularHandler add uploader ${uploader} failed`, err)
                         }
                     },
                 })
@@ -555,7 +555,7 @@ export const videoFilterPopularHandler: ContextMenuTargetHandler = (target: HTML
                             arr.unshift(uploader)
                             GM_setValue(GM_KEYS.white.uploader.valueKey, orderedUniq(arr))
                         } catch (err) {
-                            error(`videoFilterPopularHandler add white uploader ${uploader} failed`, err)
+                            logger.error(`videoFilterPopularHandler add white uploader ${uploader} failed`, err)
                         }
                     },
                 })
@@ -585,7 +585,7 @@ export const videoFilterPopularHandler: ContextMenuTargetHandler = (target: HTML
                             arr.unshift(bvid)
                             GM_setValue(GM_KEYS.black.bvid.valueKey, orderedUniq(arr))
                         } catch (err) {
-                            error(`videoFilterPopularHandler add bvid ${bvid} failed`, err)
+                            logger.error(`videoFilterPopularHandler add bvid ${bvid} failed`, err)
                         }
                     },
                 })

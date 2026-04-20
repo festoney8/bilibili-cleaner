@@ -1,7 +1,7 @@
 import { coreCheck } from '@/modules/filters/core/core'
-import settings from '@/settings'
+import config from '@/config'
 import { IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
-import { debugFilter as debug, error } from '@/utils/logger'
+import { logger } from '@/utils/logger'
 import { GM_getValue } from '$'
 import { DynContentFilter, DynUploaderFilter, DynVideoTitleFilter } from '../subFilters/black'
 import { DynContentWhiteFilter, DynVideoTitleWhiteFilter } from '../subFilters/white'
@@ -76,16 +76,16 @@ class DynamicFilterHeader implements IMainFilter {
         // 提取元素
         let selector = `#biliHeaderDynScrollCon .dynamic-all > a`
         if (mode === 'incr') {
-            selector += `:not([${settings.filterVisitSign}])`
+            selector += `:not([${config.filterVisitSign}])`
         }
         const dyns = Array.from(this.target.querySelectorAll<HTMLElement>(selector))
         if (!dyns.length) {
             return
         }
 
-        if (settings.enableDebugFilter) {
+        if (config.isDebugMode) {
             dyns.forEach((v) => {
-                debug(
+                logger.debug(
                     [
                         `DynamicFilterHeader`,
                         `uploader: ${selectorFns.uploader(v)}`,
@@ -109,18 +109,18 @@ class DynamicFilterHeader implements IMainFilter {
         // 检测
         const blackCnt = await coreCheck(dyns, true, 'style', blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
-        debug(`DynamicFilterHeader hide ${blackCnt} in ${dyns.length} dyns, mode=${mode}, time=${time}`)
+        logger.debug(`DynamicFilterHeader hide ${blackCnt} in ${dyns.length} dyns, mode=${mode}, time=${time}`)
     }
 
     checkFull() {
         this.check('full').catch((err) => {
-            error('DynamicFilterHeader check full error', err)
+            logger.error('DynamicFilterHeader check full error', err)
         })
     }
 
     // checkIncr() {
     //     this.check('incr').catch((err) => {
-    //         error('DynamicFilterHeader check incr error', err)
+    //         logger.error('DynamicFilterHeader check incr error', err)
     //     })
     // }
 
@@ -131,7 +131,7 @@ class DynamicFilterHeader implements IMainFilter {
             if (ele) {
                 clearInterval(id)
 
-                debug('DynamicFilterHeader target appear')
+                logger.debug('DynamicFilterHeader target appear')
                 this.target = ele
                 this.checkFull()
                 new MutationObserver(() => {

@@ -1,8 +1,8 @@
 import { coreCheck } from '@/modules/filters/core/core'
-import settings from '@/settings'
+import config from '@/config'
 import { Group } from '@/types/collection'
 import { ContextMenuTargetHandler, FilterContextMenu, IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
-import { debugFilter as debug, error } from '@/utils/logger'
+import { logger } from '@/utils/logger'
 import { isPageDynamic } from '@/utils/pageType'
 import { GM_getValue, GM_setValue } from '$'
 import { convertTimeToSec, orderedUniq, showEle, waitForEle } from '@/utils/tool'
@@ -65,7 +65,9 @@ const selectorFns = {
         return dyn.querySelector('.bili-dyn-title__text')?.textContent?.trim()
     },
     duration: (dyn: HTMLElement): SelectorResult => {
-        const time = dyn.querySelector('.bili-dyn-card-video__cover-shadow .duration-time')?.textContent?.trim()
+        const time = dyn
+            .querySelector('.bili-dyn-card-video__cover-shadow .duration-time, .bili-dyn-card-video__duration')
+            ?.textContent?.trim()
         return time ? convertTimeToSec(time) : undefined
     },
     title: (dyn: HTMLElement): SelectorResult => {
@@ -143,7 +145,7 @@ class DynamicFilterDynamic implements IMainFilter {
         // 提取元素
         let selector = `.bili-dyn-list__item`
         if (mode === 'incr') {
-            selector += `:not([${settings.filterVisitSign}])`
+            selector += `:not([${config.filterVisitSign}])`
         }
         const dyns = Array.from(this.target.querySelectorAll<HTMLElement>(selector))
         if (!dyns.length) {
@@ -154,9 +156,9 @@ class DynamicFilterDynamic implements IMainFilter {
             return
         }
 
-        if (settings.enableDebugFilter) {
+        if (config.isDebugMode) {
             dyns.forEach((v) => {
-                debug(
+                logger.debug(
                     [
                         `DynamicFilterDynamic`,
                         `uploader: ${selectorFns.uploader(v)}`,
@@ -169,6 +171,10 @@ class DynamicFilterDynamic implements IMainFilter {
                 )
             })
         }
+
+        // 筛掉未渲染节点 #318
+        // 动态列表过长时部分节点内部未渲染就被检测标记导致漏筛
+        const filteredDyns = dyns.filter((dyn) => !!dyn.querySelector('.bili-dyn-item__body, .bili-dyn-item__header'))
 
         // 构建黑白检测任务
         const blackPairs: SubFilterPair[] = []
@@ -183,20 +189,20 @@ class DynamicFilterDynamic implements IMainFilter {
         this.dynContentWhiteFilter.isEnable && whitePairs.push([this.dynContentWhiteFilter, selectorFns.content])
 
         // 检测
-        const blackCnt = await coreCheck(dyns, true, 'style', blackPairs, whitePairs)
+        const blackCnt = await coreCheck(filteredDyns, true, 'sign', blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
-        debug(`DynamicFilterDynamic hide ${blackCnt} in ${dyns.length} dyns, mode=${mode}, time=${time}`)
+        logger.debug(`DynamicFilterDynamic hide ${blackCnt} in ${filteredDyns.length} dyns, mode=${mode}, time=${time}`)
     }
 
     checkFull() {
         this.check('full').catch((err) => {
-            error('DynamicFilterDynamic check full error', err)
+            logger.error('DynamicFilterDynamic check full error', err)
         })
     }
 
     checkIncr() {
         this.check('incr').catch((err) => {
-            error('DynamicFilterDynamic check incr error', err)
+            logger.error('DynamicFilterDynamic check incr error', err)
         })
     }
 
@@ -210,7 +216,7 @@ class DynamicFilterDynamic implements IMainFilter {
                 return
             }
 
-            debug('DynamicFilterDynamic target appear')
+            logger.debug('DynamicFilterDynamic target appear')
             this.target = ele
             this.checkFull()
 
@@ -484,7 +490,7 @@ export const dynamicFilterDynamicHandler: ContextMenuTargetHandler = (target: HT
                         arr.unshift(uploader)
                         GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
                     } catch (err) {
-                        error(`dynamicFilterDynamicHandler add uploader ${uploader} failed`, err)
+                        logger.error(`dynamicFilterDynamicHandler add uploader ${uploader} failed`, err)
                     }
                 },
             })

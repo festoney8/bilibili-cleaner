@@ -13,7 +13,7 @@ import {
 } from './stores/view'
 import css from './style.css?inline'
 import { waitForBody } from './utils/init'
-import { error, log } from './utils/logger'
+import { logger } from '@/utils/logger'
 import { isPageLive } from './utils/pageType'
 import { migrate } from './utils/storage'
 
@@ -41,9 +41,9 @@ const main = () => {
     // 创建插件面板
     const app = createApp(App as any)
     app.config.errorHandler = (err, vm, info) => {
-        error('Vue:', err)
-        error('Component:', vm)
-        error('Info:', info)
+        logger.error('Vue:', err)
+        logger.error('Component:', vm)
+        logger.error('Info:', info)
     }
 
     const pinia = createPinia()
@@ -107,11 +107,11 @@ const menu = () => {
     })
 }
 
-log(`mode: ${import.meta.env.MODE}, url: ${location.href}`)
+logger.info(`mode: ${import.meta.env.MODE}, url: ${location.href}`)
 
 // 存储升级逻辑
 await migrate().catch((err) => {
-    error('Storage key migration failed', err)
+    logger.error('Storage key migration failed', err)
 })
 
 // 加载模块、主逻辑、菜单
@@ -119,6 +119,6 @@ for (const fn of [loadModules, main, menu]) {
     try {
         fn()
     } catch (err) {
-        error(`main.ts ${fn.name} error`, err)
+        logger.error(`main.ts ${fn.name} error`, err)
     }
 }

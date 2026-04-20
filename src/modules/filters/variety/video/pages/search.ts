@@ -1,8 +1,8 @@
 import { coreCheck } from '@/modules/filters/core/core'
-import settings from '@/settings'
+import config from '@/config'
 import { Group } from '@/types/collection'
 import { ContextMenuTargetHandler, FilterContextMenu, IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
-import { debugFilter as debug, error } from '@/utils/logger'
+import { logger } from '@/utils/logger'
 import { isPageSearch } from '@/utils/pageType'
 import { GM_getValue, GM_setValue } from '$'
 import { convertTimeToSec, matchBvid, orderedUniq, showEle, waitForEle } from '@/utils/tool'
@@ -126,9 +126,9 @@ class VideoFilterSearch implements IMainFilter {
             return
         }
 
-        if (settings.enableDebugFilter) {
+        if (config.isDebugMode) {
             videos.forEach((v) => {
-                debug(
+                logger.debug(
                     [
                         `VideoFilterSearch`,
                         `bvid: ${selectorFns.bvid(v)}`,
@@ -158,19 +158,19 @@ class VideoFilterSearch implements IMainFilter {
         // 检测
         const blackCnt = await coreCheck(videos, true, 'sign', blackPairs, whitePairs, forceBlackPairs)
         const time = (performance.now() - timer).toFixed(1)
-        debug(`VideoFilterSearch hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
+        logger.debug(`VideoFilterSearch hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
     }
 
     checkFull() {
         this.check('full').catch((err) => {
-            error('VideoFilterSearch check full error', err)
+            logger.error('VideoFilterSearch check full error', err)
         })
     }
 
     // checkIncr() {
     //     this.check('incr')
     //         .catch((err) => {
-    //             error('VideoFilterSearch check incr error', err)
+    //             logger.error('VideoFilterSearch check incr error', err)
     //         })
     // }
 
@@ -182,7 +182,7 @@ class VideoFilterSearch implements IMainFilter {
                 return
             }
 
-            debug('VideoFilterSearch target appear')
+            logger.debug('VideoFilterSearch target appear')
             this.target = ele
             this.checkFull()
 
@@ -456,7 +456,7 @@ export const videoFilterSearchHandler: ContextMenuTargetHandler = (target: HTMLE
                             arr.unshift(uploader)
                             GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
                         } catch (err) {
-                            error(`videoFilterSearchHandler add uploader ${uploader} failed`, err)
+                            logger.error(`videoFilterSearchHandler add uploader ${uploader} failed`, err)
                         }
                     },
                 })
@@ -472,7 +472,7 @@ export const videoFilterSearchHandler: ContextMenuTargetHandler = (target: HTMLE
                             arr.unshift(uploader)
                             GM_setValue(GM_KEYS.white.uploader.valueKey, orderedUniq(arr))
                         } catch (err) {
-                            error(`videoFilterSearchHandler add white uploader ${uploader} failed`, err)
+                            logger.error(`videoFilterSearchHandler add white uploader ${uploader} failed`, err)
                         }
                     },
                 })
@@ -501,7 +501,7 @@ export const videoFilterSearchHandler: ContextMenuTargetHandler = (target: HTMLE
                             arr.unshift(bvid)
                             GM_setValue(GM_KEYS.black.bvid.valueKey, orderedUniq(arr))
                         } catch (err) {
-                            error(`videoFilterSearchHandler add bvid ${bvid} failed`, err)
+                            logger.error(`videoFilterSearchHandler add bvid ${bvid} failed`, err)
                         }
                     },
                 })

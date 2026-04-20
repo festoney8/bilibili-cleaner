@@ -1,9 +1,9 @@
 import { coreCheck } from '@/modules/filters/core/core'
-import settings from '@/settings'
+import config from '@/config'
 import emojiRegex from 'emoji-regex-xs'
 import { Group } from '@/types/collection'
 import { ContextMenuTargetHandler, FilterContextMenu, IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
-import { debugFilter as debug, error } from '@/utils/logger'
+import { logger } from '@/utils/logger'
 import { isPageBangumi, isPageDynamic, isPagePlaylist, isPageSpace, isPageVideo } from '@/utils/pageType'
 import ShadowInstance from '@/utils/shadow'
 import { GM_getValue, GM_setValue } from '$'
@@ -376,16 +376,16 @@ class CommentFilterCommon implements IMainFilter {
                 (v) => v.host as HTMLElement,
             )
             if (mode === 'incr') {
-                rootComments = rootComments.filter((v) => !v.hasAttribute(settings.filterVisitSign))
+                rootComments = rootComments.filter((v) => !v.hasAttribute(config.filterVisitSign))
             }
         }
         if (!rootComments.length) {
             return
         }
 
-        if (settings.enableDebugFilter) {
+        if (config.isDebugMode) {
             rootComments.forEach((v) => {
-                debug(
+                logger.debug(
                     [
                         `CommentFilterCommon rootComments`,
                         `username: ${selectorFns.root.username(v)}`,
@@ -443,7 +443,7 @@ class CommentFilterCommon implements IMainFilter {
 
         const rootBlackCnt = await coreCheck(rootComments, true, 'style', blackPairs, whitePairs, forceBlackPairs, true)
         const time = (performance.now() - timer).toFixed(1)
-        debug(
+        logger.debug(
             `CommentFilterCommon hide ${rootBlackCnt} in ${rootComments.length} root comments, mode=${mode}, time=${time}`,
         )
     }
@@ -482,16 +482,16 @@ class CommentFilterCommon implements IMainFilter {
                 (v) => v.host as HTMLElement,
             )
             if (mode === 'incr') {
-                subComments = subComments.filter((v) => !v.hasAttribute(settings.filterVisitSign))
+                subComments = subComments.filter((v) => !v.hasAttribute(config.filterVisitSign))
             }
         }
         if (!subComments.length) {
             return
         }
 
-        if (settings.enableDebugFilter) {
+        if (config.isDebugMode) {
             subComments.forEach((v) => {
-                debug(
+                logger.debug(
                     [
                         `CommentFilterCommon subComments`,
                         `username: ${selectorFns.sub.username(v)}`,
@@ -545,17 +545,17 @@ class CommentFilterCommon implements IMainFilter {
 
         const subBlackCnt = await coreCheck(subComments, false, 'style', blackPairs, whitePairs, forceBlackPairs, true)
         const time = (performance.now() - timer).toFixed(1)
-        debug(
+        logger.debug(
             `CommentFilterCommon hide ${subBlackCnt} in ${subComments.length} sub comments, mode=${mode}, time=${time}`,
         )
     }
 
     check(mode?: 'full' | 'incr') {
         this.checkRoot(mode).catch((err) => {
-            error(`CommentFilterCommon checkRoot mode=${mode} error`, err)
+            logger.error(`CommentFilterCommon checkRoot mode=${mode} error`, err)
         })
         this.checkSub(mode).catch((err) => {
-            error(`CommentFilterCommon checkSub mode=${mode} error`, err)
+            logger.error(`CommentFilterCommon checkSub mode=${mode} error`, err)
         })
     }
 
@@ -975,7 +975,7 @@ export const commentFilterCommonHandler: ContextMenuTargetHandler = (target: HTM
                         arr.unshift(username)
                         GM_setValue(GM_KEYS.black.username.valueKey, orderedUniq(arr))
                     } catch (err) {
-                        error(`commentFilterCommonHandler add username ${username} failed`, err)
+                        logger.error(`commentFilterCommonHandler add username ${username} failed`, err)
                     }
                 },
             })

@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { ISwitchItem } from '@/types/item'
-import { error } from '@/utils/logger'
+import { logger } from '@/utils/logger'
 import { GM_getValue, GM_setValue } from '$'
 import { Switch, SwitchGroup, SwitchLabel } from '@headlessui/vue'
 import { ref, watch } from 'vue'
@@ -53,7 +53,7 @@ watch(enabled, () => {
             GM_setValue(item.id, false)
         }
     } catch (err) {
-        error(`SwitchComp ${item.id} error`, err)
+        logger.error(`SwitchComp ${item.id} error`, err)
     }
 })
 </script>

@@ -1,4 +1,4 @@
-import settings from '@/settings'
+import config from '@/config'
 import { SubFilterPair } from '@/types/filter'
 import { hideEle, showEle } from '@/utils/tool'
 import { useThrottleFn } from '@vueuse/core'
@@ -54,14 +54,14 @@ const rawCheck = async (
             requestAnimationFrame(() => {
                 for (let i = 0; i < elements.length; i++) {
                     toHideIdx.has(i) ? hideEle(elements[i], hideMode) : showEle(elements[i], hideMode)
-                    enableFilterVisitSign && elements[i].setAttribute(settings.filterVisitSign, '')
+                    enableFilterVisitSign && elements[i].setAttribute(config.filterVisitSign, '')
                 }
             })
         })
     return toHideIdx.size
 }
 
-const throttledCheck = useThrottleFn(rawCheck, 50)
+const throttledCheck = useThrottleFn(rawCheck, 100, true)
 
 /**
  * 检测元素列表中每个元素是否合法, 隐藏不合法的元素

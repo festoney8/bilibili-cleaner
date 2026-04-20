@@ -1,8 +1,8 @@
 import { coreCheck } from '@/modules/filters/core/core'
-import settings from '@/settings'
+import config from '@/config'
 import { Group } from '@/types/collection'
 import { IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
-import { debugFilter as debug, error } from '@/utils/logger'
+import { logger } from '@/utils/logger'
 import { GM_getValue } from '$'
 import { convertTimeToSec, showEle, waitForEle } from '@/utils/tool'
 import {
@@ -127,7 +127,7 @@ class DynamicFilterSpace implements IMainFilter {
         // 提取元素
         let selector = `.bili-dyn-list__item`
         if (mode === 'incr') {
-            selector += `:not([${settings.filterVisitSign}])`
+            selector += `:not([${config.filterVisitSign}])`
         }
         const dyns = Array.from(this.target.querySelectorAll<HTMLElement>(selector))
         if (!dyns.length) {
@@ -138,9 +138,12 @@ class DynamicFilterSpace implements IMainFilter {
             return
         }
 
-        if (settings.enableDebugFilter) {
+        // #318
+        const filteredDyns = dyns.filter((dyn) => !!dyn.querySelector('.bili-dyn-item__body, .bili-dyn-item__header'))
+
+        if (config.isDebugMode) {
             dyns.forEach((v) => {
-                debug(
+                logger.debug(
                     [
                         `DynamicFilterSpace`,
                         `title: ${selectorFns.title(v)}`,
@@ -166,20 +169,20 @@ class DynamicFilterSpace implements IMainFilter {
         this.dynContentWhiteFilter.isEnable && whitePairs.push([this.dynContentWhiteFilter, selectorFns.content])
 
         // 检测
-        const blackCnt = await coreCheck(dyns, true, 'style', blackPairs, whitePairs)
+        const blackCnt = await coreCheck(filteredDyns, true, 'sign', blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
-        debug(`DynamicFilterSpace hide ${blackCnt} in ${dyns.length} dyns, mode=${mode}, time=${time}`)
+        logger.debug(`DynamicFilterSpace hide ${blackCnt} in ${filteredDyns.length} dyns, mode=${mode}, time=${time}`)
     }
 
     checkFull() {
         this.check('full').catch((err) => {
-            error('DynamicFilterSpace check full error', err)
+            logger.error('DynamicFilterSpace check full error', err)
         })
     }
 
     checkIncr() {
         this.check('incr').catch((err) => {
-            error('DynamicFilterSpace check incr error', err)
+            logger.error('DynamicFilterSpace check incr error', err)
         })
     }
 
@@ -189,7 +192,7 @@ class DynamicFilterSpace implements IMainFilter {
                 return
             }
 
-            debug('DynamicFilterSpace target appear')
+            logger.debug('DynamicFilterSpace target appear')
             this.target = ele
             this.checkFull()
 

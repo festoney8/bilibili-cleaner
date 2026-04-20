@@ -1,8 +1,8 @@
 import { coreCheck } from '@/modules/filters/core/core'
-import settings from '@/settings'
+import config from '@/config'
 import { Group } from '@/types/collection'
 import { ContextMenuTargetHandler, FilterContextMenu, IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
-import { debugFilter as debug, error } from '@/utils/logger'
+import { logger } from '@/utils/logger'
 import { isPageHomepage } from '@/utils/pageType'
 import { GM_getValue, GM_setValue } from '$'
 import { convertDateToDays, convertTimeToSec, matchBvid, orderedUniq, showEle, waitForEle } from '@/utils/tool'
@@ -156,7 +156,7 @@ class VideoFilterHomepage implements IMainFilter {
         // 顶部推荐位 + rcmd视频流
         let selector = `:scope > :is(.feed-card, .bili-video-card.is-rcmd, .bili-feed-card)`
         if (mode === 'incr') {
-            selector += `:not([${settings.filterVisitSign}])`
+            selector += `:not([${config.filterVisitSign}])`
         }
         const videos = Array.from(this.target.querySelectorAll<HTMLElement>(selector))
         if (!videos.length) {
@@ -167,9 +167,9 @@ class VideoFilterHomepage implements IMainFilter {
             return
         }
 
-        if (settings.enableDebugFilter) {
+        if (config.isDebugMode) {
             videos.forEach((v) => {
-                debug(
+                logger.debug(
                     [
                         `VideoFilterHomepage`,
                         `bvid: ${selectorFns.bvid(v)}`,
@@ -205,18 +205,18 @@ class VideoFilterHomepage implements IMainFilter {
         // 检测
         const blackCnt = await coreCheck(videos, true, 'sign', blackPairs, whitePairs, forceBlackPairs)
         const time = (performance.now() - timer).toFixed(1)
-        debug(`VideoFilterHomepage hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
+        logger.debug(`VideoFilterHomepage hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
     }
 
     checkFull() {
         this.check('full').catch((err) => {
-            error('VideoFilterHomepage check full error', err)
+            logger.error('VideoFilterHomepage check full error', err)
         })
     }
 
     checkIncr() {
         this.check('incr').catch((err) => {
-            error('VideoFilterHomepage check incr error', err)
+            logger.error('VideoFilterHomepage check incr error', err)
         })
     }
 
@@ -228,7 +228,7 @@ class VideoFilterHomepage implements IMainFilter {
                 return
             }
 
-            debug('VideoFilterHomepage target appear')
+            logger.debug('VideoFilterHomepage target appear')
             this.target = ele
             this.checkFull()
 
@@ -590,7 +590,7 @@ export const videoFilterHomepageHandler: ContextMenuTargetHandler = (target: HTM
                             arr.unshift(uploader)
                             GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
                         } catch (err) {
-                            error(`videoFilterHomepageHandler add uploader ${uploader} failed`, err)
+                            logger.error(`videoFilterHomepageHandler add uploader ${uploader} failed`, err)
                         }
                     },
                 })
@@ -606,7 +606,7 @@ export const videoFilterHomepageHandler: ContextMenuTargetHandler = (target: HTM
                             arr.unshift(uploader)
                             GM_setValue(GM_KEYS.white.uploader.valueKey, orderedUniq(arr))
                         } catch (err) {
-                            error(`videoFilterHomepageHandler add white uploader ${uploader} failed`, err)
+                            logger.error(`videoFilterHomepageHandler add white uploader ${uploader} failed`, err)
                         }
                     },
                 })
@@ -635,7 +635,7 @@ export const videoFilterHomepageHandler: ContextMenuTargetHandler = (target: HTM
                             arr.unshift(bvid)
                             GM_setValue(GM_KEYS.black.bvid.valueKey, orderedUniq(arr))
                         } catch (err) {
-                            error(`videoFilterHomepageHandler add bvid ${bvid} failed`, err)
+                            logger.error(`videoFilterHomepageHandler add bvid ${bvid} failed`, err)
                         }
                     },
                 })

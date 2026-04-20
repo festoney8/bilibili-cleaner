@@ -1,5 +1,5 @@
 import { ISubFilter, SelectorFn } from '@/types/filter'
-import { error } from '@/utils/logger'
+import { logger } from '@/utils/logger'
 import { toHalfWidth } from '@/utils/tool'
 
 export class KeywordFilter implements ISubFilter {
@@ -51,7 +51,7 @@ export class KeywordFilter implements ISubFilter {
                 this.mergedRegExp.push(new RegExp(regex, 'ius'))
             }
         } catch (err) {
-            error('keyword filter build RegExp error', err)
+            logger.error('keyword filter build RegExp error', err)
         }
     }
 

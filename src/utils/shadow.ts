@@ -1,4 +1,4 @@
-import { error } from './logger'
+import { logger } from '@/utils/logger'
 import { isPageBangumi, isPageDynamic, isPagePlaylist, isPageSpace, isPageVideo } from './pageType'
 
 type TagName = string
@@ -40,7 +40,7 @@ export class Shadow {
                 this.hook()
             }
         } catch (err) {
-            error('hook shadow failed', err)
+            logger.error('hook shadow failed', err)
         }
     }
 

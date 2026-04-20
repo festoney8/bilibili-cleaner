@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import { IEditorItem } from '@/types/item'
-import { error } from '@/utils/logger'
+import { logger } from '@/utils/logger'
 import { orderedUniq } from '@/utils/tool'
 import { GM_getValue, GM_setValue } from '$'
 import { onUnmounted, ref, type WatchStopHandle } from 'vue'
@@ -61,7 +61,7 @@ const openEditor = (item: IEditorItem) => {
                 GM_setValue(currentItem.value.id, data)
                 currentItem.value.saveFn()
             } catch (err) {
-                error(`EditorDialog ${currentItem.value.id} saveData error`, err)
+                logger.error(`EditorDialog ${currentItem.value.id} saveData error`, err)
             }
         },
         { debounce: 1000 },
@@ -77,7 +77,7 @@ const closeEditor = () => {
             GM_setValue(currentItem.value.id, data)
             currentItem.value.saveFn()
         } catch (err) {
-            error(`EditorDialog ${currentItem.value.id} closeEditor error`, err)
+            logger.error(`EditorDialog ${currentItem.value.id} closeEditor error`, err)
         }
     }
     isEditorShow.value = false

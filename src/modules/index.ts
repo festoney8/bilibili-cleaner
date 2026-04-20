@@ -1,6 +1,6 @@
 import { IListItem, INumberItem, IStringItem, ISwitchItem } from '@/types/item'
 import { waitForHead } from '@/utils/init'
-import { error, log } from '@/utils/logger'
+import { logger } from '@/utils/logger'
 import { GM_getValue } from '$'
 import { useMagicKeys } from '@vueuse/core'
 import { commentFilters, dynamicFilters, loadFilterStyle, videoFilters } from './filters'
@@ -78,7 +78,10 @@ const loadRules = () => {
                                 break
                         }
                     } catch (err) {
-                        error(`loadRules load item failed, id=${item.id}, name=${item.name}, type=${item.type}`, err)
+                        logger.error(
+                            `loadRules load item failed, id=${item.id}, name=${item.name}, type=${item.type}`,
+                            err,
+                        )
                     }
                 }
             }
@@ -112,7 +115,7 @@ const loadFilters = () => {
                     }
                 }
             } catch (err) {
-                error(`loadFilters filter ${filter.name} error`, err)
+                logger.error(`loadFilters filter ${filter.name} error`, err)
             }
         }
     }
@@ -146,7 +149,7 @@ const loadRulesHotKey = () => {
             },
         })
     } catch (err) {
-        error(`loadRulesHotKey error`, err)
+        logger.error(`loadRulesHotKey error`, err)
     }
 }
 
@@ -154,13 +157,13 @@ export const loadModules = () => {
     waitForHead().then(() => {
         loadRuleStyle()
         loadFilterStyle()
-        log('load style done')
+        logger.info('load style done')
     })
 
     loadRules()
     loadRulesHotKey()
-    log('loadRules done')
+    logger.info('loadRules done')
 
     loadFilters()
-    log('loadFilters done')
+    logger.info('loadFilters done')
 }

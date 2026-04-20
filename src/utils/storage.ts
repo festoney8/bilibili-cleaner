@@ -1,5 +1,5 @@
 import { GM_deleteValue, GM_getValue, GM_listValues, GM_setValue } from '$'
-import { log } from './logger'
+import { logger } from '@/utils/logger'
 
 /**
  * @version 4.4.0
@@ -19,7 +19,7 @@ export const migrate = async () => {
     }
     // 移除旧key
     keys.forEach((key) => GM_deleteValue(key))
-    log(`Migrate ${keys.length} storage keys`)
+    logger.info(`Migrate ${keys.length} storage keys`)
 
     // 部分value改名
     const renameMap: Record<string, Record<string, string>> = {
@@ -65,9 +65,9 @@ export const migrate = async () => {
             GM_setValue(key, valueMap[value])
         }
     }
-    log(`Convert storage values complete`)
+    logger.info(`Convert storage values complete`)
 
     // 标记迁移完成
     GM_setValue('__MIGRATED__', '4.4.0')
-    log(`Migrate storage complete`)
+    logger.info(`Migrate storage complete`)
 }

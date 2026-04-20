@@ -40,7 +40,7 @@
         "typescript-eslint": "^8.58.2",
         "vite": "^7.3.2",
         "vite-plugin-monkey": "^7.1.9",
-        "vue-tsc": "^3.2.6"
+        "vue-tsc": "^3.2.7"
     },
     "lint-staged": {
         "src/**/*": "prettier --write --ignore-unknown",

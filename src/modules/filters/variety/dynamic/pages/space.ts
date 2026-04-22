@@ -134,7 +134,7 @@ class DynamicFilterSpace implements IMainFilter {
             return
         }
         if (revertAll) {
-            dyns.forEach((v) => showEle(v, 'style'))
+            dyns.forEach((v) => showEle(v, 'sign'))
             return
         }
 

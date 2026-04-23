@@ -100,7 +100,7 @@ const menu = () => {
         })
     }
     GM_registerMenuCommand('⚡ 夜间模式开关', () => {
-        toggleDarkMode()
+        toggleDarkMode().catch(() => {})
     })
     GM_registerMenuCommand('⚡ 快捷按钮开关', () => {
         sideBtnStore.toggle()

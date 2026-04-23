@@ -68,7 +68,7 @@ const handleFullScreenClick = (e: MouseEvent) => {
         (target.classList.contains('bpx-player-ctrl-full') && target.classList.contains('#bilibili-player'))
     ) {
         e.stopImmediatePropagation()
-        toggleFullScreen()
+        toggleFullScreen().catch(() => {})
     }
 }
 
@@ -81,7 +81,7 @@ const handleFullScreenDblClick = (e: MouseEvent) => {
     ) {
         e.stopImmediatePropagation()
         document.querySelector<HTMLVideoElement>('#bilibili-player video')?.pause()
-        toggleFullScreen()
+        toggleFullScreen().catch(() => {})
     }
 }
 

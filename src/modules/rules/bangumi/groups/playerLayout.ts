@@ -1,12 +1,17 @@
 import { unsafeWindow } from '$'
 import { Item } from '@/types/item'
+import { playerGoTo } from '@/utils/tool'
 import { useEventListener, useThrottleFn } from '@vueuse/core'
 
 // 禁用滚动调音量
 let preventVolumeTune = false
 
-const isWebScreen = useThrottleFn(() => {
-    return unsafeWindow.player?.getManifest()?.screenKind === 2
+// 当前是否是网页全屏模式（包含全屏滚动时的小窗模式）
+const isWebScreen = useThrottleFn((): boolean => {
+    if (unsafeWindow.player?.getManifest()?.screenKind === 2) {
+        return true
+    }
+    return !!document.querySelector('#bilibili-player-wrap[class^=video_playerFullScreen]')
 }, 200)
 
 // 网页全屏或全屏时阻止滚动音量调节
@@ -24,7 +29,7 @@ for (const eventName of ['mousewheel', 'DOMMouseScroll', 'wheel']) {
 }
 
 // 全屏可滚动 = 网页全屏功能 + html/body元素申请全屏
-const toggleFullScreen = () => {
+const toggleFullScreen = async () => {
     const fullScreenStatus = (): 'ele' | 'f11' | 'not' => {
         if (document.fullscreenElement) {
             return 'ele' // 由元素申请的全屏
@@ -35,24 +40,20 @@ const toggleFullScreen = () => {
         return 'not' // 非全屏
     }
 
-    const isWebScreen = (): boolean => {
-        return !!document.querySelector("#bilibili-player [data-screen='web']")
-    }
-
     switch (fullScreenStatus()) {
         case 'ele':
             document.exitFullscreen().catch(() => {})
-            if (isWebScreen()) {
-                unsafeWindow.player?.requestStatue(0)
+            if (await isWebScreen()) {
+                playerGoTo('normal').catch(() => {})
             }
             break
         case 'f11':
-            unsafeWindow.player?.requestStatue(0)
+            playerGoTo('normal').catch(() => {})
             break
         case 'not':
             document.documentElement.requestFullscreen().catch(() => {})
-            if (!isWebScreen()) {
-                unsafeWindow.player?.requestStatue(2)
+            if (!(await isWebScreen())) {
+                playerGoTo('web').catch(() => {})
             }
             window.scrollTo(0, 0)
             break
@@ -135,6 +136,27 @@ export const bangumiPlayerLayoutItems: Item[] = [
             preventVolumeTune = false
             document.removeEventListener('click', handleFullScreenClick, true)
             document.removeEventListener('dblclick', handleFullScreenDblClick, true)
+        },
+    },
+    {
+        type: 'switch',
+        id: 'screen-scrollable-enable-mini-player',
+        name: '网页全屏滚动时 启用小窗播放器',
+        description: ['实验功能，不支持真全屏'],
+        noStyle: true,
+        enableFn: async () => {
+            useEventListener(
+                window,
+                'scroll',
+                (e: Event) => {
+                    // bangumi页面网页全屏原生支持小窗
+                    // 拦截真全屏模式scroll，避免出现小窗掉出全屏
+                    if (document.fullscreenElement) {
+                        e.stopImmediatePropagation()
+                    }
+                },
+                { capture: true, passive: true },
+            )
         },
     },
     {

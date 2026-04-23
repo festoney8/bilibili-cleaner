@@ -1,14 +1,23 @@
 import { unsafeWindow } from '$'
 import { Item } from '@/types/item'
-import { waitForEle } from '@/utils/tool'
+import { playerGoTo, waitForEle } from '@/utils/tool'
 import { wideScreenManager } from '@/utils/widePlayer'
 import { useEventListener, useThrottleFn } from '@vueuse/core'
 
 // 禁用滚动调音量
 let preventVolumeTune = false
 
-const isWebScreen = useThrottleFn(() => {
-    return unsafeWindow.player?.getManifest()?.screenKind === 2
+// 当前是否是网页全屏模式（包含全屏滚动时的小窗模式）
+const isWebScreen = useThrottleFn((): boolean => {
+    if (unsafeWindow.player?.getManifest()?.screenKind === 2) {
+        return true
+    }
+    return document.body?.classList.contains('webscreen-fix')
+}, 200)
+
+// 当前是否是mini模式
+const isMini = useThrottleFn((): boolean => {
+    return unsafeWindow.player?.getManifest()?.screenKind === 3
 }, 200)
 
 // 网页全屏或全屏时阻止滚动音量调节
@@ -26,7 +35,7 @@ for (const eventName of ['mousewheel', 'DOMMouseScroll', 'wheel']) {
 }
 
 // 全屏可滚动 = 网页全屏功能 + html/body元素申请全屏
-const toggleFullScreen = () => {
+const toggleFullScreen = async () => {
     const fullScreenStatus = (): 'ele' | 'f11' | 'not' => {
         if (document.fullscreenElement) {
             return 'ele' // 由元素申请的全屏
@@ -37,24 +46,20 @@ const toggleFullScreen = () => {
         return 'not' // 非全屏
     }
 
-    const isWebScreen = (): boolean => {
-        return !!document.querySelector("#bilibili-player [data-screen='web']")
-    }
-
     switch (fullScreenStatus()) {
         case 'ele':
             document.exitFullscreen().catch(() => {})
-            if (isWebScreen()) {
-                unsafeWindow.player?.requestStatue(0)
+            if (await isWebScreen()) {
+                playerGoTo('normal').catch(() => {})
             }
             break
         case 'f11':
-            unsafeWindow.player?.requestStatue(0)
+            playerGoTo('normal').catch(() => {})
             break
         case 'not':
             document.documentElement.requestFullscreen().catch(() => {})
-            if (!isWebScreen()) {
-                unsafeWindow.player?.requestStatue(2)
+            if (!(await isWebScreen())) {
+                playerGoTo('web').catch(() => {})
             }
             window.scrollTo(0, 0)
             break
@@ -116,32 +121,29 @@ export const videoPlayerLayoutItems: Item[] = [
         description: ['实验功能，不要与自动宽屏同时启用', '偶尔会出现载入时闪屏'],
         enableFn: async () => {
             const id = setInterval(() => {
-                if (typeof unsafeWindow.player?.requestStatue === 'function') {
-                    unsafeWindow.player
-                        .requestStatue(2)
-                        .then(() => {
-                            clearInterval(id)
-                            // 播放器占满屏幕时隐藏临时样式
-                            const id2 = setInterval(() => {
-                                const container = document.querySelector<HTMLElement>(
-                                    '#bilibili-player .bpx-player-container',
-                                )
-                                const video = document.querySelector<HTMLElement>('#bilibili-player video')
-                                if (container && video && container.getAttribute('data-screen') === 'web') {
-                                    const a = container.offsetHeight / innerHeight
-                                    const b = container.offsetWidth / innerWidth
-                                    const c = video.offsetHeight / innerHeight
-                                    if (a > 0.9 && a < 1.1 && b > 0.9 && b < 1.1 && c > 0.9 && c < 1.1) {
-                                        clearInterval(id2)
-                                        setTimeout(() => {
-                                            document.documentElement.classList.add('webscreen-loaded')
-                                        }, 1000)
-                                    }
+                playerGoTo('web')
+                    .then(() => {
+                        clearInterval(id)
+                        // 播放器占满屏幕时隐藏临时样式
+                        const id2 = setInterval(() => {
+                            const container = document.querySelector<HTMLElement>(
+                                '#bilibili-player .bpx-player-container',
+                            )
+                            const video = document.querySelector<HTMLElement>('#bilibili-player video')
+                            if (container && video && container.getAttribute('data-screen') === 'web') {
+                                const a = container.offsetHeight / innerHeight
+                                const b = container.offsetWidth / innerWidth
+                                const c = video.offsetHeight / innerHeight
+                                if (a > 0.9 && a < 1.1 && b > 0.9 && b < 1.1 && c > 0.9 && c < 1.1) {
+                                    clearInterval(id2)
+                                    setTimeout(() => {
+                                        document.documentElement.classList.add('webscreen-loaded')
+                                    }, 1000)
                                 }
-                            }, 200)
-                        })
-                        .catch(() => {})
-                }
+                            }
+                        }, 200)
+                    })
+                    .catch(() => {})
             }, 100)
         },
     },
@@ -172,6 +174,37 @@ export const videoPlayerLayoutItems: Item[] = [
             preventVolumeTune = false
             document.removeEventListener('click', handleFullScreenClick, true)
             document.removeEventListener('dblclick', handleFullScreenDblClick, true)
+        },
+    },
+    {
+        type: 'switch',
+        id: 'screen-scrollable-enable-mini-player',
+        name: '网页全屏滚动时 启用小窗播放器',
+        description: ['实验功能，不支持真全屏'],
+        noStyle: true,
+        enableFn: async () => {
+            useEventListener(
+                window,
+                'scroll',
+                async (e: Event) => {
+                    // B 站监听 scroll 检测 #arc_toolbar_report 元素位置判断是否开关小窗，拦截掉
+                    // 只接管普通网页全屏，全屏滚动时如果切小窗会掉出全屏，原因未知
+                    if (!document.fullscreenElement && (await isWebScreen())) {
+                        e.stopImmediatePropagation()
+
+                        const currIsMini = await isMini()
+                        // 向下滚动离开第一屏，mini模式
+                        if (!currIsMini && scrollY > innerHeight * 1.1) {
+                            playerGoTo('mini').catch(() => {})
+                        }
+                        // 向上滚动进入第一屏，恢复网页全屏
+                        else if (currIsMini && scrollY < innerHeight * 1.1) {
+                            playerGoTo('web').catch(() => {})
+                        }
+                    }
+                },
+                { capture: true, passive: true },
+            )
         },
     },
     {

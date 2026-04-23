@@ -1,3 +1,4 @@
+import { unsafeWindow } from '$'
 import config from '@/config'
 
 // 匹配BV号
@@ -174,5 +175,23 @@ export const runInIdle = (callback: any, waitTime: number) => {
         window.requestIdleCallback(callback)
     } else {
         setTimeout(callback, waitTime)
+    }
+}
+
+/**
+ * 切换播放器模式 helper 方法，只适用于 video 页面和 bangumi 页面
+ * @param mode 目标模式
+ */
+export const playerGoTo = async (mode: 'normal' | 'wide' | 'web' | 'mini' | 'full' | 'pip') => {
+    const map = {
+        normal: 0,
+        wide: 1,
+        web: 2,
+        mini: 3,
+        full: 4,
+        pip: 5,
+    }
+    if (typeof unsafeWindow.player?.requestStatue === 'function') {
+        return await unsafeWindow.player.requestStatue(map[mode])
     }
 }

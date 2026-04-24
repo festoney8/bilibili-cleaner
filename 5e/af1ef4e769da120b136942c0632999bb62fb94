@@ -1,0 +1,16 @@
+src/modules/rules/bangumi/groups/playerLayout.ts
+  h_090999263e14f2 76,89
+src/modules/rules/video/groups/playerLayout.ts
+  h_090999263e14f2 199
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.2",
+  "base_commit_sha": "5eaf1ef4e769da120b136942c0632999bb62fb94",
+  "prompts": {},
+  "humans": {
+    "h_090999263e14f2": {
+      "author": "festoney8"
+    }
+  }
+}

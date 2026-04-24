@@ -49,16 +49,16 @@ const toggleFullScreen = async () => {
         case 'ele':
             document.exitFullscreen().catch(() => {})
             if (await isWebScreen()) {
-                playerGoTo('normal').catch(() => {})
+                playerGoTo('normal')
             }
             break
         case 'f11':
-            playerGoTo('normal').catch(() => {})
+            playerGoTo('normal')
             break
         case 'not':
             document.documentElement.requestFullscreen().catch(() => {})
             if (!(await isWebScreen())) {
-                playerGoTo('web').catch(() => {})
+                playerGoTo('web')
             }
             window.scrollTo(0, 0)
             break

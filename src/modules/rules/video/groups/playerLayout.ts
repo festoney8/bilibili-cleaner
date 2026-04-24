@@ -50,16 +50,16 @@ const toggleFullScreen = async () => {
         case 'ele':
             document.exitFullscreen().catch(() => {})
             if (await isWebScreen()) {
-                playerGoTo('normal').catch(() => {})
+                playerGoTo('normal')
             }
             break
         case 'f11':
-            playerGoTo('normal').catch(() => {})
+            playerGoTo('normal')
             break
         case 'not':
             document.documentElement.requestFullscreen().catch(() => {})
             if (!(await isWebScreen())) {
-                playerGoTo('web').catch(() => {})
+                playerGoTo('web')
             }
             window.scrollTo(0, 0)
             break
@@ -121,29 +121,32 @@ export const videoPlayerLayoutItems: Item[] = [
         description: ['实验功能，不要与自动宽屏同时启用', '偶尔会出现载入时闪屏'],
         enableFn: async () => {
             const id = setInterval(() => {
-                playerGoTo('web')
-                    .then(() => {
-                        clearInterval(id)
-                        // 播放器占满屏幕时隐藏临时样式
-                        const id2 = setInterval(() => {
-                            const container = document.querySelector<HTMLElement>(
-                                '#bilibili-player .bpx-player-container',
-                            )
-                            const video = document.querySelector<HTMLElement>('#bilibili-player video')
-                            if (container && video && container.getAttribute('data-screen') === 'web') {
-                                const a = container.offsetHeight / innerHeight
-                                const b = container.offsetWidth / innerWidth
-                                const c = video.offsetHeight / innerHeight
-                                if (a > 0.9 && a < 1.1 && b > 0.9 && b < 1.1 && c > 0.9 && c < 1.1) {
-                                    clearInterval(id2)
-                                    setTimeout(() => {
-                                        document.documentElement.classList.add('webscreen-loaded')
-                                    }, 1000)
+                if (typeof unsafeWindow.player?.requestStatue === 'function') {
+                    unsafeWindow.player
+                        .requestStatue(2)
+                        .then(() => {
+                            clearInterval(id)
+                            // 播放器占满屏幕时隐藏临时样式
+                            const id2 = setInterval(() => {
+                                const container = document.querySelector<HTMLElement>(
+                                    '#bilibili-player .bpx-player-container',
+                                )
+                                const video = document.querySelector<HTMLElement>('#bilibili-player video')
+                                if (container && video && container.getAttribute('data-screen') === 'web') {
+                                    const a = container.offsetHeight / innerHeight
+                                    const b = container.offsetWidth / innerWidth
+                                    const c = video.offsetHeight / innerHeight
+                                    if (a > 0.9 && a < 1.1 && b > 0.9 && b < 1.1 && c > 0.9 && c < 1.1) {
+                                        clearInterval(id2)
+                                        setTimeout(() => {
+                                            document.documentElement.classList.add('webscreen-loaded')
+                                        }, 1000)
+                                    }
                                 }
-                            }
-                        }, 200)
-                    })
-                    .catch(() => {})
+                            }, 200)
+                        })
+                        .catch(() => {})
+                }
             }, 100)
         },
     },
@@ -194,11 +197,11 @@ export const videoPlayerLayoutItems: Item[] = [
                         const currIsMiniScreen = await isMiniScreen()
                         // 向下滚动离开第一屏，mini模式
                         if (!currIsMiniScreen && scrollY > innerHeight * 1.1) {
-                            playerGoTo('mini').catch(() => {})
+                            playerGoTo('mini')
                         }
                         // 向上滚动进入第一屏，恢复网页全屏
                         else if (currIsMiniScreen && scrollY < innerHeight * 1.1) {
-                            playerGoTo('web').catch(() => {})
+                            playerGoTo('web')
                         }
                     }
                 },

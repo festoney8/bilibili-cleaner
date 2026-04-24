@@ -182,7 +182,7 @@ export const runInIdle = (callback: any, waitTime: number) => {
  * 切换播放器模式 helper 方法，只适用于 video 页面和 bangumi 页面
  * @param mode 目标模式
  */
-export const playerGoTo = async (mode: 'normal' | 'wide' | 'web' | 'mini' | 'full' | 'pip') => {
+export const playerGoTo = (mode: 'normal' | 'wide' | 'web' | 'mini' | 'full' | 'pip') => {
     const map = {
         normal: 0,
         wide: 1,
@@ -192,6 +192,6 @@ export const playerGoTo = async (mode: 'normal' | 'wide' | 'web' | 'mini' | 'ful
         pip: 5,
     }
     if (typeof unsafeWindow.player?.requestStatue === 'function') {
-        return await unsafeWindow.player.requestStatue(map[mode])
+        unsafeWindow.player.requestStatue(map[mode]).catch(() => {})
     }
 }

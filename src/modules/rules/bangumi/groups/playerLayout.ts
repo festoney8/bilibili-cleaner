@@ -6,6 +6,9 @@ import { useEventListener } from '@vueuse/core'
 // 禁用滚动调音量
 let preventVolumeTune = false
 
+// 监听器清理函数
+let cleanUp = () => {}
+
 // 当前是否是网页全屏模式（包含全屏滚动时的小窗模式）
 const isWebScreen = (): boolean => {
     if (unsafeWindow.player?.getManifest()?.screenKind === 2) {
@@ -149,7 +152,7 @@ export const bangumiPlayerLayoutItems: Item[] = [
         name: '网页全屏滚动时 启用小窗播放器',
         description: ['实验功能，不支持真全屏'],
         enableFn: () => {
-            useEventListener(
+            cleanUp = useEventListener(
                 window,
                 'scroll',
                 (e: Event) => {
@@ -161,6 +164,9 @@ export const bangumiPlayerLayoutItems: Item[] = [
                 },
                 { capture: true, passive: true },
             )
+        },
+        disableFn: () => {
+            cleanUp()
         },
     },
     {

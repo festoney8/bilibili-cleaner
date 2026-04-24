@@ -6,6 +6,9 @@ import { useEventListener } from '@vueuse/core'
 
 // 禁用滚动调音量
 let preventVolumeTune = false
+// 网页全屏小窗劫持
+let hookArcToolBar = false
+let cleanUp = () => {}
 
 // 当前是否是网页全屏模式（包含全屏滚动时的小窗模式）
 const isWebScreen = (): boolean => {
@@ -185,28 +188,41 @@ export const videoPlayerLayoutItems: Item[] = [
         name: '网页全屏滚动时 启用小窗播放器',
         description: ['实验功能，不支持真全屏'],
         enableFn: () => {
-            useEventListener(
-                window,
-                'scroll',
-                (e: Event) => {
-                    // B 站监听 scroll 检测 #arc_toolbar_report 元素位置判断是否开关小窗，拦截掉
-                    // 只接管普通网页全屏，全屏滚动时如果切小窗会掉出全屏，原因未知
-                    if (!document.fullscreenElement && isWebScreen()) {
-                        e.stopImmediatePropagation()
+            // 劫持 getBoundingClientRect
+            // 网页全屏滚动时，对 arc_toolbar_report 强行返回 top=999999
+            hookArcToolBar = true
+            const orig = Element.prototype.getBoundingClientRect
+            Element.prototype.getBoundingClientRect = function () {
+                if (
+                    hookArcToolBar &&
+                    !document.fullscreenElement &&
+                    isWebScreen() &&
+                    this.id === 'arc_toolbar_report'
+                ) {
+                    const rect = orig.call(this)
+                    return { ...rect, top: 999999 }
+                }
+                return orig.call(this)
+            }
 
-                        const currIsMiniScreen = isMiniScreen()
-                        // 向下滚动离开第一屏，mini模式
-                        if (!currIsMiniScreen && scrollY >= innerHeight * 1.1) {
-                            playerGoTo('mini')
-                        }
-                        // 向上滚动进入第一屏，恢复网页全屏
-                        else if (currIsMiniScreen && scrollY < innerHeight * 1.1) {
-                            playerGoTo('web')
-                        }
+            // 网页全屏时接管小窗切换
+            cleanUp = useEventListener(window, 'scroll', () => {
+                if (!document.fullscreenElement && isWebScreen()) {
+                    const currIsMiniScreen = isMiniScreen()
+                    // 向下滚动离开第一屏，mini模式
+                    if (!currIsMiniScreen && scrollY >= innerHeight * 1.1) {
+                        playerGoTo('mini')
                     }
-                },
-                { capture: true, passive: true },
-            )
+                    // 向上滚动进入第一屏，恢复网页全屏
+                    else if (currIsMiniScreen && scrollY < innerHeight * 1.1) {
+                        playerGoTo('web')
+                    }
+                }
+            })
+        },
+        disableFn: () => {
+            hookArcToolBar = false
+            cleanUp()
         },
     },
     {

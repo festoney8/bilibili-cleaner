@@ -69,7 +69,7 @@ html[fullscreen-scrollable] {
 // 网页全屏滚动时 启用小窗播放器
 html[screen-scrollable-enable-mini-player] {
     // 隐藏小窗右上角叉号，点了会退出全屏
-    .bpx-player-mini-close {
+    #bilibili-player-wrap[class^='video_playerFullScreen'] .bpx-player-mini-close {
         display: none !important;
     }
 }

@@ -13,12 +13,12 @@ const isWebScreen = useThrottleFn((): boolean => {
         return true
     }
     return document.body?.classList.contains('webscreen-fix')
-}, 200)
+}, 100)
 
 // 当前是否是mini模式
-const isMini = useThrottleFn((): boolean => {
+const isMiniScreen = useThrottleFn((): boolean => {
     return unsafeWindow.player?.getManifest()?.screenKind === 3
-}, 200)
+}, 100)
 
 // 网页全屏或全屏时阻止滚动音量调节
 for (const eventName of ['mousewheel', 'DOMMouseScroll', 'wheel']) {
@@ -26,7 +26,7 @@ for (const eventName of ['mousewheel', 'DOMMouseScroll', 'wheel']) {
         window,
         eventName,
         async (e: WheelEvent) => {
-            if (preventVolumeTune && (await isWebScreen())) {
+            if (preventVolumeTune && (await isWebScreen()) && !(await isMiniScreen())) {
                 e.stopImmediatePropagation()
             }
         },
@@ -181,7 +181,6 @@ export const videoPlayerLayoutItems: Item[] = [
         id: 'screen-scrollable-enable-mini-player',
         name: '网页全屏滚动时 启用小窗播放器',
         description: ['实验功能，不支持真全屏'],
-        noStyle: true,
         enableFn: async () => {
             useEventListener(
                 window,
@@ -192,13 +191,13 @@ export const videoPlayerLayoutItems: Item[] = [
                     if (!document.fullscreenElement && (await isWebScreen())) {
                         e.stopImmediatePropagation()
 
-                        const currIsMini = await isMini()
+                        const currIsMiniScreen = await isMiniScreen()
                         // 向下滚动离开第一屏，mini模式
-                        if (!currIsMini && scrollY > innerHeight * 1.1) {
+                        if (!currIsMiniScreen && scrollY > innerHeight * 1.1) {
                             playerGoTo('mini').catch(() => {})
                         }
                         // 向上滚动进入第一屏，恢复网页全屏
-                        else if (currIsMini && scrollY < innerHeight * 1.1) {
+                        else if (currIsMiniScreen && scrollY < innerHeight * 1.1) {
                             playerGoTo('web').catch(() => {})
                         }
                     }

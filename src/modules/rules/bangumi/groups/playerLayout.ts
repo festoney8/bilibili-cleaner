@@ -12,7 +12,12 @@ const isWebScreen = useThrottleFn((): boolean => {
         return true
     }
     return !!document.querySelector('#bilibili-player-wrap[class^=video_playerFullScreen]')
-}, 200)
+}, 100)
+
+// 当前是否是mini模式
+const isMiniScreen = useThrottleFn((): boolean => {
+    return unsafeWindow.player?.getManifest()?.screenKind === 3
+}, 100)
 
 // 网页全屏或全屏时阻止滚动音量调节
 for (const eventName of ['mousewheel', 'DOMMouseScroll', 'wheel']) {
@@ -20,7 +25,7 @@ for (const eventName of ['mousewheel', 'DOMMouseScroll', 'wheel']) {
         window,
         eventName,
         async (e: WheelEvent) => {
-            if (preventVolumeTune && (await isWebScreen())) {
+            if (preventVolumeTune && (await isWebScreen()) && !(await isMiniScreen())) {
                 e.stopImmediatePropagation()
             }
         },
@@ -143,7 +148,6 @@ export const bangumiPlayerLayoutItems: Item[] = [
         id: 'screen-scrollable-enable-mini-player',
         name: '网页全屏滚动时 启用小窗播放器',
         description: ['实验功能，不支持真全屏'],
-        noStyle: true,
         enableFn: async () => {
             useEventListener(
                 window,

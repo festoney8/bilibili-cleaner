@@ -121,7 +121,7 @@ export const bangumiPlayerLayoutItems: Item[] = [
         type: 'switch',
         id: 'webscreen-scrollable',
         name: '网页全屏时 页面可滚动',
-        description: ['刷新生效，启用后滚轮无法调节音量'],
+        description: ['启用后滚轮无法调节音量，刷新生效'],
         enableFn: () => {
             preventVolumeTune = true
         },
@@ -134,7 +134,7 @@ export const bangumiPlayerLayoutItems: Item[] = [
         type: 'switch',
         id: 'fullscreen-scrollable',
         name: '网页全屏/真全屏时 页面可滚动',
-        description: ['刷新生效，启用后滚轮无法调节音量'],
+        description: ['启用后滚轮无法调节音量，刷新生效'],
         enableFn: () => {
             preventVolumeTune = true
             document.addEventListener('click', handleFullScreenClick, true)

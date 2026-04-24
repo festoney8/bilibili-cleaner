@@ -157,7 +157,7 @@ export const videoPlayerLayoutItems: Item[] = [
         type: 'switch',
         id: 'webscreen-scrollable',
         name: '网页全屏时 页面可滚动',
-        description: ['刷新生效，启用后滚轮无法调节音量'],
+        description: ['启用后滚轮无法调节音量，刷新生效'],
         enableFn: () => {
             preventVolumeTune = true
         },
@@ -170,7 +170,7 @@ export const videoPlayerLayoutItems: Item[] = [
         type: 'switch',
         id: 'fullscreen-scrollable',
         name: '网页全屏/真全屏时 页面可滚动',
-        description: ['刷新生效，启用后滚轮无法调节音量'],
+        description: ['启用后滚轮无法调节音量，刷新生效'],
         enableFn: () => {
             preventVolumeTune = true
             document.addEventListener('click', handleFullScreenClick, true)
@@ -189,7 +189,7 @@ export const videoPlayerLayoutItems: Item[] = [
         description: ['实验功能，不支持真全屏'],
         enableFn: () => {
             // 劫持 getBoundingClientRect
-            // 网页全屏滚动时，对 arc_toolbar_report 强行返回 top=999999
+            // 网页全屏滚动时，对小窗触发元素强行返回 top=999999
             hookArcToolBar = true
             const orig = Element.prototype.getBoundingClientRect
             Element.prototype.getBoundingClientRect = function () {
@@ -197,7 +197,7 @@ export const videoPlayerLayoutItems: Item[] = [
                     hookArcToolBar &&
                     !document.fullscreenElement &&
                     isWebScreen() &&
-                    this.id === 'arc_toolbar_report'
+                    (this.id === 'arc_toolbar_report' || this.id === 'playlistToolbar')
                 ) {
                     const rect = orig.call(this)
                     return { ...rect, top: 999999 }
@@ -210,11 +210,11 @@ export const videoPlayerLayoutItems: Item[] = [
                 if (!document.fullscreenElement && isWebScreen()) {
                     const currIsMiniScreen = isMiniScreen()
                     // 向下滚动离开第一屏，mini模式
-                    if (!currIsMiniScreen && scrollY >= innerHeight * 1.1) {
+                    if (!currIsMiniScreen && scrollY >= innerHeight * 1.05) {
                         playerGoTo('mini')
                     }
                     // 向上滚动进入第一屏，恢复网页全屏
-                    else if (currIsMiniScreen && scrollY < innerHeight * 1.1) {
+                    else if (currIsMiniScreen && scrollY < innerHeight * 1.05) {
                         playerGoTo('web')
                     }
                 }

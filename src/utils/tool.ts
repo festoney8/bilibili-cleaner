@@ -1,5 +1,6 @@
 import { unsafeWindow } from '$'
 import config from '@/config'
+import { logger } from './logger'
 
 // 匹配BV号
 const bvidPattern = /(BV[1-9A-HJ-NP-Za-km-z]+)/
@@ -192,6 +193,8 @@ export const playerGoTo = (mode: 'normal' | 'wide' | 'web' | 'mini' | 'full' | '
         pip: 5,
     }
     if (typeof unsafeWindow.player?.requestStatue === 'function') {
-        unsafeWindow.player.requestStatue(map[mode]).catch(() => {})
+        unsafeWindow.player.requestStatue(map[mode]).catch((err: unknown) => {
+            logger.error(`Failed to switch player mode to ${mode}:`, err)
+        })
     }
 }

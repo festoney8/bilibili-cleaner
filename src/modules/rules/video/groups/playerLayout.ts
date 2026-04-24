@@ -6,8 +6,8 @@ import { useEventListener } from '@vueuse/core'
 
 // 禁用滚动调音量
 let preventVolumeTune = false
-// 网页全屏小窗劫持
-let hookArcToolBar = false
+// 网页全屏时劫持小窗切换
+const origGetBoundingClientRect = Element.prototype.getBoundingClientRect
 let cleanUp = () => {}
 
 // 当前是否是网页全屏模式（包含全屏滚动时的小窗模式）
@@ -190,19 +190,16 @@ export const videoPlayerLayoutItems: Item[] = [
         enableFn: () => {
             // 劫持 getBoundingClientRect
             // 网页全屏滚动时，对小窗触发元素强行返回 top=999999
-            hookArcToolBar = true
-            const orig = Element.prototype.getBoundingClientRect
             Element.prototype.getBoundingClientRect = function () {
                 if (
-                    hookArcToolBar &&
                     !document.fullscreenElement &&
                     isWebScreen() &&
                     (this.id === 'arc_toolbar_report' || this.id === 'playlistToolbar')
                 ) {
-                    const rect = orig.call(this)
+                    const rect = origGetBoundingClientRect.call(this)
                     return { ...rect, top: 999999 }
                 }
-                return orig.call(this)
+                return origGetBoundingClientRect.call(this)
             }
 
             // 网页全屏时接管小窗切换
@@ -221,7 +218,7 @@ export const videoPlayerLayoutItems: Item[] = [
             })
         },
         disableFn: () => {
-            hookArcToolBar = false
+            Element.prototype.getBoundingClientRect = origGetBoundingClientRect
             cleanUp()
         },
     },

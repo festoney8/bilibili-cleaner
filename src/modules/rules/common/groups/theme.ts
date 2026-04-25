@@ -15,12 +15,12 @@ const themeState = useGMValue('common-theme-dark', 'off', {
     debounce: 1000,
 })
 
-export const toggleDarkMode = async () => {
+export const toggleDarkMode = () => {
     if (isDarkMode.value) {
-        await disableDarkMode()
+        disableDarkMode()
         themeState.value = 'off'
     } else {
-        await enableDarkMode()
+        enableDarkMode()
         themeState.value = 'on'
     }
 }
@@ -29,7 +29,7 @@ export const toggleDarkMode = async () => {
 let labStyleLock = false
 
 // 启用夜间模式
-const enableDarkMode = async () => {
+const enableDarkMode = () => {
     isDarkMode.value = true
 
     // 直播页设定夜间模式, 拦截其他代码修改lab-style
@@ -77,7 +77,7 @@ const enableDarkMode = async () => {
 }
 
 // 禁用夜间模式
-const disableDarkMode = async () => {
+const disableDarkMode = () => {
     isDarkMode.value = false
 
     document.documentElement.removeAttribute('common-theme-dark-page')
@@ -108,14 +108,14 @@ const disableDarkMode = async () => {
 }
 
 // 监听状态切换
-watch(themeState, async (value) => {
+watch(themeState, (value) => {
     if (value === 'on' && !isDarkMode.value) {
         isDarkMode.value = true
-        await enableDarkMode()
+        enableDarkMode()
     }
     if (value === 'off' && isDarkMode.value) {
         isDarkMode.value = false
-        await disableDarkMode()
+        disableDarkMode()
     }
 })
 
@@ -145,15 +145,15 @@ export const commonThemeItems: Item[] = [
             {
                 value: 'auto',
                 name: '跟随系统',
-                fn: async () => {
+                fn: () => {
                     const isDark = usePreferredDark()
                     watch(
                         isDark,
-                        async (v) => {
+                        (v) => {
                             if (v) {
-                                await enableDarkMode()
+                                enableDarkMode()
                             } else {
-                                await disableDarkMode()
+                                disableDarkMode()
                             }
                         },
                         { immediate: true },

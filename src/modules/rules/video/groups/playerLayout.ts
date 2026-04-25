@@ -1,23 +1,35 @@
 import { unsafeWindow } from '$'
 import { Item } from '@/types/item'
-import { waitForEle } from '@/utils/tool'
+import { playerGoTo, waitForEle } from '@/utils/tool'
 import { wideScreenManager } from '@/utils/widePlayer'
-import { useEventListener, useThrottleFn } from '@vueuse/core'
+import { useEventListener } from '@vueuse/core'
 
 // 禁用滚动调音量
 let preventVolumeTune = false
+// 网页全屏时劫持小窗切换
+const origGetBoundingClientRect = Element.prototype.getBoundingClientRect
+let cleanUp = () => {}
 
-const isWebScreen = useThrottleFn(() => {
-    return unsafeWindow.player?.getManifest()?.screenKind === 2
-}, 200)
+// 当前是否是网页全屏模式（包含全屏滚动时的小窗模式）
+const isWebScreen = (): boolean => {
+    if (unsafeWindow.player?.getManifest()?.screenKind === 2) {
+        return true
+    }
+    return document.body?.classList.contains('webscreen-fix')
+}
+
+// 当前是否是mini模式
+const isMiniScreen = (): boolean => {
+    return unsafeWindow.player?.getManifest()?.screenKind === 3
+}
 
 // 网页全屏或全屏时阻止滚动音量调节
 for (const eventName of ['mousewheel', 'DOMMouseScroll', 'wheel']) {
     useEventListener(
         window,
         eventName,
-        async (e: WheelEvent) => {
-            if (preventVolumeTune && (await isWebScreen())) {
+        (e: WheelEvent) => {
+            if (preventVolumeTune && isWebScreen() && !isMiniScreen()) {
                 e.stopImmediatePropagation()
             }
         },
@@ -37,24 +49,20 @@ const toggleFullScreen = () => {
         return 'not' // 非全屏
     }
 
-    const isWebScreen = (): boolean => {
-        return !!document.querySelector("#bilibili-player [data-screen='web']")
-    }
-
     switch (fullScreenStatus()) {
         case 'ele':
             document.exitFullscreen().catch(() => {})
             if (isWebScreen()) {
-                unsafeWindow.player?.requestStatue(0)
+                playerGoTo('normal')
             }
             break
         case 'f11':
-            unsafeWindow.player?.requestStatue(0)
+            playerGoTo('normal')
             break
         case 'not':
             document.documentElement.requestFullscreen().catch(() => {})
             if (!isWebScreen()) {
-                unsafeWindow.player?.requestStatue(2)
+                playerGoTo('web')
             }
             window.scrollTo(0, 0)
             break
@@ -91,7 +99,7 @@ export const videoPlayerLayoutItems: Item[] = [
         type: 'switch',
         id: 'default-widescreen',
         name: '自动宽屏播放',
-        enableFn: async () => {
+        enableFn: () => {
             unsafeWindow.isWide = true
             wideScreenManager.lock() // 锁定宽屏模式
             const listener = () => {
@@ -114,7 +122,7 @@ export const videoPlayerLayoutItems: Item[] = [
         id: 'default-webscreen',
         name: '自动网页全屏播放',
         description: ['实验功能，不要与自动宽屏同时启用', '偶尔会出现载入时闪屏'],
-        enableFn: async () => {
+        enableFn: () => {
             const id = setInterval(() => {
                 if (typeof unsafeWindow.player?.requestStatue === 'function') {
                     unsafeWindow.player
@@ -149,7 +157,7 @@ export const videoPlayerLayoutItems: Item[] = [
         type: 'switch',
         id: 'webscreen-scrollable',
         name: '网页全屏时 页面可滚动',
-        description: ['刷新生效，启用后滚轮无法调节音量'],
+        description: ['启用后滚轮无法调节音量，刷新生效'],
         enableFn: () => {
             preventVolumeTune = true
         },
@@ -162,8 +170,8 @@ export const videoPlayerLayoutItems: Item[] = [
         type: 'switch',
         id: 'fullscreen-scrollable',
         name: '网页全屏/真全屏时 页面可滚动',
-        description: ['刷新生效，启用后滚轮无法调节音量'],
-        enableFn: async () => {
+        description: ['启用后滚轮无法调节音量，刷新生效'],
+        enableFn: () => {
             preventVolumeTune = true
             document.addEventListener('click', handleFullScreenClick, true)
             document.addEventListener('dblclick', handleFullScreenDblClick, true)
@@ -172,6 +180,46 @@ export const videoPlayerLayoutItems: Item[] = [
             preventVolumeTune = false
             document.removeEventListener('click', handleFullScreenClick, true)
             document.removeEventListener('dblclick', handleFullScreenDblClick, true)
+        },
+    },
+    {
+        type: 'switch',
+        id: 'screen-scrollable-enable-mini-player',
+        name: '网页全屏滚动时 启用小窗播放器',
+        description: ['实验功能，不支持真全屏'],
+        enableFn: () => {
+            // 劫持 getBoundingClientRect
+            // 网页全屏滚动时，对小窗触发元素强行返回 top=999999
+            Element.prototype.getBoundingClientRect = function () {
+                if (
+                    !document.fullscreenElement &&
+                    isWebScreen() &&
+                    (this.id === 'arc_toolbar_report' || this.id === 'playlistToolbar')
+                ) {
+                    const rect = origGetBoundingClientRect.call(this)
+                    return { ...rect, top: 999999 }
+                }
+                return origGetBoundingClientRect.call(this)
+            }
+
+            // 网页全屏时接管小窗切换
+            cleanUp = useEventListener(window, 'scroll', () => {
+                if (!document.fullscreenElement && isWebScreen()) {
+                    const currIsMiniScreen = isMiniScreen()
+                    // 向下滚动离开第一屏，mini模式
+                    if (!currIsMiniScreen && scrollY >= innerHeight * 1.05) {
+                        playerGoTo('mini')
+                    }
+                    // 向上滚动进入第一屏，恢复网页全屏
+                    else if (currIsMiniScreen && scrollY < innerHeight * 1.05) {
+                        playerGoTo('web')
+                    }
+                }
+            })
+        },
+        disableFn: () => {
+            Element.prototype.getBoundingClientRect = origGetBoundingClientRect
+            cleanUp()
         },
     },
     {

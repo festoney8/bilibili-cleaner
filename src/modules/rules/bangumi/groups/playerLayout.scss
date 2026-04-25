@@ -66,6 +66,14 @@ html[fullscreen-scrollable] {
     }
 }
 
+// 网页全屏滚动时 启用小窗播放器
+html[screen-scrollable-enable-mini-player] {
+    // 隐藏小窗右上角叉号，点了会退出全屏
+    #bilibili-player-wrap[class^='video_playerFullScreen'] .bpx-player-mini-close {
+        display: none !important;
+    }
+}
+
 // 全屏滚动时 在视频底部显示顶栏
 // issue #199, 参考 https://greasyfork.org/scripts/445241
 html[screen-scrollable-move-header-bottom] {

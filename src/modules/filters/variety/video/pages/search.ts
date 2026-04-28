@@ -529,6 +529,41 @@ export const videoFilterSearchHandler: ContextMenuTargetHandler = (target: HTMLE
             })
         }
     }
+
+    // 搜索页同名用户卡片
+    if (target.closest('div.user-list')) {
+        const userList = target.closest('div.user-list')
+        const userAnchor = userList?.querySelector<HTMLAnchorElement>('a.user-name')
+        const uploader = userAnchor?.textContent?.trim()
+        const url = userAnchor?.href.trim()
+        const spaceUrl = url?.match(/space\.bilibili\.com\/\d+/)?.[0]
+
+        if (uploader) {
+            if (mainFilter.videoUploaderFilter.isEnable) {
+                menus.push({
+                    name: `屏蔽UP主：${uploader}`,
+                    fn: async () => {
+                        try {
+                            mainFilter.videoUploaderFilter.addParam(uploader)
+                            mainFilter.checkFull()
+                            const arr: string[] = GM_getValue(GM_KEYS.black.uploader.valueKey, [])
+                            arr.unshift(uploader)
+                            GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
+                        } catch (err) {
+                            logger.error(`videoFilterSearchHandler add uploader ${uploader} failed`, err)
+                        }
+                    },
+                })
+            }
+        }
+        if (spaceUrl && (mainFilter.videoUploaderFilter.isEnable || mainFilter.videoUploaderWhiteFilter.isEnable)) {
+            menus.push({
+                name: `复制主页链接`,
+                fn: () => navigator.clipboard.writeText(`https://${spaceUrl}`),
+            })
+        }
+    }
+
     // BVID
     if (target.classList.contains('bili-video-card__info--tit') || target.closest('.bili-video-card__info--tit')) {
         const url = (target.closest('a') as HTMLAnchorElement)?.href

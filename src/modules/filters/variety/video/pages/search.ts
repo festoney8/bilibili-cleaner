@@ -188,7 +188,7 @@ class VideoFilterSearch implements IMainFilter {
         if (!userName) {
             return
         }
-        if (!this.videoUploaderFilter.isEnable) {
+        if (!this.videoUploaderFilter.isEnable && !this.videoUploaderWhiteFilter.isEnable) {
             showEle(userList, 'sign')
             return
         }
@@ -198,9 +198,13 @@ class VideoFilterSearch implements IMainFilter {
         }
 
         const blackPairs: SubFilterPair[] = []
-        blackPairs.push([this.videoUploaderFilter, selectorFns.uploaderCard])
+        this.videoUploaderFilter.isEnable && blackPairs.push([this.videoUploaderFilter, selectorFns.uploaderCard])
 
-        const blackCnt = await coreCheck([userList], true, 'sign', blackPairs)
+        const whitePairs: SubFilterPair[] = []
+        this.videoUploaderWhiteFilter.isEnable &&
+            whitePairs.push([this.videoUploaderWhiteFilter, selectorFns.uploaderCard])
+
+        const blackCnt = await coreCheck([userList], true, 'sign', blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
         logger.debug(`VideoFilterSearchUserCard hide ${blackCnt} in user-list, mode=${mode}, time=${time}`)
     }
@@ -551,6 +555,22 @@ export const videoFilterSearchHandler: ContextMenuTargetHandler = (target: HTMLE
                             GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
                         } catch (err) {
                             logger.error(`videoFilterSearchHandler add uploader ${uploader} failed`, err)
+                        }
+                    },
+                })
+            }
+            if (mainFilter.videoUploaderWhiteFilter.isEnable) {
+                menus.push({
+                    name: `将UP主加入白名单`,
+                    fn: async () => {
+                        try {
+                            mainFilter.videoUploaderWhiteFilter.addParam(uploader)
+                            mainFilter.checkFull()
+                            const arr: string[] = GM_getValue(GM_KEYS.white.uploader.valueKey, [])
+                            arr.unshift(uploader)
+                            GM_setValue(GM_KEYS.white.uploader.valueKey, orderedUniq(arr))
+                        } catch (err) {
+                            logger.error(`videoFilterSearchHandler add white uploader ${uploader} failed`, err)
                         }
                     },
                 })

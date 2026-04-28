@@ -68,6 +68,9 @@ const selectorFns = {
     uploader: (video: HTMLElement): SelectorResult => {
         return video.querySelector('.bili-video-card__info--author')?.textContent?.trim()
     },
+    uploaderCard: (userCard: HTMLElement): SelectorResult => {
+        return userCard.querySelector('.user-name')?.textContent?.trim()
+    },
 }
 
 class VideoFilterSearch implements IMainFilter {
@@ -118,6 +121,14 @@ class VideoFilterSearch implements IMainFilter {
         const selector = `:where(.video.search-all-list, .search-page-video) .video-list > div`
 
         const videos = Array.from(this.target.querySelectorAll<HTMLElement>(selector))
+
+        // 同名用户卡片检测（搜索页的 div.user-list）
+        try {
+            await this.checkUserCards(mode)
+        } catch (err) {
+            logger.error('VideoFilterSearch checkUserList error', err)
+        }
+
         if (!videos.length) {
             return
         }
@@ -159,6 +170,39 @@ class VideoFilterSearch implements IMainFilter {
         const blackCnt = await coreCheck(videos, true, 'sign', blackPairs, whitePairs, forceBlackPairs)
         const time = (performance.now() - timer).toFixed(1)
         logger.debug(`VideoFilterSearch hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
+    }
+
+    // 类似上面的check方法
+    async checkUserCards(mode?: 'full' | 'incr') {
+        if (!this.target) {
+            return
+        }
+
+        const timer = performance.now()
+        // 此元素应该至多一个，命名看上去是多个
+        const userList = this.target.querySelector<HTMLDivElement>('.user-list')
+        if (!userList) {
+            return
+        }
+        const userName = userList.querySelector<HTMLAnchorElement>('a.user-name')?.textContent?.trim()
+        if (!userName) {
+            return
+        }
+        if (!this.videoUploaderFilter.isEnable) {
+            showEle(userList, 'sign')
+            return
+        }
+
+        if (config.isDebugMode) {
+            logger.debug([`VideoFilterSearchUserCard`, `uploader: ${userName}`].join('\n'))
+        }
+
+        const blackPairs: SubFilterPair[] = []
+        blackPairs.push([this.videoUploaderFilter, selectorFns.uploaderCard])
+
+        const blackCnt = await coreCheck([userList], true, 'sign', blackPairs)
+        const time = (performance.now() - timer).toFixed(1)
+        logger.debug(`VideoFilterSearchUserCard hide ${blackCnt} in user-list, mode=${mode}, time=${time}`)
     }
 
     checkFull() {

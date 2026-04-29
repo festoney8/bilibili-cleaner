@@ -122,13 +122,6 @@ class VideoFilterSearch implements IMainFilter {
 
         const videos = Array.from(this.target.querySelectorAll<HTMLElement>(selector))
 
-        // 同名用户卡片检测（搜索页的 div.user-list）
-        try {
-            await this.checkUserCards(mode)
-        } catch (err) {
-            logger.error('VideoFilterSearch checkUserList error', err)
-        }
-
         if (!videos.length) {
             return
         }
@@ -188,7 +181,11 @@ class VideoFilterSearch implements IMainFilter {
         if (!userName) {
             return
         }
-        if (!this.videoUploaderFilter.isEnable && !this.videoUploaderWhiteFilter.isEnable) {
+        if (
+            !this.videoUploaderFilter.isEnable &&
+            !this.videoUploaderKeywordFilter.isEnable &&
+            !this.videoUploaderWhiteFilter.isEnable
+        ) {
             showEle(userList, 'sign')
             return
         }
@@ -199,6 +196,8 @@ class VideoFilterSearch implements IMainFilter {
 
         const blackPairs: SubFilterPair[] = []
         this.videoUploaderFilter.isEnable && blackPairs.push([this.videoUploaderFilter, selectorFns.uploaderCard])
+        this.videoUploaderKeywordFilter.isEnable &&
+            blackPairs.push([this.videoUploaderKeywordFilter, selectorFns.uploaderCard])
 
         const whitePairs: SubFilterPair[] = []
         this.videoUploaderWhiteFilter.isEnable &&
@@ -210,6 +209,11 @@ class VideoFilterSearch implements IMainFilter {
     }
 
     checkFull() {
+        // 用户卡片检测（搜索页的 div.user-list）
+        this.checkUserCards('full').catch((err) => {
+            logger.error('VideoFilterSearch checkUserList error', err)
+        })
+        // 搜索页视频列表检测
         this.check('full').catch((err) => {
             logger.error('VideoFilterSearch check full error', err)
         })

@@ -11,6 +11,7 @@
     "dependencies": {
         "@headlessui/vue": "^1.7.23",
         "@heroicons/vue": "^2.2.0",
+        "@types/node": "^25.6.0",
         "@vueuse/core": "^12.8.2",
         "@vueuse/integrations": "^13.9.0",
         "emoji-regex-xs": "^2.0.1",
@@ -30,14 +31,14 @@
         "globals": "^15.15.0",
         "husky": "^9.1.7",
         "lint-staged": "^15.5.2",
-        "postcss": "^8.5.10",
+        "postcss": "^8.5.12",
         "prettier": "3.4.2",
         "prettier-plugin-tailwindcss": "^0.6.14",
         "stylelint": "^16.26.1",
         "stylelint-config-standard-scss": "^14.0.0",
         "tailwindcss": "^3.4.19",
         "typescript": "^5.9.3",
-        "typescript-eslint": "^8.59.0",
+        "typescript-eslint": "^8.59.1",
         "vite": "^7.3.2",
         "vite-plugin-monkey": "^7.1.9",
         "vue-tsc": "^3.2.7"
@@ -47,5 +48,5 @@
         "src/**/*.{js,mjs,cjs,ts,vue}": "npx eslint --fix",
         "src/**/*.scss": "npx stylelint --fix"
     },
-    "packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319"
+    "packageManager": "pnpm@10.33.2+sha512.a90faf6feeab71ad6c6e57f94e0fe1a12f5dcc22cd754db40ae9593eb6a3e0b6b12e3540218bb37ae083404b1f2ce6db2a4121e979829b4aff94b99f49da1cf8"
 }

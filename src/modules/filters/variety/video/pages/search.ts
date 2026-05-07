@@ -66,7 +66,10 @@ const selectorFns = {
         return (href && matchBvid(href)) ?? undefined
     },
     uploader: (video: HTMLElement): SelectorResult => {
-        return video.querySelector('.bili-video-card__info--author')?.textContent?.trim()
+        return (
+            video.querySelector('.bili-video-card__info--author')?.textContent?.trim() ||
+            video.closest('.user-list')?.querySelector('.user-name')?.textContent?.trim()
+        )
     },
     uploaderCard: (userCard: HTMLElement): SelectorResult => {
         return userCard.querySelector('.user-name')?.textContent?.trim()
@@ -119,8 +122,11 @@ class VideoFilterSearch implements IMainFilter {
 
         // 提取元素
         const selector = `:where(.video.search-all-list, .search-page-video) .video-list > div`
-
-        const videos = Array.from(this.target.querySelectorAll<HTMLElement>(selector))
+        const cardSelector = `.user-list .video-list-item`
+        const videos = [
+            ...this.target.querySelectorAll<HTMLElement>(selector),
+            ...document.querySelectorAll<HTMLElement>(cardSelector),
+        ]
 
         if (!videos.length) {
             return
@@ -539,7 +545,7 @@ export const videoFilterSearchHandler: ContextMenuTargetHandler = (target: HTMLE
     }
 
     // 搜索页同名用户卡片
-    if (target.closest('div.user-list')) {
+    if (target.closest('div.user-list .info-card')) {
         const userList = target.closest('div.user-list')
         const userAnchor = userList?.querySelector<HTMLAnchorElement>('a.user-name')
         const uploader = userAnchor?.textContent?.trim()

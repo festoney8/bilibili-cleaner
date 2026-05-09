@@ -19,7 +19,7 @@ export type Rule = {
     groups: Group[]
 
     // 附加样式
-    style?: string
+    style?: HTMLStyleElement
 
     // 特殊规则
     isSpecial?: boolean

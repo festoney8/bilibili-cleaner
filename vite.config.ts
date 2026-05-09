@@ -2,10 +2,12 @@ import vue from '@vitejs/plugin-vue'
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import monkey, { cdn } from 'vite-plugin-monkey'
+import tailwindcss from '@tailwindcss/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
+        tailwindcss(),
         vue(),
         monkey({
             entry: 'src/main.ts',
@@ -58,5 +60,8 @@ export default defineConfig({
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url)),
         },
+    },
+    css: {
+        postcss: './postcss.config.js',
     },
 })

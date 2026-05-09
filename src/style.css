@@ -1,8 +1,6 @@
 /* stylelint-disable scss/at-rule-no-unknown */
 /* stylelint-disable property-no-vendor-prefix */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
 @layer utilities {
     /* Hide scrollbar for Chrome, Safari and Opera */
@@ -18,7 +16,6 @@
 }
 
 @layer base {
-    /* change 1rem for live.bilibili.com */
     :host {
         font-family: 'PingFang SC', 'HarmonyOS_Regular', 'Helvetica Neue', 'Microsoft YaHei', sans-serif !important;
     }

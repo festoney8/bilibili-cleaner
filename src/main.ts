@@ -11,7 +11,7 @@ import {
     useSideBtnStore,
     useVideoFilterPanelStore,
 } from './stores/view'
-import css from './style.css?inline'
+import css from './style.css?style'
 import { waitForBody } from './utils/init'
 import { logger } from '@/utils/logger'
 import { isPageLive } from './utils/pageType'
@@ -22,20 +22,7 @@ const main = () => {
     const wrap = document.createElement('div')
     wrap.id = 'bili-cleaner'
     const root = wrap.attachShadow({ mode: 'open' })
-    const style = document.createElement('style')
-    style.textContent = css
-    root.appendChild(style)
-
-    /**
-     * dev mode inline css HMR
-     * @see https://github.com/lisonge/vite-plugin-monkey/blob/47ac609/playground/test-shadow-dom/src/hmr_inline_css.ts
-     */
-    if (import.meta.env.DEV && import.meta.hot) {
-        import.meta.hot.accept('./style.css?inline', (newModule: any) => {
-            const newCSS = newModule?.default as string
-            style.textContent = newCSS ?? ''
-        })
-    }
+    root.append(css)
     waitForBody().then(() => document.body.appendChild(wrap))
 
     // 创建插件面板

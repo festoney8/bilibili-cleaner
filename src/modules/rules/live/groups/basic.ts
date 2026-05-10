@@ -84,4 +84,19 @@ export const liveBasicItems: Item[] = [
         },
         enableFnRunAt: 'document-end',
     },
+    {
+        type: 'number',
+        id: 'live-page-width',
+        name: '修改 页面宽度占比 (0禁用)',
+        description: ['推荐范围 85~95'],
+        minValue: 0,
+        maxValue: 100,
+        step: 1,
+        defaultValue: 0,
+        disableValue: 0,
+        addonText: 'vw',
+        fn: (value: number) => {
+            document.documentElement.style.setProperty('--live-page-width', `${value}vw`)
+        },
+    },
 ]

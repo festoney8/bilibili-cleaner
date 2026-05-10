@@ -79,3 +79,17 @@ html[live-page-remove-wallpaper] {
         box-shadow: 0 0 12px rgb(0 0 0 / 0.2);
     }
 }
+
+// 修改 页面宽度
+html[live-page-width] {
+    body:not(.pure_room_root, .player-full-win) .live-room-app .app-content .app-body {
+        width: var(
+            --live-page-width,
+            clamp(
+                980px,
+                min(calc((100vh - 136px - 78px - 64px) * 16 / 9 + 320px + 12px + 100px), calc(100vw - 100px)),
+                3420px
+            )
+        ) !important;
+    }
+}

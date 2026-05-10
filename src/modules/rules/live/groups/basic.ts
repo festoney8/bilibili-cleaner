@@ -2,6 +2,8 @@ import { unsafeWindow } from '$'
 import { Item } from '@/types/item'
 import { logger } from '@/utils/logger'
 
+const origAppendChild = Element.prototype.appendChild
+
 export const liveBasicItems: Item[] = [
     {
         type: 'switch',
@@ -13,6 +15,22 @@ export const liveBasicItems: Item[] = [
         type: 'switch',
         id: 'live-page-default-skin',
         name: '禁用 播放器皮肤',
+        noStyle: true,
+        enableFn: () => {
+            const node = document.querySelector('head #skin-css')
+            if (node) {
+                node.remove()
+            }
+            Element.prototype.appendChild = function <T extends Node>(node: T): T {
+                if (this === document.head && node instanceof HTMLStyleElement && node.id === 'skin-css') {
+                    return node // 阻止皮肤样式注入head
+                }
+                return origAppendChild.call(this, node) as T
+            }
+        },
+        disableFn: () => {
+            Element.prototype.appendChild = origAppendChild
+        },
     },
     {
         type: 'switch',

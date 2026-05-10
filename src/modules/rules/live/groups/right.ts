@@ -15,7 +15,7 @@ export const liveRightItems: Item[] = [
     {
         type: 'switch',
         id: 'live-page-compact-danmaku',
-        name: '使弹幕列表紧凑',
+        name: '增大弹幕字号、调整间距',
         defaultEnable: true,
     },
     {

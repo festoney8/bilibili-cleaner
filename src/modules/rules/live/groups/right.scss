@@ -45,7 +45,7 @@ html[live-page-rank-list-vm] {
     }
 }
 
-// 使弹幕列表紧凑
+// 增大弹幕字号、调整间距
 html[live-page-compact-danmaku] {
     .chat-history-panel .chat-history-list .chat-item {
         padding: 3px 5px !important;
@@ -211,7 +211,7 @@ html[live-page-control-panel-icon-row] {
         display: none !important;
     }
     #chat-control-panel-vm {
-        height: 115px;
+        // height: 115px;
         min-height: unset !important;
     }
 
@@ -240,7 +240,8 @@ html[live-page-chat-input-ctnr-medal-section] {
 
 // 隐藏 发送框 发送按钮 (回车发送)
 html[live-page-chat-input-ctnr-send-btn] {
-    .bottom-actions {
+    .bottom-actions,
+    .send-btn-wrapper {
         display: none !important;
     }
     #chat-control-panel-vm {

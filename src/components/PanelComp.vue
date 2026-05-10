@@ -2,12 +2,12 @@
     <div
         ref="panel"
         :style="[panelStyle, style]"
-        class="no-scrollbar fixed z-[10000000] select-none overflow-auto overscroll-none rounded-xl bg-white shadow-lg will-change-[top,left]"
+        class="no-scrollbar fixed z-10000000 overflow-auto overscroll-none rounded-xl bg-white shadow-lg will-change-[top,left] select-none"
     >
         <div ref="bar" class="sticky top-0 z-10 w-full cursor-move bg-[#00AEEC] py-1.5 text-center">
             <div class="text-xl font-black text-white">{{ title }}</div>
             <i
-                class="absolute right-0 top-0 m-1 cursor-pointer text-white hover:rounded-full hover:bg-white hover:bg-opacity-40"
+                class="absolute top-0 right-0 m-1 cursor-pointer text-white hover:rounded-full hover:bg-white/40"
                 @click="emit('close')"
             >
                 <svg

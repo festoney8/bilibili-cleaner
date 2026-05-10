@@ -1,10 +1,13 @@
 <template>
     <div
-        class="group fixed flex flex-col justify-end text-opacity-50 will-change-[right,bottom] hover:text-opacity-100"
+        class="group fixed flex flex-col justify-end will-change-[right,bottom]"
         v-if="sideBtnStore.isShow"
         ref="target"
         :style="{ right: btnPos.right + 'px', bottom: btnPos.bottom + 'px' }"
-        :class="[isDarkMode ? 'text-white' : 'text-black', isPageBangumi() || isPageVideo() ? 'z-[100]' : 'z-[2000]']"
+        :class="[
+            isDarkMode ? 'text-white/50 hover:text-white' : 'text-black/50 hover:text-black',
+            isPageBangumi() || isPageVideo() ? 'z-100' : 'z-2000',
+        ]"
     >
         <div
             class="mt-1 h-10 w-10 cursor-pointer items-center justify-center rounded-lg border transition-colors hover:border-none hover:bg-[#00AEEC] hover:text-white"
@@ -19,8 +22,8 @@
             @click="btn.click()"
         >
             <div>
-                <p class="select-none text-center text-[13px] leading-4">{{ btn.text.value.substring(0, 2) }}</p>
-                <p class="select-none text-center text-[13px] leading-4">{{ btn.text.value.substring(2, 4) }}</p>
+                <p class="text-center text-[13px] leading-4 select-none">{{ btn.text.value.substring(0, 2) }}</p>
+                <p class="text-center text-[13px] leading-4 select-none">{{ btn.text.value.substring(2, 4) }}</p>
             </div>
         </div>
     </div>

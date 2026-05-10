@@ -3,11 +3,13 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import monkey, { cdn } from 'vite-plugin-monkey'
 import tailwindcss from '@tailwindcss/vite'
+import tailwindShadowDOM from 'vite-plugin-tailwind-shadowdom'
 
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
         tailwindcss(),
+        tailwindShadowDOM(),
         vue(),
         monkey({
             entry: 'src/main.ts',

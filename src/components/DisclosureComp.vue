@@ -2,7 +2,7 @@
     <div class="mx-auto w-full bg-white p-1.5">
         <Disclosure v-slot="{ open }" :default-open="!isFold">
             <DisclosureButton
-                class="flex w-full justify-between rounded-lg px-4 py-1.5 text-left font-bold outline-none"
+                class="flex w-full justify-between rounded-lg px-4 py-1.5 text-left font-bold outline-hidden"
                 :class="{
                     'bg-blue-100/60 text-blue-900 hover:bg-blue-100': !isSpecial,
                     'bg-purple-100/60 text-purple-900 hover:bg-purple-100': isSpecial,
@@ -11,15 +11,15 @@
                 <span>{{ title || 'Disclosure Title' }}</span>
                 <ChevronUpIcon
                     :class="{
-                        'rotate-180': open,
-                        'rotate-90': !open,
+                        'rotate-180 transition-transform': open,
+                        'rotate-90 transition-transform': !open,
                         'text-blue-500': !isSpecial,
                         'text-purple-500': isSpecial,
                     }"
                     class="h-6 w-6"
                 />
             </DisclosureButton>
-            <DisclosurePanel :unmount="false" class="pl-3 pr-2 pt-2 text-gray-500">
+            <DisclosurePanel :unmount="false" class="pt-2 pr-2 pl-3 text-gray-500">
                 <slot />
             </DisclosurePanel>
         </Disclosure>

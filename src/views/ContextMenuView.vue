@@ -1,7 +1,7 @@
 <template>
     <div
         v-if="show"
-        class="fixed z-[100000] block cursor-pointer overflow-hidden rounded-md bg-white text-[15px] text-black shadow-lg shadow-black/20"
+        class="fixed z-100000 block cursor-pointer overflow-hidden rounded-md bg-white text-[15px] text-black shadow-lg shadow-black/20"
         :style="{ left: pos.left + 'px', top: pos.top + 'px' }"
     >
         <div v-for="(menu, index) in menuList" :key="index">
@@ -9,7 +9,7 @@
                 <span class="mr-0.5">◎</span>
                 {{ menu.name }}
             </div>
-            <hr v-if="index < menuList.length - 1" />
+            <hr class="border-gray-300" v-if="index < menuList.length - 1" />
         </div>
     </div>
 </template>

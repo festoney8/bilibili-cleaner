@@ -1,11 +1,11 @@
 <template>
-    <div class="mb-0.5 mt-1 flex items-center py-1 text-black">
+    <div class="mt-1 mb-0.5 flex items-center py-1 text-black">
         <div>{{ name }}</div>
         <input
             type="text"
             v-model="currValue"
             @keydown.stop
-            class="ml-4 block flex-1 rounded-md border border-gray-300 bg-white p-1.5 text-sm outline-none invalid:border-red-500 focus:border-gray-500 focus:invalid:border-red-500"
+            class="ml-4 block flex-1 rounded-md border border-gray-300 bg-white p-1.5 text-sm outline-hidden invalid:border-red-500 focus:border-gray-500 focus:invalid:border-red-500"
         />
     </div>
     <DescriptionComp v-if="description?.length" :description="description"></DescriptionComp>

@@ -1,8 +1,9 @@
 # CHANGELOG
 
-## 4.4.3
+## 4.5.0
 
 - 新增：搜索页 UP主过滤、视频过滤支持用户卡片
+- 更新：升级到 pnpm11, vite8, monkey v8, tailwind v4
 
 ## 4.4.2
 

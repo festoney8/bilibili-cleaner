@@ -56,7 +56,7 @@ export const videoBasicItems: Item[] = [
                         }
                     }
                     return url
-                } catch (err) {
+                } catch {
                     return url
                 }
             }

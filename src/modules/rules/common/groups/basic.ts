@@ -160,7 +160,7 @@ export const commonBasicItems: Item[] = [
 
                     urlObj.search = params.toString().replace(/\/$/, '')
                     return urlObj.toString()
-                } catch (err) {
+                } catch {
                     return url
                 }
             }

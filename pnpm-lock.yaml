@@ -70,8 +70,8 @@ importers:
         specifier: ^9.1.7
         version: 9.1.7
       lint-staged:
-        specifier: ^17.0.3
-        version: 17.0.3
+        specifier: ^17.0.4
+        version: 17.0.4
       prettier:
         specifier: ^3.8.3
         version: 3.8.3
@@ -94,8 +94,8 @@ importers:
         specifier: ^8.0.11
         version: 8.0.11(@types/node@25.6.2)(jiti@2.7.0)(sass-embedded@1.99.0)(sass@1.99.0)(yaml@2.8.4)
       vite-plugin-monkey:
-        specifier: ^8.0.1
-        version: 8.0.1(postcss@8.5.14)(vite@8.0.11(@types/node@25.6.2)(jiti@2.7.0)(sass-embedded@1.99.0)(sass@1.99.0)(yaml@2.8.4))
+        specifier: ^8.0.3
+        version: 8.0.3(postcss@8.5.14)(vite@8.0.11(@types/node@25.6.2)(jiti@2.7.0)(sass-embedded@1.99.0)(sass@1.99.0)(yaml@2.8.4))
       vite-plugin-tailwind-shadowdom:
         specifier: ^1.1.1
         version: 1.1.1(vite@8.0.11(@types/node@25.6.2)(jiti@2.7.0)(sass-embedded@1.99.0)(sass@1.99.0)(yaml@2.8.4))
@@ -1007,8 +1007,8 @@ packages:
     resolution: {integrity: sha512-BLrgEcRTwX2o6gGxGOCNyMvGSp35YofuYzw9h1IMTRmKqttAZZVU67bdb9Pr2vUHA8+j3i2tJfjO6C6+4myGTA==}
     engines: {node: 18 || 20 || >=22}
 
-  baseline-browser-mapping@2.10.28:
-    resolution: {integrity: sha512-Ic44hnOtFIgravCunj1ifSoQPSUrkNiJuH9Mf6jr2jjoA74icqV8wU0KuadXeOR8zuIJMOoTv0GuQjZ9ZYNMeA==}
+  baseline-browser-mapping@2.10.29:
+    resolution: {integrity: sha512-Asa2krT+XTPZINCS+2QcyS8WTkObE77RwkydwF7h6DmnKqbvlalz93m/dnphUyCa6SWSP51VgtEUf2FN+gelFQ==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -1629,8 +1629,8 @@ packages:
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
 
-  lint-staged@17.0.3:
-    resolution: {integrity: sha512-wnvMRhzC3GNpjixxleiG+pAW09dHTUgBCjMS7XouAg5E7wKUc8YdfogpF7zIgvXKDbH+452O6+XpnKm6V67rPw==}
+  lint-staged@17.0.4:
+    resolution: {integrity: sha512-+rU9lSUyVOZ/hDUmRLVGzyS2v73cDdQjX+XQz1AaOdIE4RysLq0HoPW2HrrgeNCLklkhi904VBU1bmgWLHVnkA==}
     engines: {node: '>=22.22.1'}
     hasBin: true
 
@@ -2268,8 +2268,8 @@ packages:
   varint@6.0.0:
     resolution: {integrity: sha512-cXEIW6cfr15lFv563k4GuVuW/fiwjknytD37jIOLSdSWuOI6WnO/oKwmP2FQTU2l01LP8/M5TSAJpzUaGe3uWg==}
 
-  vite-plugin-monkey@8.0.1:
-    resolution: {integrity: sha512-+kPRsixZ2mLKhmVRQ7shx0EYJKNKn7vq/Li9qwMYMSZRgGntWlFDlfjnMArYstbn+7mKBLZAsmIz/m8EWSBpeQ==}
+  vite-plugin-monkey@8.0.3:
+    resolution: {integrity: sha512-7e1p8gjsHVvr+ZcHtDR/bNTFyljuiaIA9yAKBPDLYxuAcKarCbZok1TdjUYJX8xTibELWnnHKChEGHeoHM287Q==}
     peerDependencies:
       vite: ^8.0.0
     peerDependenciesMeta:
@@ -3157,7 +3157,7 @@ snapshots:
 
   balanced-match@4.0.4: {}
 
-  baseline-browser-mapping@2.10.28: {}
+  baseline-browser-mapping@2.10.29: {}
 
   birpc@2.3.0: {}
 
@@ -3182,7 +3182,7 @@ snapshots:
 
   browserslist@4.28.2:
     dependencies:
-      baseline-browser-mapping: 2.10.28
+      baseline-browser-mapping: 2.10.29
       caniuse-lite: 1.0.30001792
       electron-to-chromium: 1.5.353
       node-releases: 2.0.38
@@ -3700,7 +3700,7 @@ snapshots:
 
   lines-and-columns@1.2.4: {}
 
-  lint-staged@17.0.3:
+  lint-staged@17.0.4:
     dependencies:
       listr2: 10.2.1
       picomatch: 4.0.4
@@ -4343,7 +4343,7 @@ snapshots:
 
   varint@6.0.0: {}
 
-  vite-plugin-monkey@8.0.1(postcss@8.5.14)(vite@8.0.11(@types/node@25.6.2)(jiti@2.7.0)(sass-embedded@1.99.0)(sass@1.99.0)(yaml@2.8.4)):
+  vite-plugin-monkey@8.0.3(postcss@8.5.14)(vite@8.0.11(@types/node@25.6.2)(jiti@2.7.0)(sass-embedded@1.99.0)(sass@1.99.0)(yaml@2.8.4)):
     dependencies:
       acorn-walk: 8.3.5
       cross-spawn: 7.0.6

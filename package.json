@@ -32,7 +32,7 @@
         "eslint-plugin-vue": "^10.9.1",
         "globals": "^17.6.0",
         "husky": "^9.1.7",
-        "lint-staged": "^17.0.3",
+        "lint-staged": "^17.0.4",
         "prettier": "^3.8.3",
         "sass-embedded": "^1.99.0",
         "stylelint": "^17.11.0",
@@ -40,7 +40,7 @@
         "typescript": "^6.0.3",
         "typescript-eslint": "^8.59.2",
         "vite": "^8.0.11",
-        "vite-plugin-monkey": "^8.0.1",
+        "vite-plugin-monkey": "^8.0.3",
         "vite-plugin-tailwind-shadowdom": "^1.1.1",
         "vue-tsc": "^3.2.8"
     },

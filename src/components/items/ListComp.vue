@@ -4,7 +4,7 @@
         <Listbox v-model="selectedOption">
             <div class="relative w-2/5">
                 <ListboxButton
-                    class="relative w-full cursor-pointer rounded-lg bg-white px-3 py-1.5 text-left ring-1 ring-gray-300 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-1 focus-visible:ring-gray-500 focus-visible:ring-white/75 sm:text-sm"
+                    class="relative w-full cursor-pointer rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-left outline-hidden focus-visible:border-indigo-500 sm:text-sm"
                 >
                     <span class="block truncate text-gray-800">{{ selectedOption.name }}</span>
                     <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -18,7 +18,7 @@
                     leave-to-class="opacity-0"
                 >
                     <ListboxOptions
-                        class="no-scrollbar absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
+                        class="no-scrollbar absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-hidden sm:text-sm"
                     >
                         <ListboxOption
                             v-slot="{ active, selected }"
@@ -30,7 +30,7 @@
                             <li
                                 :class="[
                                     active ? 'bg-purple-100 text-black' : 'text-gray-900',
-                                    'relative cursor-default py-2 pl-10 pr-4 transition-colors duration-200',
+                                    'relative cursor-default py-2 pr-4 pl-10 transition-colors duration-200',
                                 ]"
                             >
                                 <span :class="[selected ? 'font-medium' : 'font-normal', 'block truncate']">{{

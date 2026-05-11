@@ -1,11 +1,11 @@
 <template>
-    <SwitchGroup class="m-0.5 h-fit w-full rounded-lg py-1 hover:bg-blue-50 hover:bg-opacity-50">
+    <SwitchGroup class="m-0.5 h-fit w-full rounded-lg py-1 hover:bg-blue-50/50">
         <div class="flex items-center">
             <SwitchLabel class="flex flex-1 flex-row text-black">
                 <Switch
                     v-model="enabled"
                     :class="enabled ? 'bg-[#00AEEC]' : 'bg-gray-200'"
-                    class="relative inline-flex h-6 w-11 items-center rounded-full outline-none transition-colors"
+                    class="relative inline-flex h-6 w-11 items-center rounded-full outline-hidden transition-colors"
                 >
                     <span
                         :class="enabled ? 'translate-x-6' : 'translate-x-1'"

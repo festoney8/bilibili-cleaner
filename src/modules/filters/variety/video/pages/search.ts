@@ -66,7 +66,13 @@ const selectorFns = {
         return (href && matchBvid(href)) ?? undefined
     },
     uploader: (video: HTMLElement): SelectorResult => {
-        return video.querySelector('.bili-video-card__info--author')?.textContent?.trim()
+        return (
+            video.querySelector('.bili-video-card__info--author')?.textContent?.trim() ||
+            video.closest('.user-list')?.querySelector('.user-name')?.textContent?.trim()
+        )
+    },
+    uploaderCard: (userCard: HTMLElement): SelectorResult => {
+        return userCard.querySelector('.user-name')?.textContent?.trim()
     },
 }
 
@@ -116,8 +122,12 @@ class VideoFilterSearch implements IMainFilter {
 
         // 提取元素
         const selector = `:where(.video.search-all-list, .search-page-video) .video-list > div`
+        const cardSelector = `.user-list .video-list-item`
+        const videos = [
+            ...this.target.querySelectorAll<HTMLElement>(selector),
+            ...document.querySelectorAll<HTMLElement>(cardSelector),
+        ]
 
-        const videos = Array.from(this.target.querySelectorAll<HTMLElement>(selector))
         if (!videos.length) {
             return
         }
@@ -161,7 +171,55 @@ class VideoFilterSearch implements IMainFilter {
         logger.debug(`VideoFilterSearch hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
     }
 
+    // 类似上面的check方法
+    async checkUserCards(mode?: 'full' | 'incr') {
+        if (!this.target) {
+            return
+        }
+
+        const timer = performance.now()
+        // 此元素应该至多一个，命名看上去是多个
+        const userList = this.target.querySelector<HTMLDivElement>('.user-list')
+        if (!userList) {
+            return
+        }
+        const userName = userList.querySelector<HTMLAnchorElement>('a.user-name')?.textContent?.trim()
+        if (!userName) {
+            return
+        }
+        if (
+            !this.videoUploaderFilter.isEnable &&
+            !this.videoUploaderKeywordFilter.isEnable &&
+            !this.videoUploaderWhiteFilter.isEnable
+        ) {
+            showEle(userList, 'sign')
+            return
+        }
+
+        if (config.isDebugMode) {
+            logger.debug([`VideoFilterSearchUserCard`, `uploader: ${userName}`].join('\n'))
+        }
+
+        const blackPairs: SubFilterPair[] = []
+        this.videoUploaderFilter.isEnable && blackPairs.push([this.videoUploaderFilter, selectorFns.uploaderCard])
+        this.videoUploaderKeywordFilter.isEnable &&
+            blackPairs.push([this.videoUploaderKeywordFilter, selectorFns.uploaderCard])
+
+        const whitePairs: SubFilterPair[] = []
+        this.videoUploaderWhiteFilter.isEnable &&
+            whitePairs.push([this.videoUploaderWhiteFilter, selectorFns.uploaderCard])
+
+        const blackCnt = await coreCheck([userList], true, 'sign', blackPairs, whitePairs)
+        const time = (performance.now() - timer).toFixed(1)
+        logger.debug(`VideoFilterSearchUserCard hide ${blackCnt} in user-list, mode=${mode}, time=${time}`)
+    }
+
     checkFull() {
+        // 用户卡片检测（搜索页的 div.user-list）
+        this.checkUserCards('full').catch((err) => {
+            logger.error('VideoFilterSearch checkUserList error', err)
+        })
+        // 搜索页视频列表检测
         this.check('full').catch((err) => {
             logger.error('VideoFilterSearch check full error', err)
         })
@@ -485,6 +543,57 @@ export const videoFilterSearchHandler: ContextMenuTargetHandler = (target: HTMLE
             })
         }
     }
+
+    // 搜索页同名用户卡片
+    if (target.closest('div.user-list .info-card')) {
+        const userList = target.closest('div.user-list')
+        const userAnchor = userList?.querySelector<HTMLAnchorElement>('a.user-name')
+        const uploader = userAnchor?.textContent?.trim()
+        const url = userAnchor?.href.trim()
+        const spaceUrl = url?.match(/space\.bilibili\.com\/\d+/)?.[0]
+
+        if (uploader) {
+            if (mainFilter.videoUploaderFilter.isEnable) {
+                menus.push({
+                    name: `屏蔽UP主：${uploader}`,
+                    fn: async () => {
+                        try {
+                            mainFilter.videoUploaderFilter.addParam(uploader)
+                            mainFilter.checkFull()
+                            const arr: string[] = GM_getValue(GM_KEYS.black.uploader.valueKey, [])
+                            arr.unshift(uploader)
+                            GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
+                        } catch (err) {
+                            logger.error(`videoFilterSearchHandler add uploader ${uploader} failed`, err)
+                        }
+                    },
+                })
+            }
+            if (mainFilter.videoUploaderWhiteFilter.isEnable) {
+                menus.push({
+                    name: `将UP主加入白名单`,
+                    fn: async () => {
+                        try {
+                            mainFilter.videoUploaderWhiteFilter.addParam(uploader)
+                            mainFilter.checkFull()
+                            const arr: string[] = GM_getValue(GM_KEYS.white.uploader.valueKey, [])
+                            arr.unshift(uploader)
+                            GM_setValue(GM_KEYS.white.uploader.valueKey, orderedUniq(arr))
+                        } catch (err) {
+                            logger.error(`videoFilterSearchHandler add white uploader ${uploader} failed`, err)
+                        }
+                    },
+                })
+            }
+        }
+        if (spaceUrl && (mainFilter.videoUploaderFilter.isEnable || mainFilter.videoUploaderWhiteFilter.isEnable)) {
+            menus.push({
+                name: `复制主页链接`,
+                fn: () => navigator.clipboard.writeText(`https://${spaceUrl}`),
+            })
+        }
+    }
+
     // BVID
     if (target.classList.contains('bili-video-card__info--tit') || target.closest('.bili-video-card__info--tit')) {
         const url = (target.closest('a') as HTMLAnchorElement)?.href

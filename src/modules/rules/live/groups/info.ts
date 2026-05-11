@@ -13,53 +13,13 @@ export const liveInfoItems: Item[] = [
     },
     {
         type: 'switch',
-        id: 'live-page-head-info-vm-upper-row-visited',
-        name: '隐藏 xx人看过',
+        id: 'live-page-head-info-vm-upper-row-hotrank',
+        name: '隐藏 榜单',
     },
     {
         type: 'switch',
-        id: 'live-page-head-info-vm-upper-row-popular',
-        name: '隐藏 人气',
-    },
-    {
-        type: 'switch',
-        id: 'live-page-head-info-vm-upper-row-like',
-        name: '隐藏 点赞',
-    },
-    {
-        type: 'switch',
-        id: 'live-page-head-info-vm-upper-row-report',
-        name: '隐藏 举报',
-        defaultEnable: true,
-    },
-    {
-        type: 'switch',
-        id: 'live-page-head-info-vm-upper-row-cut',
-        name: '隐藏 剪辑',
-        defaultEnable: true,
-    },
-    {
-        type: 'switch',
-        id: 'live-page-head-info-vm-upper-row-share',
-        name: '隐藏 分享',
-        defaultEnable: true,
-    },
-    {
-        type: 'switch',
-        id: 'live-page-head-info-vm-lower-row-hot-rank',
-        name: '隐藏 人气榜',
-        defaultEnable: true,
-    },
-    {
-        type: 'switch',
-        id: 'live-page-head-info-vm-lower-row-gift-planet-entry',
-        name: '隐藏 礼物',
-    },
-    {
-        type: 'switch',
-        id: 'live-page-head-info-vm-lower-row-activity-gather-entry',
+        id: 'live-page-head-info-vm-upper-row-activity',
         name: '隐藏 活动',
-        defaultEnable: true,
     },
     {
         type: 'switch',

@@ -1,8 +1,8 @@
 <template>
-    <label class="flex w-full py-1 hover:bg-blue-50 hover:bg-opacity-50">
+    <label class="flex w-full py-1 hover:bg-blue-50/50">
         <button
             type="button"
-            class="inline-flex justify-center rounded-md border border-transparent bg-white px-2 py-1 text-sm text-blue-900 outline-none ring-1 ring-gray-300 hover:ring-blue-500 focus:outline-none focus-visible:ring-1 focus-visible:ring-gray-500 focus-visible:ring-offset-1"
+            class="inline-flex justify-center rounded-md border border-gray-300 bg-white px-2 py-1 text-sm text-blue-900 outline-hidden"
             @click="emit('edit', item)"
         >
             编辑

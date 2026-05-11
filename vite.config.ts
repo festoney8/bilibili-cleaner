@@ -2,17 +2,21 @@ import vue from '@vitejs/plugin-vue'
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import monkey, { cdn } from 'vite-plugin-monkey'
+import tailwindcss from '@tailwindcss/vite'
+import tailwindShadowDOM from 'vite-plugin-tailwind-shadowdom'
 
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
+        tailwindcss(),
+        tailwindShadowDOM(),
         vue(),
         monkey({
             entry: 'src/main.ts',
             userscript: {
                 name: 'bilibili 页面净化大师',
                 namespace: 'http://tampermonkey.net/',
-                version: '4.4.2',
+                version: '4.5.0',
                 description:
                     '净化 B站/哔哩哔哩 页面，支持「精简功能、播放器净化、过滤视频、过滤评论、全站黑白名单」，提供 300+ 功能，定制自己的 B 站',
                 author: 'festoney8',
@@ -58,5 +62,8 @@ export default defineConfig({
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url)),
         },
+    },
+    css: {
+        postcss: './postcss.config.js',
     },
 })

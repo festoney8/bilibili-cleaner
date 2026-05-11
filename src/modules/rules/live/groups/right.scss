@@ -50,6 +50,11 @@ html[live-page-rank-list-vm-fold] {
         overflow: unset;
     }
 
+    // 字号
+    #rank-list-vm .tab-list .tab-item {
+        font-size: 14px !important;
+    }
+
     // 弹幕栏
     body:not(.hide-aside-area.player-full-win) #aside-area-vm {
         display: flex;

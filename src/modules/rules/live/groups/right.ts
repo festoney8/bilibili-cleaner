@@ -2,6 +2,21 @@ import { Item } from '@/types/item'
 
 export const liveRightItems: Item[] = [
     {
+        type: 'number',
+        id: 'live-page-danmaku-font-size',
+        name: '调整 弹幕列表字号',
+        description: ['设为 0 禁用，推荐范围 13~17'],
+        minValue: 0,
+        maxValue: 20,
+        step: 1,
+        defaultValue: 15,
+        disableValue: 0,
+        addonText: 'px',
+        fn: (value: number) => {
+            document.documentElement.style.setProperty('--live-page-danmaku-font-size', `${value}px`)
+        },
+    },
+    {
         type: 'switch',
         id: 'live-page-rank-list-vm-fold',
         name: '折叠 排行榜/大航海',
@@ -11,12 +26,6 @@ export const liveRightItems: Item[] = [
         type: 'switch',
         id: 'live-page-rank-list-vm',
         name: '隐藏 排行榜/大航海',
-    },
-    {
-        type: 'switch',
-        id: 'live-page-compact-danmaku',
-        name: '增大弹幕字号、调整间距',
-        defaultEnable: true,
     },
     {
         type: 'switch',

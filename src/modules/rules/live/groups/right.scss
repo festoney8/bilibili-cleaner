@@ -1,3 +1,40 @@
+// 调整 弹幕列表字号
+html[live-page-danmaku-font-size] {
+    $font-size: var(--live-page-danmaku-font-size, 15px);
+
+    .chat-history-panel .chat-history-list .chat-item {
+        padding: calc($font-size / 5) 5px !important;
+        font-size: $font-size !important;
+        .danmaku-item-right {
+            line-height: 1.3 !important;
+        }
+        &.chat-colorful-bubble,
+        &.has-bubble {
+            margin: 2px 0 !important;
+        }
+
+        .user-name {
+            font-size: $font-size !important;
+        }
+        .reply-uname {
+            font-size: $font-size !important;
+        }
+        .reply-uname .common-nickname-wrapper {
+            font-size: $font-size !important;
+        }
+
+        // super chat
+        .card-item-middle-bottom .text {
+            font-size: calc($font-size - 1px) !important;
+        }
+    }
+
+    // super chat
+    #pay-note-panel-vm .card-item-middle-bottom .text {
+        font-size: calc($font-size - 1px) !important;
+    }
+}
+
 // 折叠 排行榜/大航海
 html[live-page-rank-list-vm-fold] {
     #rank-list-vm {
@@ -42,38 +79,6 @@ html[live-page-rank-list-vm] {
     }
     .chat-history-panel .danmaku-at-prompt {
         bottom: 160px;
-    }
-}
-
-// 增大弹幕字号、调整间距
-html[live-page-compact-danmaku] {
-    .chat-history-panel .chat-history-list .chat-item {
-        padding: 3px 5px !important;
-        font-size: 15px !important;
-        &.chat-colorful-bubble,
-        &.has-bubble {
-            margin: 2px 0 !important;
-        }
-
-        .user-name {
-            font-size: 15px !important;
-        }
-        .reply-uname {
-            font-size: 15px !important;
-        }
-        .reply-uname .common-nickname-wrapper {
-            font-size: 15px !important;
-        }
-
-        // super chat
-        .card-item-middle-bottom .text {
-            font-size: 14px !important;
-        }
-    }
-
-    // super chat
-    #pay-note-panel-vm .card-item-middle-bottom .text {
-        font-size: 14px !important;
     }
 }
 

@@ -1,8 +1,9 @@
 import { unsafeWindow } from '$'
 import { Item } from '@/types/item'
+import { waitForHead } from '@/utils/init'
 import { logger } from '@/utils/logger'
 
-const origAppendChild = Element.prototype.appendChild
+let observer: MutationObserver | undefined
 
 export const liveBasicItems: Item[] = [
     {
@@ -17,19 +18,29 @@ export const liveBasicItems: Item[] = [
         name: '禁用 播放器皮肤',
         noStyle: true,
         enableFn: () => {
-            const node = document.querySelector('head #skin-css')
-            if (node) {
-                node.remove()
+            const style = document.querySelector<HTMLStyleElement>('head #skin-css')
+            if (style) {
+                style.disabled = true
             }
-            Element.prototype.appendChild = function <T extends Node>(node: T): T {
-                if (this === document.head && node instanceof HTMLStyleElement && node.id === 'skin-css') {
-                    return node // 阻止皮肤样式注入head
+            observer = new MutationObserver((mutations) => {
+                for (const mutation of mutations) {
+                    for (const node of mutation.addedNodes) {
+                        if (node instanceof HTMLStyleElement && node.id === 'skin-css') {
+                            node.disabled = true
+                        }
+                    }
                 }
-                return origAppendChild.call(this, node) as T
-            }
+            })
+            waitForHead().then(() => {
+                observer?.observe(document.head, { childList: true })
+            })
         },
         disableFn: () => {
-            Element.prototype.appendChild = origAppendChild
+            observer?.disconnect()
+            const style = document.querySelector<HTMLStyleElement>('head #skin-css')
+            if (style) {
+                style.disabled = false
+            }
         },
     },
     {

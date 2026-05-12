@@ -124,27 +124,13 @@ const loadFilters = () => {
 /** 快捷键 Alt + B，快速禁用全部 CSS 样式 */
 const loadRulesHotKey = () => {
     try {
-        let isEnable = true
-        const toggle = () => {
-            const cssNodes = document.querySelectorAll<HTMLStyleElement>('style.bili-cleaner-css')
-            if (isEnable) {
-                for (const node of cssNodes) {
-                    node.innerHTML = '/*' + node.innerHTML + '*/'
-                }
-            } else {
-                for (const node of cssNodes) {
-                    node.innerHTML = node.innerHTML.replace(/^\/\*[\s\n]*|[\s\n]*\*\/$/g, '')
-                }
-            }
-            isEnable = !isEnable
-        }
-
         useMagicKeys({
             passive: false,
             onEventFired(e) {
                 if (e.type === 'keydown' && e.altKey && e.key.toLocaleLowerCase() === 'b') {
                     e.preventDefault()
-                    toggle()
+                    const styleNodes = document.querySelectorAll<HTMLStyleElement>('style.bili-cleaner-css')
+                    styleNodes.forEach((node) => (node.disabled = !node.disabled))
                 }
             },
         })

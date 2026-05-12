@@ -223,6 +223,9 @@ html[live-page-control-panel-icon-row] {
     #chat-control-panel-vm {
         // height: 115px;
         min-height: unset !important;
+        .chat-input-ctnr {
+            margin-top: 0 !important;
+        }
     }
 
     // 弹幕栏
@@ -243,8 +246,8 @@ html[live-page-chat-input-ctnr-medal-section] {
     .medal-section {
         display: none !important;
     }
-    .chat-input-new {
-        padding: 10px 5px !important;
+    .chat-input-area textarea {
+        padding: 9px 0 0 !important;
     }
 }
 

@@ -3,7 +3,7 @@ import { Item } from '@/types/item'
 import { waitForHead } from '@/utils/init'
 import { logger } from '@/utils/logger'
 
-let observer: MutationObserver
+let observer: MutationObserver | undefined
 
 export const liveBasicItems: Item[] = [
     {
@@ -32,13 +32,11 @@ export const liveBasicItems: Item[] = [
                 }
             })
             waitForHead().then(() => {
-                observer.observe(document.head, { childList: true })
+                observer?.observe(document.head, { childList: true })
             })
         },
         disableFn: () => {
-            if (observer) {
-                observer.disconnect()
-            }
+            observer?.disconnect()
             const style = document.querySelector<HTMLStyleElement>('head #skin-css')
             if (style) {
                 style.disabled = false

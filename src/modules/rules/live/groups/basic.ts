@@ -1,8 +1,28 @@
 import { unsafeWindow } from '$'
 import { Item } from '@/types/item'
+import { waitForHead } from '@/utils/init'
 import { logger } from '@/utils/logger'
 
-const origAppendChild = Element.prototype.appendChild
+let observer: MutationObserver
+
+const nodeComment = (node: Node | undefined | null, enable: boolean) => {
+    if (!node || !(node instanceof HTMLElement)) {
+        return
+    }
+    const inner = node.innerHTML.trim()
+    if (!inner) {
+        return
+    }
+    if (enable) {
+        if (!inner.startsWith('/*') && !inner.endsWith('*/')) {
+            node.innerHTML = '/*' + inner + '*/'
+        }
+    } else {
+        if (inner.startsWith('/*') && inner.endsWith('*/')) {
+            node.innerHTML = inner.slice(2, -2).trim()
+        }
+    }
+}
 
 export const liveBasicItems: Item[] = [
     {
@@ -17,19 +37,25 @@ export const liveBasicItems: Item[] = [
         name: '禁用 播放器皮肤',
         noStyle: true,
         enableFn: () => {
-            const node = document.querySelector('head #skin-css')
-            if (node) {
-                node.remove()
-            }
-            Element.prototype.appendChild = function <T extends Node>(node: T): T {
-                if (this === document.head && node instanceof HTMLStyleElement && node.id === 'skin-css') {
-                    return node // 阻止皮肤样式注入head
+            nodeComment(document.querySelector('head #skin-css'), true)
+            observer = new MutationObserver((mutations) => {
+                for (const mutation of mutations) {
+                    for (const node of mutation.addedNodes) {
+                        if (node instanceof HTMLStyleElement && node.id === 'skin-css') {
+                            nodeComment(node, true)
+                        }
+                    }
                 }
-                return origAppendChild.call(this, node) as T
-            }
+            })
+            waitForHead().then(() => {
+                observer.observe(document.head, { childList: true })
+            })
         },
         disableFn: () => {
-            Element.prototype.appendChild = origAppendChild
+            if (observer) {
+                observer.disconnect()
+            }
+            nodeComment(document.querySelector('head #skin-css'), false)
         },
     },
     {

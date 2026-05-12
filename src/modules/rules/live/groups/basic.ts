@@ -5,25 +5,6 @@ import { logger } from '@/utils/logger'
 
 let observer: MutationObserver
 
-const nodeComment = (node: Node | undefined | null, enable: boolean) => {
-    if (!node || !(node instanceof HTMLElement)) {
-        return
-    }
-    const inner = node.innerHTML.trim()
-    if (!inner) {
-        return
-    }
-    if (enable) {
-        if (!inner.startsWith('/*') && !inner.endsWith('*/')) {
-            node.innerHTML = '/*' + inner + '*/'
-        }
-    } else {
-        if (inner.startsWith('/*') && inner.endsWith('*/')) {
-            node.innerHTML = inner.slice(2, -2).trim()
-        }
-    }
-}
-
 export const liveBasicItems: Item[] = [
     {
         type: 'switch',
@@ -37,12 +18,15 @@ export const liveBasicItems: Item[] = [
         name: '禁用 播放器皮肤',
         noStyle: true,
         enableFn: () => {
-            nodeComment(document.querySelector('head #skin-css'), true)
+            const style = document.querySelector<HTMLStyleElement>('head #skin-css')
+            if (style) {
+                style.disabled = true
+            }
             observer = new MutationObserver((mutations) => {
                 for (const mutation of mutations) {
                     for (const node of mutation.addedNodes) {
                         if (node instanceof HTMLStyleElement && node.id === 'skin-css') {
-                            nodeComment(node, true)
+                            node.disabled = true
                         }
                     }
                 }
@@ -55,7 +39,10 @@ export const liveBasicItems: Item[] = [
             if (observer) {
                 observer.disconnect()
             }
-            nodeComment(document.querySelector('head #skin-css'), false)
+            const style = document.querySelector<HTMLStyleElement>('head #skin-css')
+            if (style) {
+                style.disabled = false
+            }
         },
     },
     {

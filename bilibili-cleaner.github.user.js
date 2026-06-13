@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      4.5.1
+// @version      4.5.2
 // @author       festoney8
 // @description  净化 B站/哔哩哔哩 页面，支持「精简功能、播放器净化、过滤视频、过滤评论、全站黑白名单」，提供 300+ 功能，定制自己的 B 站
 // @license      MIT
@@ -29,7 +29,7 @@
 // @exclude      *://www.bilibili.com/blackboard/comment-detail.html*
 // @exclude      *://www.bilibili.com/blackboard/newplayer.html*
 // @exclude      *://www.bilibili.com/appeal/*
-// @require      https://registry.npmmirror.com/vue/3.5.34/files/dist/vue.global.prod.js
+// @require      https://registry.npmmirror.com/vue/3.5.38/files/dist/vue.global.prod.js
 // @grant        GM_addValueChangeListener
 // @grant        GM_deleteValue
 // @grant        GM_getValue
@@ -42,7 +42,7 @@
 // ==/UserScript==
 
 (async function(vue) {
-  'use strict';
+	"use strict";
 	var __create = Object.create;
 	var __defProp = Object.defineProperty;
 	var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -64,14 +64,14 @@
 		enumerable: true
 	}) : target, mod));
 	vue = __toESM(vue);
-	var _GM_addValueChangeListener = typeof GM_addValueChangeListener != "undefined" ? GM_addValueChangeListener : void 0;
-	var _GM_deleteValue = typeof GM_deleteValue != "undefined" ? GM_deleteValue : void 0;
-	var _GM_getValue = typeof GM_getValue != "undefined" ? GM_getValue : void 0;
-	var _GM_listValues = typeof GM_listValues != "undefined" ? GM_listValues : void 0;
-	var _GM_registerMenuCommand = typeof GM_registerMenuCommand != "undefined" ? GM_registerMenuCommand : void 0;
-	var _GM_removeValueChangeListener = typeof GM_removeValueChangeListener != "undefined" ? GM_removeValueChangeListener : void 0;
-	var _GM_setValue = typeof GM_setValue != "undefined" ? GM_setValue : void 0;
-	var _unsafeWindow = typeof unsafeWindow != "undefined" ? unsafeWindow : void 0;
+	var _GM_addValueChangeListener = (() => typeof GM_addValueChangeListener != "undefined" ? GM_addValueChangeListener : void 0)();
+	var _GM_deleteValue = (() => typeof GM_deleteValue != "undefined" ? GM_deleteValue : void 0)();
+	var _GM_getValue = (() => typeof GM_getValue != "undefined" ? GM_getValue : void 0)();
+	var _GM_listValues = (() => typeof GM_listValues != "undefined" ? GM_listValues : void 0)();
+	var _GM_registerMenuCommand = (() => typeof GM_registerMenuCommand != "undefined" ? GM_registerMenuCommand : void 0)();
+	var _GM_removeValueChangeListener = (() => typeof GM_removeValueChangeListener != "undefined" ? GM_removeValueChangeListener : void 0)();
+	var _GM_setValue = (() => typeof GM_setValue != "undefined" ? GM_setValue : void 0)();
+	var _unsafeWindow = (() => typeof unsafeWindow != "undefined" ? unsafeWindow : void 0)();
 	var IS_CLIENT = typeof window !== "undefined";
 	var activePinia;
 	var setActivePinia = (pinia) => activePinia = pinia;
@@ -85,7 +85,7 @@
 		MutationType["patchObject"] = "patch object";
 		MutationType["patchFunction"] = "patch function";
 	})(MutationType || (MutationType = {}));
-	var _global$1 = typeof window === "object" && window.window === window ? window : typeof self === "object" && self.self === self ? self : typeof global === "object" && global.global === global ? global : typeof globalThis === "object" ? globalThis : { HTMLElement: null };
+	var _global$1 = (() => typeof window === "object" && window.window === window ? window : typeof self === "object" && self.self === self ? self : typeof global === "object" && global.global === global ? global : typeof globalThis === "object" ? globalThis : { HTMLElement: null })();
 	function bom(blob, { autoBom = false } = {}) {
 		if (autoBom && /^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(blob.type)) return new Blob([String.fromCharCode(65279), blob], { type: blob.type });
 		return blob;
@@ -134,7 +134,7 @@
 		}
 	}
 	var _navigator = typeof navigator === "object" ? navigator : { userAgent: "" };
-	var isMacOSWebView = /Macintosh/.test(_navigator.userAgent) && /AppleWebKit/.test(_navigator.userAgent) && !/Safari/.test(_navigator.userAgent);
+	var isMacOSWebView = (() => /Macintosh/.test(_navigator.userAgent) && /AppleWebKit/.test(_navigator.userAgent) && !/Safari/.test(_navigator.userAgent))();
 	var saveAs = !IS_CLIENT ? () => {} : typeof HTMLAnchorElement !== "undefined" && "download" in HTMLAnchorElement.prototype && !isMacOSWebView ? downloadSaveAs : "msSaveOrOpenBlob" in _navigator ? msSaveAs : fileSaverSaveAs;
 	function downloadSaveAs(blob, name = "download", opts) {
 		const a = document.createElement("a");
@@ -924,7 +924,7 @@
 				},
 				close(l) {
 					n.closeDisclosure();
-					(l ? l instanceof HTMLElement ? l : l.value instanceof HTMLElement ? o$3(l) : o$3(n.button) : o$3(n.button))?.focus();
+					(() => l ? l instanceof HTMLElement ? l : l.value instanceof HTMLElement ? o$3(l) : o$3(n.button) : o$3(n.button))()?.focus();
 				}
 			};
 			return (0, vue.provide)(T, n), t((0, vue.computed)(() => u$5(s.value, {
@@ -3746,7 +3746,8 @@
 		"AI小精灵呀",
 		"AI课程教学",
 		"Ai好记",
-		"MilkyAi"
+		"MilkyAi",
+		"视频AI问答助手"
 	];
 	var botsSet = new Set(bots);
 	var BooleanFilter = class {
@@ -3897,7 +3898,7 @@
 	var CommentIsNoteFilter = class extends BooleanFilter {};
 	var CommentIsLinkFilter = class extends BooleanFilter {};
 	var CommentIsMeFilter = class extends BooleanFilter {};
-	var GM_KEYS$9 = {
+	var GM_KEYS$10 = {
 		black: {
 			username: {
 				statusKey: "video-comment-username-filter-status",
@@ -3935,7 +3936,7 @@
 		}
 	};
 	var emojiPattern = emoji_regex_xs_default();
-	var selectorFns$9 = {
+	var selectorFns$10 = {
 		root: {
 			username: (comment) => {
 				return comment.__data?.member?.uname?.trim();
@@ -4072,10 +4073,10 @@
 		commentIsLinkFilter = new CommentIsLinkFilter();
 		commentIsMeFilter = new CommentIsMeFilter();
 		init() {
-			this.commentUsernameFilter.setParam(_GM_getValue(GM_KEYS$9.black.username.valueKey, []));
-			this.commentUsernameKeywordFilter.setParam(_GM_getValue(GM_KEYS$9.black.usernameKeyword.valueKey, []));
-			this.commentContentFilter.setParam(_GM_getValue(GM_KEYS$9.black.content.valueKey, []));
-			this.commentLevelFilter.setParam(_GM_getValue(GM_KEYS$9.black.level.valueKey, 0));
+			this.commentUsernameFilter.setParam(_GM_getValue(GM_KEYS$10.black.username.valueKey, []));
+			this.commentUsernameKeywordFilter.setParam(_GM_getValue(GM_KEYS$10.black.usernameKeyword.valueKey, []));
+			this.commentContentFilter.setParam(_GM_getValue(GM_KEYS$10.black.content.valueKey, []));
+			this.commentLevelFilter.setParam(_GM_getValue(GM_KEYS$10.black.level.valueKey, 0));
 			this.commentBotFilter.setParam(bots);
 			this.commentAdFilter.setParam([`/(bili2233\\.cn|b23\\.tv)\\/(mall-|cm-)|领券|gaoneng\\.bilibili\\.com/`]);
 		}
@@ -4092,20 +4093,20 @@
 			if (config_default.isDebugMode) rootComments.forEach((v) => {
 				logger.debug([
 					`CommentFilterCommon rootComments`,
-					`username: ${selectorFns$9.root.username(v)}`,
-					`content: ${selectorFns$9.root.content(v)}`,
-					`callUser: ${selectorFns$9.root.callUser(v)}`,
-					`callUserNoReply: ${selectorFns$9.root.callUserNoReply(v)}`,
-					`callUserOnly: ${selectorFns$9.root.callUserOnly(v)}`,
-					`callUserOnlyNoReply: ${selectorFns$9.root.callUserOnlyNoReply(v)}`,
-					`level: ${selectorFns$9.root.level(v)}`,
-					`noface: ${selectorFns$9.root.noface(v)}`,
-					`isUp: ${selectorFns$9.root.isUp(v)}`,
-					`isPin: ${selectorFns$9.root.isPin(v)}`,
-					`isNote: ${selectorFns$9.root.isNote(v)}`,
-					`isLink: ${selectorFns$9.root.isLink(v)}`,
-					`isMe: ${selectorFns$9.root.isMe(v)}`,
-					`emojiOnly: ${selectorFns$9.root.emojiOnly(v)}`
+					`username: ${selectorFns$10.root.username(v)}`,
+					`content: ${selectorFns$10.root.content(v)}`,
+					`callUser: ${selectorFns$10.root.callUser(v)}`,
+					`callUserNoReply: ${selectorFns$10.root.callUserNoReply(v)}`,
+					`callUserOnly: ${selectorFns$10.root.callUserOnly(v)}`,
+					`callUserOnlyNoReply: ${selectorFns$10.root.callUserOnlyNoReply(v)}`,
+					`level: ${selectorFns$10.root.level(v)}`,
+					`noface: ${selectorFns$10.root.noface(v)}`,
+					`isUp: ${selectorFns$10.root.isUp(v)}`,
+					`isPin: ${selectorFns$10.root.isPin(v)}`,
+					`isNote: ${selectorFns$10.root.isNote(v)}`,
+					`isLink: ${selectorFns$10.root.isLink(v)}`,
+					`isMe: ${selectorFns$10.root.isMe(v)}`,
+					`emojiOnly: ${selectorFns$10.root.emojiOnly(v)}`
 				].join("\n"));
 			});
 			if (isRootWhite || revertAll) {
@@ -4113,26 +4114,26 @@
 				return;
 			}
 			const blackPairs = [];
-			this.commentUsernameFilter.isEnable && blackPairs.push([this.commentUsernameFilter, selectorFns$9.root.username]);
-			this.commentUsernameKeywordFilter.isEnable && blackPairs.push([this.commentUsernameKeywordFilter, selectorFns$9.root.username]);
-			this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns$9.root.content]);
-			this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns$9.root.level]);
-			this.commentNoFaceFilter.isEnable && blackPairs.push([this.commentNoFaceFilter, selectorFns$9.root.noface]);
-			this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns$9.root.username]);
-			this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns$9.root.callBot]);
-			this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns$9.root.callUser]);
-			this.commentCallUserNoReplyFilter.isEnable && blackPairs.push([this.commentCallUserNoReplyFilter, selectorFns$9.root.callUserNoReply]);
-			this.commentCallUserOnlyFilter.isEnable && blackPairs.push([this.commentCallUserOnlyFilter, selectorFns$9.root.callUserOnly]);
-			this.commentCallUserOnlyNoReplyFilter.isEnable && blackPairs.push([this.commentCallUserOnlyNoReplyFilter, selectorFns$9.root.callUserOnlyNoReply]);
-			this.commentEmojiOnlyFilter.isEnable && blackPairs.push([this.commentEmojiOnlyFilter, selectorFns$9.root.emojiOnly]);
+			this.commentUsernameFilter.isEnable && blackPairs.push([this.commentUsernameFilter, selectorFns$10.root.username]);
+			this.commentUsernameKeywordFilter.isEnable && blackPairs.push([this.commentUsernameKeywordFilter, selectorFns$10.root.username]);
+			this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns$10.root.content]);
+			this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns$10.root.level]);
+			this.commentNoFaceFilter.isEnable && blackPairs.push([this.commentNoFaceFilter, selectorFns$10.root.noface]);
+			this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns$10.root.username]);
+			this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns$10.root.callBot]);
+			this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns$10.root.callUser]);
+			this.commentCallUserNoReplyFilter.isEnable && blackPairs.push([this.commentCallUserNoReplyFilter, selectorFns$10.root.callUserNoReply]);
+			this.commentCallUserOnlyFilter.isEnable && blackPairs.push([this.commentCallUserOnlyFilter, selectorFns$10.root.callUserOnly]);
+			this.commentCallUserOnlyNoReplyFilter.isEnable && blackPairs.push([this.commentCallUserOnlyNoReplyFilter, selectorFns$10.root.callUserOnlyNoReply]);
+			this.commentEmojiOnlyFilter.isEnable && blackPairs.push([this.commentEmojiOnlyFilter, selectorFns$10.root.emojiOnly]);
 			const whitePairs = [];
-			this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns$9.root.isUp]);
-			this.commentIsPinFilter.isEnable && whitePairs.push([this.commentIsPinFilter, selectorFns$9.root.isPin]);
-			this.commentIsNoteFilter.isEnable && whitePairs.push([this.commentIsNoteFilter, selectorFns$9.root.isNote]);
-			this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns$9.root.isLink]);
-			this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns$9.root.isMe]);
+			this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns$10.root.isUp]);
+			this.commentIsPinFilter.isEnable && whitePairs.push([this.commentIsPinFilter, selectorFns$10.root.isPin]);
+			this.commentIsNoteFilter.isEnable && whitePairs.push([this.commentIsNoteFilter, selectorFns$10.root.isNote]);
+			this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns$10.root.isLink]);
+			this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns$10.root.isMe]);
 			const forceBlackPairs = [];
-			this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns$9.root.content]);
+			this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns$10.root.content]);
 			const rootBlackCnt = await coreCheck(rootComments, true, "style", blackPairs, whitePairs, forceBlackPairs, true);
 			const time = (performance.now() - timer).toFixed(1);
 			logger.debug(`CommentFilterCommon hide ${rootBlackCnt} in ${rootComments.length} root comments, mode=${mode}, time=${time}`);
@@ -4150,18 +4151,18 @@
 			if (config_default.isDebugMode) subComments.forEach((v) => {
 				logger.debug([
 					`CommentFilterCommon subComments`,
-					`username: ${selectorFns$9.sub.username(v)}`,
-					`content: ${selectorFns$9.sub.content(v)}`,
-					`callUser: ${selectorFns$9.sub.callUser(v)}`,
-					`callUserNoReply: ${selectorFns$9.sub.callUserNoReply(v)}`,
-					`callUserOnly: ${selectorFns$9.sub.callUserOnly(v)}`,
-					`callUserOnlyNoReply: ${selectorFns$9.sub.callUserOnlyNoReply(v)}`,
-					`level: ${selectorFns$9.sub.level(v)}`,
-					`noface: ${selectorFns$9.sub.noface(v)}`,
-					`isUp: ${selectorFns$9.sub.isUp(v)}`,
-					`isLink: ${selectorFns$9.sub.isLink(v)}`,
-					`isMe: ${selectorFns$9.sub.isMe(v)}`,
-					`emojiOnly: ${selectorFns$9.sub.emojiOnly(v)}`
+					`username: ${selectorFns$10.sub.username(v)}`,
+					`content: ${selectorFns$10.sub.content(v)}`,
+					`callUser: ${selectorFns$10.sub.callUser(v)}`,
+					`callUserNoReply: ${selectorFns$10.sub.callUserNoReply(v)}`,
+					`callUserOnly: ${selectorFns$10.sub.callUserOnly(v)}`,
+					`callUserOnlyNoReply: ${selectorFns$10.sub.callUserOnlyNoReply(v)}`,
+					`level: ${selectorFns$10.sub.level(v)}`,
+					`noface: ${selectorFns$10.sub.noface(v)}`,
+					`isUp: ${selectorFns$10.sub.isUp(v)}`,
+					`isLink: ${selectorFns$10.sub.isLink(v)}`,
+					`isMe: ${selectorFns$10.sub.isMe(v)}`,
+					`emojiOnly: ${selectorFns$10.sub.emojiOnly(v)}`
 				].join("\n"));
 			});
 			if (isSubWhite || revertAll) {
@@ -4169,24 +4170,24 @@
 				return;
 			}
 			const blackPairs = [];
-			this.commentUsernameFilter.isEnable && blackPairs.push([this.commentUsernameFilter, selectorFns$9.sub.username]);
-			this.commentUsernameKeywordFilter.isEnable && blackPairs.push([this.commentUsernameKeywordFilter, selectorFns$9.sub.username]);
-			this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns$9.sub.content]);
-			this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns$9.sub.level]);
-			this.commentNoFaceFilter.isEnable && blackPairs.push([this.commentNoFaceFilter, selectorFns$9.sub.noface]);
-			this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns$9.sub.username]);
-			this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns$9.sub.callBot]);
-			this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns$9.sub.callUser]);
-			this.commentCallUserNoReplyFilter.isEnable && blackPairs.push([this.commentCallUserNoReplyFilter, selectorFns$9.sub.callUserNoReply]);
-			this.commentCallUserOnlyFilter.isEnable && blackPairs.push([this.commentCallUserOnlyFilter, selectorFns$9.sub.callUserOnly]);
-			this.commentCallUserOnlyNoReplyFilter.isEnable && blackPairs.push([this.commentCallUserOnlyNoReplyFilter, selectorFns$9.sub.callUserOnlyNoReply]);
-			this.commentEmojiOnlyFilter.isEnable && blackPairs.push([this.commentEmojiOnlyFilter, selectorFns$9.sub.emojiOnly]);
+			this.commentUsernameFilter.isEnable && blackPairs.push([this.commentUsernameFilter, selectorFns$10.sub.username]);
+			this.commentUsernameKeywordFilter.isEnable && blackPairs.push([this.commentUsernameKeywordFilter, selectorFns$10.sub.username]);
+			this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns$10.sub.content]);
+			this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns$10.sub.level]);
+			this.commentNoFaceFilter.isEnable && blackPairs.push([this.commentNoFaceFilter, selectorFns$10.sub.noface]);
+			this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns$10.sub.username]);
+			this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns$10.sub.callBot]);
+			this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns$10.sub.callUser]);
+			this.commentCallUserNoReplyFilter.isEnable && blackPairs.push([this.commentCallUserNoReplyFilter, selectorFns$10.sub.callUserNoReply]);
+			this.commentCallUserOnlyFilter.isEnable && blackPairs.push([this.commentCallUserOnlyFilter, selectorFns$10.sub.callUserOnly]);
+			this.commentCallUserOnlyNoReplyFilter.isEnable && blackPairs.push([this.commentCallUserOnlyNoReplyFilter, selectorFns$10.sub.callUserOnlyNoReply]);
+			this.commentEmojiOnlyFilter.isEnable && blackPairs.push([this.commentEmojiOnlyFilter, selectorFns$10.sub.emojiOnly]);
 			const whitePairs = [];
-			this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns$9.sub.isUp]);
-			this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns$9.sub.isLink]);
-			this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns$9.sub.isMe]);
+			this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns$10.sub.isUp]);
+			this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns$10.sub.isLink]);
+			this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns$10.sub.isMe]);
 			const forceBlackPairs = [];
-			this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns$9.sub.content]);
+			this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns$10.sub.content]);
 			const subBlackCnt = await coreCheck(subComments, false, "style", blackPairs, whitePairs, forceBlackPairs, true);
 			const time = (performance.now() - timer).toFixed(1);
 			logger.debug(`CommentFilterCommon hide ${subBlackCnt} in ${subComments.length} sub comments, mode=${mode}, time=${time}`);
@@ -4214,11 +4215,11 @@
 			});
 		}
 	};
-	var mainFilter$9 = new CommentFilterCommon();
+	var mainFilter$10 = new CommentFilterCommon();
 	var commentFilterCommonEntry = async () => {
-		mainFilter$9.init();
-		mainFilter$9.commentIsMeFilter.enable();
-		mainFilter$9.observe();
+		mainFilter$10.init();
+		mainFilter$10.commentIsMeFilter.enable();
+		mainFilter$10.observe();
 	};
 	var commentFilterCommonGroups = [
 		{
@@ -4226,47 +4227,47 @@
 			items: [
 				{
 					type: "switch",
-					id: GM_KEYS$9.black.username.statusKey,
+					id: GM_KEYS$10.black.username.statusKey,
 					name: "启用 评论用户过滤 (右键单击用户名)",
 					noStyle: true,
 					enableFn: () => {
-						mainFilter$9.commentUsernameFilter.enable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentUsernameFilter.enable();
+						mainFilter$10.check("full");
 					},
 					disableFn: () => {
-						mainFilter$9.commentUsernameFilter.disable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentUsernameFilter.disable();
+						mainFilter$10.check("full");
 					}
 				},
 				{
 					type: "editor",
-					id: GM_KEYS$9.black.username.valueKey,
+					id: GM_KEYS$10.black.username.valueKey,
 					name: "编辑 评论用户黑名单",
 					description: ["本黑名单与UP主黑名单互不影响", "右键屏蔽的用户会出现在首行"],
 					editorTitle: "评论区 用户黑名单",
 					editorDescription: ["每行一个用户名，保存时自动去重"],
 					saveFn: async () => {
-						mainFilter$9.commentUsernameFilter.setParam(_GM_getValue(GM_KEYS$9.black.username.valueKey, []));
-						mainFilter$9.check("full");
+						mainFilter$10.commentUsernameFilter.setParam(_GM_getValue(GM_KEYS$10.black.username.valueKey, []));
+						mainFilter$10.check("full");
 					}
 				},
 				{
 					type: "switch",
-					id: GM_KEYS$9.black.usernameKeyword.statusKey,
+					id: GM_KEYS$10.black.usernameKeyword.statusKey,
 					name: "启用 评论用户昵称关键词过滤",
 					noStyle: true,
 					enableFn: () => {
-						mainFilter$9.commentUsernameKeywordFilter.enable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentUsernameKeywordFilter.enable();
+						mainFilter$10.check("full");
 					},
 					disableFn: () => {
-						mainFilter$9.commentUsernameKeywordFilter.disable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentUsernameKeywordFilter.disable();
+						mainFilter$10.check("full");
 					}
 				},
 				{
 					type: "editor",
-					id: GM_KEYS$9.black.usernameKeyword.valueKey,
+					id: GM_KEYS$10.black.usernameKeyword.valueKey,
 					name: "编辑 评论用户昵称关键词黑名单",
 					editorTitle: "评论区 用户黑名单",
 					editorDescription: [
@@ -4275,8 +4276,8 @@
 						"正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
 					],
 					saveFn: async () => {
-						mainFilter$9.commentUsernameKeywordFilter.setParam(_GM_getValue(GM_KEYS$9.black.usernameKeyword.valueKey, []));
-						mainFilter$9.check("full");
+						mainFilter$10.commentUsernameKeywordFilter.setParam(_GM_getValue(GM_KEYS$10.black.usernameKeyword.valueKey, []));
+						mainFilter$10.check("full");
 					}
 				}
 			]
@@ -4285,20 +4286,20 @@
 			name: "评论内容过滤",
 			items: [{
 				type: "switch",
-				id: GM_KEYS$9.black.content.statusKey,
+				id: GM_KEYS$10.black.content.statusKey,
 				name: "启用 评论关键词过滤",
 				noStyle: true,
 				enableFn: () => {
-					mainFilter$9.commentContentFilter.enable();
-					mainFilter$9.check("full");
+					mainFilter$10.commentContentFilter.enable();
+					mainFilter$10.check("full");
 				},
 				disableFn: () => {
-					mainFilter$9.commentContentFilter.disable();
-					mainFilter$9.check("full");
+					mainFilter$10.commentContentFilter.disable();
+					mainFilter$10.check("full");
 				}
 			}, {
 				type: "editor",
-				id: GM_KEYS$9.black.content.valueKey,
+				id: GM_KEYS$10.black.content.valueKey,
 				name: "编辑 评论关键词黑名单",
 				editorTitle: "评论关键词 黑名单",
 				editorDescription: [
@@ -4307,8 +4308,8 @@
 					"正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
 				],
 				saveFn: async () => {
-					mainFilter$9.commentContentFilter.setParam(_GM_getValue(GM_KEYS$9.black.content.valueKey, []));
-					mainFilter$9.check("full");
+					mainFilter$10.commentContentFilter.setParam(_GM_getValue(GM_KEYS$10.black.content.valueKey, []));
+					mainFilter$10.check("full");
 				}
 			}]
 		},
@@ -4317,128 +4318,128 @@
 			items: [
 				{
 					type: "switch",
-					id: GM_KEYS$9.black.callBot.statusKey,
+					id: GM_KEYS$10.black.callBot.statusKey,
 					name: "过滤 召唤AI的评论",
 					noStyle: true,
 					enableFn: () => {
-						mainFilter$9.commentCallBotFilter.enable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentCallBotFilter.enable();
+						mainFilter$10.check("full");
 					},
 					disableFn: () => {
-						mainFilter$9.commentCallBotFilter.disable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentCallBotFilter.disable();
+						mainFilter$10.check("full");
 					}
 				},
 				{
 					type: "switch",
-					id: GM_KEYS$9.black.bot.statusKey,
+					id: GM_KEYS$10.black.bot.statusKey,
 					name: "过滤 AI发布的评论",
 					noStyle: true,
 					enableFn: () => {
-						mainFilter$9.commentBotFilter.enable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentBotFilter.enable();
+						mainFilter$10.check("full");
 					},
 					disableFn: () => {
-						mainFilter$9.commentBotFilter.disable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentBotFilter.disable();
+						mainFilter$10.check("full");
 					}
 				},
 				{
 					type: "switch",
-					id: GM_KEYS$9.black.isAD.statusKey,
+					id: GM_KEYS$10.black.isAD.statusKey,
 					name: "过滤 带货评论",
 					noStyle: true,
 					enableFn: () => {
-						mainFilter$9.commentAdFilter.enable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentAdFilter.enable();
+						mainFilter$10.check("full");
 					},
 					disableFn: () => {
-						mainFilter$9.commentAdFilter.disable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentAdFilter.disable();
+						mainFilter$10.check("full");
 					}
 				},
 				{
 					type: "switch",
-					id: GM_KEYS$9.black.emojiOnly.statusKey,
+					id: GM_KEYS$10.black.emojiOnly.statusKey,
 					name: "过滤 只有表情的评论",
 					noStyle: true,
 					enableFn: () => {
-						mainFilter$9.commentEmojiOnlyFilter.enable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentEmojiOnlyFilter.enable();
+						mainFilter$10.check("full");
 					},
 					disableFn: () => {
-						mainFilter$9.commentEmojiOnlyFilter.disable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentEmojiOnlyFilter.disable();
+						mainFilter$10.check("full");
 					}
 				},
 				{
 					type: "switch",
-					id: GM_KEYS$9.black.noface.statusKey,
+					id: GM_KEYS$10.black.noface.statusKey,
 					name: "过滤 默认头像非会员用户评论",
 					noStyle: true,
 					enableFn: () => {
-						mainFilter$9.commentNoFaceFilter.enable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentNoFaceFilter.enable();
+						mainFilter$10.check("full");
 					},
 					disableFn: () => {
-						mainFilter$9.commentNoFaceFilter.disable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentNoFaceFilter.disable();
+						mainFilter$10.check("full");
 					}
 				},
 				{
 					type: "switch",
-					id: GM_KEYS$9.black.callUserOnly.statusKey,
+					id: GM_KEYS$10.black.callUserOnly.statusKey,
 					name: "过滤 只含 @其他用户 的全部评论",
 					noStyle: true,
 					enableFn: () => {
-						mainFilter$9.commentCallUserOnlyFilter.enable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentCallUserOnlyFilter.enable();
+						mainFilter$10.check("full");
 					},
 					disableFn: () => {
-						mainFilter$9.commentCallUserOnlyFilter.disable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentCallUserOnlyFilter.disable();
+						mainFilter$10.check("full");
 					}
 				},
 				{
 					type: "switch",
-					id: GM_KEYS$9.black.callUserOnlyNoReply.statusKey,
+					id: GM_KEYS$10.black.callUserOnlyNoReply.statusKey,
 					name: "过滤 只含 @其他用户 的无回复评论",
 					noStyle: true,
 					enableFn: () => {
-						mainFilter$9.commentCallUserOnlyNoReplyFilter.enable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentCallUserOnlyNoReplyFilter.enable();
+						mainFilter$10.check("full");
 					},
 					disableFn: () => {
-						mainFilter$9.commentCallUserOnlyNoReplyFilter.disable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentCallUserOnlyNoReplyFilter.disable();
+						mainFilter$10.check("full");
 					}
 				},
 				{
 					type: "switch",
-					id: GM_KEYS$9.black.callUser.statusKey,
+					id: GM_KEYS$10.black.callUser.statusKey,
 					name: "过滤 包含 @其他用户 的全部评论",
 					noStyle: true,
 					enableFn: () => {
-						mainFilter$9.commentCallUserFilter.enable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentCallUserFilter.enable();
+						mainFilter$10.check("full");
 					},
 					disableFn: () => {
-						mainFilter$9.commentCallUserFilter.disable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentCallUserFilter.disable();
+						mainFilter$10.check("full");
 					}
 				},
 				{
 					type: "switch",
-					id: GM_KEYS$9.black.callUserNoReply.statusKey,
+					id: GM_KEYS$10.black.callUserNoReply.statusKey,
 					name: "过滤 包含 @其他用户 的无回复评论",
 					noStyle: true,
 					enableFn: () => {
-						mainFilter$9.commentCallUserNoReplyFilter.enable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentCallUserNoReplyFilter.enable();
+						mainFilter$10.check("full");
 					},
 					disableFn: () => {
-						mainFilter$9.commentCallUserNoReplyFilter.disable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentCallUserNoReplyFilter.disable();
+						mainFilter$10.check("full");
 					}
 				}
 			]
@@ -4447,20 +4448,20 @@
 			name: "等级过滤",
 			items: [{
 				type: "switch",
-				id: GM_KEYS$9.black.level.statusKey,
+				id: GM_KEYS$10.black.level.statusKey,
 				name: "启用 用户等级过滤",
 				noStyle: true,
 				enableFn: () => {
-					mainFilter$9.commentLevelFilter.enable();
-					mainFilter$9.check("full");
+					mainFilter$10.commentLevelFilter.enable();
+					mainFilter$10.check("full");
 				},
 				disableFn: () => {
-					mainFilter$9.commentLevelFilter.disable();
-					mainFilter$9.check("full");
+					mainFilter$10.commentLevelFilter.disable();
+					mainFilter$10.check("full");
 				}
 			}, {
 				type: "number",
-				id: GM_KEYS$9.black.level.valueKey,
+				id: GM_KEYS$10.black.level.valueKey,
 				noStyle: true,
 				name: "设定最低等级 (0~6)",
 				minValue: 0,
@@ -4469,8 +4470,8 @@
 				defaultValue: 0,
 				disableValue: 0,
 				fn: (value) => {
-					mainFilter$9.commentLevelFilter.setParam(value);
-					mainFilter$9.check("full");
+					mainFilter$10.commentLevelFilter.setParam(value);
+					mainFilter$10.check("full");
 				}
 			}]
 		},
@@ -4479,86 +4480,86 @@
 			items: [
 				{
 					type: "switch",
-					id: GM_KEYS$9.white.root.statusKey,
+					id: GM_KEYS$10.white.root.statusKey,
 					name: "一级评论(主评论) 免过滤",
 					noStyle: true,
 					enableFn: () => {
 						isRootWhite = true;
-						mainFilter$9.check("full");
+						mainFilter$10.check("full");
 					},
 					disableFn: () => {
 						isRootWhite = false;
-						mainFilter$9.check("full");
+						mainFilter$10.check("full");
 					}
 				},
 				{
 					type: "switch",
-					id: GM_KEYS$9.white.sub.statusKey,
+					id: GM_KEYS$10.white.sub.statusKey,
 					name: "二级评论(回复) 免过滤",
 					noStyle: true,
 					enableFn: () => {
 						isSubWhite = true;
-						mainFilter$9.check("full");
+						mainFilter$10.check("full");
 					},
 					disableFn: () => {
 						isSubWhite = false;
-						mainFilter$9.check("full");
+						mainFilter$10.check("full");
 					}
 				},
 				{
 					type: "switch",
-					id: GM_KEYS$9.white.isUp.statusKey,
+					id: GM_KEYS$10.white.isUp.statusKey,
 					name: "UP主的评论 免过滤",
 					noStyle: true,
 					enableFn: () => {
-						mainFilter$9.commentIsUpFilter.enable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentIsUpFilter.enable();
+						mainFilter$10.check("full");
 					},
 					disableFn: () => {
-						mainFilter$9.commentIsUpFilter.disable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentIsUpFilter.disable();
+						mainFilter$10.check("full");
 					}
 				},
 				{
 					type: "switch",
-					id: GM_KEYS$9.white.isPin.statusKey,
+					id: GM_KEYS$10.white.isPin.statusKey,
 					name: "置顶评论 免过滤",
 					noStyle: true,
 					enableFn: () => {
-						mainFilter$9.commentIsPinFilter.enable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentIsPinFilter.enable();
+						mainFilter$10.check("full");
 					},
 					disableFn: () => {
-						mainFilter$9.commentIsPinFilter.disable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentIsPinFilter.disable();
+						mainFilter$10.check("full");
 					}
 				},
 				{
 					type: "switch",
-					id: GM_KEYS$9.white.isNote.statusKey,
+					id: GM_KEYS$10.white.isNote.statusKey,
 					name: "笔记/图片评论 免过滤",
 					noStyle: true,
 					enableFn: () => {
-						mainFilter$9.commentIsNoteFilter.enable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentIsNoteFilter.enable();
+						mainFilter$10.check("full");
 					},
 					disableFn: () => {
-						mainFilter$9.commentIsNoteFilter.disable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentIsNoteFilter.disable();
+						mainFilter$10.check("full");
 					}
 				},
 				{
 					type: "switch",
-					id: GM_KEYS$9.white.isLink.statusKey,
+					id: GM_KEYS$10.white.isLink.statusKey,
 					name: "含超链接的评论 免过滤",
 					noStyle: true,
 					enableFn: () => {
-						mainFilter$9.commentIsLinkFilter.enable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentIsLinkFilter.enable();
+						mainFilter$10.check("full");
 					},
 					disableFn: () => {
-						mainFilter$9.commentIsLinkFilter.disable();
-						mainFilter$9.check("full");
+						mainFilter$10.commentIsLinkFilter.disable();
+						mainFilter$10.check("full");
 					}
 				}
 			]
@@ -4569,15 +4570,15 @@
 		const menus = [];
 		if (target.parentElement?.id === "user-name" || target.classList.contains("user-name") || target.classList.contains("sub-user-name")) {
 			const username = target.textContent?.trim();
-			if (username && mainFilter$9.commentUsernameFilter.isEnable) menus.push({
+			if (username && mainFilter$10.commentUsernameFilter.isEnable) menus.push({
 				name: `屏蔽用户：${username}`,
 				fn: async () => {
 					try {
-						mainFilter$9.commentUsernameFilter.addParam(username);
-						mainFilter$9.check("full");
-						const arr = _GM_getValue(GM_KEYS$9.black.username.valueKey, []);
+						mainFilter$10.commentUsernameFilter.addParam(username);
+						mainFilter$10.check("full");
+						const arr = _GM_getValue(GM_KEYS$10.black.username.valueKey, []);
 						arr.unshift(username);
-						_GM_setValue(GM_KEYS$9.black.username.valueKey, orderedUniq(arr));
+						_GM_setValue(GM_KEYS$10.black.username.valueKey, orderedUniq(arr));
 					} catch (err) {
 						logger.error(`commentFilterCommonHandler add username ${username} failed`, err);
 					}
@@ -4594,7 +4595,7 @@
 	var DynPlaybackFilter = class extends BooleanFilter {};
 	var DynVideoTitleWhiteFilter = class extends KeywordFilter {};
 	var DynContentWhiteFilter = class extends KeywordFilter {};
-	var GM_KEYS$8 = {
+	var GM_KEYS$9 = {
 		black: {
 			uploader: {
 				statusKey: "dyn-uploader-filter-status",
@@ -4627,7 +4628,7 @@
 		}
 	};
 	var isAllDyn = true;
-	var selectorFns$8 = {
+	var selectorFns$9 = {
 		uploader: (dyn) => {
 			if (!isAllDyn) return;
 			return dyn.querySelector(".bili-dyn-title__text")?.textContent?.trim();
@@ -4664,12 +4665,12 @@
 		dynVideoTitleWhiteFilter = new DynVideoTitleWhiteFilter();
 		dynContentWhiteFilter = new DynContentWhiteFilter();
 		init() {
-			this.dynUploaderFilter.setParam(_GM_getValue(GM_KEYS$8.black.uploader.valueKey, []));
-			this.dynDurationFilter.setParam(_GM_getValue(GM_KEYS$8.black.duration.valueKey, 0));
-			this.dynVideoTitleFilter.setParam(_GM_getValue(GM_KEYS$8.black.title.valueKey, []));
-			this.dynContentFilter.setParam(_GM_getValue(GM_KEYS$8.black.content.valueKey, []));
-			this.dynVideoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$8.white.title.valueKey, []));
-			this.dynContentWhiteFilter.setParam(_GM_getValue(GM_KEYS$8.white.content.valueKey, []));
+			this.dynUploaderFilter.setParam(_GM_getValue(GM_KEYS$9.black.uploader.valueKey, []));
+			this.dynDurationFilter.setParam(_GM_getValue(GM_KEYS$9.black.duration.valueKey, 0));
+			this.dynVideoTitleFilter.setParam(_GM_getValue(GM_KEYS$9.black.title.valueKey, []));
+			this.dynContentFilter.setParam(_GM_getValue(GM_KEYS$9.black.content.valueKey, []));
+			this.dynVideoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$9.white.title.valueKey, []));
+			this.dynContentWhiteFilter.setParam(_GM_getValue(GM_KEYS$9.white.content.valueKey, []));
 		}
 		async check(mode) {
 			if (!this.target) return;
@@ -4688,25 +4689,25 @@
 			if (config_default.isDebugMode) dyns.forEach((v) => {
 				logger.debug([
 					`DynamicFilterDynamic`,
-					`uploader: ${selectorFns$8.uploader(v)}`,
-					`title: ${selectorFns$8.title(v)}`,
-					`duration: ${selectorFns$8.duration(v)}`,
-					`content: ${selectorFns$8.content(v)}`,
-					`shortVideo: ${selectorFns$8.dynVideo(v)}`,
-					`playback: ${selectorFns$8.playback(v)}`
+					`uploader: ${selectorFns$9.uploader(v)}`,
+					`title: ${selectorFns$9.title(v)}`,
+					`duration: ${selectorFns$9.duration(v)}`,
+					`content: ${selectorFns$9.content(v)}`,
+					`shortVideo: ${selectorFns$9.dynVideo(v)}`,
+					`playback: ${selectorFns$9.playback(v)}`
 				].join("\n"));
 			});
 			const filteredDyns = dyns.filter((dyn) => !!dyn.querySelector(".bili-dyn-item__body, .bili-dyn-item__header"));
 			const blackPairs = [];
-			this.dynUploaderFilter.isEnable && blackPairs.push([this.dynUploaderFilter, selectorFns$8.uploader]);
-			this.dynDurationFilter.isEnable && blackPairs.push([this.dynDurationFilter, selectorFns$8.duration]);
-			this.dynVideoTitleFilter.isEnable && blackPairs.push([this.dynVideoTitleFilter, selectorFns$8.title]);
-			this.dynContentFilter.isEnable && blackPairs.push([this.dynContentFilter, selectorFns$8.content]);
-			this.dynDynVideoFilter.isEnable && blackPairs.push([this.dynDynVideoFilter, selectorFns$8.dynVideo]);
-			this.dynPlaybackFilter.isEnable && blackPairs.push([this.dynPlaybackFilter, selectorFns$8.playback]);
+			this.dynUploaderFilter.isEnable && blackPairs.push([this.dynUploaderFilter, selectorFns$9.uploader]);
+			this.dynDurationFilter.isEnable && blackPairs.push([this.dynDurationFilter, selectorFns$9.duration]);
+			this.dynVideoTitleFilter.isEnable && blackPairs.push([this.dynVideoTitleFilter, selectorFns$9.title]);
+			this.dynContentFilter.isEnable && blackPairs.push([this.dynContentFilter, selectorFns$9.content]);
+			this.dynDynVideoFilter.isEnable && blackPairs.push([this.dynDynVideoFilter, selectorFns$9.dynVideo]);
+			this.dynPlaybackFilter.isEnable && blackPairs.push([this.dynPlaybackFilter, selectorFns$9.playback]);
 			const whitePairs = [];
-			this.dynVideoTitleWhiteFilter.isEnable && whitePairs.push([this.dynVideoTitleWhiteFilter, selectorFns$8.title]);
-			this.dynContentWhiteFilter.isEnable && whitePairs.push([this.dynContentWhiteFilter, selectorFns$8.content]);
+			this.dynVideoTitleWhiteFilter.isEnable && whitePairs.push([this.dynVideoTitleWhiteFilter, selectorFns$9.title]);
+			this.dynContentWhiteFilter.isEnable && whitePairs.push([this.dynContentWhiteFilter, selectorFns$9.content]);
 			const blackCnt = await coreCheck(filteredDyns, true, "sign", blackPairs, whitePairs);
 			const time = (performance.now() - timer).toFixed(1);
 			logger.debug(`DynamicFilterDynamic hide ${blackCnt} in ${filteredDyns.length} dyns, mode=${mode}, time=${time}`);
@@ -4736,37 +4737,37 @@
 			});
 		}
 	};
-	var mainFilter$8 = new DynamicFilterDynamic();
+	var mainFilter$9 = new DynamicFilterDynamic();
 	var dynamicFilterDynamicEntry = async () => {
-		mainFilter$8.init();
-		mainFilter$8.observe();
+		mainFilter$9.init();
+		mainFilter$9.observe();
 	};
 	var dynamicFilterDynamicGroups = [
 		{
 			name: "动态发布人过滤",
 			items: [{
 				type: "switch",
-				id: GM_KEYS$8.black.uploader.statusKey,
+				id: GM_KEYS$9.black.uploader.statusKey,
 				name: "启用 动态发布人过滤 (右键单击用户名)",
 				noStyle: true,
 				enableFn: () => {
-					mainFilter$8.dynUploaderFilter.enable();
-					mainFilter$8.checkFull();
+					mainFilter$9.dynUploaderFilter.enable();
+					mainFilter$9.checkFull();
 				},
 				disableFn: () => {
-					mainFilter$8.dynUploaderFilter.disable();
-					mainFilter$8.checkFull();
+					mainFilter$9.dynUploaderFilter.disable();
+					mainFilter$9.checkFull();
 				}
 			}, {
 				type: "editor",
-				id: GM_KEYS$8.black.uploader.valueKey,
+				id: GM_KEYS$9.black.uploader.valueKey,
 				name: "编辑 动态发布用户黑名单",
 				editorTitle: "动态发布用户 黑名单",
 				description: ["右键屏蔽的用户会出现在首行"],
 				editorDescription: ["一行一个用户名，保存时自动去重"],
 				saveFn: async () => {
-					mainFilter$8.dynUploaderFilter.setParam(_GM_getValue(GM_KEYS$8.black.uploader.valueKey, []));
-					mainFilter$8.checkFull();
+					mainFilter$9.dynUploaderFilter.setParam(_GM_getValue(GM_KEYS$9.black.uploader.valueKey, []));
+					mainFilter$9.checkFull();
 				}
 			}]
 		},
@@ -4774,20 +4775,20 @@
 			name: "动态内视频时长过滤",
 			items: [{
 				type: "switch",
-				id: GM_KEYS$8.black.duration.statusKey,
+				id: GM_KEYS$9.black.duration.statusKey,
 				name: "启用 时长过滤",
 				noStyle: true,
 				enableFn: () => {
-					mainFilter$8.dynDurationFilter.enable();
-					mainFilter$8.checkFull();
+					mainFilter$9.dynDurationFilter.enable();
+					mainFilter$9.checkFull();
 				},
 				disableFn: () => {
-					mainFilter$8.dynDurationFilter.disable();
-					mainFilter$8.checkFull();
+					mainFilter$9.dynDurationFilter.disable();
+					mainFilter$9.checkFull();
 				}
 			}, {
 				type: "number",
-				id: GM_KEYS$8.black.duration.valueKey,
+				id: GM_KEYS$9.black.duration.valueKey,
 				name: "设定最低时长（0~300s）",
 				noStyle: true,
 				minValue: 0,
@@ -4797,8 +4798,8 @@
 				disableValue: 0,
 				addonText: "秒",
 				fn: (value) => {
-					mainFilter$8.dynDurationFilter.setParam(value);
-					mainFilter$8.checkFull();
+					mainFilter$9.dynDurationFilter.setParam(value);
+					mainFilter$9.checkFull();
 				}
 			}]
 		},
@@ -4806,20 +4807,20 @@
 			name: "动态内视频标题过滤",
 			items: [{
 				type: "switch",
-				id: GM_KEYS$8.black.title.statusKey,
+				id: GM_KEYS$9.black.title.statusKey,
 				name: "启用 视频标题关键词过滤",
 				noStyle: true,
 				enableFn: () => {
-					mainFilter$8.dynVideoTitleFilter.enable();
-					mainFilter$8.checkFull();
+					mainFilter$9.dynVideoTitleFilter.enable();
+					mainFilter$9.checkFull();
 				},
 				disableFn: () => {
-					mainFilter$8.dynVideoTitleFilter.disable();
-					mainFilter$8.checkFull();
+					mainFilter$9.dynVideoTitleFilter.disable();
+					mainFilter$9.checkFull();
 				}
 			}, {
 				type: "editor",
-				id: GM_KEYS$8.black.title.valueKey,
+				id: GM_KEYS$9.black.title.valueKey,
 				name: "编辑 视频标题关键词黑名单",
 				editorTitle: "视频标题关键词 黑名单",
 				editorDescription: [
@@ -4828,8 +4829,8 @@
 					"正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
 				],
 				saveFn: async () => {
-					mainFilter$8.dynVideoTitleFilter.setParam(_GM_getValue(GM_KEYS$8.black.title.valueKey, []));
-					mainFilter$8.checkFull();
+					mainFilter$9.dynVideoTitleFilter.setParam(_GM_getValue(GM_KEYS$9.black.title.valueKey, []));
+					mainFilter$9.checkFull();
 				}
 			}]
 		},
@@ -4837,21 +4838,21 @@
 			name: "动态内容过滤",
 			items: [{
 				type: "switch",
-				id: GM_KEYS$8.black.content.statusKey,
+				id: GM_KEYS$9.black.content.statusKey,
 				name: "启用 动态内容关键词过滤",
 				description: ["不覆盖动态内视频标题"],
 				noStyle: true,
 				enableFn: () => {
-					mainFilter$8.dynContentFilter.enable();
-					mainFilter$8.checkFull();
+					mainFilter$9.dynContentFilter.enable();
+					mainFilter$9.checkFull();
 				},
 				disableFn: () => {
-					mainFilter$8.dynContentFilter.disable();
-					mainFilter$8.checkFull();
+					mainFilter$9.dynContentFilter.disable();
+					mainFilter$9.checkFull();
 				}
 			}, {
 				type: "editor",
-				id: GM_KEYS$8.black.content.valueKey,
+				id: GM_KEYS$9.black.content.valueKey,
 				name: "编辑 动态内容关键词黑名单",
 				editorTitle: "动态内容关键词 黑名单",
 				editorDescription: [
@@ -4860,8 +4861,8 @@
 					"正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
 				],
 				saveFn: async () => {
-					mainFilter$8.dynContentFilter.setParam(_GM_getValue(GM_KEYS$8.black.content.valueKey, []));
-					mainFilter$8.checkFull();
+					mainFilter$9.dynContentFilter.setParam(_GM_getValue(GM_KEYS$9.black.content.valueKey, []));
+					mainFilter$9.checkFull();
 				}
 			}]
 		},
@@ -4869,29 +4870,29 @@
 			name: "按类型过滤",
 			items: [{
 				type: "switch",
-				id: GM_KEYS$8.black.dynVideo.statusKey,
+				id: GM_KEYS$9.black.dynVideo.statusKey,
 				name: "过滤 动态视频",
 				noStyle: true,
 				enableFn: () => {
-					mainFilter$8.dynDynVideoFilter.enable();
-					mainFilter$8.checkFull();
+					mainFilter$9.dynDynVideoFilter.enable();
+					mainFilter$9.checkFull();
 				},
 				disableFn: () => {
-					mainFilter$8.dynDynVideoFilter.disable();
-					mainFilter$8.checkFull();
+					mainFilter$9.dynDynVideoFilter.disable();
+					mainFilter$9.checkFull();
 				}
 			}, {
 				type: "switch",
-				id: GM_KEYS$8.black.playback.statusKey,
+				id: GM_KEYS$9.black.playback.statusKey,
 				name: "过滤 直播回放",
 				noStyle: true,
 				enableFn: () => {
-					mainFilter$8.dynPlaybackFilter.enable();
-					mainFilter$8.checkFull();
+					mainFilter$9.dynPlaybackFilter.enable();
+					mainFilter$9.checkFull();
 				},
 				disableFn: () => {
-					mainFilter$8.dynPlaybackFilter.disable();
-					mainFilter$8.checkFull();
+					mainFilter$9.dynPlaybackFilter.disable();
+					mainFilter$9.checkFull();
 				}
 			}]
 		},
@@ -4900,21 +4901,21 @@
 			items: [
 				{
 					type: "switch",
-					id: GM_KEYS$8.white.title.statusKey,
+					id: GM_KEYS$9.white.title.statusKey,
 					name: "启用 标题关键词白名单",
 					noStyle: true,
 					enableFn: () => {
-						mainFilter$8.dynVideoTitleWhiteFilter.enable();
-						mainFilter$8.checkFull();
+						mainFilter$9.dynVideoTitleWhiteFilter.enable();
+						mainFilter$9.checkFull();
 					},
 					disableFn: () => {
-						mainFilter$8.dynVideoTitleWhiteFilter.disable();
-						mainFilter$8.checkFull();
+						mainFilter$9.dynVideoTitleWhiteFilter.disable();
+						mainFilter$9.checkFull();
 					}
 				},
 				{
 					type: "editor",
-					id: GM_KEYS$8.white.title.valueKey,
+					id: GM_KEYS$9.white.title.valueKey,
 					name: "编辑 标题关键词白名单",
 					editorTitle: "标题关键词 白名单",
 					editorDescription: [
@@ -4923,28 +4924,28 @@
 						"正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
 					],
 					saveFn: async () => {
-						mainFilter$8.dynVideoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$8.white.title.valueKey, []));
-						mainFilter$8.checkFull();
+						mainFilter$9.dynVideoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$9.white.title.valueKey, []));
+						mainFilter$9.checkFull();
 					}
 				},
 				{
 					type: "switch",
-					id: GM_KEYS$8.white.content.statusKey,
+					id: GM_KEYS$9.white.content.statusKey,
 					name: "启用 动态内容关键词白名单",
 					description: ["不覆盖动态内视频标题"],
 					noStyle: true,
 					enableFn: () => {
-						mainFilter$8.dynContentWhiteFilter.enable();
-						mainFilter$8.checkFull();
+						mainFilter$9.dynContentWhiteFilter.enable();
+						mainFilter$9.checkFull();
 					},
 					disableFn: () => {
-						mainFilter$8.dynContentWhiteFilter.disable();
-						mainFilter$8.checkFull();
+						mainFilter$9.dynContentWhiteFilter.disable();
+						mainFilter$9.checkFull();
 					}
 				},
 				{
 					type: "editor",
-					id: GM_KEYS$8.white.content.valueKey,
+					id: GM_KEYS$9.white.content.valueKey,
 					name: "编辑 动态内容关键词白名单",
 					editorTitle: "动态内容关键词 白名单",
 					editorDescription: [
@@ -4953,8 +4954,8 @@
 						"正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
 					],
 					saveFn: async () => {
-						mainFilter$8.dynContentWhiteFilter.setParam(_GM_getValue(GM_KEYS$8.white.content.valueKey, []));
-						mainFilter$8.checkFull();
+						mainFilter$9.dynContentWhiteFilter.setParam(_GM_getValue(GM_KEYS$9.white.content.valueKey, []));
+						mainFilter$9.checkFull();
 					}
 				}
 			]
@@ -4965,15 +4966,15 @@
 		const menus = [];
 		if (target.classList.contains("bili-dyn-title__text")) {
 			const uploader = target.textContent?.trim();
-			if (uploader && mainFilter$8.dynUploaderFilter.isEnable) menus.push({
+			if (uploader && mainFilter$9.dynUploaderFilter.isEnable) menus.push({
 				name: `隐藏用户动态：${uploader}`,
 				fn: async () => {
 					try {
-						mainFilter$8.dynUploaderFilter.addParam(uploader);
-						mainFilter$8.checkFull();
-						const arr = _GM_getValue(GM_KEYS$8.black.uploader.valueKey, []);
+						mainFilter$9.dynUploaderFilter.addParam(uploader);
+						mainFilter$9.checkFull();
+						const arr = _GM_getValue(GM_KEYS$9.black.uploader.valueKey, []);
 						arr.unshift(uploader);
-						_GM_setValue(GM_KEYS$8.black.uploader.valueKey, orderedUniq(arr));
+						_GM_setValue(GM_KEYS$9.black.uploader.valueKey, orderedUniq(arr));
 					} catch (err) {
 						logger.error(`dynamicFilterDynamicHandler add uploader ${uploader} failed`, err);
 					}
@@ -4982,7 +4983,7 @@
 		}
 		return menus;
 	};
-	var GM_KEYS$7 = {
+	var GM_KEYS$8 = {
 		black: {
 			uploader: {
 				statusKey: "dyn-uploader-filter-status",
@@ -5008,7 +5009,7 @@
 			}
 		}
 	};
-	var selectorFns$7 = {
+	var selectorFns$8 = {
 		uploader: (dyn) => {
 			return dyn.querySelector(".user-name")?.textContent?.trim();
 		},
@@ -5027,11 +5028,11 @@
 		dynVideoTitleWhiteFilter = new DynVideoTitleWhiteFilter();
 		dynContentWhiteFilter = new DynContentWhiteFilter();
 		init() {
-			this.dynUploaderFilter.setParam(_GM_getValue(GM_KEYS$7.black.uploader.valueKey, []));
-			this.dynVideoTitleFilter.setParam(_GM_getValue(GM_KEYS$7.black.title.valueKey, []));
-			this.dynContentFilter.setParam(_GM_getValue(GM_KEYS$7.black.content.valueKey, []));
-			this.dynVideoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$7.white.title.valueKey, []));
-			this.dynContentWhiteFilter.setParam(_GM_getValue(GM_KEYS$7.white.content.valueKey, []));
+			this.dynUploaderFilter.setParam(_GM_getValue(GM_KEYS$8.black.uploader.valueKey, []));
+			this.dynVideoTitleFilter.setParam(_GM_getValue(GM_KEYS$8.black.title.valueKey, []));
+			this.dynContentFilter.setParam(_GM_getValue(GM_KEYS$8.black.content.valueKey, []));
+			this.dynVideoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$8.white.title.valueKey, []));
+			this.dynContentWhiteFilter.setParam(_GM_getValue(GM_KEYS$8.white.content.valueKey, []));
 		}
 		async check(mode) {
 			if (!this.target) return;
@@ -5043,18 +5044,18 @@
 			if (config_default.isDebugMode) dyns.forEach((v) => {
 				logger.debug([
 					`DynamicFilterHeader`,
-					`uploader: ${selectorFns$7.uploader(v)}`,
-					`title: ${selectorFns$7.title(v)}`,
-					`content: ${selectorFns$7.content(v)}`
+					`uploader: ${selectorFns$8.uploader(v)}`,
+					`title: ${selectorFns$8.title(v)}`,
+					`content: ${selectorFns$8.content(v)}`
 				].join("\n"));
 			});
 			const blackPairs = [];
-			this.dynUploaderFilter.isEnable && blackPairs.push([this.dynUploaderFilter, selectorFns$7.uploader]);
-			this.dynVideoTitleFilter.isEnable && blackPairs.push([this.dynVideoTitleFilter, selectorFns$7.title]);
-			this.dynContentFilter.isEnable && blackPairs.push([this.dynContentFilter, selectorFns$7.content]);
+			this.dynUploaderFilter.isEnable && blackPairs.push([this.dynUploaderFilter, selectorFns$8.uploader]);
+			this.dynVideoTitleFilter.isEnable && blackPairs.push([this.dynVideoTitleFilter, selectorFns$8.title]);
+			this.dynContentFilter.isEnable && blackPairs.push([this.dynContentFilter, selectorFns$8.content]);
 			const whitePairs = [];
-			this.dynVideoTitleWhiteFilter.isEnable && whitePairs.push([this.dynVideoTitleWhiteFilter, selectorFns$7.title]);
-			this.dynContentWhiteFilter.isEnable && whitePairs.push([this.dynContentWhiteFilter, selectorFns$7.content]);
+			this.dynVideoTitleWhiteFilter.isEnable && whitePairs.push([this.dynVideoTitleWhiteFilter, selectorFns$8.title]);
+			this.dynContentWhiteFilter.isEnable && whitePairs.push([this.dynContentWhiteFilter, selectorFns$8.content]);
 			const blackCnt = await coreCheck(dyns, true, "style", blackPairs, whitePairs);
 			const time = (performance.now() - timer).toFixed(1);
 			logger.debug(`DynamicFilterHeader hide ${blackCnt} in ${dyns.length} dyns, mode=${mode}, time=${time}`);
@@ -5084,17 +5085,17 @@
 			}, 1e3);
 		}
 	};
-	var mainFilter$7 = new DynamicFilterHeader();
+	var mainFilter$8 = new DynamicFilterHeader();
 	var dynamicFilterHeaderEntry = async () => {
-		mainFilter$7.init();
-		mainFilter$7.observe();
-		if (_GM_getValue(GM_KEYS$7.black.uploader.statusKey)) mainFilter$7.dynUploaderFilter.enable();
-		if (_GM_getValue(GM_KEYS$7.black.title.statusKey)) mainFilter$7.dynVideoTitleFilter.enable();
-		if (_GM_getValue(GM_KEYS$7.black.content.statusKey)) mainFilter$7.dynContentFilter.enable();
-		if (_GM_getValue(GM_KEYS$7.white.title.statusKey)) mainFilter$7.dynVideoTitleWhiteFilter.enable();
-		if (_GM_getValue(GM_KEYS$7.white.content.statusKey)) mainFilter$7.dynContentWhiteFilter.enable();
+		mainFilter$8.init();
+		mainFilter$8.observe();
+		if (_GM_getValue(GM_KEYS$8.black.uploader.statusKey)) mainFilter$8.dynUploaderFilter.enable();
+		if (_GM_getValue(GM_KEYS$8.black.title.statusKey)) mainFilter$8.dynVideoTitleFilter.enable();
+		if (_GM_getValue(GM_KEYS$8.black.content.statusKey)) mainFilter$8.dynContentFilter.enable();
+		if (_GM_getValue(GM_KEYS$8.white.title.statusKey)) mainFilter$8.dynVideoTitleWhiteFilter.enable();
+		if (_GM_getValue(GM_KEYS$8.white.content.statusKey)) mainFilter$8.dynContentWhiteFilter.enable();
 	};
-	var GM_KEYS$6 = {
+	var GM_KEYS$7 = {
 		black: {
 			duration: {
 				statusKey: "space-dyn-duration-filter-status",
@@ -5122,7 +5123,7 @@
 			}
 		}
 	};
-	var selectorFns$6 = {
+	var selectorFns$7 = {
 		duration: (dyn) => {
 			const time = dyn.querySelector(".bili-dyn-card-video__cover-shadow .duration-time")?.textContent?.trim();
 			return time ? convertTimeToSec(time) : void 0;
@@ -5154,11 +5155,11 @@
 		dynVideoTitleWhiteFilter = new DynVideoTitleWhiteFilter();
 		dynContentWhiteFilter = new DynContentWhiteFilter();
 		init() {
-			this.dynDurationFilter.setParam(_GM_getValue(GM_KEYS$6.black.duration.valueKey, 0));
-			this.dynVideoTitleFilter.setParam(_GM_getValue(GM_KEYS$6.black.title.valueKey, []));
-			this.dynContentFilter.setParam(_GM_getValue(GM_KEYS$6.black.content.valueKey, []));
-			this.dynVideoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$6.white.title.valueKey, []));
-			this.dynContentWhiteFilter.setParam(_GM_getValue(GM_KEYS$6.white.content.valueKey, []));
+			this.dynDurationFilter.setParam(_GM_getValue(GM_KEYS$7.black.duration.valueKey, 0));
+			this.dynVideoTitleFilter.setParam(_GM_getValue(GM_KEYS$7.black.title.valueKey, []));
+			this.dynContentFilter.setParam(_GM_getValue(GM_KEYS$7.black.content.valueKey, []));
+			this.dynVideoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$7.white.title.valueKey, []));
+			this.dynContentWhiteFilter.setParam(_GM_getValue(GM_KEYS$7.white.content.valueKey, []));
 		}
 		async check(mode) {
 			if (!this.target) return;
@@ -5178,22 +5179,22 @@
 			if (config_default.isDebugMode) dyns.forEach((v) => {
 				logger.debug([
 					`DynamicFilterSpace`,
-					`title: ${selectorFns$6.title(v)}`,
-					`duration: ${selectorFns$6.duration(v)}`,
-					`content: ${selectorFns$6.content(v)}`,
-					`shortVideo: ${selectorFns$6.dynVideo(v)}`,
-					`playback: ${selectorFns$6.playback(v)}`
+					`title: ${selectorFns$7.title(v)}`,
+					`duration: ${selectorFns$7.duration(v)}`,
+					`content: ${selectorFns$7.content(v)}`,
+					`shortVideo: ${selectorFns$7.dynVideo(v)}`,
+					`playback: ${selectorFns$7.playback(v)}`
 				].join("\n"));
 			});
 			const blackPairs = [];
-			this.dynDurationFilter.isEnable && blackPairs.push([this.dynDurationFilter, selectorFns$6.duration]);
-			this.dynVideoTitleFilter.isEnable && blackPairs.push([this.dynVideoTitleFilter, selectorFns$6.title]);
-			this.dynContentFilter.isEnable && blackPairs.push([this.dynContentFilter, selectorFns$6.content]);
-			this.dynDynVideoFilter.isEnable && blackPairs.push([this.dynDynVideoFilter, selectorFns$6.dynVideo]);
-			this.dynPlaybackFilter.isEnable && blackPairs.push([this.dynPlaybackFilter, selectorFns$6.playback]);
+			this.dynDurationFilter.isEnable && blackPairs.push([this.dynDurationFilter, selectorFns$7.duration]);
+			this.dynVideoTitleFilter.isEnable && blackPairs.push([this.dynVideoTitleFilter, selectorFns$7.title]);
+			this.dynContentFilter.isEnable && blackPairs.push([this.dynContentFilter, selectorFns$7.content]);
+			this.dynDynVideoFilter.isEnable && blackPairs.push([this.dynDynVideoFilter, selectorFns$7.dynVideo]);
+			this.dynPlaybackFilter.isEnable && blackPairs.push([this.dynPlaybackFilter, selectorFns$7.playback]);
 			const whitePairs = [];
-			this.dynVideoTitleWhiteFilter.isEnable && whitePairs.push([this.dynVideoTitleWhiteFilter, selectorFns$6.title]);
-			this.dynContentWhiteFilter.isEnable && whitePairs.push([this.dynContentWhiteFilter, selectorFns$6.content]);
+			this.dynVideoTitleWhiteFilter.isEnable && whitePairs.push([this.dynVideoTitleWhiteFilter, selectorFns$7.title]);
+			this.dynContentWhiteFilter.isEnable && whitePairs.push([this.dynContentWhiteFilter, selectorFns$7.content]);
 			const blackCnt = await coreCheck(filteredDyns, true, "sign", blackPairs, whitePairs);
 			const time = (performance.now() - timer).toFixed(1);
 			logger.debug(`DynamicFilterSpace hide ${blackCnt} in ${filteredDyns.length} dyns, mode=${mode}, time=${time}`);
@@ -5223,30 +5224,30 @@
 			});
 		}
 	};
-	var mainFilter$6 = new DynamicFilterSpace();
+	var mainFilter$7 = new DynamicFilterSpace();
 	var dynamicFilterSpaceEntry = async () => {
-		mainFilter$6.init();
-		mainFilter$6.observe();
+		mainFilter$7.init();
+		mainFilter$7.observe();
 	};
 	var dynamicFilterSpaceGroups = [
 		{
 			name: "动态内视频时长过滤",
 			items: [{
 				type: "switch",
-				id: GM_KEYS$6.black.duration.statusKey,
+				id: GM_KEYS$7.black.duration.statusKey,
 				name: "启用 时长过滤",
 				noStyle: true,
 				enableFn: () => {
-					mainFilter$6.dynDurationFilter.enable();
-					mainFilter$6.checkFull();
+					mainFilter$7.dynDurationFilter.enable();
+					mainFilter$7.checkFull();
 				},
 				disableFn: () => {
-					mainFilter$6.dynDurationFilter.disable();
-					mainFilter$6.checkFull();
+					mainFilter$7.dynDurationFilter.disable();
+					mainFilter$7.checkFull();
 				}
 			}, {
 				type: "number",
-				id: GM_KEYS$6.black.duration.valueKey,
+				id: GM_KEYS$7.black.duration.valueKey,
 				name: "设定最低时长（0~300s）",
 				noStyle: true,
 				minValue: 0,
@@ -5256,8 +5257,8 @@
 				disableValue: 0,
 				addonText: "秒",
 				fn: (value) => {
-					mainFilter$6.dynDurationFilter.setParam(value);
-					mainFilter$6.checkFull();
+					mainFilter$7.dynDurationFilter.setParam(value);
+					mainFilter$7.checkFull();
 				}
 			}]
 		},
@@ -5265,20 +5266,20 @@
 			name: "动态内视频标题过滤",
 			items: [{
 				type: "switch",
-				id: GM_KEYS$6.black.title.statusKey,
+				id: GM_KEYS$7.black.title.statusKey,
 				name: "启用 视频标题关键词过滤",
 				noStyle: true,
 				enableFn: () => {
-					mainFilter$6.dynVideoTitleFilter.enable();
-					mainFilter$6.checkFull();
+					mainFilter$7.dynVideoTitleFilter.enable();
+					mainFilter$7.checkFull();
 				},
 				disableFn: () => {
-					mainFilter$6.dynVideoTitleFilter.disable();
-					mainFilter$6.checkFull();
+					mainFilter$7.dynVideoTitleFilter.disable();
+					mainFilter$7.checkFull();
 				}
 			}, {
 				type: "editor",
-				id: GM_KEYS$6.black.title.valueKey,
+				id: GM_KEYS$7.black.title.valueKey,
 				name: "编辑 视频标题关键词黑名单",
 				editorTitle: "视频标题关键词 黑名单",
 				editorDescription: [
@@ -5287,8 +5288,8 @@
 					"正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
 				],
 				saveFn: async () => {
-					mainFilter$6.dynVideoTitleFilter.setParam(_GM_getValue(GM_KEYS$6.black.title.valueKey, []));
-					mainFilter$6.checkFull();
+					mainFilter$7.dynVideoTitleFilter.setParam(_GM_getValue(GM_KEYS$7.black.title.valueKey, []));
+					mainFilter$7.checkFull();
 				}
 			}]
 		},
@@ -5296,21 +5297,21 @@
 			name: "动态内容过滤",
 			items: [{
 				type: "switch",
-				id: GM_KEYS$6.black.content.statusKey,
+				id: GM_KEYS$7.black.content.statusKey,
 				name: "启用 动态内容关键词过滤",
 				description: ["不覆盖动态内视频标题"],
 				noStyle: true,
 				enableFn: () => {
-					mainFilter$6.dynContentFilter.enable();
-					mainFilter$6.checkFull();
+					mainFilter$7.dynContentFilter.enable();
+					mainFilter$7.checkFull();
 				},
 				disableFn: () => {
-					mainFilter$6.dynContentFilter.disable();
-					mainFilter$6.checkFull();
+					mainFilter$7.dynContentFilter.disable();
+					mainFilter$7.checkFull();
 				}
 			}, {
 				type: "editor",
-				id: GM_KEYS$6.black.content.valueKey,
+				id: GM_KEYS$7.black.content.valueKey,
 				name: "编辑 动态内容关键词黑名单",
 				editorTitle: "动态内容关键词 黑名单",
 				editorDescription: [
@@ -5319,8 +5320,8 @@
 					"正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
 				],
 				saveFn: async () => {
-					mainFilter$6.dynContentFilter.setParam(_GM_getValue(GM_KEYS$6.black.content.valueKey, []));
-					mainFilter$6.checkFull();
+					mainFilter$7.dynContentFilter.setParam(_GM_getValue(GM_KEYS$7.black.content.valueKey, []));
+					mainFilter$7.checkFull();
 				}
 			}]
 		},
@@ -5328,29 +5329,29 @@
 			name: "按类型过滤",
 			items: [{
 				type: "switch",
-				id: GM_KEYS$6.black.dynVideo.statusKey,
+				id: GM_KEYS$7.black.dynVideo.statusKey,
 				name: "过滤 动态视频",
 				noStyle: true,
 				enableFn: () => {
-					mainFilter$6.dynDynVideoFilter.enable();
-					mainFilter$6.checkFull();
+					mainFilter$7.dynDynVideoFilter.enable();
+					mainFilter$7.checkFull();
 				},
 				disableFn: () => {
-					mainFilter$6.dynDynVideoFilter.disable();
-					mainFilter$6.checkFull();
+					mainFilter$7.dynDynVideoFilter.disable();
+					mainFilter$7.checkFull();
 				}
 			}, {
 				type: "switch",
-				id: GM_KEYS$6.black.playback.statusKey,
+				id: GM_KEYS$7.black.playback.statusKey,
 				name: "过滤 直播回放",
 				noStyle: true,
 				enableFn: () => {
-					mainFilter$6.dynPlaybackFilter.enable();
-					mainFilter$6.checkFull();
+					mainFilter$7.dynPlaybackFilter.enable();
+					mainFilter$7.checkFull();
 				},
 				disableFn: () => {
-					mainFilter$6.dynPlaybackFilter.disable();
-					mainFilter$6.checkFull();
+					mainFilter$7.dynPlaybackFilter.disable();
+					mainFilter$7.checkFull();
 				}
 			}]
 		},
@@ -5359,21 +5360,21 @@
 			items: [
 				{
 					type: "switch",
-					id: GM_KEYS$6.white.title.statusKey,
+					id: GM_KEYS$7.white.title.statusKey,
 					name: "启用 标题关键词白名单",
 					noStyle: true,
 					enableFn: () => {
-						mainFilter$6.dynVideoTitleWhiteFilter.enable();
-						mainFilter$6.checkFull();
+						mainFilter$7.dynVideoTitleWhiteFilter.enable();
+						mainFilter$7.checkFull();
 					},
 					disableFn: () => {
-						mainFilter$6.dynVideoTitleWhiteFilter.disable();
-						mainFilter$6.checkFull();
+						mainFilter$7.dynVideoTitleWhiteFilter.disable();
+						mainFilter$7.checkFull();
 					}
 				},
 				{
 					type: "editor",
-					id: GM_KEYS$6.white.title.valueKey,
+					id: GM_KEYS$7.white.title.valueKey,
 					name: "编辑 标题关键词白名单",
 					editorTitle: "标题关键词 白名单",
 					editorDescription: [
@@ -5382,28 +5383,28 @@
 						"正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
 					],
 					saveFn: async () => {
-						mainFilter$6.dynVideoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$6.white.title.valueKey, []));
-						mainFilter$6.checkFull();
+						mainFilter$7.dynVideoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$7.white.title.valueKey, []));
+						mainFilter$7.checkFull();
 					}
 				},
 				{
 					type: "switch",
-					id: GM_KEYS$6.white.content.statusKey,
+					id: GM_KEYS$7.white.content.statusKey,
 					name: "启用 动态内容关键词白名单",
 					description: ["不覆盖动态内视频标题"],
 					noStyle: true,
 					enableFn: () => {
-						mainFilter$6.dynContentWhiteFilter.enable();
-						mainFilter$6.checkFull();
+						mainFilter$7.dynContentWhiteFilter.enable();
+						mainFilter$7.checkFull();
 					},
 					disableFn: () => {
-						mainFilter$6.dynContentWhiteFilter.disable();
-						mainFilter$6.checkFull();
+						mainFilter$7.dynContentWhiteFilter.disable();
+						mainFilter$7.checkFull();
 					}
 				},
 				{
 					type: "editor",
-					id: GM_KEYS$6.white.content.valueKey,
+					id: GM_KEYS$7.white.content.valueKey,
 					name: "编辑 动态内容关键词白名单",
 					editorTitle: "动态内容关键词 白名单",
 					editorDescription: [
@@ -5412,8 +5413,8 @@
 						"正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
 					],
 					saveFn: async () => {
-						mainFilter$6.dynContentWhiteFilter.setParam(_GM_getValue(GM_KEYS$6.white.content.valueKey, []));
-						mainFilter$6.checkFull();
+						mainFilter$7.dynContentWhiteFilter.setParam(_GM_getValue(GM_KEYS$7.white.content.valueKey, []));
+						mainFilter$7.checkFull();
 					}
 				}
 			]
@@ -5456,7 +5457,7 @@
 	var VideoUploaderWhiteFilter = class extends StringFilter {};
 	var VideoTitleWhiteFilter = class extends KeywordFilter {};
 	var VideoIsFollowWhiteFilter = class extends BooleanFilter {};
-	var GM_KEYS$5 = {
+	var GM_KEYS$6 = {
 		black: {
 			duration: {
 				statusKey: "channel-duration-filter-status",
@@ -5494,7 +5495,7 @@
 			}
 		}
 	};
-	var selectorFns$5 = {
+	var selectorFns$6 = {
 		duration: (video) => {
 			const duration = video.querySelector(".bili-cover-card__stats .bili-cover-card__stat:last-child span")?.textContent?.trim();
 			return (duration && convertTimeToSec(duration)) ?? void 0;
@@ -5529,14 +5530,14 @@
 		videoUploaderWhiteFilter = new VideoUploaderWhiteFilter();
 		videoTitleWhiteFilter = new VideoTitleWhiteFilter();
 		init() {
-			this.videoBvidFilter.setParam(_GM_getValue(GM_KEYS$5.black.bvid.valueKey, []));
-			this.videoDurationFilter.setParam(_GM_getValue(GM_KEYS$5.black.duration.valueKey, 0));
-			this.videoTitleFilter.setParam(_GM_getValue(GM_KEYS$5.black.title.valueKey, []));
-			this.videoPubdateFilter.setParam(_GM_getValue(GM_KEYS$5.black.pubdate.valueKey, 0));
-			this.videoUploaderFilter.setParam(_GM_getValue(GM_KEYS$5.black.uploader.valueKey, []));
-			this.videoUploaderKeywordFilter.setParam(_GM_getValue(GM_KEYS$5.black.uploaderKeyword.valueKey, []));
-			this.videoUploaderWhiteFilter.setParam(_GM_getValue(GM_KEYS$5.white.uploader.valueKey, []));
-			this.videoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$5.white.title.valueKey, []));
+			this.videoBvidFilter.setParam(_GM_getValue(GM_KEYS$6.black.bvid.valueKey, []));
+			this.videoDurationFilter.setParam(_GM_getValue(GM_KEYS$6.black.duration.valueKey, 0));
+			this.videoTitleFilter.setParam(_GM_getValue(GM_KEYS$6.black.title.valueKey, []));
+			this.videoPubdateFilter.setParam(_GM_getValue(GM_KEYS$6.black.pubdate.valueKey, 0));
+			this.videoUploaderFilter.setParam(_GM_getValue(GM_KEYS$6.black.uploader.valueKey, []));
+			this.videoUploaderKeywordFilter.setParam(_GM_getValue(GM_KEYS$6.black.uploaderKeyword.valueKey, []));
+			this.videoUploaderWhiteFilter.setParam(_GM_getValue(GM_KEYS$6.white.uploader.valueKey, []));
+			this.videoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$6.white.title.valueKey, []));
 		}
 		async check(mode) {
 			if (!this.target) return;
@@ -5554,24 +5555,24 @@
 			if (config_default.isDebugMode) videos.forEach((v) => {
 				logger.debug([
 					`VideoFilterChannel`,
-					`bvid: ${selectorFns$5.bvid(v)}`,
-					`duration: ${selectorFns$5.duration(v)}`,
-					`title: ${selectorFns$5.title(v)}`,
-					`uploader: ${selectorFns$5.uploader(v)}`,
-					`pubdate: ${selectorFns$5.pubdate(v)}`
+					`bvid: ${selectorFns$6.bvid(v)}`,
+					`duration: ${selectorFns$6.duration(v)}`,
+					`title: ${selectorFns$6.title(v)}`,
+					`uploader: ${selectorFns$6.uploader(v)}`,
+					`pubdate: ${selectorFns$6.pubdate(v)}`
 				].join("\n"));
 			});
 			const blackPairs = [];
-			this.videoDurationFilter.isEnable && blackPairs.push([this.videoDurationFilter, selectorFns$5.duration]);
-			this.videoTitleFilter.isEnable && blackPairs.push([this.videoTitleFilter, selectorFns$5.title]);
-			this.videoPubdateFilter.isEnable && blackPairs.push([this.videoPubdateFilter, selectorFns$5.pubdate]);
-			this.videoUploaderFilter.isEnable && blackPairs.push([this.videoUploaderFilter, selectorFns$5.uploader]);
-			this.videoUploaderKeywordFilter.isEnable && blackPairs.push([this.videoUploaderKeywordFilter, selectorFns$5.uploader]);
+			this.videoDurationFilter.isEnable && blackPairs.push([this.videoDurationFilter, selectorFns$6.duration]);
+			this.videoTitleFilter.isEnable && blackPairs.push([this.videoTitleFilter, selectorFns$6.title]);
+			this.videoPubdateFilter.isEnable && blackPairs.push([this.videoPubdateFilter, selectorFns$6.pubdate]);
+			this.videoUploaderFilter.isEnable && blackPairs.push([this.videoUploaderFilter, selectorFns$6.uploader]);
+			this.videoUploaderKeywordFilter.isEnable && blackPairs.push([this.videoUploaderKeywordFilter, selectorFns$6.uploader]);
 			const whitePairs = [];
-			this.videoUploaderWhiteFilter.isEnable && whitePairs.push([this.videoUploaderWhiteFilter, selectorFns$5.uploader]);
-			this.videoTitleWhiteFilter.isEnable && whitePairs.push([this.videoTitleWhiteFilter, selectorFns$5.title]);
+			this.videoUploaderWhiteFilter.isEnable && whitePairs.push([this.videoUploaderWhiteFilter, selectorFns$6.uploader]);
+			this.videoTitleWhiteFilter.isEnable && whitePairs.push([this.videoTitleWhiteFilter, selectorFns$6.title]);
 			const forceBlackPairs = [];
-			this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns$5.bvid]);
+			this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns$6.bvid]);
 			const blackCnt = await coreCheck(videos, true, "sign", blackPairs, whitePairs, forceBlackPairs);
 			const time = (performance.now() - timer).toFixed(1);
 			logger.debug(`VideoFilterChannel hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`);
@@ -5603,12 +5604,504 @@
 			});
 		}
 	};
-	var mainFilter$5 = new VideoFilterChannel();
+	var mainFilter$6 = new VideoFilterChannel();
 	var videoFilterChannelEntry = async () => {
-		mainFilter$5.init();
-		mainFilter$5.observe();
+		mainFilter$6.init();
+		mainFilter$6.observe();
 	};
 	var videoFilterChannelGroups = [
+		{
+			name: "时长过滤",
+			items: [{
+				type: "switch",
+				id: GM_KEYS$6.black.duration.statusKey,
+				name: "启用 时长过滤",
+				noStyle: true,
+				enableFn: () => {
+					mainFilter$6.videoDurationFilter.enable();
+					mainFilter$6.checkFull();
+				},
+				disableFn: () => {
+					mainFilter$6.videoDurationFilter.disable();
+					mainFilter$6.checkFull();
+				}
+			}, {
+				type: "number",
+				id: GM_KEYS$6.black.duration.valueKey,
+				name: "设定最低时长（0~300s）",
+				noStyle: true,
+				minValue: 0,
+				step: 1,
+				maxValue: 300,
+				defaultValue: 60,
+				disableValue: 0,
+				addonText: "秒",
+				fn: (value) => {
+					mainFilter$6.videoDurationFilter.setParam(value);
+					mainFilter$6.checkFull();
+				}
+			}]
+		},
+		{
+			name: "UP主过滤",
+			items: [
+				{
+					type: "switch",
+					id: GM_KEYS$6.black.uploader.statusKey,
+					name: "启用 UP主过滤 (右键单击UP主)",
+					defaultEnable: true,
+					noStyle: true,
+					enableFn: () => {
+						mainFilter$6.videoUploaderFilter.enable();
+						mainFilter$6.checkFull();
+					},
+					disableFn: () => {
+						mainFilter$6.videoUploaderFilter.disable();
+						mainFilter$6.checkFull();
+					}
+				},
+				{
+					type: "editor",
+					id: GM_KEYS$6.black.uploader.valueKey,
+					name: "编辑 UP主黑名单",
+					description: ["右键屏蔽的UP主会出现在首行"],
+					editorTitle: "UP主 黑名单",
+					editorDescription: ["每行一个UP主昵称，保存时自动去重"],
+					saveFn: async () => {
+						mainFilter$6.videoUploaderFilter.setParam(_GM_getValue(GM_KEYS$6.black.uploader.valueKey, []));
+						mainFilter$6.checkFull();
+					}
+				},
+				{
+					type: "switch",
+					id: GM_KEYS$6.black.uploaderKeyword.statusKey,
+					name: "启用 UP主昵称关键词过滤",
+					noStyle: true,
+					enableFn: () => {
+						mainFilter$6.videoUploaderKeywordFilter.enable();
+						mainFilter$6.checkFull();
+					},
+					disableFn: () => {
+						mainFilter$6.videoUploaderKeywordFilter.disable();
+						mainFilter$6.checkFull();
+					}
+				},
+				{
+					type: "editor",
+					id: GM_KEYS$6.black.uploaderKeyword.valueKey,
+					name: "编辑 UP主昵称关键词黑名单",
+					editorTitle: "UP主昵称关键词 黑名单",
+					editorDescription: [
+						"每行一个关键词或正则，不区分大小写、全半角",
+						"请勿使用过于激进的关键词或正则",
+						"正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
+					],
+					saveFn: async () => {
+						mainFilter$6.videoUploaderKeywordFilter.setParam(_GM_getValue(GM_KEYS$6.black.uploaderKeyword.valueKey, []));
+						mainFilter$6.checkFull();
+					}
+				}
+			]
+		},
+		{
+			name: "标题关键词过滤",
+			items: [{
+				type: "switch",
+				id: GM_KEYS$6.black.title.statusKey,
+				name: "启用 标题关键词过滤",
+				noStyle: true,
+				enableFn: () => {
+					mainFilter$6.videoTitleFilter.enable();
+					mainFilter$6.checkFull();
+				},
+				disableFn: () => {
+					mainFilter$6.videoTitleFilter.disable();
+					mainFilter$6.checkFull();
+				}
+			}, {
+				type: "editor",
+				id: GM_KEYS$6.black.title.valueKey,
+				name: "编辑 标题关键词黑名单",
+				editorTitle: "标题关键词 黑名单",
+				editorDescription: [
+					"每行一个关键词或正则，不区分大小写、全半角",
+					"请勿使用过于激进的关键词或正则",
+					"正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
+				],
+				saveFn: async () => {
+					mainFilter$6.videoTitleFilter.setParam(_GM_getValue(GM_KEYS$6.black.title.valueKey, []));
+					mainFilter$6.checkFull();
+				}
+			}]
+		},
+		{
+			name: "BV号过滤",
+			items: [{
+				type: "switch",
+				id: GM_KEYS$6.black.bvid.statusKey,
+				name: "启用 BV号过滤 (右键单击标题)",
+				noStyle: true,
+				enableFn: () => {
+					mainFilter$6.videoBvidFilter.enable();
+					mainFilter$6.checkFull();
+				},
+				disableFn: () => {
+					mainFilter$6.videoBvidFilter.disable();
+					mainFilter$6.checkFull();
+				}
+			}, {
+				type: "editor",
+				id: GM_KEYS$6.black.bvid.valueKey,
+				name: "编辑 BV号黑名单",
+				description: ["右键屏蔽的BV号会出现在首行"],
+				editorTitle: "BV号 黑名单",
+				editorDescription: ["每行一个BV号，保存时自动去重"],
+				saveFn: async () => {
+					mainFilter$6.videoBvidFilter.setParam(_GM_getValue(GM_KEYS$6.black.bvid.valueKey, []));
+					mainFilter$6.checkFull();
+				}
+			}]
+		},
+		{
+			name: "发布日期过滤",
+			fold: true,
+			items: [{
+				type: "switch",
+				id: GM_KEYS$6.black.pubdate.statusKey,
+				name: "启用 发布日期过滤",
+				noStyle: true,
+				enableFn: () => {
+					mainFilter$6.videoPubdateFilter.enable();
+					mainFilter$6.checkFull();
+				},
+				disableFn: () => {
+					mainFilter$6.videoPubdateFilter.disable();
+					mainFilter$6.checkFull();
+				}
+			}, {
+				type: "number",
+				id: GM_KEYS$6.black.pubdate.valueKey,
+				name: "视频发布日 距今不超过",
+				noStyle: true,
+				minValue: 0,
+				maxValue: 500,
+				step: 1,
+				defaultValue: 60,
+				disableValue: 0,
+				addonText: "天",
+				fn: (value) => {
+					mainFilter$6.videoPubdateFilter.setParam(value);
+					mainFilter$6.checkFull();
+				}
+			}]
+		},
+		{
+			name: "白名单 免过滤",
+			items: [
+				{
+					type: "switch",
+					id: GM_KEYS$6.white.uploader.statusKey,
+					name: "启用 UP主白名单 (右键单击UP主)",
+					defaultEnable: true,
+					noStyle: true,
+					enableFn: () => {
+						mainFilter$6.videoUploaderWhiteFilter.enable();
+						mainFilter$6.checkFull();
+					},
+					disableFn: () => {
+						mainFilter$6.videoUploaderWhiteFilter.disable();
+						mainFilter$6.checkFull();
+					}
+				},
+				{
+					type: "editor",
+					id: GM_KEYS$6.white.uploader.valueKey,
+					name: "编辑 UP主白名单",
+					editorTitle: "UP主 白名单",
+					editorDescription: ["每行一个UP主昵称，保存时自动去重"],
+					saveFn: async () => {
+						mainFilter$6.videoUploaderWhiteFilter.setParam(_GM_getValue(GM_KEYS$6.white.uploader.valueKey, []));
+						mainFilter$6.checkFull();
+					}
+				},
+				{
+					type: "switch",
+					id: GM_KEYS$6.white.title.statusKey,
+					name: "启用 标题关键词白名单",
+					noStyle: true,
+					enableFn: () => {
+						mainFilter$6.videoTitleWhiteFilter.enable();
+						mainFilter$6.checkFull();
+					},
+					disableFn: () => {
+						mainFilter$6.videoTitleWhiteFilter.disable();
+						mainFilter$6.checkFull();
+					}
+				},
+				{
+					type: "editor",
+					id: GM_KEYS$6.white.title.valueKey,
+					name: "编辑 标题关键词白名单",
+					editorTitle: "标题关键词 白名单",
+					editorDescription: [
+						"每行一个关键词或正则，不区分大小写、全半角",
+						"请勿使用过于激进的关键词或正则",
+						"正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
+					],
+					saveFn: async () => {
+						mainFilter$6.videoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$6.white.title.valueKey, []));
+						mainFilter$6.checkFull();
+					}
+				}
+			]
+		}
+	];
+	var videoFilterChannelHandler = (target) => {
+		if (!isPageChannel()) return [];
+		const menus = [];
+		if (target.closest(".bili-video-card__author")) {
+			const uploader = target.closest(".bili-video-card__author")?.querySelector(".bili-video-card__text:last-child")?.textContent?.split(" · ")[0].trim();
+			const spaceUrl = (target.closest(".bili-video-card__author")?.href.trim())?.match(/space\.bilibili\.com\/\d+/)?.[0];
+			if (uploader) {
+				if (mainFilter$6.videoUploaderFilter.isEnable) menus.push({
+					name: `屏蔽UP主：${uploader}`,
+					fn: async () => {
+						try {
+							mainFilter$6.videoUploaderFilter.addParam(uploader);
+							mainFilter$6.checkFull();
+							const arr = _GM_getValue(GM_KEYS$6.black.uploader.valueKey, []);
+							arr.unshift(uploader);
+							_GM_setValue(GM_KEYS$6.black.uploader.valueKey, orderedUniq(arr));
+						} catch (err) {
+							logger.error(`videoFilterChannelHandler add uploader ${uploader} failed`, err);
+						}
+					}
+				});
+				if (mainFilter$6.videoUploaderWhiteFilter.isEnable) menus.push({
+					name: `将UP主加入白名单`,
+					fn: async () => {
+						try {
+							mainFilter$6.videoUploaderWhiteFilter.addParam(uploader);
+							mainFilter$6.checkFull();
+							const arr = _GM_getValue(GM_KEYS$6.white.uploader.valueKey, []);
+							arr.unshift(uploader);
+							_GM_setValue(GM_KEYS$6.white.uploader.valueKey, orderedUniq(arr));
+						} catch (err) {
+							logger.error(`videoFilterChannelHandler add white uploader ${uploader} failed`, err);
+						}
+					}
+				});
+			}
+			if (spaceUrl && (mainFilter$6.videoUploaderFilter.isEnable || mainFilter$6.videoUploaderWhiteFilter.isEnable)) menus.push({
+				name: `复制主页链接`,
+				fn: async () => {
+					navigator.clipboard.writeText(`https://${spaceUrl}`).catch(() => {});
+				}
+			});
+		}
+		if (target instanceof HTMLAnchorElement && target.closest(".bili-video-card__title")) {
+			const url = target.closest(".bili-video-card__title")?.querySelector("a")?.href;
+			if (url && mainFilter$6.videoBvidFilter.isEnable) {
+				const bvid = matchBvid(url);
+				if (bvid) {
+					menus.push({
+						name: `屏蔽视频 ${bvid}`,
+						fn: async () => {
+							try {
+								mainFilter$6.videoBvidFilter.addParam(bvid);
+								mainFilter$6.checkFull();
+								const arr = _GM_getValue(GM_KEYS$6.black.bvid.valueKey, []);
+								arr.unshift(bvid);
+								_GM_setValue(GM_KEYS$6.black.bvid.valueKey, orderedUniq(arr));
+							} catch (err) {
+								logger.error(`videoFilterChannelHandler add bvid ${bvid} failed`, err);
+							}
+						}
+					});
+					menus.push({
+						name: "复制视频链接",
+						fn: async () => {
+							navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).catch(() => {});
+						}
+					});
+				}
+			}
+		}
+		return menus;
+	};
+	var GM_KEYS$5 = {
+		black: {
+			duration: {
+				statusKey: "homepage-duration-filter-status",
+				valueKey: "global-duration-filter-value"
+			},
+			views: {
+				statusKey: "homepage-views-filter-status",
+				valueKey: "global-views-filter-value"
+			},
+			uploader: {
+				statusKey: "homepage-uploader-filter-status",
+				valueKey: "global-uploader-filter-value"
+			},
+			uploaderKeyword: {
+				statusKey: "homepage-uploader-keyword-filter-status",
+				valueKey: "global-uploader-keyword-filter-value"
+			},
+			bvid: {
+				statusKey: "homepage-bvid-filter-status",
+				valueKey: "global-bvid-filter-value"
+			},
+			pubdate: {
+				statusKey: "homepage-pubdate-filter-status",
+				valueKey: "global-pubdate-filter-value"
+			},
+			title: {
+				statusKey: "homepage-title-keyword-filter-status",
+				valueKey: "global-title-keyword-filter-value"
+			}
+		},
+		white: {
+			uploader: {
+				statusKey: "homepage-uploader-whitelist-filter-status",
+				valueKey: "global-uploader-whitelist-filter-value"
+			},
+			title: {
+				statusKey: "homepage-title-keyword-whitelist-filter-status",
+				valueKey: "global-title-keyword-whitelist-filter-value"
+			},
+			isFollow: { statusKey: "homepage-following-whitelist-filter-status" }
+		}
+	};
+	var selectorFns$5 = {
+		duration: (video) => {
+			const duration = video.querySelector(".bili-video-card__stats__duration")?.textContent?.trim();
+			return duration && convertTimeToSec(duration);
+		},
+		views: (video) => {
+			const text = video.querySelector(".bili-video-card__stats--text")?.textContent?.trim();
+			if (text) {
+				if (/\d+(?:\.\d+)?万/.test(text)) return parseFloat(text.replace("万", "")) * 1e4;
+				if (/^\d+$/.test(text)) return parseFloat(text);
+			}
+		},
+		title: (video) => {
+			return video.querySelector(".bili-video-card__info--tit a")?.textContent?.trim();
+		},
+		pubdate: (video) => {
+			const pubdate = video.querySelector(".bili-video-card__info--date")?.textContent?.trim();
+			return pubdate && convertDateToDays(pubdate);
+		},
+		bvid: (video) => {
+			const href = video.querySelector(".bili-video-card__info--tit a")?.getAttribute("href") || video.querySelector(".bili-video-card__image--link")?.getAttribute("href");
+			return (href && matchBvid(href)) ?? void 0;
+		},
+		uploader: (video) => {
+			return video.querySelector(".bili-video-card__info--author")?.textContent?.trim();
+		},
+		isFollow: (video) => {
+			return video.querySelector(".bili-video-card__info--icon-text")?.textContent?.trim() === "已关注";
+		}
+	};
+	var VideoFilterHomepage = class {
+		target;
+		videoBvidFilter = new VideoBvidFilter();
+		videoDurationFilter = new VideoDurationFilter();
+		videoViewsFilter = new VideoViewsFilter();
+		videoTitleFilter = new VideoTitleFilter();
+		videoPubdateFilter = new VideoPubdateFilter();
+		videoUploaderFilter = new VideoUploaderFilter();
+		videoUploaderKeywordFilter = new VideoUploaderKeywordFilter();
+		videoUploaderWhiteFilter = new VideoUploaderWhiteFilter();
+		videoTitleWhiteFilter = new VideoTitleWhiteFilter();
+		videoIsFollowWhiteFilter = new VideoIsFollowWhiteFilter();
+		init() {
+			this.videoBvidFilter.setParam(_GM_getValue(GM_KEYS$5.black.bvid.valueKey, []));
+			this.videoDurationFilter.setParam(_GM_getValue(GM_KEYS$5.black.duration.valueKey, 0));
+			this.videoViewsFilter.setParam(_GM_getValue(GM_KEYS$5.black.views.valueKey, 0));
+			this.videoTitleFilter.setParam(_GM_getValue(GM_KEYS$5.black.title.valueKey, []));
+			this.videoPubdateFilter.setParam(_GM_getValue(GM_KEYS$5.black.pubdate.valueKey, 0));
+			this.videoUploaderFilter.setParam(_GM_getValue(GM_KEYS$5.black.uploader.valueKey, []));
+			this.videoUploaderKeywordFilter.setParam(_GM_getValue(GM_KEYS$5.black.uploaderKeyword.valueKey, []));
+			this.videoUploaderWhiteFilter.setParam(_GM_getValue(GM_KEYS$5.white.uploader.valueKey, []));
+			this.videoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$5.white.title.valueKey, []));
+		}
+		async check(mode) {
+			if (!this.target) return;
+			let revertAll = false;
+			if (!(this.videoBvidFilter.isEnable || this.videoDurationFilter.isEnable || this.videoViewsFilter.isEnable || this.videoTitleFilter.isEnable || this.videoUploaderFilter.isEnable || this.videoUploaderKeywordFilter.isEnable || this.videoPubdateFilter.isEnable)) revertAll = true;
+			const timer = performance.now();
+			let selector = `:scope > :is(.feed-card, .bili-video-card.is-rcmd, .bili-feed-card)`;
+			if (mode === "incr") selector += `:not([${config_default.filterVisitSign}])`;
+			const videos = Array.from(this.target.querySelectorAll(selector));
+			if (!videos.length) return;
+			if (revertAll) {
+				videos.forEach((v) => showEle(v, "sign"));
+				return;
+			}
+			if (config_default.isDebugMode) videos.forEach((v) => {
+				logger.debug([
+					`VideoFilterHomepage`,
+					`bvid: ${selectorFns$5.bvid(v)}`,
+					`duration: ${selectorFns$5.duration(v)}`,
+					`views: ${selectorFns$5.views(v)}`,
+					`title: ${selectorFns$5.title(v)}`,
+					`uploader: ${selectorFns$5.uploader(v)}`,
+					`pubdate: ${selectorFns$5.pubdate(v)}`,
+					`isFollow: ${selectorFns$5.isFollow(v)}`
+				].join("\n"));
+			});
+			const blackPairs = [];
+			this.videoDurationFilter.isEnable && blackPairs.push([this.videoDurationFilter, selectorFns$5.duration]);
+			this.videoViewsFilter.isEnable && blackPairs.push([this.videoViewsFilter, selectorFns$5.views]);
+			this.videoTitleFilter.isEnable && blackPairs.push([this.videoTitleFilter, selectorFns$5.title]);
+			this.videoPubdateFilter.isEnable && blackPairs.push([this.videoPubdateFilter, selectorFns$5.pubdate]);
+			this.videoUploaderFilter.isEnable && blackPairs.push([this.videoUploaderFilter, selectorFns$5.uploader]);
+			this.videoUploaderKeywordFilter.isEnable && blackPairs.push([this.videoUploaderKeywordFilter, selectorFns$5.uploader]);
+			const whitePairs = [];
+			this.videoUploaderWhiteFilter.isEnable && whitePairs.push([this.videoUploaderWhiteFilter, selectorFns$5.uploader]);
+			this.videoTitleWhiteFilter.isEnable && whitePairs.push([this.videoTitleWhiteFilter, selectorFns$5.title]);
+			this.videoIsFollowWhiteFilter.isEnable && whitePairs.push([this.videoIsFollowWhiteFilter, selectorFns$5.isFollow]);
+			const forceBlackPairs = [];
+			this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns$5.bvid]);
+			const blackCnt = await coreCheck(videos, true, "sign", blackPairs, whitePairs, forceBlackPairs);
+			const time = (performance.now() - timer).toFixed(1);
+			logger.debug(`VideoFilterHomepage hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`);
+		}
+		checkFull() {
+			this.check("full").catch((err) => {
+				logger.error("VideoFilterHomepage check full error", err);
+			});
+		}
+		checkIncr() {
+			this.check("incr").catch((err) => {
+				logger.error("VideoFilterHomepage check incr error", err);
+			});
+		}
+		observe() {
+			waitForEle(document, ".container", (node) => {
+				return node.classList.contains("container");
+			}).then((ele) => {
+				if (!ele) return;
+				logger.debug("VideoFilterHomepage target appear");
+				this.target = ele;
+				this.checkFull();
+				new MutationObserver(() => {
+					this.checkIncr();
+				}).observe(this.target, { childList: true });
+			});
+		}
+	};
+	var mainFilter$5 = new VideoFilterHomepage();
+	var videoFilterHomepageEntry = async () => {
+		mainFilter$5.init();
+		mainFilter$5.observe();
+		const checkHomepageSuffix = () => {
+			if (location.pathname.startsWith("/index.html") && (mainFilter$5.videoBvidFilter.isEnable || mainFilter$5.videoDurationFilter.isEnable || mainFilter$5.videoViewsFilter.isEnable || mainFilter$5.videoTitleFilter.isEnable || mainFilter$5.videoUploaderFilter.isEnable || mainFilter$5.videoUploaderKeywordFilter.isEnable || mainFilter$5.videoPubdateFilter.isEnable)) alert(`[bilibili-cleaner] 视频过滤在当前首页不生效\n当前网址包含 index.html 后缀\n请使用无后缀首页 https://www.bilibili.com/`);
+		};
+		if (document.readyState === "complete") checkHomepageSuffix();
+		else window.addEventListener("load", checkHomepageSuffix);
+	};
+	var videoFilterHomepageGroups = [
 		{
 			name: "时长过滤",
 			items: [{
@@ -5630,8 +6123,8 @@
 				name: "设定最低时长（0~300s）",
 				noStyle: true,
 				minValue: 0,
-				step: 1,
 				maxValue: 300,
+				step: 1,
 				defaultValue: 60,
 				disableValue: 0,
 				addonText: "秒",
@@ -5795,8 +6288,57 @@
 			}]
 		},
 		{
+			name: "播放量过滤",
+			fold: true,
+			items: [{
+				type: "switch",
+				id: GM_KEYS$5.black.views.statusKey,
+				name: "启用 播放量过滤",
+				description: ["不推荐启用", "会导致刚发布的优质视频被过滤"],
+				noStyle: true,
+				enableFn: () => {
+					mainFilter$5.videoViewsFilter.enable();
+					mainFilter$5.checkFull();
+				},
+				disableFn: () => {
+					mainFilter$5.videoViewsFilter.disable();
+					mainFilter$5.checkFull();
+				}
+			}, {
+				type: "number",
+				id: GM_KEYS$5.black.views.valueKey,
+				name: "设定最低播放量（0~10万）",
+				noStyle: true,
+				minValue: 0,
+				maxValue: 1e5,
+				step: 1,
+				defaultValue: 0,
+				disableValue: 0,
+				addonText: "次",
+				fn: (value) => {
+					mainFilter$5.videoViewsFilter.setParam(value);
+					mainFilter$5.checkFull();
+				}
+			}]
+		},
+		{
 			name: "白名单 免过滤",
 			items: [
+				{
+					type: "switch",
+					id: GM_KEYS$5.white.isFollow.statusKey,
+					name: "标有 [已关注] 的视频免过滤",
+					defaultEnable: true,
+					noStyle: true,
+					enableFn: () => {
+						mainFilter$5.videoIsFollowWhiteFilter.enable();
+						mainFilter$5.checkFull();
+					},
+					disableFn: () => {
+						mainFilter$5.videoIsFollowWhiteFilter.disable();
+						mainFilter$5.checkFull();
+					}
+				},
 				{
 					type: "switch",
 					id: GM_KEYS$5.white.uploader.statusKey,
@@ -5855,12 +6397,12 @@
 			]
 		}
 	];
-	var videoFilterChannelHandler = (target) => {
-		if (!isPageChannel()) return [];
+	var videoFilterHomepageHandler = (target) => {
+		if (!isPageHomepage()) return [];
 		const menus = [];
-		if (target.closest(".bili-video-card__author")) {
-			const uploader = target.closest(".bili-video-card__author")?.querySelector(".bili-video-card__text:last-child")?.textContent?.split(" · ")[0].trim();
-			const spaceUrl = (target.closest(".bili-video-card__author")?.href.trim())?.match(/space\.bilibili\.com\/\d+/)?.[0];
+		if (target.closest(".bili-video-card__info--owner")) {
+			const uploader = target.closest(".bili-video-card__info--owner")?.querySelector(".bili-video-card__info--author")?.textContent?.trim();
+			const spaceUrl = (target.closest(".bili-video-card__info--owner")?.href.trim())?.match(/space\.bilibili\.com\/\d+/)?.[0];
 			if (uploader) {
 				if (mainFilter$5.videoUploaderFilter.isEnable) menus.push({
 					name: `屏蔽UP主：${uploader}`,
@@ -5872,7 +6414,7 @@
 							arr.unshift(uploader);
 							_GM_setValue(GM_KEYS$5.black.uploader.valueKey, orderedUniq(arr));
 						} catch (err) {
-							logger.error(`videoFilterChannelHandler add uploader ${uploader} failed`, err);
+							logger.error(`videoFilterHomepageHandler add uploader ${uploader} failed`, err);
 						}
 					}
 				});
@@ -5886,20 +6428,18 @@
 							arr.unshift(uploader);
 							_GM_setValue(GM_KEYS$5.white.uploader.valueKey, orderedUniq(arr));
 						} catch (err) {
-							logger.error(`videoFilterChannelHandler add white uploader ${uploader} failed`, err);
+							logger.error(`videoFilterHomepageHandler add white uploader ${uploader} failed`, err);
 						}
 					}
 				});
 			}
 			if (spaceUrl && (mainFilter$5.videoUploaderFilter.isEnable || mainFilter$5.videoUploaderWhiteFilter.isEnable)) menus.push({
 				name: `复制主页链接`,
-				fn: async () => {
-					navigator.clipboard.writeText(`https://${spaceUrl}`).catch(() => {});
-				}
+				fn: () => navigator.clipboard.writeText(`https://${spaceUrl}`).catch(() => {})
 			});
 		}
-		if (target instanceof HTMLAnchorElement && target.closest(".bili-video-card__title")) {
-			const url = target.closest(".bili-video-card__title")?.querySelector("a")?.href;
+		if (target instanceof HTMLAnchorElement && target.closest(".bili-video-card__info--tit")) {
+			const url = target.closest(".bili-video-card__info--tit")?.querySelector("a")?.href;
 			if (url && mainFilter$5.videoBvidFilter.isEnable) {
 				const bvid = matchBvid(url);
 				if (bvid) {
@@ -5913,15 +6453,13 @@
 								arr.unshift(bvid);
 								_GM_setValue(GM_KEYS$5.black.bvid.valueKey, orderedUniq(arr));
 							} catch (err) {
-								logger.error(`videoFilterChannelHandler add bvid ${bvid} failed`, err);
+								logger.error(`videoFilterHomepageHandler add bvid ${bvid} failed`, err);
 							}
 						}
 					});
 					menus.push({
 						name: "复制视频链接",
-						fn: async () => {
-							navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).catch(() => {});
-						}
+						fn: () => navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).catch(() => {})
 					});
 				}
 			}
@@ -5931,107 +6469,98 @@
 	var GM_KEYS$4 = {
 		black: {
 			duration: {
-				statusKey: "homepage-duration-filter-status",
+				statusKey: "popular-duration-filter-status",
 				valueKey: "global-duration-filter-value"
 			},
-			views: {
-				statusKey: "homepage-views-filter-status",
-				valueKey: "global-views-filter-value"
-			},
 			uploader: {
-				statusKey: "homepage-uploader-filter-status",
+				statusKey: "popular-uploader-filter-status",
 				valueKey: "global-uploader-filter-value"
 			},
 			uploaderKeyword: {
-				statusKey: "homepage-uploader-keyword-filter-status",
+				statusKey: "popular-uploader-keyword-filter-status",
 				valueKey: "global-uploader-keyword-filter-value"
 			},
 			bvid: {
-				statusKey: "homepage-bvid-filter-status",
+				statusKey: "popular-bvid-filter-status",
 				valueKey: "global-bvid-filter-value"
 			},
-			pubdate: {
-				statusKey: "homepage-pubdate-filter-status",
-				valueKey: "global-pubdate-filter-value"
-			},
 			title: {
-				statusKey: "homepage-title-keyword-filter-status",
+				statusKey: "popular-title-keyword-filter-status",
 				valueKey: "global-title-keyword-filter-value"
-			}
+			},
+			quality: {
+				statusKey: "popular-quality-filter-status",
+				valueKey: "global-quality-filter-value"
+			},
+			dimension: { statusKey: "popular-dimension-filter-status" }
 		},
 		white: {
 			uploader: {
-				statusKey: "homepage-uploader-whitelist-filter-status",
+				statusKey: "popular-uploader-whitelist-filter-status",
 				valueKey: "global-uploader-whitelist-filter-value"
 			},
 			title: {
-				statusKey: "homepage-title-keyword-whitelist-filter-status",
+				statusKey: "popular-title-keyword-whitelist-filter-status",
 				valueKey: "global-title-keyword-whitelist-filter-value"
-			},
-			isFollow: { statusKey: "homepage-following-whitelist-filter-status" }
+			}
 		}
+	};
+	var getVideoData = (video) => {
+		let videoData;
+		if (!video.classList.contains("rank-item")) return video.__vue__?.videoData;
+		const rank = video.getAttribute("data-rank");
+		if (rank && parseInt(rank) > 0) videoData = video.closest(".rank-list-wrap")?.__vue__?.list?.[parseInt(rank) - 1];
+		return videoData;
 	};
 	var selectorFns$4 = {
-		duration: (video) => {
-			const duration = video.querySelector(".bili-video-card__stats__duration")?.textContent?.trim();
-			return duration && convertTimeToSec(duration);
-		},
-		views: (video) => {
-			const text = video.querySelector(".bili-video-card__stats--text")?.textContent?.trim();
-			if (text) {
-				if (/\d+(?:\.\d+)?万/.test(text)) return parseFloat(text.replace("万", "")) * 1e4;
-				if (/^\d+$/.test(text)) return parseFloat(text);
-			}
-		},
 		title: (video) => {
-			return video.querySelector(".bili-video-card__info--tit a")?.textContent?.trim();
-		},
-		pubdate: (video) => {
-			const pubdate = video.querySelector(".bili-video-card__info--date")?.textContent?.trim();
-			return pubdate && convertDateToDays(pubdate);
+			return getVideoData(video)?.title;
 		},
 		bvid: (video) => {
-			const href = video.querySelector(".bili-video-card__info--tit a")?.getAttribute("href") || video.querySelector(".bili-video-card__image--link")?.getAttribute("href");
-			return (href && matchBvid(href)) ?? void 0;
+			return getVideoData(video)?.bvid;
 		},
 		uploader: (video) => {
-			return video.querySelector(".bili-video-card__info--author")?.textContent?.trim();
+			return getVideoData(video)?.owner?.name;
 		},
-		isFollow: (video) => {
-			return video.querySelector(".bili-video-card__info--icon-text")?.textContent?.trim() === "已关注";
+		duration: (video) => {
+			return getVideoData(video)?.duration;
+		},
+		quality: (video) => {
+			const stat = getVideoData(video)?.stat;
+			if (stat && typeof stat.coin === "number" && typeof stat.like === "number") return calcQuality(stat.coin / stat.like);
+		},
+		dimension: (video) => {
+			const dimension = getVideoData(video)?.dimension;
+			if (dimension && typeof dimension.height === "number" && typeof dimension.width === "number") return dimension?.height > dimension?.width;
 		}
 	};
-	var VideoFilterHomepage = class {
+	var VideoFilterPopular = class {
 		target;
 		videoBvidFilter = new VideoBvidFilter();
 		videoDurationFilter = new VideoDurationFilter();
-		videoViewsFilter = new VideoViewsFilter();
 		videoTitleFilter = new VideoTitleFilter();
-		videoPubdateFilter = new VideoPubdateFilter();
 		videoUploaderFilter = new VideoUploaderFilter();
 		videoUploaderKeywordFilter = new VideoUploaderKeywordFilter();
+		videoQualityFilter = new VideoQualityFilter();
+		videoDimensionFilter = new VideoDimensionFilter();
 		videoUploaderWhiteFilter = new VideoUploaderWhiteFilter();
 		videoTitleWhiteFilter = new VideoTitleWhiteFilter();
-		videoIsFollowWhiteFilter = new VideoIsFollowWhiteFilter();
 		init() {
 			this.videoBvidFilter.setParam(_GM_getValue(GM_KEYS$4.black.bvid.valueKey, []));
 			this.videoDurationFilter.setParam(_GM_getValue(GM_KEYS$4.black.duration.valueKey, 0));
-			this.videoViewsFilter.setParam(_GM_getValue(GM_KEYS$4.black.views.valueKey, 0));
 			this.videoTitleFilter.setParam(_GM_getValue(GM_KEYS$4.black.title.valueKey, []));
-			this.videoPubdateFilter.setParam(_GM_getValue(GM_KEYS$4.black.pubdate.valueKey, 0));
 			this.videoUploaderFilter.setParam(_GM_getValue(GM_KEYS$4.black.uploader.valueKey, []));
 			this.videoUploaderKeywordFilter.setParam(_GM_getValue(GM_KEYS$4.black.uploaderKeyword.valueKey, []));
+			this.videoQualityFilter.setParam(_GM_getValue(GM_KEYS$4.black.quality.valueKey, 0));
 			this.videoUploaderWhiteFilter.setParam(_GM_getValue(GM_KEYS$4.white.uploader.valueKey, []));
 			this.videoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$4.white.title.valueKey, []));
 		}
 		async check(mode) {
 			if (!this.target) return;
 			let revertAll = false;
-			if (!(this.videoBvidFilter.isEnable || this.videoDurationFilter.isEnable || this.videoViewsFilter.isEnable || this.videoTitleFilter.isEnable || this.videoUploaderFilter.isEnable || this.videoUploaderKeywordFilter.isEnable || this.videoPubdateFilter.isEnable)) revertAll = true;
+			if (!(this.videoBvidFilter.isEnable || this.videoDurationFilter.isEnable || this.videoTitleFilter.isEnable || this.videoUploaderFilter.isEnable || this.videoUploaderKeywordFilter.isEnable || this.videoDimensionFilter.isEnable || this.videoQualityFilter.isEnable)) revertAll = true;
 			const timer = performance.now();
-			let selector = `:scope > :is(.feed-card, .bili-video-card.is-rcmd, .bili-feed-card)`;
-			if (mode === "incr") selector += `:not([${config_default.filterVisitSign}])`;
-			const videos = Array.from(this.target.querySelectorAll(selector));
+			const videos = Array.from(this.target.querySelectorAll(`.card-list .video-card, .video-list .video-card, .rank-list:not(.pgc-list) .rank-item`));
 			if (!videos.length) return;
 			if (revertAll) {
 				videos.forEach((v) => showEle(v, "sign"));
@@ -6039,63 +6568,58 @@
 			}
 			if (config_default.isDebugMode) videos.forEach((v) => {
 				logger.debug([
-					`VideoFilterHomepage`,
+					`VideoFilterPopular`,
 					`bvid: ${selectorFns$4.bvid(v)}`,
 					`duration: ${selectorFns$4.duration(v)}`,
-					`views: ${selectorFns$4.views(v)}`,
 					`title: ${selectorFns$4.title(v)}`,
 					`uploader: ${selectorFns$4.uploader(v)}`,
-					`pubdate: ${selectorFns$4.pubdate(v)}`,
-					`isFollow: ${selectorFns$4.isFollow(v)}`
+					`quality: ${selectorFns$4.quality(v)}`
 				].join("\n"));
 			});
 			const blackPairs = [];
 			this.videoDurationFilter.isEnable && blackPairs.push([this.videoDurationFilter, selectorFns$4.duration]);
-			this.videoViewsFilter.isEnable && blackPairs.push([this.videoViewsFilter, selectorFns$4.views]);
 			this.videoTitleFilter.isEnable && blackPairs.push([this.videoTitleFilter, selectorFns$4.title]);
-			this.videoPubdateFilter.isEnable && blackPairs.push([this.videoPubdateFilter, selectorFns$4.pubdate]);
 			this.videoUploaderFilter.isEnable && blackPairs.push([this.videoUploaderFilter, selectorFns$4.uploader]);
 			this.videoUploaderKeywordFilter.isEnable && blackPairs.push([this.videoUploaderKeywordFilter, selectorFns$4.uploader]);
+			this.videoDimensionFilter.isEnable && blackPairs.push([this.videoDimensionFilter, selectorFns$4.dimension]);
+			this.videoQualityFilter.isEnable && blackPairs.push([this.videoQualityFilter, selectorFns$4.quality]);
 			const whitePairs = [];
 			this.videoUploaderWhiteFilter.isEnable && whitePairs.push([this.videoUploaderWhiteFilter, selectorFns$4.uploader]);
 			this.videoTitleWhiteFilter.isEnable && whitePairs.push([this.videoTitleWhiteFilter, selectorFns$4.title]);
-			this.videoIsFollowWhiteFilter.isEnable && whitePairs.push([this.videoIsFollowWhiteFilter, selectorFns$4.isFollow]);
 			const forceBlackPairs = [];
 			this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns$4.bvid]);
 			const blackCnt = await coreCheck(videos, true, "sign", blackPairs, whitePairs, forceBlackPairs);
 			const time = (performance.now() - timer).toFixed(1);
-			logger.debug(`VideoFilterHomepage hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`);
+			logger.debug(`VideoFilterPopular hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`);
 		}
 		checkFull() {
 			this.check("full").catch((err) => {
-				logger.error("VideoFilterHomepage check full error", err);
-			});
-		}
-		checkIncr() {
-			this.check("incr").catch((err) => {
-				logger.error("VideoFilterHomepage check incr error", err);
+				logger.error("VideoFilterPopular check full error", err);
 			});
 		}
 		observe() {
-			waitForEle(document, ".container", (node) => {
-				return node.classList.contains("container");
+			waitForEle(document, "#app", (node) => {
+				return node.id === "app";
 			}).then((ele) => {
 				if (!ele) return;
-				logger.debug("VideoFilterHomepage target appear");
+				logger.debug("VideoFilterPopular target appear");
 				this.target = ele;
 				this.checkFull();
 				new MutationObserver(() => {
-					this.checkIncr();
-				}).observe(this.target, { childList: true });
+					this.checkFull();
+				}).observe(this.target, {
+					childList: true,
+					subtree: true
+				});
 			});
 		}
 	};
-	var mainFilter$4 = new VideoFilterHomepage();
-	var videoFilterHomepageEntry = async () => {
+	var mainFilter$4 = new VideoFilterPopular();
+	var videoFilterPopularEntry = async () => {
 		mainFilter$4.init();
 		mainFilter$4.observe();
 	};
-	var videoFilterHomepageGroups = [
+	var videoFilterPopularGroups = [
 		{
 			name: "时长过滤",
 			items: [{
@@ -6190,6 +6714,56 @@
 			]
 		},
 		{
+			name: "视频质量过滤",
+			items: [
+				{
+					type: "switch",
+					id: GM_KEYS$4.black.dimension.statusKey,
+					name: "启用 竖屏视频过滤",
+					defaultEnable: true,
+					noStyle: true,
+					enableFn: () => {
+						mainFilter$4.videoDimensionFilter.enable();
+						mainFilter$4.checkFull();
+					},
+					disableFn: () => {
+						mainFilter$4.videoDimensionFilter.disable();
+						mainFilter$4.checkFull();
+					}
+				},
+				{
+					type: "switch",
+					id: GM_KEYS$4.black.quality.statusKey,
+					name: "启用 劣质视频过滤",
+					noStyle: true,
+					enableFn: () => {
+						mainFilter$4.videoQualityFilter.enable();
+						mainFilter$4.checkFull();
+					},
+					disableFn: () => {
+						mainFilter$4.videoQualityFilter.disable();
+						mainFilter$4.checkFull();
+					}
+				},
+				{
+					type: "number",
+					id: GM_KEYS$4.black.quality.valueKey,
+					name: "劣质视频过滤百分比 (0~80%)",
+					noStyle: true,
+					minValue: 0,
+					maxValue: 80,
+					step: .1,
+					defaultValue: 25,
+					disableValue: 0,
+					addonText: "%",
+					fn: (value) => {
+						mainFilter$4.videoQualityFilter.setParam(value);
+						mainFilter$4.checkFull();
+					}
+				}
+			]
+		},
+		{
 			name: "标题关键词过滤",
 			items: [{
 				type: "switch",
@@ -6249,90 +6823,8 @@
 			}]
 		},
 		{
-			name: "发布日期过滤",
-			fold: true,
-			items: [{
-				type: "switch",
-				id: GM_KEYS$4.black.pubdate.statusKey,
-				name: "启用 发布日期过滤",
-				noStyle: true,
-				enableFn: () => {
-					mainFilter$4.videoPubdateFilter.enable();
-					mainFilter$4.checkFull();
-				},
-				disableFn: () => {
-					mainFilter$4.videoPubdateFilter.disable();
-					mainFilter$4.checkFull();
-				}
-			}, {
-				type: "number",
-				id: GM_KEYS$4.black.pubdate.valueKey,
-				name: "视频发布日 距今不超过",
-				noStyle: true,
-				minValue: 0,
-				maxValue: 500,
-				step: 1,
-				defaultValue: 60,
-				disableValue: 0,
-				addonText: "天",
-				fn: (value) => {
-					mainFilter$4.videoPubdateFilter.setParam(value);
-					mainFilter$4.checkFull();
-				}
-			}]
-		},
-		{
-			name: "播放量过滤",
-			fold: true,
-			items: [{
-				type: "switch",
-				id: GM_KEYS$4.black.views.statusKey,
-				name: "启用 播放量过滤",
-				description: ["不推荐启用", "会导致刚发布的优质视频被过滤"],
-				noStyle: true,
-				enableFn: () => {
-					mainFilter$4.videoViewsFilter.enable();
-					mainFilter$4.checkFull();
-				},
-				disableFn: () => {
-					mainFilter$4.videoViewsFilter.disable();
-					mainFilter$4.checkFull();
-				}
-			}, {
-				type: "number",
-				id: GM_KEYS$4.black.views.valueKey,
-				name: "设定最低播放量（0~10万）",
-				noStyle: true,
-				minValue: 0,
-				maxValue: 1e5,
-				step: 1,
-				defaultValue: 0,
-				disableValue: 0,
-				addonText: "次",
-				fn: (value) => {
-					mainFilter$4.videoViewsFilter.setParam(value);
-					mainFilter$4.checkFull();
-				}
-			}]
-		},
-		{
 			name: "白名单 免过滤",
 			items: [
-				{
-					type: "switch",
-					id: GM_KEYS$4.white.isFollow.statusKey,
-					name: "标有 [已关注] 的视频免过滤",
-					defaultEnable: true,
-					noStyle: true,
-					enableFn: () => {
-						mainFilter$4.videoIsFollowWhiteFilter.enable();
-						mainFilter$4.checkFull();
-					},
-					disableFn: () => {
-						mainFilter$4.videoIsFollowWhiteFilter.disable();
-						mainFilter$4.checkFull();
-					}
-				},
 				{
 					type: "switch",
 					id: GM_KEYS$4.white.uploader.statusKey,
@@ -6391,12 +6883,11 @@
 			]
 		}
 	];
-	var videoFilterHomepageHandler = (target) => {
-		if (!isPageHomepage()) return [];
+	var videoFilterPopularHandler = (target) => {
+		if (!isPagePopular()) return [];
 		const menus = [];
-		if (target.closest(".bili-video-card__info--owner")) {
-			const uploader = target.closest(".bili-video-card__info--owner")?.querySelector(".bili-video-card__info--author")?.textContent?.trim();
-			const spaceUrl = (target.closest(".bili-video-card__info--owner")?.href.trim())?.match(/space\.bilibili\.com\/\d+/)?.[0];
+		if (target.closest(".up-name")) {
+			const uploader = target.textContent?.trim();
 			if (uploader) {
 				if (mainFilter$4.videoUploaderFilter.isEnable) menus.push({
 					name: `屏蔽UP主：${uploader}`,
@@ -6408,7 +6899,7 @@
 							arr.unshift(uploader);
 							_GM_setValue(GM_KEYS$4.black.uploader.valueKey, orderedUniq(arr));
 						} catch (err) {
-							logger.error(`videoFilterHomepageHandler add uploader ${uploader} failed`, err);
+							logger.error(`videoFilterPopularHandler add uploader ${uploader} failed`, err);
 						}
 					}
 				});
@@ -6422,18 +6913,15 @@
 							arr.unshift(uploader);
 							_GM_setValue(GM_KEYS$4.white.uploader.valueKey, orderedUniq(arr));
 						} catch (err) {
-							logger.error(`videoFilterHomepageHandler add white uploader ${uploader} failed`, err);
+							logger.error(`videoFilterPopularHandler add white uploader ${uploader} failed`, err);
 						}
 					}
 				});
 			}
-			if (spaceUrl && (mainFilter$4.videoUploaderFilter.isEnable || mainFilter$4.videoUploaderWhiteFilter.isEnable)) menus.push({
-				name: `复制主页链接`,
-				fn: () => navigator.clipboard.writeText(`https://${spaceUrl}`).catch(() => {})
-			});
 		}
-		if (target instanceof HTMLAnchorElement && target.closest(".bili-video-card__info--tit")) {
-			const url = target.closest(".bili-video-card__info--tit")?.querySelector("a")?.href;
+		if (target.classList.contains("title") && target.closest(".info a") || target.classList.contains("video-name") || target.classList.contains("lazy-image")) {
+			let url = target.getAttribute("href") || target.parentElement?.getAttribute("href");
+			if (!url) url = target.closest(".video-card")?.querySelector(".video-card__content > a")?.getAttribute("href");
 			if (url && mainFilter$4.videoBvidFilter.isEnable) {
 				const bvid = matchBvid(url);
 				if (bvid) {
@@ -6447,7 +6935,7 @@
 								arr.unshift(bvid);
 								_GM_setValue(GM_KEYS$4.black.bvid.valueKey, orderedUniq(arr));
 							} catch (err) {
-								logger.error(`videoFilterHomepageHandler add bvid ${bvid} failed`, err);
+								logger.error(`videoFilterPopularHandler add bvid ${bvid} failed`, err);
 							}
 						}
 					});
@@ -6463,80 +6951,63 @@
 	var GM_KEYS$3 = {
 		black: {
 			duration: {
-				statusKey: "popular-duration-filter-status",
+				statusKey: "search-duration-filter-status",
 				valueKey: "global-duration-filter-value"
 			},
 			uploader: {
-				statusKey: "popular-uploader-filter-status",
+				statusKey: "search-uploader-filter-status",
 				valueKey: "global-uploader-filter-value"
 			},
 			uploaderKeyword: {
-				statusKey: "popular-uploader-keyword-filter-status",
+				statusKey: "search-uploader-keyword-filter-status",
 				valueKey: "global-uploader-keyword-filter-value"
 			},
 			bvid: {
-				statusKey: "popular-bvid-filter-status",
+				statusKey: "search-bvid-filter-status",
 				valueKey: "global-bvid-filter-value"
 			},
 			title: {
-				statusKey: "popular-title-keyword-filter-status",
+				statusKey: "search-title-keyword-filter-status",
 				valueKey: "global-title-keyword-filter-value"
-			},
-			quality: {
-				statusKey: "popular-quality-filter-status",
-				valueKey: "global-quality-filter-value"
-			},
-			dimension: { statusKey: "popular-dimension-filter-status" }
+			}
 		},
 		white: {
 			uploader: {
-				statusKey: "popular-uploader-whitelist-filter-status",
+				statusKey: "search-uploader-whitelist-filter-status",
 				valueKey: "global-uploader-whitelist-filter-value"
 			},
 			title: {
-				statusKey: "popular-title-keyword-whitelist-filter-status",
+				statusKey: "search-title-keyword-whitelist-filter-status",
 				valueKey: "global-title-keyword-whitelist-filter-value"
 			}
 		}
 	};
-	var getVideoData = (video) => {
-		let videoData;
-		if (!video.classList.contains("rank-item")) return video.__vue__?.videoData;
-		const rank = video.getAttribute("data-rank");
-		if (rank && parseInt(rank) > 0) videoData = video.closest(".rank-list-wrap")?.__vue__?.list?.[parseInt(rank) - 1];
-		return videoData;
-	};
 	var selectorFns$3 = {
+		duration: (video) => {
+			const duration = video.querySelector(".bili-video-card__stats__duration")?.textContent?.trim();
+			return (duration && convertTimeToSec(duration)) ?? void 0;
+		},
 		title: (video) => {
-			return getVideoData(video)?.title;
+			return video.querySelector(".bili-video-card__info--tit")?.textContent?.trim();
 		},
 		bvid: (video) => {
-			return getVideoData(video)?.bvid;
+			const href = video.querySelector(".bili-video-card__wrap > a")?.getAttribute("href") || video.querySelector(".bili-video-card__info--right > a")?.getAttribute("href");
+			return (href && matchBvid(href)) ?? void 0;
 		},
 		uploader: (video) => {
-			return getVideoData(video)?.owner?.name;
+			return video.querySelector(".bili-video-card__info--author")?.textContent?.trim() || video.closest(".user-list")?.querySelector(".user-name")?.textContent?.trim();
 		},
-		duration: (video) => {
-			return getVideoData(video)?.duration;
-		},
-		quality: (video) => {
-			const stat = getVideoData(video)?.stat;
-			if (stat && typeof stat.coin === "number" && typeof stat.like === "number") return calcQuality(stat.coin / stat.like);
-		},
-		dimension: (video) => {
-			const dimension = getVideoData(video)?.dimension;
-			if (dimension && typeof dimension.height === "number" && typeof dimension.width === "number") return dimension?.height > dimension?.width;
+		uploaderCard: (userCard) => {
+			return userCard.querySelector(".user-name")?.textContent?.trim();
 		}
 	};
-	var VideoFilterPopular = class {
+	var VideoFilterSearch = class {
 		target;
 		videoBvidFilter = new VideoBvidFilter();
 		videoDurationFilter = new VideoDurationFilter();
 		videoTitleFilter = new VideoTitleFilter();
 		videoUploaderFilter = new VideoUploaderFilter();
 		videoUploaderKeywordFilter = new VideoUploaderKeywordFilter();
-		videoQualityFilter = new VideoQualityFilter();
-		videoDimensionFilter = new VideoDimensionFilter();
 		videoUploaderWhiteFilter = new VideoUploaderWhiteFilter();
 		videoTitleWhiteFilter = new VideoTitleWhiteFilter();
 		init() {
@@ -6545,16 +7016,17 @@
 			this.videoTitleFilter.setParam(_GM_getValue(GM_KEYS$3.black.title.valueKey, []));
 			this.videoUploaderFilter.setParam(_GM_getValue(GM_KEYS$3.black.uploader.valueKey, []));
 			this.videoUploaderKeywordFilter.setParam(_GM_getValue(GM_KEYS$3.black.uploaderKeyword.valueKey, []));
-			this.videoQualityFilter.setParam(_GM_getValue(GM_KEYS$3.black.quality.valueKey, 0));
 			this.videoUploaderWhiteFilter.setParam(_GM_getValue(GM_KEYS$3.white.uploader.valueKey, []));
 			this.videoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$3.white.title.valueKey, []));
 		}
 		async check(mode) {
 			if (!this.target) return;
 			let revertAll = false;
-			if (!(this.videoBvidFilter.isEnable || this.videoDurationFilter.isEnable || this.videoTitleFilter.isEnable || this.videoUploaderFilter.isEnable || this.videoUploaderKeywordFilter.isEnable || this.videoDimensionFilter.isEnable || this.videoQualityFilter.isEnable)) revertAll = true;
+			if (!(this.videoBvidFilter.isEnable || this.videoDurationFilter.isEnable || this.videoTitleFilter.isEnable || this.videoUploaderFilter.isEnable || this.videoUploaderKeywordFilter.isEnable)) revertAll = true;
 			const timer = performance.now();
-			const videos = Array.from(this.target.querySelectorAll(`.card-list .video-card, .video-list .video-card, .rank-list:not(.pgc-list) .rank-item`));
+			const selector = `:where(.video.search-all-list, .search-page-video) .video-list > div`;
+			const cardSelector = `.user-list .video-list-item`;
+			const videos = [...this.target.querySelectorAll(selector), ...document.querySelectorAll(cardSelector)];
 			if (!videos.length) return;
 			if (revertAll) {
 				videos.forEach((v) => showEle(v, "sign"));
@@ -6562,12 +7034,11 @@
 			}
 			if (config_default.isDebugMode) videos.forEach((v) => {
 				logger.debug([
-					`VideoFilterPopular`,
+					`VideoFilterSearch`,
 					`bvid: ${selectorFns$3.bvid(v)}`,
 					`duration: ${selectorFns$3.duration(v)}`,
 					`title: ${selectorFns$3.title(v)}`,
-					`uploader: ${selectorFns$3.uploader(v)}`,
-					`quality: ${selectorFns$3.quality(v)}`
+					`uploader: ${selectorFns$3.uploader(v)}`
 				].join("\n"));
 			});
 			const blackPairs = [];
@@ -6575,8 +7046,6 @@
 			this.videoTitleFilter.isEnable && blackPairs.push([this.videoTitleFilter, selectorFns$3.title]);
 			this.videoUploaderFilter.isEnable && blackPairs.push([this.videoUploaderFilter, selectorFns$3.uploader]);
 			this.videoUploaderKeywordFilter.isEnable && blackPairs.push([this.videoUploaderKeywordFilter, selectorFns$3.uploader]);
-			this.videoDimensionFilter.isEnable && blackPairs.push([this.videoDimensionFilter, selectorFns$3.dimension]);
-			this.videoQualityFilter.isEnable && blackPairs.push([this.videoQualityFilter, selectorFns$3.quality]);
 			const whitePairs = [];
 			this.videoUploaderWhiteFilter.isEnable && whitePairs.push([this.videoUploaderWhiteFilter, selectorFns$3.uploader]);
 			this.videoTitleWhiteFilter.isEnable && whitePairs.push([this.videoTitleWhiteFilter, selectorFns$3.title]);
@@ -6584,19 +7053,43 @@
 			this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns$3.bvid]);
 			const blackCnt = await coreCheck(videos, true, "sign", blackPairs, whitePairs, forceBlackPairs);
 			const time = (performance.now() - timer).toFixed(1);
-			logger.debug(`VideoFilterPopular hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`);
+			logger.debug(`VideoFilterSearch hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`);
+		}
+		async checkUserCards(mode) {
+			if (!this.target) return;
+			const timer = performance.now();
+			const userList = this.target.querySelector(".user-list");
+			if (!userList) return;
+			const userName = userList.querySelector("a.user-name")?.textContent?.trim();
+			if (!userName) return;
+			if (!this.videoUploaderFilter.isEnable && !this.videoUploaderKeywordFilter.isEnable && !this.videoUploaderWhiteFilter.isEnable) {
+				showEle(userList, "sign");
+				return;
+			}
+			if (config_default.isDebugMode) logger.debug([`VideoFilterSearchUserCard`, `uploader: ${userName}`].join("\n"));
+			const blackPairs = [];
+			this.videoUploaderFilter.isEnable && blackPairs.push([this.videoUploaderFilter, selectorFns$3.uploaderCard]);
+			this.videoUploaderKeywordFilter.isEnable && blackPairs.push([this.videoUploaderKeywordFilter, selectorFns$3.uploaderCard]);
+			const whitePairs = [];
+			this.videoUploaderWhiteFilter.isEnable && whitePairs.push([this.videoUploaderWhiteFilter, selectorFns$3.uploaderCard]);
+			const blackCnt = await coreCheck([userList], true, "sign", blackPairs, whitePairs);
+			const time = (performance.now() - timer).toFixed(1);
+			logger.debug(`VideoFilterSearchUserCard hide ${blackCnt} in user-list, mode=${mode}, time=${time}`);
 		}
 		checkFull() {
+			this.checkUserCards("full").catch((err) => {
+				logger.error("VideoFilterSearch checkUserList error", err);
+			});
 			this.check("full").catch((err) => {
-				logger.error("VideoFilterPopular check full error", err);
+				logger.error("VideoFilterSearch check full error", err);
 			});
 		}
 		observe() {
-			waitForEle(document, "#app", (node) => {
-				return node.id === "app";
+			waitForEle(document, ".search-layout", (node) => {
+				return node.className.includes("search-layout");
 			}).then((ele) => {
 				if (!ele) return;
-				logger.debug("VideoFilterPopular target appear");
+				logger.debug("VideoFilterSearch target appear");
 				this.target = ele;
 				this.checkFull();
 				new MutationObserver(() => {
@@ -6608,12 +7101,12 @@
 			});
 		}
 	};
-	var mainFilter$3 = new VideoFilterPopular();
-	var videoFilterPopularEntry = async () => {
+	var mainFilter$3 = new VideoFilterSearch();
+	var videoFilterSearchEntry = async () => {
 		mainFilter$3.init();
 		mainFilter$3.observe();
 	};
-	var videoFilterPopularGroups = [
+	var videoFilterSearchGroups = [
 		{
 			name: "时长过滤",
 			items: [{
@@ -6702,56 +7195,6 @@
 					],
 					saveFn: async () => {
 						mainFilter$3.videoUploaderKeywordFilter.setParam(_GM_getValue(GM_KEYS$3.black.uploaderKeyword.valueKey, []));
-						mainFilter$3.checkFull();
-					}
-				}
-			]
-		},
-		{
-			name: "视频质量过滤",
-			items: [
-				{
-					type: "switch",
-					id: GM_KEYS$3.black.dimension.statusKey,
-					name: "启用 竖屏视频过滤",
-					defaultEnable: true,
-					noStyle: true,
-					enableFn: () => {
-						mainFilter$3.videoDimensionFilter.enable();
-						mainFilter$3.checkFull();
-					},
-					disableFn: () => {
-						mainFilter$3.videoDimensionFilter.disable();
-						mainFilter$3.checkFull();
-					}
-				},
-				{
-					type: "switch",
-					id: GM_KEYS$3.black.quality.statusKey,
-					name: "启用 劣质视频过滤",
-					noStyle: true,
-					enableFn: () => {
-						mainFilter$3.videoQualityFilter.enable();
-						mainFilter$3.checkFull();
-					},
-					disableFn: () => {
-						mainFilter$3.videoQualityFilter.disable();
-						mainFilter$3.checkFull();
-					}
-				},
-				{
-					type: "number",
-					id: GM_KEYS$3.black.quality.valueKey,
-					name: "劣质视频过滤百分比 (0~80%)",
-					noStyle: true,
-					minValue: 0,
-					maxValue: 80,
-					step: .1,
-					defaultValue: 25,
-					disableValue: 0,
-					addonText: "%",
-					fn: (value) => {
-						mainFilter$3.videoQualityFilter.setParam(value);
 						mainFilter$3.checkFull();
 					}
 				}
@@ -6877,11 +7320,12 @@
 			]
 		}
 	];
-	var videoFilterPopularHandler = (target) => {
-		if (!isPagePopular()) return [];
+	var videoFilterSearchHandler = (target) => {
+		if (!isPageSearch()) return [];
 		const menus = [];
-		if (target.closest(".up-name")) {
-			const uploader = target.textContent?.trim();
+		if (target.closest(".bili-video-card__info--owner")) {
+			const uploader = target.closest(".bili-video-card__info--owner")?.querySelector(".bili-video-card__info--author")?.textContent?.trim();
+			const spaceUrl = (target.closest(".bili-video-card__info--owner")?.href.trim())?.match(/space\.bilibili\.com\/\d+/)?.[0];
 			if (uploader) {
 				if (mainFilter$3.videoUploaderFilter.isEnable) menus.push({
 					name: `屏蔽UP主：${uploader}`,
@@ -6893,7 +7337,7 @@
 							arr.unshift(uploader);
 							_GM_setValue(GM_KEYS$3.black.uploader.valueKey, orderedUniq(arr));
 						} catch (err) {
-							logger.error(`videoFilterPopularHandler add uploader ${uploader} failed`, err);
+							logger.error(`videoFilterSearchHandler add uploader ${uploader} failed`, err);
 						}
 					}
 				});
@@ -6907,15 +7351,57 @@
 							arr.unshift(uploader);
 							_GM_setValue(GM_KEYS$3.white.uploader.valueKey, orderedUniq(arr));
 						} catch (err) {
-							logger.error(`videoFilterPopularHandler add white uploader ${uploader} failed`, err);
+							logger.error(`videoFilterSearchHandler add white uploader ${uploader} failed`, err);
 						}
 					}
 				});
 			}
+			if (spaceUrl && (mainFilter$3.videoUploaderFilter.isEnable || mainFilter$3.videoUploaderWhiteFilter.isEnable)) menus.push({
+				name: `复制主页链接`,
+				fn: () => navigator.clipboard.writeText(`https://${spaceUrl}`)
+			});
 		}
-		if (target.classList.contains("title") && target.closest(".info a") || target.classList.contains("video-name") || target.classList.contains("lazy-image")) {
-			let url = target.getAttribute("href") || target.parentElement?.getAttribute("href");
-			if (!url) url = target.closest(".video-card")?.querySelector(".video-card__content > a")?.getAttribute("href");
+		if (target.closest("div.user-list .info-card")) {
+			const userAnchor = target.closest("div.user-list")?.querySelector("a.user-name");
+			const uploader = userAnchor?.textContent?.trim();
+			const spaceUrl = (userAnchor?.href.trim())?.match(/space\.bilibili\.com\/\d+/)?.[0];
+			if (uploader) {
+				if (mainFilter$3.videoUploaderFilter.isEnable) menus.push({
+					name: `屏蔽UP主：${uploader}`,
+					fn: async () => {
+						try {
+							mainFilter$3.videoUploaderFilter.addParam(uploader);
+							mainFilter$3.checkFull();
+							const arr = _GM_getValue(GM_KEYS$3.black.uploader.valueKey, []);
+							arr.unshift(uploader);
+							_GM_setValue(GM_KEYS$3.black.uploader.valueKey, orderedUniq(arr));
+						} catch (err) {
+							logger.error(`videoFilterSearchHandler add uploader ${uploader} failed`, err);
+						}
+					}
+				});
+				if (mainFilter$3.videoUploaderWhiteFilter.isEnable) menus.push({
+					name: `将UP主加入白名单`,
+					fn: async () => {
+						try {
+							mainFilter$3.videoUploaderWhiteFilter.addParam(uploader);
+							mainFilter$3.checkFull();
+							const arr = _GM_getValue(GM_KEYS$3.white.uploader.valueKey, []);
+							arr.unshift(uploader);
+							_GM_setValue(GM_KEYS$3.white.uploader.valueKey, orderedUniq(arr));
+						} catch (err) {
+							logger.error(`videoFilterSearchHandler add white uploader ${uploader} failed`, err);
+						}
+					}
+				});
+			}
+			if (spaceUrl && (mainFilter$3.videoUploaderFilter.isEnable || mainFilter$3.videoUploaderWhiteFilter.isEnable)) menus.push({
+				name: `复制主页链接`,
+				fn: () => navigator.clipboard.writeText(`https://${spaceUrl}`)
+			});
+		}
+		if (target.classList.contains("bili-video-card__info--tit") || target.closest(".bili-video-card__info--tit")) {
+			const url = target.closest("a")?.href;
 			if (url && mainFilter$3.videoBvidFilter.isEnable) {
 				const bvid = matchBvid(url);
 				if (bvid) {
@@ -6929,7 +7415,7 @@
 								arr.unshift(bvid);
 								_GM_setValue(GM_KEYS$3.black.bvid.valueKey, orderedUniq(arr));
 							} catch (err) {
-								logger.error(`videoFilterPopularHandler add bvid ${bvid} failed`, err);
+								logger.error(`videoFilterSearchHandler add bvid ${bvid} failed`, err);
 							}
 						}
 					});
@@ -6945,82 +7431,60 @@
 	var GM_KEYS$2 = {
 		black: {
 			duration: {
-				statusKey: "search-duration-filter-status",
+				statusKey: "space-duration-filter-status",
 				valueKey: "global-duration-filter-value"
 			},
-			uploader: {
-				statusKey: "search-uploader-filter-status",
-				valueKey: "global-uploader-filter-value"
-			},
-			uploaderKeyword: {
-				statusKey: "search-uploader-keyword-filter-status",
-				valueKey: "global-uploader-keyword-filter-value"
-			},
 			bvid: {
-				statusKey: "search-bvid-filter-status",
+				statusKey: "space-bvid-filter-status",
 				valueKey: "global-bvid-filter-value"
 			},
 			title: {
-				statusKey: "search-title-keyword-filter-status",
+				statusKey: "space-title-keyword-filter-status",
 				valueKey: "global-title-keyword-filter-value"
 			}
 		},
-		white: {
-			uploader: {
-				statusKey: "search-uploader-whitelist-filter-status",
-				valueKey: "global-uploader-whitelist-filter-value"
-			},
-			title: {
-				statusKey: "search-title-keyword-whitelist-filter-status",
-				valueKey: "global-title-keyword-whitelist-filter-value"
-			}
-		}
+		white: { title: {
+			statusKey: "space-title-keyword-whitelist-filter-status",
+			valueKey: "global-title-keyword-whitelist-filter-value"
+		} }
 	};
 	var selectorFns$2 = {
 		duration: (video) => {
-			const duration = video.querySelector(".bili-video-card__stats__duration")?.textContent?.trim();
+			const duration = video.querySelector("span.length")?.textContent?.trim() || video.querySelector(".bili-cover-card__stats .bili-cover-card__stat:nth-last-child(1)")?.textContent?.trim();
 			return (duration && convertTimeToSec(duration)) ?? void 0;
 		},
 		title: (video) => {
-			return video.querySelector(".bili-video-card__info--tit")?.textContent?.trim();
+			return video.querySelector("a.title")?.textContent?.trim() || video.querySelector(".bili-video-card__title a")?.textContent?.trim();
 		},
 		bvid: (video) => {
-			const href = video.querySelector(".bili-video-card__wrap > a")?.getAttribute("href") || video.querySelector(".bili-video-card__info--right > a")?.getAttribute("href");
+			const href = video.querySelector("a.title")?.getAttribute("href")?.trim() || video.querySelector(".bili-video-card__title a")?.getAttribute("href")?.trim();
 			return (href && matchBvid(href)) ?? void 0;
-		},
-		uploader: (video) => {
-			return video.querySelector(".bili-video-card__info--author")?.textContent?.trim() || video.closest(".user-list")?.querySelector(".user-name")?.textContent?.trim();
-		},
-		uploaderCard: (userCard) => {
-			return userCard.querySelector(".user-name")?.textContent?.trim();
 		}
 	};
-	var VideoFilterSearch = class {
+	var VideoFilterSpace = class {
 		target;
 		videoBvidFilter = new VideoBvidFilter();
 		videoDurationFilter = new VideoDurationFilter();
 		videoTitleFilter = new VideoTitleFilter();
-		videoUploaderFilter = new VideoUploaderFilter();
-		videoUploaderKeywordFilter = new VideoUploaderKeywordFilter();
-		videoUploaderWhiteFilter = new VideoUploaderWhiteFilter();
 		videoTitleWhiteFilter = new VideoTitleWhiteFilter();
 		init() {
 			this.videoBvidFilter.setParam(_GM_getValue(GM_KEYS$2.black.bvid.valueKey, []));
 			this.videoDurationFilter.setParam(_GM_getValue(GM_KEYS$2.black.duration.valueKey, 0));
 			this.videoTitleFilter.setParam(_GM_getValue(GM_KEYS$2.black.title.valueKey, []));
-			this.videoUploaderFilter.setParam(_GM_getValue(GM_KEYS$2.black.uploader.valueKey, []));
-			this.videoUploaderKeywordFilter.setParam(_GM_getValue(GM_KEYS$2.black.uploaderKeyword.valueKey, []));
-			this.videoUploaderWhiteFilter.setParam(_GM_getValue(GM_KEYS$2.white.uploader.valueKey, []));
 			this.videoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$2.white.title.valueKey, []));
 		}
 		async check(mode) {
 			if (!this.target) return;
 			let revertAll = false;
-			if (!(this.videoBvidFilter.isEnable || this.videoDurationFilter.isEnable || this.videoTitleFilter.isEnable || this.videoUploaderFilter.isEnable || this.videoUploaderKeywordFilter.isEnable)) revertAll = true;
+			if (!(this.videoBvidFilter.isEnable || this.videoDurationFilter.isEnable || this.videoTitleFilter.isEnable)) revertAll = true;
 			const timer = performance.now();
-			const selector = `:where(.video.search-all-list, .search-page-video) .video-list > div`;
-			const cardSelector = `.user-list .video-list-item`;
-			const videos = [...this.target.querySelectorAll(selector), ...document.querySelectorAll(cardSelector)];
+			let selector;
+			if (/^\/\d+$/.test(location.pathname)) selector = `#page-index .small-item, .section-wrap.video-section .items__item, .section-wrap.lists-section .video-list__item`;
+			if (/^\/\d+\/(?:upload\/)?video$/.test(location.pathname)) selector = `#submit-video :is(.small-item,.list-item), .video-list .upload-video-card`;
+			if (/^\/\d+\/channel\/(collectiondetail|seriesdetail)/.test(location.pathname)) selector = `:is(#page-collection-detail,#page-series-detail) li.small-item`;
+			if (/^\/\d+\/lists/.test(location.pathname)) selector = `.space-lists .video-list .video-list__item, .space-list-details .list-video-item`;
+			if (!selector) return;
+			const videos = Array.from(this.target.querySelectorAll(selector));
 			if (!videos.length) return;
 			if (revertAll) {
 				videos.forEach((v) => showEle(v, "sign"));
@@ -7028,62 +7492,34 @@
 			}
 			if (config_default.isDebugMode) videos.forEach((v) => {
 				logger.debug([
-					`VideoFilterSearch`,
+					`VideoFilterSpace`,
 					`bvid: ${selectorFns$2.bvid(v)}`,
 					`duration: ${selectorFns$2.duration(v)}`,
-					`title: ${selectorFns$2.title(v)}`,
-					`uploader: ${selectorFns$2.uploader(v)}`
+					`title: ${selectorFns$2.title(v)}`
 				].join("\n"));
 			});
 			const blackPairs = [];
 			this.videoDurationFilter.isEnable && blackPairs.push([this.videoDurationFilter, selectorFns$2.duration]);
 			this.videoTitleFilter.isEnable && blackPairs.push([this.videoTitleFilter, selectorFns$2.title]);
-			this.videoUploaderFilter.isEnable && blackPairs.push([this.videoUploaderFilter, selectorFns$2.uploader]);
-			this.videoUploaderKeywordFilter.isEnable && blackPairs.push([this.videoUploaderKeywordFilter, selectorFns$2.uploader]);
 			const whitePairs = [];
-			this.videoUploaderWhiteFilter.isEnable && whitePairs.push([this.videoUploaderWhiteFilter, selectorFns$2.uploader]);
 			this.videoTitleWhiteFilter.isEnable && whitePairs.push([this.videoTitleWhiteFilter, selectorFns$2.title]);
 			const forceBlackPairs = [];
 			this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns$2.bvid]);
 			const blackCnt = await coreCheck(videos, true, "sign", blackPairs, whitePairs, forceBlackPairs);
 			const time = (performance.now() - timer).toFixed(1);
-			logger.debug(`VideoFilterSearch hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`);
-		}
-		async checkUserCards(mode) {
-			if (!this.target) return;
-			const timer = performance.now();
-			const userList = this.target.querySelector(".user-list");
-			if (!userList) return;
-			const userName = userList.querySelector("a.user-name")?.textContent?.trim();
-			if (!userName) return;
-			if (!this.videoUploaderFilter.isEnable && !this.videoUploaderKeywordFilter.isEnable && !this.videoUploaderWhiteFilter.isEnable) {
-				showEle(userList, "sign");
-				return;
-			}
-			if (config_default.isDebugMode) logger.debug([`VideoFilterSearchUserCard`, `uploader: ${userName}`].join("\n"));
-			const blackPairs = [];
-			this.videoUploaderFilter.isEnable && blackPairs.push([this.videoUploaderFilter, selectorFns$2.uploaderCard]);
-			this.videoUploaderKeywordFilter.isEnable && blackPairs.push([this.videoUploaderKeywordFilter, selectorFns$2.uploaderCard]);
-			const whitePairs = [];
-			this.videoUploaderWhiteFilter.isEnable && whitePairs.push([this.videoUploaderWhiteFilter, selectorFns$2.uploaderCard]);
-			const blackCnt = await coreCheck([userList], true, "sign", blackPairs, whitePairs);
-			const time = (performance.now() - timer).toFixed(1);
-			logger.debug(`VideoFilterSearchUserCard hide ${blackCnt} in user-list, mode=${mode}, time=${time}`);
+			logger.debug(`VideoFilterSpace hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`);
 		}
 		checkFull() {
-			this.checkUserCards("full").catch((err) => {
-				logger.error("VideoFilterSearch checkUserList error", err);
-			});
 			this.check("full").catch((err) => {
-				logger.error("VideoFilterSearch check full error", err);
+				logger.error("VideoFilterSpace check full error", err);
 			});
 		}
 		observe() {
-			waitForEle(document, ".search-layout", (node) => {
-				return node.className.includes("search-layout");
+			waitForEle(document, "#app", (node) => {
+				return node.id === "app";
 			}).then((ele) => {
 				if (!ele) return;
-				logger.debug("VideoFilterSearch target appear");
+				logger.debug("VideoFilterSpace target appear");
 				this.target = ele;
 				this.checkFull();
 				new MutationObserver(() => {
@@ -7095,12 +7531,12 @@
 			});
 		}
 	};
-	var mainFilter$2 = new VideoFilterSearch();
-	var videoFilterSearchEntry = async () => {
+	var mainFilter$2 = new VideoFilterSpace();
+	var videoFilterSpaceEntry = async () => {
 		mainFilter$2.init();
 		mainFilter$2.observe();
 	};
-	var videoFilterSearchGroups = [
+	var videoFilterSpaceGroups = [
 		{
 			name: "时长过滤",
 			items: [{
@@ -7132,67 +7568,6 @@
 					mainFilter$2.checkFull();
 				}
 			}]
-		},
-		{
-			name: "UP主过滤",
-			items: [
-				{
-					type: "switch",
-					id: GM_KEYS$2.black.uploader.statusKey,
-					name: "启用 UP主过滤 (右键单击UP主)",
-					defaultEnable: true,
-					noStyle: true,
-					enableFn: () => {
-						mainFilter$2.videoUploaderFilter.enable();
-						mainFilter$2.checkFull();
-					},
-					disableFn: () => {
-						mainFilter$2.videoUploaderFilter.disable();
-						mainFilter$2.checkFull();
-					}
-				},
-				{
-					type: "editor",
-					id: GM_KEYS$2.black.uploader.valueKey,
-					name: "编辑 UP主黑名单",
-					description: ["右键屏蔽的UP主会出现在首行"],
-					editorTitle: "UP主 黑名单",
-					editorDescription: ["每行一个UP主昵称，保存时自动去重"],
-					saveFn: async () => {
-						mainFilter$2.videoUploaderFilter.setParam(_GM_getValue(GM_KEYS$2.black.uploader.valueKey, []));
-						mainFilter$2.checkFull();
-					}
-				},
-				{
-					type: "switch",
-					id: GM_KEYS$2.black.uploaderKeyword.statusKey,
-					name: "启用 UP主昵称关键词过滤",
-					noStyle: true,
-					enableFn: () => {
-						mainFilter$2.videoUploaderKeywordFilter.enable();
-						mainFilter$2.checkFull();
-					},
-					disableFn: () => {
-						mainFilter$2.videoUploaderKeywordFilter.disable();
-						mainFilter$2.checkFull();
-					}
-				},
-				{
-					type: "editor",
-					id: GM_KEYS$2.black.uploaderKeyword.valueKey,
-					name: "编辑 UP主昵称关键词黑名单",
-					editorTitle: "UP主昵称关键词 黑名单",
-					editorDescription: [
-						"每行一个关键词或正则，不区分大小写、全半角",
-						"请勿使用过于激进的关键词或正则",
-						"正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
-					],
-					saveFn: async () => {
-						mainFilter$2.videoUploaderKeywordFilter.setParam(_GM_getValue(GM_KEYS$2.black.uploaderKeyword.valueKey, []));
-						mainFilter$2.checkFull();
-					}
-				}
-			]
 		},
 		{
 			name: "标题关键词过滤",
@@ -7255,147 +7630,41 @@
 		},
 		{
 			name: "白名单 免过滤",
-			items: [
-				{
-					type: "switch",
-					id: GM_KEYS$2.white.uploader.statusKey,
-					name: "启用 UP主白名单 (右键单击UP主)",
-					defaultEnable: true,
-					noStyle: true,
-					enableFn: () => {
-						mainFilter$2.videoUploaderWhiteFilter.enable();
-						mainFilter$2.checkFull();
-					},
-					disableFn: () => {
-						mainFilter$2.videoUploaderWhiteFilter.disable();
-						mainFilter$2.checkFull();
-					}
+			items: [{
+				type: "switch",
+				id: GM_KEYS$2.white.title.statusKey,
+				name: "启用 标题关键词白名单",
+				noStyle: true,
+				enableFn: () => {
+					mainFilter$2.videoTitleWhiteFilter.enable();
+					mainFilter$2.checkFull();
 				},
-				{
-					type: "editor",
-					id: GM_KEYS$2.white.uploader.valueKey,
-					name: "编辑 UP主白名单",
-					editorTitle: "UP主 白名单",
-					editorDescription: ["每行一个UP主昵称，保存时自动去重"],
-					saveFn: async () => {
-						mainFilter$2.videoUploaderWhiteFilter.setParam(_GM_getValue(GM_KEYS$2.white.uploader.valueKey, []));
-						mainFilter$2.checkFull();
-					}
-				},
-				{
-					type: "switch",
-					id: GM_KEYS$2.white.title.statusKey,
-					name: "启用 标题关键词白名单",
-					noStyle: true,
-					enableFn: () => {
-						mainFilter$2.videoTitleWhiteFilter.enable();
-						mainFilter$2.checkFull();
-					},
-					disableFn: () => {
-						mainFilter$2.videoTitleWhiteFilter.disable();
-						mainFilter$2.checkFull();
-					}
-				},
-				{
-					type: "editor",
-					id: GM_KEYS$2.white.title.valueKey,
-					name: "编辑 标题关键词白名单",
-					editorTitle: "标题关键词 白名单",
-					editorDescription: [
-						"每行一个关键词或正则，不区分大小写、全半角",
-						"请勿使用过于激进的关键词或正则",
-						"正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
-					],
-					saveFn: async () => {
-						mainFilter$2.videoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$2.white.title.valueKey, []));
-						mainFilter$2.checkFull();
-					}
+				disableFn: () => {
+					mainFilter$2.videoTitleWhiteFilter.disable();
+					mainFilter$2.checkFull();
 				}
-			]
+			}, {
+				type: "editor",
+				id: GM_KEYS$2.white.title.valueKey,
+				name: "编辑 标题关键词白名单",
+				editorTitle: "标题关键词 白名单",
+				editorDescription: [
+					"每行一个关键词或正则，不区分大小写、全半角",
+					"请勿使用过于激进的关键词或正则",
+					"正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
+				],
+				saveFn: async () => {
+					mainFilter$2.videoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$2.white.title.valueKey, []));
+					mainFilter$2.checkFull();
+				}
+			}]
 		}
 	];
-	var videoFilterSearchHandler = (target) => {
-		if (!isPageSearch()) return [];
+	var videoFilterSpaceHandler = (target) => {
+		if (!isPageSpace()) return [];
 		const menus = [];
-		if (target.closest(".bili-video-card__info--owner")) {
-			const uploader = target.closest(".bili-video-card__info--owner")?.querySelector(".bili-video-card__info--author")?.textContent?.trim();
-			const spaceUrl = (target.closest(".bili-video-card__info--owner")?.href.trim())?.match(/space\.bilibili\.com\/\d+/)?.[0];
-			if (uploader) {
-				if (mainFilter$2.videoUploaderFilter.isEnable) menus.push({
-					name: `屏蔽UP主：${uploader}`,
-					fn: async () => {
-						try {
-							mainFilter$2.videoUploaderFilter.addParam(uploader);
-							mainFilter$2.checkFull();
-							const arr = _GM_getValue(GM_KEYS$2.black.uploader.valueKey, []);
-							arr.unshift(uploader);
-							_GM_setValue(GM_KEYS$2.black.uploader.valueKey, orderedUniq(arr));
-						} catch (err) {
-							logger.error(`videoFilterSearchHandler add uploader ${uploader} failed`, err);
-						}
-					}
-				});
-				if (mainFilter$2.videoUploaderWhiteFilter.isEnable) menus.push({
-					name: `将UP主加入白名单`,
-					fn: async () => {
-						try {
-							mainFilter$2.videoUploaderWhiteFilter.addParam(uploader);
-							mainFilter$2.checkFull();
-							const arr = _GM_getValue(GM_KEYS$2.white.uploader.valueKey, []);
-							arr.unshift(uploader);
-							_GM_setValue(GM_KEYS$2.white.uploader.valueKey, orderedUniq(arr));
-						} catch (err) {
-							logger.error(`videoFilterSearchHandler add white uploader ${uploader} failed`, err);
-						}
-					}
-				});
-			}
-			if (spaceUrl && (mainFilter$2.videoUploaderFilter.isEnable || mainFilter$2.videoUploaderWhiteFilter.isEnable)) menus.push({
-				name: `复制主页链接`,
-				fn: () => navigator.clipboard.writeText(`https://${spaceUrl}`)
-			});
-		}
-		if (target.closest("div.user-list .info-card")) {
-			const userAnchor = target.closest("div.user-list")?.querySelector("a.user-name");
-			const uploader = userAnchor?.textContent?.trim();
-			const spaceUrl = (userAnchor?.href.trim())?.match(/space\.bilibili\.com\/\d+/)?.[0];
-			if (uploader) {
-				if (mainFilter$2.videoUploaderFilter.isEnable) menus.push({
-					name: `屏蔽UP主：${uploader}`,
-					fn: async () => {
-						try {
-							mainFilter$2.videoUploaderFilter.addParam(uploader);
-							mainFilter$2.checkFull();
-							const arr = _GM_getValue(GM_KEYS$2.black.uploader.valueKey, []);
-							arr.unshift(uploader);
-							_GM_setValue(GM_KEYS$2.black.uploader.valueKey, orderedUniq(arr));
-						} catch (err) {
-							logger.error(`videoFilterSearchHandler add uploader ${uploader} failed`, err);
-						}
-					}
-				});
-				if (mainFilter$2.videoUploaderWhiteFilter.isEnable) menus.push({
-					name: `将UP主加入白名单`,
-					fn: async () => {
-						try {
-							mainFilter$2.videoUploaderWhiteFilter.addParam(uploader);
-							mainFilter$2.checkFull();
-							const arr = _GM_getValue(GM_KEYS$2.white.uploader.valueKey, []);
-							arr.unshift(uploader);
-							_GM_setValue(GM_KEYS$2.white.uploader.valueKey, orderedUniq(arr));
-						} catch (err) {
-							logger.error(`videoFilterSearchHandler add white uploader ${uploader} failed`, err);
-						}
-					}
-				});
-			}
-			if (spaceUrl && (mainFilter$2.videoUploaderFilter.isEnable || mainFilter$2.videoUploaderWhiteFilter.isEnable)) menus.push({
-				name: `复制主页链接`,
-				fn: () => navigator.clipboard.writeText(`https://${spaceUrl}`)
-			});
-		}
-		if (target.classList.contains("bili-video-card__info--tit") || target.closest(".bili-video-card__info--tit")) {
-			const url = target.closest("a")?.href;
+		if (target.closest(".bili-video-card__title")) {
+			const url = target.href;
 			if (url && mainFilter$2.videoBvidFilter.isEnable) {
 				const bvid = matchBvid(url);
 				if (bvid) {
@@ -7425,60 +7694,80 @@
 	var GM_KEYS$1 = {
 		black: {
 			duration: {
-				statusKey: "space-duration-filter-status",
+				statusKey: "video-duration-filter-status",
 				valueKey: "global-duration-filter-value"
 			},
+			uploader: {
+				statusKey: "video-uploader-filter-status",
+				valueKey: "global-uploader-filter-value"
+			},
+			uploaderKeyword: {
+				statusKey: "video-uploader-keyword-filter-status",
+				valueKey: "global-uploader-keyword-filter-value"
+			},
 			bvid: {
-				statusKey: "space-bvid-filter-status",
+				statusKey: "video-bvid-filter-status",
 				valueKey: "global-bvid-filter-value"
 			},
 			title: {
-				statusKey: "space-title-keyword-filter-status",
+				statusKey: "video-title-keyword-filter-status",
 				valueKey: "global-title-keyword-filter-value"
-			}
+			},
+			related: { statusKey: "video-related-filter-status" }
 		},
-		white: { title: {
-			statusKey: "space-title-keyword-whitelist-filter-status",
-			valueKey: "global-title-keyword-whitelist-filter-value"
-		} }
+		white: {
+			uploader: {
+				statusKey: "video-uploader-whitelist-filter-status",
+				valueKey: "global-uploader-whitelist-filter-value"
+			},
+			title: {
+				statusKey: "video-title-keyword-whitelist-filter-status",
+				valueKey: "global-title-keyword-whitelist-filter-value"
+			}
+		}
 	};
 	var selectorFns$1 = {
 		duration: (video) => {
-			const duration = video.querySelector("span.length")?.textContent?.trim() || video.querySelector(".bili-cover-card__stats .bili-cover-card__stat:nth-last-child(1)")?.textContent?.trim();
-			return (duration && convertTimeToSec(duration)) ?? void 0;
+			const duration = video.querySelector(".pic-box span.duration")?.textContent;
+			return duration ? convertTimeToSec(duration) : void 0;
 		},
 		title: (video) => {
-			return video.querySelector("a.title")?.textContent?.trim() || video.querySelector(".bili-video-card__title a")?.textContent?.trim();
+			return video.querySelector(".info > a p")?.textContent?.trim();
 		},
 		bvid: (video) => {
-			const href = video.querySelector("a.title")?.getAttribute("href")?.trim() || video.querySelector(".bili-video-card__title a")?.getAttribute("href")?.trim();
+			const href = video.querySelector(".info > a")?.getAttribute("href") || video.querySelector(".pic-box .framepreview-box > a")?.getAttribute("href");
 			return (href && matchBvid(href)) ?? void 0;
+		},
+		uploader: (video) => {
+			return video.querySelector(".info > .upname .name")?.textContent?.trim();
 		}
 	};
-	var VideoFilterSpace = class {
+	var enableRelatedCheck = false;
+	var VideoFilterVideo = class {
 		target;
 		videoBvidFilter = new VideoBvidFilter();
 		videoDurationFilter = new VideoDurationFilter();
 		videoTitleFilter = new VideoTitleFilter();
+		videoUploaderFilter = new VideoUploaderFilter();
+		videoUploaderKeywordFilter = new VideoUploaderKeywordFilter();
+		videoUploaderWhiteFilter = new VideoUploaderWhiteFilter();
 		videoTitleWhiteFilter = new VideoTitleWhiteFilter();
 		init() {
 			this.videoBvidFilter.setParam(_GM_getValue(GM_KEYS$1.black.bvid.valueKey, []));
 			this.videoDurationFilter.setParam(_GM_getValue(GM_KEYS$1.black.duration.valueKey, 0));
 			this.videoTitleFilter.setParam(_GM_getValue(GM_KEYS$1.black.title.valueKey, []));
+			this.videoUploaderFilter.setParam(_GM_getValue(GM_KEYS$1.black.uploader.valueKey, []));
+			this.videoUploaderKeywordFilter.setParam(_GM_getValue(GM_KEYS$1.black.uploaderKeyword.valueKey, []));
+			this.videoUploaderWhiteFilter.setParam(_GM_getValue(GM_KEYS$1.white.uploader.valueKey, []));
 			this.videoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$1.white.title.valueKey, []));
 		}
 		async check(mode) {
 			if (!this.target) return;
 			let revertAll = false;
-			if (!(this.videoBvidFilter.isEnable || this.videoDurationFilter.isEnable || this.videoTitleFilter.isEnable)) revertAll = true;
+			if (!(this.videoBvidFilter.isEnable || this.videoDurationFilter.isEnable || this.videoTitleFilter.isEnable || this.videoUploaderFilter.isEnable || this.videoUploaderKeywordFilter.isEnable)) revertAll = true;
 			const timer = performance.now();
-			let selector;
-			if (/^\/\d+$/.test(location.pathname)) selector = `#page-index .small-item, .section-wrap.video-section .items__item, .section-wrap.lists-section .video-list__item`;
-			if (/^\/\d+\/(?:upload\/)?video$/.test(location.pathname)) selector = `#submit-video :is(.small-item,.list-item), .video-list .upload-video-card`;
-			if (/^\/\d+\/channel\/(collectiondetail|seriesdetail)/.test(location.pathname)) selector = `:is(#page-collection-detail,#page-series-detail) li.small-item`;
-			if (/^\/\d+\/lists/.test(location.pathname)) selector = `.space-lists .video-list .video-list__item, .space-list-details .list-video-item`;
-			if (!selector) return;
-			const videos = Array.from(this.target.querySelectorAll(selector));
+			const videos = Array.from(this.target.querySelectorAll(`.next-play :is(.video-page-card-small, .video-page-operator-card-small),
+            .rec-list :is(.video-page-card-small, .video-page-operator-card-small), .recommend-video-card`));
 			if (!videos.length) return;
 			if (revertAll) {
 				videos.forEach((v) => showEle(v, "sign"));
@@ -7486,34 +7775,50 @@
 			}
 			if (config_default.isDebugMode) videos.forEach((v) => {
 				logger.debug([
-					`VideoFilterSpace`,
+					`VideoFilterVideo`,
 					`bvid: ${selectorFns$1.bvid(v)}`,
 					`duration: ${selectorFns$1.duration(v)}`,
-					`title: ${selectorFns$1.title(v)}`
+					`title: ${selectorFns$1.title(v)}`,
+					`uploader: ${selectorFns$1.uploader(v)}`
 				].join("\n"));
 			});
 			const blackPairs = [];
 			this.videoDurationFilter.isEnable && blackPairs.push([this.videoDurationFilter, selectorFns$1.duration]);
 			this.videoTitleFilter.isEnable && blackPairs.push([this.videoTitleFilter, selectorFns$1.title]);
+			this.videoUploaderFilter.isEnable && blackPairs.push([this.videoUploaderFilter, selectorFns$1.uploader]);
+			this.videoUploaderKeywordFilter.isEnable && blackPairs.push([this.videoUploaderKeywordFilter, selectorFns$1.uploader]);
 			const whitePairs = [];
+			this.videoUploaderWhiteFilter.isEnable && whitePairs.push([this.videoUploaderWhiteFilter, selectorFns$1.uploader]);
 			this.videoTitleWhiteFilter.isEnable && whitePairs.push([this.videoTitleWhiteFilter, selectorFns$1.title]);
 			const forceBlackPairs = [];
 			this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns$1.bvid]);
 			const blackCnt = await coreCheck(videos, true, "sign", blackPairs, whitePairs, forceBlackPairs);
+			if (enableRelatedCheck && blackCnt) {
+				const blackBvids = new Set();
+				for (const video of videos) if (isEleHide(video, "sign")) {
+					const url = video.querySelector(".info > a")?.getAttribute("href");
+					if (url) {
+						const bvid = matchBvid(url);
+						bvid && blackBvids.add(bvid);
+					}
+				}
+				const rel = _unsafeWindow.__INITIAL_STATE__?.related;
+				if (rel?.length && blackBvids.size) _unsafeWindow.__INITIAL_STATE__.related = rel.filter((v) => !(v.bvid && blackBvids.has(v.bvid)));
+			}
 			const time = (performance.now() - timer).toFixed(1);
-			logger.debug(`VideoFilterSpace hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`);
+			logger.debug(`VideoFilterVideo hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`);
 		}
 		checkFull() {
 			this.check("full").catch((err) => {
-				logger.error("VideoFilterSpace check full error", err);
+				logger.error("VideoFilterVideo check full error", err);
 			});
 		}
 		observe() {
-			waitForEle(document, "#app", (node) => {
-				return node.id === "app";
+			waitForEle(document, "#reco_list, .recommend-list-v1, .recommend-list-container", (node) => {
+				return node.id === "reco_list" || ["recommend-list-v1", "recommend-list-container"].includes(node.className);
 			}).then((ele) => {
 				if (!ele) return;
-				logger.debug("VideoFilterSpace target appear");
+				logger.debug("VideoFilterVideo target appear");
 				this.target = ele;
 				this.checkFull();
 				new MutationObserver(() => {
@@ -7525,12 +7830,12 @@
 			});
 		}
 	};
-	var mainFilter$1 = new VideoFilterSpace();
-	var videoFilterSpaceEntry = async () => {
+	var mainFilter$1 = new VideoFilterVideo();
+	var videoFilterVideoEntry = async () => {
 		mainFilter$1.init();
 		mainFilter$1.observe();
 	};
-	var videoFilterSpaceGroups = [
+	var videoFilterVideoGroups = [
 		{
 			name: "时长过滤",
 			items: [{
@@ -7562,6 +7867,67 @@
 					mainFilter$1.checkFull();
 				}
 			}]
+		},
+		{
+			name: "UP主过滤",
+			items: [
+				{
+					type: "switch",
+					id: GM_KEYS$1.black.uploader.statusKey,
+					name: "启用 UP主过滤 (右键单击UP主)",
+					defaultEnable: true,
+					noStyle: true,
+					enableFn: () => {
+						mainFilter$1.videoUploaderFilter.enable();
+						mainFilter$1.checkFull();
+					},
+					disableFn: () => {
+						mainFilter$1.videoUploaderFilter.disable();
+						mainFilter$1.checkFull();
+					}
+				},
+				{
+					type: "editor",
+					id: GM_KEYS$1.black.uploader.valueKey,
+					name: "编辑 UP主黑名单",
+					description: ["右键屏蔽的UP主会出现在首行"],
+					editorTitle: "UP主 黑名单",
+					editorDescription: ["每行一个UP主昵称，保存时自动去重"],
+					saveFn: async () => {
+						mainFilter$1.videoUploaderFilter.setParam(_GM_getValue(GM_KEYS$1.black.uploader.valueKey, []));
+						mainFilter$1.checkFull();
+					}
+				},
+				{
+					type: "switch",
+					id: GM_KEYS$1.black.uploaderKeyword.statusKey,
+					name: "启用 UP主昵称关键词过滤",
+					noStyle: true,
+					enableFn: () => {
+						mainFilter$1.videoUploaderKeywordFilter.enable();
+						mainFilter$1.checkFull();
+					},
+					disableFn: () => {
+						mainFilter$1.videoUploaderKeywordFilter.disable();
+						mainFilter$1.checkFull();
+					}
+				},
+				{
+					type: "editor",
+					id: GM_KEYS$1.black.uploaderKeyword.valueKey,
+					name: "编辑 UP主昵称关键词黑名单",
+					editorTitle: "UP主昵称关键词 黑名单",
+					editorDescription: [
+						"每行一个关键词或正则，不区分大小写、全半角",
+						"请勿使用过于激进的关键词或正则",
+						"正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
+					],
+					saveFn: async () => {
+						mainFilter$1.videoUploaderKeywordFilter.setParam(_GM_getValue(GM_KEYS$1.black.uploaderKeyword.valueKey, []));
+						mainFilter$1.checkFull();
+					}
+				}
+			]
 		},
 		{
 			name: "标题关键词过滤",
@@ -7623,42 +7989,131 @@
 			}]
 		},
 		{
-			name: "白名单 免过滤",
+			name: "其他过滤",
 			items: [{
 				type: "switch",
-				id: GM_KEYS$1.white.title.statusKey,
-				name: "启用 标题关键词白名单",
+				id: GM_KEYS$1.black.related.statusKey,
+				name: "启用 相关视频数据过滤 (实验功能)",
+				description: [
+					"过滤当前视频的\"相关视频\"缓存数据",
+					"自动替换接下来播放、播放结束相关视频",
+					"启用后，变动其他过滤功能需刷新页面"
+				],
 				noStyle: true,
 				enableFn: () => {
-					mainFilter$1.videoTitleWhiteFilter.enable();
+					enableRelatedCheck = true;
 					mainFilter$1.checkFull();
 				},
 				disableFn: () => {
-					mainFilter$1.videoTitleWhiteFilter.disable();
-					mainFilter$1.checkFull();
-				}
-			}, {
-				type: "editor",
-				id: GM_KEYS$1.white.title.valueKey,
-				name: "编辑 标题关键词白名单",
-				editorTitle: "标题关键词 白名单",
-				editorDescription: [
-					"每行一个关键词或正则，不区分大小写、全半角",
-					"请勿使用过于激进的关键词或正则",
-					"正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
-				],
-				saveFn: async () => {
-					mainFilter$1.videoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$1.white.title.valueKey, []));
+					enableRelatedCheck = false;
 					mainFilter$1.checkFull();
 				}
 			}]
+		},
+		{
+			name: "白名单 免过滤",
+			items: [
+				{
+					type: "switch",
+					id: GM_KEYS$1.white.uploader.statusKey,
+					name: "启用 UP主白名单 (右键单击UP主)",
+					defaultEnable: true,
+					noStyle: true,
+					enableFn: () => {
+						mainFilter$1.videoUploaderWhiteFilter.enable();
+						mainFilter$1.checkFull();
+					},
+					disableFn: () => {
+						mainFilter$1.videoUploaderWhiteFilter.disable();
+						mainFilter$1.checkFull();
+					}
+				},
+				{
+					type: "editor",
+					id: GM_KEYS$1.white.uploader.valueKey,
+					name: "编辑 UP主白名单",
+					editorTitle: "UP主 白名单",
+					editorDescription: ["每行一个UP主昵称，保存时自动去重"],
+					saveFn: async () => {
+						mainFilter$1.videoUploaderWhiteFilter.setParam(_GM_getValue(GM_KEYS$1.white.uploader.valueKey, []));
+						mainFilter$1.checkFull();
+					}
+				},
+				{
+					type: "switch",
+					id: GM_KEYS$1.white.title.statusKey,
+					name: "启用 标题关键词白名单",
+					noStyle: true,
+					enableFn: () => {
+						mainFilter$1.videoTitleWhiteFilter.enable();
+						mainFilter$1.checkFull();
+					},
+					disableFn: () => {
+						mainFilter$1.videoTitleWhiteFilter.disable();
+						mainFilter$1.checkFull();
+					}
+				},
+				{
+					type: "editor",
+					id: GM_KEYS$1.white.title.valueKey,
+					name: "编辑 标题关键词白名单",
+					editorTitle: "标题关键词 白名单",
+					editorDescription: [
+						"每行一个关键词或正则，不区分大小写、全半角",
+						"请勿使用过于激进的关键词或正则",
+						"正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
+					],
+					saveFn: async () => {
+						mainFilter$1.videoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$1.white.title.valueKey, []));
+						mainFilter$1.checkFull();
+					}
+				}
+			]
 		}
 	];
-	var videoFilterSpaceHandler = (target) => {
-		if (!isPageSpace()) return [];
+	var videoFilterVideoHandler = (target) => {
+		if (!(isPageVideo() || isPagePlaylist() || isPageBangumi())) return [];
 		const menus = [];
-		if (target.closest(".bili-video-card__title")) {
-			const url = target.href;
+		if (target.closest(".right-container, .recommend-list-container, .up-panel-container") && (target.classList.contains("name") || target.classList.contains("up-name") || target.parentElement?.classList.contains("up-name") || target.closest(".staff-info"))) {
+			const uploader = target.closest(".staff-info")?.querySelector(".staff-name")?.textContent?.trim() || target.textContent?.trim() || target.parentElement?.textContent?.trim();
+			const spaceUrl = (target.closest(".upname")?.querySelector(":scope a")?.getAttribute("href"))?.match(/space\.bilibili\.com\/\d+/)?.[0];
+			if (uploader) {
+				if (mainFilter$1.videoUploaderFilter.isEnable) menus.push({
+					name: `屏蔽UP主：${uploader}`,
+					fn: async () => {
+						try {
+							mainFilter$1.videoUploaderFilter.addParam(uploader);
+							mainFilter$1.checkFull();
+							const arr = _GM_getValue(GM_KEYS$1.black.uploader.valueKey, []);
+							arr.unshift(uploader);
+							_GM_setValue(GM_KEYS$1.black.uploader.valueKey, orderedUniq(arr));
+						} catch (err) {
+							logger.error(`videoFilterVideoHandler add uploader ${uploader} failed`, err);
+						}
+					}
+				});
+				if (mainFilter$1.videoUploaderWhiteFilter.isEnable) menus.push({
+					name: `将UP主加入白名单`,
+					fn: async () => {
+						try {
+							mainFilter$1.videoUploaderWhiteFilter.addParam(uploader);
+							mainFilter$1.checkFull();
+							const arr = _GM_getValue(GM_KEYS$1.white.uploader.valueKey, []);
+							arr.unshift(uploader);
+							_GM_setValue(GM_KEYS$1.white.uploader.valueKey, orderedUniq(arr));
+						} catch (err) {
+							logger.error(`videoFilterVideoHandler add white uploader ${uploader} failed`, err);
+						}
+					}
+				});
+			}
+			if (spaceUrl && (mainFilter$1.videoUploaderFilter.isEnable || mainFilter$1.videoUploaderWhiteFilter.isEnable)) menus.push({
+				name: `复制主页链接`,
+				fn: () => navigator.clipboard.writeText(`https://${spaceUrl}`)
+			});
+		}
+		if (target.closest(".right-container, .recommend-list-container") && target.classList.contains("title")) {
+			const url = target.parentElement?.getAttribute("href");
 			if (url && mainFilter$1.videoBvidFilter.isEnable) {
 				const bvid = matchBvid(url);
 				if (bvid) {
@@ -7672,7 +8127,7 @@
 								arr.unshift(bvid);
 								_GM_setValue(GM_KEYS$1.black.bvid.valueKey, orderedUniq(arr));
 							} catch (err) {
-								logger.error(`videoFilterSearchHandler add bvid ${bvid} failed`, err);
+								logger.error(`videoFilterVideoHandler add bvid ${bvid} failed`, err);
 							}
 						}
 					});
@@ -7685,321 +8140,213 @@
 		}
 		return menus;
 	};
+	var ArticleAuthorFilter = class extends StringFilter {};
+	var ArticleAuthorKeywordFilter = class extends KeywordFilter {};
+	var ArticleTitleKeywordFilter = class extends KeywordFilter {};
+	var ArticleAuthorWhiteFilter = class extends StringFilter {};
+	var ArticleTitleKeywordWhiteFilter = class extends KeywordFilter {};
 	var GM_KEYS = {
 		black: {
-			duration: {
-				statusKey: "video-duration-filter-status",
-				valueKey: "global-duration-filter-value"
+			author: {
+				statusKey: "search-article-author-filter-status",
+				valueKey: "global-article-author-filter-value"
 			},
-			uploader: {
-				statusKey: "video-uploader-filter-status",
-				valueKey: "global-uploader-filter-value"
-			},
-			uploaderKeyword: {
-				statusKey: "video-uploader-keyword-filter-status",
-				valueKey: "global-uploader-keyword-filter-value"
-			},
-			bvid: {
-				statusKey: "video-bvid-filter-status",
-				valueKey: "global-bvid-filter-value"
+			authorKeyword: {
+				statusKey: "search-article-author-keyword-filter-status",
+				valueKey: "global-article-author-keyword-filter-value"
 			},
 			title: {
-				statusKey: "video-title-keyword-filter-status",
-				valueKey: "global-title-keyword-filter-value"
-			},
-			related: { statusKey: "video-related-filter-status" }
+				statusKey: "search-article-title-keyword-filter-status",
+				valueKey: "global-article-title-keyword-filter-value"
+			}
 		},
 		white: {
-			uploader: {
-				statusKey: "video-uploader-whitelist-filter-status",
-				valueKey: "global-uploader-whitelist-filter-value"
+			author: {
+				statusKey: "search-article-author-whitelist-filter-status",
+				valueKey: "global-article-author-whitelist-filter-value"
 			},
 			title: {
-				statusKey: "video-title-keyword-whitelist-filter-status",
-				valueKey: "global-title-keyword-whitelist-filter-value"
+				statusKey: "search-article-title-keyword-whitelist-filter-status",
+				valueKey: "global-article-title-keyword-whitelist-filter-value"
 			}
 		}
 	};
 	var selectorFns = {
-		duration: (video) => {
-			const duration = video.querySelector(".pic-box span.duration")?.textContent;
-			return duration ? convertTimeToSec(duration) : void 0;
+		author: (card) => {
+			return card.querySelector(".atc-author .lh_xs")?.textContent?.trim();
 		},
-		title: (video) => {
-			return video.querySelector(".info > a p")?.textContent?.trim();
-		},
-		bvid: (video) => {
-			const href = video.querySelector(".info > a")?.getAttribute("href") || video.querySelector(".pic-box .framepreview-box > a")?.getAttribute("href");
-			return (href && matchBvid(href)) ?? void 0;
-		},
-		uploader: (video) => {
-			return video.querySelector(".info > .upname .name")?.textContent?.trim();
+		title: (card) => {
+			return card.querySelector(".i_card_title a")?.getAttribute("title")?.trim();
 		}
 	};
-	var enableRelatedCheck = false;
-	var VideoFilterVideo = class {
+	var ArticleFilterSearch = class {
 		target;
-		videoBvidFilter = new VideoBvidFilter();
-		videoDurationFilter = new VideoDurationFilter();
-		videoTitleFilter = new VideoTitleFilter();
-		videoUploaderFilter = new VideoUploaderFilter();
-		videoUploaderKeywordFilter = new VideoUploaderKeywordFilter();
-		videoUploaderWhiteFilter = new VideoUploaderWhiteFilter();
-		videoTitleWhiteFilter = new VideoTitleWhiteFilter();
+		articleAuthorFilter = new ArticleAuthorFilter();
+		articleAuthorKeywordFilter = new ArticleAuthorKeywordFilter();
+		articleAuthorWhiteFilter = new ArticleAuthorWhiteFilter();
+		articleTitleKeywordFilter = new ArticleTitleKeywordFilter();
+		articleTitleKeywordWhiteFilter = new ArticleTitleKeywordWhiteFilter();
 		init() {
-			this.videoBvidFilter.setParam(_GM_getValue(GM_KEYS.black.bvid.valueKey, []));
-			this.videoDurationFilter.setParam(_GM_getValue(GM_KEYS.black.duration.valueKey, 0));
-			this.videoTitleFilter.setParam(_GM_getValue(GM_KEYS.black.title.valueKey, []));
-			this.videoUploaderFilter.setParam(_GM_getValue(GM_KEYS.black.uploader.valueKey, []));
-			this.videoUploaderKeywordFilter.setParam(_GM_getValue(GM_KEYS.black.uploaderKeyword.valueKey, []));
-			this.videoUploaderWhiteFilter.setParam(_GM_getValue(GM_KEYS.white.uploader.valueKey, []));
-			this.videoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS.white.title.valueKey, []));
+			const blacklist = _GM_getValue(GM_KEYS.black.author.valueKey, []);
+			const keywordBlacklist = _GM_getValue(GM_KEYS.black.authorKeyword.valueKey, []);
+			const titleKeywordBlacklist = _GM_getValue(GM_KEYS.black.title.valueKey, []);
+			const whitelist = _GM_getValue(GM_KEYS.white.author.valueKey, []);
+			const titleKeywordWhitelist = _GM_getValue(GM_KEYS.white.title.valueKey, []);
+			this.articleAuthorFilter.setParam(blacklist);
+			this.articleAuthorKeywordFilter.setParam(keywordBlacklist);
+			this.articleTitleKeywordFilter.setParam(titleKeywordBlacklist);
+			this.articleAuthorWhiteFilter.setParam(whitelist);
+			this.articleTitleKeywordWhiteFilter.setParam(titleKeywordWhitelist);
 		}
-		async check(mode) {
+		async checkFilter() {
 			if (!this.target) return;
+			const mediaList = this.target.querySelector("div.media-list");
+			if (!mediaList) return;
 			let revertAll = false;
-			if (!(this.videoBvidFilter.isEnable || this.videoDurationFilter.isEnable || this.videoTitleFilter.isEnable || this.videoUploaderFilter.isEnable || this.videoUploaderKeywordFilter.isEnable)) revertAll = true;
+			if (!this.articleAuthorFilter.isEnable && !this.articleAuthorKeywordFilter.isEnable && !this.articleTitleKeywordFilter.isEnable && !this.articleAuthorWhiteFilter.isEnable && !this.articleTitleKeywordWhiteFilter.isEnable) revertAll = true;
 			const timer = performance.now();
-			const videos = Array.from(this.target.querySelectorAll(`.next-play :is(.video-page-card-small, .video-page-operator-card-small),
-            .rec-list :is(.video-page-card-small, .video-page-operator-card-small), .recommend-video-card`));
-			if (!videos.length) return;
+			const cards = Array.from(mediaList.children);
+			if (!cards.length) return;
 			if (revertAll) {
-				videos.forEach((v) => showEle(v, "sign"));
+				cards.forEach((c) => showEle(c, "sign"));
 				return;
 			}
-			if (config_default.isDebugMode) videos.forEach((v) => {
+			if (config_default.isDebugMode) cards.forEach((c) => {
 				logger.debug([
-					`VideoFilterVideo`,
-					`bvid: ${selectorFns.bvid(v)}`,
-					`duration: ${selectorFns.duration(v)}`,
-					`title: ${selectorFns.title(v)}`,
-					`uploader: ${selectorFns.uploader(v)}`
+					`ArticleFilterSearch`,
+					`author: ${selectorFns.author(c)}`,
+					`title: ${selectorFns.title(c)}`
 				].join("\n"));
 			});
 			const blackPairs = [];
-			this.videoDurationFilter.isEnable && blackPairs.push([this.videoDurationFilter, selectorFns.duration]);
-			this.videoTitleFilter.isEnable && blackPairs.push([this.videoTitleFilter, selectorFns.title]);
-			this.videoUploaderFilter.isEnable && blackPairs.push([this.videoUploaderFilter, selectorFns.uploader]);
-			this.videoUploaderKeywordFilter.isEnable && blackPairs.push([this.videoUploaderKeywordFilter, selectorFns.uploader]);
+			this.articleAuthorFilter.isEnable && blackPairs.push([this.articleAuthorFilter, selectorFns.author]);
+			this.articleAuthorKeywordFilter.isEnable && blackPairs.push([this.articleAuthorKeywordFilter, selectorFns.author]);
+			this.articleTitleKeywordFilter.isEnable && blackPairs.push([this.articleTitleKeywordFilter, selectorFns.title]);
 			const whitePairs = [];
-			this.videoUploaderWhiteFilter.isEnable && whitePairs.push([this.videoUploaderWhiteFilter, selectorFns.uploader]);
-			this.videoTitleWhiteFilter.isEnable && whitePairs.push([this.videoTitleWhiteFilter, selectorFns.title]);
-			const forceBlackPairs = [];
-			this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns.bvid]);
-			const blackCnt = await coreCheck(videos, true, "sign", blackPairs, whitePairs, forceBlackPairs);
-			if (enableRelatedCheck && blackCnt) {
-				const blackBvids = new Set();
-				for (const video of videos) if (isEleHide(video, "sign")) {
-					const url = video.querySelector(".info > a")?.getAttribute("href");
-					if (url) {
-						const bvid = matchBvid(url);
-						bvid && blackBvids.add(bvid);
-					}
-				}
-				const rel = _unsafeWindow.__INITIAL_STATE__?.related;
-				if (rel?.length && blackBvids.size) _unsafeWindow.__INITIAL_STATE__.related = rel.filter((v) => !(v.bvid && blackBvids.has(v.bvid)));
-			}
+			this.articleAuthorWhiteFilter.isEnable && whitePairs.push([this.articleAuthorWhiteFilter, selectorFns.author]);
+			this.articleTitleKeywordWhiteFilter.isEnable && whitePairs.push([this.articleTitleKeywordWhiteFilter, selectorFns.title]);
+			const blackCnt = await coreCheck(cards, true, "sign", blackPairs, whitePairs);
 			const time = (performance.now() - timer).toFixed(1);
-			logger.debug(`VideoFilterVideo hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`);
-		}
-		checkFull() {
-			this.check("full").catch((err) => {
-				logger.error("VideoFilterVideo check full error", err);
-			});
+			logger.debug(`ArticleFilterSearch hide ${blackCnt} in ${cards.length} cards, time=${time}`);
 		}
 		observe() {
-			waitForEle(document, "#reco_list, .recommend-list-v1, .recommend-list-container", (node) => {
-				return node.id === "reco_list" || ["recommend-list-v1", "recommend-list-container"].includes(node.className);
+			logger.log("ArticleFilterSearch observe");
+			waitForEle(document, "div.search-content", (node) => {
+				return node.classList && node.classList.contains("search-content");
 			}).then((ele) => {
 				if (!ele) return;
-				logger.debug("VideoFilterVideo target appear");
+				logger.log("ArticleFilterSearch div.search-content found");
 				this.target = ele;
-				this.checkFull();
+				this.checkFilter();
 				new MutationObserver(() => {
-					this.checkFull();
+					this.checkFilter();
 				}).observe(this.target, {
 					childList: true,
 					subtree: true
 				});
 			});
 		}
+		check(_mode) {
+			this.checkFilter();
+		}
+		checkFull() {
+			this.checkFilter();
+		}
 	};
-	var mainFilter = new VideoFilterVideo();
-	var videoFilterVideoEntry = async () => {
+	var mainFilter = new ArticleFilterSearch();
+	var articleFilterEntry = async () => {
 		mainFilter.init();
 		mainFilter.observe();
 	};
-	var videoFilterVideoGroups = [
+	var articleFilterGroups = [
 		{
-			name: "时长过滤",
-			items: [{
-				type: "switch",
-				id: GM_KEYS.black.duration.statusKey,
-				name: "启用 时长过滤",
-				noStyle: true,
-				enableFn: () => {
-					mainFilter.videoDurationFilter.enable();
-					mainFilter.checkFull();
-				},
-				disableFn: () => {
-					mainFilter.videoDurationFilter.disable();
-					mainFilter.checkFull();
-				}
-			}, {
-				type: "number",
-				id: GM_KEYS.black.duration.valueKey,
-				name: "设定最低时长（0~300s）",
-				noStyle: true,
-				minValue: 0,
-				maxValue: 300,
-				step: 1,
-				defaultValue: 60,
-				disableValue: 0,
-				addonText: "秒",
-				fn: (value) => {
-					mainFilter.videoDurationFilter.setParam(value);
-					mainFilter.checkFull();
-				}
-			}]
-		},
-		{
-			name: "UP主过滤",
+			name: "专栏作者过滤",
 			items: [
 				{
 					type: "switch",
-					id: GM_KEYS.black.uploader.statusKey,
-					name: "启用 UP主过滤 (右键单击UP主)",
+					id: GM_KEYS.black.author.statusKey,
+					name: "启用 专栏作者过滤 (右键单击专栏作者)",
 					defaultEnable: true,
 					noStyle: true,
 					enableFn: () => {
-						mainFilter.videoUploaderFilter.enable();
+						mainFilter.articleAuthorFilter.enable();
 						mainFilter.checkFull();
 					},
 					disableFn: () => {
-						mainFilter.videoUploaderFilter.disable();
+						mainFilter.articleAuthorFilter.disable();
 						mainFilter.checkFull();
 					}
 				},
 				{
 					type: "editor",
-					id: GM_KEYS.black.uploader.valueKey,
-					name: "编辑 UP主黑名单",
-					description: ["右键屏蔽的UP主会出现在首行"],
-					editorTitle: "UP主 黑名单",
-					editorDescription: ["每行一个UP主昵称，保存时自动去重"],
+					id: GM_KEYS.black.author.valueKey,
+					name: "编辑 专栏作者黑名单",
+					description: ["右键屏蔽的专栏作者会出现在首行"],
+					editorTitle: "专栏作者 黑名单",
+					editorDescription: ["每行一个专栏作者昵称，保存时自动去重"],
 					saveFn: async () => {
-						mainFilter.videoUploaderFilter.setParam(_GM_getValue(GM_KEYS.black.uploader.valueKey, []));
+						mainFilter.articleAuthorFilter.setParam(_GM_getValue(GM_KEYS.black.author.valueKey, []));
 						mainFilter.checkFull();
 					}
 				},
 				{
 					type: "switch",
-					id: GM_KEYS.black.uploaderKeyword.statusKey,
-					name: "启用 UP主昵称关键词过滤",
+					id: GM_KEYS.black.authorKeyword.statusKey,
+					name: "启用 专栏作者昵称关键词过滤",
 					noStyle: true,
 					enableFn: () => {
-						mainFilter.videoUploaderKeywordFilter.enable();
+						mainFilter.articleAuthorKeywordFilter.enable();
 						mainFilter.checkFull();
 					},
 					disableFn: () => {
-						mainFilter.videoUploaderKeywordFilter.disable();
+						mainFilter.articleAuthorKeywordFilter.disable();
 						mainFilter.checkFull();
 					}
 				},
 				{
 					type: "editor",
-					id: GM_KEYS.black.uploaderKeyword.valueKey,
-					name: "编辑 UP主昵称关键词黑名单",
-					editorTitle: "UP主昵称关键词 黑名单",
+					id: GM_KEYS.black.authorKeyword.valueKey,
+					name: "编辑 专栏作者昵称关键词黑名单",
+					editorTitle: "专栏作者昵称关键词 黑名单",
 					editorDescription: [
 						"每行一个关键词或正则，不区分大小写、全半角",
 						"请勿使用过于激进的关键词或正则",
 						"正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
 					],
 					saveFn: async () => {
-						mainFilter.videoUploaderKeywordFilter.setParam(_GM_getValue(GM_KEYS.black.uploaderKeyword.valueKey, []));
+						mainFilter.articleAuthorKeywordFilter.setParam(_GM_getValue(GM_KEYS.black.authorKeyword.valueKey, []));
 						mainFilter.checkFull();
 					}
 				}
 			]
 		},
 		{
-			name: "标题关键词过滤",
+			name: "专栏标题关键词过滤",
 			items: [{
 				type: "switch",
 				id: GM_KEYS.black.title.statusKey,
-				name: "启用 标题关键词过滤",
+				name: "启用 专栏标题关键词过滤",
 				noStyle: true,
 				enableFn: () => {
-					mainFilter.videoTitleFilter.enable();
+					mainFilter.articleTitleKeywordFilter.enable();
 					mainFilter.checkFull();
 				},
 				disableFn: () => {
-					mainFilter.videoTitleFilter.disable();
+					mainFilter.articleTitleKeywordFilter.disable();
 					mainFilter.checkFull();
 				}
 			}, {
 				type: "editor",
 				id: GM_KEYS.black.title.valueKey,
-				name: "编辑 标题关键词黑名单",
-				editorTitle: "标题关键词 黑名单",
+				name: "编辑 专栏标题关键词黑名单",
+				editorTitle: "专栏标题关键词 黑名单",
 				editorDescription: [
 					"每行一个关键词或正则，不区分大小写、全半角",
 					"请勿使用过于激进的关键词或正则",
 					"正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
 				],
 				saveFn: async () => {
-					mainFilter.videoTitleFilter.setParam(_GM_getValue(GM_KEYS.black.title.valueKey, []));
-					mainFilter.checkFull();
-				}
-			}]
-		},
-		{
-			name: "BV号过滤",
-			items: [{
-				type: "switch",
-				id: GM_KEYS.black.bvid.statusKey,
-				name: "启用 BV号过滤 (右键单击标题)",
-				noStyle: true,
-				enableFn: () => {
-					mainFilter.videoBvidFilter.enable();
-					mainFilter.checkFull();
-				},
-				disableFn: () => {
-					mainFilter.videoBvidFilter.disable();
-					mainFilter.checkFull();
-				}
-			}, {
-				type: "editor",
-				id: GM_KEYS.black.bvid.valueKey,
-				name: "编辑 BV号黑名单",
-				description: ["右键屏蔽的BV号会出现在首行"],
-				editorTitle: "BV号 黑名单",
-				editorDescription: ["每行一个BV号，保存时自动去重"],
-				saveFn: async () => {
-					mainFilter.videoBvidFilter.setParam(_GM_getValue(GM_KEYS.black.bvid.valueKey, []));
-					mainFilter.checkFull();
-				}
-			}]
-		},
-		{
-			name: "其他过滤",
-			items: [{
-				type: "switch",
-				id: GM_KEYS.black.related.statusKey,
-				name: "启用 相关视频数据过滤 (实验功能)",
-				description: [
-					"过滤当前视频的\"相关视频\"缓存数据",
-					"自动替换接下来播放、播放结束相关视频",
-					"启用后，变动其他过滤功能需刷新页面"
-				],
-				noStyle: true,
-				enableFn: () => {
-					enableRelatedCheck = true;
-					mainFilter.checkFull();
-				},
-				disableFn: () => {
-					enableRelatedCheck = false;
+					mainFilter.articleTitleKeywordFilter.setParam(_GM_getValue(GM_KEYS.black.title.valueKey, []));
 					mainFilter.checkFull();
 				}
 			}]
@@ -8009,128 +8356,99 @@
 			items: [
 				{
 					type: "switch",
-					id: GM_KEYS.white.uploader.statusKey,
-					name: "启用 UP主白名单 (右键单击UP主)",
+					id: GM_KEYS.white.author.statusKey,
+					name: "启用 专栏作者白名单 (右键单击专栏作者)",
 					defaultEnable: true,
 					noStyle: true,
 					enableFn: () => {
-						mainFilter.videoUploaderWhiteFilter.enable();
+						mainFilter.articleAuthorWhiteFilter.enable();
 						mainFilter.checkFull();
 					},
 					disableFn: () => {
-						mainFilter.videoUploaderWhiteFilter.disable();
+						mainFilter.articleAuthorWhiteFilter.disable();
 						mainFilter.checkFull();
 					}
 				},
 				{
 					type: "editor",
-					id: GM_KEYS.white.uploader.valueKey,
-					name: "编辑 UP主白名单",
-					editorTitle: "UP主 白名单",
-					editorDescription: ["每行一个UP主昵称，保存时自动去重"],
+					id: GM_KEYS.white.author.valueKey,
+					name: "编辑 专栏作者白名单",
+					editorTitle: "专栏作者 白名单",
+					editorDescription: ["每行一个专栏作者昵称，保存时自动去重"],
 					saveFn: async () => {
-						mainFilter.videoUploaderWhiteFilter.setParam(_GM_getValue(GM_KEYS.white.uploader.valueKey, []));
+						mainFilter.articleAuthorWhiteFilter.setParam(_GM_getValue(GM_KEYS.white.author.valueKey, []));
 						mainFilter.checkFull();
 					}
 				},
 				{
 					type: "switch",
 					id: GM_KEYS.white.title.statusKey,
-					name: "启用 标题关键词白名单",
+					name: "启用 专栏标题关键词白名单",
 					noStyle: true,
 					enableFn: () => {
-						mainFilter.videoTitleWhiteFilter.enable();
+						mainFilter.articleTitleKeywordWhiteFilter.enable();
 						mainFilter.checkFull();
 					},
 					disableFn: () => {
-						mainFilter.videoTitleWhiteFilter.disable();
+						mainFilter.articleTitleKeywordWhiteFilter.disable();
 						mainFilter.checkFull();
 					}
 				},
 				{
 					type: "editor",
 					id: GM_KEYS.white.title.valueKey,
-					name: "编辑 标题关键词白名单",
-					editorTitle: "标题关键词 白名单",
-					editorDescription: [
-						"每行一个关键词或正则，不区分大小写、全半角",
-						"请勿使用过于激进的关键词或正则",
-						"正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"
-					],
+					name: "编辑 专栏标题关键词白名单",
+					editorTitle: "专栏标题关键词 白名单",
+					editorDescription: ["每行一个关键词或正则，不区分大小写、全半角", "正则默认 ius 模式，无需 flag，语法：/abc|\\d+/"],
 					saveFn: async () => {
-						mainFilter.videoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS.white.title.valueKey, []));
+						mainFilter.articleTitleKeywordWhiteFilter.setParam(_GM_getValue(GM_KEYS.white.title.valueKey, []));
 						mainFilter.checkFull();
 					}
 				}
 			]
 		}
 	];
-	var videoFilterVideoHandler = (target) => {
-		if (!(isPageVideo() || isPagePlaylist() || isPageBangumi())) return [];
+	var articleFilterHandler = (target) => {
+		if (location.host !== "search.bilibili.com") return [];
 		const menus = [];
-		if (target.closest(".right-container, .recommend-list-container, .up-panel-container") && (target.classList.contains("name") || target.classList.contains("up-name") || target.parentElement?.classList.contains("up-name") || target.closest(".staff-info"))) {
-			const uploader = target.closest(".staff-info")?.querySelector(".staff-name")?.textContent?.trim() || target.textContent?.trim() || target.parentElement?.textContent?.trim();
-			const spaceUrl = (target.closest(".upname")?.querySelector(":scope a")?.getAttribute("href"))?.match(/space\.bilibili\.com\/\d+/)?.[0];
-			if (uploader) {
-				if (mainFilter.videoUploaderFilter.isEnable) menus.push({
-					name: `屏蔽UP主：${uploader}`,
+		const authorEl = target.closest(".atc-author");
+		if (authorEl) {
+			const author = authorEl.querySelector(".lh_xs")?.textContent?.trim();
+			const spaceUrl = (authorEl.querySelector("a")?.href?.trim())?.match(/space\.bilibili\.com\/\d+/)?.[0];
+			if (author) {
+				if (mainFilter.articleAuthorFilter.isEnable) menus.push({
+					name: `屏蔽专栏作者：${author}`,
 					fn: async () => {
 						try {
-							mainFilter.videoUploaderFilter.addParam(uploader);
+							mainFilter.articleAuthorFilter.addParam(author);
 							mainFilter.checkFull();
-							const arr = _GM_getValue(GM_KEYS.black.uploader.valueKey, []);
-							arr.unshift(uploader);
-							_GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr));
+							const arr = _GM_getValue(GM_KEYS.black.author.valueKey, []);
+							arr.unshift(author);
+							_GM_setValue(GM_KEYS.black.author.valueKey, orderedUniq(arr));
 						} catch (err) {
-							logger.error(`videoFilterVideoHandler add uploader ${uploader} failed`, err);
+							logger.error(`articleFilterHandler add author ${author} failed`, err);
 						}
 					}
 				});
-				if (mainFilter.videoUploaderWhiteFilter.isEnable) menus.push({
-					name: `将UP主加入白名单`,
+				if (mainFilter.articleAuthorWhiteFilter.isEnable) menus.push({
+					name: `将专栏作者加入白名单`,
 					fn: async () => {
 						try {
-							mainFilter.videoUploaderWhiteFilter.addParam(uploader);
+							mainFilter.articleAuthorWhiteFilter.addParam(author);
 							mainFilter.checkFull();
-							const arr = _GM_getValue(GM_KEYS.white.uploader.valueKey, []);
-							arr.unshift(uploader);
-							_GM_setValue(GM_KEYS.white.uploader.valueKey, orderedUniq(arr));
+							const arr = _GM_getValue(GM_KEYS.white.author.valueKey, []);
+							arr.unshift(author);
+							_GM_setValue(GM_KEYS.white.author.valueKey, orderedUniq(arr));
 						} catch (err) {
-							logger.error(`videoFilterVideoHandler add white uploader ${uploader} failed`, err);
+							logger.error(`articleFilterHandler add white author ${author} failed`, err);
 						}
 					}
 				});
 			}
-			if (spaceUrl && (mainFilter.videoUploaderFilter.isEnable || mainFilter.videoUploaderWhiteFilter.isEnable)) menus.push({
+			if (spaceUrl && (mainFilter.articleAuthorFilter.isEnable || mainFilter.articleAuthorWhiteFilter.isEnable)) menus.push({
 				name: `复制主页链接`,
 				fn: () => navigator.clipboard.writeText(`https://${spaceUrl}`)
 			});
-		}
-		if (target.closest(".right-container, .recommend-list-container") && target.classList.contains("title")) {
-			const url = target.parentElement?.getAttribute("href");
-			if (url && mainFilter.videoBvidFilter.isEnable) {
-				const bvid = matchBvid(url);
-				if (bvid) {
-					menus.push({
-						name: `屏蔽视频 ${bvid}`,
-						fn: async () => {
-							try {
-								mainFilter.videoBvidFilter.addParam(bvid);
-								mainFilter.checkFull();
-								const arr = _GM_getValue(GM_KEYS.black.bvid.valueKey, []);
-								arr.unshift(bvid);
-								_GM_setValue(GM_KEYS.black.bvid.valueKey, orderedUniq(arr));
-							} catch (err) {
-								logger.error(`videoFilterVideoHandler add bvid ${bvid} failed`, err);
-							}
-						}
-					});
-					menus.push({
-						name: "复制视频链接",
-						fn: () => navigator.clipboard.writeText(`https://www.bilibili.com/video/${bvid}`).catch(() => {})
-					});
-				}
-			}
 		}
 		return menus;
 	};
@@ -8198,6 +8516,12 @@
 			checkFn: () => !isPageLive()
 		}
 	];
+	var articleFilters = [{
+		name: "搜索页 专栏过滤",
+		groups: articleFilterGroups,
+		entry: articleFilterEntry,
+		checkFn: isPageSearch
+	}];
 	var loadFilterStyle = () => {
 		const style = document.createElement("style");
 		style.className = `bili-cleaner-css filter`;
@@ -8212,7 +8536,8 @@
 		videoFilterHomepageHandler,
 		videoFilterSpaceHandler,
 		dynamicFilterDynamicHandler,
-		commentFilterCommonHandler
+		commentFilterCommonHandler,
+		articleFilterHandler
 	];
 	var useRulePanelStore = defineStore("RulePanel", () => {
 		const isShow = (0, vue.ref)(false);
@@ -8316,6 +8641,26 @@
 			show,
 			hide,
 			toggle
+		};
+	});
+	var useArticleFilterPanelStore = defineStore("ArticleFilterPanel", () => {
+		const isShow = (0, vue.ref)(false);
+		const show = () => {
+			isShow.value = true;
+		};
+		const hide = () => {
+			isShow.value = false;
+		};
+		const toggle = () => {
+			isShow.value = !isShow.value;
+		};
+		const isPageValid = () => isPageSearch();
+		return {
+			isShow,
+			show,
+			hide,
+			toggle,
+			isPageValid
 		};
 	});
 	var CommentFilterPanelView_default = (0, vue.defineComponent)({
@@ -11671,7 +12016,6 @@
 					type: "switch",
 					id: "live-page-default-skin",
 					name: "禁用 播放器皮肤",
-					noStyle: true,
 					enableFn: () => {
 						const style = document.querySelector("head #skin-css");
 						if (style) style.disabled = true;
@@ -11803,6 +12147,11 @@
 					id: "live-page-head-web-player-shop-popover-vm",
 					name: "隐藏 购物小橙车提示",
 					defaultEnable: true
+				},
+				{
+					type: "switch",
+					id: "live-page-web-player-interactive-sticker",
+					name: "隐藏 播放器内sticker"
 				},
 				{
 					type: "switch",
@@ -13127,6 +13476,13 @@
 								}, 200);
 							}).catch(() => {});
 						}, 100);
+						document.addEventListener("keydown", (e) => {
+							if (isWebScreen() && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
+								const target = e.target;
+								if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) return;
+								document.querySelector("#bilibili-player .bpx-player-dm-root")?.click();
+							}
+						}, true);
 					}
 				},
 				{
@@ -13694,7 +14050,7 @@
 	var index_scss_default$8 = _style("html[hide-dynamic-page-fixed-header] .fixed-header .bili-header__bar{position:relative!important}html[hide-dynamic-page-fixed-header] aside.right section.sticky{top:15px!important}html[exchange-dynamic-page-left-right-aside] aside.left{order:3;margin-right:0!important}html[exchange-dynamic-page-left-right-aside] main{order:2}html[exchange-dynamic-page-left-right-aside] aside.right{order:1;margin-right:12px!important}html[exchange-dynamic-page-left-right-aside] .bili-dyn-sidebar{order:4}html[hide-dynamic-page-bili-dyn-avatar-pendent] .bili-dyn-list .b-avatar__layers .b-avatar__layer.center:first-child{width:48px!important;height:48px!important}html[hide-dynamic-page-bili-dyn-avatar-pendent] .bili-dyn-list .b-avatar__layers .b-avatar__layer.center:nth-child(2),html[hide-dynamic-page-bili-dyn-avatar-pendent] .bili-dyn-list .b-avatar__layers:nth-child(2) .b-avatar__layer.center,html[hide-dynamic-page-bili-dyn-avatar-icon] .bili-dyn-list .b-avatar__layer:not(.center),html[hide-dynamic-page-bili-dyn-ornament] .bili-dyn-ornament,html[hide-dynamic-page-bili-dyn-ornament] .bili-dyn-item__ornament,html[hide-dynamic-page-bili-dyn-dispute] .bili-dyn-content__dispute,html[hide-dynamic-page-bili-dyn-official-topic] .bili-dyn-content__orig__topic,html[hide-dynamic-page-bili-dyn-official-topic] .bili-dyn-content__forw__topic{display:none!important}html[hide-dynamic-page-bili-dyn-text-topic] .bili-rich-text-topic{color:inherit!important}html[hide-dynamic-page-bili-dyn-text-topic] .bili-rich-text-topic:hover{color:var(--brand_blue)!important}html[hide-dynamic-page-bili-dyn-item-interaction] .bili-dyn-item__interaction{display:none!important}html[hide-dynamic-page-bili-dyn-card-reserve] .bili-dyn-list__item:has(.bili-dyn-card-reserve){display:none!important}:is(html[hide-dynamic-page-bili-dyn-card-goods] .bili-dyn-list__item:has(.bili-dyn-card-goods),html[hide-dynamic-page-bili-dyn-card-goods] .bili-dyn-list__item:has(.bili-rich-text-module.goods),html[hide-dynamic-page-bili-dyn-card-goods] .bili-dyn-list__item:has([data-type=goods])){display:none!important}html[hide-dynamic-page-bili-dyn-lottery] .bili-dyn-list__item:has([data-type=lottery]){display:none!important}html[hide-dynamic-page-bili-dyn-forward] .bili-dyn-list__item:has(.bili-dyn-content__orig.reference){display:none!important}html[hide-dynamic-page-bili-dyn-vote] .bili-dyn-list__item:has(.bili-dyn-card-vote){display:none!important}html[hide-dynamic-page-bili-dyn-live] .bili-dyn-list__item:has(.bili-dyn-card-live){display:none!important}html[hide-dynamic-page-bili-dyn-blocked] .bili-dyn-list__item:has(.dyn-blocked-mask,.bili-dyn-upower-common){display:none!important}html[hide-dynamic-page-bili-dyn-charge-video] .bili-dyn-list__item:has(.bili-dyn-card-video__badge [src*=qcRJ6sJU91]){display:none!important}html[dynamic-page-unfold-dynamic-content] .bili-dyn-list__item:not(:has(.dyn-card-opus__title)) .bili-rich-text .bili-rich-text__content{max-height:unset!important;-webkit-line-clamp:unset!important}html[dynamic-page-unfold-dynamic-content] .bili-dyn-list__item:not(:has(.dyn-card-opus__title)) .bili-rich-text .bili-rich-text__action{display:none!important}html[hide-dynamic-page-bili-dyn-publishing] .bili-dyn-publishing{display:none!important}html[hide-dynamic-page-bili-dyn-publishing] main section:first-child{margin-bottom:0!important}html[hide-dynamic-page-up-list] section:has(.bili-dyn-up-list){display:none!important}html[dynamic-page-up-list-dual-line-mode] .bili-dyn-up-list__content{grid-template-rows:auto auto!important;grid-auto-flow:column!important;display:grid!important}html[dynamic-page-up-list-dual-line-mode] .bili-dyn-up-list__content .shim{display:none!important}html[dynamic-page-up-list-dual-line-mode] .bili-dyn-up-list__item{height:auto!important}html[dynamic-page-up-list-dual-line-mode] .bili-dyn-up-list__window{padding:10px!important}html[dynamic-page-up-list-dual-line-mode] .bili-dyn-up-list__nav__btn{zoom:1.4;transition:background-color .1s linear}html[dynamic-page-up-list-dual-line-mode] .bili-dyn-up-list__nav__btn:hover{color:#fff!important;background-color:#00aeec!important}html[dynamic-page-up-list-checked-item-opacity] .bili-dyn-up-list__item:not(.active):has(.bili-dyn-up-list__item__face .bili-dyn-up-list__item__face__img:only-child){opacity:.25;transition:opacity .2s ease-out}html[dynamic-page-up-list-checked-item-opacity] .bili-dyn-up-list__item:hover{opacity:1!important;transition:opacity .1s linear!important}@keyframes disappear{0%{opacity:1;width:68px;margin-right:6px}99%{opacity:0;width:0;margin-right:0}to{opacity:0;width:0;margin-right:0;display:none}}html[dynamic-page-up-list-checked-item-hide] .bili-dyn-up-list__item:not(.active):has(.bili-dyn-up-list__item__face .bili-dyn-up-list__item__face__img:only-child){animation:.5s 1s forwards disappear}@supports ((-moz-appearance:none)){html[dynamic-page-up-list-checked-item-hide] .bili-dyn-up-list__item:not(.active):has(.bili-dyn-up-list__item__face .bili-dyn-up-list__item__face__img:only-child){display:none}}html[hide-dynamic-page-bili-dyn-list-tabs] .bili-dyn-list-tabs{display:none!important}html[hide-dynamic-page-bili-dyn-list-tabs] .bili-dyn-list{margin-top:0!important}html[hide-dynamic-page-bili-dyn-my-info] aside.left section,html[hide-dynamic-page-bili-dyn-live-users__item__living] .bili-dyn-live-users__item__living,html[hide-dynamic-page-aside-left] aside.left{display:none!important}html[hide-dynamic-page-aside-left] .bili-dyn-home--member{justify-content:center!important}html[hide-dynamic-page-aside-left] #app:has(.bili-dyn-home--member){min-width:fit-content}html[hide-dynamic-page-bili-dyn-banner] .bili-dyn-banner{display:none!important}html[hide-dynamic-page-bili-dyn-ads] section:has(.bili-dyn-ads){display:none!important}html[hide-dynamic-page-bili-dyn-ads] aside.right section{margin-bottom:0!important}html[hide-dynamic-page-bili-dyn-ads] aside.right section.sticky{top:72px}html[hide-dynamic-page-bili-dyn-topic-box] .bili-dyn-topic-box,html[hide-dynamic-page-bili-dyn-topic-box] .bili-dyn-search-trendings,html[hide-dynamic-page-bili-dyn-topic-box] .topic-panel,html[hide-dynamic-page-aside-right] aside.right{display:none!important}html[hide-dynamic-page-aside-right] .bili-dyn-home--member{justify-content:center!important}html[hide-dynamic-page-aside-right] #app:has(.bili-dyn-home--member){min-width:fit-content}html[dynamic-list-width] #app:has(.bili-dyn-home--member){min-width:fit-content!important}html[dynamic-list-width] #app:has(.bili-dyn-home--member) main{width:max(556px, var(--dynamic-list-width))!important}html[dynamic-detail-width] #app:has(.opus-detail){min-width:fit-content!important}html[dynamic-detail-width] #app:has(.opus-detail) .opus-detail{width:max(708px, var(--dynamic-detail-width))!important}html[dynamic-detail-width] #app:has(.opus-detail) .opus-detail .right-sidebar-wrap{margin-left:calc(max(708px, var(--dynamic-detail-width)) + 10px)!important}html[dynamic-detail-width] #app:has(.card .bili-dyn-item){min-width:fit-content!important}html[dynamic-detail-width] #app:has(.card .bili-dyn-item) .content{width:max(556px, var(--dynamic-detail-width))!important}html[hide-dynamic-page-sidebar-old-version] .bili-dyn-sidebar .bili-dyn-sidebar__btn:first-child{visibility:hidden!important}html[hide-dynamic-page-sidebar-old-version] .opus-detail .side-toolbar__bottom .side-toolbar__btn:not(.backtop){display:none!important}html[hide-dynamic-page-sidebar-back-to-top] .bili-dyn-sidebar .bili-dyn-sidebar__btn:last-child{visibility:hidden!important}");
 	var index_scss_default$7 = _style("html[video-page-danmaku-font-family] .bili-danmaku-x-dm,html[video-page-danmaku-font-family] .bili-dm,html[video-page-danmaku-font-family] .bili-dm *{font-family:var(--video-page-danmaku-font-family)!important}html[video-page-danmaku-font-weight] .bili-danmaku-x-dm,html[video-page-danmaku-font-weight] .bili-dm,html[video-page-danmaku-font-weight] .bili-dm *{font-weight:var(--video-page-danmaku-font-weight)!important}html[video-page-hide-bpx-player-video-info-online] .bpx-player-video-info-online,html[video-page-hide-bpx-player-video-info-online] .bpx-player-video-info-divide,html[video-page-hide-bpx-player-video-info-dm] .bpx-player-video-info-dm,html[video-page-hide-bpx-player-video-info-dm] .bpx-player-video-info-divide,html[video-page-hide-bpx-player-dm-switch] .bpx-player-dm-switch,html[video-page-hide-bpx-player-dm-setting] .bpx-player-dm-setting,html[video-page-hide-bpx-player-video-btn-dm] .bpx-player-video-btn-dm{display:none!important}html[video-page-hide-bpx-player-dm-input] .bpx-player-dm-input::placeholder{color:#0000!important}html[video-page-hide-bpx-player-dm-hint] .bpx-player-dm-hint,html[video-page-hide-bpx-player-dm-btn-send] .bpx-player-dm-btn-send,html[video-page-hide-bpx-player-postpanel] .bpx-player-postpanel-sug,html[video-page-hide-bpx-player-postpanel] .bpx-player-postpanel-carousel,html[video-page-hide-bpx-player-postpanel] .bpx-player-postpanel-popup,html[video-page-hide-bpx-player-sending-area] .bpx-player-sending-area,html[video-page-hide-bpx-player-sending-area] #bilibili-player-placeholder-bottom{display:none!important}html[video-page-hide-bpx-player-sending-area] #playerWrap:has(.bpx-player-container:not([data-screen=web],[data-screen=full])){aspect-ratio:16/9;height:unset!important}html[video-page-hide-bpx-player-sending-area] #playerWrap:has(.bpx-player-container:not([data-screen=web],[data-screen=full])) #bilibili-player{aspect-ratio:16/9;height:unset!important}html[video-page-hide-bpx-player-sending-area] .page-main-content:has(.festival-video-player) .video-player-box{height:fit-content!important}html[video-page-hide-bpx-player-sending-area] .festival-video-player{height:fit-content!important}html[video-page-hide-bpx-player-sending-area] .festival-video-player #bilibili-player:not(.mode-webscreen){height:calc(100% - 46px)!important}html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=full] .bpx-player-control-bottom-center .bpx-player-video-inputbar,html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=web] .bpx-player-control-bottom-center .bpx-player-video-inputbar{display:none!important}html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=full] .bpx-player-control-bottom-center,html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=web] .bpx-player-control-bottom-center{padding:0 15px!important}html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=full] .bpx-player-control-bottom-left,html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=web] .bpx-player-control-bottom-left{min-width:unset!important}html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=full] .bpx-player-ctrl-viewpoint,html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=web] .bpx-player-ctrl-viewpoint{width:fit-content!important}html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=full] .bpx-player-video-info,html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=web] .bpx-player-video-info{color:#fffc!important;width:unset!important;margin-bottom:1px!important;margin-right:16px!important;display:flex!important}html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=full] .bpx-player-video-info-online,html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=web] .bpx-player-video-info-online{font-size:14px!important;display:flex!important}html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=full] .bpx-player-video-info-dm,html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=full] .bpx-player-video-info-divide,html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=web] .bpx-player-video-info-dm,html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=web] .bpx-player-video-info-divide{display:none}html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=full] .bpx-player-control-bottom-center,html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=web] .bpx-player-control-bottom-center{padding:0 16px!important}html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=full] .bpx-player-ctrl-viewpoint,html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=web] .bpx-player-ctrl-viewpoint{width:fit-content!important}html[video-page-hide-bpx-player-bili-guide-all] .bili-follow-to-electric,html[video-page-hide-bpx-player-bili-guide-all] .bili-guide,html[video-page-hide-bpx-player-bili-guide-all] .bili-guide-all,html[video-page-hide-bpx-player-bili-guide-all] .bili-guide-animate,html[video-page-hide-bpx-player-bili-guide-all] .bili-guide-cyc,html[video-page-hide-bpx-player-bili-guide-all] .bili-guide-electric,html[video-page-hide-bpx-player-bili-guide-all] .bili-guide-follow,html[video-page-hide-bpx-player-bili-guide-all] .bili-guide-followed,html[video-page-hide-bpx-player-bili-guide-all] .bili-danmaku-x-guide,html[video-page-hide-bpx-player-bili-guide-all] .bili-danmaku-x-guide-all,html[video-page-hide-bpx-player-bili-guide-all] .bili-danmaku-x-guide-follow,html[video-page-hide-bpx-player-bili-guide-all] .bili-danmaku-x-guide-gray,html[video-page-hide-bpx-player-bili-vote] .bili-vote,html[video-page-hide-bpx-player-bili-vote] .bili-danmaku-x-vote,html[video-page-hide-bpx-player-bili-qoe-feedback] .bpx-player-qoeFeedback,html[video-page-hide-bpx-player-bili-qoe-feedback] .bili-qoeFeedback,html[video-page-hide-bpx-player-bili-qoe-feedback] .bili-qoeFeedback-score,html[video-page-hide-bpx-player-bili-qoe-feedback] .bili-qoeFeedback-vote,html[video-page-hide-bpx-player-bili-score] .bili-score,html[video-page-hide-bpx-player-bili-score] .bili-danmaku-x-score,html[video-page-hide-bpx-player-bili-score] .bili-danmaku-x-superRating,html[video-page-hide-bpx-player-bili-score-sum] .bili-scoreSum,html[video-page-hide-bpx-player-bili-score-sum] .bili-danmaku-x-scoreSum,html[video-page-hide-bpx-player-bili-clock] .bili-clock,html[video-page-hide-bpx-player-bili-clock] .bili-danmaku-x-clock,html[video-page-hide-bpx-player-bili-cmtime] .bili-cmtime,html[video-page-hide-bpx-player-bili-cmtime] .bili-danmaku-x-cmtime,html[video-page-hide-bpx-player-bili-cmd-shrink] .bili-cmd-shrink,html[video-page-hide-bpx-player-bili-cmd-shrink] .bili-danmaku-x-cmd-shrink,html[video-page-hide-bpx-player-bili-reserve] .bili-reserve,html[video-page-hide-bpx-player-bili-reserve] .bili-danmaku-x-reserve,html[video-page-hide-bpx-player-bili-link] .bili-link,html[video-page-hide-bpx-player-bili-link] .bili-danmaku-x-link,html[video-page-hide-bpx-player-cmd-dm-wrap] .bpx-player-cmd-dm-wrap,html[video-page-hide-bpx-player-top-left-title] .bpx-player-top-title,html[video-page-hide-bpx-player-top-left-title] .bpx-player-top-left-title,html[video-page-hide-bpx-player-top-left-title] .bpx-player-top-mask,html[video-page-hide-bpx-player-top-left-music] .bpx-player-top-left-music,html[video-page-hide-bpx-player-top-left-follow] .bpx-player-top-left-follow,html[video-page-hide-bpx-player-top-issue] .bpx-player-top-issue,html[video-page-hide-bpx-player-state-wrap] .bpx-player-state-wrap,html[video-page-hide-bpx-player-ending-related] .bpx-player-ending-related{display:none!important}html[video-page-hide-bpx-player-ending-related] .bpx-player-ending-content{align-items:center!important;display:flex!important}html[video-page-hide-bpx-player-dialog-wrap] .bpx-player-dialog-wrap,html[video-page-bpx-player-bili-high-icon] .bili-dm .bili-high-icon,html[video-page-bpx-player-bili-high-icon] .bili-danmaku-x-high-icon{display:none!important}html[video-page-bpx-player-bili-dm-vip-white] .bili-dm>.bili-dm-vip,html[video-page-bpx-player-bili-dm-vip-white] .bili-danmaku-x-dm-vip{background:unset!important;background-image:unset!important;background-size:unset!important;text-shadow:1px 0 1px #000,0 1px 1px #000,0 -1px 1px #000,-1px 0 1px #000!important;-webkit-text-stroke:unset!important;-moz-text-stroke:none!important;-ms-text-stroke:none!important}html[video-page-bpx-player-bili-dm-normal-white] .bili-danmaku-x-dm,html[video-page-bpx-player-bili-dm-normal-white] .bili-dm{--color:white!important}html[video-page-subtitle-font-color] .bpx-player-subtitle-panel-text{color:var(--video-page-subtitle-font-color)!important}html[video-page-subtitle-font-family] .bpx-player-subtitle-panel-text{font-family:var(--video-page-subtitle-font-family)!important}html[video-page-subtitle-font-weight] .bpx-player-subtitle-panel-text{font-weight:var(--video-page-subtitle-font-weight)!important}html[video-page-subtitle-text-stroke-color] .bpx-player-subtitle-panel-text{background:unset!important;background-color:var(--video-page-subtitle-text-stroke-color)!important;-webkit-background-clip:text!important;background-clip:text!important}html[video-page-subtitle-text-stroke-width] .bpx-player-container:where([data-screen=normal],[data-screen=wide]) .bpx-player-subtitle-panel-text{-webkit-text-stroke:calc(.6 * var(--video-page-subtitle-text-stroke-width)) transparent!important;-moz-text-stroke:calc(.6 * var(--video-page-subtitle-text-stroke-width)) transparent!important;-ms-text-stroke:calc(.6 * var(--video-page-subtitle-text-stroke-width)) transparent!important}html[video-page-subtitle-text-stroke-width] .bpx-player-container:where([data-screen=web],[data-screen=full]) .bpx-player-subtitle-panel-text{-webkit-text-stroke:var(--video-page-subtitle-text-stroke-width) transparent!important;-moz-text-stroke:var(--video-page-subtitle-text-stroke-width) transparent!important;-ms-text-stroke:var(--video-page-subtitle-text-stroke-width) transparent!important}html[video-page-hide-bpx-player-ctrl-prev] .bpx-player-ctrl-prev,html[video-page-hide-bpx-player-ctrl-play] .bpx-player-ctrl-play,html[video-page-hide-bpx-player-ctrl-next] .bpx-player-ctrl-next,html[video-page-hide-bpx-player-ctrl-viewpoint] .bpx-player-ctrl-viewpoint,html[video-page-hide-bpx-player-ctrl-flac] .bpx-player-ctrl-flac,html[video-page-hide-bpx-player-ctrl-quality] .bpx-player-ctrl-quality,html[video-page-hide-bpx-player-ctrl-eplist] .bpx-player-ctrl-eplist,html[video-page-hide-bpx-player-ctrl-playbackrate] .bpx-player-ctrl-playbackrate,html[video-page-hide-bpx-player-ctrl-subtitle] .bpx-player-ctrl-subtitle,html[video-page-hide-bpx-player-ctrl-volume] .bpx-player-ctrl-volume,html[video-page-hide-bpx-player-ctrl-setting] .bpx-player-ctrl-setting,html[video-page-hide-bpx-player-ctrl-pip] .bpx-player-ctrl-pip,html[video-page-hide-bpx-player-ctrl-wide] .bpx-player-ctrl-wide,html[video-page-hide-bpx-player-ctrl-web] .bpx-player-ctrl-web,html[video-page-hide-bpx-player-ctrl-full] .bpx-player-ctrl-full,html[video-page-hide-bpx-player-pbp-pin] .bpx-player-pbp-pin,html[video-page-hide-bpx-player-shadow-progress-area] .bpx-player-shadow-progress-area{display:none!important}html[video-page-hide-bpx-player-shadow-progress-area] .bpx-player-pbp:not(.show){bottom:0!important}html[video-page-show-bpx-player-shadow-progress-area-fullscreen] #bilibili-player [data-screen=full][data-ctrl-hidden=true] .bpx-player-shadow-progress-area{opacity:1!important;visibility:visible!important}html[video-page-show-bpx-player-pbp] .bpx-player-pbp:not(.show){opacity:1!important}");
 	var index_scss_default$6 = _style("html[homepage-hide-banner] #i_cecream .bili-header .bili-header__bar,html[homepage-hide-banner] #app .bili-header .bili-header__bar{position:fixed;background:var(--bg1,white)!important;transition:unset!important;box-shadow:0 2px 4px #80808026!important}html[homepage-hide-banner] #i_cecream .bili-header .bili-header__bar.slide-down,html[homepage-hide-banner] #app .bili-header .bili-header__bar.slide-down{animation:none!important;box-shadow:0 2px 4px #80808026!important}html[homepage-hide-banner] #i_cecream .bili-header .bili-header__bar .left-entry :is(.entry-title,.download-entry,.default-entry,.loc-entry),html[homepage-hide-banner] #app .bili-header .bili-header__bar .left-entry :is(.entry-title,.download-entry,.default-entry,.loc-entry){color:var(--text1,#18191c)!important}html[homepage-hide-banner] #i_cecream .bili-header .bili-header__bar .left-entry .zhuzhan-icon,html[homepage-hide-banner] #app .bili-header .bili-header__bar .left-entry .zhuzhan-icon{color:#00aeec!important}html[homepage-hide-banner] #i_cecream .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-icon,html[homepage-hide-banner] #app .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-icon{color:var(--text1,#18191c)!important}html[homepage-hide-banner] #i_cecream .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-text,html[homepage-hide-banner] #app .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-text{color:var(--text2,#61666d)!important}html[homepage-hide-banner] #i_cecream .bili-header .bili-header__banner,html[homepage-hide-banner] #app .bili-header .bili-header__banner{min-height:unset!important;background:var(--bg1,white)!important;height:64px!important}html[homepage-hide-banner] #i_cecream .bili-header .bili-header__banner>*,html[homepage-hide-banner] #app .bili-header .bili-header__banner>*{display:none!important}html[homepage-hide-recommend-swipe] .recommended-swipe{visibility:hidden!important;pointer-events:none!important;opacity:0!important;width:0!important;height:0!important;position:absolute!important}html[homepage-hide-recommend-swipe] .recommended-container_floor-aside .container>:nth-of-type(n+5){margin-top:0!important}html[homepage-hide-recommend-swipe] .recommended-container_floor-aside .container .feed-card:nth-of-type(n+9),html[homepage-hide-recommend-swipe] .recommended-container_floor-aside .container .feed-card:nth-of-type(n+12){display:initial}html[homepage-hide-recommend-swipe] .recommended-container_floor-aside .container>:nth-of-type(n+13),html[homepage-hide-recommend-swipe] .recommended-container_floor-aside .container .floor-single-card:first-of-type{margin-top:0!important}html[homepage-hide-subarea] .bili-header{margin-bottom:20px!important}html[homepage-hide-subarea] .bili-header .bili-header__channel{display:none!important}html[homepage-hide-subarea] body:has(.bilibili-gate-root) .bili-header{margin-bottom:15px!important}html[homepage-hide-subarea] body:has(.bilibili-gate-root) .bili-header .bili-header__channel{display:none!important}html[homepage-hide-sticky-header] .bili-header .bili-header__bar{background:0 0;transition:none!important;position:absolute!important}html[homepage-hide-sticky-header] .bili-header .bili-header__bar.slide-down{box-shadow:none!important;animation:none!important}html[homepage-hide-sticky-header] .bili-header .bili-header__bar .left-entry :is(.entry-title,.download-entry,.default-entry,.loc-entry,.zhuzhan-icon),html[homepage-hide-sticky-header] .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-icon,html[homepage-hide-sticky-header] .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-text{color:#fff}html[homepage-hide-sticky-header] #i_cecream .header-channel,html[homepage-hide-sticky-header] #app .header-channel,html[homepage-hide-sticky-header] .bilibili-gate-root [data-role=tab-bar-wrapper]{top:0!important}html[homepage-hide-sticky-subarea] #i_cecream .header-channel,html[homepage-hide-sticky-subarea] #app .header-channel{display:none!important}html[homepage-hide-sticky-subarea] #i_cecream .bili-header__bar:not(.slide-down),html[homepage-hide-sticky-subarea] #app .bili-header__bar:not(.slide-down){transition:background-color .2s linear}html[homepage-hide-sticky-subarea] #i_cecream .bili-feed4 .bili-header .slide-down,html[homepage-hide-sticky-subarea] #app .bili-feed4 .bili-header .slide-down{animation:.3s linear forwards headerSlideDown!important}html[homepage-hide-adblock-tips] .adblock-tips,html[homepage-revert-channel-dynamic-icon] .bili-header__channel .channel-icons .icon-bg__dynamic svg,html[homepage-revert-channel-dynamic-icon] .bili-header__channel .channel-icons .icon-bg__dynamic picture{display:none!important}html[homepage-revert-channel-dynamic-icon] .bili-header__channel .channel-icons .icon-bg__dynamic:after{content:\"\";background-image:url(\"data:image/svg+xml,<svg width=\\\"22\\\" height=\\\"23\\\" viewBox=\\\"0 0 22 23\\\" fill=\\\"none\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\" class=\\\"icon-bg--icon\\\" data-v-674f5b07=\\\"\\\"> <path d=\\\"M6.41659 15.625C3.88528 15.625 1.83325 13.7782 1.83325 11.5H10.9999C10.9999 13.7782 8.94789 15.625 6.41659 15.625Z\\\" stroke=\\\"white\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\"></path> <path d=\\\"M15.125 16.0827C15.125 18.614 13.2782 20.666 11 20.666L11 11.4993C13.2782 11.4993 15.125 13.5514 15.125 16.0827Z\\\" stroke=\\\"white\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\"></path> <path d=\\\"M6.875 6.91667C6.875 9.44797 8.72183 11.5 11 11.5L11 2.33333C8.72182 2.33333 6.875 4.38536 6.875 6.91667Z\\\" stroke=\\\"white\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\"></path> <path d=\\\"M15.5833 7.375C13.052 7.375 11 9.22183 11 11.5H20.1667C20.1667 9.22183 18.1146 7.375 15.5833 7.375Z\\\" stroke=\\\"white\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\"></path></svg>\");background-position:50%;background-repeat:no-repeat;background-size:contain;width:25px;height:25px}html[homepage-layout=\"2\"] #i_cecream .recommended-container_floor-aside .container,html[homepage-layout=\"2\"] #app .recommended-container_floor-aside .container{grid-template-columns:repeat(2,1fr)!important}html[homepage-layout=\"3\"] #i_cecream .recommended-container_floor-aside .container,html[homepage-layout=\"3\"] #app .recommended-container_floor-aside .container{grid-template-columns:repeat(3,1fr)!important}html[homepage-layout=\"4\"] #i_cecream .recommended-container_floor-aside .container,html[homepage-layout=\"4\"] #app .recommended-container_floor-aside .container{grid-template-columns:repeat(4,1fr)!important}html[homepage-layout=\"5\"] #i_cecream .recommended-container_floor-aside .container,html[homepage-layout=\"5\"] #app .recommended-container_floor-aside .container{grid-template-columns:repeat(5,1fr)!important}html[homepage-layout=\"6\"] #i_cecream .recommended-container_floor-aside .container,html[homepage-layout=\"6\"] #app .recommended-container_floor-aside .container{grid-template-columns:repeat(6,1fr)!important}html[homepage-layout-padding] .bili-feed4-layout,html[homepage-layout-padding] .bili-feed4 .bili-header .bili-header__channel{padding:0 var(--homepage-layout-padding,initial)!important;width:100%!important}html[homepage-increase-rcmd-list-font-size] main .bili-video-card .bili-video-card__info--tit,html[homepage-increase-rcmd-list-font-size] main .bili-live-card .bili-live-card__info--tit,html[homepage-increase-rcmd-list-font-size] main .single-card.floor-card .title{font-size:16px!important}html[homepage-increase-rcmd-list-font-size] main .bili-video-card .bili-video-card__info--bottom,html[homepage-increase-rcmd-list-font-size] main .floor-card .sub-title.sub-title,html[homepage-increase-rcmd-list-font-size] main .bili-video-card__stats,html[homepage-increase-rcmd-list-font-size] main .bili-video-card__stats .bili-video-card__stats--left,html[homepage-increase-rcmd-list-font-size] main .bili-video-card__stats .bili-video-card__stats--right{font-size:14px!important}html[homepage-move-no-interest] main .bili-video-card__info--no-interest{top:unset!important;bottom:0!important}html[homepage-move-no-interest] main .bili-video-card__info--bottom{padding-right:20px!important}html[homepage-move-no-interest] main .bili-video-card.enable-no-interest,html[homepage-move-no-interest] main .bili-live-card.enable-no-interest,html[homepage-hide-no-interest] main .bili-video-card.enable-no-interest,html[homepage-hide-no-interest] main .bili-live-card.enable-no-interest{--title-padding-right:0}html[homepage-hide-no-interest] main .bili-video-card__info--no-interest,html[homepage-hide-no-interest] main .bili-live-card__info--no-interest{display:none!important}html[homepage-hide-up-info-icon] main .bili-video-card .bili-video-card__info--icon-text{width:17px;height:17px;color:#0000!important;background-color:unset!important;border-radius:unset!important;font-size:0!important;line-height:unset!important;padding:unset!important;-webkit-user-select:none!important;user-select:none!important;margin:0 2px 0 0!important}html[homepage-hide-up-info-icon] main .bili-video-card .bili-video-card__info--icon-text:before{content:\"\";background-image:url(\"data:image/svg+xml,<svg xmlns=\\\"http://www.w3.org/2000/svg\\\" xmlns:xlink=\\\"http://www.w3.org/1999/xlink\\\" viewBox=\\\"0 0 24 24\\\" width=\\\"24\\\" height=\\\"24\\\" fill=\\\"currentColor\\\" class=\\\"bili-video-card__info--owner__up\\\"><!--[--><path d=\\\"M6.15 8.24805C6.5642 8.24805 6.9 8.58383 6.9 8.99805L6.9 12.7741C6.9 13.5881 7.55988 14.248 8.3739 14.248C9.18791 14.248 9.8478 13.5881 9.8478 12.7741L9.8478 8.99805C9.8478 8.58383 10.1836 8.24805 10.5978 8.24805C11.012 8.24805 11.3478 8.58383 11.3478 8.99805L11.3478 12.7741C11.3478 14.41655 10.01635 15.748 8.3739 15.748C6.73146 15.748 5.4 14.41655 5.4 12.7741L5.4 8.99805C5.4 8.58383 5.73578 8.24805 6.15 8.24805z\\\" fill=\\\"rgb(148, 153, 160)\\\"></path><path d=\\\"M12.6522 8.99805C12.6522 8.58383 12.98795 8.24805 13.4022 8.24805L15.725 8.24805C17.31285 8.24805 18.6 9.53522 18.6 11.123C18.6 12.71085 17.31285 13.998 15.725 13.998L14.1522 13.998L14.1522 14.998C14.1522 15.4122 13.8164 15.748 13.4022 15.748C12.98795 15.748 12.6522 15.4122 12.6522 14.998L12.6522 8.99805zM14.1522 12.498L15.725 12.498C16.4844 12.498 17.1 11.8824 17.1 11.123C17.1 10.36365 16.4844 9.74804 15.725 9.74804L14.1522 9.74804L14.1522 12.498z\\\" fill=\\\"rgb(148, 153, 160)\\\"></path><path d=\\\"M12 4.99805C9.48178 4.99805 7.283 5.12616 5.73089 5.25202C4.65221 5.33949 3.81611 6.16352 3.72 7.23254C3.60607 8.4998 3.5 10.171 3.5 11.998C3.5 13.8251 3.60607 15.4963 3.72 16.76355C3.81611 17.83255 4.65221 18.6566 5.73089 18.7441C7.283 18.8699 9.48178 18.998 12 18.998C14.5185 18.998 16.7174 18.8699 18.2696 18.74405C19.3481 18.65655 20.184 17.8328 20.2801 16.76405C20.394 15.4973 20.5 13.82645 20.5 11.998C20.5 10.16965 20.394 8.49877 20.2801 7.23205C20.184 6.1633 19.3481 5.33952 18.2696 5.25205C16.7174 5.12618 14.5185 4.99805 12 4.99805zM5.60965 3.75693C7.19232 3.62859 9.43258 3.49805 12 3.49805C14.5677 3.49805 16.8081 3.62861 18.3908 3.75696C20.1881 3.90272 21.6118 5.29278 21.7741 7.09773C21.8909 8.3969 22 10.11405 22 11.998C22 13.88205 21.8909 15.5992 21.7741 16.8984C21.6118 18.7033 20.1881 20.09335 18.3908 20.23915C16.8081 20.3675 14.5677 20.498 12 20.498C9.43258 20.498 7.19232 20.3675 5.60965 20.2392C3.81206 20.0934 2.38831 18.70295 2.22603 16.8979C2.10918 15.5982 2 13.8808 2 11.998C2 10.1153 2.10918 8.39787 2.22603 7.09823C2.38831 5.29312 3.81206 3.90269 5.60965 3.75693z\\\" fill=\\\"rgb(148, 153, 160)\\\"></path><!--]--></svg>\");background-position:50%;background-repeat:no-repeat;background-size:contain;width:100%;height:100%;display:inline-block}html[homepage-hide-video-info-date] main .bili-video-card__info--date,html[homepage-hide-danmaku-count] main .bili-video-card__stats--item:nth-child(2),html[homepage-hide-bili-watch-later-tip] main .bili-watch-later__tip--lab,html[homepage-hide-inline-player-danmaku] main .bpx-player-row-dm-wrap,html[homepage-hide-inline-player-danmaku] main .bpx-player-cmd-dm-wrap{display:none!important}html[homepage-hide-ad-card] main :is(.feed-card,.bili-video-card,.bili-feed-card):not(.bilibili-gate-video-card):has(.bili-video-card__info--ad,[href*=\"cm.bilibili.com\"],.bili-video-card__info--creative-ad,.vui_icon.bili-video-card__stats--icon,.bili-video-card__info--owner:not([href*=\"space.bilibili.com\"])){display:none!important}html[homepage-hide-ad-card] main :is(.feed-card,.bili-video-card,.bili-feed-card):not(:has(.bili-video-card__wrap,.bili-video-card__skeleton)){display:none!important}html[homepage-hide-ad-card] main .recommended-container_floor-aside .container>:nth-of-type(n+5){margin-top:0!important}html[homepage-hide-ad-card] main .recommended-container_floor-aside .container .feed-card:nth-of-type(n+9){display:initial}html[homepage-hide-ad-card] main .recommended-container_floor-aside .container>:nth-of-type(n+13){margin-top:0!important}html[homepage-hide-ad-card] main .recommended-container_floor-aside .container .feed-card:nth-of-type(n+12){display:initial}html[homepage-hide-ad-card] main .recommended-container_floor-aside .container .floor-single-card:first-of-type{margin-top:0!important}:is(html[homepage-hide-live-card-recommend] main .bili-live-card,html[homepage-hide-live-card-recommend] main .bili-feed-card:has(.bili-live-card),html[homepage-hide-live-card-recommend] main .floor-single-card:has([href^=\"//live.bilibili.com\"],[href^=\"live.bilibili.com\"],[href^=\"https://live.bilibili.com\"])),html[homepage-simple-sub-area-card-recommend] main .floor-single-card .layer{display:none!important}html[homepage-simple-sub-area-card-recommend] main .floor-single-card .floor-card{box-shadow:unset!important;border:none!important}html[homepage-simple-sub-area-card-recommend] main .floor-single-card .floor-card .info-container{padding:0!important}html[homepage-simple-sub-area-card-recommend] main .single-card.floor-card .floor-card-inner,html[homepage-simple-sub-area-card-recommend] main .single-card.floor-card .floor-card-inner:hover{background:0 0!important}html[homepage-hide-sub-area-card-recommend] main .floor-single-card:not(:has(.skeleton,.skeleton-item)){display:none!important}html[homepage-hide-skeleton-animation] main .bili-video-card .loading_animation .bili-video-card__skeleton--light,html[homepage-hide-skeleton-animation] main .bili-video-card .loading_animation .bili-video-card__skeleton--light:after,html[homepage-hide-skeleton-animation] main .bili-video-card .loading_animation .bili-video-card__skeleton--text,html[homepage-hide-skeleton-animation] main .bili-video-card .loading_animation .bili-video-card__skeleton--text:after,html[homepage-hide-skeleton-animation] main .bili-video-card .loading_animation .bili-video-card__skeleton--face,html[homepage-hide-skeleton-animation] main .bili-video-card .loading_animation .bili-video-card__skeleton--face:after,html[homepage-hide-skeleton-animation] main .bili-video-card .loading_animation .bili-video-card__skeleton--cover,html[homepage-hide-skeleton-animation] main .bili-video-card .loading_animation .bili-video-card__skeleton--cover:after,html[homepage-hide-skeleton-animation] main :where(.floor-skeleton,.skeleton) .skeleton-item,html[homepage-hide-skeleton-animation] main :where(.floor-skeleton,.skeleton) .skeleton-item:after{animation:none!important}html[homepage-hide-skeleton-before-anchor] main .bili-video-card:not(.is-rcmd):has(~.load-more-anchor){display:none!important}html[homepage-hide-skeleton] main .load-more-anchor{visibility:hidden}html[homepage-hide-skeleton] main .container>.bili-video-card:not(.is-rcmd){display:none}html[homepage-hide-skeleton] main .container>.floor-single-card:has(.skeleton,.skeleton-item){display:none}html[homepage-increase-rcmd-load-size] main .container>.floor-single-card:has(.skeleton,.skeleton-item,.floor-skeleton){display:none}html[homepage-rcmd-video-preload] main .bili-video-card:not(.is-rcmd):has(~.load-more-anchor){display:none!important}html[homepage-rcmd-video-preload] main .floor-single-card:not(:has(.skeleton,.skeleton-item)){display:none!important}html[homepage-rcmd-video-preload] main .load-more-anchor.preload{opacity:0;position:fixed;top:-100px;left:-100px}html[homepage-hide-desktop-download-tip] .desktop-download-tip,html[homepage-hide-trial-feed-wrap] .trial-feed-wrap,html[homepage-hide-feed-roll-btn] .feed-roll-btn,html[homepage-hide-watchlater-pip-button] .watchlater-pip-button,html[homepage-hide-adcard-button] .adcard,html[homepage-hide-adcard-button] .fixed-card .btn-ad,html[homepage-hide-adcard-button] .palette-button-adcard,html[homepage-hide-adcard-button] .palette-button-wrap .adcard-content,html[homepage-hide-flexible-roll-btn-text] .palette-button-wrap .flexible-roll-btn .btn-text,html[homepage-hide-flexible-roll-btn] .palette-button-wrap .flexible-roll-btn,html[homepage-hide-feedback] .palette-button-wrap .storage-box,html[homepage-hide-top-btn] .palette-button-wrap .top-btn-wrap{display:none!important}");
-	var index_scss_default$5 = _style("html[live-page-sidebar-vm] #sidebar-vm{display:none!important}html[live-page-remove-wallpaper] .room-bg{background-image:unset!important}html[live-page-remove-wallpaper] #player-ctnr{border-radius:12px;box-shadow:0 0 12px #0003}html[live-page-remove-wallpaper] #aside-area-vm{box-shadow:0 0 12px #0003}html[live-page-width] body:not(.pure_room_root,.player-full-win) .live-room-app .app-content .app-body{width:var(--live-page-width,clamp(980px, min((100vh - 136px - 78px - 64px) * 16 / 9 + 320px + 12px + 100px, 100vw - 100px), 3420px))!important}html[live-page-flip-view] .flip-view,html[live-page-room-info-ctnr] #sections-vm .room-info-ctnr,html[live-page-room-feed] #sections-vm .room-feed,html[live-page-announcement-cntr] #sections-vm .room-detail-box,html[live-page-sections-vm] #sections-vm{display:none!important}html[live-page-sections-vm] .room-bg{min-height:99vh!important}html[live-page-header-search-btn] #nav-searchform .search-bar input{margin-right:0!important}html[live-page-header-search-btn] #nav-searchform .search-bar{padding:0 3px!important}html[live-page-header-search-btn] #nav-searchform .search-bar .nav-search-clean{right:0!important}html[live-page-header-search-btn] #nav-searchform .search-btn{display:none!important}html[live-page-nav-search-rcmd] #nav-searchform input::placeholder{visibility:hidden;opacity:0!important}html[live-page-nav-search-history] #nav-searchform .history{display:none!important}html[live-page-nav-search-trending] .search-pannel{padding:13px 0 4px!important}html[live-page-nav-search-trending] .search-pannel .trending{display:none!important}html[live-page-nav-search-trending] .search-pannel .histories-wrap{max-height:unset!important}html[live-page-nav-search-trending] .search-pannel .history-fold-wrap,html[live-page-header-search-block] #nav-searchform,html[live-page-header-entry-logo] #main-ctnr a.entry_logo[href=\"//live.bilibili.com\"]{display:none!important}html[live-page-header-entry-logo] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-entry-logo] .pre-hold-nav-logo,html[live-page-header-entry-title] #main-ctnr a.entry-title[href=\"//www.bilibili.com\"]{display:none!important}html[live-page-header-entry-title] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-entry-title] #prehold-nav-vm .nav-item:has(a[href=\"//www.bilibili.com\"]){display:none!important}html[live-page-header-live] #main-ctnr .dp-table-cell a[name=live]{display:none!important}html[live-page-header-live] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-live] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com\"]){display:none!important}html[live-page-header-net-game] #main-ctnr .dp-table-cell a[name=网游]{display:none!important}html[live-page-header-net-game] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-net-game] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=2&areaId=0\"]){display:none!important}html[live-page-header-mobile-game] #main-ctnr .dp-table-cell a[name=手游]{display:none!important}html[live-page-header-mobile-game] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-mobile-game] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=3&areaId=0\"]){display:none!important}html[live-page-header-standalone-game] #main-ctnr .dp-table-cell a[name=单机游戏]{display:none!important}html[live-page-header-standalone-game] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-game] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=6&areaId=0\"]){display:none!important}html[live-page-header-standalone-vtuber] #main-ctnr .dp-table-cell a[name=虚拟主播]{display:none!important}html[live-page-header-standalone-vtuber] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-vtuber] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=9&areaId=0\"]){display:none!important}html[live-page-header-standalone-entertainment] #main-ctnr .dp-table-cell a[name=娱乐]{display:none!important}html[live-page-header-standalone-entertainment] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-entertainment] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=1&areaId=0\"]){display:none!important}html[live-page-header-standalone-radio] #main-ctnr .dp-table-cell a[name=电台]{display:none!important}html[live-page-header-standalone-radio] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-radio] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=5&areaId=0\"]){display:none!important}html[live-page-header-standalone-match] #main-ctnr .dp-table-cell a[name=赛事]{display:none!important}html[live-page-header-standalone-match] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-match] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=13&areaId=0\"]){display:none!important}html[live-page-header-standalone-chatroom] #main-ctnr .dp-table-cell a[name=聊天室]{display:none!important}html[live-page-header-standalone-chatroom] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-chatroom] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=14&areaId=0\"]){display:none!important}html[live-page-header-standalone-living] #main-ctnr .dp-table-cell a[name=生活]{display:none!important}html[live-page-header-standalone-living] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-living] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=10&areaId=0\"]){display:none!important}html[live-page-header-standalone-knowledge] #main-ctnr .dp-table-cell a[name=知识]{display:none!important}html[live-page-header-standalone-knowledge] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-knowledge] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=11&areaId=0\"]){display:none!important}html[live-page-header-standalone-helpmeplay] #main-ctnr .dp-table-cell a[name=帮我玩]{display:none!important}html[live-page-header-standalone-helpmeplay] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-helpmeplay] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=301&areaId=0\"],a[href^=\"//live.bilibili.com/p/html/play-together-area/\"]){display:none!important}html[live-page-header-standalone-interact] #main-ctnr .dp-table-cell a[name=互动玩法]{display:none!important}html[live-page-header-standalone-interact] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-interact] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=15&areaId=0\"]){display:none!important}html[live-page-header-standalone-shopping] #main-ctnr .dp-table-cell a[name=购物]{display:none!important}html[live-page-header-standalone-shopping] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-shopping] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=300&areaId=0\"]){display:none!important}html[live-page-header-showmore-link] #main-ctnr .showmore-link{display:none!important}html[live-page-header-showmore-link] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-showmore-link] #prehold-nav-vm .nav-item:last-child,html[live-page-header-avatar] #right-part .user-panel{display:none!important}html[live-page-header-follow-panel] #right-part .shortcut-item:has(.follow-panel-set){display:none}html[live-page-header-recharge] #right-part .shortcut-item:has(.item-icon-recharge){display:none}html[live-page-header-bili-download-panel] #right-part .shortcut-item:has(.bili-download-panel,.item-icon-electronDownload){display:none}html[live-page-header-go-live] #right-part .shortcut-item:has(.download-panel-ctnr,.startlive-btn){visibility:hidden}html[live-page-head-info-avatar-pendant] #head-info-vm :is(.blive-avatar-pendant,.blive-avatar-icons),html[live-page-head-info-vm-upper-row-follow-ctnr] #head-info-vm .left-anchor-section .follow-ctnr,html[live-page-head-info-vm-upper-row-hotrank] #head-info-vm #LiveRoomHotrankEntries,html[live-page-head-info-vm-upper-row-activity] #head-info-vm .activity-entry,html[live-page-head-info-vm] #head-info-vm{display:none!important}html[live-page-head-info-vm] #player-ctnr{border-top-left-radius:12px;border-top-right-radius:12px;overflow:hidden}html[live-page-head-web-player-icon-feedback] .web-player-icon-feedback,html[live-page-head-web-player-shop-popover-vm] #shop-popover-vm,html[live-page-head-web-player-awesome-pk-vm] #pk-vm,html[live-page-head-web-player-awesome-pk-vm] #awesome-pk-vm,html[live-page-head-web-player-awesome-pk-vm] #universal-pk-vm,html[live-page-web-player-watermark] .web-player-icon-roomStatus,html[live-page-web-player-watermark] .blur-edges-ctnr{display:none!important}html[live-page-web-player-watermark] .web-player-module-area-mask{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}html[live-page-hide-web-player-background] #fullscreen-container{--first-frame-bg:unset!important}html[live-page-head-web-player-announcement-wrapper] #live-player .announcement-wrapper,html[live-page-head-web-player-game-id] #game-id,html[live-page-head-web-player-research-container] .research-container,html[live-page-head-web-player-live-lottery] #anchor-guest-box-id{display:none!important}html[live-page-head-web-player-live-lottery] .m-nobar__popup-container:has(iframe[src^=\"https://live.bilibili.com/p/html/live-lottery/lottery-user.html\"]){display:none!important}html[live-page-combo-danmaku] .danmaku-item-container>div.combo,html[live-page-combo-danmaku] .bilibili-combo-danmaku-container,html[live-page-clean-all-danmaku-small-emoji] .danmaku-item-container .bili-dm-emoji,html[live-page-clean-all-danmaku-small-emoji] .danmaku-item-container .bili-danmaku-x-dm-emoji,html[live-page-clean-all-danmaku-big-emoji] .danmaku-item-container .bili-danmaku-x-dm img[style*=width\\:45px],html[live-page-gift-control-vm] #gift-control-vm{display:none!important}html[live-page-gift-control-vm] body:not(.pure_room_root,.player-full-win) .fullscreen-container-paddingbox{border-bottom-right-radius:12px;border-bottom-left-radius:12px;overflow:hidden;height:0!important}html[live-page-gift-control-vm] body:not(.pure_room_root,.player-full-win) .fullscreen-container-paddingbox #fullscreen-container{grid-template-rows:minmax(0,1fr) auto!important}html[live-page-gift-control-vm] body:not(.pure_room_root,.player-full-win) .fullscreen-container-paddingbox #fullscreen-container .gift-control-section{display:none!important}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) #gift-control-vm:not(:has(.anchor-lottery-entry,.gift-lottery)){display:none!important}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) #gift-control-vm:has(.anchor-lottery-entry,.gift-lottery){height:0!important}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) #gift-control-vm:has(.anchor-lottery-entry,.gift-lottery) .gift-panel{display:none}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) #gift-control-vm:has(.anchor-lottery-entry,.gift-lottery) .out-part{position:fixed;top:calc(100vh - 120px);left:0;padding-right:10px!important}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) .fullscreen-container-paddingbox{border-bottom-right-radius:12px;border-bottom-left-radius:12px;overflow:hidden;height:0!important}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) .fullscreen-container-paddingbox #fullscreen-container{grid-template-rows:minmax(0,1fr) auto!important}html[live-page-fullscreen-danmaku-vm] #fullscreen-danmaku-vm{display:none!important}html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item{padding:calc(var(--live-page-danmaku-font-size,15px) / 5) 5px!important;font-size:var(--live-page-danmaku-font-size,15px)!important}html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item .danmaku-item-right{line-height:1.3!important}html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item.chat-colorful-bubble,html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item.has-bubble{margin:2px 0!important}html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item .user-name,html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item .reply-uname,html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item .reply-uname .common-nickname-wrapper{font-size:var(--live-page-danmaku-font-size,15px)!important}html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item .card-item-middle-bottom .text,html[live-page-danmaku-font-size] #pay-note-panel-vm .card-item-middle-bottom .text{font-size:calc(var(--live-page-danmaku-font-size,15px) - 1px)!important}html[live-page-rank-list-vm-fold] #rank-list-vm{max-height:32px;transition:max-height .3s linear;overflow:hidden}html[live-page-rank-list-vm-fold] .player-full-win #rank-list-vm{border-radius:0}html[live-page-rank-list-vm-fold] #rank-list-vm:hover{max-height:178px;overflow:unset}html[live-page-rank-list-vm-fold] #rank-list-vm .tab-list .tab-item{font-size:14px!important}html[live-page-rank-list-vm-fold] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-rank-list-vm-fold] .chat-history-panel{flex:1}html[live-page-rank-list-vm-fold] .chat-history-panel .danmaku-at-prompt{bottom:160px}html[live-page-rank-list-vm] #rank-list-vm{display:none!important}html[live-page-rank-list-vm] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-rank-list-vm] .chat-history-panel{flex:1}html[live-page-rank-list-vm] .chat-history-panel .danmaku-at-prompt{bottom:160px}html[live-page-convention-msg] .convention-msg.border-box,html[live-page-convention-msg] .new-video-pk-item-dm{display:none!important}html[live-page-welcome-msg] .welcome-section-bottom{display:none}html[live-page-rank-icon] .chat-item .rank-icon,html[live-page-title-label] .chat-item .title-label,html[live-page-wealth-medal-ctnr] .chat-item .wealth-medal-ctnr,html[live-page-group-medal-ctnr] .chat-item .group-medal-ctnr,html[live-page-fans-medal-item-ctnr] .chat-item .fans-medal-item-ctnr{display:none!important}html[live-page-chat-item-background-color] .chat-item{background-color:unset!important;border-image-source:unset!important}html[live-page-chat-item-background-color] .chat-item>div[style*=\"height: 62px\"]:has(+.danmaku-item-left){display:none!important}html[live-page-chat-item-background-color] .chat-item .danmaku-item-left br,html[live-page-gift-item] .chat-item.gift-item,html[live-page-gift-item] .chat-item.common-danmuku-msg,html[live-page-bulge-danmaku] .chat-item.bulge-emoticon,html[live-page-bulge-danmaku] .chat-item.chat-emoticon,html[live-page-chat-item-top3-notice] .chat-item.top3-notice,html[live-page-brush-prompt] #brush-prompt{display:none!important}html[live-page-brush-prompt] .chat-history-panel .chat-history-list.with-brush-prompt{height:100%!important}html[live-page-combo-card] .gift-wish-card-root{display:none!important}html[live-page-combo-card] #combo-card:has(.countDownBtn){display:none!important}html[live-page-combo-card] .chat-history-panel{padding-bottom:0!important}html[live-page-combo-card] #combo-card:has(.combo-tips){display:none!important}html[live-page-combo-card] .play-together-service-card-container,html[live-page-combo-card] .vote-card,html[live-page-control-panel-icon-row] .control-panel-icon-row{display:none!important}html[live-page-control-panel-icon-row] #chat-control-panel-vm{min-height:unset!important}html[live-page-control-panel-icon-row] #chat-control-panel-vm .chat-input-ctnr{margin-top:0!important}html[live-page-control-panel-icon-row] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-control-panel-icon-row] .chat-history-panel{flex:1}html[live-page-control-panel-icon-row] .chat-history-panel .danmaku-at-prompt{bottom:100px}html[live-page-chat-input-ctnr-medal-section] .medal-section{display:none!important}html[live-page-chat-input-ctnr-medal-section] .chat-input-area textarea{padding:9px 0 0!important}html[live-page-chat-input-ctnr-send-btn] .bottom-actions,html[live-page-chat-input-ctnr-send-btn] .send-btn-wrapper{display:none!important}html[live-page-chat-input-ctnr-send-btn] #chat-control-panel-vm{height:fit-content!important;min-height:unset!important}html[live-page-chat-input-ctnr-send-btn] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-chat-input-ctnr-send-btn] .chat-history-panel{flex:1}html[live-page-chat-input-ctnr-send-btn] .chat-history-panel .danmaku-at-prompt{bottom:120px}html[live-page-chat-input-ctnr] .chat-input-ctnr,html[live-page-chat-input-ctnr] .bottom-actions{display:none!important}html[live-page-chat-input-ctnr] #chat-control-panel-vm{height:fit-content!important;min-height:unset!important}html[live-page-chat-input-ctnr] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-chat-input-ctnr] .chat-history-panel{flex:1}html[live-page-chat-input-ctnr] .chat-history-panel .danmaku-at-prompt{bottom:70px}html[live-page-chat-control-panel] #chat-control-panel-vm{min-height:unset!important;display:none!important}html[live-page-chat-control-panel] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-chat-control-panel] .chat-history-panel{border-bottom-right-radius:12px;border-bottom-left-radius:12px;flex:1}html[live-page-chat-control-panel] .chat-history-panel .danmaku-at-prompt{bottom:20px!important}");
+	var index_scss_default$5 = _style("html[live-page-sidebar-vm] #sidebar-vm{display:none!important}html[live-page-default-skin] #control-panel-ctnr-box .icon-left-part svg:hover path{fill:#00aeec}html[live-page-default-skin] #control-panel-ctnr-box .icon-left-part svg path{fill:#c9ccd0}html[live-page-default-skin][lab-style=dark] #control-panel-ctnr-box .icon-left-part svg:hover path{fill:#00aeec}html[live-page-default-skin][lab-style=dark] #control-panel-ctnr-box .icon-left-part svg path{fill:#46494d}html[live-page-remove-wallpaper] .room-bg{background-image:unset!important}html[live-page-remove-wallpaper] #player-ctnr{border-radius:12px;box-shadow:0 0 12px #0003}html[live-page-remove-wallpaper] #aside-area-vm{box-shadow:0 0 12px #0003}html[live-page-width] body:not(.pure_room_root,.player-full-win) .live-room-app .app-content .app-body{width:var(--live-page-width,clamp(980px, min((100vh - 136px - 78px - 64px) * 16 / 9 + 320px + 12px + 100px, 100vw - 100px), 3420px))!important}html[live-page-flip-view] .flip-view,html[live-page-room-info-ctnr] #sections-vm .room-info-ctnr,html[live-page-room-feed] #sections-vm .room-feed,html[live-page-announcement-cntr] #sections-vm .room-detail-box,html[live-page-sections-vm] #sections-vm{display:none!important}html[live-page-sections-vm] .room-bg{min-height:99vh!important}html[live-page-header-search-btn] #nav-searchform .search-bar input{margin-right:0!important}html[live-page-header-search-btn] #nav-searchform .search-bar{padding:0 3px!important}html[live-page-header-search-btn] #nav-searchform .search-bar .nav-search-clean{right:0!important}html[live-page-header-search-btn] #nav-searchform .search-btn{display:none!important}html[live-page-nav-search-rcmd] #nav-searchform input::placeholder{visibility:hidden;opacity:0!important}html[live-page-nav-search-history] #nav-searchform .history{display:none!important}html[live-page-nav-search-trending] .search-pannel{padding:13px 0 4px!important}html[live-page-nav-search-trending] .search-pannel .trending{display:none!important}html[live-page-nav-search-trending] .search-pannel .histories-wrap{max-height:unset!important}html[live-page-nav-search-trending] .search-pannel .history-fold-wrap,html[live-page-header-search-block] #nav-searchform,html[live-page-header-entry-logo] #main-ctnr a.entry_logo[href=\"//live.bilibili.com\"]{display:none!important}html[live-page-header-entry-logo] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-entry-logo] .pre-hold-nav-logo,html[live-page-header-entry-title] #main-ctnr a.entry-title[href=\"//www.bilibili.com\"]{display:none!important}html[live-page-header-entry-title] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-entry-title] #prehold-nav-vm .nav-item:has(a[href=\"//www.bilibili.com\"]){display:none!important}html[live-page-header-live] #main-ctnr .dp-table-cell a[name=live]{display:none!important}html[live-page-header-live] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-live] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com\"]){display:none!important}html[live-page-header-net-game] #main-ctnr .dp-table-cell a[name=网游]{display:none!important}html[live-page-header-net-game] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-net-game] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=2&areaId=0\"]){display:none!important}html[live-page-header-mobile-game] #main-ctnr .dp-table-cell a[name=手游]{display:none!important}html[live-page-header-mobile-game] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-mobile-game] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=3&areaId=0\"]){display:none!important}html[live-page-header-standalone-game] #main-ctnr .dp-table-cell a[name=单机游戏]{display:none!important}html[live-page-header-standalone-game] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-game] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=6&areaId=0\"]){display:none!important}html[live-page-header-standalone-vtuber] #main-ctnr .dp-table-cell a[name=虚拟主播]{display:none!important}html[live-page-header-standalone-vtuber] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-vtuber] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=9&areaId=0\"]){display:none!important}html[live-page-header-standalone-entertainment] #main-ctnr .dp-table-cell a[name=娱乐]{display:none!important}html[live-page-header-standalone-entertainment] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-entertainment] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=1&areaId=0\"]){display:none!important}html[live-page-header-standalone-radio] #main-ctnr .dp-table-cell a[name=电台]{display:none!important}html[live-page-header-standalone-radio] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-radio] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=5&areaId=0\"]){display:none!important}html[live-page-header-standalone-match] #main-ctnr .dp-table-cell a[name=赛事]{display:none!important}html[live-page-header-standalone-match] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-match] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=13&areaId=0\"]){display:none!important}html[live-page-header-standalone-chatroom] #main-ctnr .dp-table-cell a[name=聊天室]{display:none!important}html[live-page-header-standalone-chatroom] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-chatroom] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=14&areaId=0\"]){display:none!important}html[live-page-header-standalone-living] #main-ctnr .dp-table-cell a[name=生活]{display:none!important}html[live-page-header-standalone-living] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-living] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=10&areaId=0\"]){display:none!important}html[live-page-header-standalone-knowledge] #main-ctnr .dp-table-cell a[name=知识]{display:none!important}html[live-page-header-standalone-knowledge] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-knowledge] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=11&areaId=0\"]){display:none!important}html[live-page-header-standalone-helpmeplay] #main-ctnr .dp-table-cell a[name=帮我玩]{display:none!important}html[live-page-header-standalone-helpmeplay] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-helpmeplay] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=301&areaId=0\"],a[href^=\"//live.bilibili.com/p/html/play-together-area/\"]){display:none!important}html[live-page-header-standalone-interact] #main-ctnr .dp-table-cell a[name=互动玩法]{display:none!important}html[live-page-header-standalone-interact] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-interact] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=15&areaId=0\"]){display:none!important}html[live-page-header-standalone-shopping] #main-ctnr .dp-table-cell a[name=购物]{display:none!important}html[live-page-header-standalone-shopping] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-shopping] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=300&areaId=0\"]){display:none!important}html[live-page-header-showmore-link] #main-ctnr .showmore-link{display:none!important}html[live-page-header-showmore-link] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-showmore-link] #prehold-nav-vm .nav-item:last-child,html[live-page-header-avatar] #right-part .user-panel{display:none!important}html[live-page-header-follow-panel] #right-part .shortcut-item:has(.follow-panel-set){display:none}html[live-page-header-recharge] #right-part .shortcut-item:has(.item-icon-recharge){display:none}html[live-page-header-bili-download-panel] #right-part .shortcut-item:has(.bili-download-panel,.item-icon-electronDownload){display:none}html[live-page-header-go-live] #right-part .shortcut-item:has(.download-panel-ctnr,.startlive-btn){visibility:hidden}html[live-page-head-info-avatar-pendant] #head-info-vm :is(.blive-avatar-pendant,.blive-avatar-icons),html[live-page-head-info-vm-upper-row-follow-ctnr] #head-info-vm .left-anchor-section .follow-ctnr,html[live-page-head-info-vm-upper-row-hotrank] #head-info-vm #LiveRoomHotrankEntries,html[live-page-head-info-vm-upper-row-activity] #head-info-vm .activity-entry,html[live-page-head-info-vm] #head-info-vm{display:none!important}html[live-page-head-info-vm] #player-ctnr{border-top-left-radius:12px;border-top-right-radius:12px;overflow:hidden}html[live-page-head-web-player-icon-feedback] .web-player-icon-feedback,html[live-page-head-web-player-shop-popover-vm] #shop-popover-vm,html[live-page-web-player-interactive-sticker] #interactive-sticker-vm,html[live-page-head-web-player-awesome-pk-vm] #pk-vm,html[live-page-head-web-player-awesome-pk-vm] #awesome-pk-vm,html[live-page-head-web-player-awesome-pk-vm] #universal-pk-vm,html[live-page-web-player-watermark] .web-player-icon-roomStatus,html[live-page-web-player-watermark] .blur-edges-ctnr{display:none!important}html[live-page-web-player-watermark] .web-player-module-area-mask{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}html[live-page-hide-web-player-background] #fullscreen-container{--first-frame-bg:unset!important}html[live-page-hide-web-player-background] .pure_room_root #live-player{background-color:#000!important}html[live-page-head-web-player-announcement-wrapper] #live-player .announcement-wrapper,html[live-page-head-web-player-game-id] #game-id,html[live-page-head-web-player-research-container] .research-container,html[live-page-head-web-player-live-lottery] #anchor-guest-box-id{display:none!important}html[live-page-head-web-player-live-lottery] .m-nobar__popup-container:has(iframe[src^=\"https://live.bilibili.com/p/html/live-lottery/lottery-user.html\"]){display:none!important}html[live-page-combo-danmaku] .danmaku-item-container>div.combo,html[live-page-combo-danmaku] .bilibili-combo-danmaku-container,html[live-page-clean-all-danmaku-small-emoji] .danmaku-item-container .bili-dm-emoji,html[live-page-clean-all-danmaku-small-emoji] .danmaku-item-container .bili-danmaku-x-dm-emoji,html[live-page-clean-all-danmaku-big-emoji] .danmaku-item-container .bili-danmaku-x-dm img[style*=width\\:45px],html[live-page-gift-control-vm] #gift-control-vm{display:none!important}html[live-page-gift-control-vm] body:not(.pure_room_root,.player-full-win) .fullscreen-container-paddingbox{border-bottom-right-radius:12px;border-bottom-left-radius:12px;overflow:hidden;height:0!important}html[live-page-gift-control-vm] body:not(.pure_room_root,.player-full-win) .fullscreen-container-paddingbox #fullscreen-container{grid-template-rows:minmax(0,1fr) auto!important}html[live-page-gift-control-vm] body:not(.pure_room_root,.player-full-win) .fullscreen-container-paddingbox #fullscreen-container .gift-control-section{display:none!important}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) #gift-control-vm:not(:has(.anchor-lottery-entry,.gift-lottery)){display:none!important}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) #gift-control-vm:has(.anchor-lottery-entry,.gift-lottery){height:0!important}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) #gift-control-vm:has(.anchor-lottery-entry,.gift-lottery) .gift-panel{display:none}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) #gift-control-vm:has(.anchor-lottery-entry,.gift-lottery) .out-part{position:fixed;top:calc(100vh - 120px);left:0;padding-right:10px!important}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) .fullscreen-container-paddingbox{border-bottom-right-radius:12px;border-bottom-left-radius:12px;overflow:hidden;height:0!important}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) .fullscreen-container-paddingbox #fullscreen-container{grid-template-rows:minmax(0,1fr) auto!important}html[live-page-fullscreen-danmaku-vm] #fullscreen-danmaku-vm{display:none!important}html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item{padding:calc(var(--live-page-danmaku-font-size,15px) / 5) 5px!important;font-size:var(--live-page-danmaku-font-size,15px)!important}html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item .danmaku-item-right{line-height:1.3!important}html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item.chat-colorful-bubble,html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item.has-bubble{margin:2px 0!important}html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item .user-name,html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item .reply-uname,html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item .reply-uname .common-nickname-wrapper{font-size:var(--live-page-danmaku-font-size,15px)!important}html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item .card-item-middle-bottom .text,html[live-page-danmaku-font-size] #pay-note-panel-vm .card-item-middle-bottom .text{font-size:calc(var(--live-page-danmaku-font-size,15px) - 1px)!important}html[live-page-rank-list-vm-fold] #rank-list-vm{max-height:32px;transition:max-height .3s linear;overflow:hidden}html[live-page-rank-list-vm-fold] .player-full-win #rank-list-vm{border-radius:0}html[live-page-rank-list-vm-fold] #rank-list-vm:hover{max-height:178px;overflow:unset}html[live-page-rank-list-vm-fold] #rank-list-vm .tab-list .tab-item{font-size:14px!important}html[live-page-rank-list-vm-fold] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-rank-list-vm-fold] .chat-history-panel{flex:1}html[live-page-rank-list-vm-fold] .chat-history-panel .danmaku-at-prompt{bottom:160px}html[live-page-rank-list-vm] #rank-list-vm{display:none!important}html[live-page-rank-list-vm] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-rank-list-vm] .chat-history-panel{flex:1}html[live-page-rank-list-vm] .chat-history-panel .danmaku-at-prompt{bottom:160px}html[live-page-convention-msg] .convention-msg.border-box,html[live-page-convention-msg] .new-video-pk-item-dm{display:none!important}html[live-page-welcome-msg] .welcome-section-bottom{display:none}html[live-page-rank-icon] .chat-item .rank-icon,html[live-page-title-label] .chat-item .title-label,html[live-page-wealth-medal-ctnr] .chat-item .wealth-medal-ctnr,html[live-page-group-medal-ctnr] .chat-item .group-medal-ctnr,html[live-page-fans-medal-item-ctnr] .chat-item .fans-medal-item-ctnr{display:none!important}html[live-page-chat-item-background-color] .chat-item{background-color:unset!important;border-image-source:unset!important}html[live-page-chat-item-background-color] .chat-item>div[style*=\"height: 62px\"]:has(+.danmaku-item-left){display:none!important}html[live-page-chat-item-background-color] .chat-item .danmaku-item-left br,html[live-page-gift-item] .chat-item.gift-item,html[live-page-gift-item] .chat-item.common-danmuku-msg,html[live-page-bulge-danmaku] .chat-item.bulge-emoticon,html[live-page-bulge-danmaku] .chat-item.chat-emoticon,html[live-page-chat-item-top3-notice] .chat-item.top3-notice,html[live-page-brush-prompt] #brush-prompt{display:none!important}html[live-page-brush-prompt] .chat-history-panel .chat-history-list.with-brush-prompt{height:100%!important}html[live-page-combo-card] .gift-wish-card-root{display:none!important}html[live-page-combo-card] #combo-card:has(.countDownBtn){display:none!important}html[live-page-combo-card] .chat-history-panel{padding-bottom:0!important}html[live-page-combo-card] #combo-card:has(.combo-tips){display:none!important}html[live-page-combo-card] .play-together-service-card-container,html[live-page-combo-card] .vote-card,html[live-page-control-panel-icon-row] .control-panel-icon-row{display:none!important}html[live-page-control-panel-icon-row] #chat-control-panel-vm{min-height:unset!important}html[live-page-control-panel-icon-row] #chat-control-panel-vm .chat-input-ctnr{margin-top:0!important}html[live-page-control-panel-icon-row] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-control-panel-icon-row] .chat-history-panel{flex:1}html[live-page-control-panel-icon-row] .chat-history-panel .danmaku-at-prompt{bottom:100px}html[live-page-chat-input-ctnr-medal-section] .medal-section{display:none!important}html[live-page-chat-input-ctnr-medal-section] .chat-input-area textarea{padding:9px 0 0!important}html[live-page-chat-input-ctnr-send-btn] .bottom-actions,html[live-page-chat-input-ctnr-send-btn] .send-btn-wrapper{display:none!important}html[live-page-chat-input-ctnr-send-btn] #chat-control-panel-vm{height:fit-content!important;min-height:unset!important}html[live-page-chat-input-ctnr-send-btn] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-chat-input-ctnr-send-btn] .chat-history-panel{flex:1}html[live-page-chat-input-ctnr-send-btn] .chat-history-panel .danmaku-at-prompt{bottom:120px}html[live-page-chat-input-ctnr] .chat-input-ctnr,html[live-page-chat-input-ctnr] .bottom-actions{display:none!important}html[live-page-chat-input-ctnr] #chat-control-panel-vm{height:fit-content!important;min-height:unset!important}html[live-page-chat-input-ctnr] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-chat-input-ctnr] .chat-history-panel{flex:1}html[live-page-chat-input-ctnr] .chat-history-panel .danmaku-at-prompt{bottom:70px}html[live-page-chat-control-panel] #chat-control-panel-vm{min-height:unset!important;display:none!important}html[live-page-chat-control-panel] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-chat-control-panel] .chat-history-panel{border-bottom-right-radius:12px;border-bottom-left-radius:12px;flex:1}html[live-page-chat-control-panel] .chat-history-panel .danmaku-at-prompt{bottom:20px!important}");
 	var index_scss_default$4 = _style("html[homepage-hide-banner] #biliMainHeader{min-height:unset!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__bar{position:fixed;background:var(--bg1,white)!important;transition:unset!important;box-shadow:0 2px 4px #80808026!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__bar.slide-down{animation:none!important;box-shadow:0 2px 4px #80808026!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__bar .left-entry :is(.entry-title,.download-entry,.default-entry,.loc-entry){color:var(--text1,#18191c)!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__bar .left-entry .zhuzhan-icon{color:#00aeec!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-icon{color:var(--text1,#18191c)!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-text{color:var(--text2,#61666d)!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__banner{min-height:unset!important;background:var(--bg1,white)!important;height:64px!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__banner>*{display:none!important}html[homepage-hide-sticky-header] .bili-header .bili-header__bar{background:0 0;transition:none!important;position:absolute!important}html[homepage-hide-sticky-header] .bili-header .bili-header__bar.slide-down{box-shadow:none!important;animation:none!important}html[homepage-hide-sticky-header] .bili-header .bili-header__bar .left-entry :is(.entry-title,.download-entry,.default-entry,.loc-entry,.zhuzhan-icon),html[homepage-hide-sticky-header] .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-icon,html[homepage-hide-sticky-header] .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-text{color:#fff}html[popular-hide-tips] .popular-list .popular-tips,html[popular-hide-tips] .rank-container .rank-tips,html[popular-hide-tips] .history-list .history-tips{display:none!important}html[popular-hide-tips] .rank-container .rank-tab-wrap{margin-bottom:0!important;padding:10px 0!important}html[popular-hide-danmaku-count] .popular-list .video-stat .like-text,html[popular-hide-danmaku-count] .weekly-list .video-stat .like-text,html[popular-hide-danmaku-count] .history-list .video-stat .like-text,html[popular-hide-danmaku-count] .rank-list .rank-item .detail-state .data-box:nth-child(2){display:none!important}html[popular-hide-danmaku-count] .rank-list .rank-item .detail-state .data-box:first-child{margin:0!important}html[popular-hide-danmaku-count] .video-card .video-stat .play-text{margin-right:0!important}html[popular-layout=\"2\"] .cm-module{display:none!important}html[popular-layout=\"2\"] .video-list,html[popular-layout=\"2\"] .popular-list .card-list,html[popular-layout=\"2\"] .history-list .card-list{grid-template-columns:auto auto;display:grid!important}html[popular-layout=\"2\"] .popular-list .card-list .video-card,html[popular-layout=\"2\"] .video-list .video-card,html[popular-layout=\"2\"] .history-list .card-list .video-card{width:unset!important}html[popular-layout=\"3\"] .cm-module{display:none!important}@media (width>=1300px) and (width<=1399.9px){html[popular-layout=\"3\"] .popular-container{max-width:1180px!important}}@media (width<=1139.9px){html[popular-layout=\"3\"] .popular-container{max-width:1020px!important}}html[popular-layout=\"3\"] .rank-container .rank-tab-wrap{margin-bottom:0!important;padding:10px 0!important}html[popular-layout=\"3\"] .nav-tabs{height:70px!important}html[popular-layout=\"3\"] .popular-list{padding:10px 0 0!important}html[popular-layout=\"3\"] .video-list{margin-top:15px!important}html[popular-layout=\"3\"] .popular-list .popular-tips,html[popular-layout=\"3\"] .rank-container .rank-tips,html[popular-layout=\"3\"] .history-list .history-tips,html[popular-layout=\"3\"] .popular-list .popular-tips,html[popular-layout=\"3\"] .weekly-list .weekly-hint,html[popular-layout=\"3\"] .history-list .history-hint{display:none!important}html[popular-layout=\"3\"] .card-list,html[popular-layout=\"3\"] .video-list{grid-gap:20px!important;grid-column:span 3!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;width:100%!important;display:grid!important}html[popular-layout=\"3\"] .card-list .video-card,html[popular-layout=\"3\"] .video-list .video-card{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"3\"] .card-list .video-card__content,html[popular-layout=\"3\"] .video-list .video-card__content{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;aspect-ratio:16/9!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"3\"] .card-list .video-card__info,html[popular-layout=\"3\"] .video-list .video-card__info{font-size:14px;margin-top:8px!important;padding:0!important}html[popular-layout=\"3\"] .card-list .video-card__info>div,html[popular-layout=\"3\"] .video-list .video-card__info>div{justify-content:space-between!important;display:flex!important}html[popular-layout=\"3\"] .card-list .video-card__info .rcmd-tag,html[popular-layout=\"3\"] .video-list .video-card__info .rcmd-tag{display:none!important}html[popular-layout=\"3\"] .card-list .video-card__info .video-name,html[popular-layout=\"3\"] .video-list .video-card__info .video-name{height:44px!important;margin-bottom:8px!important;font-size:15px!important;font-weight:400!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"3\"] .card-list .video-card__info .up-name,html[popular-layout=\"3\"] .video-list .video-card__info .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"3\"] .card-list .video-card__info .video-stat .play-text,html[popular-layout=\"3\"] .card-list .video-card__info .video-stat .like-text,html[popular-layout=\"3\"] .video-list .video-card__info .video-stat .play-text,html[popular-layout=\"3\"] .video-list .video-card__info .video-stat .like-text{text-wrap:nowrap!important}html[popular-layout=\"3\"] .rank-list{grid-gap:20px!important;grid-column:span 3!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;width:100%!important;display:grid!important}html[popular-layout=\"3\"] .rank-list .rank-item{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"3\"] .rank-list .rank-item .content{display:unset!important;padding:unset!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .more-data{display:none!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .img{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .img .num{zoom:1.2;font-size:18px}html[popular-layout=\"3\"] .rank-list .rank-item .content .info{font-size:14px;margin-top:8px!important;margin-left:unset!important;height:unset!important;padding:0!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .info .title{height:44px!important;font-size:15px!important;font-weight:500!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .info .detail{justify-content:space-between!important;align-items:center!important;margin-top:8px!important;display:flex!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .info .detail .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .info .detail .detail-state .data-box{line-height:unset!important;margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .info .detail .detail-state .data-box:nth-child(2){margin-left:12px!important}html[popular-layout=\"3\"] .rank-list:not(.pgc-list) .content .img{aspect-ratio:16/9!important}html[popular-layout=\"3\"] .rank-list.pgc-list .content .img{aspect-ratio:220/296!important}html[popular-layout=\"3\"] .rank-list.pgc-list .rank-item .content .info .title{margin-top:.2em;font-size:17px!important}html[popular-layout=\"3\"] .rank-list.pgc-list .rank-item .content .info .data-box{margin-top:unset!important;font-size:14px!important}html[popular-layout=\"3\"] .no-more,html[popular-layout=\"4\"] .cm-module{display:none!important}@media (width>=1300px) and (width<=1399.9px){html[popular-layout=\"4\"] .popular-container{max-width:1180px!important}}@media (width<=1139.9px){html[popular-layout=\"4\"] .popular-container{max-width:1020px!important}}html[popular-layout=\"4\"] .rank-container .rank-tab-wrap{margin-bottom:0!important;padding:10px 0!important}html[popular-layout=\"4\"] .nav-tabs{height:70px!important}html[popular-layout=\"4\"] .popular-list{padding:10px 0 0!important}html[popular-layout=\"4\"] .video-list{margin-top:15px!important}html[popular-layout=\"4\"] .popular-list .popular-tips,html[popular-layout=\"4\"] .rank-container .rank-tips,html[popular-layout=\"4\"] .history-list .history-tips,html[popular-layout=\"4\"] .popular-list .popular-tips,html[popular-layout=\"4\"] .weekly-list .weekly-hint,html[popular-layout=\"4\"] .history-list .history-hint{display:none!important}html[popular-layout=\"4\"] .card-list,html[popular-layout=\"4\"] .video-list{grid-gap:20px!important;grid-column:span 4!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;width:100%!important;display:grid!important}html[popular-layout=\"4\"] .card-list .video-card,html[popular-layout=\"4\"] .video-list .video-card{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"4\"] .card-list .video-card__content,html[popular-layout=\"4\"] .video-list .video-card__content{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;aspect-ratio:16/9!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"4\"] .card-list .video-card__info,html[popular-layout=\"4\"] .video-list .video-card__info{font-size:14px;margin-top:8px!important;padding:0!important}html[popular-layout=\"4\"] .card-list .video-card__info>div,html[popular-layout=\"4\"] .video-list .video-card__info>div{justify-content:space-between!important;display:flex!important}html[popular-layout=\"4\"] .card-list .video-card__info .rcmd-tag,html[popular-layout=\"4\"] .video-list .video-card__info .rcmd-tag{display:none!important}html[popular-layout=\"4\"] .card-list .video-card__info .video-name,html[popular-layout=\"4\"] .video-list .video-card__info .video-name{height:44px!important;margin-bottom:8px!important;font-size:15px!important;font-weight:400!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"4\"] .card-list .video-card__info .up-name,html[popular-layout=\"4\"] .video-list .video-card__info .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"4\"] .card-list .video-card__info .video-stat .play-text,html[popular-layout=\"4\"] .card-list .video-card__info .video-stat .like-text,html[popular-layout=\"4\"] .video-list .video-card__info .video-stat .play-text,html[popular-layout=\"4\"] .video-list .video-card__info .video-stat .like-text{text-wrap:nowrap!important}html[popular-layout=\"4\"] .rank-list{grid-gap:20px!important;grid-column:span 4!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;width:100%!important;display:grid!important}html[popular-layout=\"4\"] .rank-list .rank-item{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"4\"] .rank-list .rank-item .content{display:unset!important;padding:unset!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .more-data{display:none!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .img{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .img .num{zoom:1.2;font-size:18px}html[popular-layout=\"4\"] .rank-list .rank-item .content .info{font-size:14px;margin-top:8px!important;margin-left:unset!important;height:unset!important;padding:0!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .info .title{height:44px!important;font-size:15px!important;font-weight:500!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .info .detail{justify-content:space-between!important;align-items:center!important;margin-top:8px!important;display:flex!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .info .detail .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .info .detail .detail-state .data-box{line-height:unset!important;margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .info .detail .detail-state .data-box:nth-child(2){margin-left:12px!important}html[popular-layout=\"4\"] .rank-list:not(.pgc-list) .content .img{aspect-ratio:16/9!important}html[popular-layout=\"4\"] .rank-list.pgc-list .content .img{aspect-ratio:220/296!important}html[popular-layout=\"4\"] .rank-list.pgc-list .rank-item .content .info .title{margin-top:.2em;font-size:17px!important}html[popular-layout=\"4\"] .rank-list.pgc-list .rank-item .content .info .data-box{margin-top:unset!important;font-size:14px!important}html[popular-layout=\"4\"] .no-more,html[popular-layout=\"5\"] .cm-module{display:none!important}@media (width>=1300px) and (width<=1399.9px){html[popular-layout=\"5\"] .popular-container{max-width:1180px!important}}@media (width<=1139.9px){html[popular-layout=\"5\"] .popular-container{max-width:1020px!important}}html[popular-layout=\"5\"] .rank-container .rank-tab-wrap{margin-bottom:0!important;padding:10px 0!important}html[popular-layout=\"5\"] .nav-tabs{height:70px!important}html[popular-layout=\"5\"] .popular-list{padding:10px 0 0!important}html[popular-layout=\"5\"] .video-list{margin-top:15px!important}html[popular-layout=\"5\"] .popular-list .popular-tips,html[popular-layout=\"5\"] .rank-container .rank-tips,html[popular-layout=\"5\"] .history-list .history-tips,html[popular-layout=\"5\"] .popular-list .popular-tips,html[popular-layout=\"5\"] .weekly-list .weekly-hint,html[popular-layout=\"5\"] .history-list .history-hint{display:none!important}html[popular-layout=\"5\"] .card-list,html[popular-layout=\"5\"] .video-list{grid-gap:20px!important;grid-column:span 5!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;width:100%!important;display:grid!important}html[popular-layout=\"5\"] .card-list .video-card,html[popular-layout=\"5\"] .video-list .video-card{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"5\"] .card-list .video-card__content,html[popular-layout=\"5\"] .video-list .video-card__content{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;aspect-ratio:16/9!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"5\"] .card-list .video-card__info,html[popular-layout=\"5\"] .video-list .video-card__info{font-size:14px;margin-top:8px!important;padding:0!important}html[popular-layout=\"5\"] .card-list .video-card__info>div,html[popular-layout=\"5\"] .video-list .video-card__info>div{justify-content:space-between!important;display:flex!important}html[popular-layout=\"5\"] .card-list .video-card__info .rcmd-tag,html[popular-layout=\"5\"] .video-list .video-card__info .rcmd-tag{display:none!important}html[popular-layout=\"5\"] .card-list .video-card__info .video-name,html[popular-layout=\"5\"] .video-list .video-card__info .video-name{height:44px!important;margin-bottom:8px!important;font-size:15px!important;font-weight:400!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"5\"] .card-list .video-card__info .up-name,html[popular-layout=\"5\"] .video-list .video-card__info .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"5\"] .card-list .video-card__info .video-stat .play-text,html[popular-layout=\"5\"] .card-list .video-card__info .video-stat .like-text,html[popular-layout=\"5\"] .video-list .video-card__info .video-stat .play-text,html[popular-layout=\"5\"] .video-list .video-card__info .video-stat .like-text{text-wrap:nowrap!important}html[popular-layout=\"5\"] .rank-list{grid-gap:20px!important;grid-column:span 5!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;width:100%!important;display:grid!important}html[popular-layout=\"5\"] .rank-list .rank-item{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"5\"] .rank-list .rank-item .content{display:unset!important;padding:unset!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .more-data{display:none!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .img{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .img .num{zoom:1.2;font-size:18px}html[popular-layout=\"5\"] .rank-list .rank-item .content .info{font-size:14px;margin-top:8px!important;margin-left:unset!important;height:unset!important;padding:0!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .info .title{height:44px!important;font-size:15px!important;font-weight:500!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .info .detail{justify-content:space-between!important;align-items:center!important;margin-top:8px!important;display:flex!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .info .detail .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .info .detail .detail-state .data-box{line-height:unset!important;margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .info .detail .detail-state .data-box:nth-child(2){margin-left:12px!important}html[popular-layout=\"5\"] .rank-list:not(.pgc-list) .content .img{aspect-ratio:16/9!important}html[popular-layout=\"5\"] .rank-list.pgc-list .content .img{aspect-ratio:220/296!important}html[popular-layout=\"5\"] .rank-list.pgc-list .rank-item .content .info .title{margin-top:.2em;font-size:17px!important}html[popular-layout=\"5\"] .rank-list.pgc-list .rank-item .content .info .data-box{margin-top:unset!important;font-size:14px!important}html[popular-layout=\"5\"] .no-more,html[popular-layout=\"5\"] .video-stat .like-text,html[popular-layout=\"5\"] .rank-list .rank-item .detail-state .data-box:nth-child(2){display:none!important}html[popular-layout=\"5\"] .rank-list .rank-item .detail-state .data-box:first-child{margin:0!important}html[popular-layout=\"5\"] .video-card .video-stat .play-text{margin-right:0!important}html[popular-layout=\"6\"] .cm-module{display:none!important}@media (width>=1300px) and (width<=1399.9px){html[popular-layout=\"6\"] .popular-container{max-width:1180px!important}}@media (width<=1139.9px){html[popular-layout=\"6\"] .popular-container{max-width:1020px!important}}html[popular-layout=\"6\"] .rank-container .rank-tab-wrap{margin-bottom:0!important;padding:10px 0!important}html[popular-layout=\"6\"] .nav-tabs{height:70px!important}html[popular-layout=\"6\"] .popular-list{padding:10px 0 0!important}html[popular-layout=\"6\"] .video-list{margin-top:15px!important}html[popular-layout=\"6\"] .popular-list .popular-tips,html[popular-layout=\"6\"] .rank-container .rank-tips,html[popular-layout=\"6\"] .history-list .history-tips,html[popular-layout=\"6\"] .popular-list .popular-tips,html[popular-layout=\"6\"] .weekly-list .weekly-hint,html[popular-layout=\"6\"] .history-list .history-hint{display:none!important}html[popular-layout=\"6\"] .card-list,html[popular-layout=\"6\"] .video-list{grid-gap:20px!important;grid-column:span 6!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;width:100%!important;display:grid!important}html[popular-layout=\"6\"] .card-list .video-card,html[popular-layout=\"6\"] .video-list .video-card{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"6\"] .card-list .video-card__content,html[popular-layout=\"6\"] .video-list .video-card__content{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;aspect-ratio:16/9!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"6\"] .card-list .video-card__info,html[popular-layout=\"6\"] .video-list .video-card__info{font-size:14px;margin-top:8px!important;padding:0!important}html[popular-layout=\"6\"] .card-list .video-card__info>div,html[popular-layout=\"6\"] .video-list .video-card__info>div{justify-content:space-between!important;display:flex!important}html[popular-layout=\"6\"] .card-list .video-card__info .rcmd-tag,html[popular-layout=\"6\"] .video-list .video-card__info .rcmd-tag{display:none!important}html[popular-layout=\"6\"] .card-list .video-card__info .video-name,html[popular-layout=\"6\"] .video-list .video-card__info .video-name{height:44px!important;margin-bottom:8px!important;font-size:15px!important;font-weight:400!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"6\"] .card-list .video-card__info .up-name,html[popular-layout=\"6\"] .video-list .video-card__info .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"6\"] .card-list .video-card__info .video-stat .play-text,html[popular-layout=\"6\"] .card-list .video-card__info .video-stat .like-text,html[popular-layout=\"6\"] .video-list .video-card__info .video-stat .play-text,html[popular-layout=\"6\"] .video-list .video-card__info .video-stat .like-text{text-wrap:nowrap!important}html[popular-layout=\"6\"] .rank-list{grid-gap:20px!important;grid-column:span 6!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;width:100%!important;display:grid!important}html[popular-layout=\"6\"] .rank-list .rank-item{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"6\"] .rank-list .rank-item .content{display:unset!important;padding:unset!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .more-data{display:none!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .img{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .img .num{zoom:1.2;font-size:18px}html[popular-layout=\"6\"] .rank-list .rank-item .content .info{font-size:14px;margin-top:8px!important;margin-left:unset!important;height:unset!important;padding:0!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .info .title{height:44px!important;font-size:15px!important;font-weight:500!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .info .detail{justify-content:space-between!important;align-items:center!important;margin-top:8px!important;display:flex!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .info .detail .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .info .detail .detail-state .data-box{line-height:unset!important;margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .info .detail .detail-state .data-box:nth-child(2){margin-left:12px!important}html[popular-layout=\"6\"] .rank-list:not(.pgc-list) .content .img{aspect-ratio:16/9!important}html[popular-layout=\"6\"] .rank-list.pgc-list .content .img{aspect-ratio:220/296!important}html[popular-layout=\"6\"] .rank-list.pgc-list .rank-item .content .info .title{margin-top:.2em;font-size:17px!important}html[popular-layout=\"6\"] .rank-list.pgc-list .rank-item .content .info .data-box{margin-top:unset!important;font-size:14px!important}html[popular-layout=\"6\"] .no-more,html[popular-layout=\"6\"] .video-stat .like-text,html[popular-layout=\"6\"] .rank-list .rank-item .detail-state .data-box:nth-child(2){display:none!important}html[popular-layout=\"6\"] .rank-list .rank-item .detail-state .data-box:first-child{margin:0!important}html[popular-layout=\"6\"] .video-card .video-stat .play-text{margin-right:0!important}html[popular-hot-hide-tag] .popular-list .rcmd-tag,html[popular-weekly-hide-hint] .weekly-list .weekly-hint,html[popular-history-hide-hint] .history-list .history-hint{display:none!important}");
 	var index_scss_default$3 = _style("html[hide-search-page-search-sticky-header] .search-sticky-header,html[hide-search-page-bangumi-pgc-list] .bangumi-pgc-list,html[hide-search-page-activity-game-list] .activity-game-list{display:none!important}html[hide-search-page-ad] .video-list.row>div:has([href*=\"cm.bilibili.com\"],.bili-video-card__info--ad,.bili-video-card__info--ad-creative){display:none!important}html[hide-search-page-live-room-result] .video-list>div:has([href*=\"live.bilibili.com\"]){display:none!important}html[hide-search-page-cheese-result] .video-list>div:has(.bili-video-card__info--cheese){display:none!important}html[hide-search-page-danmaku-count] .bili-video-card .bili-video-card__stats--left .bili-video-card__stats--item:nth-child(2),html[hide-search-page-date] .bili-video-card .bili-video-card__info--date{display:none!important}html[hide-search-page-customer-service] .side-buttons div:has(>a[href*=customer-service]){display:none!important}html[hide-search-page-btn-to-top] .side-buttons .btn-to-top-wrap{display:none!important}");
 	var index_scss_default$2 = _style("html[hide-space-page-video-card-danmaku-count] .bili-video-card .bili-cover-card__stats .bili-cover-card__stat:nth-child(2):not(:last-child){display:none!important}html[increase-space-page-video-card-font-size] .bili-cover-card{--bili-cover-card-stat-icon-size:16px!important;--bili-cover-card-stat-font-size:13px!important}html[increase-space-page-video-card-font-size] .bili-video-card{--bili-video-card-title-font-size:15px!important;--bili-video-card-title-line-height:23px!important;--bili-video-card-subtitle-font-size:14px!important;--bili-video-card-subtitle-line-height:16px!important}html[hide-dynamic-page-bili-dyn-avatar-pendent] .bili-dyn-list .b-avatar__layers .b-avatar__layer.center:first-child{width:48px!important;height:48px!important}html[hide-dynamic-page-bili-dyn-avatar-pendent] .bili-dyn-list .b-avatar__layers .b-avatar__layer.center:nth-child(2),html[hide-dynamic-page-bili-dyn-avatar-pendent] .bili-dyn-list .b-avatar__layers:nth-child(2) .b-avatar__layer.center,html[hide-dynamic-page-bili-dyn-avatar-icon] .bili-dyn-list .b-avatar__layer:not(.center),html[hide-dynamic-page-bili-dyn-ornament] .bili-dyn-ornament,html[hide-dynamic-page-bili-dyn-ornament] .bili-dyn-item__ornament,html[hide-dynamic-page-bili-dyn-dispute] .bili-dyn-content__dispute,html[hide-dynamic-page-bili-dyn-official-topic] .bili-dyn-content__orig__topic,html[hide-dynamic-page-bili-dyn-official-topic] .bili-dyn-content__forw__topic{display:none!important}html[hide-dynamic-page-bili-dyn-text-topic] .bili-rich-text-topic{color:inherit!important}html[hide-dynamic-page-bili-dyn-text-topic] .bili-rich-text-topic:hover{color:var(--brand_blue)!important}html[hide-dynamic-page-bili-dyn-item-interaction] .bili-dyn-item__interaction{display:none!important}html[hide-dynamic-page-bili-dyn-card-reserve] .bili-dyn-list__item:has(.bili-dyn-card-reserve){display:none!important}:is(html[hide-dynamic-page-bili-dyn-card-goods] .bili-dyn-list__item:has(.bili-dyn-card-goods),html[hide-dynamic-page-bili-dyn-card-goods] .bili-dyn-list__item:has(.bili-rich-text-module.goods),html[hide-dynamic-page-bili-dyn-card-goods] .bili-dyn-list__item:has([data-type=goods])){display:none!important}html[hide-dynamic-page-bili-dyn-lottery] .bili-dyn-list__item:has([data-type=lottery]){display:none!important}html[hide-dynamic-page-bili-dyn-forward] .bili-dyn-list__item:has(.bili-dyn-content__orig.reference){display:none!important}html[hide-dynamic-page-bili-dyn-vote] .bili-dyn-list__item:has(.bili-dyn-card-vote){display:none!important}html[hide-dynamic-page-bili-dyn-live] .bili-dyn-list__item:has(.bili-dyn-card-live){display:none!important}html[hide-dynamic-page-bili-dyn-blocked] .bili-dyn-list__item:has(.dyn-blocked-mask,.bili-dyn-upower-common){display:none!important}html[hide-dynamic-page-bili-dyn-charge-video] .bili-dyn-list__item:has(.bili-dyn-card-video__badge [src*=qcRJ6sJU91]){display:none!important}html[dynamic-page-unfold-dynamic-content] .bili-dyn-list__item:not(:has(.dyn-card-opus__title)) .bili-rich-text .bili-rich-text__content{max-height:unset!important;-webkit-line-clamp:unset!important}html[dynamic-page-unfold-dynamic-content] .bili-dyn-list__item:not(:has(.dyn-card-opus__title)) .bili-rich-text .bili-rich-text__action{display:none!important}html[hide-space-page-sidebar-feedback] #app .space-float{height:fit-content!important}html[hide-space-page-sidebar-feedback] #app .space-float .float-button:nth-last-child(3){display:none!important}html[hide-space-page-sidebar-revert] #app .space-float{height:fit-content!important}html[hide-space-page-sidebar-revert] #app .space-float .float-button:nth-last-child(2){display:none!important}");
@@ -13843,6 +14199,58 @@
 							}, 1040)]);
 						}), 128))]);
 					}), 64)), (0, vue.createVNode)(EditorDialog_default, {
+						ref_key: "editorDialogRef",
+						ref: editorDialogRef
+					}, null, 512)]),
+					_: 1
+				}, 16, ["onClose"])), [[vue.vShow, (0, vue.unref)(store).isShow]]);
+			};
+		}
+	});
+	var ArticleFilterPanelView_default = (0, vue.defineComponent)({
+		__name: "ArticleFilterPanelView",
+		setup(__props) {
+			const store = useArticleFilterPanelStore();
+			const editorDialogRef = (0, vue.ref)(null);
+			const handleEdit = (item) => {
+				editorDialogRef.value?.openEditor(item);
+			};
+			let currPageGroups = [];
+			for (const articleFilter of articleFilters) if (articleFilter.checkFn()) currPageGroups = [...currPageGroups, ...articleFilter.groups];
+			return (_ctx, _cache) => {
+				return (0, vue.withDirectives)(((0, vue.openBlock)(), (0, vue.createBlock)(PanelComp_default, (0, vue.mergeProps)({
+					title: "专栏过滤",
+					widthPercent: 28,
+					heightPercent: 85,
+					minWidth: 360,
+					minHeight: 600
+				}, { onClose: (0, vue.unref)(store).hide }), {
+					default: (0, vue.withCtx)(() => [((0, vue.openBlock)(true), (0, vue.createElementBlock)(vue.Fragment, null, (0, vue.renderList)((0, vue.unref)(currPageGroups), (group, index) => {
+						return (0, vue.openBlock)(), (0, vue.createElementBlock)("div", { key: index }, [(0, vue.createVNode)(DisclosureComp_default, (0, vue.mergeProps)({ ref_for: true }, {
+							title: group.name,
+							isFold: group.fold
+						}), {
+							default: (0, vue.withCtx)(() => [((0, vue.openBlock)(true), (0, vue.createElementBlock)(vue.Fragment, null, (0, vue.renderList)(group.items, (item, innerIndex) => {
+								return (0, vue.openBlock)(), (0, vue.createElementBlock)("div", { key: innerIndex }, [item.type === "switch" ? ((0, vue.openBlock)(), (0, vue.createBlock)(SwitchComp_default, (0, vue.mergeProps)({
+									key: 0,
+									ref_for: true
+								}, item), null, 16)) : item.type === "number" ? ((0, vue.openBlock)(), (0, vue.createBlock)(NumberComp_default, (0, vue.mergeProps)({
+									key: 1,
+									ref_for: true
+								}, item), null, 16)) : item.type === "string" ? ((0, vue.openBlock)(), (0, vue.createBlock)(StringComp_default, (0, vue.mergeProps)({
+									key: 2,
+									ref_for: true
+								}, item), null, 16)) : item.type === "editor" ? ((0, vue.openBlock)(), (0, vue.createBlock)(EditorComp_default, (0, vue.mergeProps)({
+									key: 3,
+									ref_for: true
+								}, item, { onEdit: handleEdit }), null, 16)) : item.type === "list" ? ((0, vue.openBlock)(), (0, vue.createBlock)(ListComp_default, (0, vue.mergeProps)({
+									key: 4,
+									ref_for: true
+								}, item), null, 16)) : (0, vue.createCommentVNode)("", true)]);
+							}), 128))]),
+							_: 2
+						}, 1040)]);
+					}), 128)), (0, vue.createVNode)(EditorDialog_default, {
 						ref_key: "editorDialogRef",
 						ref: editorDialogRef
 					}, null, 512)]),
@@ -14019,7 +14427,8 @@
 					(0, vue.createVNode)(CommentFilterPanelView_default),
 					(0, vue.createVNode)(DynamicFilterPanelView_default),
 					(0, vue.createVNode)(ContextMenuView_default),
-					(0, vue.createVNode)(SideBtnView_default)
+					(0, vue.createVNode)(SideBtnView_default),
+					(0, vue.createVNode)(ArticleFilterPanelView_default)
 				]);
 			};
 		}
@@ -14076,7 +14485,8 @@
 		const filters = [
 			...videoFilters,
 			...commentFilters,
-			...dynamicFilters
+			...dynamicFilters,
+			...articleFilters
 		];
 		for (const filter of filters) if (filter.checkFn()) try {
 			filter.entry();
@@ -14203,6 +14613,7 @@
 		const videoStore = useVideoFilterPanelStore();
 		const commentStore = useCommentFilterPanelStore();
 		const dynamicStore = useDynamicFilterPanelStore();
+		const articleStore = useArticleFilterPanelStore();
 		const sideBtnStore = useSideBtnStore();
 		_GM_registerMenuCommand("✅ 页面净化优化", () => {
 			ruleStore.toggle();
@@ -14224,6 +14635,12 @@
 		});
 		else _GM_registerMenuCommand("🚫 动态过滤设置", () => {
 			alert("[bilibili-cleaner] 本页面不支持动态过滤");
+		});
+		if (articleStore.isPageValid()) _GM_registerMenuCommand("✅ 专栏过滤设置", () => {
+			articleStore.toggle();
+		});
+		else _GM_registerMenuCommand("🚫 专栏过滤设置", () => {
+			alert("[bilibili-cleaner] 本页面不支持专栏过滤");
 		});
 		_GM_registerMenuCommand("⚡ 夜间模式开关", () => {
 			toggleDarkMode();

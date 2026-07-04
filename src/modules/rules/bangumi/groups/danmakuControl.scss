@@ -62,12 +62,13 @@ html[video-page-hide-bpx-player-sending-area] {
         display: none !important;
     }
 
-    // 关闭弹幕栏后 播放器去黑边
-    #bilibili-player-wrap[class^='video_playerNormal'] {
-        height: calc(var(--video-width) * 0.5625);
-    }
+    // 播放器去黑边
+    #bilibili-player-wrap[class^='video_playerNormal'],
     #bilibili-player-wrap[class^='video_playerWide'] {
-        height: calc(var(--containerWidth) * 0.5625);
+        --danmu-bar-height: 0 !important;
+    }
+    &:has(#bilibili-player-wrap[class^='video_playerNormal']) .plp-left-wrap {
+        padding-top: calc(56.25%) !important;
     }
 }
 

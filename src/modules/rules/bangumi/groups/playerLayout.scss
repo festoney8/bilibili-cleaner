@@ -12,6 +12,11 @@
             position: static !important;
             margin: 0 auto !important;
             padding-top: calc(100vh + 15px) !important;
+            min-width: 900px !important;
+            width: calc(var(--normalscreen-width, calc(177.778vh - 470px)) + 30px + var(--right-bar-width)) !important;
+            .plp-left-wrap {
+                padding-top: 0 !important;
+            }
         }
         &::-webkit-scrollbar {
             display: none !important;

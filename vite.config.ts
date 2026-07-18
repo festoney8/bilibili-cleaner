@@ -43,6 +43,7 @@ export default defineConfig({
                     '*://www.bilibili.com/blackboard/comment-detail.html*',
                     '*://www.bilibili.com/blackboard/newplayer.html*',
                     '*://www.bilibili.com/appeal/*',
+                    '*://www.bilibili.com/toy/*',
                 ],
                 icon: 'https://www.bilibili.com/favicon.ico',
                 'run-at': 'document-start',

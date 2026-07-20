@@ -115,10 +115,12 @@ const selectorFns = {
             return (comment as any).__data?.member?.uname?.trim()
         },
         content: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.content?.message
-                ?.replace(/@[^@\s]+/g, ' ')
-                ?.replace(/(\[[^[\]]+\])+/g, ' ')
-                .trim()
+            return (
+                (comment as any).__data?.content?.message
+                    ?.replace(/@[^@\s]+/g, ' ')
+                    // ?.replace(/(\[[^[\]]+\])+/g, ' ') // 去除官方表情包
+                    .trim()
+            )
         },
         noface: (comment: HTMLElement): SelectorResult => {
             return (
@@ -205,12 +207,14 @@ const selectorFns = {
             return (comment as any).__data?.member?.uname?.trim()
         },
         content: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.content?.message
-                ?.trim()
-                ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
-                ?.replace(/@[^@\s]+/g, ' ')
-                ?.replace(/(\[[^[\]]+\])+/g, ' ')
-                .trim()
+            return (
+                (comment as any).__data?.content?.message
+                    ?.trim()
+                    ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
+                    ?.replace(/@[^@\s]+/g, ' ')
+                    // ?.replace(/(\[[^[\]]+\])+/g, ' ') // 去除官方表情包
+                    .trim()
+            )
         },
         noface: (comment: HTMLElement): SelectorResult => {
             return (
@@ -350,23 +354,21 @@ class CommentFilterCommon implements IMainFilter {
     async checkRoot(mode?: 'full' | 'incr') {
         const timer = performance.now()
         let revertAll = false
-        if (
-            !(
-                this.commentUsernameFilter.isEnable ||
-                this.commentUsernameKeywordFilter.isEnable ||
-                this.commentContentFilter.isEnable ||
-                this.commentAdFilter.isEnable ||
-                this.commentLevelFilter.isEnable ||
-                this.commentNoFaceFilter.isEnable ||
-                this.commentBotFilter.isEnable ||
-                this.commentCallBotFilter.isEnable ||
-                this.commentCallUserFilter.isEnable ||
-                this.commentCallUserNoReplyFilter.isEnable ||
-                this.commentCallUserOnlyFilter.isEnable ||
-                this.commentCallUserOnlyNoReplyFilter.isEnable ||
-                this.commentEmojiOnlyFilter.isEnable
-            )
-        ) {
+        if (!(
+            this.commentUsernameFilter.isEnable ||
+            this.commentUsernameKeywordFilter.isEnable ||
+            this.commentContentFilter.isEnable ||
+            this.commentAdFilter.isEnable ||
+            this.commentLevelFilter.isEnable ||
+            this.commentNoFaceFilter.isEnable ||
+            this.commentBotFilter.isEnable ||
+            this.commentCallBotFilter.isEnable ||
+            this.commentCallUserFilter.isEnable ||
+            this.commentCallUserNoReplyFilter.isEnable ||
+            this.commentCallUserOnlyFilter.isEnable ||
+            this.commentCallUserOnlyNoReplyFilter.isEnable ||
+            this.commentEmojiOnlyFilter.isEnable
+        )) {
             revertAll = true
         }
 
@@ -456,23 +458,21 @@ class CommentFilterCommon implements IMainFilter {
     async checkSub(mode?: 'full' | 'incr') {
         const timer = performance.now()
         let revertAll = false
-        if (
-            !(
-                this.commentUsernameFilter.isEnable ||
-                this.commentUsernameKeywordFilter.isEnable ||
-                this.commentContentFilter.isEnable ||
-                this.commentAdFilter.isEnable ||
-                this.commentLevelFilter.isEnable ||
-                this.commentNoFaceFilter.isEnable ||
-                this.commentBotFilter.isEnable ||
-                this.commentCallBotFilter.isEnable ||
-                this.commentCallUserFilter.isEnable ||
-                this.commentCallUserNoReplyFilter.isEnable ||
-                this.commentCallUserOnlyFilter.isEnable ||
-                this.commentCallUserOnlyNoReplyFilter.isEnable ||
-                this.commentEmojiOnlyFilter.isEnable
-            )
-        ) {
+        if (!(
+            this.commentUsernameFilter.isEnable ||
+            this.commentUsernameKeywordFilter.isEnable ||
+            this.commentContentFilter.isEnable ||
+            this.commentAdFilter.isEnable ||
+            this.commentLevelFilter.isEnable ||
+            this.commentNoFaceFilter.isEnable ||
+            this.commentBotFilter.isEnable ||
+            this.commentCallBotFilter.isEnable ||
+            this.commentCallUserFilter.isEnable ||
+            this.commentCallUserNoReplyFilter.isEnable ||
+            this.commentCallUserOnlyFilter.isEnable ||
+            this.commentCallUserOnlyNoReplyFilter.isEnable ||
+            this.commentEmojiOnlyFilter.isEnable
+        )) {
             revertAll = true
         }
 
@@ -687,6 +687,8 @@ export const commentFilterCommonGroups: Group[] = [
                     '每行一个关键词或正则，不区分大小写、全半角',
                     '请勿使用过于激进的关键词或正则',
                     '正则默认 ius 模式，无需 flag，语法：/abc|\\d+/',
+                    '支持检测表情包原文，如：[笑哭]',
+                    '鼠标划选评论内容并复制，即可得到表情包原文',
                 ],
                 saveFn: async () => {
                     mainFilter.commentContentFilter.setParam(GM_getValue(GM_KEYS.black.content.valueKey, []))

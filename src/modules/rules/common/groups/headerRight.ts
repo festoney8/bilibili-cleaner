@@ -1,4 +1,5 @@
 import { Item } from '@/types/item'
+import { isPageLive } from '@/utils/pageType'
 
 export const commonHeaderRightItems: Item[] = [
     {
@@ -43,6 +44,9 @@ export const commonHeaderRightItems: Item[] = [
         name: '收藏弹出框 自动选中稍后再看',
         noStyle: true,
         enableFn: async () => {
+            if (isPageLive()) {
+                return
+            }
             if (!CSS.supports('selector(:has(*))')) {
                 return
             }

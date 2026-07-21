@@ -8,6 +8,8 @@ import { ref, watch } from 'vue'
 
 // 夜间模式状态
 export const isDarkMode = ref(false)
+const isDark = usePreferredDark()
+let isAutoMode = false
 
 // 同步夜间模式状态
 const themeState = useGMValue('common-theme-dark', 'off', {
@@ -16,6 +18,7 @@ const themeState = useGMValue('common-theme-dark', 'off', {
 })
 
 export const toggleDarkMode = () => {
+    isAutoMode = false
     if (isDarkMode.value) {
         disableDarkMode()
         themeState.value = 'off'
@@ -28,6 +31,19 @@ export const toggleDarkMode = () => {
 // 是否禁止修改lab-style属性
 let labStyleLock = false
 
+const origSetAttribute = Element.prototype.setAttribute
+
+// 跟随系统夜间模式
+watch(isDark, (v) => {
+    if (isAutoMode) {
+        if (v) {
+            enableDarkMode()
+        } else {
+            disableDarkMode()
+        }
+    }
+})
+
 // 启用夜间模式
 const enableDarkMode = () => {
     isDarkMode.value = true
@@ -37,7 +53,6 @@ const enableDarkMode = () => {
         document.documentElement.setAttribute('common-theme-dark-page', 'live')
         document.documentElement.setAttribute('lab-style', 'dark')
         labStyleLock = true
-        const origSetAttribute = Element.prototype.setAttribute
         Element.prototype.setAttribute = function (attr, value) {
             if (labStyleLock && this === document.documentElement && attr === 'lab-style') {
                 return origSetAttribute.call(this, attr, 'dark')
@@ -59,7 +74,7 @@ const enableDarkMode = () => {
     }
 
     const style = document.querySelector('head link#__css-map__') as HTMLLinkElement
-    if (style?.href.includes('light.css')) {
+    if (style?.href?.includes('light.css')) {
         style.href = style.href.replace('light.css', 'dark.css')
     }
 
@@ -84,13 +99,14 @@ const disableDarkMode = () => {
 
     if (isPageLive()) {
         labStyleLock = false
+        Element.prototype.setAttribute = origSetAttribute
         document.documentElement.setAttribute('lab-style', '')
     }
     if (isPageDynamic() || isPageMessage() || isPageHomepage()) {
         document.documentElement.classList.remove('bili_dark')
     }
     const style = document.querySelector('head link#__css-map__') as HTMLLinkElement
-    if (style?.href.includes('dark.css')) {
+    if (style?.href?.includes('dark.css')) {
         style.href = style.href.replace('dark.css', 'light.css')
     }
 
@@ -109,13 +125,19 @@ const disableDarkMode = () => {
 
 // 监听状态切换
 watch(themeState, (value) => {
-    if (value === 'on' && !isDarkMode.value) {
-        isDarkMode.value = true
-        enableDarkMode()
+    if (value === 'on') {
+        if (!isDarkMode.value) {
+            isDarkMode.value = true
+            enableDarkMode()
+        }
+        isAutoMode = false
     }
-    if (value === 'off' && isDarkMode.value) {
-        isDarkMode.value = false
-        disableDarkMode()
+    if (value === 'off') {
+        if (isDarkMode.value) {
+            isDarkMode.value = false
+            disableDarkMode()
+        }
+        isAutoMode = false
     }
 })
 
@@ -135,34 +157,33 @@ export const commonThemeItems: Item[] = [
             {
                 value: 'off',
                 name: '日间',
-                fn: disableDarkMode,
+                fn: () => {
+                    isAutoMode = false
+                    disableDarkMode()
+                },
             },
             {
                 value: 'on',
                 name: '夜间',
-                fn: enableDarkMode,
+                fn: () => {
+                    isAutoMode = false
+                    enableDarkMode()
+                },
             },
             {
                 value: 'auto',
                 name: '跟随系统',
                 fn: () => {
-                    const isDark = usePreferredDark()
-                    watch(
-                        isDark,
-                        (v) => {
-                            if (v) {
-                                enableDarkMode()
-                            } else {
-                                disableDarkMode()
-                            }
-                        },
-                        { immediate: true },
-                    )
+                    isAutoMode = true
+                    isDark.value ? enableDarkMode() : disableDarkMode()
                 },
             },
             {
                 value: 'default',
                 name: '官方默认',
+                fn: () => {
+                    isAutoMode = false
+                },
             },
         ],
     },

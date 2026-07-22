@@ -1,21 +1,20 @@
 import { useGMValue } from '@/composables/gmValue'
 import { Item } from '@/types/item'
 import { isPageDynamic, isPageHomepage, isPageLive, isPageMessage, isPageSpace } from '@/utils/pageType'
-
 import { usePreferredDark } from '@vueuse/core'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { ref, watch } from 'vue'
-
-// 夜间模式状态
-export const isDarkMode = ref(false)
-const isDark = usePreferredDark()
-let isAutoMode = false
 
 // 同步夜间模式状态
 const themeState = useGMValue('common-theme-dark', 'off', {
     deep: false,
     debounce: 1000,
 })
+
+// 夜间模式状态
+export const isDarkMode = ref(false)
+const isDark = usePreferredDark()
+let isAutoMode = themeState.value === 'auto'
 
 export const toggleDarkMode = () => {
     isAutoMode = false
@@ -34,15 +33,19 @@ let labStyleLock = false
 const origSetAttribute = Element.prototype.setAttribute
 
 // 跟随系统夜间模式
-watch(isDark, (v) => {
-    if (isAutoMode) {
-        if (v) {
-            enableDarkMode()
-        } else {
-            disableDarkMode()
+watch(
+    isDark,
+    (v) => {
+        if (isAutoMode) {
+            if (v) {
+                enableDarkMode()
+            } else {
+                disableDarkMode()
+            }
         }
-    }
-})
+    },
+    { immediate: true },
+)
 
 // 启用夜间模式
 const enableDarkMode = () => {

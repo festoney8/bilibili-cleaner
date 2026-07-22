@@ -132,6 +132,7 @@ export const commonBasicItems: Item[] = [
                         keysToRemove.add('linked_creative_id')
                         keysToRemove.add('bbid')
                         keysToRemove.add('ts')
+                        keysToRemove.add('-Arouter')
                     }
                     // watchlater page new params
                     if (isPageWatchlater()) {

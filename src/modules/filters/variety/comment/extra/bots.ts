@@ -26,6 +26,7 @@ export const bots = [
     'Ai好记', // 3546850168670261
     'MilkyAi', // 3461574540921489
     '视频AI问答助手', // 402404792
+    '总结猫', // 1095342058
 ]
 
 export const botsSet = new Set(bots)

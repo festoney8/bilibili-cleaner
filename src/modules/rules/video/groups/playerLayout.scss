@@ -91,13 +91,16 @@ html[default-webscreen] {
             position: relative;
         }
 
-        #danmukuBox .bui-collapse-wrap:not(.bui-collapse-wrap-folded) {
-            margin-top: 0 !important;
-            .bpx-player-wraplist {
-                max-height: calc(50vh + 75px) !important;
-            }
-            .bpx-player-dm-wrap {
-                max-height: 50vh !important;
+        #danmukuBox {
+            margin-top: unset !important;
+            .bui-collapse-wrap:not(.bui-collapse-wrap-folded) {
+                margin-top: 0 !important;
+                .bpx-player-wraplist {
+                    max-height: calc(50vh + 75px) !important;
+                }
+                .bpx-player-dm-wrap {
+                    max-height: 50vh !important;
+                }
             }
         }
         .left-container,

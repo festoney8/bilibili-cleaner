@@ -118,7 +118,13 @@ export const rules: Rule[] = [
         groups: commentGroups,
         style: commentStyle,
         isSpecial: true,
-        checkFn: () => isPageVideo() || isPageBangumi() || isPageDynamic() || isPageSpace() || isPagePlaylist(),
+        checkFn: () =>
+            isPageVideo() ||
+            isPageBangumi() ||
+            isPageDynamic() ||
+            isPageSpace() ||
+            isPagePlaylist() ||
+            isPageFestival(),
     },
     {
         name: 'common',

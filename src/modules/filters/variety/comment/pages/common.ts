@@ -4,7 +4,14 @@ import emojiRegex from 'emoji-regex-xs'
 import { Group } from '@/types/collection'
 import { ContextMenuTargetHandler, FilterContextMenu, IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
 import { logger } from '@/utils/logger'
-import { isPageBangumi, isPageDynamic, isPagePlaylist, isPageSpace, isPageVideo } from '@/utils/pageType'
+import {
+    isPageBangumi,
+    isPageDynamic,
+    isPageFestival,
+    isPagePlaylist,
+    isPageSpace,
+    isPageVideo,
+} from '@/utils/pageType'
 import ShadowInstance from '@/utils/shadow'
 import { GM_getValue, GM_setValue } from '$'
 import { orderedUniq, showEle } from '@/utils/tool'
@@ -955,7 +962,14 @@ export const commentFilterCommonGroups: Group[] = [
 
 // 右键菜单handler
 export const commentFilterCommonHandler: ContextMenuTargetHandler = (target: HTMLElement): FilterContextMenu[] => {
-    if (!(isPageVideo() || isPagePlaylist() || isPageBangumi() || isPageDynamic() || isPageSpace())) {
+    if (!(
+        isPageVideo() ||
+        isPagePlaylist() ||
+        isPageBangumi() ||
+        isPageDynamic() ||
+        isPageSpace() ||
+        isPageFestival()
+    )) {
         return []
     }
 

@@ -3,6 +3,7 @@ import {
     isPageBangumi,
     isPageChannel,
     isPageDynamic,
+    isPageFestival,
     isPageHomepage,
     isPageLive,
     isPagePlaylist,
@@ -194,6 +195,9 @@ export const commonBasicItems: Item[] = [
             }
             if (isPageSpace()) {
                 return 'common-unify-font-space'
+            }
+            if (isPageFestival()) {
+                return 'common-unify-font-festival'
             }
             return undefined
         })(),

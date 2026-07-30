@@ -2,6 +2,7 @@ import {
     isPageBangumi,
     isPageChannel,
     isPageDynamic,
+    isPageFestival,
     isPageHomepage,
     isPagePlaylist,
     isPagePopular,
@@ -69,7 +70,9 @@ export const useCommentFilterPanelStore = defineStore('CommentFilterPanel', () =
         isShow.value = !isShow.value
     }
     const isPageValid = () => {
-        return isPageVideo() || isPageBangumi() || isPageDynamic() || isPageSpace() || isPagePlaylist()
+        return (
+            isPageVideo() || isPageBangumi() || isPageDynamic() || isPageSpace() || isPagePlaylist() || isPageFestival()
+        )
     }
     return { isShow, show, hide, toggle, isPageValid }
 })

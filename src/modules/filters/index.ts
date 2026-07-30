@@ -4,6 +4,7 @@ import {
     isPageBangumi,
     isPageChannel,
     isPageDynamic,
+    isPageFestival,
     isPageHomepage,
     isPageLive,
     isPagePlaylist,
@@ -90,7 +91,13 @@ export const commentFilters: Filter[] = [
         name: '视频页/番剧页/动态页/空间页 视频评论过滤',
         groups: commentFilterCommonGroups,
         entry: commentFilterCommonEntry,
-        checkFn: () => isPageVideo() || isPageBangumi() || isPagePlaylist() || isPageDynamic() || isPageSpace(),
+        checkFn: () =>
+            isPageVideo() ||
+            isPageBangumi() ||
+            isPagePlaylist() ||
+            isPageDynamic() ||
+            isPageSpace() ||
+            isPageFestival(),
     },
 ]
 

@@ -106,6 +106,9 @@ const menu = () => {
     GM_registerMenuCommand('⚡ 快捷按钮开关', () => {
         sideBtnStore.toggle()
     })
+    GM_registerMenuCommand('💬 问题反馈', () => {
+        window.open('https://github.com/festoney8/bilibili-cleaner', '_blank')
+    })
 }
 
 logger.info(`mode: ${import.meta.env.MODE}, url: ${location.href}`)

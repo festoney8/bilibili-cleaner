@@ -180,6 +180,123 @@ export const runInIdle = (callback: any, waitTime: number) => {
 }
 
 /**
+ * 创建顶栏搜索推荐词隐藏控制器，支持开关时启用/还原
+ * @param inputSelector 搜索框选择器
+ * @param btnSelector 搜索按钮选择器
+ */
+export const createNavSearchRcmdHider = (inputSelector: string, btnSelector: string) => {
+    let enabled = false
+    let pollId: ReturnType<typeof setInterval> | null = null
+    let observer: MutationObserver | null = null
+    let el: HTMLInputElement | null = null
+    let form: HTMLElement | null = null
+    let btn: Element | null = null
+    let savedTitle = ''
+    let savedPlaceholder = ''
+
+    const isEmpty = () => !el?.value.trim()
+    const blockEmptyRcmd = (e: Event) => {
+        if (isEmpty()) {
+            e.preventDefault()
+            e.stopImmediatePropagation()
+        }
+    }
+    const onKeydown = (e: KeyboardEvent) => {
+        // 避开输入法组字确认的 Enter
+        if (e.key === 'Enter' && !e.isComposing && e.keyCode !== 229) {
+            blockEmptyRcmd(e)
+        }
+    }
+
+    const cleanup = () => {
+        if (pollId !== null) {
+            clearInterval(pollId)
+            pollId = null
+        }
+        observer?.disconnect()
+        observer = null
+        el?.removeEventListener('keydown', onKeydown, true)
+        form?.removeEventListener('submit', blockEmptyRcmd, true)
+        btn?.removeEventListener('click', blockEmptyRcmd, true)
+        if (el) {
+            if (savedTitle) {
+                el.title = savedTitle
+            }
+            if (savedPlaceholder) {
+                el.placeholder = savedPlaceholder
+            }
+        }
+        el = null
+        form = null
+        btn = null
+    }
+
+    const setup = (input: HTMLInputElement) => {
+        el = input
+        form = input.closest('form')
+        btn = document.querySelector(btnSelector)
+        savedTitle = input.title
+        savedPlaceholder = input.placeholder
+        input.title = ''
+        input.placeholder = ''
+
+        observer = new MutationObserver(() => {
+            if (input.title) {
+                savedTitle = input.title
+                input.title = ''
+            }
+            if (input.placeholder) {
+                savedPlaceholder = input.placeholder
+                input.placeholder = ''
+            }
+        })
+        observer.observe(input, {
+            attributeFilter: ['placeholder', 'title'],
+        })
+
+        // B 站可能用内存中的默认词发起跳转，额外拦截空搜索
+        input.addEventListener('keydown', onKeydown, true)
+        form?.addEventListener('submit', blockEmptyRcmd, true)
+        btn?.addEventListener('click', blockEmptyRcmd, true)
+    }
+
+    return {
+        enable: () => {
+            if (enabled) {
+                return
+            }
+            enabled = true
+            let cnt = 0
+            pollId = setInterval(() => {
+                if (!enabled) {
+                    return
+                }
+                const input = document.querySelector(inputSelector) as HTMLInputElement | null
+                if (input) {
+                    if (pollId !== null) {
+                        clearInterval(pollId)
+                        pollId = null
+                    }
+                    setup(input)
+                    return
+                }
+                if (++cnt > 20 && pollId !== null) {
+                    clearInterval(pollId)
+                    pollId = null
+                }
+            }, 500)
+        },
+        disable: () => {
+            if (!enabled) {
+                return
+            }
+            enabled = false
+            cleanup()
+        },
+    }
+}
+
+/**
  * 切换播放器模式 helper 方法，只适用于 video 页面和 bangumi 页面
  * @param mode 目标模式
  */

@@ -180,19 +180,21 @@ export const runInIdle = (callback: any, waitTime: number) => {
 }
 
 /**
- * 创建顶栏搜索推荐词隐藏控制器，支持开关时启用/还原
+ * 创建顶栏搜索推荐词隐藏控制器，支持开关时启用/还原。
+ * placeholder 视觉隐藏交给 CSS；这里只处理 hover title 与空搜索跳转。
+ * 不要用 MutationObserver 互清 title/placeholder，会与其他改搜索框的脚本死循环卡死。
+ * @see https://greasyfork.org/zh-CN/scripts/479861/discussions/285183
  * @param inputSelector 搜索框选择器
  * @param btnSelector 搜索按钮选择器
  */
 export const createNavSearchRcmdHider = (inputSelector: string, btnSelector: string) => {
     let enabled = false
     let pollId: ReturnType<typeof setInterval> | null = null
-    let observer: MutationObserver | null = null
     let el: HTMLInputElement | null = null
     let form: HTMLElement | null = null
     let btn: Element | null = null
     let savedTitle = ''
-    let savedPlaceholder = ''
+    let titlePatched = false
 
     const isEmpty = () => !el?.value.trim()
     const blockEmptyRcmd = (e: Event) => {
@@ -208,52 +210,75 @@ export const createNavSearchRcmdHider = (inputSelector: string, btnSelector: str
         }
     }
 
+    // 兜底：若站点用 setAttribute 写入 title，在即将弹出 tooltip 前清掉 attribute
+    const scrubTitleAttr = () => {
+        if (!el?.hasAttribute('title')) {
+            return
+        }
+        const attr = el.getAttribute('title')
+        if (attr) {
+            savedTitle = attr
+        }
+        el.removeAttribute('title')
+    }
+
+    const patchTitle = (input: HTMLInputElement) => {
+        savedTitle = input.getAttribute('title') || input.title || ''
+        // 覆盖实例属性：他方写 .title 时只记值、不回写 attribute，避免互相 Observer 死循环
+        Object.defineProperty(input, 'title', {
+            configurable: true,
+            enumerable: true,
+            get() {
+                return savedTitle
+            },
+            set(v: unknown) {
+                savedTitle = String(v ?? '')
+            },
+        })
+        input.removeAttribute('title')
+        titlePatched = true
+    }
+
+    const unpatchTitle = (input: HTMLInputElement) => {
+        if (!titlePatched) {
+            return
+        }
+        Reflect.deleteProperty(input, 'title')
+        titlePatched = false
+        if (savedTitle) {
+            input.title = savedTitle
+        } else {
+            input.removeAttribute('title')
+        }
+    }
+
     const cleanup = () => {
         if (pollId !== null) {
             clearInterval(pollId)
             pollId = null
         }
-        observer?.disconnect()
-        observer = null
         el?.removeEventListener('keydown', onKeydown, true)
+        el?.removeEventListener('pointerenter', scrubTitleAttr, true)
+        el?.removeEventListener('focus', scrubTitleAttr, true)
         form?.removeEventListener('submit', blockEmptyRcmd, true)
         btn?.removeEventListener('click', blockEmptyRcmd, true)
         if (el) {
-            if (savedTitle) {
-                el.title = savedTitle
-            }
-            if (savedPlaceholder) {
-                el.placeholder = savedPlaceholder
-            }
+            unpatchTitle(el)
         }
         el = null
         form = null
         btn = null
+        savedTitle = ''
     }
 
     const setup = (input: HTMLInputElement) => {
         el = input
         form = input.closest('form')
         btn = document.querySelector(btnSelector)
-        savedTitle = input.title
-        savedPlaceholder = input.placeholder
-        input.title = ''
-        input.placeholder = ''
+        patchTitle(input)
 
-        observer = new MutationObserver(() => {
-            if (input.title) {
-                savedTitle = input.title
-                input.title = ''
-            }
-            if (input.placeholder) {
-                savedPlaceholder = input.placeholder
-                input.placeholder = ''
-            }
-        })
-        observer.observe(input, {
-            attributeFilter: ['placeholder', 'title'],
-        })
-
+        input.addEventListener('pointerenter', scrubTitleAttr, true)
+        input.addEventListener('focus', scrubTitleAttr, true)
         // B 站可能用内存中的默认词发起跳转，额外拦截空搜索
         input.addEventListener('keydown', onKeydown, true)
         form?.addEventListener('submit', blockEmptyRcmd, true)

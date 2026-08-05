@@ -16,36 +16,10 @@ export const isDarkMode = ref(false)
 const isDark = usePreferredDark()
 let isAutoMode = themeState.value === 'auto'
 
-export const toggleDarkMode = () => {
-    isAutoMode = false
-    if (isDarkMode.value) {
-        disableDarkMode()
-        themeState.value = 'off'
-    } else {
-        enableDarkMode()
-        themeState.value = 'on'
-    }
-}
-
 // 是否禁止修改lab-style属性
 let labStyleLock = false
 
 const origSetAttribute = Element.prototype.setAttribute
-
-// 跟随系统夜间模式
-watch(
-    isDark,
-    (v) => {
-        if (isAutoMode) {
-            if (v) {
-                enableDarkMode()
-            } else {
-                disableDarkMode()
-            }
-        }
-    },
-    { immediate: true },
-)
 
 // 启用夜间模式
 const enableDarkMode = () => {
@@ -143,6 +117,32 @@ watch(themeState, (value) => {
         isAutoMode = false
     }
 })
+
+// 跟随系统夜间模式
+watch(
+    isDark,
+    (v) => {
+        if (isAutoMode) {
+            if (v) {
+                enableDarkMode()
+            } else {
+                disableDarkMode()
+            }
+        }
+    },
+    { immediate: true },
+)
+
+export const toggleDarkMode = () => {
+    isAutoMode = false
+    if (isDarkMode.value) {
+        disableDarkMode()
+        themeState.value = 'off'
+    } else {
+        enableDarkMode()
+        themeState.value = 'on'
+    }
+}
 
 export const commonThemeItems: Item[] = [
     {

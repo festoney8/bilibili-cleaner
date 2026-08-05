@@ -254,18 +254,26 @@ html[video-page-exchange-player-position] {
     }
 
     // fix #80, fix #347
-    &[player-is-wide] body:not(.webscreen-fix) {
-        #danmukuBox {
-            margin-top: 0 !important;
+    &[player-is-wide] {
+        // 逆向魔法，勿动
+        $player-width: calc(380px + clamp(543px, min(100vw - 648px, 100vh * 16 / 9 - 691px), 1569px));
+        $player-height: calc($player-width * 9 / 16);
+        body:not(.webscreen-fix) {
+            #danmukuBox {
+                margin-top: 0 !important;
+            }
+            .up-panel-container {
+                position: relative !important;
+                margin-top: calc(86px + $player-height) !important;
+                padding-top: 30px !important;
+            }
         }
-        .up-panel-container {
-            position: relative !important;
 
-            // 逆向魔法，勿动
-            $player-width: calc(380px + clamp(543px, min(100vw - 648px, 100vh * 16 / 9 - 691px), 1569px));
-
-            margin-top: calc(30px + $player-width * 9 / 16) !important;
-            padding-top: 30px !important;
+        // “非全屏时 关闭弹幕栏” 影响距离
+        &[video-page-hide-bpx-player-sending-area] body:not(.webscreen-fix) {
+            .up-panel-container {
+                margin-top: calc(30px + $player-height) !important;
+            }
         }
     }
 

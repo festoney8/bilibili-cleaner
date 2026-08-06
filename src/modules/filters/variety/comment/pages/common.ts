@@ -428,7 +428,6 @@ class CommentFilterCommon implements IMainFilter {
         this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns.root.content])
         this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns.root.level])
         this.commentNoFaceFilter.isEnable && blackPairs.push([this.commentNoFaceFilter, selectorFns.root.noface])
-        this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns.root.username])
         this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.root.callBot])
         this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns.root.callUser])
         this.commentCallUserNoReplyFilter.isEnable &&
@@ -449,6 +448,7 @@ class CommentFilterCommon implements IMainFilter {
 
         const forceBlackPairs: SubFilterPair[] = []
         this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns.root.content])
+        this.commentBotFilter.isEnable && forceBlackPairs.push([this.commentBotFilter, selectorFns.root.username])
 
         const rootBlackCnt = await coreCheck(rootComments, true, 'style', blackPairs, whitePairs, forceBlackPairs, true)
         const time = (performance.now() - timer).toFixed(1)

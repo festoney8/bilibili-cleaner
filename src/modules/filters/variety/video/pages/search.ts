@@ -9,6 +9,7 @@ import { convertTimeToSec, matchBvid, orderedUniq, showEle, waitForEle } from '@
 import {
     VideoBvidFilter,
     VideoDurationFilter,
+    VideoNoRelativityFilter,
     VideoTitleFilter,
     VideoUploaderFilter,
     VideoUploaderKeywordFilter,
@@ -36,6 +37,9 @@ const GM_KEYS = {
         title: {
             statusKey: 'search-title-keyword-filter-status',
             valueKey: 'global-title-keyword-filter-value',
+        },
+        noRelativity: {
+            statusKey: 'search-no-relativity-filter-status',
         },
     },
     white: {
@@ -65,6 +69,20 @@ const selectorFns = {
             video.querySelector('.bili-video-card__info--right > a')?.getAttribute('href')
         return (href && matchBvid(href)) ?? undefined
     },
+    // 无相关性true, 有相关性false, 数据缺失undefined
+    noRelativity: (video: HTMLElement): SelectorResult => {
+        const bvid = selectorFns.bvid(video)
+        if (!bvid) {
+            return undefined
+        }
+        // 卡片元素上挂载了vue实例, props.info为整个搜索结果列表的原始数据, 需按bvid匹配
+        const info = (video.closest('.video.search-all-list') as any)?.__VUE__?.[0]?.props?.info
+        const data = Array.isArray(info) ? info.find((item: any) => item?.bvid === bvid) : undefined
+        if (!data || !Array.isArray(data.hit_columns)) {
+            return undefined
+        }
+        return data.hit_columns.length === 0
+    },
     uploader: (video: HTMLElement): SelectorResult => {
         return (
             video.querySelector('.bili-video-card__info--author')?.textContent?.trim() ||
@@ -85,6 +103,7 @@ class VideoFilterSearch implements IMainFilter {
     videoTitleFilter = new VideoTitleFilter()
     videoUploaderFilter = new VideoUploaderFilter()
     videoUploaderKeywordFilter = new VideoUploaderKeywordFilter()
+    videoNoRelativityFilter = new VideoNoRelativityFilter()
 
     // 白名单
     videoUploaderWhiteFilter = new VideoUploaderWhiteFilter()
@@ -107,15 +126,14 @@ class VideoFilterSearch implements IMainFilter {
             return
         }
         let revertAll = false
-        if (
-            !(
-                this.videoBvidFilter.isEnable ||
-                this.videoDurationFilter.isEnable ||
-                this.videoTitleFilter.isEnable ||
-                this.videoUploaderFilter.isEnable ||
-                this.videoUploaderKeywordFilter.isEnable
-            )
-        ) {
+        if (!(
+            this.videoBvidFilter.isEnable ||
+            this.videoDurationFilter.isEnable ||
+            this.videoTitleFilter.isEnable ||
+            this.videoUploaderFilter.isEnable ||
+            this.videoUploaderKeywordFilter.isEnable ||
+            this.videoNoRelativityFilter.isEnable
+        )) {
             revertAll = true
         }
         const timer = performance.now()
@@ -145,6 +163,7 @@ class VideoFilterSearch implements IMainFilter {
                         `duration: ${selectorFns.duration(v)}`,
                         `title: ${selectorFns.title(v)}`,
                         `uploader: ${selectorFns.uploader(v)}`,
+                        `noRelativity: ${selectorFns.noRelativity(v)}`,
                     ].join('\n'),
                 )
             })
@@ -157,6 +176,8 @@ class VideoFilterSearch implements IMainFilter {
         this.videoUploaderFilter.isEnable && blackPairs.push([this.videoUploaderFilter, selectorFns.uploader])
         this.videoUploaderKeywordFilter.isEnable &&
             blackPairs.push([this.videoUploaderKeywordFilter, selectorFns.uploader])
+        this.videoNoRelativityFilter.isEnable &&
+            blackPairs.push([this.videoNoRelativityFilter, selectorFns.noRelativity])
 
         const whitePairs: SubFilterPair[] = []
         this.videoUploaderWhiteFilter.isEnable && whitePairs.push([this.videoUploaderWhiteFilter, selectorFns.uploader])
@@ -419,6 +440,27 @@ export const videoFilterSearchGroups: Group[] = [
                 editorDescription: ['每行一个BV号，保存时自动去重'],
                 saveFn: async () => {
                     mainFilter.videoBvidFilter.setParam(GM_getValue(GM_KEYS.black.bvid.valueKey, []))
+                    mainFilter.checkFull()
+                },
+            },
+        ],
+    },
+    {
+        name: '相关性过滤',
+        items: [
+            {
+                type: 'switch',
+                id: GM_KEYS.black.noRelativity.statusKey,
+                name: '启用 搜索相关性过滤',
+                description: ['隐藏标题、简介、标签均未命中关键词的视频'],
+                defaultEnable: true,
+                noStyle: true,
+                enableFn: () => {
+                    mainFilter.videoNoRelativityFilter.enable()
+                    mainFilter.checkFull()
+                },
+                disableFn: () => {
+                    mainFilter.videoNoRelativityFilter.disable()
                     mainFilter.checkFull()
                 },
             },

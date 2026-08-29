@@ -8,7 +8,7 @@
         "build": "vue-tsc -b && vite build",
         "prepare": "husky"
     },
-    "packageManager": "pnpm@11.18.0+sha512.33d83c77da82f49fba836925c6f1b841181ec3132b670639bd012f7075f5c7cf634c5f870147c19aae7478fac01df09d8892e880454896edd23ee9b33757563c",
+    "packageManager": "pnpm@11.24.0+sha512.bd27e345e976dcb0be0b7a1228217b049a817e21b1f355c90dbe7dc46671895a8bc1e6d06c24554505ea93ea0b45f489a27ec1bfbc8de6a9659fca0f16fa0000",
     "dependencies": {
         "@headlessui/vue": "^1.7.23",
         "@heroicons/vue": "^2.2.0",
@@ -20,7 +20,7 @@
         "pinia": "^3.0.4",
         "tailwindcss": "^4.3.3",
         "universal-cookie": "^8.1.2",
-        "vue": "^3.5.40"
+        "vue": "^3.5.42"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
@@ -30,20 +30,20 @@
         "autoprefixer": "^10.5.4",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-vue": "^10.10.0",
-        "globals": "^17.9.0",
+        "globals": "^17.11.0",
         "husky": "^9.1.7",
-        "lint-staged": "^17.3.0",
+        "lint-staged": "^17.4.1",
         "prettier": "^3.9.6",
         "prettier-plugin-tailwindcss": "^0.8.1",
-        "sass-embedded": "^1.100.0",
+        "sass-embedded": "^1.103.1",
         "stylelint": "^17.14.1",
         "stylelint-config-standard-scss": "^17.0.0",
         "typescript": "^6.0.3",
-        "typescript-eslint": "^8.66.0",
-        "vite": "^8.2.0",
+        "typescript-eslint": "^8.68.0",
+        "vite": "^8.2.2",
         "vite-plugin-monkey": "^8.1.0",
         "vite-plugin-tailwind-shadowdom": "^1.1.1",
-        "vue-tsc": "^3.3.9"
+        "vue-tsc": "^3.3.11"
     },
     "lint-staged": {
         "src/**/*": "prettier --write --ignore-unknown",

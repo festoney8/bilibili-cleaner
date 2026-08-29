@@ -1,5 +1,6 @@
 import { unsafeWindow } from '$'
 import config from '@/config'
+import { bigram } from 'n-gram'
 import { logger } from './logger'
 
 // 匹配BV号
@@ -77,6 +78,50 @@ export const calcQuality = (ratio: number): number => {
     const D = 1.686e2
     const ans = (A - D) / (1 + Math.pow(ratio / C, B)) + D
     return ans > 0 ? ans : 0
+}
+
+/**
+ * 计算搜索关键词与视频的相关度(0~1)
+ * hit_columns非空: 搜索引擎已命中, 返回1
+ * hit_columns为空: 返回关键词bigram在视频文本(标题/简介/作者/标签)中的覆盖率
+ * 数据缺失无法判断: 返回undefined
+ * @param keyword 搜索关键词(URL解码后)
+ * @param hitColumns 搜索结果原始数据中的hit_columns字段
+ */
+export const calcVideoRelativity = (
+    keyword: string,
+    title: string,
+    description: string,
+    author: string,
+    tags: string[],
+    hitColumns: unknown,
+): number | undefined => {
+    if (!Array.isArray(hitColumns)) {
+        return undefined
+    }
+    if (hitColumns.length > 0) {
+        return 1
+    }
+    const query = keyword.replace(/\s+/g, '')
+    if (!query) {
+        return undefined
+    }
+    // 关键词不足两个字符时无bigram, 退化为单字匹配
+    const toGrams = query.length >= 2 ? (s: string) => bigram(s) : (s: string) => [...s]
+    const queryGrams = new Set(toGrams(query))
+    // 换行分隔各字段, 避免产生跨字段的bigram
+    const text = [title, description, author, ...tags].filter(Boolean).join('\n')
+    if (!text) {
+        return 0
+    }
+    const textGrams = new Set(toGrams(text))
+    let hit = 0
+    queryGrams.forEach((g) => {
+        if (textGrams.has(g)) {
+            hit++
+        }
+    })
+    return hit / queryGrams.size
 }
 
 // 隐藏元素

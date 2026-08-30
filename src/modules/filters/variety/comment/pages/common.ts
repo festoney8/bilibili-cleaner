@@ -28,6 +28,7 @@ import {
     CommentEmojiOnlyFilter,
     CommentLevelFilter,
     CommentNoFaceFilter,
+    CommentChainFilter,
     CommentUsernameFilter,
     CommentUsernameKeywordFilter,
 } from '../subFilters/black'
@@ -84,6 +85,10 @@ const GM_KEYS = {
         emojiOnly: {
             statusKey: 'video-comment-emoji-only-filter-status',
         },
+        chain: {
+            statusKey: 'video-comment-chain-filter-status',
+            valueKey: 'video-comment-chain-level-value',
+        },
     },
     white: {
         root: {
@@ -116,6 +121,10 @@ const GM_KEYS = {
 // https://b23.tv/av1350214762
 // https://b23.tv/av113195607985861
 const emojiPattern = emojiRegex()
+
+// 记录当前评论区已被过滤的二级评论及其连坐层级
+const commentRpidLevelMap = new Map<string, number>()
+
 const selectorFns = {
     root: {
         username: (comment: HTMLElement): SelectorResult => {
@@ -210,6 +219,16 @@ const selectorFns = {
         },
     },
     sub: {
+        rpid: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.rpid_str
+        },
+        parent: (comment: HTMLElement): SelectorResult => {
+            return (comment as any).__data?.parent_str
+        },
+        isReplyToFiltered: (comment: HTMLElement): SelectorResult => {
+            const parent = (comment as any).__data?.parent_str
+            return typeof parent === 'string' && commentRpidLevelMap.has(parent)
+        },
         username: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.member?.uname?.trim()
         },
@@ -315,6 +334,39 @@ const selectorFns = {
     },
 }
 
+const updateCommentRpidLevelMap = (comments: HTMLElement[], hiddenIndexes: Set<number>, initial: boolean) => {
+    hiddenIndexes.forEach((index) => {
+        const comment = comments[index]
+        const rpid = selectorFns.sub.rpid(comment)
+        if (typeof rpid !== 'string' || !rpid) {
+            return
+        }
+
+        if (initial) {
+            const currentLevel = commentRpidLevelMap.get(rpid)
+            if (currentLevel === undefined || currentLevel > 0) {
+                commentRpidLevelMap.set(rpid, 0)
+            }
+            return
+        }
+
+        const parent = selectorFns.sub.parent(comment)
+        if (typeof parent !== 'string') {
+            return
+        }
+        const parentLevel = commentRpidLevelMap.get(parent)
+        if (parentLevel === undefined) {
+            return
+        }
+
+        const level = parentLevel + 1
+        const currentLevel = commentRpidLevelMap.get(rpid)
+        if (currentLevel === undefined || level < currentLevel) {
+            commentRpidLevelMap.set(rpid, level)
+        }
+    })
+}
+
 // 一二级评论是否检测
 let isRootWhite = false
 let isSubWhite = false
@@ -336,6 +388,8 @@ class CommentFilterCommon implements IMainFilter {
     commentCallUserOnlyFilter = new CommentCallUserOnlyFilter()
     commentCallUserOnlyNoReplyFilter = new CommentCallUserOnlyNoReplyFilter()
     commentEmojiOnlyFilter = new CommentEmojiOnlyFilter()
+    commentChainFilter = new CommentChainFilter()
+    commentChainLevel = 1
     // 白名单
     commentIsUpFilter = new CommentIsUpFilter()
     commentIsPinFilter = new CommentIsPinFilter()
@@ -349,6 +403,8 @@ class CommentFilterCommon implements IMainFilter {
         this.commentUsernameKeywordFilter.setParam(GM_getValue(GM_KEYS.black.usernameKeyword.valueKey, []))
         this.commentContentFilter.setParam(GM_getValue(GM_KEYS.black.content.valueKey, []))
         this.commentLevelFilter.setParam(GM_getValue(GM_KEYS.black.level.valueKey, 0))
+        const chainLevel = GM_getValue(GM_KEYS.black.chain.valueKey, 1)
+        this.commentChainLevel = typeof chainLevel === 'number' ? Math.min(10, Math.max(0, chainLevel)) : 1
         this.commentBotFilter.setParam(bots)
         this.commentAdFilter.setParam([`/(bili2233\\.cn|b23\\.tv)\\/(mall-|cm-)|领券|gaoneng\\.bilibili\\.com/`])
     }
@@ -428,7 +484,6 @@ class CommentFilterCommon implements IMainFilter {
         this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns.root.content])
         this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns.root.level])
         this.commentNoFaceFilter.isEnable && blackPairs.push([this.commentNoFaceFilter, selectorFns.root.noface])
-        this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns.root.username])
         this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.root.callBot])
         this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns.root.callUser])
         this.commentCallUserNoReplyFilter.isEnable &&
@@ -449,11 +504,20 @@ class CommentFilterCommon implements IMainFilter {
 
         const forceBlackPairs: SubFilterPair[] = []
         this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns.root.content])
+        this.commentBotFilter.isEnable && forceBlackPairs.push([this.commentBotFilter, selectorFns.root.username])
 
-        const rootBlackCnt = await coreCheck(rootComments, true, 'style', blackPairs, whitePairs, forceBlackPairs, true)
+        const rootBlackIdxSet = await coreCheck(
+            rootComments,
+            true,
+            'style',
+            blackPairs,
+            whitePairs,
+            forceBlackPairs,
+            true,
+        )
         const time = (performance.now() - timer).toFixed(1)
         logger.debug(
-            `CommentFilterCommon hide ${rootBlackCnt} in ${rootComments.length} root comments, mode=${mode}, time=${time}`,
+            `CommentFilterCommon hide ${rootBlackIdxSet.size} in ${rootComments.length} root comments, mode=${mode}, time=${time}`,
         )
     }
 
@@ -464,6 +528,9 @@ class CommentFilterCommon implements IMainFilter {
      */
     async checkSub(mode?: 'full' | 'incr') {
         const timer = performance.now()
+        if (mode === 'full') {
+            commentRpidLevelMap.clear()
+        }
         let revertAll = false
         if (!(
             this.commentUsernameFilter.isEnable ||
@@ -478,7 +545,8 @@ class CommentFilterCommon implements IMainFilter {
             this.commentCallUserNoReplyFilter.isEnable ||
             this.commentCallUserOnlyFilter.isEnable ||
             this.commentCallUserOnlyNoReplyFilter.isEnable ||
-            this.commentEmojiOnlyFilter.isEnable
+            this.commentEmojiOnlyFilter.isEnable ||
+            this.commentChainFilter.isEnable
         )) {
             revertAll = true
         }
@@ -550,10 +618,40 @@ class CommentFilterCommon implements IMainFilter {
         const forceBlackPairs: SubFilterPair[] = []
         this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns.sub.content])
 
-        const subBlackCnt = await coreCheck(subComments, false, 'style', blackPairs, whitePairs, forceBlackPairs, true)
+        const subBlackIdxSet = await coreCheck(
+            subComments,
+            false,
+            'style',
+            blackPairs,
+            whitePairs,
+            forceBlackPairs,
+            true,
+        )
+
+        // 更新rpid map，开始多轮链式过滤检查
+        updateCommentRpidLevelMap(subComments, subBlackIdxSet, true)
+        let chainBlackIdxSet = new Set<number>()
+        if (this.commentChainFilter.isEnable && this.commentChainLevel > 0) {
+            for (let round = 1; round <= this.commentChainLevel; round++) {
+                const chainBlackPairs = [
+                    ...blackPairs,
+                    [this.commentChainFilter, selectorFns.sub.isReplyToFiltered] as SubFilterPair,
+                ]
+                chainBlackIdxSet = await coreCheck(
+                    subComments,
+                    false,
+                    'style',
+                    chainBlackPairs,
+                    whitePairs,
+                    forceBlackPairs,
+                    true,
+                )
+                updateCommentRpidLevelMap(subComments, chainBlackIdxSet, false)
+            }
+        }
         const time = (performance.now() - timer).toFixed(1)
         logger.debug(
-            `CommentFilterCommon hide ${subBlackCnt} in ${subComments.length} sub comments, mode=${mode}, time=${time}`,
+            `CommentFilterCommon hide ${new Set([...subBlackIdxSet, ...chainBlackIdxSet]).size} in ${subComments.length} sub comments, mode=${mode}, time=${time}`,
         )
     }
 
@@ -864,6 +962,42 @@ export const commentFilterCommonGroups: Group[] = [
                 disableValue: 0,
                 fn: (value: number) => {
                     mainFilter.commentLevelFilter.setParam(value)
+                    mainFilter.check('full')
+                },
+            },
+        ],
+    },
+    {
+        name: '链式过滤',
+        items: [
+            {
+                type: 'switch',
+                id: GM_KEYS.black.chain.statusKey,
+                name: '启用 链式过滤（实验功能）',
+                description: ['连坐机制，回复评论一并被过滤', '只对二级评论生效', '轻微影响过滤性能'],
+                noStyle: true,
+                enableFn: () => {
+                    mainFilter.commentChainFilter.enable()
+                    mainFilter.check('full')
+                },
+                disableFn: () => {
+                    mainFilter.commentChainFilter.disable()
+                    mainFilter.check('full')
+                },
+            },
+            {
+                type: 'number',
+                id: GM_KEYS.black.chain.valueKey,
+                noStyle: true,
+                name: '设定 连坐层级 (0~10)',
+                minValue: 0,
+                maxValue: 10,
+                step: 1,
+                defaultValue: 1,
+                disableValue: 0,
+                fn: (value: number) => {
+                    mainFilter.commentChainLevel = Math.min(10, Math.max(0, value))
+                    commentRpidLevelMap.clear()
                     mainFilter.check('full')
                 },
             },

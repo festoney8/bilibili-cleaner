@@ -118,9 +118,9 @@ class ArticleFilterSearch implements IMainFilter {
         this.articleTitleKeywordWhiteFilter.isEnable &&
             whitePairs.push([this.articleTitleKeywordWhiteFilter, selectorFns.title])
 
-        const blackCnt = await coreCheck(cards, true, 'sign', blackPairs, whitePairs)
+        const blackIdxSet = await coreCheck(cards, true, 'sign', blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
-        logger.debug(`ArticleFilterSearch hide ${blackCnt} in ${cards.length} cards, time=${time}`)
+        logger.debug(`ArticleFilterSearch hide ${blackIdxSet.size} in ${cards.length} cards, time=${time}`)
     }
 
     observe() {

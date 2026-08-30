@@ -14,7 +14,7 @@ const rawCheck = async (
     blackPairs: SubFilterPair[],
     whitePairs?: SubFilterPair[],
     forceBlackPairs?: SubFilterPair[],
-): Promise<number> => {
+): Promise<Set<number>> => {
     const toHideIdx = new Set<number>()
 
     const tasks = elements.map((el, idx) =>
@@ -58,7 +58,7 @@ const rawCheck = async (
                 }
             })
         })
-    return toHideIdx.size
+    return toHideIdx
 }
 
 const throttledCheck = useThrottleFn(rawCheck, 100, true)
@@ -82,9 +82,12 @@ export const coreCheck = async (
     whitePairs?: SubFilterPair[],
     forceBlackPairs?: SubFilterPair[],
     noThrottle?: boolean,
-): Promise<number> => {
+): Promise<Set<number>> => {
     if (noThrottle) {
         return rawCheck(elements, enableFilterVisitSign, hideMode, blackPairs, whitePairs, forceBlackPairs)
     }
-    return throttledCheck(elements, enableFilterVisitSign, hideMode, blackPairs, whitePairs, forceBlackPairs)
+    return (
+        (await throttledCheck(elements, enableFilterVisitSign, hideMode, blackPairs, whitePairs, forceBlackPairs)) ??
+        new Set<number>()
+    )
 }

@@ -125,16 +125,14 @@ class DynamicFilterDynamic implements IMainFilter {
             return
         }
         let revertAll = false
-        if (
-            !(
-                this.dynUploaderFilter.isEnable ||
-                this.dynDurationFilter.isEnable ||
-                this.dynVideoTitleFilter.isEnable ||
-                this.dynContentFilter.isEnable ||
-                this.dynDynVideoFilter.isEnable ||
-                this.dynPlaybackFilter.isEnable
-            )
-        ) {
+        if (!(
+            this.dynUploaderFilter.isEnable ||
+            this.dynDurationFilter.isEnable ||
+            this.dynVideoTitleFilter.isEnable ||
+            this.dynContentFilter.isEnable ||
+            this.dynDynVideoFilter.isEnable ||
+            this.dynPlaybackFilter.isEnable
+        )) {
             revertAll = true
         }
         const timer = performance.now()
@@ -189,9 +187,11 @@ class DynamicFilterDynamic implements IMainFilter {
         this.dynContentWhiteFilter.isEnable && whitePairs.push([this.dynContentWhiteFilter, selectorFns.content])
 
         // 检测
-        const blackCnt = await coreCheck(filteredDyns, true, 'sign', blackPairs, whitePairs)
+        const blackIdxSet = await coreCheck(filteredDyns, true, 'sign', blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
-        logger.debug(`DynamicFilterDynamic hide ${blackCnt} in ${filteredDyns.length} dyns, mode=${mode}, time=${time}`)
+        logger.debug(
+            `DynamicFilterDynamic hide ${blackIdxSet.size} in ${filteredDyns.length} dyns, mode=${mode}, time=${time}`,
+        )
     }
 
     checkFull() {

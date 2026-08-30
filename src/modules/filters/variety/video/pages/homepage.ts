@@ -138,17 +138,15 @@ class VideoFilterHomepage implements IMainFilter {
             return
         }
         let revertAll = false
-        if (
-            !(
-                this.videoBvidFilter.isEnable ||
-                this.videoDurationFilter.isEnable ||
-                this.videoViewsFilter.isEnable ||
-                this.videoTitleFilter.isEnable ||
-                this.videoUploaderFilter.isEnable ||
-                this.videoUploaderKeywordFilter.isEnable ||
-                this.videoPubdateFilter.isEnable
-            )
-        ) {
+        if (!(
+            this.videoBvidFilter.isEnable ||
+            this.videoDurationFilter.isEnable ||
+            this.videoViewsFilter.isEnable ||
+            this.videoTitleFilter.isEnable ||
+            this.videoUploaderFilter.isEnable ||
+            this.videoUploaderKeywordFilter.isEnable ||
+            this.videoPubdateFilter.isEnable
+        )) {
             revertAll = true
         }
         const timer = performance.now()
@@ -203,9 +201,11 @@ class VideoFilterHomepage implements IMainFilter {
         this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns.bvid])
 
         // 检测
-        const blackCnt = await coreCheck(videos, true, 'sign', blackPairs, whitePairs, forceBlackPairs)
+        const blackIdxSet = await coreCheck(videos, true, 'sign', blackPairs, whitePairs, forceBlackPairs)
         const time = (performance.now() - timer).toFixed(1)
-        logger.debug(`VideoFilterHomepage hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
+        logger.debug(
+            `VideoFilterHomepage hide ${blackIdxSet.size} in ${videos.length} videos, mode=${mode}, time=${time}`,
+        )
     }
 
     checkFull() {

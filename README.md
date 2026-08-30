@@ -259,7 +259,7 @@
 
 - 环境要求
     - node.js >= 24
-    - pnpm >= 11.18
+    - pnpm >= 11.24
     - 使用新版 Chrome / Edge / Firefox，安装 tampermonkey 或 violentmonkey
 
 - 编译运行

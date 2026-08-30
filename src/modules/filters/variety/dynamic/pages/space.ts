@@ -111,15 +111,13 @@ class DynamicFilterSpace implements IMainFilter {
             return
         }
         let revertAll = false
-        if (
-            !(
-                this.dynDurationFilter.isEnable ||
-                this.dynVideoTitleFilter.isEnable ||
-                this.dynContentFilter.isEnable ||
-                this.dynDynVideoFilter.isEnable ||
-                this.dynPlaybackFilter.isEnable
-            )
-        ) {
+        if (!(
+            this.dynDurationFilter.isEnable ||
+            this.dynVideoTitleFilter.isEnable ||
+            this.dynContentFilter.isEnable ||
+            this.dynDynVideoFilter.isEnable ||
+            this.dynPlaybackFilter.isEnable
+        )) {
             revertAll = true
         }
         const timer = performance.now()
@@ -169,9 +167,11 @@ class DynamicFilterSpace implements IMainFilter {
         this.dynContentWhiteFilter.isEnable && whitePairs.push([this.dynContentWhiteFilter, selectorFns.content])
 
         // 检测
-        const blackCnt = await coreCheck(filteredDyns, true, 'sign', blackPairs, whitePairs)
+        const blackIdxSet = await coreCheck(filteredDyns, true, 'sign', blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
-        logger.debug(`DynamicFilterSpace hide ${blackCnt} in ${filteredDyns.length} dyns, mode=${mode}, time=${time}`)
+        logger.debug(
+            `DynamicFilterSpace hide ${blackIdxSet.size} in ${filteredDyns.length} dyns, mode=${mode}, time=${time}`,
+        )
     }
 
     checkFull() {

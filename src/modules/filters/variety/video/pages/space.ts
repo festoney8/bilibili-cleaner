@@ -139,9 +139,9 @@ class VideoFilterSpace implements IMainFilter {
         this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns.bvid])
 
         // 检测
-        const blackCnt = await coreCheck(videos, true, 'sign', blackPairs, whitePairs, forceBlackPairs)
+        const blackIdxSet = await coreCheck(videos, true, 'sign', blackPairs, whitePairs, forceBlackPairs)
         const time = (performance.now() - timer).toFixed(1)
-        logger.debug(`VideoFilterSpace hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
+        logger.debug(`VideoFilterSpace hide ${blackIdxSet.size} in ${videos.length} videos, mode=${mode}, time=${time}`)
     }
 
     checkFull() {

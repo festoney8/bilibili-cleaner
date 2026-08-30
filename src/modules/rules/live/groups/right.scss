@@ -190,8 +190,11 @@ html[live-page-brush-prompt] {
 
 // 隐藏 互动框
 html[live-page-combo-card] {
+    #relocated-slot-combo-danmaku {
+        display: none !important;
+    }
+
     // 倒计时互动
-    #combo-card:has(.countDownBtn),
     .gift-wish-card-root {
         display: none !important;
     }
@@ -199,8 +202,8 @@ html[live-page-combo-card] {
         padding-bottom: 0 !important;
     }
 
-    // 他们都在说
-    #combo-card:has(.combo-tips) {
+    // 倒计时互动、他们都在说、加入粉丝团
+    #combo-card {
         display: none !important;
     }
 

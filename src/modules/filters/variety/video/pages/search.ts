@@ -113,15 +113,13 @@ const registerRelativityFetchHook = () => {
             if (!Array.isArray(result)) {
                 return
             }
-            let cnt = 0
             result.forEach((item: any) => {
                 const relativityItem = toRelativityItem(item)
                 if (relativityItem) {
                     relativityMap.set(item.bvid, relativityItem)
-                    cnt++
                 }
             })
-            logger.debug(`VideoFilterSearch relativityMap updated, +${cnt}, size=${relativityMap.size}`)
+            logger.debug(`VideoFilterSearch relativityMap updated, size=${relativityMap.size}`)
         } catch (err) {
             logger.error('VideoFilterSearch relativity fetch hook error', err)
         }
@@ -143,6 +141,21 @@ const getFirstPageVideoItem = (bvid: string): any | undefined => {
     return undefined
 }
 
+// 卡片元素自身的vue实例兜底, 字段结构与API不同: 作者为对象取name, tag与hit_columns为空
+const getCardVideoItem = (video: HTMLElement): RelativityItem | undefined => {
+    const info = (video.querySelector('.bili-video-card') as any)?.__VUE__?.[0]?.props?.info
+    if (!info || typeof info !== 'object') {
+        return undefined
+    }
+    return {
+        title: typeof info.title === 'string' ? info.title : '',
+        description: typeof info.description === 'string' ? info.description : '',
+        author: typeof info.author?.name === 'string' ? info.author.name : '',
+        tag: '',
+        hit_columns: [],
+    }
+}
+
 // 视频列表信息提取
 const selectorFns = {
     duration: (video: HTMLElement): SelectorResult => {
@@ -162,13 +175,16 @@ const selectorFns = {
     // hit_columns 非空为100(搜索命中)
     // hit_columns 为空按 bigram 覆盖率二次筛查(0~100)
     relativity: (video: HTMLElement): SelectorResult => {
+        if (video.closest('.user-list')) {
+            return undefined
+        }
         const keyword = new URLSearchParams(location.search).get('keyword')?.trim()
         const bvid = selectorFns.bvid(video)
         if (!keyword || typeof bvid !== 'string') {
             return undefined
         }
-        // 取map缓存数据, 回退到pinia中的首屏数据
-        const data = relativityMap.get(bvid) ?? toRelativityItem(getFirstPageVideoItem(bvid))
+        // 依次取缓存的各页API数据, pinia首屏数据, 卡片自身vue数据
+        const data = relativityMap.get(bvid) ?? toRelativityItem(getFirstPageVideoItem(bvid)) ?? getCardVideoItem(video)
         if (!data) {
             return undefined
         }
@@ -215,7 +231,7 @@ class VideoFilterSearch implements IMainFilter {
         this.videoTitleFilter.setParam(GM_getValue(GM_KEYS.black.title.valueKey, []))
         this.videoUploaderFilter.setParam(GM_getValue(GM_KEYS.black.uploader.valueKey, []))
         this.videoUploaderKeywordFilter.setParam(GM_getValue(GM_KEYS.black.uploaderKeyword.valueKey, []))
-        this.videoRelativityFilter.setParam(GM_getValue(GM_KEYS.black.relativity.valueKey, 20))
+        this.videoRelativityFilter.setParam(GM_getValue(GM_KEYS.black.relativity.valueKey, 15))
         // 白名单
         this.videoUploaderWhiteFilter.setParam(GM_getValue(GM_KEYS.white.uploader.valueKey, []))
         this.videoTitleWhiteFilter.setParam(GM_getValue(GM_KEYS.white.title.valueKey, []))
@@ -382,13 +398,18 @@ export const videoFilterSearchEntry = async () => {
 
 export const videoFilterSearchGroups: Group[] = [
     {
-        name: '相关性过滤',
+        name: '搜索结果相关性过滤',
         items: [
             {
                 type: 'switch',
                 id: GM_KEYS.black.relativity.statusKey,
-                name: '启用 搜索结果相关性过滤',
-                description: ['隐藏与搜索词无关的视频', '保留搜索命中项, 未命中时按相似度筛查'],
+                name: '启用 相关性过滤（实验功能）',
+                description: [
+                    '不稳定功能，刷新生效',
+                    '保留搜索命中项，未命中时按相似度筛查',
+                    '有遗漏或误伤，有可能过滤整页视频',
+                    '页码 >=2 时刷新网页会失效',
+                ],
                 defaultEnable: false,
                 noStyle: true,
                 enableFn: () => {
@@ -408,12 +429,13 @@ export const videoFilterSearchGroups: Group[] = [
                 type: 'number',
                 id: GM_KEYS.black.relativity.valueKey,
                 name: '相关度阈值百分比',
+                description: ['非线性，15% 能过滤掉多数不相关视频'],
                 noStyle: true,
                 minValue: 0,
                 maxValue: 100,
                 step: 1,
-                defaultValue: 20,
-                disableValue: 0,
+                defaultValue: 15,
+                disableValue: -1,
                 addonText: '%',
                 fn: (value: number) => {
                     mainFilter.videoRelativityFilter.setParam(value)

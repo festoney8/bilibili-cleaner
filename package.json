@@ -33,6 +33,7 @@
         "eslint-plugin-vue": "^10.10.0",
         "globals": "^17.11.0",
         "husky": "^9.1.7",
+        "jsdom": "^30.0.1",
         "lint-staged": "^17.4.1",
         "prettier": "^3.9.6",
         "prettier-plugin-tailwindcss": "^0.8.1",
@@ -44,6 +45,7 @@
         "vite": "^8.2.2",
         "vite-plugin-monkey": "^8.1.0",
         "vite-plugin-tailwind-shadowdom": "^1.1.1",
+        "vitest": "^4.1.11",
         "vue-tsc": "^3.3.11"
     },
     "lint-staged": {

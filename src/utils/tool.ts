@@ -80,50 +80,6 @@ export const calcQuality = (ratio: number): number => {
     return ans > 0 ? ans : 0
 }
 
-/**
- * 计算搜索关键词与视频的相关度(0~1)
- * hit_columns非空: 搜索引擎已命中, 返回1
- * hit_columns为空: 返回关键词bigram在视频文本(标题/简介/作者/标签)中的覆盖率
- * 数据缺失无法判断: 返回undefined
- * @param keyword 搜索关键词(URL解码后)
- * @param hitColumns 搜索结果原始数据中的hit_columns字段
- */
-export const calcVideoRelativity = (
-    keyword: string,
-    title: string,
-    description: string,
-    author: string,
-    tags: string[],
-    hitColumns: unknown,
-): number | undefined => {
-    if (!Array.isArray(hitColumns)) {
-        return undefined
-    }
-    if (hitColumns.length > 0) {
-        return 1
-    }
-    const query = keyword.replace(/\s+/g, '')
-    if (!query) {
-        return undefined
-    }
-    // 关键词不足两个字符时无bigram, 退化为单字匹配
-    const toGrams = query.length >= 2 ? (s: string) => bigram(s) : (s: string) => [...s]
-    const queryGrams = new Set(toGrams(query))
-    // 换行分隔各字段, 避免产生跨字段的bigram
-    const text = [title, description, author, ...tags].filter(Boolean).join('\n')
-    if (!text) {
-        return 0
-    }
-    const textGrams = new Set(toGrams(text))
-    let hit = 0
-    queryGrams.forEach((g) => {
-        if (textGrams.has(g)) {
-            hit++
-        }
-    })
-    return hit / queryGrams.size
-}
-
 // 隐藏元素
 export const hideEle = (ele: HTMLElement, hideMode: 'style' | 'sign') => {
     if (hideMode === 'sign') {
@@ -242,4 +198,171 @@ export const playerGoTo = (mode: 'normal' | 'wide' | 'web' | 'mini' | 'full' | '
             logger.error(`Failed to switch player mode to ${mode}:`, err)
         })
     }
+}
+
+// NFKC正规化
+const normalizeText = (value: unknown): string => {
+    if (typeof value !== 'string') {
+        return ''
+    }
+    return value.normalize('NFKC').toLowerCase().trim()
+}
+
+// 视频相关度评分参数
+const VIDEO_RELATIVITY_PARAMS = {
+    tokenization: {
+        segmenterLocale: 'zh',
+        segmenterGranularity: 'word' as const,
+    },
+    scoreWeights: {
+        unigramCoverage: 0.75,
+        bigramProximity: 0.25,
+    },
+    fieldWeights: {
+        title: 0.6,
+        tags: 0.25,
+        author: 0.1,
+        description: 0.05,
+    },
+} as const
+
+const tokenizeVideoRelativityText = (value: string, segmenter: Intl.Segmenter): string[] => {
+    return Array.from(segmenter.segment(value))
+        .filter(({ isWordLike }) => isWordLike)
+        .map(({ segment }) => segment)
+        .filter(Boolean)
+}
+
+const toTokenSet = (tokens: string[]): Set<string> => new Set(tokens)
+
+const toBigramSet = (tokens: string[]): Set<string> => {
+    const tokenBigrams = bigram(tokens) as unknown as string[][]
+    return new Set(tokenBigrams.map((pair) => pair.join('\u0000')))
+}
+
+const calcTokenCoverage = (queryTokens: string[], fieldTokens: string[]): number => {
+    if (!queryTokens.length) {
+        return 0
+    }
+    const fieldTokenSet = toTokenSet(fieldTokens)
+    const matchedTokenCount = queryTokens.filter((token) => fieldTokenSet.has(token)).length
+    return matchedTokenCount / queryTokens.length
+}
+
+const calcBigramCoverage = (queryTokens: string[], fieldTokens: string[]): number => {
+    const queryBigramSet = toBigramSet(queryTokens)
+    if (!queryBigramSet.size) {
+        return 0
+    }
+    const fieldBigramSet = toBigramSet(fieldTokens)
+    const matchedBigramCount = Array.from(queryBigramSet).filter((pair) => fieldBigramSet.has(pair)).length
+    return matchedBigramCount / queryBigramSet.size
+}
+
+const calcVideoRelativityFieldScore = (queryTokens: string[], fieldTokens: string[]): number => {
+    const unigramCoverage = calcTokenCoverage(queryTokens, fieldTokens)
+    if (queryTokens.length < 2) {
+        return unigramCoverage
+    }
+
+    const bigramCoverage = calcBigramCoverage(queryTokens, fieldTokens)
+    const { unigramCoverage: unigramWeight, bigramProximity: bigramWeight } = VIDEO_RELATIVITY_PARAMS.scoreWeights
+    return unigramCoverage * (unigramWeight + bigramWeight * bigramCoverage)
+}
+
+const calcVideoRelativityTagsScore = (queryTokens: string[], tags: string[], segmenter: Intl.Segmenter): number => {
+    const tagTokens = tags.map((tag) => tokenizeVideoRelativityText(tag, segmenter))
+    const allTagTokens = tagTokens.flat()
+    const unigramCoverage = calcTokenCoverage(queryTokens, allTagTokens)
+    if (queryTokens.length < 2) {
+        return unigramCoverage
+    }
+
+    const queryBigramSet = toBigramSet(queryTokens)
+    const tagBigramUnion = new Set(tagTokens.flatMap((tokens) => Array.from(toBigramSet(tokens))))
+    const matchedBigramCount = Array.from(queryBigramSet).filter((queryBigram) => {
+        return tagBigramUnion.has(queryBigram)
+    }).length
+    const bigramCoverage = queryBigramSet.size ? matchedBigramCount / queryBigramSet.size : 0
+    const { unigramCoverage: unigramWeight, bigramProximity: bigramWeight } = VIDEO_RELATIVITY_PARAMS.scoreWeights
+    return unigramCoverage * (unigramWeight + bigramWeight * bigramCoverage)
+}
+
+/**
+ * 计算搜索关键词与视频的相关度(0~1)
+ * hit_columns非空: 搜索引擎已命中, 返回1
+ * hit_columns为空: 按字段加权计算关键词与标题/标签/作者/简介的相关度
+ * 数据缺失或浏览器不支持 Intl.Segmenter: 返回undefined
+ * @param keyword 搜索关键词
+ * @param title 视频标题
+ * @param description 视频简介
+ * @param author 视频作者
+ * @param tags 标签关键词列表
+ * @param hitColumns 搜索结果原始数据中的hit_columns字段
+ */
+export const calcVideoRelativity = (
+    keyword: string,
+    title: string,
+    description: string,
+    author: string,
+    tags: string[],
+    hitColumns: unknown,
+): number | undefined => {
+    if (!Array.isArray(hitColumns)) {
+        return undefined
+    }
+
+    // hit_columns 直接命中
+    if (hitColumns.length > 0) {
+        return 1
+    }
+
+    // 正规化
+    keyword = normalizeText(keyword)
+    title = normalizeText(title)
+    description = normalizeText(description)
+    author = normalizeText(author)
+    tags = tags.map((tag) => normalizeText(tag))
+
+    // 直接命中title/keyword/tag
+    if (title.includes(keyword) || author.includes(keyword) || tags.includes(keyword)) {
+        return 1
+    }
+
+    // 不支持分词器的浏览器
+    if (typeof Intl === 'undefined' || typeof Intl.Segmenter !== 'function') {
+        return undefined
+    }
+
+    // 分词
+    const segmenter = new Intl.Segmenter(VIDEO_RELATIVITY_PARAMS.tokenization.segmenterLocale, {
+        granularity: VIDEO_RELATIVITY_PARAMS.tokenization.segmenterGranularity,
+    })
+    const queryTokens = Array.from(new Set(tokenizeVideoRelativityText(keyword, segmenter)))
+    if (!queryTokens.length) {
+        return undefined
+    }
+
+    // 各字段评分
+    const titleScore = calcVideoRelativityFieldScore(queryTokens, tokenizeVideoRelativityText(title, segmenter))
+    const descriptionScore = calcVideoRelativityFieldScore(
+        queryTokens,
+        tokenizeVideoRelativityText(description, segmenter),
+    )
+    const authorScore = calcVideoRelativityFieldScore(queryTokens, tokenizeVideoRelativityText(author, segmenter))
+    const tagsScore = calcVideoRelativityTagsScore(queryTokens, tags, segmenter)
+    const {
+        title: titleWeight,
+        tags: tagsWeight,
+        author: authorWeight,
+        description: descriptionWeight,
+    } = VIDEO_RELATIVITY_PARAMS.fieldWeights
+
+    const finalScore =
+        titleWeight * titleScore +
+        tagsWeight * tagsScore +
+        authorWeight * authorScore +
+        descriptionWeight * descriptionScore
+
+    return Math.max(0, Math.min(1, finalScore))
 }

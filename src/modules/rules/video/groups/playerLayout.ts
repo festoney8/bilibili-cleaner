@@ -96,14 +96,14 @@ const handleFullScreenDblClick = (e: MouseEvent) => {
 
 // 拦截 F 键全屏
 const handleKeyFPress = (e: KeyboardEvent) => {
-    if (e.key.toLocaleLowerCase() !== 'f' || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) {
+    if (e.key.toLocaleLowerCase() !== 'f' || e.ctrlKey || e.altKey || e.metaKey) {
         return
     }
     if (isEditableElement(e.target as Element)) {
         return
     }
-    e.preventDefault()
     e.stopImmediatePropagation()
+    e.preventDefault()
     toggleFullScreen()
 }
 
@@ -218,10 +218,14 @@ export const videoPlayerLayoutItems: Item[] = [
         name: '按 F 键全屏可滚动',
         description: ['需同时启用真全屏页面滚动'],
         enableFn: () => {
-            document.addEventListener('keydown', handleKeyFPress, true)
+            for (const type of ['keydown', 'keypress', 'keyup'] as const) {
+                window.addEventListener(type, handleKeyFPress, true)
+            }
         },
         disableFn: () => {
-            document.removeEventListener('keydown', handleKeyFPress, true)
+            for (const type of ['keydown', 'keypress', 'keyup'] as const) {
+                window.removeEventListener(type, handleKeyFPress, true)
+            }
         },
     },
     {

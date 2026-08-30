@@ -7,6 +7,7 @@ import { liveHeaderRightItems } from './groups/headerRight'
 import { liveInfoItems } from './groups/info'
 import { livePlayerItems } from './groups/player'
 import { liveRightItems } from './groups/right'
+import { liveDanmakuItems } from './groups/danmaku'
 
 export const liveGroups: Group[] = [
     {
@@ -23,6 +24,11 @@ export const liveGroups: Group[] = [
         name: '播放器',
         fold: true,
         items: livePlayerItems,
+    },
+    {
+        name: '弹幕样式',
+        fold: true,
+        items: liveDanmakuItems,
     },
     {
         name: '右栏 弹幕列表',

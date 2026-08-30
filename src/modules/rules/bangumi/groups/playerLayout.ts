@@ -1,6 +1,6 @@
 import { unsafeWindow } from '$'
 import { Item } from '@/types/item'
-import { playerGoTo } from '@/utils/tool'
+import { isEditableElement, playerGoTo } from '@/utils/tool'
 import { useEventListener } from '@vueuse/core'
 
 // 禁用滚动调音量
@@ -93,6 +93,19 @@ const handleFullScreenDblClick = (e: MouseEvent) => {
     }
 }
 
+// 拦截 F 键全屏
+const handleKeyFPress = (e: KeyboardEvent) => {
+    if (e.key.toLocaleLowerCase() !== 'f' || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) {
+        return
+    }
+    if (isEditableElement(e.target as Element)) {
+        return
+    }
+    e.preventDefault()
+    e.stopImmediatePropagation()
+    toggleFullScreen()
+}
+
 export const bangumiPlayerLayoutItems: Item[] = [
     {
         type: 'switch',
@@ -144,6 +157,18 @@ export const bangumiPlayerLayoutItems: Item[] = [
             preventVolumeTune = false
             document.removeEventListener('click', handleFullScreenClick, true)
             document.removeEventListener('dblclick', handleFullScreenDblClick, true)
+        },
+    },
+    {
+        type: 'switch',
+        id: 'fullscreen-key-f-scrollable',
+        name: '按 F 键全屏可滚动',
+        description: ['需同时启用真全屏页面滚动'],
+        enableFn: () => {
+            document.addEventListener('keydown', handleKeyFPress, true)
+        },
+        disableFn: () => {
+            document.removeEventListener('keydown', handleKeyFPress, true)
         },
     },
     {

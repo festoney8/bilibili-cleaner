@@ -200,6 +200,22 @@ export const playerGoTo = (mode: 'normal' | 'wide' | 'web' | 'mini' | 'full' | '
     }
 }
 
+/**
+ * 判断是否为可编辑元素
+ * @param el 目标元素
+ */
+export const isEditableElement = (el: Element): boolean => {
+    if (!(el instanceof HTMLElement)) {
+        return false
+    }
+    return (
+        el.tagName === 'INPUT' ||
+        el.tagName === 'TEXTAREA' ||
+        el.isContentEditable ||
+        el.closest('[contenteditable]') !== null
+    )
+}
+
 // NFKC正规化
 const normalizeText = (value: unknown): string => {
     if (typeof value !== 'string') {

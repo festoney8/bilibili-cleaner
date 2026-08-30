@@ -109,7 +109,7 @@ class DynamicFilterHeader implements IMainFilter {
         // 检测
         const blackCnt = await coreCheck(dyns, true, 'style', blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
-        logger.debug(`DynamicFilterHeader hide ${blackCnt} in ${dyns.length} dyns, mode=${mode}, time=${time}`)
+        logger.debug(`DynamicFilterHeader hide ${blackCnt.size} in ${dyns.length} dyns, mode=${mode}, time=${time}`)
     }
 
     checkFull() {

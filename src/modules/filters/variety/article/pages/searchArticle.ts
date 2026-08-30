@@ -120,7 +120,7 @@ class ArticleFilterSearch implements IMainFilter {
 
         const blackCnt = await coreCheck(cards, true, 'sign', blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
-        logger.debug(`ArticleFilterSearch hide ${blackCnt} in ${cards.length} cards, time=${time}`)
+        logger.debug(`ArticleFilterSearch hide ${blackCnt.size} in ${cards.length} cards, time=${time}`)
     }
 
     observe() {

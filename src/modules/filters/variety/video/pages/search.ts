@@ -304,7 +304,7 @@ class VideoFilterSearch implements IMainFilter {
         // 检测
         const blackCnt = await coreCheck(videos, true, 'sign', blackPairs, whitePairs, forceBlackPairs)
         const time = (performance.now() - timer).toFixed(1)
-        logger.debug(`VideoFilterSearch hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
+        logger.debug(`VideoFilterSearch hide ${blackCnt.size} in ${videos.length} videos, mode=${mode}, time=${time}`)
     }
 
     // 类似上面的check方法
@@ -347,7 +347,7 @@ class VideoFilterSearch implements IMainFilter {
 
         const blackCnt = await coreCheck([userList], true, 'sign', blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
-        logger.debug(`VideoFilterSearchUserCard hide ${blackCnt} in user-list, mode=${mode}, time=${time}`)
+        logger.debug(`VideoFilterSearchUserCard hide ${blackCnt.size} in user-list, mode=${mode}, time=${time}`)
     }
 
     checkFull() {

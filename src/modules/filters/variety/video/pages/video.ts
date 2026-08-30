@@ -108,15 +108,13 @@ class VideoFilterVideo implements IMainFilter {
             return
         }
         let revertAll = false
-        if (
-            !(
-                this.videoBvidFilter.isEnable ||
-                this.videoDurationFilter.isEnable ||
-                this.videoTitleFilter.isEnable ||
-                this.videoUploaderFilter.isEnable ||
-                this.videoUploaderKeywordFilter.isEnable
-            )
-        ) {
+        if (!(
+            this.videoBvidFilter.isEnable ||
+            this.videoDurationFilter.isEnable ||
+            this.videoTitleFilter.isEnable ||
+            this.videoUploaderFilter.isEnable ||
+            this.videoUploaderKeywordFilter.isEnable
+        )) {
             revertAll = true
         }
         const timer = performance.now()
@@ -167,7 +165,7 @@ class VideoFilterVideo implements IMainFilter {
 
         // 缓存数据检测，更新__INITIAL_STATE__.related
         // __INITIAL_STATE__.related 与右侧视频列表绑定
-        if (enableRelatedCheck && blackCnt) {
+        if (enableRelatedCheck && blackCnt.size) {
             const blackBvids = new Set<string>()
             for (const video of videos) {
                 if (isEleHide(video, 'sign')) {
@@ -184,7 +182,7 @@ class VideoFilterVideo implements IMainFilter {
             }
         }
         const time = (performance.now() - timer).toFixed(1)
-        logger.debug(`VideoFilterVideo hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
+        logger.debug(`VideoFilterVideo hide ${blackCnt.size} in ${videos.length} videos, mode=${mode}, time=${time}`)
     }
 
     checkFull() {

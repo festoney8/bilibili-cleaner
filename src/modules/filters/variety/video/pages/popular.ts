@@ -136,17 +136,15 @@ class VideoFilterPopular implements IMainFilter {
             return
         }
         let revertAll = false
-        if (
-            !(
-                this.videoBvidFilter.isEnable ||
-                this.videoDurationFilter.isEnable ||
-                this.videoTitleFilter.isEnable ||
-                this.videoUploaderFilter.isEnable ||
-                this.videoUploaderKeywordFilter.isEnable ||
-                this.videoDimensionFilter.isEnable ||
-                this.videoQualityFilter.isEnable
-            )
-        ) {
+        if (!(
+            this.videoBvidFilter.isEnable ||
+            this.videoDurationFilter.isEnable ||
+            this.videoTitleFilter.isEnable ||
+            this.videoUploaderFilter.isEnable ||
+            this.videoUploaderKeywordFilter.isEnable ||
+            this.videoDimensionFilter.isEnable ||
+            this.videoQualityFilter.isEnable
+        )) {
             revertAll = true
         }
         const timer = performance.now()
@@ -197,7 +195,7 @@ class VideoFilterPopular implements IMainFilter {
         // 检测
         const blackCnt = await coreCheck(videos, true, 'sign', blackPairs, whitePairs, forceBlackPairs)
         const time = (performance.now() - timer).toFixed(1)
-        logger.debug(`VideoFilterPopular hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
+        logger.debug(`VideoFilterPopular hide ${blackCnt.size} in ${videos.length} videos, mode=${mode}, time=${time}`)
     }
 
     checkFull() {

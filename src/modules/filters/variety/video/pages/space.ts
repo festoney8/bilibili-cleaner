@@ -141,7 +141,7 @@ class VideoFilterSpace implements IMainFilter {
         // 检测
         const blackCnt = await coreCheck(videos, true, 'sign', blackPairs, whitePairs, forceBlackPairs)
         const time = (performance.now() - timer).toFixed(1)
-        logger.debug(`VideoFilterSpace hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`)
+        logger.debug(`VideoFilterSpace hide ${blackCnt.size} in ${videos.length} videos, mode=${mode}, time=${time}`)
     }
 
     checkFull() {

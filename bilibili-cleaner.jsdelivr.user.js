@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      4.5.5
+// @version      4.5.6
 // @author       festoney8
 // @description  净化 B站/哔哩哔哩 页面，支持「精简功能、播放器净化、过滤视频、过滤评论、全站黑白名单」，提供 300+ 功能，定制自己的 B 站
 // @license      MIT
@@ -30,7 +30,7 @@
 // @exclude      *://www.bilibili.com/blackboard/newplayer.html*
 // @exclude      *://www.bilibili.com/appeal/*
 // @exclude      *://www.bilibili.com/toy/*
-// @require      https://registry.npmmirror.com/vue/3.5.40/files/dist/vue.global.prod.js
+// @require      https://registry.npmmirror.com/vue/3.5.42/files/dist/vue.global.prod.js
 // @grant        GM_addValueChangeListener
 // @grant        GM_deleteValue
 // @grant        GM_getValue
@@ -143,12 +143,13 @@
 		a.rel = "noopener";
 		if (typeof blob === "string") {
 			a.href = blob;
-			if (a.origin !== location.origin) if (corsEnabled(a.href)) download(blob, name, opts);
-			else {
-				a.target = "_blank";
-				click(a);
-			}
-			else click(a);
+			if (a.origin !== location.origin) {
+				if (corsEnabled(a.href)) download(blob, name, opts);
+				else {
+					a.target = "_blank";
+					click(a);
+				}
+			} else click(a);
 		} else {
 			a.href = URL.createObjectURL(blob);
 			setTimeout(function() {
@@ -160,16 +161,17 @@
 		}
 	}
 	function msSaveAs(blob, name = "download", opts) {
-		if (typeof blob === "string") if (corsEnabled(blob)) download(blob, name, opts);
-		else {
-			const a = document.createElement("a");
-			a.href = blob;
-			a.target = "_blank";
-			setTimeout(function() {
-				click(a);
-			});
-		}
-		else navigator.msSaveOrOpenBlob(bom(blob, opts), name);
+		if (typeof blob === "string") {
+			if (corsEnabled(blob)) download(blob, name, opts);
+			else {
+				const a = document.createElement("a");
+				a.href = blob;
+				a.target = "_blank";
+				setTimeout(function() {
+					click(a);
+				});
+			}
+		} else navigator.msSaveOrOpenBlob(bom(blob, opts), name);
 	}
 	function fileSaverSaveAs(blob, name, opts, popup) {
 		popup = popup || open("", "_blank");
@@ -407,8 +409,10 @@
 			const prop = setupStore[key];
 			if ((0, vue.isRef)(prop) && !isComputed(prop) || (0, vue.isReactive)(prop)) {
 				if (!isOptionsStore) {
-					if (initialState && shouldHydrate(prop)) if ((0, vue.isRef)(prop)) prop.value = initialState[key];
-					else mergeReactiveObjects(prop, initialState[key]);
+					if (initialState && shouldHydrate(prop)) {
+						if ((0, vue.isRef)(prop)) prop.value = initialState[key];
+						else mergeReactiveObjects(prop, initialState[key]);
+					}
 					pinia.state.value[$id][key] = prop;
 				}
 			} else if (typeof prop === "function") {
@@ -448,8 +452,10 @@
 			pinia = pinia || (hasContext ? (0, vue.inject)(piniaSymbol, null) : null);
 			if (pinia) setActivePinia(pinia);
 			pinia = activePinia;
-			if (!pinia._s.has(id)) if (isSetupStore) createSetupStore(id, setup, options, pinia);
-			else createOptionsStore(id, options, pinia);
+			if (!pinia._s.has(id)) {
+				if (isSetupStore) createSetupStore(id, setup, options, pinia);
+				else createOptionsStore(id, options, pinia);
+			}
 			return pinia._s.get(id);
 		}
 		useStore.$id = id;
@@ -994,15 +1000,11 @@
 				var S;
 				if (!t.disabled) if (n.value) switch (u.key) {
 					case o$2.Space:
-					case o$2.Enter:
-						u.preventDefault(), u.stopPropagation(), e.toggleDisclosure(), (S = o$3(e.button)) == null || S.focus();
-						break;
+					case o$2.Enter: u.preventDefault(), u.stopPropagation(), e.toggleDisclosure(), (S = o$3(e.button)) == null || S.focus();
 				}
 				else switch (u.key) {
 					case o$2.Space:
-					case o$2.Enter:
-						u.preventDefault(), u.stopPropagation(), e.toggleDisclosure();
-						break;
+					case o$2.Enter: u.preventDefault(), u.stopPropagation(), e.toggleDisclosure();
 				}
 			}
 			function v(u) {
@@ -1985,6 +1987,21 @@
 		error: wrapper(console.error),
 		debug: config_default.isDebugMode ? wrapper(console.debug) : () => {}
 	};
+	var bigram = nGram(2);
+	nGram(3);
+	function nGram(n) {
+		if (typeof n !== "number" || Number.isNaN(n) || n < 1 || n === Number.POSITIVE_INFINITY) throw new Error("`" + n + "` is not a valid argument for `n-gram`");
+		return grams;
+		function grams(value) {
+			const nGrams = [];
+			if (value === null || value === void 0) return nGrams;
+			const source = typeof value.slice === "function" ? value : String(value);
+			let index = source.length - n + 1;
+			if (index < 1) return nGrams;
+			while (index--) nGrams[index] = source.slice(index, index + n);
+			return nGrams;
+		}
+	}
 	var bvidPattern = /(BV[1-9A-HJ-NP-Za-km-z]+)/;
 	var matchBvid = (s) => {
 		return bvidPattern.exec(s)?.[1] ?? null;
@@ -2078,6 +2095,90 @@
 		if (typeof _unsafeWindow.player?.requestStatue === "function") _unsafeWindow.player.requestStatue(map[mode]).catch((err) => {
 			logger.error(`Failed to switch player mode to ${mode}:`, err);
 		});
+	};
+	var isEditableElement = (el) => {
+		if (!(el instanceof HTMLElement)) return false;
+		return el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable || el.closest("[contenteditable]") !== null;
+	};
+	var normalizeText = (value) => {
+		if (typeof value !== "string") return "";
+		return value.normalize("NFKC").toLowerCase().trim();
+	};
+	var VIDEO_RELATIVITY_PARAMS = {
+		tokenization: {
+			segmenterLocale: "zh",
+			segmenterGranularity: "word"
+		},
+		scoreWeights: {
+			unigramCoverage: .75,
+			bigramProximity: .25
+		},
+		fieldWeights: {
+			title: .6,
+			tags: .25,
+			author: .1,
+			description: .05
+		}
+	};
+	var tokenizeVideoRelativityText = (value, segmenter) => {
+		return Array.from(segmenter.segment(value)).filter(({ isWordLike }) => isWordLike).map(({ segment }) => segment).filter(Boolean);
+	};
+	var toTokenSet = (tokens) => new Set(tokens);
+	var toBigramSet = (tokens) => {
+		const tokenBigrams = bigram(tokens);
+		return new Set(tokenBigrams.map((pair) => pair.join("\0")));
+	};
+	var calcTokenCoverage = (queryTokens, fieldTokens) => {
+		if (!queryTokens.length) return 0;
+		const fieldTokenSet = toTokenSet(fieldTokens);
+		return queryTokens.filter((token) => fieldTokenSet.has(token)).length / queryTokens.length;
+	};
+	var calcBigramCoverage = (queryTokens, fieldTokens) => {
+		const queryBigramSet = toBigramSet(queryTokens);
+		if (!queryBigramSet.size) return 0;
+		const fieldBigramSet = toBigramSet(fieldTokens);
+		return Array.from(queryBigramSet).filter((pair) => fieldBigramSet.has(pair)).length / queryBigramSet.size;
+	};
+	var calcVideoRelativityFieldScore = (queryTokens, fieldTokens) => {
+		const unigramCoverage = calcTokenCoverage(queryTokens, fieldTokens);
+		if (queryTokens.length < 2) return unigramCoverage;
+		const bigramCoverage = calcBigramCoverage(queryTokens, fieldTokens);
+		const { unigramCoverage: unigramWeight, bigramProximity: bigramWeight } = VIDEO_RELATIVITY_PARAMS.scoreWeights;
+		return unigramCoverage * (unigramWeight + bigramWeight * bigramCoverage);
+	};
+	var calcVideoRelativityTagsScore = (queryTokens, tags, segmenter) => {
+		const tagTokens = tags.map((tag) => tokenizeVideoRelativityText(tag, segmenter));
+		const unigramCoverage = calcTokenCoverage(queryTokens, tagTokens.flat());
+		if (queryTokens.length < 2) return unigramCoverage;
+		const queryBigramSet = toBigramSet(queryTokens);
+		const tagBigramUnion = new Set(tagTokens.flatMap((tokens) => Array.from(toBigramSet(tokens))));
+		const matchedBigramCount = Array.from(queryBigramSet).filter((queryBigram) => {
+			return tagBigramUnion.has(queryBigram);
+		}).length;
+		const bigramCoverage = queryBigramSet.size ? matchedBigramCount / queryBigramSet.size : 0;
+		const { unigramCoverage: unigramWeight, bigramProximity: bigramWeight } = VIDEO_RELATIVITY_PARAMS.scoreWeights;
+		return unigramCoverage * (unigramWeight + bigramWeight * bigramCoverage);
+	};
+	var calcVideoRelativity = (keyword, title, description, author, tags, hitColumns) => {
+		if (!Array.isArray(hitColumns)) return;
+		if (hitColumns.length > 0) return 1;
+		keyword = normalizeText(keyword);
+		title = normalizeText(title);
+		description = normalizeText(description);
+		author = normalizeText(author);
+		tags = tags.map((tag) => normalizeText(tag));
+		if (title.includes(keyword) || author.includes(keyword) || tags.includes(keyword)) return 1;
+		if (typeof Intl === "undefined" || typeof Intl.Segmenter !== "function") return;
+		const segmenter = new Intl.Segmenter(VIDEO_RELATIVITY_PARAMS.tokenization.segmenterLocale, { granularity: VIDEO_RELATIVITY_PARAMS.tokenization.segmenterGranularity });
+		const queryTokens = Array.from(new Set(tokenizeVideoRelativityText(keyword, segmenter)));
+		if (!queryTokens.length) return;
+		const titleScore = calcVideoRelativityFieldScore(queryTokens, tokenizeVideoRelativityText(title, segmenter));
+		const descriptionScore = calcVideoRelativityFieldScore(queryTokens, tokenizeVideoRelativityText(description, segmenter));
+		const authorScore = calcVideoRelativityFieldScore(queryTokens, tokenizeVideoRelativityText(author, segmenter));
+		const tagsScore = calcVideoRelativityTagsScore(queryTokens, tags, segmenter);
+		const { title: titleWeight, tags: tagsWeight, author: authorWeight, description: descriptionWeight } = VIDEO_RELATIVITY_PARAMS.fieldWeights;
+		const finalScore = titleWeight * titleScore + tagsWeight * tagsScore + authorWeight * authorScore + descriptionWeight * descriptionScore;
+		return Math.max(0, Math.min(1, finalScore));
 	};
 	function tryOnScopeDispose(fn, failSilently) {
 		if ((0, vue.getCurrentScope)()) {
@@ -3673,12 +3774,12 @@
 				}
 			});
 		});
-		return toHideIdx.size;
+		return toHideIdx;
 	};
 	var throttledCheck = useThrottleFn(rawCheck, 100, true);
 	var coreCheck = async (elements, enableFilterVisitSign = true, hideMode, blackPairs, whitePairs, forceBlackPairs, noThrottle) => {
 		if (noThrottle) return rawCheck(elements, enableFilterVisitSign, hideMode, blackPairs, whitePairs, forceBlackPairs);
-		return throttledCheck(elements, enableFilterVisitSign, hideMode, blackPairs, whitePairs, forceBlackPairs);
+		return await throttledCheck(elements, enableFilterVisitSign, hideMode, blackPairs, whitePairs, forceBlackPairs) ?? new Set();
 	};
 	var r = String.raw;
 	var e = r`\p{Emoji}(?:\p{EMod}|[\u{E0020}-\u{E007E}]+\u{E007F}|\uFE0F?\u20E3?)`;
@@ -3799,7 +3900,8 @@
 		"Ai好记",
 		"MilkyAi",
 		"视频AI问答助手",
-		"总结猫"
+		"总结猫",
+		"AI沈阳美食家"
 	];
 	var botsSet = new Set(bots);
 	var BooleanFilter = class {
@@ -3945,6 +4047,7 @@
 	var CommentCallUserOnlyFilter = class extends BooleanFilter {};
 	var CommentCallUserOnlyNoReplyFilter = class extends BooleanFilter {};
 	var CommentEmojiOnlyFilter = class extends BooleanFilter {};
+	var CommentChainFilter = class extends BooleanFilter {};
 	var CommentIsUpFilter = class extends BooleanFilter {};
 	var CommentIsPinFilter = class extends BooleanFilter {};
 	var CommentIsNoteFilter = class extends BooleanFilter {};
@@ -3976,7 +4079,11 @@
 			callUserOnly: { statusKey: "video-comment-call-user-only-filter-status" },
 			callUserOnlyNoReply: { statusKey: "video-comment-call-user-only-noreply-filter-status" },
 			isAD: { statusKey: "video-comment-ad-filter-status" },
-			emojiOnly: { statusKey: "video-comment-emoji-only-filter-status" }
+			emojiOnly: { statusKey: "video-comment-emoji-only-filter-status" },
+			chain: {
+				statusKey: "video-comment-chain-filter-status",
+				valueKey: "video-comment-chain-level-value"
+			}
 		},
 		white: {
 			root: { statusKey: "video-comment-root-whitelist-status" },
@@ -3988,6 +4095,7 @@
 		}
 	};
 	var emojiPattern = emoji_regex_xs_default();
+	var commentRpidLevelMap = new Map();
 	var selectorFns$10 = {
 		root: {
 			username: (comment) => {
@@ -4050,6 +4158,16 @@
 			}
 		},
 		sub: {
+			rpid: (comment) => {
+				return comment.__data?.rpid_str;
+			},
+			parent: (comment) => {
+				return comment.__data?.parent_str;
+			},
+			isReplyToFiltered: (comment) => {
+				const parent = comment.__data?.parent_str;
+				return typeof parent === "string" && commentRpidLevelMap.has(parent);
+			},
 			username: (comment) => {
 				return comment.__data?.member?.uname?.trim();
 			},
@@ -4102,6 +4220,25 @@
 			}
 		}
 	};
+	var updateCommentRpidLevelMap = (comments, hiddenIndexes, initial) => {
+		hiddenIndexes.forEach((index) => {
+			const comment = comments[index];
+			const rpid = selectorFns$10.sub.rpid(comment);
+			if (typeof rpid !== "string" || !rpid) return;
+			if (initial) {
+				const currentLevel = commentRpidLevelMap.get(rpid);
+				if (currentLevel === void 0 || currentLevel > 0) commentRpidLevelMap.set(rpid, 0);
+				return;
+			}
+			const parent = selectorFns$10.sub.parent(comment);
+			if (typeof parent !== "string") return;
+			const parentLevel = commentRpidLevelMap.get(parent);
+			if (parentLevel === void 0) return;
+			const level = parentLevel + 1;
+			const currentLevel = commentRpidLevelMap.get(rpid);
+			if (currentLevel === void 0 || level < currentLevel) commentRpidLevelMap.set(rpid, level);
+		});
+	};
 	var isRootWhite = false;
 	var isSubWhite = false;
 	var CommentFilterCommon = class {
@@ -4119,6 +4256,8 @@
 		commentCallUserOnlyFilter = new CommentCallUserOnlyFilter();
 		commentCallUserOnlyNoReplyFilter = new CommentCallUserOnlyNoReplyFilter();
 		commentEmojiOnlyFilter = new CommentEmojiOnlyFilter();
+		commentChainFilter = new CommentChainFilter();
+		commentChainLevel = 1;
 		commentIsUpFilter = new CommentIsUpFilter();
 		commentIsPinFilter = new CommentIsPinFilter();
 		commentIsNoteFilter = new CommentIsNoteFilter();
@@ -4129,6 +4268,8 @@
 			this.commentUsernameKeywordFilter.setParam(_GM_getValue(GM_KEYS$10.black.usernameKeyword.valueKey, []));
 			this.commentContentFilter.setParam(_GM_getValue(GM_KEYS$10.black.content.valueKey, []));
 			this.commentLevelFilter.setParam(_GM_getValue(GM_KEYS$10.black.level.valueKey, 0));
+			const chainLevel = _GM_getValue(GM_KEYS$10.black.chain.valueKey, 1);
+			this.commentChainLevel = typeof chainLevel === "number" ? Math.min(10, Math.max(0, chainLevel)) : 1;
 			this.commentBotFilter.setParam(bots);
 			this.commentAdFilter.setParam([`/(bili2233\\.cn|b23\\.tv)\\/(mall-|cm-)|领券|gaoneng\\.bilibili\\.com/`]);
 		}
@@ -4171,7 +4312,6 @@
 			this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns$10.root.content]);
 			this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns$10.root.level]);
 			this.commentNoFaceFilter.isEnable && blackPairs.push([this.commentNoFaceFilter, selectorFns$10.root.noface]);
-			this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns$10.root.username]);
 			this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns$10.root.callBot]);
 			this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns$10.root.callUser]);
 			this.commentCallUserNoReplyFilter.isEnable && blackPairs.push([this.commentCallUserNoReplyFilter, selectorFns$10.root.callUserNoReply]);
@@ -4186,14 +4326,16 @@
 			this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns$10.root.isMe]);
 			const forceBlackPairs = [];
 			this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns$10.root.content]);
-			const rootBlackCnt = await coreCheck(rootComments, true, "style", blackPairs, whitePairs, forceBlackPairs, true);
+			this.commentBotFilter.isEnable && forceBlackPairs.push([this.commentBotFilter, selectorFns$10.root.username]);
+			const rootBlackIdxSet = await coreCheck(rootComments, true, "style", blackPairs, whitePairs, forceBlackPairs, true);
 			const time = (performance.now() - timer).toFixed(1);
-			logger.debug(`CommentFilterCommon hide ${rootBlackCnt} in ${rootComments.length} root comments, mode=${mode}, time=${time}`);
+			logger.debug(`CommentFilterCommon hide ${rootBlackIdxSet.size} in ${rootComments.length} root comments, mode=${mode}, time=${time}`);
 		}
 		async checkSub(mode) {
 			const timer = performance.now();
+			if (mode === "full") commentRpidLevelMap.clear();
 			let revertAll = false;
-			if (!(this.commentUsernameFilter.isEnable || this.commentUsernameKeywordFilter.isEnable || this.commentContentFilter.isEnable || this.commentAdFilter.isEnable || this.commentLevelFilter.isEnable || this.commentNoFaceFilter.isEnable || this.commentBotFilter.isEnable || this.commentCallBotFilter.isEnable || this.commentCallUserFilter.isEnable || this.commentCallUserNoReplyFilter.isEnable || this.commentCallUserOnlyFilter.isEnable || this.commentCallUserOnlyNoReplyFilter.isEnable || this.commentEmojiOnlyFilter.isEnable)) revertAll = true;
+			if (!(this.commentUsernameFilter.isEnable || this.commentUsernameKeywordFilter.isEnable || this.commentContentFilter.isEnable || this.commentAdFilter.isEnable || this.commentLevelFilter.isEnable || this.commentNoFaceFilter.isEnable || this.commentBotFilter.isEnable || this.commentCallBotFilter.isEnable || this.commentCallUserFilter.isEnable || this.commentCallUserNoReplyFilter.isEnable || this.commentCallUserOnlyFilter.isEnable || this.commentCallUserOnlyNoReplyFilter.isEnable || this.commentEmojiOnlyFilter.isEnable || this.commentChainFilter.isEnable)) revertAll = true;
 			let subComments = [];
 			if (ShadowInstance.shadowStore.has("BILI-COMMENT-REPLY-RENDERER")) {
 				subComments = Array.from(ShadowInstance.shadowStore.get("BILI-COMMENT-REPLY-RENDERER")).map((v) => v.host);
@@ -4240,9 +4382,16 @@
 			this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns$10.sub.isMe]);
 			const forceBlackPairs = [];
 			this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns$10.sub.content]);
-			const subBlackCnt = await coreCheck(subComments, false, "style", blackPairs, whitePairs, forceBlackPairs, true);
+			const subBlackIdxSet = await coreCheck(subComments, false, "style", blackPairs, whitePairs, forceBlackPairs, true);
+			updateCommentRpidLevelMap(subComments, subBlackIdxSet, true);
+			let chainBlackIdxSet = new Set();
+			if (this.commentChainFilter.isEnable && this.commentChainLevel > 0) for (let round = 1; round <= this.commentChainLevel; round++) {
+				const chainBlackPairs = [...blackPairs, [this.commentChainFilter, selectorFns$10.sub.isReplyToFiltered]];
+				chainBlackIdxSet = await coreCheck(subComments, false, "style", chainBlackPairs, whitePairs, forceBlackPairs, true);
+				updateCommentRpidLevelMap(subComments, chainBlackIdxSet, false);
+			}
 			const time = (performance.now() - timer).toFixed(1);
-			logger.debug(`CommentFilterCommon hide ${subBlackCnt} in ${subComments.length} sub comments, mode=${mode}, time=${time}`);
+			logger.debug(`CommentFilterCommon hide ${new Set([...subBlackIdxSet, ...chainBlackIdxSet]).size} in ${subComments.length} sub comments, mode=${mode}, time=${time}`);
 		}
 		check(mode) {
 			this.checkRoot(mode).catch((err) => {
@@ -4530,6 +4679,43 @@
 			}]
 		},
 		{
+			name: "链式过滤",
+			items: [{
+				type: "switch",
+				id: GM_KEYS$10.black.chain.statusKey,
+				name: "启用 链式过滤（实验功能）",
+				description: [
+					"连坐机制，回复评论一并被过滤",
+					"只对二级评论生效",
+					"轻微影响过滤性能"
+				],
+				noStyle: true,
+				enableFn: () => {
+					mainFilter$10.commentChainFilter.enable();
+					mainFilter$10.check("full");
+				},
+				disableFn: () => {
+					mainFilter$10.commentChainFilter.disable();
+					mainFilter$10.check("full");
+				}
+			}, {
+				type: "number",
+				id: GM_KEYS$10.black.chain.valueKey,
+				noStyle: true,
+				name: "设定 连坐层级 (0~10)",
+				minValue: 0,
+				maxValue: 10,
+				step: 1,
+				defaultValue: 1,
+				disableValue: 0,
+				fn: (value) => {
+					mainFilter$10.commentChainLevel = Math.min(10, Math.max(0, value));
+					commentRpidLevelMap.clear();
+					mainFilter$10.check("full");
+				}
+			}]
+		},
+		{
 			name: "白名单 免过滤",
 			items: [
 				{
@@ -4762,9 +4948,9 @@
 			const whitePairs = [];
 			this.dynVideoTitleWhiteFilter.isEnable && whitePairs.push([this.dynVideoTitleWhiteFilter, selectorFns$9.title]);
 			this.dynContentWhiteFilter.isEnable && whitePairs.push([this.dynContentWhiteFilter, selectorFns$9.content]);
-			const blackCnt = await coreCheck(filteredDyns, true, "sign", blackPairs, whitePairs);
+			const blackIdxSet = await coreCheck(filteredDyns, true, "sign", blackPairs, whitePairs);
 			const time = (performance.now() - timer).toFixed(1);
-			logger.debug(`DynamicFilterDynamic hide ${blackCnt} in ${filteredDyns.length} dyns, mode=${mode}, time=${time}`);
+			logger.debug(`DynamicFilterDynamic hide ${blackIdxSet.size} in ${filteredDyns.length} dyns, mode=${mode}, time=${time}`);
 		}
 		checkFull() {
 			this.check("full").catch((err) => {
@@ -5110,9 +5296,9 @@
 			const whitePairs = [];
 			this.dynVideoTitleWhiteFilter.isEnable && whitePairs.push([this.dynVideoTitleWhiteFilter, selectorFns$8.title]);
 			this.dynContentWhiteFilter.isEnable && whitePairs.push([this.dynContentWhiteFilter, selectorFns$8.content]);
-			const blackCnt = await coreCheck(dyns, true, "style", blackPairs, whitePairs);
+			const blackIdxSet = await coreCheck(dyns, true, "style", blackPairs, whitePairs);
 			const time = (performance.now() - timer).toFixed(1);
-			logger.debug(`DynamicFilterHeader hide ${blackCnt} in ${dyns.length} dyns, mode=${mode}, time=${time}`);
+			logger.debug(`DynamicFilterHeader hide ${blackIdxSet.size} in ${dyns.length} dyns, mode=${mode}, time=${time}`);
 		}
 		checkFull() {
 			this.check("full").catch((err) => {
@@ -5249,9 +5435,9 @@
 			const whitePairs = [];
 			this.dynVideoTitleWhiteFilter.isEnable && whitePairs.push([this.dynVideoTitleWhiteFilter, selectorFns$7.title]);
 			this.dynContentWhiteFilter.isEnable && whitePairs.push([this.dynContentWhiteFilter, selectorFns$7.content]);
-			const blackCnt = await coreCheck(filteredDyns, true, "sign", blackPairs, whitePairs);
+			const blackIdxSet = await coreCheck(filteredDyns, true, "sign", blackPairs, whitePairs);
 			const time = (performance.now() - timer).toFixed(1);
-			logger.debug(`DynamicFilterSpace hide ${blackCnt} in ${filteredDyns.length} dyns, mode=${mode}, time=${time}`);
+			logger.debug(`DynamicFilterSpace hide ${blackIdxSet.size} in ${filteredDyns.length} dyns, mode=${mode}, time=${time}`);
 		}
 		checkFull() {
 			this.check("full").catch((err) => {
@@ -5508,6 +5694,7 @@
 	var VideoUploaderFilter = class extends StringFilter {};
 	var VideoUploaderKeywordFilter = class extends KeywordFilter {};
 	var VideoViewsFilter = class extends NumberMinFilter {};
+	var VideoRelativityFilter = class extends NumberMinFilter {};
 	var VideoUploaderWhiteFilter = class extends StringFilter {};
 	var VideoTitleWhiteFilter = class extends KeywordFilter {};
 	var VideoIsFollowWhiteFilter = class extends BooleanFilter {};
@@ -5627,9 +5814,9 @@
 			this.videoTitleWhiteFilter.isEnable && whitePairs.push([this.videoTitleWhiteFilter, selectorFns$6.title]);
 			const forceBlackPairs = [];
 			this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns$6.bvid]);
-			const blackCnt = await coreCheck(videos, true, "sign", blackPairs, whitePairs, forceBlackPairs);
+			const blackIdxSet = await coreCheck(videos, true, "sign", blackPairs, whitePairs, forceBlackPairs);
 			const time = (performance.now() - timer).toFixed(1);
-			logger.debug(`VideoFilterChannel hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`);
+			logger.debug(`VideoFilterChannel hide ${blackIdxSet.size} in ${videos.length} videos, mode=${mode}, time=${time}`);
 		}
 		checkFull() {
 			this.check("full").catch((err) => {
@@ -6117,9 +6304,9 @@
 			this.videoIsFollowWhiteFilter.isEnable && whitePairs.push([this.videoIsFollowWhiteFilter, selectorFns$5.isFollow]);
 			const forceBlackPairs = [];
 			this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns$5.bvid]);
-			const blackCnt = await coreCheck(videos, true, "sign", blackPairs, whitePairs, forceBlackPairs);
+			const blackIdxSet = await coreCheck(videos, true, "sign", blackPairs, whitePairs, forceBlackPairs);
 			const time = (performance.now() - timer).toFixed(1);
-			logger.debug(`VideoFilterHomepage hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`);
+			logger.debug(`VideoFilterHomepage hide ${blackIdxSet.size} in ${videos.length} videos, mode=${mode}, time=${time}`);
 		}
 		checkFull() {
 			this.check("full").catch((err) => {
@@ -6642,9 +6829,9 @@
 			this.videoTitleWhiteFilter.isEnable && whitePairs.push([this.videoTitleWhiteFilter, selectorFns$4.title]);
 			const forceBlackPairs = [];
 			this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns$4.bvid]);
-			const blackCnt = await coreCheck(videos, true, "sign", blackPairs, whitePairs, forceBlackPairs);
+			const blackIdxSet = await coreCheck(videos, true, "sign", blackPairs, whitePairs, forceBlackPairs);
 			const time = (performance.now() - timer).toFixed(1);
-			logger.debug(`VideoFilterPopular hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`);
+			logger.debug(`VideoFilterPopular hide ${blackIdxSet.size} in ${videos.length} videos, mode=${mode}, time=${time}`);
 		}
 		checkFull() {
 			this.check("full").catch((err) => {
@@ -7002,6 +7189,52 @@
 		}
 		return menus;
 	};
+	var fetchHook = class FetchHook {
+		static instance;
+		preFnArr = [];
+		postFnArr = [];
+		constructor() {
+			try {
+				this.hook();
+			} catch (err) {
+				logger.error("hook fetch error", err);
+			}
+		}
+		static getInstance() {
+			if (!FetchHook.instance) FetchHook.instance = new FetchHook();
+			return FetchHook.instance;
+		}
+		addPreFn(fn) {
+			this.preFnArr.push(fn);
+		}
+		addPostFn(fn) {
+			this.postFnArr.push(fn);
+		}
+		hook() {
+			const origFetch = _unsafeWindow.fetch;
+			_unsafeWindow.fetch = async (input, init) => {
+				try {
+					this.preFnArr.forEach((fn) => {
+						input = fn(input, init);
+					});
+				} catch {
+					return origFetch(input, init);
+				}
+				let resp = await origFetch(input, init);
+				const origResp = resp.clone();
+				try {
+					for (const fn of this.postFnArr) {
+						const ans = await fn(input, init, resp);
+						if (ans) resp = ans;
+					}
+				} catch (err) {
+					logger.error("fetch hook postFnArr", err);
+					return origResp;
+				}
+				return resp;
+			};
+		}
+	}.getInstance();
 	var GM_KEYS$3 = {
 		black: {
 			duration: {
@@ -7023,6 +7256,10 @@
 			title: {
 				statusKey: "search-title-keyword-filter-status",
 				valueKey: "global-title-keyword-filter-value"
+			},
+			relativity: {
+				statusKey: "search-relativity-filter-status",
+				valueKey: "search-relativity-threshold-value"
 			}
 		},
 		white: {
@@ -7036,6 +7273,59 @@
 			}
 		}
 	};
+	var toRelativityItem = (data) => {
+		if (typeof data?.bvid !== "string" || !data.bvid) return;
+		return {
+			title: typeof data.title === "string" ? data.title.replace(/<[^>]+>/g, "") : "",
+			description: typeof data.description === "string" ? data.description : "",
+			author: typeof data.author === "string" ? data.author : "",
+			tag: typeof data.tag === "string" ? data.tag : "",
+			hit_columns: data.hit_columns
+		};
+	};
+	var relativityMap = new Map();
+	var relativityHookEnabled = false;
+	var relativityHookRegistered = false;
+	var registerRelativityFetchHook = () => {
+		if (relativityHookRegistered) return;
+		relativityHookRegistered = true;
+		fetchHook.addPostFn(async (input, init, resp) => {
+			if (!relativityHookEnabled) return;
+			try {
+				const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
+				if ((init?.method ?? "GET").toUpperCase() !== "GET" || !url.includes("api.bilibili.com") || !url.includes("/search/type")) return;
+				if (new URL(url, location.origin).searchParams.get("search_type") !== "video") return;
+				const result = (await resp?.clone().json())?.data?.result;
+				if (!Array.isArray(result)) return;
+				result.forEach((item) => {
+					const relativityItem = toRelativityItem(item);
+					if (relativityItem) relativityMap.set(item.bvid, relativityItem);
+				});
+				logger.debug(`VideoFilterSearch relativityMap updated, size=${relativityMap.size}`);
+			} catch (err) {
+				logger.error("VideoFilterSearch relativity fetch hook error", err);
+			}
+		});
+	};
+	var getFirstPageVideoItem = (bvid) => {
+		const result = _unsafeWindow.__pinia?.searchResponse?.searchAllResponse?.result;
+		if (!Array.isArray(result)) return;
+		for (let i = result.length - 1; i >= 0; i--) {
+			const data = result[i]?.data;
+			if (result[i]?.result_type === "video" && Array.isArray(data)) return data.find((item) => item?.bvid === bvid);
+		}
+	};
+	var getCardVideoItem = (video) => {
+		const info = video.querySelector(".bili-video-card")?.__VUE__?.[0]?.props?.info;
+		if (!info || typeof info !== "object") return;
+		return {
+			title: typeof info.title === "string" ? info.title : "",
+			description: typeof info.description === "string" ? info.description : "",
+			author: typeof info.author?.name === "string" ? info.author.name : "",
+			tag: "",
+			hit_columns: []
+		};
+	};
 	var selectorFns$3 = {
 		duration: (video) => {
 			const duration = video.querySelector(".bili-video-card__stats__duration")?.textContent?.trim();
@@ -7047,6 +7337,16 @@
 		bvid: (video) => {
 			const href = video.querySelector(".bili-video-card__wrap > a")?.getAttribute("href") || video.querySelector(".bili-video-card__info--right > a")?.getAttribute("href");
 			return (href && matchBvid(href)) ?? void 0;
+		},
+		relativity: (video) => {
+			if (video.closest(".user-list")) return;
+			const keyword = new URLSearchParams(location.search).get("keyword")?.trim();
+			const bvid = selectorFns$3.bvid(video);
+			if (!keyword || typeof bvid !== "string") return;
+			const data = relativityMap.get(bvid) ?? toRelativityItem(getFirstPageVideoItem(bvid)) ?? getCardVideoItem(video);
+			if (!data) return;
+			const relativity = calcVideoRelativity(keyword, data.title, data.description, data.author, data.tag.split(",").filter(Boolean), data.hit_columns);
+			return relativity === void 0 ? void 0 : relativity * 100;
 		},
 		uploader: (video) => {
 			return video.querySelector(".bili-video-card__info--author")?.textContent?.trim() || video.closest(".user-list")?.querySelector(".user-name")?.textContent?.trim();
@@ -7062,6 +7362,7 @@
 		videoTitleFilter = new VideoTitleFilter();
 		videoUploaderFilter = new VideoUploaderFilter();
 		videoUploaderKeywordFilter = new VideoUploaderKeywordFilter();
+		videoRelativityFilter = new VideoRelativityFilter();
 		videoUploaderWhiteFilter = new VideoUploaderWhiteFilter();
 		videoTitleWhiteFilter = new VideoTitleWhiteFilter();
 		init() {
@@ -7070,13 +7371,14 @@
 			this.videoTitleFilter.setParam(_GM_getValue(GM_KEYS$3.black.title.valueKey, []));
 			this.videoUploaderFilter.setParam(_GM_getValue(GM_KEYS$3.black.uploader.valueKey, []));
 			this.videoUploaderKeywordFilter.setParam(_GM_getValue(GM_KEYS$3.black.uploaderKeyword.valueKey, []));
+			this.videoRelativityFilter.setParam(_GM_getValue(GM_KEYS$3.black.relativity.valueKey, 15));
 			this.videoUploaderWhiteFilter.setParam(_GM_getValue(GM_KEYS$3.white.uploader.valueKey, []));
 			this.videoTitleWhiteFilter.setParam(_GM_getValue(GM_KEYS$3.white.title.valueKey, []));
 		}
 		async check(mode) {
 			if (!this.target) return;
 			let revertAll = false;
-			if (!(this.videoBvidFilter.isEnable || this.videoDurationFilter.isEnable || this.videoTitleFilter.isEnable || this.videoUploaderFilter.isEnable || this.videoUploaderKeywordFilter.isEnable)) revertAll = true;
+			if (!(this.videoBvidFilter.isEnable || this.videoDurationFilter.isEnable || this.videoTitleFilter.isEnable || this.videoUploaderFilter.isEnable || this.videoUploaderKeywordFilter.isEnable || this.videoRelativityFilter.isEnable)) revertAll = true;
 			const timer = performance.now();
 			const selector = `:where(.video.search-all-list, .search-page-video) .video-list > div`;
 			const cardSelector = `.user-list .video-list-item`;
@@ -7092,7 +7394,8 @@
 					`bvid: ${selectorFns$3.bvid(v)}`,
 					`duration: ${selectorFns$3.duration(v)}`,
 					`title: ${selectorFns$3.title(v)}`,
-					`uploader: ${selectorFns$3.uploader(v)}`
+					`uploader: ${selectorFns$3.uploader(v)}`,
+					`relativity: ${selectorFns$3.relativity(v)}`
 				].join("\n"));
 			});
 			const blackPairs = [];
@@ -7100,14 +7403,15 @@
 			this.videoTitleFilter.isEnable && blackPairs.push([this.videoTitleFilter, selectorFns$3.title]);
 			this.videoUploaderFilter.isEnable && blackPairs.push([this.videoUploaderFilter, selectorFns$3.uploader]);
 			this.videoUploaderKeywordFilter.isEnable && blackPairs.push([this.videoUploaderKeywordFilter, selectorFns$3.uploader]);
+			this.videoRelativityFilter.isEnable && blackPairs.push([this.videoRelativityFilter, selectorFns$3.relativity]);
 			const whitePairs = [];
 			this.videoUploaderWhiteFilter.isEnable && whitePairs.push([this.videoUploaderWhiteFilter, selectorFns$3.uploader]);
 			this.videoTitleWhiteFilter.isEnable && whitePairs.push([this.videoTitleWhiteFilter, selectorFns$3.title]);
 			const forceBlackPairs = [];
 			this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns$3.bvid]);
-			const blackCnt = await coreCheck(videos, true, "sign", blackPairs, whitePairs, forceBlackPairs);
+			const blackIdxSet = await coreCheck(videos, true, "sign", blackPairs, whitePairs, forceBlackPairs);
 			const time = (performance.now() - timer).toFixed(1);
-			logger.debug(`VideoFilterSearch hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`);
+			logger.debug(`VideoFilterSearch hide ${blackIdxSet.size} in ${videos.length} videos, mode=${mode}, time=${time}`);
 		}
 		async checkUserCards(mode) {
 			if (!this.target) return;
@@ -7126,9 +7430,9 @@
 			this.videoUploaderKeywordFilter.isEnable && blackPairs.push([this.videoUploaderKeywordFilter, selectorFns$3.uploaderCard]);
 			const whitePairs = [];
 			this.videoUploaderWhiteFilter.isEnable && whitePairs.push([this.videoUploaderWhiteFilter, selectorFns$3.uploaderCard]);
-			const blackCnt = await coreCheck([userList], true, "sign", blackPairs, whitePairs);
+			const blackIdxSet = await coreCheck([userList], true, "sign", blackPairs, whitePairs);
 			const time = (performance.now() - timer).toFixed(1);
-			logger.debug(`VideoFilterSearchUserCard hide ${blackCnt} in user-list, mode=${mode}, time=${time}`);
+			logger.debug(`VideoFilterSearchUserCard hide ${blackIdxSet.size} in user-list, mode=${mode}, time=${time}`);
 		}
 		checkFull() {
 			this.checkUserCards("full").catch((err) => {
@@ -7161,6 +7465,50 @@
 		mainFilter$3.observe();
 	};
 	var videoFilterSearchGroups = [
+		{
+			name: "搜索结果相关性过滤",
+			items: [{
+				type: "switch",
+				id: GM_KEYS$3.black.relativity.statusKey,
+				name: "启用 相关性过滤（实验功能）",
+				description: [
+					"不稳定功能，刷新生效",
+					"保留搜索命中项，未命中时按相似度筛查",
+					"有遗漏或误伤，有可能过滤整页视频",
+					"页码 >=2 时刷新网页会失效"
+				],
+				defaultEnable: false,
+				noStyle: true,
+				enableFn: () => {
+					relativityHookEnabled = true;
+					registerRelativityFetchHook();
+					mainFilter$3.videoRelativityFilter.enable();
+					mainFilter$3.checkFull();
+				},
+				disableFn: () => {
+					relativityHookEnabled = false;
+					relativityMap.clear();
+					mainFilter$3.videoRelativityFilter.disable();
+					mainFilter$3.checkFull();
+				}
+			}, {
+				type: "number",
+				id: GM_KEYS$3.black.relativity.valueKey,
+				name: "相关度阈值百分比",
+				description: ["非线性，15% 能过滤掉多数不相关视频"],
+				noStyle: true,
+				minValue: 0,
+				maxValue: 100,
+				step: 1,
+				defaultValue: 15,
+				disableValue: -1,
+				addonText: "%",
+				fn: (value) => {
+					mainFilter$3.videoRelativityFilter.setParam(value);
+					mainFilter$3.checkFull();
+				}
+			}]
+		},
 		{
 			name: "时长过滤",
 			items: [{
@@ -7559,9 +7907,9 @@
 			this.videoTitleWhiteFilter.isEnable && whitePairs.push([this.videoTitleWhiteFilter, selectorFns$2.title]);
 			const forceBlackPairs = [];
 			this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns$2.bvid]);
-			const blackCnt = await coreCheck(videos, true, "sign", blackPairs, whitePairs, forceBlackPairs);
+			const blackIdxSet = await coreCheck(videos, true, "sign", blackPairs, whitePairs, forceBlackPairs);
 			const time = (performance.now() - timer).toFixed(1);
-			logger.debug(`VideoFilterSpace hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`);
+			logger.debug(`VideoFilterSpace hide ${blackIdxSet.size} in ${videos.length} videos, mode=${mode}, time=${time}`);
 		}
 		checkFull() {
 			this.check("full").catch((err) => {
@@ -7846,8 +8194,8 @@
 			this.videoTitleWhiteFilter.isEnable && whitePairs.push([this.videoTitleWhiteFilter, selectorFns$1.title]);
 			const forceBlackPairs = [];
 			this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns$1.bvid]);
-			const blackCnt = await coreCheck(videos, true, "sign", blackPairs, whitePairs, forceBlackPairs);
-			if (enableRelatedCheck && blackCnt) {
+			const blackIdxSet = await coreCheck(videos, true, "sign", blackPairs, whitePairs, forceBlackPairs);
+			if (enableRelatedCheck && blackIdxSet.size) {
 				const blackBvids = new Set();
 				for (const video of videos) if (isEleHide(video, "sign")) {
 					const url = video.querySelector(".info > a")?.getAttribute("href");
@@ -7860,7 +8208,7 @@
 				if (rel?.length && blackBvids.size) _unsafeWindow.__INITIAL_STATE__.related = rel.filter((v) => !(v.bvid && blackBvids.has(v.bvid)));
 			}
 			const time = (performance.now() - timer).toFixed(1);
-			logger.debug(`VideoFilterVideo hide ${blackCnt} in ${videos.length} videos, mode=${mode}, time=${time}`);
+			logger.debug(`VideoFilterVideo hide ${blackIdxSet.size} in ${videos.length} videos, mode=${mode}, time=${time}`);
 		}
 		checkFull() {
 			this.check("full").catch((err) => {
@@ -8279,9 +8627,9 @@
 			const whitePairs = [];
 			this.articleAuthorWhiteFilter.isEnable && whitePairs.push([this.articleAuthorWhiteFilter, selectorFns.author]);
 			this.articleTitleKeywordWhiteFilter.isEnable && whitePairs.push([this.articleTitleKeywordWhiteFilter, selectorFns.title]);
-			const blackCnt = await coreCheck(cards, true, "sign", blackPairs, whitePairs);
+			const blackIdxSet = await coreCheck(cards, true, "sign", blackPairs, whitePairs);
 			const time = (performance.now() - timer).toFixed(1);
-			logger.debug(`ArticleFilterSearch hide ${blackCnt} in ${cards.length} cards, time=${time}`);
+			logger.debug(`ArticleFilterSearch hide ${blackIdxSet.size} in ${cards.length} cards, time=${time}`);
 		}
 		observe() {
 			logger.log("ArticleFilterSearch observe");
@@ -9330,6 +9678,13 @@
 			toggleFullScreen$1();
 		}
 	};
+	var handleKeyFPress$1 = (e) => {
+		if (e.key.toLocaleLowerCase() !== "f" || e.ctrlKey || e.altKey || e.metaKey) return;
+		if (isEditableElement(e.target)) return;
+		e.stopImmediatePropagation();
+		e.preventDefault();
+		toggleFullScreen$1();
+	};
 	var bangumiGroups = [
 		{
 			name: "基本功能",
@@ -9386,6 +9741,18 @@
 						preventVolumeTune$1 = false;
 						document.removeEventListener("click", handleFullScreenClick$1, true);
 						document.removeEventListener("dblclick", handleFullScreenDblClick$1, true);
+					}
+				},
+				{
+					type: "switch",
+					id: "fullscreen-key-f-scrollable",
+					name: "按 F 键全屏可滚动",
+					description: ["需同时启用真全屏页面滚动"],
+					enableFn: () => {
+						window.addEventListener("keydown", handleKeyFPress$1, true);
+					},
+					disableFn: () => {
+						window.removeEventListener("keydown", handleKeyFPress$1, true);
 					}
 				},
 				{
@@ -10374,14 +10741,18 @@
 		}
 		addChangeListener(callback) {
 			this.changeListeners.push(callback);
-			if (this.HAS_DOCUMENT_COOKIE && this.changeListeners.length === 1) if (typeof window === "object" && "cookieStore" in window) window.cookieStore.addEventListener("change", this.update);
-			else this._startPolling();
+			if (this.HAS_DOCUMENT_COOKIE && this.changeListeners.length === 1) {
+				if (typeof window === "object" && "cookieStore" in window) window.cookieStore.addEventListener("change", this.update);
+				else this._startPolling();
+			}
 		}
 		removeChangeListener(callback) {
 			const idx = this.changeListeners.indexOf(callback);
 			if (idx >= 0) this.changeListeners.splice(idx, 1);
-			if (this.HAS_DOCUMENT_COOKIE && this.changeListeners.length === 0) if (typeof window === "object" && "cookieStore" in window) window.cookieStore.removeEventListener("change", this.update);
-			else this._stopPolling();
+			if (this.HAS_DOCUMENT_COOKIE && this.changeListeners.length === 0) {
+				if (typeof window === "object" && "cookieStore" in window) window.cookieStore.removeEventListener("change", this.update);
+				else this._stopPolling();
+			}
 		}
 		removeAllChangeListeners() {
 			while (this.changeListeners.length > 0) this.removeChangeListener(this.changeListeners[0]);
@@ -10505,8 +10876,10 @@
 		}
 	});
 	(0, vue.watch)(isDark, (v) => {
-		if (isAutoMode) if (v) enableDarkMode();
-		else disableDarkMode();
+		if (isAutoMode) {
+			if (v) enableDarkMode();
+			else disableDarkMode();
+		}
 	}, { immediate: true });
 	var toggleDarkMode = () => {
 		isAutoMode = false;
@@ -11747,149 +12120,101 @@
 			]
 		}
 	];
-	var homepageBasicItems = [
-		{
-			type: "switch",
-			id: "homepage-hide-banner",
-			name: "隐藏 横幅banner",
-			description: ["同步生效：首页、分区页、热门页"]
-		},
-		{
-			type: "switch",
-			id: "homepage-hide-recommend-swipe",
-			name: "隐藏 大图活动轮播",
-			defaultEnable: true
-		},
-		{
-			type: "switch",
-			id: "homepage-hide-subarea",
-			name: "隐藏 分区栏"
-		},
-		{
-			type: "switch",
-			id: "homepage-hide-sticky-header",
-			name: "隐藏 滚动页面时 顶部吸附顶栏"
-		},
-		{
-			type: "switch",
-			id: "homepage-hide-sticky-subarea",
-			name: "隐藏 滚动页面时 顶部吸附分区栏",
-			defaultEnable: true
-		},
-		{
-			type: "switch",
-			id: "homepage-hide-adblock-tips",
-			name: "隐藏 顶部adblock提示",
-			defaultEnable: true
-		},
-		{
-			type: "switch",
-			id: "homepage-revert-channel-dynamic-icon",
-			name: "恢复 原始动态按钮",
-			description: ["同步生效：首页、分区页"]
-		}
-	];
-	var homepageLayoutItems = [{
-		type: "list",
-		id: "homepage-layout",
-		name: "修改 视频列表列数",
-		description: ["未启用时，B 站自动判断列数"],
-		defaultValue: "0",
-		disableValue: "0",
-		options: [
-			{
-				value: "0",
-				name: "未启用"
-			},
-			{
-				value: "2",
-				name: "2 列布局"
-			},
-			{
-				value: "3",
-				name: "3 列布局"
-			},
-			{
-				value: "4",
-				name: "4 列布局"
-			},
-			{
-				value: "5",
-				name: "5 列布局"
-			},
-			{
-				value: "6",
-				name: "6 列布局"
-			}
-		]
-	}, {
-		type: "number",
-		id: "homepage-layout-padding",
-		name: "修改 页面两侧边距 (-1禁用)",
-		minValue: -1,
-		maxValue: 500,
-		step: 1,
-		defaultValue: -1,
-		disableValue: -1,
-		addonText: "px",
-		fn: (value) => {
-			document.documentElement.style.setProperty("--homepage-layout-padding", `${value}px`);
-		}
-	}];
-	var fetchHook = class FetchHook {
-		static instance;
-		preFnArr = [];
-		postFnArr = [];
-		constructor() {
-			try {
-				this.hook();
-			} catch (err) {
-				logger.error("hook fetch error", err);
-			}
-		}
-		static getInstance() {
-			if (!FetchHook.instance) FetchHook.instance = new FetchHook();
-			return FetchHook.instance;
-		}
-		addPreFn(fn) {
-			this.preFnArr.push(fn);
-		}
-		addPostFn(fn) {
-			this.postFnArr.push(fn);
-		}
-		hook() {
-			const origFetch = _unsafeWindow.fetch;
-			_unsafeWindow.fetch = async (input, init) => {
-				try {
-					this.preFnArr.forEach((fn) => {
-						input = fn(input, init);
-					});
-				} catch {
-					return origFetch(input, init);
-				}
-				let resp = await origFetch(input, init);
-				const origResp = resp.clone();
-				try {
-					for (const fn of this.postFnArr) {
-						const ans = await fn(input, init, resp);
-						if (ans) resp = ans;
-					}
-				} catch (err) {
-					logger.error("fetch hook postFnArr", err);
-					return origResp;
-				}
-				return resp;
-			};
-		}
-	}.getInstance();
 	var homepageGroups = [
 		{
 			name: "基本功能",
-			items: homepageBasicItems
+			items: [
+				{
+					type: "switch",
+					id: "homepage-hide-banner",
+					name: "隐藏 横幅banner",
+					description: ["同步生效：首页、分区页、热门页"]
+				},
+				{
+					type: "switch",
+					id: "homepage-hide-recommend-swipe",
+					name: "隐藏 大图活动轮播",
+					defaultEnable: true
+				},
+				{
+					type: "switch",
+					id: "homepage-hide-subarea",
+					name: "隐藏 分区栏"
+				},
+				{
+					type: "switch",
+					id: "homepage-hide-sticky-header",
+					name: "隐藏 滚动页面时 顶部吸附顶栏"
+				},
+				{
+					type: "switch",
+					id: "homepage-hide-sticky-subarea",
+					name: "隐藏 滚动页面时 顶部吸附分区栏",
+					defaultEnable: true
+				},
+				{
+					type: "switch",
+					id: "homepage-hide-adblock-tips",
+					name: "隐藏 顶部adblock提示",
+					defaultEnable: true
+				},
+				{
+					type: "switch",
+					id: "homepage-revert-channel-dynamic-icon",
+					name: "恢复 原始动态按钮",
+					description: ["同步生效：首页、分区页"]
+				}
+			]
 		},
 		{
 			name: "页面布局",
-			items: homepageLayoutItems
+			items: [{
+				type: "list",
+				id: "homepage-layout",
+				name: "修改 视频列表列数",
+				description: ["未启用时，B 站自动判断列数"],
+				defaultValue: "0",
+				disableValue: "0",
+				options: [
+					{
+						value: "0",
+						name: "未启用"
+					},
+					{
+						value: "2",
+						name: "2 列布局"
+					},
+					{
+						value: "3",
+						name: "3 列布局"
+					},
+					{
+						value: "4",
+						name: "4 列布局"
+					},
+					{
+						value: "5",
+						name: "5 列布局"
+					},
+					{
+						value: "6",
+						name: "6 列布局"
+					}
+				]
+			}, {
+				type: "number",
+				id: "homepage-layout-padding",
+				name: "修改 页面两侧边距 (-1禁用)",
+				minValue: -1,
+				maxValue: 500,
+				step: 1,
+				defaultValue: -1,
+				disableValue: -1,
+				addonText: "px",
+				fn: (value) => {
+					document.documentElement.style.setProperty("--homepage-layout-padding", `${value}px`);
+				}
+			}]
 		},
 		{
 			name: "视频列表",
@@ -12006,14 +12331,15 @@
 								let isPreload = false;
 								window.addEventListener("scroll", function() {
 									const scrollTop = window.scrollY || document.documentElement.scrollTop;
-									if (scrollTop > lastScrollTop) if (innerHeight - anchor.getBoundingClientRect().top > -innerHeight * .75 && !isPreload) {
-										anchor.classList.add("preload");
-										isPreload = true;
+									if (scrollTop > lastScrollTop) {
+										if (innerHeight - anchor.getBoundingClientRect().top > -innerHeight * .75 && !isPreload) {
+											anchor.classList.add("preload");
+											isPreload = true;
+										} else {
+											isPreload && anchor.classList.remove("preload");
+											isPreload = false;
+										}
 									} else {
-										isPreload && anchor.classList.remove("preload");
-										isPreload = false;
-									}
-									else {
 										isPreload && anchor.classList.remove("preload");
 										isPreload = false;
 									}
@@ -12118,6 +12444,12 @@
 			});
 		});
 	};
+	var handleKeyGPress = (e) => {
+		if (e.key.toLocaleLowerCase() !== "g" || e.ctrlKey || e.altKey || e.metaKey) return;
+		if (isEditableElement(e.target)) return;
+		e.stopImmediatePropagation();
+		e.preventDefault();
+	};
 	var observer;
 	var liveBasicItems = [
 		{
@@ -12150,6 +12482,25 @@
 			type: "switch",
 			id: "live-page-remove-wallpaper",
 			name: "禁用 直播背景"
+		},
+		{
+			type: "switch",
+			id: "live-page-disable-hotkey-g-follow",
+			name: "禁用 快捷键 G 关注主播",
+			enableFn: () => {
+				for (const type of [
+					"keydown",
+					"keypress",
+					"keyup"
+				]) window.addEventListener(type, handleKeyGPress, true);
+			},
+			disableFn: () => {
+				for (const type of [
+					"keydown",
+					"keypress",
+					"keyup"
+				]) window.removeEventListener(type, handleKeyGPress, true);
+			}
 		},
 		{
 			type: "switch",
@@ -12371,6 +12722,31 @@
 					name: "全屏时 隐藏弹幕发送框"
 				}
 			]
+		},
+		{
+			name: "弹幕样式",
+			fold: true,
+			items: [{
+				type: "string",
+				id: "video-page-danmaku-font-family",
+				name: "弹幕字体",
+				description: ["遵循 CSS font-family 语法，留空为禁用", "确保本地已安装该字体，检查家族名是否正确"],
+				defaultValue: "PingFang SC,HarmonyOS_Regular,Helvetica Neue,Microsoft YaHei,sans-serif",
+				disableValue: "",
+				fn: (value) => {
+					document.documentElement.style.setProperty("--video-page-danmaku-font-family", value.trim().replace(/;$/, ""));
+				}
+			}, {
+				type: "string",
+				id: "video-page-danmaku-font-weight",
+				name: "弹幕字重",
+				description: ["遵循 CSS font-weight 语法，留空为禁用", "确保本地字体支持该字重"],
+				defaultValue: "",
+				disableValue: "",
+				fn: (value) => {
+					document.documentElement.style.setProperty("--video-page-danmaku-font-weight", value.trim().replace(/;$/, ""));
+				}
+			}]
 		},
 		{
 			name: "右栏 弹幕列表",
@@ -13579,6 +13955,13 @@
 			toggleFullScreen();
 		}
 	};
+	var handleKeyFPress = (e) => {
+		if (e.key.toLocaleLowerCase() !== "f" || e.ctrlKey || e.altKey || e.metaKey) return;
+		if (isEditableElement(e.target)) return;
+		e.stopImmediatePropagation();
+		e.preventDefault();
+		toggleFullScreen();
+	};
 	var videoGroups = [
 		{
 			name: "基本功能",
@@ -13672,6 +14055,18 @@
 						preventVolumeTune = false;
 						document.removeEventListener("click", handleFullScreenClick, true);
 						document.removeEventListener("dblclick", handleFullScreenDblClick, true);
+					}
+				},
+				{
+					type: "switch",
+					id: "fullscreen-key-f-scrollable",
+					name: "按 F 键全屏可滚动",
+					description: ["需同时启用真全屏页面滚动"],
+					enableFn: () => {
+						window.addEventListener("keydown", handleKeyFPress, true);
+					},
+					disableFn: () => {
+						window.removeEventListener("keydown", handleKeyFPress, true);
 					}
 				},
 				{
@@ -14210,8 +14605,8 @@
 	var index_scss_default$8 = _style("html[hide-dynamic-page-fixed-header] .fixed-header .bili-header__bar{position:relative!important}html[hide-dynamic-page-fixed-header] aside.right section.sticky{top:15px!important}html[exchange-dynamic-page-left-right-aside] aside.left{order:3;margin-right:0!important}html[exchange-dynamic-page-left-right-aside] main{order:2}html[exchange-dynamic-page-left-right-aside] aside.right{order:1;margin-right:12px!important}html[exchange-dynamic-page-left-right-aside] .bili-dyn-sidebar{order:4}html[hide-dynamic-page-bili-dyn-avatar-pendent] .bili-dyn-list .b-avatar__layers .b-avatar__layer.center:first-child{width:48px!important;height:48px!important}html[hide-dynamic-page-bili-dyn-avatar-pendent] .bili-dyn-list .b-avatar__layers .b-avatar__layer.center:nth-child(2),html[hide-dynamic-page-bili-dyn-avatar-pendent] .bili-dyn-list .b-avatar__layers:nth-child(2) .b-avatar__layer.center,html[hide-dynamic-page-bili-dyn-avatar-icon] .bili-dyn-list .b-avatar__layer:not(.center),html[hide-dynamic-page-bili-dyn-ornament] .bili-dyn-ornament,html[hide-dynamic-page-bili-dyn-ornament] .bili-dyn-item__ornament,html[hide-dynamic-page-bili-dyn-dispute] .bili-dyn-content__dispute,html[hide-dynamic-page-bili-dyn-official-topic] .bili-dyn-content__orig__topic,html[hide-dynamic-page-bili-dyn-official-topic] .bili-dyn-content__forw__topic{display:none!important}html[hide-dynamic-page-bili-dyn-text-topic] .bili-rich-text-topic{color:inherit!important}html[hide-dynamic-page-bili-dyn-text-topic] .bili-rich-text-topic:hover{color:var(--brand_blue)!important}html[hide-dynamic-page-bili-dyn-item-interaction] .bili-dyn-item__interaction{display:none!important}html[hide-dynamic-page-bili-dyn-card-reserve] .bili-dyn-list__item:has(.bili-dyn-card-reserve){display:none!important}:is(html[hide-dynamic-page-bili-dyn-card-goods] .bili-dyn-list__item:has(.bili-dyn-card-goods),html[hide-dynamic-page-bili-dyn-card-goods] .bili-dyn-list__item:has(.bili-rich-text-module.goods),html[hide-dynamic-page-bili-dyn-card-goods] .bili-dyn-list__item:has([data-type=goods])){display:none!important}html[hide-dynamic-page-bili-dyn-lottery] .bili-dyn-list__item:has([data-type=lottery]){display:none!important}html[hide-dynamic-page-bili-dyn-forward] .bili-dyn-list__item:has(.bili-dyn-content__orig.reference){display:none!important}html[hide-dynamic-page-bili-dyn-vote] .bili-dyn-list__item:has(.bili-dyn-card-vote){display:none!important}html[hide-dynamic-page-bili-dyn-live] .bili-dyn-list__item:has(.bili-dyn-card-live){display:none!important}html[hide-dynamic-page-bili-dyn-blocked] .bili-dyn-list__item:has(.dyn-blocked-mask,.bili-dyn-upower-common){display:none!important}html[hide-dynamic-page-bili-dyn-charge-video] .bili-dyn-list__item:has(.bili-dyn-card-video__badge [src*=qcRJ6sJU91]){display:none!important}html[dynamic-page-unfold-dynamic-content] .bili-dyn-list__item:not(:has(.dyn-card-opus__title)) .bili-rich-text .bili-rich-text__content{max-height:unset!important;-webkit-line-clamp:unset!important}html[dynamic-page-unfold-dynamic-content] .bili-dyn-list__item:not(:has(.dyn-card-opus__title)) .bili-rich-text .bili-rich-text__action{display:none!important}html[hide-dynamic-page-bili-dyn-publishing] .bili-dyn-publishing{display:none!important}html[hide-dynamic-page-bili-dyn-publishing] main section:first-child{margin-bottom:0!important}html[hide-dynamic-page-up-list] section:has(.bili-dyn-up-list){display:none!important}html[dynamic-page-up-list-dual-line-mode] .bili-dyn-up-list__content{grid-template-rows:auto auto!important;grid-auto-flow:column!important;display:grid!important}html[dynamic-page-up-list-dual-line-mode] .bili-dyn-up-list__content .shim{display:none!important}html[dynamic-page-up-list-dual-line-mode] .bili-dyn-up-list__item{height:auto!important}html[dynamic-page-up-list-dual-line-mode] .bili-dyn-up-list__window{padding:10px!important}html[dynamic-page-up-list-dual-line-mode] .bili-dyn-up-list__nav__btn{zoom:1.4;transition:background-color .1s linear}html[dynamic-page-up-list-dual-line-mode] .bili-dyn-up-list__nav__btn:hover{color:#fff!important;background-color:#00aeec!important}html[dynamic-page-up-list-checked-item-opacity] .bili-dyn-up-list__item:not(.active):has(.bili-dyn-up-list__item__face .bili-dyn-up-list__item__face__img:only-child){opacity:.25;transition:opacity .2s ease-out}html[dynamic-page-up-list-checked-item-opacity] .bili-dyn-up-list__item:hover{opacity:1!important;transition:opacity .1s linear!important}@keyframes disappear{0%{opacity:1;width:68px;margin-right:6px}99%{opacity:0;width:0;margin-right:0}to{opacity:0;width:0;margin-right:0;display:none}}html[dynamic-page-up-list-checked-item-hide] .bili-dyn-up-list__item:not(.active):has(.bili-dyn-up-list__item__face .bili-dyn-up-list__item__face__img:only-child){animation:.5s 1s forwards disappear}@supports ((-moz-appearance:none)){html[dynamic-page-up-list-checked-item-hide] .bili-dyn-up-list__item:not(.active):has(.bili-dyn-up-list__item__face .bili-dyn-up-list__item__face__img:only-child){display:none}}html[hide-dynamic-page-bili-dyn-list-tabs] .bili-dyn-list-tabs{display:none!important}html[hide-dynamic-page-bili-dyn-list-tabs] .bili-dyn-list{margin-top:0!important}html[hide-dynamic-page-bili-dyn-my-info] aside.left section,html[hide-dynamic-page-bili-dyn-live-users__item__living] .bili-dyn-live-users__item__living,html[hide-dynamic-page-aside-left] aside.left{display:none!important}html[hide-dynamic-page-aside-left] .bili-dyn-home--member{justify-content:center!important}html[hide-dynamic-page-aside-left] #app:has(.bili-dyn-home--member){min-width:fit-content}html[hide-dynamic-page-bili-dyn-banner] .bili-dyn-banner{display:none!important}html[hide-dynamic-page-bili-dyn-ads] section:has(.bili-dyn-ads){display:none!important}html[hide-dynamic-page-bili-dyn-ads] aside.right section{margin-bottom:0!important}html[hide-dynamic-page-bili-dyn-ads] aside.right section.sticky{top:72px}html[hide-dynamic-page-bili-dyn-topic-box] .bili-dyn-topic-box,html[hide-dynamic-page-bili-dyn-topic-box] .bili-dyn-search-trendings,html[hide-dynamic-page-bili-dyn-topic-box] .topic-panel,html[hide-dynamic-page-aside-right] aside.right{display:none!important}html[hide-dynamic-page-aside-right] .bili-dyn-home--member{justify-content:center!important}html[hide-dynamic-page-aside-right] #app:has(.bili-dyn-home--member){min-width:fit-content}html[dynamic-list-width] #app:has(.bili-dyn-home--member){min-width:fit-content!important}html[dynamic-list-width] #app:has(.bili-dyn-home--member) main{width:max(556px, var(--dynamic-list-width))!important}html[dynamic-detail-width] #app:has(.opus-detail){min-width:fit-content!important}html[dynamic-detail-width] #app:has(.opus-detail) .opus-detail{width:max(708px, var(--dynamic-detail-width))!important}html[dynamic-detail-width] #app:has(.opus-detail) .opus-detail .right-sidebar-wrap{margin-left:calc(max(708px, var(--dynamic-detail-width)) + 10px)!important}html[dynamic-detail-width] #app:has(.card .bili-dyn-item){min-width:fit-content!important}html[dynamic-detail-width] #app:has(.card .bili-dyn-item) .content{width:max(556px, var(--dynamic-detail-width))!important}html[hide-dynamic-page-sidebar-old-version] .bili-dyn-sidebar .bili-dyn-sidebar__btn:first-child{visibility:hidden!important}html[hide-dynamic-page-sidebar-old-version] .opus-detail .side-toolbar__bottom .side-toolbar__btn:not(.backtop){display:none!important}html[hide-dynamic-page-sidebar-back-to-top] .bili-dyn-sidebar .bili-dyn-sidebar__btn:last-child{visibility:hidden!important}");
 	var index_scss_default$7 = _style("html[video-page-danmaku-font-family] .bili-danmaku-x-dm,html[video-page-danmaku-font-family] .bili-dm,html[video-page-danmaku-font-family] .bili-dm *{font-family:var(--video-page-danmaku-font-family)!important}html[video-page-danmaku-font-weight] .bili-danmaku-x-dm,html[video-page-danmaku-font-weight] .bili-dm,html[video-page-danmaku-font-weight] .bili-dm *{font-weight:var(--video-page-danmaku-font-weight)!important}html[video-page-hide-bpx-player-video-info-online] .bpx-player-video-info-online,html[video-page-hide-bpx-player-video-info-online] .bpx-player-video-info-divide,html[video-page-hide-bpx-player-video-info-dm] .bpx-player-video-info-dm,html[video-page-hide-bpx-player-video-info-dm] .bpx-player-video-info-divide,html[video-page-hide-bpx-player-dm-switch] .bpx-player-dm-switch,html[video-page-hide-bpx-player-dm-setting] .bpx-player-dm-setting,html[video-page-hide-bpx-player-video-btn-dm] .bpx-player-video-btn-dm{display:none!important}html[video-page-hide-bpx-player-dm-input] .bpx-player-dm-input::placeholder{color:#0000!important}html[video-page-hide-bpx-player-dm-hint] .bpx-player-dm-hint,html[video-page-hide-bpx-player-dm-btn-send] .bpx-player-dm-btn-send,html[video-page-hide-bpx-player-postpanel] .bpx-player-postpanel-sug,html[video-page-hide-bpx-player-postpanel] .bpx-player-postpanel-carousel,html[video-page-hide-bpx-player-postpanel] .bpx-player-postpanel-popup,html[video-page-hide-bpx-player-sending-area] .bpx-player-sending-area,html[video-page-hide-bpx-player-sending-area] #bilibili-player-placeholder-bottom{display:none!important}html[video-page-hide-bpx-player-sending-area] #playerWrap:has(.bpx-player-container:not([data-screen=web],[data-screen=full])){aspect-ratio:16/9;height:unset!important}html[video-page-hide-bpx-player-sending-area] #playerWrap:has(.bpx-player-container:not([data-screen=web],[data-screen=full])) #bilibili-player{aspect-ratio:16/9;height:unset!important}html[video-page-hide-bpx-player-sending-area] .page-main-content:has(.festival-video-player) .video-player-box{height:fit-content!important}html[video-page-hide-bpx-player-sending-area] .festival-video-player{height:fit-content!important}html[video-page-hide-bpx-player-sending-area] .festival-video-player #bilibili-player:not(.mode-webscreen){height:calc(100% - 46px)!important}html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=full] .bpx-player-control-bottom-center .bpx-player-video-inputbar,html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=web] .bpx-player-control-bottom-center .bpx-player-video-inputbar{display:none!important}html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=full] .bpx-player-control-bottom-center,html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=web] .bpx-player-control-bottom-center{padding:0 15px!important}html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=full] .bpx-player-control-bottom-left,html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=web] .bpx-player-control-bottom-left{min-width:unset!important}html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=full] .bpx-player-ctrl-viewpoint,html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=web] .bpx-player-ctrl-viewpoint{width:fit-content!important}html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=full] .bpx-player-video-info,html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=web] .bpx-player-video-info{color:#fffc!important;width:unset!important;margin-bottom:1px!important;margin-right:16px!important;display:flex!important}html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=full] .bpx-player-video-info-online,html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=web] .bpx-player-video-info-online{font-size:14px!important;display:flex!important}html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=full] .bpx-player-video-info-dm,html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=full] .bpx-player-video-info-divide,html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=web] .bpx-player-video-info-dm,html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=web] .bpx-player-video-info-divide{display:none}html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=full] .bpx-player-control-bottom-center,html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=web] .bpx-player-control-bottom-center{padding:0 16px!important}html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=full] .bpx-player-ctrl-viewpoint,html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=web] .bpx-player-ctrl-viewpoint{width:fit-content!important}html[video-page-hide-bpx-player-bili-guide-all] .bili-follow-to-electric,html[video-page-hide-bpx-player-bili-guide-all] .bili-guide,html[video-page-hide-bpx-player-bili-guide-all] .bili-guide-all,html[video-page-hide-bpx-player-bili-guide-all] .bili-guide-animate,html[video-page-hide-bpx-player-bili-guide-all] .bili-guide-cyc,html[video-page-hide-bpx-player-bili-guide-all] .bili-guide-electric,html[video-page-hide-bpx-player-bili-guide-all] .bili-guide-follow,html[video-page-hide-bpx-player-bili-guide-all] .bili-guide-followed,html[video-page-hide-bpx-player-bili-guide-all] .bili-danmaku-x-guide,html[video-page-hide-bpx-player-bili-guide-all] .bili-danmaku-x-guide-all,html[video-page-hide-bpx-player-bili-guide-all] .bili-danmaku-x-guide-follow,html[video-page-hide-bpx-player-bili-guide-all] .bili-danmaku-x-guide-gray,html[video-page-hide-bpx-player-bili-vote] .bili-vote,html[video-page-hide-bpx-player-bili-vote] .bili-danmaku-x-vote,html[video-page-hide-bpx-player-bili-qoe-feedback] .bpx-player-qoeFeedback,html[video-page-hide-bpx-player-bili-qoe-feedback] .bili-qoeFeedback,html[video-page-hide-bpx-player-bili-qoe-feedback] .bili-qoeFeedback-score,html[video-page-hide-bpx-player-bili-qoe-feedback] .bili-qoeFeedback-vote,html[video-page-hide-bpx-player-bili-score] .bili-score,html[video-page-hide-bpx-player-bili-score] .bili-danmaku-x-score,html[video-page-hide-bpx-player-bili-score] .bili-danmaku-x-superRating,html[video-page-hide-bpx-player-bili-score-sum] .bili-scoreSum,html[video-page-hide-bpx-player-bili-score-sum] .bili-danmaku-x-scoreSum,html[video-page-hide-bpx-player-bili-clock] .bili-clock,html[video-page-hide-bpx-player-bili-clock] .bili-danmaku-x-clock,html[video-page-hide-bpx-player-bili-cmtime] .bili-cmtime,html[video-page-hide-bpx-player-bili-cmtime] .bili-danmaku-x-cmtime,html[video-page-hide-bpx-player-bili-cmd-shrink] .bili-cmd-shrink,html[video-page-hide-bpx-player-bili-cmd-shrink] .bili-danmaku-x-cmd-shrink,html[video-page-hide-bpx-player-bili-reserve] .bili-reserve,html[video-page-hide-bpx-player-bili-reserve] .bili-danmaku-x-reserve,html[video-page-hide-bpx-player-bili-link] .bili-link,html[video-page-hide-bpx-player-bili-link] .bili-danmaku-x-link,html[video-page-hide-bpx-player-cmd-dm-wrap] .bpx-player-cmd-dm-wrap,html[video-page-hide-bpx-player-top-left-title] .bpx-player-top-title,html[video-page-hide-bpx-player-top-left-title] .bpx-player-top-left-title,html[video-page-hide-bpx-player-top-left-title] .bpx-player-top-mask,html[video-page-hide-bpx-player-top-left-music] .bpx-player-top-left-music,html[video-page-hide-bpx-player-top-left-follow] .bpx-player-top-left-follow,html[video-page-hide-bpx-player-top-issue] .bpx-player-top-issue,html[video-page-hide-bpx-player-state-wrap] .bpx-player-state-wrap,html[video-page-hide-bpx-player-ending-related] .bpx-player-ending-related{display:none!important}html[video-page-hide-bpx-player-ending-related] .bpx-player-ending-content{align-items:center!important;display:flex!important}html[video-page-hide-bpx-player-dialog-wrap] .bpx-player-dialog-wrap,html[video-page-bpx-player-bili-high-icon] .bili-dm .bili-high-icon,html[video-page-bpx-player-bili-high-icon] .bili-danmaku-x-high-icon{display:none!important}html[video-page-bpx-player-bili-dm-vip-white] .bili-dm>.bili-dm-vip,html[video-page-bpx-player-bili-dm-vip-white] .bili-danmaku-x-dm-vip{background:unset!important;background-image:unset!important;background-size:unset!important;text-shadow:1px 0 1px #000,0 1px 1px #000,0 -1px 1px #000,-1px 0 1px #000!important;-webkit-text-stroke:unset!important;-moz-text-stroke:none!important;-ms-text-stroke:none!important}html[video-page-bpx-player-bili-dm-normal-white] .bili-danmaku-x-dm,html[video-page-bpx-player-bili-dm-normal-white] .bili-dm{--color:white!important}html[video-page-subtitle-font-color] .bpx-player-subtitle-panel-text{color:var(--video-page-subtitle-font-color)!important}html[video-page-subtitle-font-family] .bpx-player-subtitle-panel-text{font-family:var(--video-page-subtitle-font-family)!important}html[video-page-subtitle-font-weight] .bpx-player-subtitle-panel-text{font-weight:var(--video-page-subtitle-font-weight)!important}html[video-page-subtitle-text-stroke-color] .bpx-player-subtitle-panel-text{background:unset!important;background-color:var(--video-page-subtitle-text-stroke-color)!important;-webkit-background-clip:text!important;background-clip:text!important}html[video-page-subtitle-text-stroke-width] .bpx-player-container:where([data-screen=normal],[data-screen=wide]) .bpx-player-subtitle-panel-text{-webkit-text-stroke:calc(.6 * var(--video-page-subtitle-text-stroke-width)) transparent!important;-moz-text-stroke:calc(.6 * var(--video-page-subtitle-text-stroke-width)) transparent!important;-ms-text-stroke:calc(.6 * var(--video-page-subtitle-text-stroke-width)) transparent!important}html[video-page-subtitle-text-stroke-width] .bpx-player-container:where([data-screen=web],[data-screen=full]) .bpx-player-subtitle-panel-text{-webkit-text-stroke:var(--video-page-subtitle-text-stroke-width) transparent!important;-moz-text-stroke:var(--video-page-subtitle-text-stroke-width) transparent!important;-ms-text-stroke:var(--video-page-subtitle-text-stroke-width) transparent!important}html[video-page-hide-bpx-player-ctrl-prev] .bpx-player-ctrl-prev,html[video-page-hide-bpx-player-ctrl-play] .bpx-player-ctrl-play,html[video-page-hide-bpx-player-ctrl-next] .bpx-player-ctrl-next,html[video-page-hide-bpx-player-ctrl-viewpoint] .bpx-player-ctrl-viewpoint,html[video-page-hide-bpx-player-ctrl-flac] .bpx-player-ctrl-flac,html[video-page-hide-bpx-player-ctrl-quality] .bpx-player-ctrl-quality,html[video-page-hide-bpx-player-ctrl-eplist] .bpx-player-ctrl-eplist,html[video-page-hide-bpx-player-ctrl-playbackrate] .bpx-player-ctrl-playbackrate,html[video-page-hide-bpx-player-ctrl-subtitle] .bpx-player-ctrl-subtitle,html[video-page-hide-bpx-player-ctrl-volume] .bpx-player-ctrl-volume,html[video-page-hide-bpx-player-ctrl-setting] .bpx-player-ctrl-setting,html[video-page-hide-bpx-player-ctrl-pip] .bpx-player-ctrl-pip,html[video-page-hide-bpx-player-ctrl-wide] .bpx-player-ctrl-wide,html[video-page-hide-bpx-player-ctrl-web] .bpx-player-ctrl-web,html[video-page-hide-bpx-player-ctrl-full] .bpx-player-ctrl-full,html[video-page-hide-bpx-player-pbp-pin] .bpx-player-pbp-pin,html[video-page-hide-bpx-player-shadow-progress-area] .bpx-player-shadow-progress-area{display:none!important}html[video-page-hide-bpx-player-shadow-progress-area] .bpx-player-pbp:not(.show){bottom:0!important}html[video-page-show-bpx-player-shadow-progress-area-fullscreen] #bilibili-player [data-screen=full][data-ctrl-hidden=true] .bpx-player-shadow-progress-area{opacity:1!important;visibility:visible!important}html[video-page-show-bpx-player-pbp] .bpx-player-pbp:not(.show){opacity:1!important}");
 	var index_scss_default$6 = _style("html[homepage-hide-banner] #i_cecream .bili-header .bili-header__bar,html[homepage-hide-banner] #app .bili-header .bili-header__bar{position:fixed;background:var(--bg1,white)!important;transition:unset!important;box-shadow:0 2px 4px #80808026!important}html[homepage-hide-banner] #i_cecream .bili-header .bili-header__bar.slide-down,html[homepage-hide-banner] #app .bili-header .bili-header__bar.slide-down{animation:none!important;box-shadow:0 2px 4px #80808026!important}html[homepage-hide-banner] #i_cecream .bili-header .bili-header__bar .left-entry :is(.entry-title,.download-entry,.default-entry,.loc-entry),html[homepage-hide-banner] #app .bili-header .bili-header__bar .left-entry :is(.entry-title,.download-entry,.default-entry,.loc-entry){color:var(--text1,#18191c)!important}html[homepage-hide-banner] #i_cecream .bili-header .bili-header__bar .left-entry .zhuzhan-icon,html[homepage-hide-banner] #app .bili-header .bili-header__bar .left-entry .zhuzhan-icon{color:#00aeec!important}html[homepage-hide-banner] #i_cecream .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-icon,html[homepage-hide-banner] #app .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-icon{color:var(--text1,#18191c)!important}html[homepage-hide-banner] #i_cecream .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-text,html[homepage-hide-banner] #app .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-text{color:var(--text2,#61666d)!important}html[homepage-hide-banner] #i_cecream .bili-header .bili-header__banner,html[homepage-hide-banner] #app .bili-header .bili-header__banner{min-height:unset!important;background:var(--bg1,white)!important;height:64px!important}html[homepage-hide-banner] #i_cecream .bili-header .bili-header__banner>*,html[homepage-hide-banner] #app .bili-header .bili-header__banner>*{display:none!important}html[homepage-hide-recommend-swipe] .recommended-swipe{visibility:hidden!important;pointer-events:none!important;opacity:0!important;width:0!important;height:0!important;position:absolute!important}html[homepage-hide-recommend-swipe] .recommended-container_floor-aside .container>:nth-of-type(n+5){margin-top:0!important}html[homepage-hide-recommend-swipe] .recommended-container_floor-aside .container .feed-card:nth-of-type(n+9),html[homepage-hide-recommend-swipe] .recommended-container_floor-aside .container .feed-card:nth-of-type(n+12){display:initial}html[homepage-hide-recommend-swipe] .recommended-container_floor-aside .container>:nth-of-type(n+13),html[homepage-hide-recommend-swipe] .recommended-container_floor-aside .container .floor-single-card:first-of-type{margin-top:0!important}html[homepage-hide-subarea] .bili-header{margin-bottom:20px!important}html[homepage-hide-subarea] .bili-header .bili-header__channel{display:none!important}html[homepage-hide-subarea] body:has(.bilibili-gate-root) .bili-header{margin-bottom:15px!important}html[homepage-hide-subarea] body:has(.bilibili-gate-root) .bili-header .bili-header__channel{display:none!important}html[homepage-hide-sticky-header] .bili-header .bili-header__bar{background:0 0;transition:none!important;position:absolute!important}html[homepage-hide-sticky-header] .bili-header .bili-header__bar.slide-down{box-shadow:none!important;animation:none!important}html[homepage-hide-sticky-header] .bili-header .bili-header__bar .left-entry :is(.entry-title,.download-entry,.default-entry,.loc-entry,.zhuzhan-icon),html[homepage-hide-sticky-header] .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-icon,html[homepage-hide-sticky-header] .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-text{color:#fff}html[homepage-hide-sticky-header] #i_cecream .header-channel,html[homepage-hide-sticky-header] #app .header-channel,html[homepage-hide-sticky-header] .bilibili-gate-root [data-role=tab-bar-wrapper]{top:0!important}html[homepage-hide-sticky-subarea] #i_cecream .header-channel,html[homepage-hide-sticky-subarea] #app .header-channel{display:none!important}html[homepage-hide-sticky-subarea] #i_cecream .bili-header__bar:not(.slide-down),html[homepage-hide-sticky-subarea] #app .bili-header__bar:not(.slide-down){transition:background-color .2s linear}html[homepage-hide-sticky-subarea] #i_cecream .bili-feed4 .bili-header .slide-down,html[homepage-hide-sticky-subarea] #app .bili-feed4 .bili-header .slide-down{animation:.3s linear forwards headerSlideDown!important}html[homepage-hide-adblock-tips] .adblock-tips,html[homepage-revert-channel-dynamic-icon] .bili-header__channel .channel-icons .icon-bg__dynamic svg,html[homepage-revert-channel-dynamic-icon] .bili-header__channel .channel-icons .icon-bg__dynamic picture{display:none!important}html[homepage-revert-channel-dynamic-icon] .bili-header__channel .channel-icons .icon-bg__dynamic:after{content:\"\";background-image:url(\"data:image/svg+xml,<svg width=\\\"22\\\" height=\\\"23\\\" viewBox=\\\"0 0 22 23\\\" fill=\\\"none\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\" class=\\\"icon-bg--icon\\\" data-v-674f5b07=\\\"\\\"> <path d=\\\"M6.41659 15.625C3.88528 15.625 1.83325 13.7782 1.83325 11.5H10.9999C10.9999 13.7782 8.94789 15.625 6.41659 15.625Z\\\" stroke=\\\"white\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\"></path> <path d=\\\"M15.125 16.0827C15.125 18.614 13.2782 20.666 11 20.666L11 11.4993C13.2782 11.4993 15.125 13.5514 15.125 16.0827Z\\\" stroke=\\\"white\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\"></path> <path d=\\\"M6.875 6.91667C6.875 9.44797 8.72183 11.5 11 11.5L11 2.33333C8.72182 2.33333 6.875 4.38536 6.875 6.91667Z\\\" stroke=\\\"white\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\"></path> <path d=\\\"M15.5833 7.375C13.052 7.375 11 9.22183 11 11.5H20.1667C20.1667 9.22183 18.1146 7.375 15.5833 7.375Z\\\" stroke=\\\"white\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\"></path></svg>\");background-position:50%;background-repeat:no-repeat;background-size:contain;width:25px;height:25px}html[homepage-layout=\"2\"] #i_cecream .recommended-container_floor-aside .container,html[homepage-layout=\"2\"] #app .recommended-container_floor-aside .container{grid-template-columns:repeat(2,1fr)!important}html[homepage-layout=\"3\"] #i_cecream .recommended-container_floor-aside .container,html[homepage-layout=\"3\"] #app .recommended-container_floor-aside .container{grid-template-columns:repeat(3,1fr)!important}html[homepage-layout=\"4\"] #i_cecream .recommended-container_floor-aside .container,html[homepage-layout=\"4\"] #app .recommended-container_floor-aside .container{grid-template-columns:repeat(4,1fr)!important}html[homepage-layout=\"5\"] #i_cecream .recommended-container_floor-aside .container,html[homepage-layout=\"5\"] #app .recommended-container_floor-aside .container{grid-template-columns:repeat(5,1fr)!important}html[homepage-layout=\"6\"] #i_cecream .recommended-container_floor-aside .container,html[homepage-layout=\"6\"] #app .recommended-container_floor-aside .container{grid-template-columns:repeat(6,1fr)!important}html[homepage-layout-padding] .bili-feed4-layout,html[homepage-layout-padding] .bili-feed4 .bili-header .bili-header__channel{padding:0 var(--homepage-layout-padding,initial)!important;width:100%!important}html[homepage-increase-rcmd-list-font-size] main .bili-video-card .bili-video-card__info--tit,html[homepage-increase-rcmd-list-font-size] main .bili-live-card .bili-live-card__info--tit,html[homepage-increase-rcmd-list-font-size] main .single-card.floor-card .title{font-size:16px!important}html[homepage-increase-rcmd-list-font-size] main .bili-video-card .bili-video-card__info--bottom,html[homepage-increase-rcmd-list-font-size] main .floor-card .sub-title.sub-title,html[homepage-increase-rcmd-list-font-size] main .bili-video-card__stats,html[homepage-increase-rcmd-list-font-size] main .bili-video-card__stats .bili-video-card__stats--left,html[homepage-increase-rcmd-list-font-size] main .bili-video-card__stats .bili-video-card__stats--right{font-size:14px!important}html[homepage-move-no-interest] main .bili-video-card__info--no-interest{top:unset!important;bottom:0!important}html[homepage-move-no-interest] main .bili-video-card__info--bottom{padding-right:20px!important}html[homepage-move-no-interest] main .bili-video-card.enable-no-interest,html[homepage-move-no-interest] main .bili-live-card.enable-no-interest,html[homepage-hide-no-interest] main .bili-video-card.enable-no-interest,html[homepage-hide-no-interest] main .bili-live-card.enable-no-interest{--title-padding-right:0}html[homepage-hide-no-interest] main .bili-video-card__info--no-interest,html[homepage-hide-no-interest] main .bili-live-card__info--no-interest{display:none!important}html[homepage-hide-up-info-icon] main .bili-video-card .bili-video-card__info--icon-text{width:17px;height:17px;color:#0000!important;background-color:unset!important;border-radius:unset!important;font-size:0!important;line-height:unset!important;padding:unset!important;-webkit-user-select:none!important;user-select:none!important;margin:0 2px 0 0!important}html[homepage-hide-up-info-icon] main .bili-video-card .bili-video-card__info--icon-text:before{content:\"\";background-image:url(\"data:image/svg+xml,<svg xmlns=\\\"http://www.w3.org/2000/svg\\\" xmlns:xlink=\\\"http://www.w3.org/1999/xlink\\\" viewBox=\\\"0 0 24 24\\\" width=\\\"24\\\" height=\\\"24\\\" fill=\\\"currentColor\\\" class=\\\"bili-video-card__info--owner__up\\\"><!--[--><path d=\\\"M6.15 8.24805C6.5642 8.24805 6.9 8.58383 6.9 8.99805L6.9 12.7741C6.9 13.5881 7.55988 14.248 8.3739 14.248C9.18791 14.248 9.8478 13.5881 9.8478 12.7741L9.8478 8.99805C9.8478 8.58383 10.1836 8.24805 10.5978 8.24805C11.012 8.24805 11.3478 8.58383 11.3478 8.99805L11.3478 12.7741C11.3478 14.41655 10.01635 15.748 8.3739 15.748C6.73146 15.748 5.4 14.41655 5.4 12.7741L5.4 8.99805C5.4 8.58383 5.73578 8.24805 6.15 8.24805z\\\" fill=\\\"rgb(148, 153, 160)\\\"></path><path d=\\\"M12.6522 8.99805C12.6522 8.58383 12.98795 8.24805 13.4022 8.24805L15.725 8.24805C17.31285 8.24805 18.6 9.53522 18.6 11.123C18.6 12.71085 17.31285 13.998 15.725 13.998L14.1522 13.998L14.1522 14.998C14.1522 15.4122 13.8164 15.748 13.4022 15.748C12.98795 15.748 12.6522 15.4122 12.6522 14.998L12.6522 8.99805zM14.1522 12.498L15.725 12.498C16.4844 12.498 17.1 11.8824 17.1 11.123C17.1 10.36365 16.4844 9.74804 15.725 9.74804L14.1522 9.74804L14.1522 12.498z\\\" fill=\\\"rgb(148, 153, 160)\\\"></path><path d=\\\"M12 4.99805C9.48178 4.99805 7.283 5.12616 5.73089 5.25202C4.65221 5.33949 3.81611 6.16352 3.72 7.23254C3.60607 8.4998 3.5 10.171 3.5 11.998C3.5 13.8251 3.60607 15.4963 3.72 16.76355C3.81611 17.83255 4.65221 18.6566 5.73089 18.7441C7.283 18.8699 9.48178 18.998 12 18.998C14.5185 18.998 16.7174 18.8699 18.2696 18.74405C19.3481 18.65655 20.184 17.8328 20.2801 16.76405C20.394 15.4973 20.5 13.82645 20.5 11.998C20.5 10.16965 20.394 8.49877 20.2801 7.23205C20.184 6.1633 19.3481 5.33952 18.2696 5.25205C16.7174 5.12618 14.5185 4.99805 12 4.99805zM5.60965 3.75693C7.19232 3.62859 9.43258 3.49805 12 3.49805C14.5677 3.49805 16.8081 3.62861 18.3908 3.75696C20.1881 3.90272 21.6118 5.29278 21.7741 7.09773C21.8909 8.3969 22 10.11405 22 11.998C22 13.88205 21.8909 15.5992 21.7741 16.8984C21.6118 18.7033 20.1881 20.09335 18.3908 20.23915C16.8081 20.3675 14.5677 20.498 12 20.498C9.43258 20.498 7.19232 20.3675 5.60965 20.2392C3.81206 20.0934 2.38831 18.70295 2.22603 16.8979C2.10918 15.5982 2 13.8808 2 11.998C2 10.1153 2.10918 8.39787 2.22603 7.09823C2.38831 5.29312 3.81206 3.90269 5.60965 3.75693z\\\" fill=\\\"rgb(148, 153, 160)\\\"></path><!--]--></svg>\");background-position:50%;background-repeat:no-repeat;background-size:contain;width:100%;height:100%;display:inline-block}html[homepage-hide-video-info-date] main .bili-video-card__info--date,html[homepage-hide-danmaku-count] main .bili-video-card__stats--item:nth-child(2),html[homepage-hide-bili-watch-later-tip] main .bili-watch-later__tip--lab,html[homepage-hide-inline-player-danmaku] main .bpx-player-row-dm-wrap,html[homepage-hide-inline-player-danmaku] main .bpx-player-cmd-dm-wrap{display:none!important}html[homepage-hide-ad-card] main :is(.feed-card,.bili-video-card,.bili-feed-card):not(.bilibili-gate-video-card):has(.bili-video-card__info--ad,[href*=\"cm.bilibili.com\"],.bili-video-card__info--creative-ad,.vui_icon.bili-video-card__stats--icon,.bili-video-card__info--owner:not([href*=\"space.bilibili.com\"])){display:none!important}html[homepage-hide-ad-card] main :is(.feed-card,.bili-video-card,.bili-feed-card):not(:has(.bili-video-card__wrap,.bili-video-card__skeleton)){display:none!important}html[homepage-hide-ad-card] main .recommended-container_floor-aside .container>:nth-of-type(n+5){margin-top:0!important}html[homepage-hide-ad-card] main .recommended-container_floor-aside .container .feed-card:nth-of-type(n+9){display:initial}html[homepage-hide-ad-card] main .recommended-container_floor-aside .container>:nth-of-type(n+13){margin-top:0!important}html[homepage-hide-ad-card] main .recommended-container_floor-aside .container .feed-card:nth-of-type(n+12){display:initial}html[homepage-hide-ad-card] main .recommended-container_floor-aside .container .floor-single-card:first-of-type{margin-top:0!important}:is(html[homepage-hide-live-card-recommend] main .bili-live-card,html[homepage-hide-live-card-recommend] main .bili-feed-card:has(.bili-live-card),html[homepage-hide-live-card-recommend] main .floor-single-card:has([href^=\"//live.bilibili.com\"],[href^=\"live.bilibili.com\"],[href^=\"https://live.bilibili.com\"])),html[homepage-simple-sub-area-card-recommend] main .floor-single-card .layer{display:none!important}html[homepage-simple-sub-area-card-recommend] main .floor-single-card .floor-card{box-shadow:unset!important;border:none!important}html[homepage-simple-sub-area-card-recommend] main .floor-single-card .floor-card .info-container{padding:0!important}html[homepage-simple-sub-area-card-recommend] main .single-card.floor-card .floor-card-inner,html[homepage-simple-sub-area-card-recommend] main .single-card.floor-card .floor-card-inner:hover{background:0 0!important}html[homepage-hide-sub-area-card-recommend] main .floor-single-card:not(:has(.skeleton,.skeleton-item)){display:none!important}html[homepage-hide-skeleton-animation] main .bili-video-card .loading_animation .bili-video-card__skeleton--light,html[homepage-hide-skeleton-animation] main .bili-video-card .loading_animation .bili-video-card__skeleton--light:after,html[homepage-hide-skeleton-animation] main .bili-video-card .loading_animation .bili-video-card__skeleton--text,html[homepage-hide-skeleton-animation] main .bili-video-card .loading_animation .bili-video-card__skeleton--text:after,html[homepage-hide-skeleton-animation] main .bili-video-card .loading_animation .bili-video-card__skeleton--face,html[homepage-hide-skeleton-animation] main .bili-video-card .loading_animation .bili-video-card__skeleton--face:after,html[homepage-hide-skeleton-animation] main .bili-video-card .loading_animation .bili-video-card__skeleton--cover,html[homepage-hide-skeleton-animation] main .bili-video-card .loading_animation .bili-video-card__skeleton--cover:after,html[homepage-hide-skeleton-animation] main :where(.floor-skeleton,.skeleton) .skeleton-item,html[homepage-hide-skeleton-animation] main :where(.floor-skeleton,.skeleton) .skeleton-item:after{animation:none!important}html[homepage-hide-skeleton-before-anchor] main .bili-video-card:not(.is-rcmd):has(~.load-more-anchor){display:none!important}html[homepage-hide-skeleton] main .load-more-anchor{visibility:hidden}html[homepage-hide-skeleton] main .container>.bili-video-card:not(.is-rcmd){display:none}html[homepage-hide-skeleton] main .container>.floor-single-card:has(.skeleton,.skeleton-item){display:none}html[homepage-increase-rcmd-load-size] main .container>.floor-single-card:has(.skeleton,.skeleton-item,.floor-skeleton){display:none}html[homepage-rcmd-video-preload] main .bili-video-card:not(.is-rcmd):has(~.load-more-anchor){display:none!important}html[homepage-rcmd-video-preload] main .floor-single-card:not(:has(.skeleton,.skeleton-item)){display:none!important}html[homepage-rcmd-video-preload] main .load-more-anchor.preload{opacity:0;position:fixed;top:-100px;left:-100px}html[homepage-hide-desktop-download-tip] .desktop-download-tip,html[homepage-hide-trial-feed-wrap] .trial-feed-wrap,html[homepage-hide-feed-roll-btn] .feed-roll-btn,html[homepage-hide-watchlater-pip-button] .watchlater-pip-button,html[homepage-hide-adcard-button] .adcard,html[homepage-hide-adcard-button] .fixed-card .btn-ad,html[homepage-hide-adcard-button] .palette-button-adcard,html[homepage-hide-adcard-button] .palette-button-wrap .adcard-content,html[homepage-hide-flexible-roll-btn-text] .palette-button-wrap .flexible-roll-btn .btn-text,html[homepage-hide-flexible-roll-btn] .palette-button-wrap .flexible-roll-btn,html[homepage-hide-feedback] .palette-button-wrap .storage-box,html[homepage-hide-top-btn] .palette-button-wrap .top-btn-wrap{display:none!important}");
-	var index_scss_default$5 = _style("html[live-page-sidebar-vm] #sidebar-vm{display:none!important}html[live-page-default-skin] #control-panel-ctnr-box .icon-left-part svg:hover path{fill:#00aeec}html[live-page-default-skin] #control-panel-ctnr-box .icon-left-part svg path{fill:#c9ccd0}html[live-page-default-skin][lab-style=dark] #control-panel-ctnr-box .icon-left-part svg:hover path{fill:#00aeec}html[live-page-default-skin][lab-style=dark] #control-panel-ctnr-box .icon-left-part svg path{fill:#46494d}html[live-page-remove-wallpaper] .room-bg{background-image:unset!important}html[live-page-remove-wallpaper] #player-ctnr{border-radius:12px;box-shadow:0 0 12px #0003}html[live-page-remove-wallpaper] #aside-area-vm{box-shadow:0 0 12px #0003}html[live-page-width] body:not(.pure_room_root,.player-full-win) .live-room-app .app-content .app-body{width:var(--live-page-width,clamp(980px, min((100vh - 136px - 78px - 64px) * 16 / 9 + 320px + 12px + 100px, 100vw - 100px), 3420px))!important}html[live-page-flip-view] .flip-view,html[live-page-room-info-ctnr] #sections-vm .room-info-ctnr,html[live-page-room-feed] #sections-vm .room-feed,html[live-page-announcement-cntr] #sections-vm .room-detail-box,html[live-page-sections-vm] #sections-vm{display:none!important}html[live-page-sections-vm] .room-bg{min-height:99vh!important}html[live-page-header-search-btn] #nav-searchform .search-bar input{margin-right:0!important}html[live-page-header-search-btn] #nav-searchform .search-bar{padding:0 3px!important}html[live-page-header-search-btn] #nav-searchform .search-bar .nav-search-clean{right:0!important}html[live-page-header-search-btn] #nav-searchform .search-btn{display:none!important}html[live-page-nav-search-rcmd] #nav-searchform input::placeholder{visibility:hidden;opacity:0!important}html[live-page-nav-search-history] #nav-searchform .history{display:none!important}html[live-page-nav-search-trending] .search-pannel{padding:13px 0 4px!important}html[live-page-nav-search-trending] .search-pannel .trending{display:none!important}html[live-page-nav-search-trending] .search-pannel .histories-wrap{max-height:unset!important}html[live-page-nav-search-trending] .search-pannel .history-fold-wrap,html[live-page-header-search-block] #nav-searchform,html[live-page-header-entry-logo] #main-ctnr a.entry_logo[href=\"//live.bilibili.com\"]{display:none!important}html[live-page-header-entry-logo] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-entry-logo] .pre-hold-nav-logo,html[live-page-header-entry-title] #main-ctnr a.entry-title[href=\"//www.bilibili.com\"]{display:none!important}html[live-page-header-entry-title] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-entry-title] #prehold-nav-vm .nav-item:has(a[href=\"//www.bilibili.com\"]){display:none!important}html[live-page-header-live] #main-ctnr .dp-table-cell a[name=live]{display:none!important}html[live-page-header-live] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-live] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com\"]){display:none!important}html[live-page-header-net-game] #main-ctnr .dp-table-cell a[name=网游]{display:none!important}html[live-page-header-net-game] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-net-game] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=2&areaId=0\"]){display:none!important}html[live-page-header-mobile-game] #main-ctnr .dp-table-cell a[name=手游]{display:none!important}html[live-page-header-mobile-game] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-mobile-game] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=3&areaId=0\"]){display:none!important}html[live-page-header-standalone-game] #main-ctnr .dp-table-cell a[name=单机游戏]{display:none!important}html[live-page-header-standalone-game] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-game] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=6&areaId=0\"]){display:none!important}html[live-page-header-standalone-vtuber] #main-ctnr .dp-table-cell a[name=虚拟主播]{display:none!important}html[live-page-header-standalone-vtuber] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-vtuber] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=9&areaId=0\"]){display:none!important}html[live-page-header-standalone-entertainment] #main-ctnr .dp-table-cell a[name=娱乐]{display:none!important}html[live-page-header-standalone-entertainment] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-entertainment] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=1&areaId=0\"]){display:none!important}html[live-page-header-standalone-radio] #main-ctnr .dp-table-cell a[name=电台]{display:none!important}html[live-page-header-standalone-radio] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-radio] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=5&areaId=0\"]){display:none!important}html[live-page-header-standalone-match] #main-ctnr .dp-table-cell a[name=赛事]{display:none!important}html[live-page-header-standalone-match] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-match] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=13&areaId=0\"]){display:none!important}html[live-page-header-standalone-chatroom] #main-ctnr .dp-table-cell a[name=聊天室]{display:none!important}html[live-page-header-standalone-chatroom] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-chatroom] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=14&areaId=0\"]){display:none!important}html[live-page-header-standalone-living] #main-ctnr .dp-table-cell a[name=生活]{display:none!important}html[live-page-header-standalone-living] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-living] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=10&areaId=0\"]){display:none!important}html[live-page-header-standalone-knowledge] #main-ctnr .dp-table-cell a[name=知识]{display:none!important}html[live-page-header-standalone-knowledge] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-knowledge] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=11&areaId=0\"]){display:none!important}html[live-page-header-standalone-helpmeplay] #main-ctnr .dp-table-cell a[name=帮我玩]{display:none!important}html[live-page-header-standalone-helpmeplay] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-helpmeplay] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=301&areaId=0\"],a[href^=\"//live.bilibili.com/p/html/play-together-area/\"]){display:none!important}html[live-page-header-standalone-interact] #main-ctnr .dp-table-cell a[name=互动玩法]{display:none!important}html[live-page-header-standalone-interact] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-interact] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=15&areaId=0\"]){display:none!important}html[live-page-header-standalone-shopping] #main-ctnr .dp-table-cell a[name=购物]{display:none!important}html[live-page-header-standalone-shopping] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-shopping] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=300&areaId=0\"]){display:none!important}html[live-page-header-showmore-link] #main-ctnr .showmore-link{display:none!important}html[live-page-header-showmore-link] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-showmore-link] #prehold-nav-vm .nav-item:last-child,html[live-page-header-avatar] #right-part .user-panel{display:none!important}html[live-page-header-follow-panel] #right-part .shortcut-item:has(.follow-panel-set){display:none}html[live-page-header-recharge] #right-part .shortcut-item:has(.item-icon-recharge){display:none}html[live-page-header-bili-download-panel] #right-part .shortcut-item:has(.bili-download-panel,.item-icon-electronDownload){display:none}html[live-page-header-go-live] #right-part .shortcut-item:has(.download-panel-ctnr,.startlive-btn){visibility:hidden}html[live-page-head-info-avatar-pendant] #head-info-vm :is(.blive-avatar-pendant,.blive-avatar-icons),html[live-page-head-info-vm-upper-row-follow-ctnr] #head-info-vm .left-anchor-section .follow-ctnr,html[live-page-head-info-vm-upper-row-hotrank] #head-info-vm #LiveRoomHotrankEntries,html[live-page-head-info-vm-upper-row-activity] #head-info-vm .activity-entry,html[live-page-head-info-vm] #head-info-vm{display:none!important}html[live-page-head-info-vm] #player-ctnr{border-top-left-radius:12px;border-top-right-radius:12px;overflow:hidden}html[live-page-head-web-player-icon-feedback] .web-player-icon-feedback,html[live-page-head-web-player-shop-popover-vm] #shop-popover-vm,html[live-page-web-player-interactive-sticker] #interactive-sticker-vm,html[live-page-head-web-player-awesome-pk-vm] #pk-vm,html[live-page-head-web-player-awesome-pk-vm] #awesome-pk-vm,html[live-page-head-web-player-awesome-pk-vm] #universal-pk-vm,html[live-page-web-player-watermark] .web-player-icon-roomStatus,html[live-page-web-player-watermark] .blur-edges-ctnr{display:none!important}html[live-page-web-player-watermark] .web-player-module-area-mask{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}html[live-page-hide-web-player-background] #fullscreen-container{--first-frame-bg:unset!important}html[live-page-hide-web-player-background] .pure_room_root #live-player{background-color:#000!important}html[live-page-head-web-player-announcement-wrapper] #live-player .announcement-wrapper,html[live-page-head-web-player-game-id] #game-id,html[live-page-head-web-player-research-container] .research-container,html[live-page-head-web-player-live-lottery] #anchor-guest-box-id{display:none!important}html[live-page-head-web-player-live-lottery] .m-nobar__popup-container:has(iframe[src^=\"https://live.bilibili.com/p/html/live-lottery/lottery-user.html\"]){display:none!important}html[live-page-combo-danmaku] .danmaku-item-container>div.combo,html[live-page-combo-danmaku] .bilibili-combo-danmaku-container,html[live-page-clean-all-danmaku-small-emoji] .danmaku-item-container .bili-dm-emoji,html[live-page-clean-all-danmaku-small-emoji] .danmaku-item-container .bili-danmaku-x-dm-emoji,html[live-page-clean-all-danmaku-big-emoji] .danmaku-item-container .bili-danmaku-x-dm img[style*=width\\:45px],html[live-page-gift-control-vm] #gift-control-vm{display:none!important}html[live-page-gift-control-vm] body:not(.pure_room_root,.player-full-win) .fullscreen-container-paddingbox{border-bottom-right-radius:12px;border-bottom-left-radius:12px;overflow:hidden;height:0!important}html[live-page-gift-control-vm] body:not(.pure_room_root,.player-full-win) .fullscreen-container-paddingbox #fullscreen-container{grid-template-rows:minmax(0,1fr) auto!important}html[live-page-gift-control-vm] body:not(.pure_room_root,.player-full-win) .fullscreen-container-paddingbox #fullscreen-container .gift-control-section{display:none!important}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) #gift-control-vm:not(:has(.anchor-lottery-entry,.gift-lottery)){display:none!important}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) #gift-control-vm:has(.anchor-lottery-entry,.gift-lottery){height:0!important}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) #gift-control-vm:has(.anchor-lottery-entry,.gift-lottery) .gift-panel{display:none}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) #gift-control-vm:has(.anchor-lottery-entry,.gift-lottery) .out-part{position:fixed;top:calc(100vh - 120px);left:0;padding-right:10px!important}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) .fullscreen-container-paddingbox{border-bottom-right-radius:12px;border-bottom-left-radius:12px;overflow:hidden;height:0!important}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) .fullscreen-container-paddingbox #fullscreen-container{grid-template-rows:minmax(0,1fr) auto!important}html[live-page-fullscreen-danmaku-vm] #fullscreen-danmaku-vm{display:none!important}html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item{padding:calc(var(--live-page-danmaku-font-size,15px) / 5) 5px!important;font-size:var(--live-page-danmaku-font-size,15px)!important}html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item .danmaku-item-right{line-height:1.3!important}html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item.chat-colorful-bubble,html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item.has-bubble{margin:2px 0!important}html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item .user-name,html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item .reply-uname,html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item .reply-uname .common-nickname-wrapper{font-size:var(--live-page-danmaku-font-size,15px)!important}html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item .card-item-middle-bottom .text,html[live-page-danmaku-font-size] #pay-note-panel-vm .card-item-middle-bottom .text{font-size:calc(var(--live-page-danmaku-font-size,15px) - 1px)!important}html[live-page-rank-list-vm-fold] #rank-list-vm{max-height:32px;transition:max-height .3s linear;overflow:hidden}html[live-page-rank-list-vm-fold] .player-full-win #rank-list-vm{border-radius:0}html[live-page-rank-list-vm-fold] #rank-list-vm:hover{max-height:178px;overflow:unset}html[live-page-rank-list-vm-fold] #rank-list-vm .tab-list .tab-item{font-size:14px!important}html[live-page-rank-list-vm-fold] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-rank-list-vm-fold] .chat-history-panel{flex:1}html[live-page-rank-list-vm-fold] .chat-history-panel .danmaku-at-prompt{bottom:160px}html[live-page-rank-list-vm] #rank-list-vm{display:none!important}html[live-page-rank-list-vm] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-rank-list-vm] .chat-history-panel{flex:1}html[live-page-rank-list-vm] .chat-history-panel .danmaku-at-prompt{bottom:160px}html[live-page-convention-msg] .convention-msg.border-box,html[live-page-convention-msg] .new-video-pk-item-dm{display:none!important}html[live-page-welcome-msg] .welcome-section-bottom{display:none}html[live-page-rank-icon] .chat-item .rank-icon,html[live-page-title-label] .chat-item .title-label,html[live-page-wealth-medal-ctnr] .chat-item .wealth-medal-ctnr,html[live-page-group-medal-ctnr] .chat-item .group-medal-ctnr,html[live-page-fans-medal-item-ctnr] .chat-item .fans-medal-item-ctnr{display:none!important}html[live-page-chat-item-background-color] .chat-item{background-color:unset!important;border-image-source:unset!important}html[live-page-chat-item-background-color] .chat-item>div[style*=\"height: 62px\"]:has(+.danmaku-item-left){display:none!important}html[live-page-chat-item-background-color] .chat-item .danmaku-item-left br,html[live-page-gift-item] .chat-item.gift-item,html[live-page-gift-item] .chat-item.common-danmuku-msg,html[live-page-bulge-danmaku] .chat-item.bulge-emoticon,html[live-page-bulge-danmaku] .chat-item.chat-emoticon,html[live-page-chat-item-top3-notice] .chat-item.top3-notice,html[live-page-brush-prompt] #brush-prompt{display:none!important}html[live-page-brush-prompt] .chat-history-panel .chat-history-list.with-brush-prompt{height:100%!important}html[live-page-combo-card] .gift-wish-card-root{display:none!important}html[live-page-combo-card] #combo-card:has(.countDownBtn){display:none!important}html[live-page-combo-card] .chat-history-panel{padding-bottom:0!important}html[live-page-combo-card] #combo-card:has(.combo-tips){display:none!important}html[live-page-combo-card] .play-together-service-card-container,html[live-page-combo-card] .vote-card,html[live-page-control-panel-icon-row] .control-panel-icon-row{display:none!important}html[live-page-control-panel-icon-row] #chat-control-panel-vm{min-height:unset!important}html[live-page-control-panel-icon-row] #chat-control-panel-vm .chat-input-ctnr{margin-top:0!important}html[live-page-control-panel-icon-row] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-control-panel-icon-row] .chat-history-panel{flex:1}html[live-page-control-panel-icon-row] .chat-history-panel .danmaku-at-prompt{bottom:100px}html[live-page-chat-input-ctnr-medal-section] .medal-section{display:none!important}html[live-page-chat-input-ctnr-medal-section] .chat-input-area textarea{padding:9px 0 0!important}html[live-page-chat-input-ctnr-send-btn] .bottom-actions,html[live-page-chat-input-ctnr-send-btn] .send-btn-wrapper{display:none!important}html[live-page-chat-input-ctnr-send-btn] #chat-control-panel-vm{height:fit-content!important;min-height:unset!important}html[live-page-chat-input-ctnr-send-btn] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-chat-input-ctnr-send-btn] .chat-history-panel{flex:1}html[live-page-chat-input-ctnr-send-btn] .chat-history-panel .danmaku-at-prompt{bottom:120px}html[live-page-chat-input-ctnr] .chat-input-ctnr,html[live-page-chat-input-ctnr] .bottom-actions{display:none!important}html[live-page-chat-input-ctnr] #chat-control-panel-vm{height:fit-content!important;min-height:unset!important}html[live-page-chat-input-ctnr] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-chat-input-ctnr] .chat-history-panel{flex:1}html[live-page-chat-input-ctnr] .chat-history-panel .danmaku-at-prompt{bottom:70px}html[live-page-chat-control-panel] #chat-control-panel-vm{min-height:unset!important;display:none!important}html[live-page-chat-control-panel] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-chat-control-panel] .chat-history-panel{border-bottom-right-radius:12px;border-bottom-left-radius:12px;flex:1}html[live-page-chat-control-panel] .chat-history-panel .danmaku-at-prompt{bottom:20px!important}");
-	var index_scss_default$4 = _style("html[homepage-hide-banner] #biliMainHeader{min-height:unset!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__bar{position:fixed;background:var(--bg1,white)!important;transition:unset!important;box-shadow:0 2px 4px #80808026!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__bar.slide-down{animation:none!important;box-shadow:0 2px 4px #80808026!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__bar .left-entry :is(.entry-title,.download-entry,.default-entry,.loc-entry){color:var(--text1,#18191c)!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__bar .left-entry .zhuzhan-icon{color:#00aeec!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-icon{color:var(--text1,#18191c)!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-text{color:var(--text2,#61666d)!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__banner{min-height:unset!important;background:var(--bg1,white)!important;height:64px!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__banner>*{display:none!important}html[homepage-hide-sticky-header] .bili-header .bili-header__bar{background:0 0;transition:none!important;position:absolute!important}html[homepage-hide-sticky-header] .bili-header .bili-header__bar.slide-down{box-shadow:none!important;animation:none!important}html[homepage-hide-sticky-header] .bili-header .bili-header__bar .left-entry :is(.entry-title,.download-entry,.default-entry,.loc-entry,.zhuzhan-icon),html[homepage-hide-sticky-header] .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-icon,html[homepage-hide-sticky-header] .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-text{color:#fff}html[popular-hide-tips] .popular-list .popular-tips,html[popular-hide-tips] .rank-container .rank-tips,html[popular-hide-tips] .history-list .history-tips{display:none!important}html[popular-hide-tips] .rank-container .rank-tab-wrap{margin-bottom:0!important;padding:10px 0!important}html[popular-hide-danmaku-count] .popular-list .video-stat .like-text,html[popular-hide-danmaku-count] .weekly-list .video-stat .like-text,html[popular-hide-danmaku-count] .history-list .video-stat .like-text,html[popular-hide-danmaku-count] .rank-list .rank-item .detail-state .data-box:nth-child(2){display:none!important}html[popular-hide-danmaku-count] .rank-list .rank-item .detail-state .data-box:first-child{margin:0!important}html[popular-hide-danmaku-count] .video-card .video-stat .play-text{margin-right:0!important}html[popular-layout=\"2\"] .cm-module{display:none!important}html[popular-layout=\"2\"] .video-list,html[popular-layout=\"2\"] .popular-list .card-list,html[popular-layout=\"2\"] .history-list .card-list{grid-template-columns:auto auto;display:grid!important}html[popular-layout=\"2\"] .popular-list .card-list .video-card,html[popular-layout=\"2\"] .video-list .video-card,html[popular-layout=\"2\"] .history-list .card-list .video-card{width:unset!important}html[popular-layout=\"3\"] .cm-module{display:none!important}@media (width>=1300px) and (width<=1399.9px){html[popular-layout=\"3\"] .popular-container{max-width:1180px!important}}@media (width<=1139.9px){html[popular-layout=\"3\"] .popular-container{max-width:1020px!important}}html[popular-layout=\"3\"] .rank-container .rank-tab-wrap{margin-bottom:0!important;padding:10px 0!important}html[popular-layout=\"3\"] .nav-tabs{height:70px!important}html[popular-layout=\"3\"] .popular-list{padding:10px 0 0!important}html[popular-layout=\"3\"] .video-list{margin-top:15px!important}html[popular-layout=\"3\"] .popular-list .popular-tips,html[popular-layout=\"3\"] .rank-container .rank-tips,html[popular-layout=\"3\"] .history-list .history-tips,html[popular-layout=\"3\"] .popular-list .popular-tips,html[popular-layout=\"3\"] .weekly-list .weekly-hint,html[popular-layout=\"3\"] .history-list .history-hint{display:none!important}html[popular-layout=\"3\"] .card-list,html[popular-layout=\"3\"] .video-list{grid-gap:20px!important;grid-column:span 3!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;width:100%!important;display:grid!important}html[popular-layout=\"3\"] .card-list .video-card,html[popular-layout=\"3\"] .video-list .video-card{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"3\"] .card-list .video-card__content,html[popular-layout=\"3\"] .video-list .video-card__content{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;aspect-ratio:16/9!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"3\"] .card-list .video-card__info,html[popular-layout=\"3\"] .video-list .video-card__info{font-size:14px;margin-top:8px!important;padding:0!important}html[popular-layout=\"3\"] .card-list .video-card__info>div,html[popular-layout=\"3\"] .video-list .video-card__info>div{justify-content:space-between!important;display:flex!important}html[popular-layout=\"3\"] .card-list .video-card__info .rcmd-tag,html[popular-layout=\"3\"] .video-list .video-card__info .rcmd-tag{display:none!important}html[popular-layout=\"3\"] .card-list .video-card__info .video-name,html[popular-layout=\"3\"] .video-list .video-card__info .video-name{height:44px!important;margin-bottom:8px!important;font-size:15px!important;font-weight:400!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"3\"] .card-list .video-card__info .up-name,html[popular-layout=\"3\"] .video-list .video-card__info .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"3\"] .card-list .video-card__info .video-stat .play-text,html[popular-layout=\"3\"] .card-list .video-card__info .video-stat .like-text,html[popular-layout=\"3\"] .video-list .video-card__info .video-stat .play-text,html[popular-layout=\"3\"] .video-list .video-card__info .video-stat .like-text{text-wrap:nowrap!important}html[popular-layout=\"3\"] .rank-list{grid-gap:20px!important;grid-column:span 3!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;width:100%!important;display:grid!important}html[popular-layout=\"3\"] .rank-list .rank-item{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"3\"] .rank-list .rank-item .content{display:unset!important;padding:unset!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .more-data{display:none!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .img{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .img .num{zoom:1.2;font-size:18px}html[popular-layout=\"3\"] .rank-list .rank-item .content .info{font-size:14px;margin-top:8px!important;margin-left:unset!important;height:unset!important;padding:0!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .info .title{height:44px!important;font-size:15px!important;font-weight:500!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .info .detail{justify-content:space-between!important;align-items:center!important;margin-top:8px!important;display:flex!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .info .detail .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .info .detail .detail-state .data-box{line-height:unset!important;margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .info .detail .detail-state .data-box:nth-child(2){margin-left:12px!important}html[popular-layout=\"3\"] .rank-list:not(.pgc-list) .content .img{aspect-ratio:16/9!important}html[popular-layout=\"3\"] .rank-list.pgc-list .content .img{aspect-ratio:220/296!important}html[popular-layout=\"3\"] .rank-list.pgc-list .rank-item .content .info .title{margin-top:.2em;font-size:17px!important}html[popular-layout=\"3\"] .rank-list.pgc-list .rank-item .content .info .data-box{margin-top:unset!important;font-size:14px!important}html[popular-layout=\"3\"] .no-more,html[popular-layout=\"4\"] .cm-module{display:none!important}@media (width>=1300px) and (width<=1399.9px){html[popular-layout=\"4\"] .popular-container{max-width:1180px!important}}@media (width<=1139.9px){html[popular-layout=\"4\"] .popular-container{max-width:1020px!important}}html[popular-layout=\"4\"] .rank-container .rank-tab-wrap{margin-bottom:0!important;padding:10px 0!important}html[popular-layout=\"4\"] .nav-tabs{height:70px!important}html[popular-layout=\"4\"] .popular-list{padding:10px 0 0!important}html[popular-layout=\"4\"] .video-list{margin-top:15px!important}html[popular-layout=\"4\"] .popular-list .popular-tips,html[popular-layout=\"4\"] .rank-container .rank-tips,html[popular-layout=\"4\"] .history-list .history-tips,html[popular-layout=\"4\"] .popular-list .popular-tips,html[popular-layout=\"4\"] .weekly-list .weekly-hint,html[popular-layout=\"4\"] .history-list .history-hint{display:none!important}html[popular-layout=\"4\"] .card-list,html[popular-layout=\"4\"] .video-list{grid-gap:20px!important;grid-column:span 4!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;width:100%!important;display:grid!important}html[popular-layout=\"4\"] .card-list .video-card,html[popular-layout=\"4\"] .video-list .video-card{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"4\"] .card-list .video-card__content,html[popular-layout=\"4\"] .video-list .video-card__content{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;aspect-ratio:16/9!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"4\"] .card-list .video-card__info,html[popular-layout=\"4\"] .video-list .video-card__info{font-size:14px;margin-top:8px!important;padding:0!important}html[popular-layout=\"4\"] .card-list .video-card__info>div,html[popular-layout=\"4\"] .video-list .video-card__info>div{justify-content:space-between!important;display:flex!important}html[popular-layout=\"4\"] .card-list .video-card__info .rcmd-tag,html[popular-layout=\"4\"] .video-list .video-card__info .rcmd-tag{display:none!important}html[popular-layout=\"4\"] .card-list .video-card__info .video-name,html[popular-layout=\"4\"] .video-list .video-card__info .video-name{height:44px!important;margin-bottom:8px!important;font-size:15px!important;font-weight:400!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"4\"] .card-list .video-card__info .up-name,html[popular-layout=\"4\"] .video-list .video-card__info .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"4\"] .card-list .video-card__info .video-stat .play-text,html[popular-layout=\"4\"] .card-list .video-card__info .video-stat .like-text,html[popular-layout=\"4\"] .video-list .video-card__info .video-stat .play-text,html[popular-layout=\"4\"] .video-list .video-card__info .video-stat .like-text{text-wrap:nowrap!important}html[popular-layout=\"4\"] .rank-list{grid-gap:20px!important;grid-column:span 4!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;width:100%!important;display:grid!important}html[popular-layout=\"4\"] .rank-list .rank-item{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"4\"] .rank-list .rank-item .content{display:unset!important;padding:unset!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .more-data{display:none!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .img{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .img .num{zoom:1.2;font-size:18px}html[popular-layout=\"4\"] .rank-list .rank-item .content .info{font-size:14px;margin-top:8px!important;margin-left:unset!important;height:unset!important;padding:0!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .info .title{height:44px!important;font-size:15px!important;font-weight:500!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .info .detail{justify-content:space-between!important;align-items:center!important;margin-top:8px!important;display:flex!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .info .detail .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .info .detail .detail-state .data-box{line-height:unset!important;margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .info .detail .detail-state .data-box:nth-child(2){margin-left:12px!important}html[popular-layout=\"4\"] .rank-list:not(.pgc-list) .content .img{aspect-ratio:16/9!important}html[popular-layout=\"4\"] .rank-list.pgc-list .content .img{aspect-ratio:220/296!important}html[popular-layout=\"4\"] .rank-list.pgc-list .rank-item .content .info .title{margin-top:.2em;font-size:17px!important}html[popular-layout=\"4\"] .rank-list.pgc-list .rank-item .content .info .data-box{margin-top:unset!important;font-size:14px!important}html[popular-layout=\"4\"] .no-more,html[popular-layout=\"5\"] .cm-module{display:none!important}@media (width>=1300px) and (width<=1399.9px){html[popular-layout=\"5\"] .popular-container{max-width:1180px!important}}@media (width<=1139.9px){html[popular-layout=\"5\"] .popular-container{max-width:1020px!important}}html[popular-layout=\"5\"] .rank-container .rank-tab-wrap{margin-bottom:0!important;padding:10px 0!important}html[popular-layout=\"5\"] .nav-tabs{height:70px!important}html[popular-layout=\"5\"] .popular-list{padding:10px 0 0!important}html[popular-layout=\"5\"] .video-list{margin-top:15px!important}html[popular-layout=\"5\"] .popular-list .popular-tips,html[popular-layout=\"5\"] .rank-container .rank-tips,html[popular-layout=\"5\"] .history-list .history-tips,html[popular-layout=\"5\"] .popular-list .popular-tips,html[popular-layout=\"5\"] .weekly-list .weekly-hint,html[popular-layout=\"5\"] .history-list .history-hint{display:none!important}html[popular-layout=\"5\"] .card-list,html[popular-layout=\"5\"] .video-list{grid-gap:20px!important;grid-column:span 5!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;width:100%!important;display:grid!important}html[popular-layout=\"5\"] .card-list .video-card,html[popular-layout=\"5\"] .video-list .video-card{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"5\"] .card-list .video-card__content,html[popular-layout=\"5\"] .video-list .video-card__content{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;aspect-ratio:16/9!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"5\"] .card-list .video-card__info,html[popular-layout=\"5\"] .video-list .video-card__info{font-size:14px;margin-top:8px!important;padding:0!important}html[popular-layout=\"5\"] .card-list .video-card__info>div,html[popular-layout=\"5\"] .video-list .video-card__info>div{justify-content:space-between!important;display:flex!important}html[popular-layout=\"5\"] .card-list .video-card__info .rcmd-tag,html[popular-layout=\"5\"] .video-list .video-card__info .rcmd-tag{display:none!important}html[popular-layout=\"5\"] .card-list .video-card__info .video-name,html[popular-layout=\"5\"] .video-list .video-card__info .video-name{height:44px!important;margin-bottom:8px!important;font-size:15px!important;font-weight:400!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"5\"] .card-list .video-card__info .up-name,html[popular-layout=\"5\"] .video-list .video-card__info .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"5\"] .card-list .video-card__info .video-stat .play-text,html[popular-layout=\"5\"] .card-list .video-card__info .video-stat .like-text,html[popular-layout=\"5\"] .video-list .video-card__info .video-stat .play-text,html[popular-layout=\"5\"] .video-list .video-card__info .video-stat .like-text{text-wrap:nowrap!important}html[popular-layout=\"5\"] .rank-list{grid-gap:20px!important;grid-column:span 5!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;width:100%!important;display:grid!important}html[popular-layout=\"5\"] .rank-list .rank-item{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"5\"] .rank-list .rank-item .content{display:unset!important;padding:unset!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .more-data{display:none!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .img{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .img .num{zoom:1.2;font-size:18px}html[popular-layout=\"5\"] .rank-list .rank-item .content .info{font-size:14px;margin-top:8px!important;margin-left:unset!important;height:unset!important;padding:0!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .info .title{height:44px!important;font-size:15px!important;font-weight:500!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .info .detail{justify-content:space-between!important;align-items:center!important;margin-top:8px!important;display:flex!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .info .detail .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .info .detail .detail-state .data-box{line-height:unset!important;margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .info .detail .detail-state .data-box:nth-child(2){margin-left:12px!important}html[popular-layout=\"5\"] .rank-list:not(.pgc-list) .content .img{aspect-ratio:16/9!important}html[popular-layout=\"5\"] .rank-list.pgc-list .content .img{aspect-ratio:220/296!important}html[popular-layout=\"5\"] .rank-list.pgc-list .rank-item .content .info .title{margin-top:.2em;font-size:17px!important}html[popular-layout=\"5\"] .rank-list.pgc-list .rank-item .content .info .data-box{margin-top:unset!important;font-size:14px!important}html[popular-layout=\"5\"] .no-more,html[popular-layout=\"5\"] .video-stat .like-text,html[popular-layout=\"5\"] .rank-list .rank-item .detail-state .data-box:nth-child(2){display:none!important}html[popular-layout=\"5\"] .rank-list .rank-item .detail-state .data-box:first-child{margin:0!important}html[popular-layout=\"5\"] .video-card .video-stat .play-text{margin-right:0!important}html[popular-layout=\"6\"] .cm-module{display:none!important}@media (width>=1300px) and (width<=1399.9px){html[popular-layout=\"6\"] .popular-container{max-width:1180px!important}}@media (width<=1139.9px){html[popular-layout=\"6\"] .popular-container{max-width:1020px!important}}html[popular-layout=\"6\"] .rank-container .rank-tab-wrap{margin-bottom:0!important;padding:10px 0!important}html[popular-layout=\"6\"] .nav-tabs{height:70px!important}html[popular-layout=\"6\"] .popular-list{padding:10px 0 0!important}html[popular-layout=\"6\"] .video-list{margin-top:15px!important}html[popular-layout=\"6\"] .popular-list .popular-tips,html[popular-layout=\"6\"] .rank-container .rank-tips,html[popular-layout=\"6\"] .history-list .history-tips,html[popular-layout=\"6\"] .popular-list .popular-tips,html[popular-layout=\"6\"] .weekly-list .weekly-hint,html[popular-layout=\"6\"] .history-list .history-hint{display:none!important}html[popular-layout=\"6\"] .card-list,html[popular-layout=\"6\"] .video-list{grid-gap:20px!important;grid-column:span 6!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;width:100%!important;display:grid!important}html[popular-layout=\"6\"] .card-list .video-card,html[popular-layout=\"6\"] .video-list .video-card{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"6\"] .card-list .video-card__content,html[popular-layout=\"6\"] .video-list .video-card__content{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;aspect-ratio:16/9!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"6\"] .card-list .video-card__info,html[popular-layout=\"6\"] .video-list .video-card__info{font-size:14px;margin-top:8px!important;padding:0!important}html[popular-layout=\"6\"] .card-list .video-card__info>div,html[popular-layout=\"6\"] .video-list .video-card__info>div{justify-content:space-between!important;display:flex!important}html[popular-layout=\"6\"] .card-list .video-card__info .rcmd-tag,html[popular-layout=\"6\"] .video-list .video-card__info .rcmd-tag{display:none!important}html[popular-layout=\"6\"] .card-list .video-card__info .video-name,html[popular-layout=\"6\"] .video-list .video-card__info .video-name{height:44px!important;margin-bottom:8px!important;font-size:15px!important;font-weight:400!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"6\"] .card-list .video-card__info .up-name,html[popular-layout=\"6\"] .video-list .video-card__info .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"6\"] .card-list .video-card__info .video-stat .play-text,html[popular-layout=\"6\"] .card-list .video-card__info .video-stat .like-text,html[popular-layout=\"6\"] .video-list .video-card__info .video-stat .play-text,html[popular-layout=\"6\"] .video-list .video-card__info .video-stat .like-text{text-wrap:nowrap!important}html[popular-layout=\"6\"] .rank-list{grid-gap:20px!important;grid-column:span 6!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;width:100%!important;display:grid!important}html[popular-layout=\"6\"] .rank-list .rank-item{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"6\"] .rank-list .rank-item .content{display:unset!important;padding:unset!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .more-data{display:none!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .img{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .img .num{zoom:1.2;font-size:18px}html[popular-layout=\"6\"] .rank-list .rank-item .content .info{font-size:14px;margin-top:8px!important;margin-left:unset!important;height:unset!important;padding:0!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .info .title{height:44px!important;font-size:15px!important;font-weight:500!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .info .detail{justify-content:space-between!important;align-items:center!important;margin-top:8px!important;display:flex!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .info .detail .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .info .detail .detail-state .data-box{line-height:unset!important;margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .info .detail .detail-state .data-box:nth-child(2){margin-left:12px!important}html[popular-layout=\"6\"] .rank-list:not(.pgc-list) .content .img{aspect-ratio:16/9!important}html[popular-layout=\"6\"] .rank-list.pgc-list .content .img{aspect-ratio:220/296!important}html[popular-layout=\"6\"] .rank-list.pgc-list .rank-item .content .info .title{margin-top:.2em;font-size:17px!important}html[popular-layout=\"6\"] .rank-list.pgc-list .rank-item .content .info .data-box{margin-top:unset!important;font-size:14px!important}html[popular-layout=\"6\"] .no-more,html[popular-layout=\"6\"] .video-stat .like-text,html[popular-layout=\"6\"] .rank-list .rank-item .detail-state .data-box:nth-child(2){display:none!important}html[popular-layout=\"6\"] .rank-list .rank-item .detail-state .data-box:first-child{margin:0!important}html[popular-layout=\"6\"] .video-card .video-stat .play-text{margin-right:0!important}html[popular-hot-hide-tag] .popular-list .rcmd-tag,html[popular-weekly-hide-hint] .weekly-list .weekly-hint,html[popular-history-hide-hint] .history-list .history-hint{display:none!important}");
+	var index_scss_default$5 = _style("html[live-page-sidebar-vm] #sidebar-vm{display:none!important}html[live-page-default-skin] #control-panel-ctnr-box .icon-left-part svg:hover path{fill:#00aeec}html[live-page-default-skin] #control-panel-ctnr-box .icon-left-part svg path{fill:#c9ccd0}html[live-page-default-skin][lab-style=dark] #control-panel-ctnr-box .icon-left-part svg:hover path{fill:#00aeec}html[live-page-default-skin][lab-style=dark] #control-panel-ctnr-box .icon-left-part svg path{fill:#46494d}html[live-page-remove-wallpaper] .room-bg{background-image:unset!important}html[live-page-remove-wallpaper] #player-ctnr{border-radius:12px;box-shadow:0 0 12px #0003}html[live-page-remove-wallpaper] #aside-area-vm{box-shadow:0 0 12px #0003}html[live-page-width] body:not(.pure_room_root,.player-full-win) .live-room-app .app-content .app-body{width:var(--live-page-width,clamp(980px, min((100vh - 136px - 78px - 64px) * 16 / 9 + 320px + 12px + 100px, 100vw - 100px), 3420px))!important}html[live-page-flip-view] .flip-view,html[live-page-room-info-ctnr] #sections-vm .room-info-ctnr,html[live-page-room-feed] #sections-vm .room-feed,html[live-page-announcement-cntr] #sections-vm .room-detail-box,html[live-page-sections-vm] #sections-vm{display:none!important}html[live-page-sections-vm] .room-bg{min-height:99vh!important}html[live-page-header-search-btn] #nav-searchform .search-bar input{margin-right:0!important}html[live-page-header-search-btn] #nav-searchform .search-bar{padding:0 3px!important}html[live-page-header-search-btn] #nav-searchform .search-bar .nav-search-clean{right:0!important}html[live-page-header-search-btn] #nav-searchform .search-btn{display:none!important}html[live-page-nav-search-rcmd] #nav-searchform input::placeholder{visibility:hidden;opacity:0!important}html[live-page-nav-search-history] #nav-searchform .history{display:none!important}html[live-page-nav-search-trending] .search-pannel{padding:13px 0 4px!important}html[live-page-nav-search-trending] .search-pannel .trending{display:none!important}html[live-page-nav-search-trending] .search-pannel .histories-wrap{max-height:unset!important}html[live-page-nav-search-trending] .search-pannel .history-fold-wrap,html[live-page-header-search-block] #nav-searchform,html[live-page-header-entry-logo] #main-ctnr a.entry_logo[href=\"//live.bilibili.com\"]{display:none!important}html[live-page-header-entry-logo] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-entry-logo] .pre-hold-nav-logo,html[live-page-header-entry-title] #main-ctnr a.entry-title[href=\"//www.bilibili.com\"]{display:none!important}html[live-page-header-entry-title] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-entry-title] #prehold-nav-vm .nav-item:has(a[href=\"//www.bilibili.com\"]){display:none!important}html[live-page-header-live] #main-ctnr .dp-table-cell a[name=live]{display:none!important}html[live-page-header-live] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-live] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com\"]){display:none!important}html[live-page-header-net-game] #main-ctnr .dp-table-cell a[name=网游]{display:none!important}html[live-page-header-net-game] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-net-game] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=2&areaId=0\"]){display:none!important}html[live-page-header-mobile-game] #main-ctnr .dp-table-cell a[name=手游]{display:none!important}html[live-page-header-mobile-game] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-mobile-game] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=3&areaId=0\"]){display:none!important}html[live-page-header-standalone-game] #main-ctnr .dp-table-cell a[name=单机游戏]{display:none!important}html[live-page-header-standalone-game] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-game] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=6&areaId=0\"]){display:none!important}html[live-page-header-standalone-vtuber] #main-ctnr .dp-table-cell a[name=虚拟主播]{display:none!important}html[live-page-header-standalone-vtuber] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-vtuber] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=9&areaId=0\"]){display:none!important}html[live-page-header-standalone-entertainment] #main-ctnr .dp-table-cell a[name=娱乐]{display:none!important}html[live-page-header-standalone-entertainment] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-entertainment] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=1&areaId=0\"]){display:none!important}html[live-page-header-standalone-radio] #main-ctnr .dp-table-cell a[name=电台]{display:none!important}html[live-page-header-standalone-radio] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-radio] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=5&areaId=0\"]){display:none!important}html[live-page-header-standalone-match] #main-ctnr .dp-table-cell a[name=赛事]{display:none!important}html[live-page-header-standalone-match] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-match] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=13&areaId=0\"]){display:none!important}html[live-page-header-standalone-chatroom] #main-ctnr .dp-table-cell a[name=聊天室]{display:none!important}html[live-page-header-standalone-chatroom] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-chatroom] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=14&areaId=0\"]){display:none!important}html[live-page-header-standalone-living] #main-ctnr .dp-table-cell a[name=生活]{display:none!important}html[live-page-header-standalone-living] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-living] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=10&areaId=0\"]){display:none!important}html[live-page-header-standalone-knowledge] #main-ctnr .dp-table-cell a[name=知识]{display:none!important}html[live-page-header-standalone-knowledge] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-knowledge] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=11&areaId=0\"]){display:none!important}html[live-page-header-standalone-helpmeplay] #main-ctnr .dp-table-cell a[name=帮我玩]{display:none!important}html[live-page-header-standalone-helpmeplay] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-helpmeplay] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=301&areaId=0\"],a[href^=\"//live.bilibili.com/p/html/play-together-area/\"]){display:none!important}html[live-page-header-standalone-interact] #main-ctnr .dp-table-cell a[name=互动玩法]{display:none!important}html[live-page-header-standalone-interact] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-interact] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=15&areaId=0\"]){display:none!important}html[live-page-header-standalone-shopping] #main-ctnr .dp-table-cell a[name=购物]{display:none!important}html[live-page-header-standalone-shopping] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-standalone-shopping] #prehold-nav-vm .nav-item:has(a[href=\"//live.bilibili.com/p/eden/area-tags?parentAreaId=300&areaId=0\"]){display:none!important}html[live-page-header-showmore-link] #main-ctnr .showmore-link{display:none!important}html[live-page-header-showmore-link] .link-navbar-more .search-bar-ctnr{margin:0 auto!important}html[live-page-header-showmore-link] #prehold-nav-vm .nav-item:last-child,html[live-page-header-avatar] #right-part .user-panel{display:none!important}html[live-page-header-follow-panel] #right-part .shortcut-item:has(.follow-panel-set){display:none}html[live-page-header-recharge] #right-part .shortcut-item:has(.item-icon-recharge){display:none}html[live-page-header-bili-download-panel] #right-part .shortcut-item:has(.bili-download-panel,.item-icon-electronDownload){display:none}html[live-page-header-go-live] #right-part .shortcut-item:has(.download-panel-ctnr,.startlive-btn){visibility:hidden}html[live-page-head-info-avatar-pendant] #head-info-vm :is(.blive-avatar-pendant,.blive-avatar-icons),html[live-page-head-info-vm-upper-row-follow-ctnr] #head-info-vm .left-anchor-section .follow-ctnr,html[live-page-head-info-vm-upper-row-hotrank] #head-info-vm #LiveRoomHotrankEntries,html[live-page-head-info-vm-upper-row-activity] #head-info-vm .activity-entry,html[live-page-head-info-vm] #head-info-vm{display:none!important}html[live-page-head-info-vm] #player-ctnr{border-top-left-radius:12px;border-top-right-radius:12px;overflow:hidden}html[live-page-head-web-player-icon-feedback] .web-player-icon-feedback,html[live-page-head-web-player-shop-popover-vm] #shop-popover-vm,html[live-page-web-player-interactive-sticker] #interactive-sticker-vm,html[live-page-head-web-player-awesome-pk-vm] #pk-vm,html[live-page-head-web-player-awesome-pk-vm] #awesome-pk-vm,html[live-page-head-web-player-awesome-pk-vm] #universal-pk-vm,html[live-page-web-player-watermark] .web-player-icon-roomStatus,html[live-page-web-player-watermark] .blur-edges-ctnr{display:none!important}html[live-page-web-player-watermark] .web-player-module-area-mask{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}html[live-page-hide-web-player-background] #fullscreen-container{--first-frame-bg:unset!important}html[live-page-hide-web-player-background] .pure_room_root #live-player{background-color:#000!important}html[live-page-head-web-player-announcement-wrapper] #live-player .announcement-wrapper,html[live-page-head-web-player-game-id] #game-id,html[live-page-head-web-player-research-container] .research-container,html[live-page-head-web-player-live-lottery] #anchor-guest-box-id{display:none!important}html[live-page-head-web-player-live-lottery] .m-nobar__popup-container:has(iframe[src^=\"https://live.bilibili.com/p/html/live-lottery/lottery-user.html\"]){display:none!important}html[live-page-combo-danmaku] .danmaku-item-container>div.combo,html[live-page-combo-danmaku] .bilibili-combo-danmaku-container,html[live-page-clean-all-danmaku-small-emoji] .danmaku-item-container .bili-dm-emoji,html[live-page-clean-all-danmaku-small-emoji] .danmaku-item-container .bili-danmaku-x-dm-emoji,html[live-page-clean-all-danmaku-big-emoji] .danmaku-item-container .bili-danmaku-x-dm img[style*=width\\:45px],html[live-page-gift-control-vm] #gift-control-vm{display:none!important}html[live-page-gift-control-vm] body:not(.pure_room_root,.player-full-win) .fullscreen-container-paddingbox{border-bottom-right-radius:12px;border-bottom-left-radius:12px;overflow:hidden;height:0!important}html[live-page-gift-control-vm] body:not(.pure_room_root,.player-full-win) .fullscreen-container-paddingbox #fullscreen-container{grid-template-rows:minmax(0,1fr) auto!important}html[live-page-gift-control-vm] body:not(.pure_room_root,.player-full-win) .fullscreen-container-paddingbox #fullscreen-container .gift-control-section{display:none!important}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) #gift-control-vm:not(:has(.anchor-lottery-entry,.gift-lottery)){display:none!important}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) #gift-control-vm:has(.anchor-lottery-entry,.gift-lottery){height:0!important}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) #gift-control-vm:has(.anchor-lottery-entry,.gift-lottery) .gift-panel{display:none}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) #gift-control-vm:has(.anchor-lottery-entry,.gift-lottery) .out-part{position:fixed;top:calc(100vh - 120px);left:0;padding-right:10px!important}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) .fullscreen-container-paddingbox{border-bottom-right-radius:12px;border-bottom-left-radius:12px;overflow:hidden;height:0!important}html[live-page-gift-control-vm-show-lottery] body:not(.pure_room_root,.player-full-win) .fullscreen-container-paddingbox #fullscreen-container{grid-template-rows:minmax(0,1fr) auto!important}html[live-page-fullscreen-danmaku-vm] #fullscreen-danmaku-vm{display:none!important}html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item{padding:calc(var(--live-page-danmaku-font-size,15px) / 5) 5px!important;font-size:var(--live-page-danmaku-font-size,15px)!important}html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item .danmaku-item-right{line-height:1.3!important}html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item.chat-colorful-bubble,html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item.has-bubble{margin:2px 0!important}html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item .user-name,html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item .reply-uname,html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item .reply-uname .common-nickname-wrapper{font-size:var(--live-page-danmaku-font-size,15px)!important}html[live-page-danmaku-font-size] .chat-history-panel .chat-history-list .chat-item .card-item-middle-bottom .text,html[live-page-danmaku-font-size] #pay-note-panel-vm .card-item-middle-bottom .text{font-size:calc(var(--live-page-danmaku-font-size,15px) - 1px)!important}html[live-page-rank-list-vm-fold] #rank-list-vm{max-height:32px;transition:max-height .3s linear;overflow:hidden}html[live-page-rank-list-vm-fold] .player-full-win #rank-list-vm{border-radius:0}html[live-page-rank-list-vm-fold] #rank-list-vm:hover{max-height:178px;overflow:unset}html[live-page-rank-list-vm-fold] #rank-list-vm .tab-list .tab-item{font-size:14px!important}html[live-page-rank-list-vm-fold] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-rank-list-vm-fold] .chat-history-panel{flex:1}html[live-page-rank-list-vm-fold] .chat-history-panel .danmaku-at-prompt{bottom:160px}html[live-page-rank-list-vm] #rank-list-vm{display:none!important}html[live-page-rank-list-vm] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-rank-list-vm] .chat-history-panel{flex:1}html[live-page-rank-list-vm] .chat-history-panel .danmaku-at-prompt{bottom:160px}html[live-page-convention-msg] .convention-msg.border-box,html[live-page-convention-msg] .new-video-pk-item-dm{display:none!important}html[live-page-welcome-msg] .welcome-section-bottom{display:none}html[live-page-rank-icon] .chat-item .rank-icon,html[live-page-title-label] .chat-item .title-label,html[live-page-wealth-medal-ctnr] .chat-item .wealth-medal-ctnr,html[live-page-group-medal-ctnr] .chat-item .group-medal-ctnr,html[live-page-fans-medal-item-ctnr] .chat-item .fans-medal-item-ctnr{display:none!important}html[live-page-chat-item-background-color] .chat-item{background-color:unset!important;border-image-source:unset!important}html[live-page-chat-item-background-color] .chat-item>div[style*=\"height: 62px\"]:has(+.danmaku-item-left){display:none!important}html[live-page-chat-item-background-color] .chat-item .danmaku-item-left br,html[live-page-gift-item] .chat-item.gift-item,html[live-page-gift-item] .chat-item.common-danmuku-msg,html[live-page-bulge-danmaku] .chat-item.bulge-emoticon,html[live-page-bulge-danmaku] .chat-item.chat-emoticon,html[live-page-chat-item-top3-notice] .chat-item.top3-notice,html[live-page-brush-prompt] #brush-prompt{display:none!important}html[live-page-brush-prompt] .chat-history-panel .chat-history-list.with-brush-prompt{height:100%!important}html[live-page-combo-card] #relocated-slot-combo-danmaku,html[live-page-combo-card] .gift-wish-card-root{display:none!important}html[live-page-combo-card] .chat-history-panel{padding-bottom:0!important}html[live-page-combo-card] #combo-card,html[live-page-combo-card] .play-together-service-card-container,html[live-page-combo-card] .vote-card,html[live-page-control-panel-icon-row] .control-panel-icon-row{display:none!important}html[live-page-control-panel-icon-row] #chat-control-panel-vm{min-height:unset!important}html[live-page-control-panel-icon-row] #chat-control-panel-vm .chat-input-ctnr{margin-top:0!important}html[live-page-control-panel-icon-row] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-control-panel-icon-row] .chat-history-panel{flex:1}html[live-page-control-panel-icon-row] .chat-history-panel .danmaku-at-prompt{bottom:100px}html[live-page-chat-input-ctnr-medal-section] .medal-section{display:none!important}html[live-page-chat-input-ctnr-medal-section] .chat-input-area textarea{padding:9px 0 0!important}html[live-page-chat-input-ctnr-send-btn] .bottom-actions,html[live-page-chat-input-ctnr-send-btn] .send-btn-wrapper{display:none!important}html[live-page-chat-input-ctnr-send-btn] #chat-control-panel-vm{height:fit-content!important;min-height:unset!important}html[live-page-chat-input-ctnr-send-btn] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-chat-input-ctnr-send-btn] .chat-history-panel{flex:1}html[live-page-chat-input-ctnr-send-btn] .chat-history-panel .danmaku-at-prompt{bottom:120px}html[live-page-chat-input-ctnr] .chat-input-ctnr,html[live-page-chat-input-ctnr] .bottom-actions{display:none!important}html[live-page-chat-input-ctnr] #chat-control-panel-vm{height:fit-content!important;min-height:unset!important}html[live-page-chat-input-ctnr] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-chat-input-ctnr] .chat-history-panel{flex:1}html[live-page-chat-input-ctnr] .chat-history-panel .danmaku-at-prompt{bottom:70px}html[live-page-chat-control-panel] #chat-control-panel-vm{min-height:unset!important;display:none!important}html[live-page-chat-control-panel] body:not(.hide-aside-area.player-full-win) #aside-area-vm{flex-direction:column;display:flex}html[live-page-chat-control-panel] .chat-history-panel{border-bottom-right-radius:12px;border-bottom-left-radius:12px;flex:1}html[live-page-chat-control-panel] .chat-history-panel .danmaku-at-prompt{bottom:20px!important}html[video-page-danmaku-font-family] .bili-danmaku-x-dm{--fontFamily:var(--video-page-danmaku-font-family)!important}html[video-page-danmaku-font-weight] .bili-danmaku-x-dm{--fontWeight:var(--video-page-danmaku-font-weight)!important}");
+	var index_scss_default$4 = _style("html[homepage-hide-banner] #biliMainHeader{min-height:unset!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__bar{position:fixed;background:var(--bg1,white)!important;transition:unset!important;box-shadow:0 2px 4px #80808026!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__bar.slide-down{animation:none!important;box-shadow:0 2px 4px #80808026!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__bar .left-entry :is(.entry-title,.download-entry,.default-entry,.loc-entry){color:var(--text1,#18191c)!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__bar .left-entry .zhuzhan-icon{color:#00aeec!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-icon{color:var(--text1,#18191c)!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-text{color:var(--text2,#61666d)!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__banner{min-height:unset!important;background:var(--bg1,white)!important;height:64px!important}html[homepage-hide-banner] #biliMainHeader .bili-header .bili-header__banner>*{display:none!important}html[homepage-hide-sticky-header] .bili-header .bili-header__bar{background:0 0;transition:none!important;position:absolute!important}html[homepage-hide-sticky-header] .bili-header .bili-header__bar.slide-down{box-shadow:none!important;animation:none!important}html[homepage-hide-sticky-header] .bili-header .bili-header__bar .left-entry :is(.entry-title,.download-entry,.default-entry,.loc-entry,.zhuzhan-icon),html[homepage-hide-sticky-header] .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-icon,html[homepage-hide-sticky-header] .bili-header .bili-header__bar .right-entry .right-entry__outside .right-entry-text{color:#fff}html[popular-hide-tips] .popular-list .popular-tips,html[popular-hide-tips] .rank-container .rank-tips,html[popular-hide-tips] .history-list .history-tips{display:none!important}html[popular-hide-tips] .rank-container .rank-tab-wrap{margin-bottom:0!important;padding:10px 0!important}html[popular-hide-danmaku-count] .popular-list .video-stat .like-text,html[popular-hide-danmaku-count] .weekly-list .video-stat .like-text,html[popular-hide-danmaku-count] .history-list .video-stat .like-text,html[popular-hide-danmaku-count] .rank-list .rank-item .detail-state .data-box:nth-child(2){display:none!important}html[popular-hide-danmaku-count] .rank-list .rank-item .detail-state .data-box:first-child{margin:0!important}html[popular-hide-danmaku-count] .video-card .video-stat .play-text{margin-right:0!important}html[popular-layout=\"2\"] .cm-module{display:none!important}html[popular-layout=\"2\"] .video-list,html[popular-layout=\"2\"] .popular-list .card-list,html[popular-layout=\"2\"] .history-list .card-list{grid-template-columns:auto auto;display:grid!important}html[popular-layout=\"2\"] .popular-list .card-list .video-card,html[popular-layout=\"2\"] .video-list .video-card,html[popular-layout=\"2\"] .history-list .card-list .video-card{width:unset!important}html[popular-layout=\"3\"] .cm-module{display:none!important}@media (width>=1300px) and (width<=1399.9px){html[popular-layout=\"3\"] .popular-container{max-width:1180px!important}}@media (width<=1139.9px){html[popular-layout=\"3\"] .popular-container{max-width:1020px!important}}html[popular-layout=\"3\"] .rank-container .rank-tab-wrap{margin-bottom:0!important;padding:10px 0!important}html[popular-layout=\"3\"] .nav-tabs{height:70px!important}html[popular-layout=\"3\"] .popular-list{padding:10px 0 0!important}html[popular-layout=\"3\"] .video-list{margin-top:15px!important}html[popular-layout=\"3\"] .popular-list .popular-tips,html[popular-layout=\"3\"] .rank-container .rank-tips,html[popular-layout=\"3\"] .history-list .history-tips,html[popular-layout=\"3\"] .popular-list .popular-tips,html[popular-layout=\"3\"] .weekly-list .weekly-hint,html[popular-layout=\"3\"] .history-list .history-hint{display:none!important}html[popular-layout=\"3\"] .card-list,html[popular-layout=\"3\"] .video-list{grid-column:span 3!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:20px!important;width:100%!important;display:grid!important}html[popular-layout=\"3\"] .card-list .video-card,html[popular-layout=\"3\"] .video-list .video-card{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"3\"] .card-list .video-card__content,html[popular-layout=\"3\"] .video-list .video-card__content{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;aspect-ratio:16/9!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"3\"] .card-list .video-card__info,html[popular-layout=\"3\"] .video-list .video-card__info{font-size:14px;margin-top:8px!important;padding:0!important}html[popular-layout=\"3\"] .card-list .video-card__info>div,html[popular-layout=\"3\"] .video-list .video-card__info>div{justify-content:space-between!important;display:flex!important}html[popular-layout=\"3\"] .card-list .video-card__info .rcmd-tag,html[popular-layout=\"3\"] .video-list .video-card__info .rcmd-tag{display:none!important}html[popular-layout=\"3\"] .card-list .video-card__info .video-name,html[popular-layout=\"3\"] .video-list .video-card__info .video-name{height:44px!important;margin-bottom:8px!important;font-size:15px!important;font-weight:400!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"3\"] .card-list .video-card__info .up-name,html[popular-layout=\"3\"] .video-list .video-card__info .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"3\"] .card-list .video-card__info .video-stat .play-text,html[popular-layout=\"3\"] .card-list .video-card__info .video-stat .like-text,html[popular-layout=\"3\"] .video-list .video-card__info .video-stat .play-text,html[popular-layout=\"3\"] .video-list .video-card__info .video-stat .like-text{text-wrap:nowrap!important}html[popular-layout=\"3\"] .rank-list{grid-column:span 3!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:20px!important;width:100%!important;display:grid!important}html[popular-layout=\"3\"] .rank-list .rank-item{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"3\"] .rank-list .rank-item .content{display:unset!important;padding:unset!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .more-data{display:none!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .img{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .img .num{zoom:1.2;font-size:18px}html[popular-layout=\"3\"] .rank-list .rank-item .content .info{font-size:14px;margin-top:8px!important;margin-left:unset!important;height:unset!important;padding:0!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .info .title{height:44px!important;font-size:15px!important;font-weight:500!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .info .detail{justify-content:space-between!important;align-items:center!important;margin-top:8px!important;display:flex!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .info .detail .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .info .detail .detail-state .data-box{line-height:unset!important;margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"3\"] .rank-list .rank-item .content .info .detail .detail-state .data-box:nth-child(2){margin-left:12px!important}html[popular-layout=\"3\"] .rank-list:not(.pgc-list) .content .img{aspect-ratio:16/9!important}html[popular-layout=\"3\"] .rank-list.pgc-list .content .img{aspect-ratio:220/296!important}html[popular-layout=\"3\"] .rank-list.pgc-list .rank-item .content .info .title{margin-top:.2em;font-size:17px!important}html[popular-layout=\"3\"] .rank-list.pgc-list .rank-item .content .info .data-box{margin-top:unset!important;font-size:14px!important}html[popular-layout=\"3\"] .no-more,html[popular-layout=\"4\"] .cm-module{display:none!important}@media (width>=1300px) and (width<=1399.9px){html[popular-layout=\"4\"] .popular-container{max-width:1180px!important}}@media (width<=1139.9px){html[popular-layout=\"4\"] .popular-container{max-width:1020px!important}}html[popular-layout=\"4\"] .rank-container .rank-tab-wrap{margin-bottom:0!important;padding:10px 0!important}html[popular-layout=\"4\"] .nav-tabs{height:70px!important}html[popular-layout=\"4\"] .popular-list{padding:10px 0 0!important}html[popular-layout=\"4\"] .video-list{margin-top:15px!important}html[popular-layout=\"4\"] .popular-list .popular-tips,html[popular-layout=\"4\"] .rank-container .rank-tips,html[popular-layout=\"4\"] .history-list .history-tips,html[popular-layout=\"4\"] .popular-list .popular-tips,html[popular-layout=\"4\"] .weekly-list .weekly-hint,html[popular-layout=\"4\"] .history-list .history-hint{display:none!important}html[popular-layout=\"4\"] .card-list,html[popular-layout=\"4\"] .video-list{grid-column:span 4!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:20px!important;width:100%!important;display:grid!important}html[popular-layout=\"4\"] .card-list .video-card,html[popular-layout=\"4\"] .video-list .video-card{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"4\"] .card-list .video-card__content,html[popular-layout=\"4\"] .video-list .video-card__content{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;aspect-ratio:16/9!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"4\"] .card-list .video-card__info,html[popular-layout=\"4\"] .video-list .video-card__info{font-size:14px;margin-top:8px!important;padding:0!important}html[popular-layout=\"4\"] .card-list .video-card__info>div,html[popular-layout=\"4\"] .video-list .video-card__info>div{justify-content:space-between!important;display:flex!important}html[popular-layout=\"4\"] .card-list .video-card__info .rcmd-tag,html[popular-layout=\"4\"] .video-list .video-card__info .rcmd-tag{display:none!important}html[popular-layout=\"4\"] .card-list .video-card__info .video-name,html[popular-layout=\"4\"] .video-list .video-card__info .video-name{height:44px!important;margin-bottom:8px!important;font-size:15px!important;font-weight:400!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"4\"] .card-list .video-card__info .up-name,html[popular-layout=\"4\"] .video-list .video-card__info .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"4\"] .card-list .video-card__info .video-stat .play-text,html[popular-layout=\"4\"] .card-list .video-card__info .video-stat .like-text,html[popular-layout=\"4\"] .video-list .video-card__info .video-stat .play-text,html[popular-layout=\"4\"] .video-list .video-card__info .video-stat .like-text{text-wrap:nowrap!important}html[popular-layout=\"4\"] .rank-list{grid-column:span 4!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:20px!important;width:100%!important;display:grid!important}html[popular-layout=\"4\"] .rank-list .rank-item{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"4\"] .rank-list .rank-item .content{display:unset!important;padding:unset!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .more-data{display:none!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .img{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .img .num{zoom:1.2;font-size:18px}html[popular-layout=\"4\"] .rank-list .rank-item .content .info{font-size:14px;margin-top:8px!important;margin-left:unset!important;height:unset!important;padding:0!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .info .title{height:44px!important;font-size:15px!important;font-weight:500!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .info .detail{justify-content:space-between!important;align-items:center!important;margin-top:8px!important;display:flex!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .info .detail .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .info .detail .detail-state .data-box{line-height:unset!important;margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"4\"] .rank-list .rank-item .content .info .detail .detail-state .data-box:nth-child(2){margin-left:12px!important}html[popular-layout=\"4\"] .rank-list:not(.pgc-list) .content .img{aspect-ratio:16/9!important}html[popular-layout=\"4\"] .rank-list.pgc-list .content .img{aspect-ratio:220/296!important}html[popular-layout=\"4\"] .rank-list.pgc-list .rank-item .content .info .title{margin-top:.2em;font-size:17px!important}html[popular-layout=\"4\"] .rank-list.pgc-list .rank-item .content .info .data-box{margin-top:unset!important;font-size:14px!important}html[popular-layout=\"4\"] .no-more,html[popular-layout=\"5\"] .cm-module{display:none!important}@media (width>=1300px) and (width<=1399.9px){html[popular-layout=\"5\"] .popular-container{max-width:1180px!important}}@media (width<=1139.9px){html[popular-layout=\"5\"] .popular-container{max-width:1020px!important}}html[popular-layout=\"5\"] .rank-container .rank-tab-wrap{margin-bottom:0!important;padding:10px 0!important}html[popular-layout=\"5\"] .nav-tabs{height:70px!important}html[popular-layout=\"5\"] .popular-list{padding:10px 0 0!important}html[popular-layout=\"5\"] .video-list{margin-top:15px!important}html[popular-layout=\"5\"] .popular-list .popular-tips,html[popular-layout=\"5\"] .rank-container .rank-tips,html[popular-layout=\"5\"] .history-list .history-tips,html[popular-layout=\"5\"] .popular-list .popular-tips,html[popular-layout=\"5\"] .weekly-list .weekly-hint,html[popular-layout=\"5\"] .history-list .history-hint{display:none!important}html[popular-layout=\"5\"] .card-list,html[popular-layout=\"5\"] .video-list{grid-column:span 5!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:20px!important;width:100%!important;display:grid!important}html[popular-layout=\"5\"] .card-list .video-card,html[popular-layout=\"5\"] .video-list .video-card{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"5\"] .card-list .video-card__content,html[popular-layout=\"5\"] .video-list .video-card__content{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;aspect-ratio:16/9!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"5\"] .card-list .video-card__info,html[popular-layout=\"5\"] .video-list .video-card__info{font-size:14px;margin-top:8px!important;padding:0!important}html[popular-layout=\"5\"] .card-list .video-card__info>div,html[popular-layout=\"5\"] .video-list .video-card__info>div{justify-content:space-between!important;display:flex!important}html[popular-layout=\"5\"] .card-list .video-card__info .rcmd-tag,html[popular-layout=\"5\"] .video-list .video-card__info .rcmd-tag{display:none!important}html[popular-layout=\"5\"] .card-list .video-card__info .video-name,html[popular-layout=\"5\"] .video-list .video-card__info .video-name{height:44px!important;margin-bottom:8px!important;font-size:15px!important;font-weight:400!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"5\"] .card-list .video-card__info .up-name,html[popular-layout=\"5\"] .video-list .video-card__info .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"5\"] .card-list .video-card__info .video-stat .play-text,html[popular-layout=\"5\"] .card-list .video-card__info .video-stat .like-text,html[popular-layout=\"5\"] .video-list .video-card__info .video-stat .play-text,html[popular-layout=\"5\"] .video-list .video-card__info .video-stat .like-text{text-wrap:nowrap!important}html[popular-layout=\"5\"] .rank-list{grid-column:span 5!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:20px!important;width:100%!important;display:grid!important}html[popular-layout=\"5\"] .rank-list .rank-item{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"5\"] .rank-list .rank-item .content{display:unset!important;padding:unset!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .more-data{display:none!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .img{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .img .num{zoom:1.2;font-size:18px}html[popular-layout=\"5\"] .rank-list .rank-item .content .info{font-size:14px;margin-top:8px!important;margin-left:unset!important;height:unset!important;padding:0!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .info .title{height:44px!important;font-size:15px!important;font-weight:500!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .info .detail{justify-content:space-between!important;align-items:center!important;margin-top:8px!important;display:flex!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .info .detail .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .info .detail .detail-state .data-box{line-height:unset!important;margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"5\"] .rank-list .rank-item .content .info .detail .detail-state .data-box:nth-child(2){margin-left:12px!important}html[popular-layout=\"5\"] .rank-list:not(.pgc-list) .content .img{aspect-ratio:16/9!important}html[popular-layout=\"5\"] .rank-list.pgc-list .content .img{aspect-ratio:220/296!important}html[popular-layout=\"5\"] .rank-list.pgc-list .rank-item .content .info .title{margin-top:.2em;font-size:17px!important}html[popular-layout=\"5\"] .rank-list.pgc-list .rank-item .content .info .data-box{margin-top:unset!important;font-size:14px!important}html[popular-layout=\"5\"] .no-more,html[popular-layout=\"5\"] .video-stat .like-text,html[popular-layout=\"5\"] .rank-list .rank-item .detail-state .data-box:nth-child(2){display:none!important}html[popular-layout=\"5\"] .rank-list .rank-item .detail-state .data-box:first-child{margin:0!important}html[popular-layout=\"5\"] .video-card .video-stat .play-text{margin-right:0!important}html[popular-layout=\"6\"] .cm-module{display:none!important}@media (width>=1300px) and (width<=1399.9px){html[popular-layout=\"6\"] .popular-container{max-width:1180px!important}}@media (width<=1139.9px){html[popular-layout=\"6\"] .popular-container{max-width:1020px!important}}html[popular-layout=\"6\"] .rank-container .rank-tab-wrap{margin-bottom:0!important;padding:10px 0!important}html[popular-layout=\"6\"] .nav-tabs{height:70px!important}html[popular-layout=\"6\"] .popular-list{padding:10px 0 0!important}html[popular-layout=\"6\"] .video-list{margin-top:15px!important}html[popular-layout=\"6\"] .popular-list .popular-tips,html[popular-layout=\"6\"] .rank-container .rank-tips,html[popular-layout=\"6\"] .history-list .history-tips,html[popular-layout=\"6\"] .popular-list .popular-tips,html[popular-layout=\"6\"] .weekly-list .weekly-hint,html[popular-layout=\"6\"] .history-list .history-hint{display:none!important}html[popular-layout=\"6\"] .card-list,html[popular-layout=\"6\"] .video-list{grid-column:span 6!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:20px!important;width:100%!important;display:grid!important}html[popular-layout=\"6\"] .card-list .video-card,html[popular-layout=\"6\"] .video-list .video-card{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"6\"] .card-list .video-card__content,html[popular-layout=\"6\"] .video-list .video-card__content{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;aspect-ratio:16/9!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"6\"] .card-list .video-card__info,html[popular-layout=\"6\"] .video-list .video-card__info{font-size:14px;margin-top:8px!important;padding:0!important}html[popular-layout=\"6\"] .card-list .video-card__info>div,html[popular-layout=\"6\"] .video-list .video-card__info>div{justify-content:space-between!important;display:flex!important}html[popular-layout=\"6\"] .card-list .video-card__info .rcmd-tag,html[popular-layout=\"6\"] .video-list .video-card__info .rcmd-tag{display:none!important}html[popular-layout=\"6\"] .card-list .video-card__info .video-name,html[popular-layout=\"6\"] .video-list .video-card__info .video-name{height:44px!important;margin-bottom:8px!important;font-size:15px!important;font-weight:400!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"6\"] .card-list .video-card__info .up-name,html[popular-layout=\"6\"] .video-list .video-card__info .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"6\"] .card-list .video-card__info .video-stat .play-text,html[popular-layout=\"6\"] .card-list .video-card__info .video-stat .like-text,html[popular-layout=\"6\"] .video-list .video-card__info .video-stat .play-text,html[popular-layout=\"6\"] .video-list .video-card__info .video-stat .like-text{text-wrap:nowrap!important}html[popular-layout=\"6\"] .rank-list{grid-column:span 6!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:20px!important;width:100%!important;display:grid!important}html[popular-layout=\"6\"] .rank-list .rank-item{display:unset!important;width:unset!important;height:unset!important;margin-right:unset!important;margin-bottom:unset!important}html[popular-layout=\"6\"] .rank-list .rank-item .content{display:unset!important;padding:unset!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .more-data{display:none!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .img{background-color:var(--Ga2,#e3e5e7)!important;width:unset!important;height:unset!important;border-radius:6px!important;margin:0!important;overflow:hidden!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .img .num{zoom:1.2;font-size:18px}html[popular-layout=\"6\"] .rank-list .rank-item .content .info{font-size:14px;margin-top:8px!important;margin-left:unset!important;height:unset!important;padding:0!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .info .title{height:44px!important;font-size:15px!important;font-weight:500!important;line-height:22px!important;overflow:hidden!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .info .detail{justify-content:space-between!important;align-items:center!important;margin-top:8px!important;display:flex!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .info .detail .up-name{margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .info .detail .detail-state .data-box{line-height:unset!important;margin:unset!important;text-wrap:nowrap!important;font-size:14px!important}html[popular-layout=\"6\"] .rank-list .rank-item .content .info .detail .detail-state .data-box:nth-child(2){margin-left:12px!important}html[popular-layout=\"6\"] .rank-list:not(.pgc-list) .content .img{aspect-ratio:16/9!important}html[popular-layout=\"6\"] .rank-list.pgc-list .content .img{aspect-ratio:220/296!important}html[popular-layout=\"6\"] .rank-list.pgc-list .rank-item .content .info .title{margin-top:.2em;font-size:17px!important}html[popular-layout=\"6\"] .rank-list.pgc-list .rank-item .content .info .data-box{margin-top:unset!important;font-size:14px!important}html[popular-layout=\"6\"] .no-more,html[popular-layout=\"6\"] .video-stat .like-text,html[popular-layout=\"6\"] .rank-list .rank-item .detail-state .data-box:nth-child(2){display:none!important}html[popular-layout=\"6\"] .rank-list .rank-item .detail-state .data-box:first-child{margin:0!important}html[popular-layout=\"6\"] .video-card .video-stat .play-text{margin-right:0!important}html[popular-hot-hide-tag] .popular-list .rcmd-tag,html[popular-weekly-hide-hint] .weekly-list .weekly-hint,html[popular-history-hide-hint] .history-list .history-hint{display:none!important}");
 	var index_scss_default$3 = _style("html[hide-search-page-search-sticky-header] .search-sticky-header,html[hide-search-page-bangumi-pgc-list] .bangumi-pgc-list,html[hide-search-page-activity-game-list] .activity-game-list{display:none!important}html[hide-search-page-ad] .video-list.row>div:has([href*=\"cm.bilibili.com\"],.bili-video-card__info--ad,.bili-video-card__info--ad-creative){display:none!important}html[hide-search-page-live-room-result] .video-list>div:has([href*=\"live.bilibili.com\"]){display:none!important}html[hide-search-page-cheese-result] .video-list>div:has(.bili-video-card__info--cheese){display:none!important}html[hide-search-page-danmaku-count] .bili-video-card .bili-video-card__stats--left .bili-video-card__stats--item:nth-child(2),html[hide-search-page-date] .bili-video-card .bili-video-card__info--date{display:none!important}html[hide-search-page-customer-service] .side-buttons div:has(>a[href*=customer-service]){display:none!important}html[hide-search-page-btn-to-top] .side-buttons .btn-to-top-wrap{display:none!important}");
 	var index_scss_default$2 = _style("html[hide-space-page-video-card-danmaku-count] .bili-video-card .bili-cover-card__stats .bili-cover-card__stat:nth-child(2):not(:last-child){display:none!important}html[increase-space-page-video-card-font-size] .bili-cover-card{--bili-cover-card-stat-icon-size:16px!important;--bili-cover-card-stat-font-size:13px!important}html[increase-space-page-video-card-font-size] .bili-video-card{--bili-video-card-title-font-size:15px!important;--bili-video-card-title-line-height:23px!important;--bili-video-card-subtitle-font-size:14px!important;--bili-video-card-subtitle-line-height:16px!important}html[hide-dynamic-page-bili-dyn-avatar-pendent] .bili-dyn-list .b-avatar__layers .b-avatar__layer.center:first-child{width:48px!important;height:48px!important}html[hide-dynamic-page-bili-dyn-avatar-pendent] .bili-dyn-list .b-avatar__layers .b-avatar__layer.center:nth-child(2),html[hide-dynamic-page-bili-dyn-avatar-pendent] .bili-dyn-list .b-avatar__layers:nth-child(2) .b-avatar__layer.center,html[hide-dynamic-page-bili-dyn-avatar-icon] .bili-dyn-list .b-avatar__layer:not(.center),html[hide-dynamic-page-bili-dyn-ornament] .bili-dyn-ornament,html[hide-dynamic-page-bili-dyn-ornament] .bili-dyn-item__ornament,html[hide-dynamic-page-bili-dyn-dispute] .bili-dyn-content__dispute,html[hide-dynamic-page-bili-dyn-official-topic] .bili-dyn-content__orig__topic,html[hide-dynamic-page-bili-dyn-official-topic] .bili-dyn-content__forw__topic{display:none!important}html[hide-dynamic-page-bili-dyn-text-topic] .bili-rich-text-topic{color:inherit!important}html[hide-dynamic-page-bili-dyn-text-topic] .bili-rich-text-topic:hover{color:var(--brand_blue)!important}html[hide-dynamic-page-bili-dyn-item-interaction] .bili-dyn-item__interaction{display:none!important}html[hide-dynamic-page-bili-dyn-card-reserve] .bili-dyn-list__item:has(.bili-dyn-card-reserve){display:none!important}:is(html[hide-dynamic-page-bili-dyn-card-goods] .bili-dyn-list__item:has(.bili-dyn-card-goods),html[hide-dynamic-page-bili-dyn-card-goods] .bili-dyn-list__item:has(.bili-rich-text-module.goods),html[hide-dynamic-page-bili-dyn-card-goods] .bili-dyn-list__item:has([data-type=goods])){display:none!important}html[hide-dynamic-page-bili-dyn-lottery] .bili-dyn-list__item:has([data-type=lottery]){display:none!important}html[hide-dynamic-page-bili-dyn-forward] .bili-dyn-list__item:has(.bili-dyn-content__orig.reference){display:none!important}html[hide-dynamic-page-bili-dyn-vote] .bili-dyn-list__item:has(.bili-dyn-card-vote){display:none!important}html[hide-dynamic-page-bili-dyn-live] .bili-dyn-list__item:has(.bili-dyn-card-live){display:none!important}html[hide-dynamic-page-bili-dyn-blocked] .bili-dyn-list__item:has(.dyn-blocked-mask,.bili-dyn-upower-common){display:none!important}html[hide-dynamic-page-bili-dyn-charge-video] .bili-dyn-list__item:has(.bili-dyn-card-video__badge [src*=qcRJ6sJU91]){display:none!important}html[dynamic-page-unfold-dynamic-content] .bili-dyn-list__item:not(:has(.dyn-card-opus__title)) .bili-rich-text .bili-rich-text__content{max-height:unset!important;-webkit-line-clamp:unset!important}html[dynamic-page-unfold-dynamic-content] .bili-dyn-list__item:not(:has(.dyn-card-opus__title)) .bili-rich-text .bili-rich-text__action{display:none!important}html[hide-space-page-sidebar-feedback] #app .space-float{height:fit-content!important}html[hide-space-page-sidebar-feedback] #app .space-float .float-button:nth-last-child(3){display:none!important}html[hide-space-page-sidebar-revert] #app .space-float{height:fit-content!important}html[hide-space-page-sidebar-revert] #app .space-float .float-button:nth-last-child(2){display:none!important}");
 	var index_scss_default$1 = _style("html[video-page-hide-fixed-header] .fixed-header .bili-header__bar{position:relative!important}html[video-page-danmaku-font-family] .bili-danmaku-x-dm{--fontFamily:var(--video-page-danmaku-font-family)!important}html[video-page-danmaku-font-weight] .bili-danmaku-x-dm{--fontWeight:var(--video-page-danmaku-font-weight)!important}html[video-page-hide-bpx-player-video-info-online] .bpx-player-video-info-online,html[video-page-hide-bpx-player-video-info-online] .bpx-player-video-info-divide,html[video-page-hide-bpx-player-video-info-dm] .bpx-player-video-info-dm,html[video-page-hide-bpx-player-video-info-dm] .bpx-player-video-info-divide,html[video-page-hide-bpx-player-dm-switch] .bpx-player-dm-switch,html[video-page-hide-bpx-player-dm-setting] .bpx-player-dm-setting,html[video-page-hide-bpx-player-video-btn-dm] .bpx-player-video-btn-dm{display:none!important}html[video-page-hide-bpx-player-dm-input] .bpx-player-dm-input::placeholder{color:#0000!important}html[video-page-hide-bpx-player-dm-hint] .bpx-player-dm-hint,html[video-page-hide-bpx-player-dm-btn-send] .bpx-player-dm-btn-send,html[video-page-hide-bpx-player-postpanel] .bpx-player-postpanel-sug,html[video-page-hide-bpx-player-postpanel] .bpx-player-postpanel-carousel,html[video-page-hide-bpx-player-postpanel] .bpx-player-postpanel-popup,html[video-page-hide-bpx-player-sending-area] .bpx-player-sending-area,html[video-page-hide-bpx-player-sending-area] #bilibili-player-placeholder-bottom{display:none!important}html[video-page-hide-bpx-player-sending-area] #playerWrap:has(.bpx-player-container:not([data-screen=web],[data-screen=full])){aspect-ratio:16/9;height:unset!important}html[video-page-hide-bpx-player-sending-area] #playerWrap:has(.bpx-player-container:not([data-screen=web],[data-screen=full])) #bilibili-player{aspect-ratio:16/9;height:unset!important}html[video-page-hide-bpx-player-sending-area] .page-main-content:has(.festival-video-player) .video-player-box{height:fit-content!important}html[video-page-hide-bpx-player-sending-area] .festival-video-player{height:fit-content!important}html[video-page-hide-bpx-player-sending-area] .festival-video-player #bilibili-player:not(.mode-webscreen){height:calc(100% - 46px)!important}html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=full] .bpx-player-control-bottom-center .bpx-player-video-inputbar,html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=web] .bpx-player-control-bottom-center .bpx-player-video-inputbar{display:none!important}html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=full] .bpx-player-control-bottom-center,html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=web] .bpx-player-control-bottom-center{padding:0 15px!important}html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=full] .bpx-player-control-bottom-left,html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=web] .bpx-player-control-bottom-left{min-width:unset!important}html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=full] .bpx-player-ctrl-viewpoint,html[video-page-hide-bpx-player-video-inputbar] .bpx-player-container[data-screen=web] .bpx-player-ctrl-viewpoint{width:fit-content!important}html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=full] .bpx-player-video-info,html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=web] .bpx-player-video-info{color:#fffc!important;margin-bottom:1px!important;margin-right:16px!important;display:flex!important}html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=full] .bpx-player-video-info-online,html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=web] .bpx-player-video-info-online{font-size:14px!important;display:flex!important}html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=full] .bpx-player-video-info-dm,html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=full] .bpx-player-video-info-divide,html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=web] .bpx-player-video-info-dm,html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=web] .bpx-player-video-info-divide{display:none}html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=full] .bpx-player-control-bottom-center,html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=web] .bpx-player-control-bottom-center{padding:0 16px!important}html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=full] .bpx-player-ctrl-viewpoint,html[video-page-show-fullscreen-bpx-player-video-info-online] .bpx-player-container[data-screen=web] .bpx-player-ctrl-viewpoint{width:fit-content!important}html[video-page-unfold-video-info-title] .video-info-container:has(.show-more){margin-bottom:12px;height:fit-content!important}html[video-page-unfold-video-info-title] .video-info-container .video-info-title-inner-overflow .video-title{margin-right:unset!important;text-wrap:wrap!important}html[video-page-unfold-video-info-title] .video-info-container .video-info-title-inner .video-title .video-title-href{text-wrap:wrap!important}html[video-page-unfold-video-info-title] .video-info-container .show-more,html[video-page-hide-video-info-danmaku-count] .video-info-detail .dm,html[video-page-hide-video-info-danmaku-count] .video-info-meta .dm,html[video-page-hide-video-info-pubdate] .video-info-detail .pubdate-ip,html[video-page-hide-video-info-pubdate] .video-info-meta .pubdate-ip,html[video-page-hide-video-info-copyright] .video-info-detail .copyright,html[video-page-hide-video-info-copyright] .video-info-meta .copyright,html[video-page-hide-video-info-honor] .video-info-detail .honor-rank,html[video-page-hide-video-info-honor] .video-info-detail .honor-weekly,html[video-page-hide-video-info-honor] .video-info-detail .honor-history,html[video-page-hide-video-info-honor] .video-info-meta .honor-rank,html[video-page-hide-video-info-honor] .video-info-meta .honor-weekly,html[video-page-hide-video-info-honor] .video-info-meta .honor-history,html[video-page-hide-video-info-argue] .video-info-detail .argue,html[video-page-hide-video-info-argue] .video-info-detail .video-argue,html[video-page-hide-video-info-argue] .video-info-meta .argue,html[video-page-hide-video-info-argue] .video-info-meta .video-argue{display:none!important}html[video-page-hide-bpx-player-mini-mode-process] .bpx-player-container[data-screen=mini]:not(:hover) .bpx-player-mini-progress{display:none}html[video-page-hide-bpx-player-mini-mode-danmaku] .bpx-player-container[data-screen=mini] .bpx-player-row-dm-wrap{visibility:hidden!important}html[video-page-bpx-player-mini-mode-wheel-adjust] .bpx-player-container[data-screen=mini]{height:calc(225px * var(--mini-player-zoom,1))!important;width:calc(400px * var(--mini-player-zoom,1))!important}html[video-page-bpx-player-mini-mode-wheel-adjust] .bpx-player-container[data-revision=\"1\"][data-screen=mini],html[video-page-bpx-player-mini-mode-wheel-adjust] .bpx-player-container[data-revision=\"2\"][data-screen=mini]{height:calc(180px * var(--mini-player-zoom,1))!important;width:calc(320px * var(--mini-player-zoom,1))!important}@media screen and (width>=1681px){html[video-page-bpx-player-mini-mode-wheel-adjust] .bpx-player-container[data-revision=\"1\"][data-screen=mini],html[video-page-bpx-player-mini-mode-wheel-adjust] .bpx-player-container[data-revision=\"2\"][data-screen=mini]{height:calc(203px * var(--mini-player-zoom,1))!important;width:calc(360px * var(--mini-player-zoom,1))!important}}html[video-page-bpx-player-mini-mode-position-record] .bpx-player-container[data-screen=mini]{transform:translateX(var(--mini-player-translate-x,1)) translateY(var(--mini-player-translate-y,1))}html[video-page-hide-bpx-player-bili-guide-all] .bili-follow-to-electric,html[video-page-hide-bpx-player-bili-guide-all] .bili-guide,html[video-page-hide-bpx-player-bili-guide-all] .bili-guide-all,html[video-page-hide-bpx-player-bili-guide-all] .bili-guide-animate,html[video-page-hide-bpx-player-bili-guide-all] .bili-guide-cyc,html[video-page-hide-bpx-player-bili-guide-all] .bili-guide-electric,html[video-page-hide-bpx-player-bili-guide-all] .bili-guide-follow,html[video-page-hide-bpx-player-bili-guide-all] .bili-guide-followed,html[video-page-hide-bpx-player-bili-guide-all] .bili-danmaku-x-guide,html[video-page-hide-bpx-player-bili-guide-all] .bili-danmaku-x-guide-all,html[video-page-hide-bpx-player-bili-guide-all] .bili-danmaku-x-guide-follow,html[video-page-hide-bpx-player-bili-guide-all] .bili-danmaku-x-guide-gray,html[video-page-hide-bpx-player-bili-vote] .bili-vote,html[video-page-hide-bpx-player-bili-vote] .bili-danmaku-x-vote,html[video-page-hide-bpx-player-bili-qoe-feedback] .bpx-player-qoeFeedback,html[video-page-hide-bpx-player-bili-qoe-feedback] .bili-qoeFeedback,html[video-page-hide-bpx-player-bili-qoe-feedback] .bili-qoeFeedback-score,html[video-page-hide-bpx-player-bili-qoe-feedback] .bili-qoeFeedback-vote,html[video-page-hide-bpx-player-bili-score] .bili-score,html[video-page-hide-bpx-player-bili-score] .bili-danmaku-x-score,html[video-page-hide-bpx-player-bili-score] .bili-danmaku-x-superRating,html[video-page-hide-bpx-player-bili-score-sum] .bili-scoreSum,html[video-page-hide-bpx-player-bili-score-sum] .bili-danmaku-x-scoreSum,html[video-page-hide-bpx-player-bili-clock] .bili-clock,html[video-page-hide-bpx-player-bili-clock] .bili-danmaku-x-clock,html[video-page-hide-bpx-player-bili-cmtime] .bili-cmtime,html[video-page-hide-bpx-player-bili-cmtime] .bili-danmaku-x-cmtime,html[video-page-hide-bpx-player-bili-cmd-shrink] .bili-cmd-shrink,html[video-page-hide-bpx-player-bili-cmd-shrink] .bili-danmaku-x-cmd-shrink,html[video-page-hide-bpx-player-bili-reserve] .bili-reserve,html[video-page-hide-bpx-player-bili-reserve] .bili-danmaku-x-reserve,html[video-page-hide-bpx-player-bili-link] .bili-link,html[video-page-hide-bpx-player-bili-link] .bili-danmaku-x-link,html[video-page-hide-bpx-player-cmd-dm-wrap] .bpx-player-cmd-dm-wrap,html[video-page-hide-bpx-player-top-left-title] .bpx-player-top-title,html[video-page-hide-bpx-player-top-left-title] .bpx-player-top-left-title,html[video-page-hide-bpx-player-top-left-title] .bpx-player-top-mask,html[video-page-hide-bpx-player-top-left-music] .bpx-player-top-left-music,html[video-page-hide-bpx-player-top-left-follow] .bpx-player-top-left-follow,html[video-page-hide-bpx-player-top-issue] .bpx-player-top-issue,html[video-page-hide-bpx-player-state-wrap] .bpx-player-state-wrap,html[video-page-hide-bpx-player-ending-related] .bpx-player-ending-related{display:none!important}html[video-page-hide-bpx-player-ending-related] .bpx-player-ending-content{align-items:center!important;display:flex!important}html[video-page-hide-bpx-player-dialog-wrap] .bpx-player-dialog-wrap,html[video-page-bpx-player-bili-high-icon] .bili-dm .bili-high-icon,html[video-page-bpx-player-bili-high-icon] .bili-danmaku-x-high-icon{display:none!important}html[video-page-bpx-player-bili-dm-vip-white] .bili-dm>.bili-dm-vip,html[video-page-bpx-player-bili-dm-vip-white] .bili-danmaku-x-colorful,html[video-page-bpx-player-bili-dm-vip-white] .bili-danmaku-x-dm-vip{background:unset!important;background-image:unset!important;background-size:unset!important;text-shadow:1px 0 1px #000,0 1px 1px #000,0 -1px 1px #000,-1px 0 1px #000!important;-webkit-text-stroke:unset!important;-moz-text-stroke:none!important;-ms-text-stroke:none!important}html[video-page-bpx-player-bili-dm-normal-white] .bili-danmaku-x-dm,html[video-page-bpx-player-bili-dm-normal-white] .bili-dm{--color:white!important}html[video-page-subtitle-font-color] .bili-subtitle-x-subtitle-panel-text,html[video-page-subtitle-font-color] .bpx-player-subtitle-panel-text{color:var(--video-page-subtitle-font-color)!important}html[video-page-subtitle-font-family] .bili-subtitle-x-subtitle-panel-text,html[video-page-subtitle-font-family] .bpx-player-subtitle-panel-text{font-family:var(--video-page-subtitle-font-family)!important}html[video-page-subtitle-font-weight] .bili-subtitle-x-subtitle-panel-text,html[video-page-subtitle-font-weight] .bpx-player-subtitle-panel-text{font-weight:var(--video-page-subtitle-font-weight)!important}html[video-page-subtitle-text-stroke-color] .bili-subtitle-x-subtitle-panel-text,html[video-page-subtitle-text-stroke-color] .bpx-player-subtitle-panel-text{background:unset!important;background-color:var(--video-page-subtitle-text-stroke-color)!important;-webkit-background-clip:text!important;background-clip:text!important}html[video-page-subtitle-text-stroke-width] .bpx-player-container:where([data-screen=normal],[data-screen=wide]) .bili-subtitle-x-subtitle-panel-text,html[video-page-subtitle-text-stroke-width] .bpx-player-container:where([data-screen=normal],[data-screen=wide]) .bpx-player-subtitle-panel-text{-webkit-text-stroke:calc(.6 * var(--video-page-subtitle-text-stroke-width)) transparent!important;-moz-text-stroke:calc(.6 * var(--video-page-subtitle-text-stroke-width)) transparent!important;-ms-text-stroke:calc(.6 * var(--video-page-subtitle-text-stroke-width)) transparent!important}html[video-page-subtitle-text-stroke-width] .bpx-player-container:where([data-screen=web],[data-screen=full]) .bili-subtitle-x-subtitle-panel-text,html[video-page-subtitle-text-stroke-width] .bpx-player-container:where([data-screen=web],[data-screen=full]) .bpx-player-subtitle-panel-text{-webkit-text-stroke:var(--video-page-subtitle-text-stroke-width) transparent!important;-moz-text-stroke:var(--video-page-subtitle-text-stroke-width) transparent!important;-ms-text-stroke:var(--video-page-subtitle-text-stroke-width) transparent!important}html[video-page-hide-bpx-player-ctrl-prev] .bpx-player-ctrl-prev,html[video-page-hide-bpx-player-ctrl-play] .bpx-player-ctrl-play,html[video-page-hide-bpx-player-ctrl-next] .bpx-player-ctrl-next,html[video-page-hide-bpx-player-ctrl-viewpoint] .bpx-player-ctrl-viewpoint,html[video-page-hide-bpx-player-ctrl-flac] .bpx-player-ctrl-flac,html[video-page-hide-bpx-player-ctrl-quality] .bpx-player-ctrl-quality,html[video-page-hide-bpx-player-ctrl-eplist] .bpx-player-ctrl-eplist,html[video-page-hide-bpx-player-ctrl-playbackrate] .bpx-player-ctrl-playbackrate,html[video-page-hide-bpx-player-ctrl-subtitle] .bpx-player-ctrl-subtitle,html[video-page-hide-bpx-player-ctrl-volume] .bpx-player-ctrl-volume,html[video-page-hide-bpx-player-ctrl-setting] .bpx-player-ctrl-setting,html[video-page-hide-bpx-player-ctrl-pip] .bpx-player-ctrl-pip,html[video-page-hide-bpx-player-ctrl-wide] .bpx-player-ctrl-wide,html[video-page-hide-bpx-player-ctrl-web] .bpx-player-ctrl-web,html[video-page-hide-bpx-player-ctrl-full] .bpx-player-ctrl-full,html[video-page-hide-bpx-player-pbp-pin] .bpx-player-pbp-pin,html[video-page-hide-bpx-player-shadow-progress-area] .bpx-player-shadow-progress-area{display:none!important}html[video-page-hide-bpx-player-shadow-progress-area] .bpx-player-pbp:not(.show){bottom:0!important}html[video-page-show-bpx-player-shadow-progress-area-fullscreen] #bilibili-player [data-screen=full][data-ctrl-hidden=true] .bpx-player-shadow-progress-area{opacity:1!important;visibility:visible!important}html[video-page-show-bpx-player-pbp] .bpx-player-pbp:not(.show){opacity:1!important}html[default-widescreen][player-is-wide] #playerWrap:has(.bpx-player-container[data-screen=mini]){width:fit-content}html[default-webscreen]:not(.webscreen-loaded){scrollbar-width:none!important}html[default-webscreen]:not(.webscreen-loaded)::-webkit-scrollbar{display:none!important}html[default-webscreen]:not(.webscreen-loaded) body{width:100%!important;height:100%!important;margin:0!important;padding:0!important;position:fixed!important;top:0!important;left:0!important}html[default-webscreen]:not(.webscreen-loaded) #app #biliMainHeader,html[default-webscreen]:not(.webscreen-loaded) #app .right-container,html[default-webscreen]:not(.webscreen-loaded) #app .fixed-sidenav-storage,html[default-webscreen]:not(.webscreen-loaded) #app .left-container>:not(#playerWrap){visibility:hidden}html[default-webscreen]:not(.webscreen-loaded) #app .left-container{width:100vw!important}html[default-webscreen]:not(.webscreen-loaded) #app #playerWrap{width:100vw!important;height:100vh!important}html[default-webscreen]:not(.webscreen-loaded) #app #playerWrap #bilibili-player-placeholder{display:none!important}html[default-webscreen]:not(.webscreen-loaded) #app #playerWrap #bilibili-player{z-index:100000!important;border-radius:0!important;width:100vw!important;height:100vh!important;position:fixed!important;top:0!important;left:0!important}html[default-webscreen]:not(.webscreen-loaded) #app #playerWrap #bilibili-player video{aspect-ratio:16/9!important;width:fit-content!important;height:100vh!important}html[default-webscreen]:not(.webscreen-loaded) #app #playerWrap #bilibili-player .bpx-player-sending-area{display:none!important}html[default-webscreen]:not(.webscreen-loaded) #app #playerWrap #bilibili-player .bpx-player-video-area{width:100vw!important;height:100vh!important}html[default-webscreen]:not(.webscreen-loaded) #app #playerWrap #bilibili-player .bpx-player-sending-bar{background-color:#0000!important}html[webscreen-scrollable] .webscreen-fix{position:unset;top:unset;left:unset;margin:unset;padding:unset;width:unset;height:unset}html[webscreen-scrollable] .webscreen-fix #biliMainHeader{display:none}html[webscreen-scrollable] .webscreen-fix #mirror-vdcon{box-sizing:content-box;position:relative}html[webscreen-scrollable] .webscreen-fix #danmukuBox{margin-top:unset!important}html[webscreen-scrollable] .webscreen-fix #danmukuBox .bui-collapse-wrap:not(.bui-collapse-wrap-folded){margin-top:0!important}html[webscreen-scrollable] .webscreen-fix #danmukuBox .bui-collapse-wrap:not(.bui-collapse-wrap-folded) .bpx-player-wraplist{max-height:calc(50vh + 75px)!important}html[webscreen-scrollable] .webscreen-fix #danmukuBox .bui-collapse-wrap:not(.bui-collapse-wrap-folded) .bpx-player-dm-wrap{max-height:50vh!important}html[webscreen-scrollable] .webscreen-fix .left-container,html[webscreen-scrollable] .webscreen-fix .playlist-container--left{padding-top:100vh;position:static!important}html[webscreen-scrollable] .webscreen-fix .left-container .video-info-container,html[webscreen-scrollable] .webscreen-fix .playlist-container--left .video-info-container{height:fit-content}html[webscreen-scrollable] .webscreen-fix .left-container #bilibili-player.mode-webscreen,html[webscreen-scrollable] .webscreen-fix .playlist-container--left #bilibili-player.mode-webscreen{border-radius:unset;z-index:unset;left:unset;top:unset;width:100%;height:100%;position:static}html[webscreen-scrollable] .webscreen-fix .left-container #playerWrap,html[webscreen-scrollable] .webscreen-fix .playlist-container--left #playerWrap{width:100vw;height:100vh;padding-right:0;position:absolute;top:0;left:0;right:0}html[webscreen-scrollable] .webscreen-fix .right-container,html[webscreen-scrollable] .webscreen-fix .playlist-container--right{padding-top:100vh}html[webscreen-scrollable] .webscreen-fix .float-nav-exp .nav-menu .item.mini,html[webscreen-scrollable] .webscreen-fix .fixed-sidenav-storage .mini-player-window{display:none!important}html[webscreen-scrollable] .webscreen-fix .bili-dialog-m{z-index:100000!important}html[webscreen-scrollable] .webscreen-fix::-webkit-scrollbar{display:none!important}html[webscreen-scrollable] .bili-msg{z-index:100001!important}@supports ((-moz-appearance:none)){html[webscreen-scrollable]:has(.webscreen-fix){scrollbar-width:none!important}}html[fullscreen-scrollable] .webscreen-fix{position:unset;top:unset;left:unset;margin:unset;padding:unset;width:unset;height:unset}html[fullscreen-scrollable] .webscreen-fix #biliMainHeader{display:none}html[fullscreen-scrollable] .webscreen-fix #mirror-vdcon{box-sizing:content-box;position:relative}html[fullscreen-scrollable] .webscreen-fix #danmukuBox{margin-top:unset!important}html[fullscreen-scrollable] .webscreen-fix #danmukuBox .bui-collapse-wrap:not(.bui-collapse-wrap-folded){margin-top:0!important}html[fullscreen-scrollable] .webscreen-fix #danmukuBox .bui-collapse-wrap:not(.bui-collapse-wrap-folded) .bpx-player-wraplist{max-height:calc(50vh + 75px)!important}html[fullscreen-scrollable] .webscreen-fix #danmukuBox .bui-collapse-wrap:not(.bui-collapse-wrap-folded) .bpx-player-dm-wrap{max-height:50vh!important}html[fullscreen-scrollable] .webscreen-fix .left-container,html[fullscreen-scrollable] .webscreen-fix .playlist-container--left{padding-top:100vh;position:static!important}html[fullscreen-scrollable] .webscreen-fix .left-container .video-info-container,html[fullscreen-scrollable] .webscreen-fix .playlist-container--left .video-info-container{height:fit-content}html[fullscreen-scrollable] .webscreen-fix .left-container #bilibili-player.mode-webscreen,html[fullscreen-scrollable] .webscreen-fix .playlist-container--left #bilibili-player.mode-webscreen{border-radius:unset;z-index:unset;left:unset;top:unset;width:100%;height:100%;position:static}html[fullscreen-scrollable] .webscreen-fix .left-container #playerWrap,html[fullscreen-scrollable] .webscreen-fix .playlist-container--left #playerWrap{width:100vw;height:100vh;padding-right:0;position:absolute;top:0;left:0;right:0}html[fullscreen-scrollable] .webscreen-fix .right-container,html[fullscreen-scrollable] .webscreen-fix .playlist-container--right{padding-top:100vh}html[fullscreen-scrollable] .webscreen-fix .float-nav-exp .nav-menu .item.mini,html[fullscreen-scrollable] .webscreen-fix .fixed-sidenav-storage .mini-player-window{display:none!important}html[fullscreen-scrollable] .webscreen-fix .bili-dialog-m{z-index:100000!important}html[fullscreen-scrollable] .webscreen-fix::-webkit-scrollbar{display:none!important}html[fullscreen-scrollable] .bili-msg{z-index:100001!important}@supports ((-moz-appearance:none)){html[fullscreen-scrollable]:has(.webscreen-fix){scrollbar-width:none!important}}html[screen-scrollable-enable-mini-player] .webscreen-fix .bpx-player-mini-close{display:none!important}html[screen-scrollable-move-header-bottom] .webscreen-fix #biliMainHeader{width:100%!important;display:block!important;position:absolute!important;top:100vh!important}html[screen-scrollable-move-header-bottom] .webscreen-fix .fixed-header .bili-header__bar{position:relative!important}html[screen-scrollable-move-header-bottom] .webscreen-fix #mirror-vdcon{padding-top:64px!important}html[screen-scrollable-move-header-bottom] .webscreen-fix .custom-navbar[role=navigation]{z-index:1000!important;top:100vh!important}html[screen-scrollable-move-header-bottom] .webscreen-fix .custom-navbar[role=navigation] .custom-navbar-item .popup{top:100%!important}html[screen-scrollable-move-header-bottom] .webscreen-fix.fixed-navbar .custom-navbar[role=navigation]{position:absolute!important}html[screen-scrollable-move-header-bottom] .custom-navbar[role=navigation]{transition:unset!important}html[video-page-exchange-player-position] body:not(.webscreen-fix) :is(.left-container,.playlist-container--left){flex-direction:column!important;padding-top:30px!important;display:flex!important}html[video-page-exchange-player-position] body:not(.webscreen-fix) :is(.left-container,.playlist-container--left)>*{order:1}html[video-page-exchange-player-position] body:not(.webscreen-fix) #playerWrap{z-index:1;order:0!important}html[video-page-exchange-player-position] body:not(.webscreen-fix) .video-info-container{height:auto!important;margin-bottom:0!important;padding-top:16px!important}html[video-page-exchange-player-position][player-is-wide] body:not(.webscreen-fix) #danmukuBox{margin-top:0!important}html[video-page-exchange-player-position][player-is-wide] body:not(.webscreen-fix) .up-panel-container{margin-top:calc(299.75px + clamp(543px,min(100vw - 648px,177.778vh - 691px),1569px)/1.77778)!important;padding-top:30px!important;position:relative!important}html[video-page-exchange-player-position][player-is-wide][video-page-hide-bpx-player-sending-area] body:not(.webscreen-fix) .up-panel-container{margin-top:calc(243.75px + clamp(543px,min(100vw - 648px,177.778vh - 691px),1569px)/1.77778)!important}html[video-page-exchange-player-position] .bili-msg{z-index:100001!important}html[normalscreen-width]:not([player-is-wide]):has(#bilibili-player .bpx-player-container[data-screen=normal],#bilibili-player .bpx-player-container:not([data-screen])) #playerWrap{height:fit-content!important}html[normalscreen-width]:not([player-is-wide]):has(#bilibili-player .bpx-player-container[data-screen=normal],#bilibili-player .bpx-player-container:not([data-screen])) #playerWrap #bilibili-player-placeholder-top{width:min(100vw - 400px, var(--normalscreen-width))!important;aspect-ratio:16/9!important}html[normalscreen-width]:not([player-is-wide]):has(#bilibili-player .bpx-player-container[data-screen=normal],#bilibili-player .bpx-player-container:not([data-screen])) #playerWrap #bilibili-player{width:min(100vw - 400px, var(--normalscreen-width));height:fit-content}html[normalscreen-width]:not([player-is-wide]):has(#bilibili-player .bpx-player-container[data-screen=normal],#bilibili-player .bpx-player-container:not([data-screen])) #playerWrap #bilibili-player .bpx-player-video-area{width:min(100vw - 400px, var(--normalscreen-width));aspect-ratio:16/9}:is(html[normalscreen-width]:not([player-is-wide]):has(#bilibili-player .bpx-player-container[data-screen=normal],#bilibili-player .bpx-player-container:not([data-screen])) .left-container,html[normalscreen-width]:not([player-is-wide]):has(#bilibili-player .bpx-player-container[data-screen=normal],#bilibili-player .bpx-player-container:not([data-screen])) .playlist-container--left),html[normalscreen-width] .webscreen-fix .left-container,html[normalscreen-width] .webscreen-fix .playlist-container--left,:is(html[normalscreen-width]:not([player-is-wide]):has(.bpx-player-container[data-screen=mini]) .left-container,html[normalscreen-width]:not([player-is-wide]):has(.bpx-player-container[data-screen=mini]) .playlist-container--left){width:min(100vw - 400px, var(--normalscreen-width))!important}html[normalscreen-width]:not([player-is-wide]):has(.bpx-player-container[data-screen=mini]) #playerWrap{width:min(100vw - 400px, var(--normalscreen-width))!important;height:fit-content!important;display:flex!important}html[normalscreen-width]:not([player-is-wide]):has(.bpx-player-container[data-screen=mini]) #playerWrap #bilibili-player-placeholder{position:static;width:min(100vw - 400px, var(--normalscreen-width))!important;height:fit-content!important}html[normalscreen-width]:not([player-is-wide]):has(.bpx-player-container[data-screen=mini]) #playerWrap #bilibili-player-placeholder #bilibili-player-placeholder-top{width:min(100vw - 400px, var(--normalscreen-width))!important;aspect-ratio:16/9!important}html[normalscreen-width]:not([player-is-wide]):has(.bpx-player-container[data-screen=mini]) #playerWrap #bilibili-player{width:min(100vw - 400px, var(--normalscreen-width))!important;height:fit-content!important}html[normalscreen-width][player-is-wide]:has(.bpx-player-container[data-screen=mini]) #bilibili-player{background-color:#000!important}html[video-page-right-container-sticky-optimize] .right-container{display:flex!important}html[video-page-right-container-sticky-optimize] .right-container .right-container-inner{width:100%!important;top:unset!important;align-self:flex-end!important;max-width:100%!important;min-height:calc(100vh - 64px)!important;padding-bottom:0!important;position:sticky!important}html[video-page-right-container-sticky-optimize] .right-container-inner{min-height:calc(100vh - 304px)!important;bottom:240px!important}html[video-page-right-container-sticky-optimize] body:has(.mini-player-window:not(.on)) .right-container-inner{min-height:calc(100vh - 74px)!important;bottom:10px!important}html[video-page-right-container-sticky-disable] .right-container-inner{position:static!important}html[video-page-hide-right-container-ad] .right-container #slide_ad,html[video-page-hide-right-container-ad] .right-container .video-card-ad-small,html[video-page-hide-right-container-ad] .right-container .video-card-ad-small-inner,html[video-page-hide-right-container-ad] .right-container .video-page-special-card-small{display:none!important}html[video-page-hide-right-container-ad] .right-container #reco_list,html[video-page-hide-right-container-ad] .right-container .recommend-list-v1{margin-top:0!important}html[video-page-hide-right-container-video-page-game-card-small] .right-container .video-page-game-card-small{display:none!important}html[video-page-unfold-right-container-danmaku] #danmukuBox .bui-collapse-wrap:not(.bui-collapse-wrap-folded){max-height:fit-content!important}html[video-page-unfold-right-container-danmaku] #danmukuBox .bui-collapse-wrap:not(.bui-collapse-wrap-folded) .bui-collapse-body{height:fit-content!important}html[video-page-unfold-right-container-danmaku] #danmukuBox .bui-collapse-wrap:not(.bui-collapse-wrap-folded) .bpx-player-wraplist,html[video-page-unfold-right-container-danmaku] #danmukuBox .bui-collapse-wrap:not(.bui-collapse-wrap-folded) .bpx-player-filter-wrap,html[video-page-unfold-right-container-danmaku] #danmukuBox .bui-collapse-wrap:not(.bui-collapse-wrap-folded) .bpx-player-dm-wrap,html[video-page-unfold-right-container-danmaku] #danmukuBox .bui-collapse-wrap:not(.bui-collapse-wrap-folded) .bpx-player-dm-container,html[video-page-unfold-right-container-danmaku] #danmukuBox .bui-collapse-wrap:not(.bui-collapse-wrap-folded) .bui-area,html[video-page-unfold-right-container-danmaku] #danmukuBox .bui-collapse-wrap:not(.bui-collapse-wrap-folded) .bui-long-list-wrap{max-height:fit-content!important}html[video-page-hide-right-container-danmaku] #danmukuBox{visibility:hidden!important;height:0!important;margin-bottom:0!important}html[video-page-hide-right-container-reco-list-next-play-next-button] .right-container .next-play .next-button,html[video-page-hide-right-container-reco-list-next-play-next-button] .right-container .next-play .continuous-btn,html[video-page-hide-right-container-reco-list-next-play] .right-container .next-play{display:none!important}html[video-page-hide-right-container-reco-list-next-play] .right-container .rec-list{margin-top:0!important}html[video-page-hide-right-container-multi-page-add-counter] .video-pod__list.multip.list{counter-reset:section-counter}html[video-page-hide-right-container-multi-page-add-counter] .video-pod__list.multip.list .video-pod__item:before{counter-increment:section-counter;content:\"P\" counter(section-counter);margin-right:10px;font-size:15px;transition:color .2s}html[video-page-hide-right-container-multi-page-add-counter] .video-pod__list.multip.list .video-pod__item.active:before,html[video-page-hide-right-container-multi-page-add-counter] .video-pod__list.multip.list .video-pod__item:hover:before{color:var(--brand_blue)}html[video-page-hide-right-container-multi-page-add-counter] .video-pod__list.multip.list:has(.video-pod__item:nth-child(10)) .video-pod__item:nth-child(-n+9):before{content:\"P0\" counter(section-counter)!important}html[video-page-right-container-section-unfold-title] .video-pod.video-pod .section .video-pod__item .title{height:fit-content!important}html[video-page-right-container-section-unfold-title] .video-pod.video-pod .section .video-pod__item .title-txt{-webkit-line-clamp:2!important;margin-top:4px!important;margin-bottom:4px!important;line-height:21px!important}html[video-page-hide-right-container-section-height] .video-sections-content-list,html[video-page-hide-right-container-section-height] .video-pod__body{height:fit-content!important;max-height:340px!important}html[video-page-hide-right-container-section-next-btn] .base-video-sections-v1 .next-button{display:none!important}html[video-page-hide-right-container-section-next-btn] .video-sections-head_first-line .first-line-left{max-width:100%!important}html[video-page-hide-right-container-section-next-btn] .video-sections-head_first-line .first-line-title{max-width:unset!important}html[video-page-hide-right-container-section-next-btn] .video-sections-head_first-line .first-line-right,html[video-page-hide-right-container-section-next-btn] .video-pod__header .auto-play,html[video-page-hide-right-container-section-play-num] .base-video-sections-v1 .play-num,html[video-page-hide-right-container-section-play-num] .video-sections-head_second-line .play-num,html[video-page-hide-right-container-section-play-num] .video-pod__header .total-view,html[video-page-hide-right-container-section-abstract] .base-video-sections-v1 .abstract,html[video-page-hide-right-container-section-abstract] .base-video-sections-v1 .second-line_left img,html[video-page-hide-right-container-section-abstract] .video-sections-head_second-line .abstract,html[video-page-hide-right-container-section-abstract] .video-sections-head_second-line .second-line_left img,html[video-page-hide-right-container-section-abstract] .video-pod__header .pod-description-reference,html[video-page-hide-right-container-section-subscribe] .base-video-sections-v1 .second-line_right,html[video-page-hide-right-container-section-subscribe] .video-sections-head_second-line .second-line_right,html[video-page-hide-right-container-section-subscribe] .video-pod__header .subscribe-btn{display:none!important}html[video-page-right-container-set-info-bottom] :is(.video-page-card-small,.video-page-operator-card-small,.recommend-list-container .video-card) .card-box .info{flex-direction:column!important;display:flex!important}html[video-page-right-container-set-info-bottom] :is(.video-page-card-small,.video-page-operator-card-small,.recommend-list-container .video-card) .card-box .info .upname{margin-top:auto!important}html[video-page-hide-right-container-duration] .right-container .card-box .duration,html[video-page-hide-right-container-duration] .recommend-list-container .duration{display:none!important}html[video-page-hide-right-container-reco-list-rec-list-info-up] .right-container .info .upname{visibility:hidden!important}html[video-page-hide-right-container-reco-list-rec-list-info-up] .right-container .info{flex-direction:column;justify-content:space-between;display:flex}html[video-page-hide-right-container-reco-list-rec-list-info-up] .recommend-list-container .info .upname{display:none!important}html[video-page-hide-right-container-reco-list-rec-list-info-up] .recommend-list-container .info{flex-direction:column;justify-content:space-between;display:flex}html[video-page-hide-right-container-reco-list-rec-list-info-plays] .right-container .info .playinfo{display:none!important}html[video-page-hide-right-container-reco-list-rec-list-info-plays] .right-container .info{flex-direction:column;justify-content:space-between;display:flex}html[video-page-hide-right-container-reco-list-rec-list-info-plays] .recommend-list-container .info .playinfo{display:none!important}html[video-page-hide-right-container-reco-list-rec-list-info-plays] .recommend-list-container .info{flex-direction:column;justify-content:space-between;display:flex}html[video-page-hide-right-container-reco-list-rec-footer] .right-container .rec-footer,html[video-page-hide-right-container-reco-list-rec-footer] .playlist-container--right .rec-footer,html[video-page-hide-right-container-reco-list-rec-list] .right-container .rec-list,html[video-page-hide-right-container-reco-list-rec-list] .right-container .rec-footer,html[video-page-hide-right-container-reco-list-rec-list] .playlist-container--right .recommend-list-container,html[video-page-hide-right-container-right-bottom-banner] #right-bottom-banner,html[video-page-hide-right-container-right-bottom-banner] .right-bottom-banner{display:none!important}html[video-page-hide-right-container-right-bottom-banner] body:has(.mini-player-window:not(.on)) .right-container-inner{padding-bottom:10px!important}html[video-page-hide-right-container-live] .right-container .pop-live-small-mode{display:none!important}html[video-page-hide-right-container-live] body:has(.mini-player-window:not(.on)) .right-container-inner{padding-bottom:10px!important}html[video-page-hide-right-container]:not([player-is-wide]) .right-container,html[video-page-hide-sidenav-right-container-live] .fixed-sidenav-storage .mini-player-window,html[video-page-hide-sidenav-right-container-live] .float-nav-exp .nav-menu .item.mini,html[video-page-hide-sidenav-customer-service] .fixed-sidenav-storage .customer-service{display:none!important}html[video-page-hide-sidenav-customer-service] .float-nav-exp .nav-menu a:has(>.item.help){display:none!important}html[video-page-hide-sidenav-back-to-top] .fixed-sidenav-storage .back-to-top,html[video-page-hide-sidenav-back-to-top] .float-nav-exp .nav-menu .item.backup,html[video-page-simple-video-share-popover] .video-share-popover .video-share-dropdown .dropdown-bottom{display:none!important}html[video-page-simple-video-share-popover] .video-share-popover .video-share-dropdown .dropdown-top{padding:15px!important}html[video-page-simple-video-share-popover] .video-share-popover .video-share-dropdown .dropdown-top .dropdown-top-right{display:none!important}html[video-page-simple-video-share-popover] .video-share-popover .video-share-dropdown .dropdown-top .dropdown-top-left{padding-right:0!important}html[video-page-hide-video-share-popover] .video-share-popover,html[video-page-hide-triple-oldfan-entry] .triple-oldfan-entry,html[video-page-hide-below-info-video-ai-assistant] .video-toolbar-right .video-ai-assistant,html[video-page-hide-below-info-video-complaint] .video-toolbar-right .video-complaint,html[video-page-hide-below-info-video-note] .video-toolbar-right .video-note,html[video-page-hide-below-info-video-report-menu] .video-toolbar-right .video-tool-more{display:none!important}html[video-page-unfold-below-info-desc] #v_desc,html[video-page-unfold-below-info-desc] .video-desc-container{margin-bottom:0!important}html[video-page-unfold-below-info-desc] #v_desc .basic-desc-info,html[video-page-unfold-below-info-desc] .video-desc-container .basic-desc-info{height:auto!important}html[video-page-unfold-below-info-desc] #v_desc .toggle-btn,html[video-page-unfold-below-info-desc] .video-desc-container .toggle-btn,html[video-page-hide-below-info-desc] #v_desc,html[video-page-hide-below-info-desc] .video-desc-container{display:none!important}html[video-page-hide-below-info-tag] #v_tag,html[video-page-hide-below-info-tag] .video-tag-container{visibility:hidden!important;height:0!important;margin:0 0 10px!important}html[video-page-hide-below-activity-vote] #activity_vote,html[video-page-hide-below-activity-vote] .activity-m-v1,html[video-page-hide-below-bannerAd] #bannerAd,html[video-page-hide-below-bannerAd] .left-container .left-banner,html[video-page-hide-up-sendmsg] .up-detail .send-msg,html[video-page-hide-up-description] .up-detail .up-description,html[video-page-hide-up-charge] .upinfo-btn-panel .new-charge-btn,html[video-page-hide-up-charge] .upinfo-btn-panel .old-charge-btn,html[video-page-hide-up-bili-avatar-pendent-dom] .up-info-container .bili-avatar-pendent-dom{display:none!important}html[video-page-hide-up-bili-avatar-pendent-dom] .up-avatar-wrap{width:48px!important;height:48px!important}html[video-page-hide-up-bili-avatar-pendent-dom] .up-avatar-wrap .up-avatar{background-color:#0000!important}html[video-page-hide-up-bili-avatar-pendent-dom] .up-avatar-wrap .bili-avatar{width:48px!important;height:48px!important;transform:unset!important}html[video-page-hide-up-bili-avatar-icon] .up-info-container .bili-avatar-icon,html[video-page-hide-up-bili-avatar-icon] .up-info-container .bili-avatar-nft-icon,html[video-page-hide-up-membersinfo-normal-header] .membersinfo-normal .header,html[video-page-hide-up-usercard] .usercard-wrap{display:none!important}");
@@ -14596,10 +14991,12 @@
 	var loadSwitchItem = (item) => {
 		if (_GM_getValue(item.id, item.defaultEnable)) {
 			if (!item.noStyle) document.documentElement.setAttribute(item.attrName ?? item.id, "");
-			if (item.enableFn) if (item.enableFnRunAt === "document-end" && document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => {
-				item.enableFn()?.catch(() => {});
-			});
-			else item.enableFn()?.catch(() => {});
+			if (item.enableFn) {
+				if (item.enableFnRunAt === "document-end" && document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => {
+					item.enableFn()?.catch(() => {});
+				});
+				else item.enableFn()?.catch(() => {});
+			}
 		}
 	};
 	var loadNumberItem = (item) => {

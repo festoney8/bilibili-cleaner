@@ -67,7 +67,7 @@
     .video-list {
         width: 100% !important;
         display: grid !important;
-        grid-gap: 20px !important;
+        gap: 20px !important;
         grid-column: span $count !important;
         grid-template-columns: repeat($count, minmax(0, 1fr)) !important;
 
@@ -127,7 +127,7 @@
     .rank-list {
         width: 100% !important;
         display: grid !important;
-        grid-gap: 20px !important;
+        gap: 20px !important;
         grid-column: span $count !important;
         grid-template-columns: repeat($count, minmax(0, 1fr)) !important;
 

@@ -165,14 +165,10 @@ export const bangumiPlayerLayoutItems: Item[] = [
         name: '按 F 键全屏可滚动',
         description: ['需同时启用真全屏页面滚动'],
         enableFn: () => {
-            for (const type of ['keydown', 'keypress', 'keyup'] as const) {
-                window.addEventListener(type, handleKeyFPress, true)
-            }
+            window.addEventListener('keydown', handleKeyFPress, true)
         },
         disableFn: () => {
-            for (const type of ['keydown', 'keypress', 'keyup'] as const) {
-                window.removeEventListener(type, handleKeyFPress, true)
-            }
+            window.removeEventListener('keydown', handleKeyFPress, true)
         },
     },
     {

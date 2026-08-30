@@ -161,11 +161,11 @@ class VideoFilterVideo implements IMainFilter {
         this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns.bvid])
 
         // 检测
-        const blackCnt = await coreCheck(videos, true, 'sign', blackPairs, whitePairs, forceBlackPairs)
+        const blackIdxSet = await coreCheck(videos, true, 'sign', blackPairs, whitePairs, forceBlackPairs)
 
         // 缓存数据检测，更新__INITIAL_STATE__.related
         // __INITIAL_STATE__.related 与右侧视频列表绑定
-        if (enableRelatedCheck && blackCnt.size) {
+        if (enableRelatedCheck && blackIdxSet.size) {
             const blackBvids = new Set<string>()
             for (const video of videos) {
                 if (isEleHide(video, 'sign')) {
@@ -182,7 +182,7 @@ class VideoFilterVideo implements IMainFilter {
             }
         }
         const time = (performance.now() - timer).toFixed(1)
-        logger.debug(`VideoFilterVideo hide ${blackCnt.size} in ${videos.length} videos, mode=${mode}, time=${time}`)
+        logger.debug(`VideoFilterVideo hide ${blackIdxSet.size} in ${videos.length} videos, mode=${mode}, time=${time}`)
     }
 
     checkFull() {

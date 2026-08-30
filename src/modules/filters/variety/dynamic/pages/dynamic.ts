@@ -187,10 +187,10 @@ class DynamicFilterDynamic implements IMainFilter {
         this.dynContentWhiteFilter.isEnable && whitePairs.push([this.dynContentWhiteFilter, selectorFns.content])
 
         // 检测
-        const blackCnt = await coreCheck(filteredDyns, true, 'sign', blackPairs, whitePairs)
+        const blackIdxSet = await coreCheck(filteredDyns, true, 'sign', blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
         logger.debug(
-            `DynamicFilterDynamic hide ${blackCnt.size} in ${filteredDyns.length} dyns, mode=${mode}, time=${time}`,
+            `DynamicFilterDynamic hide ${blackIdxSet.size} in ${filteredDyns.length} dyns, mode=${mode}, time=${time}`,
         )
     }
 

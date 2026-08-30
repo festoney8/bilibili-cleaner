@@ -107,9 +107,9 @@ class DynamicFilterHeader implements IMainFilter {
         this.dynContentWhiteFilter.isEnable && whitePairs.push([this.dynContentWhiteFilter, selectorFns.content])
 
         // 检测
-        const blackCnt = await coreCheck(dyns, true, 'style', blackPairs, whitePairs)
+        const blackIdxSet = await coreCheck(dyns, true, 'style', blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
-        logger.debug(`DynamicFilterHeader hide ${blackCnt.size} in ${dyns.length} dyns, mode=${mode}, time=${time}`)
+        logger.debug(`DynamicFilterHeader hide ${blackIdxSet.size} in ${dyns.length} dyns, mode=${mode}, time=${time}`)
     }
 
     checkFull() {

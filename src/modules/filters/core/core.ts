@@ -86,5 +86,8 @@ export const coreCheck = async (
     if (noThrottle) {
         return rawCheck(elements, enableFilterVisitSign, hideMode, blackPairs, whitePairs, forceBlackPairs)
     }
-    return throttledCheck(elements, enableFilterVisitSign, hideMode, blackPairs, whitePairs, forceBlackPairs)
+    return (
+        (await throttledCheck(elements, enableFilterVisitSign, hideMode, blackPairs, whitePairs, forceBlackPairs)) ??
+        new Set<number>()
+    )
 }

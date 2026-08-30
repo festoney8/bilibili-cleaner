@@ -506,10 +506,18 @@ class CommentFilterCommon implements IMainFilter {
         this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns.root.content])
         this.commentBotFilter.isEnable && forceBlackPairs.push([this.commentBotFilter, selectorFns.root.username])
 
-        const rootBlackCnt = await coreCheck(rootComments, true, 'style', blackPairs, whitePairs, forceBlackPairs, true)
+        const rootBlackIdxSet = await coreCheck(
+            rootComments,
+            true,
+            'style',
+            blackPairs,
+            whitePairs,
+            forceBlackPairs,
+            true,
+        )
         const time = (performance.now() - timer).toFixed(1)
         logger.debug(
-            `CommentFilterCommon hide ${rootBlackCnt.size} in ${rootComments.length} root comments, mode=${mode}, time=${time}`,
+            `CommentFilterCommon hide ${rootBlackIdxSet.size} in ${rootComments.length} root comments, mode=${mode}, time=${time}`,
         )
     }
 
@@ -607,18 +615,26 @@ class CommentFilterCommon implements IMainFilter {
         const forceBlackPairs: SubFilterPair[] = []
         this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns.sub.content])
 
-        const subBlackCnt = await coreCheck(subComments, false, 'style', blackPairs, whitePairs, forceBlackPairs, true)
+        const subBlackIdxSet = await coreCheck(
+            subComments,
+            false,
+            'style',
+            blackPairs,
+            whitePairs,
+            forceBlackPairs,
+            true,
+        )
 
         // 更新rpid map，开始多轮链式过滤检查
-        updateCommentRpidLevelMap(subComments, subBlackCnt, true)
-        let chainBlackCnt = new Set<number>()
+        updateCommentRpidLevelMap(subComments, subBlackIdxSet, true)
+        let chainBlackIdxSet = new Set<number>()
         if (this.commentChainFilter.isEnable && this.commentChainLevel > 0) {
             for (let round = 1; round <= this.commentChainLevel; round++) {
                 const chainBlackPairs = [
                     ...blackPairs,
                     [this.commentChainFilter, selectorFns.sub.isReplyToFiltered] as SubFilterPair,
                 ]
-                chainBlackCnt = await coreCheck(
+                chainBlackIdxSet = await coreCheck(
                     subComments,
                     false,
                     'style',
@@ -627,12 +643,12 @@ class CommentFilterCommon implements IMainFilter {
                     forceBlackPairs,
                     true,
                 )
-                updateCommentRpidLevelMap(subComments, chainBlackCnt, false)
+                updateCommentRpidLevelMap(subComments, chainBlackIdxSet, false)
             }
         }
         const time = (performance.now() - timer).toFixed(1)
         logger.debug(
-            `CommentFilterCommon hide ${new Set([...subBlackCnt, ...chainBlackCnt]).size} in ${subComments.length} sub comments, mode=${mode}, time=${time}`,
+            `CommentFilterCommon hide ${new Set([...subBlackIdxSet, ...chainBlackIdxSet]).size} in ${subComments.length} sub comments, mode=${mode}, time=${time}`,
         )
     }
 

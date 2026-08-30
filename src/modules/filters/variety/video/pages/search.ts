@@ -302,9 +302,11 @@ class VideoFilterSearch implements IMainFilter {
         this.videoBvidFilter.isEnable && forceBlackPairs.push([this.videoBvidFilter, selectorFns.bvid])
 
         // 检测
-        const blackCnt = await coreCheck(videos, true, 'sign', blackPairs, whitePairs, forceBlackPairs)
+        const blackIdxSet = await coreCheck(videos, true, 'sign', blackPairs, whitePairs, forceBlackPairs)
         const time = (performance.now() - timer).toFixed(1)
-        logger.debug(`VideoFilterSearch hide ${blackCnt.size} in ${videos.length} videos, mode=${mode}, time=${time}`)
+        logger.debug(
+            `VideoFilterSearch hide ${blackIdxSet.size} in ${videos.length} videos, mode=${mode}, time=${time}`,
+        )
     }
 
     // 类似上面的check方法
@@ -345,9 +347,9 @@ class VideoFilterSearch implements IMainFilter {
         this.videoUploaderWhiteFilter.isEnable &&
             whitePairs.push([this.videoUploaderWhiteFilter, selectorFns.uploaderCard])
 
-        const blackCnt = await coreCheck([userList], true, 'sign', blackPairs, whitePairs)
+        const blackIdxSet = await coreCheck([userList], true, 'sign', blackPairs, whitePairs)
         const time = (performance.now() - timer).toFixed(1)
-        logger.debug(`VideoFilterSearchUserCard hide ${blackCnt.size} in user-list, mode=${mode}, time=${time}`)
+        logger.debug(`VideoFilterSearchUserCard hide ${blackIdxSet.size} in user-list, mode=${mode}, time=${time}`)
     }
 
     checkFull() {

@@ -26,7 +26,7 @@ export const liveGroups: Group[] = [
         items: livePlayerItems,
     },
     {
-        name: '弹幕样式',
+        name: '弹幕样式（同步播放页）',
         fold: true,
         items: liveDanmakuItems,
     },

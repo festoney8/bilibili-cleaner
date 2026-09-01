@@ -96,6 +96,7 @@ html[video-page-hide-below-info-tag] {
 
 // 隐藏 活动宣传
 html[video-page-hide-below-activity-vote] {
+    .video-resource-list,
     #activity_vote,
     .activity-m-v1 {
         display: none !important;

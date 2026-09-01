@@ -6,14 +6,6 @@ html[video-page-hide-bpx-player-video-info-online] {
     }
 }
 
-// 隐藏 装填弹幕数量
-html[video-page-hide-bpx-player-video-info-dm] {
-    .bpx-player-video-info-dm,
-    .bpx-player-video-info-divide {
-        display: none !important;
-    }
-}
-
 // 隐藏 弹幕开关
 html[video-page-hide-bpx-player-dm-switch] {
     .bpx-player-dm-switch {

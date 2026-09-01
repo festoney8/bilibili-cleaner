@@ -8,11 +8,6 @@ export const videoDanmakuControlItems: Item[] = [
     },
     {
         type: 'switch',
-        id: 'video-page-hide-bpx-player-video-info-dm',
-        name: '隐藏 装填弹幕数量',
-    },
-    {
-        type: 'switch',
         id: 'video-page-hide-bpx-player-dm-switch',
         name: '隐藏 弹幕开关',
     },

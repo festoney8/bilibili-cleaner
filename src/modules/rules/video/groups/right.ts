@@ -76,11 +76,6 @@ export const videoRightItems: Item[] = [
     },
     {
         type: 'switch',
-        id: 'video-page-hide-right-container-section-next-btn',
-        name: '隐藏 视频合集 自动连播开关',
-    },
-    {
-        type: 'switch',
         id: 'video-page-hide-right-container-section-play-num',
         name: '隐藏 视频合集 播放量',
     },

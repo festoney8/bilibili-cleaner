@@ -21,8 +21,11 @@ html[live-page-head-info-vm-upper-row-hotrank] {
 
 // 隐藏 活动
 html[live-page-head-info-vm-upper-row-activity] {
-    #head-info-vm .activity-entry {
-        display: none !important;
+    #head-info-vm {
+        .activity-entry,
+        .right-dynamic-modules {
+            display: none !important;
+        }
     }
 }
 

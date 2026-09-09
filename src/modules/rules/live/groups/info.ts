@@ -1,12 +1,12 @@
 import { Item } from '@/types/item'
-import { isEditableElement } from '@/utils/tool'
+import { isEditableEvent } from '@/utils/tool'
 
 // 拦截 G 键关注
 const handleKeyGPress = (e: KeyboardEvent) => {
     if (e.key.toLocaleLowerCase() !== 'g' || e.ctrlKey || e.altKey || e.metaKey) {
         return
     }
-    if (isEditableElement(e.target as Element)) {
+    if (isEditableEvent(e)) {
         return
     }
     e.stopImmediatePropagation()

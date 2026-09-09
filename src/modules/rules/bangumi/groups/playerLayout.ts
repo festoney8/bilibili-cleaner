@@ -1,6 +1,6 @@
 import { unsafeWindow } from '$'
 import { Item } from '@/types/item'
-import { isEditableElement, playerGoTo } from '@/utils/tool'
+import { isEditableEvent, playerGoTo } from '@/utils/tool'
 import { useEventListener } from '@vueuse/core'
 
 // 禁用滚动调音量
@@ -98,7 +98,7 @@ const handleKeyFPress = (e: KeyboardEvent) => {
     if (e.key.toLocaleLowerCase() !== 'f' || e.ctrlKey || e.altKey || e.metaKey) {
         return
     }
-    if (isEditableElement(e.target as Element)) {
+    if (isEditableEvent(e)) {
         return
     }
     e.stopImmediatePropagation()

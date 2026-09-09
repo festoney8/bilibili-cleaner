@@ -1,6 +1,6 @@
 import { unsafeWindow } from '$'
 import { Item } from '@/types/item'
-import { isEditableElement, playerGoTo, waitForEle } from '@/utils/tool'
+import { isEditableEvent, playerGoTo, waitForEle } from '@/utils/tool'
 import { wideScreenManager } from '@/utils/widePlayer'
 import { useEventListener } from '@vueuse/core'
 
@@ -99,7 +99,7 @@ const handleKeyFPress = (e: KeyboardEvent) => {
     if (e.key.toLocaleLowerCase() !== 'f' || e.ctrlKey || e.altKey || e.metaKey) {
         return
     }
-    if (isEditableElement(e.target as Element)) {
+    if (isEditableEvent(e)) {
         return
     }
     e.stopImmediatePropagation()

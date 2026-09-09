@@ -190,30 +190,7 @@ html[live-page-brush-prompt] {
 
 // 隐藏 互动框
 html[live-page-combo-card] {
-    #relocated-slot-combo-danmaku {
-        display: none !important;
-    }
-
-    // 倒计时互动
-    .gift-wish-card-root {
-        display: none !important;
-    }
-    .chat-history-panel {
-        padding-bottom: 0 !important;
-    }
-
-    // 倒计时互动、他们都在说、加入粉丝团
-    #combo-card {
-        display: none !important;
-    }
-
-    // 找TA玩
-    .play-together-service-card-container {
-        display: none !important;
-    }
-
-    // 投票
-    .vote-card {
+    #relocated-cards-area {
         display: none !important;
     }
 }

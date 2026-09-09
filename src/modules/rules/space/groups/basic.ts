@@ -26,4 +26,9 @@ export const spaceBasicItems: Item[] = [
         id: 'increase-space-page-video-card-font-size',
         name: '增大 视频信息 字号',
     },
+    {
+        type: 'switch',
+        id: 'hide-space-page-video-card-charge',
+        name: '隐藏 充电视频',
+    },
 ]

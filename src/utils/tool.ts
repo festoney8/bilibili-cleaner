@@ -201,19 +201,16 @@ export const playerGoTo = (mode: 'normal' | 'wide' | 'web' | 'mini' | 'full' | '
 }
 
 /**
- * 判断是否为可编辑元素
- * @param el 目标元素
+ * 判断是否为可编辑元素的事件
+ * @param event 目标事件
  */
-export const isEditableElement = (el: Element): boolean => {
-    if (!(el instanceof HTMLElement)) {
-        return false
-    }
-    return (
-        el.tagName === 'INPUT' ||
-        el.tagName === 'TEXTAREA' ||
-        el.isContentEditable ||
-        el.closest('[contenteditable]') !== null
-    )
+export const isEditableEvent = (event: Event): boolean => {
+    return event.composedPath().some((target) => {
+        if (!(target instanceof HTMLElement)) {
+            return false
+        }
+        return target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable
+    })
 }
 
 // NFKC正规化

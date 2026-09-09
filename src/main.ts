@@ -18,6 +18,13 @@ import { logger } from '@/utils/logger'
 import { isPageLive } from './utils/pageType'
 import { migrate } from './utils/storage'
 
+// 首页重定向，避免过滤视频失效
+const redirect = () => {
+    if (location.host === 'www.bilibili.com' && location.pathname === '/index.html') {
+        window.location.replace('https://www.bilibili.com/')
+    }
+}
+
 const main = () => {
     // 创建插件面板用shadowDOM节点
     const wrap = document.createElement('div')
@@ -119,7 +126,7 @@ await migrate().catch((err) => {
 })
 
 // 加载模块、主逻辑、菜单
-for (const fn of [loadModules, main, menu]) {
+for (const fn of [redirect, loadModules, main, menu]) {
     try {
         fn()
     } catch (err) {

@@ -21,6 +21,7 @@ html[increase-space-page-video-card-font-size] {
 
 // 隐藏 充电视频
 html[hide-space-page-video-card-charge] {
+    #app .home-section .items__item:has(.sic-BDC-battery_charge_simple_fill),
     .video-list .upload-video-card:has(.sic-BDC-battery_charge_simple_fill) {
         display: none !important;
     }

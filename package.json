@@ -50,5 +50,6 @@
         "src/**/*": "prettier --write --ignore-unknown",
         "src/**/*.{js,mjs,cjs,ts,vue}": "npx eslint --fix",
         "src/**/*.scss": "npx stylelint --fix"
-    }
+    },
+    "packageManager": "pnpm@12.3.4"
 }

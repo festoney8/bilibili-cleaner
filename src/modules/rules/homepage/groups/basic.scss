@@ -37,6 +37,18 @@ html[homepage-hide-banner] {
                     display: none !important;
                 }
             }
+
+            // 新版顶栏补丁
+            &.bili-header--slide-down .bili-header__bar {
+                animation: unset !important;
+            }
+            .left-entry,
+            .right-entry {
+                color: var(--text1, #18191c) !important;
+                .home-page-entry svg.trigger-icon {
+                    color: #00aeec !important;
+                }
+            }
         }
     }
 }
@@ -135,14 +147,6 @@ html[homepage-hide-sticky-subarea] {
     #app {
         .header-channel {
             display: none !important;
-        }
-
-        // 动画
-        .bili-header__bar:not(.slide-down) {
-            transition: background-color 0.2s linear;
-        }
-        .bili-feed4 .bili-header .slide-down {
-            animation: headerSlideDown 0.3s linear forwards !important;
         }
     }
 }

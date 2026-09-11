@@ -28,6 +28,16 @@ html[common-hide-nav-homepage-logo] {
             }
         }
     }
+
+    // 新版顶栏
+    .left-entry-main .left-entry__item:nth-child(1) {
+        .left-entry__item-trigger {
+            .trigger-icon,
+            .big-logo {
+                display: none !important;
+            }
+        }
+    }
 }
 
 // 消除 .slide-down 出现时的顶栏间距变动 #284
@@ -76,6 +86,19 @@ html[common-hide-nav-homepage] {
     [class^='BiliHeaderV3_leftEntryTitle'] > div {
         display: none !important;
     }
+
+    // 新版顶栏
+    .left-entry-main .left-entry__item:nth-child(1) {
+        .left-entry__item-trigger {
+            > .trigger-text,
+            > svg {
+                display: none !important;
+            }
+            > .big-logo {
+                margin-right: 8px !important;
+            }
+        }
+    }
 }
 
 // 隐藏 番剧
@@ -87,6 +110,11 @@ html[common-hide-nav-anime] {
             display: none !important;
         }
     }
+
+    // 新版顶栏
+    .left-entry-main .left-entry__item:nth-child(2) {
+        display: none !important;
+    }
 }
 
 // 隐藏 直播
@@ -97,6 +125,11 @@ html[common-hide-nav-live] {
         li > a[href='https://live.bilibili.com/'] {
             display: none !important;
         }
+    }
+
+    // 新版顶栏
+    .left-entry-main .left-entry__item:nth-child(3) {
+        display: none !important;
     }
 }
 
@@ -112,6 +145,11 @@ html[common-hide-nav-game] {
             }
         }
     }
+
+    // 新版顶栏
+    .left-entry-main .left-entry__item:nth-child(4) {
+        display: none !important;
+    }
 }
 
 // 隐藏 会员购
@@ -122,6 +160,11 @@ html[common-hide-nav-vipshop] {
         li > a[href^='https://show.bilibili.com'] {
             display: none !important;
         }
+    }
+
+    // 新版顶栏
+    .left-entry-main .left-entry__item:nth-child(5) {
+        display: none !important;
     }
 }
 
@@ -134,6 +177,11 @@ html[common-hide-nav-manga] {
             display: none !important;
         }
     }
+
+    // 新版顶栏
+    .left-entry-main .left-entry__item:nth-child(6) {
+        display: none !important;
+    }
 }
 
 // 隐藏 赛事
@@ -145,6 +193,11 @@ html[common-hide-nav-match] {
         li > a[href^='https://www.bilibili.com/match/home/'] {
             display: none !important;
         }
+    }
+
+    // 新版顶栏
+    .left-entry-main .left-entry__item:nth-child(7) {
+        display: none !important;
     }
 }
 
@@ -172,6 +225,11 @@ html[common-hide-nav-download-app] {
             display: none !important;
         }
     }
+
+    // 新版顶栏
+    .left-entry-main .left-entry__item:has(> a[href='//app.bilibili.com/'], > a[href='https://app.bilibili.com/']) {
+        display: none !important;
+    }
 }
 
 // 隐藏 所有官方活动/活动直播
@@ -188,6 +246,11 @@ html[common-hide-nav-blackboard] {
             }
         }
     }
+
+    // 新版顶栏
+    .left-entry-main .left-entry__item.left-loc-entry {
+        display: none !important;
+    }
 }
 
 // 隐藏 首页弹出框
@@ -195,6 +258,16 @@ html[common-hide-nav-channel-panel-popover] {
     .left-entry {
         .bili-header-channel-panel,
         .mini-header__arrow {
+            display: none !important;
+        }
+    }
+
+    // 新版顶栏
+    .left-entry-main .left-entry__item:nth-child(1) {
+        .v-popover {
+            display: none !important;
+        }
+        .trigger-arrow {
             display: none !important;
         }
     }
@@ -206,12 +279,22 @@ html[common-hide-nav-anime-popover] {
     .left-entry li > a[href='https://www.bilibili.com/anime/'] + div {
         display: none !important;
     }
+
+    // 新版顶栏
+    .left-entry-main .left-entry__item:nth-child(2) .v-popover {
+        display: none !important;
+    }
 }
 
 // 隐藏 直播弹出框
 html[common-hide-nav-live-popover] {
     .left-entry li > a[href^='//live.bilibili.com'] + div,
     .left-entry li > a[href='https://live.bilibili.com'] + div {
+        display: none !important;
+    }
+
+    // 新版顶栏
+    .left-entry-main .left-entry__item:nth-child(3) .v-popover {
         display: none !important;
     }
 }
@@ -227,12 +310,22 @@ html[common-hide-nav-game-popover] {
             }
         }
     }
+
+    // 新版顶栏
+    .left-entry-main .left-entry__item:nth-child(4) .v-popover {
+        display: none !important;
+    }
 }
 
 // 隐藏 漫画弹出框
 html[common-hide-nav-manga-popover] {
     .left-entry li > a[href^='//manga.bilibili.com'] + div,
     .left-entry li > a[href^='https://manga.bilibili.com'] + div {
+        display: none !important;
+    }
+
+    // 新版顶栏
+    .left-entry-main .left-entry__item:nth-child(6) .v-popover {
         display: none !important;
     }
 }

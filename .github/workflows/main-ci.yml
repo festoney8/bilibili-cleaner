@@ -13,14 +13,11 @@ jobs:
             # env
             - name: checkout code
               uses: actions/checkout@v6
-            - name: setup pnpm
-              uses: pnpm/action-setup@v5
-            - name: setup node
-              uses: actions/setup-node@v6
+            - name: setup node and pnpm
+              uses: pnpm/setup@v2
               with:
-                  node-version: 24
-                  cache: pnpm
-                  cache-dependency-path: pnpm-lock.yaml
+                  runtime: node@24
+                  cache: true
             - name: install dependencies
               run: pnpm install --frozen-lockfile
 

@@ -54,7 +54,8 @@ export const commonHeaderRightItems: Item[] = [
             const id = setInterval(() => {
                 const ele = document.querySelector(
                     `.right-entry .v-popover-wrap:has(.right-entry__outside[href$="/favlist"]),
-                        .nav-user-center .user-con .item:has(.mini-favorite)`,
+                    .nav-user-center .user-con .item:has(.mini-favorite),
+                    .right-entry__main .favorite-entry`,
                 )
                 if (ele) {
                     clearInterval(id)

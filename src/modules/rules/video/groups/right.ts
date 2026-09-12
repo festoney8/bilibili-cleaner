@@ -22,6 +22,7 @@ export const videoRightItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-right-container-video-page-game-card-small',
         name: '隐藏 游戏推荐',
+        defaultEnable: true,
     },
     {
         type: 'switch',

@@ -73,5 +73,6 @@ export const bangumiToolbarItems: Item[] = [
         type: 'switch',
         id: 'bangumi-page-hide-sponsor-module',
         name: '隐藏 承包榜 ★',
+        defaultEnable: true,
     },
 ]

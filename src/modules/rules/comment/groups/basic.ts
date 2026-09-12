@@ -41,7 +41,6 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-hide-reply-box-textarea-placeholder',
         name: '隐藏 评论编辑器内占位文字',
         description: ['同时会隐藏回复评论时的文字提示'],
-        defaultEnable: true,
         noStyle: true,
         enableFn: () => {
             shadow.addShadowStyle(
@@ -269,6 +268,7 @@ export const commentBasicItems: Item[] = [
         id: 'video-page-fix-note-thumbnail-scale',
         name: '优化 笔记评论缩略图比例',
         noStyle: true,
+        defaultEnable: true,
         enableFn: () => {
             shadow.addShadowStyle(
                 'bili-comment-pictures-renderer',

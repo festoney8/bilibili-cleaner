@@ -17,6 +17,7 @@ export const livePlayerItems: Item[] = [
         type: 'switch',
         id: 'live-page-web-player-interactive-sticker',
         name: '隐藏 播放器内sticker',
+        defaultEnable: true,
     },
     {
         type: 'switch',

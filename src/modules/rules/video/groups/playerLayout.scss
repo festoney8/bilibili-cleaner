@@ -157,6 +157,11 @@ html[default-webscreen] {
     .bili-msg {
         z-index: 100001 !important;
     }
+
+    // 选集列表防止滚动穿透
+    .bpx-player-ctrl-eplist-menu-wrap {
+        overscroll-behavior: none;
+    }
 }
 
 // 网页全屏时 页面可滚动

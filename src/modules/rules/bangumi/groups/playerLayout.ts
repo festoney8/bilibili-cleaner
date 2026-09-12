@@ -28,6 +28,11 @@ for (const eventName of ['mousewheel', 'DOMMouseScroll', 'wheel']) {
         window,
         eventName,
         (e: WheelEvent) => {
+            // 选集区域允许滚动
+            const target = e.target as HTMLElement
+            if (target.className.startsWith('bpx-player-ctrl-eplist')) {
+                return
+            }
             if (preventVolumeTune && isWebScreen() && !isMiniScreen()) {
                 e.stopImmediatePropagation()
             }

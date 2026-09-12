@@ -36,6 +36,7 @@ export const bangumiPlayerItems: Item[] = [
         type: 'switch',
         id: 'video-page-hide-bpx-player-bili-cmtime',
         name: '隐藏 心动',
+        defaultEnable: true,
     },
     {
         type: 'switch',

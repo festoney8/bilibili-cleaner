@@ -91,6 +91,7 @@ export const commonHeaderRightItems: Item[] = [
         type: 'switch',
         id: 'common-hide-nav-member',
         name: '隐藏 创作中心',
+        defaultEnable: true,
     },
     {
         type: 'switch',

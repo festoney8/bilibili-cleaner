@@ -5,6 +5,7 @@ export const spaceSidebarItems: Item[] = [
         type: 'switch',
         id: 'hide-space-page-sidebar-feedback',
         name: '隐藏 新版反馈',
+        defaultEnable: true,
     },
     {
         type: 'switch',

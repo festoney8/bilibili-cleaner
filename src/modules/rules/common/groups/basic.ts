@@ -174,6 +174,7 @@ export const commonBasicItems: Item[] = [
         type: 'switch',
         id: 'hide-footer',
         name: '隐藏 页底footer',
+        defaultEnable: true,
     },
     {
         type: 'switch',

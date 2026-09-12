@@ -30,16 +30,17 @@
 
 ### 前提：允许运行用户脚本
 
-- Edge 打开网址 `edge://extensions/`，在左侧启用 "开发人员模式"，重启浏览器
-- Firefox 无需操作
-- Chrome 操作如图
-    1. 右键单击脚本管理器（暴力猴/篡改猴/脚本猫）
-    2. 点击 "管理扩展程序"
-    3. 若出现 "允许运行用户脚本" 选项，启用它
-    4. 启用 "开发者模式"
-    5. 重启浏览器
+Firefox 无需操作，Edge / Chrome 操作如下：
 
-        ![](images/how-to-install-on-chrome.png)
+1. 右键单击脚本管理器（暴力猴/篡改猴/脚本猫）
+2. 点击 "管理扩展程序"
+3. 若出现 "允许运行用户脚本" 选项，启用它
+4. 启用 "开发者模式"
+5. 重启浏览器
+
+![Edge](images/how-to-install-on-edge.png)
+
+![Chrome](images/how-to-install-on-chrome.png)
 
 ### 版本选择
 
@@ -136,13 +137,13 @@
 
 ### 脚本管理器
 
-| 脚本管理器                                                 | 是否支持 | MV3 标准 | 备注                             |
-| ---------------------------------------------------------- | -------- | -------- | -------------------------------- |
-| [Tampermonkey (篡改猴)](https://www.tampermonkey.net/)     | ✔️       | ✔️       | 完全测试，推荐                   |
-| [Violentmonkey (暴力猴)](https://violentmonkey.github.io/) | ✔️       | ❌️       | 完全测试，高版本 Chrome 无法运行 |
-| [ScriptCat (脚本猫)](https://docs.scriptcat.org/)          | ✔️       | ✔️       | 部分测试                         |
-| Greasemonkey                                               | ❌️       | ❌️       | 未测试                           |
-| Stay                                                       | ❌️       | ❌️       | 无法运行                         |
+| 脚本管理器                                                 | 是否支持 | MV3 标准 | 备注           |
+| ---------------------------------------------------------- | -------- | -------- | -------------- |
+| [Tampermonkey (篡改猴)](https://www.tampermonkey.net/)     | ✔️       | ✔️       | 完全测试，推荐 |
+| [Violentmonkey (暴力猴)](https://violentmonkey.github.io/) | ✔️       | ✔️       | 部分测试       |
+| [ScriptCat (脚本猫)](https://docs.scriptcat.org/)          | ✔️       | ✔️       | 部分测试       |
+| Greasemonkey                                               | ❌️       | ❌️       | 未测试         |
+| Stay                                                       | ❌️       | ❌️       | 无法运行       |
 
 ## 净化效果对比
 

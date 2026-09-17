@@ -35,28 +35,66 @@ export const convertTimeToSec = (timeStr: string): number => {
 
 /**
  * 发布日期转换成距今天数
- * @param dateStr 发布时间字符串 'xx小时前' 或 'm-dd'
+ * @param dateStr 发布时间字符串，如 'xx小时前'、'3天前'、'昨天 17:35'、'm-dd'、'm月d日'
  * @returns 天数
  */
 export const convertDateToDays = (dateStr: string): number => {
-    if (dateStr.includes('小时前')) {
+    dateStr = dateStr.replace('·', '').trim()
+    // xx小时前，xx天前
+    if (/小时|小時|分钟|分鐘/.test(dateStr)) {
         return 0
     }
-    dateStr = dateStr.replace('·', '').trim()
+    // x天前
+    const daysAgoMatch = dateStr.match(/^(\d+)天前$/)
+    if (daysAgoMatch) {
+        return Number(daysAgoMatch[1])
+    }
+
+    const now = new Date()
+    const today = now.getTime()
+
+    // 昨天 HH:mm
+    const yesterdayMatch = dateStr.match(/^昨天\s*(\d{1,2}):(\d{2})$/)
+    if (yesterdayMatch) {
+        const [, hourStr, minuteStr] = yesterdayMatch
+        const target = new Date(now)
+
+        target.setDate(target.getDate() - 1)
+        target.setHours(Number(hourStr), Number(minuteStr), 0, 0)
+
+        return (today - target.getTime()) / 86400000
+    }
+    // m月d日
+    const monthDayMatch = dateStr.match(/^(\d{1,2})月(\d{1,2})日$/)
+    if (monthDayMatch) {
+        const [, monthStr, dayStr] = monthDayMatch
+        const month = Number(monthStr)
+        const day = Number(dayStr)
+
+        let target = new Date(now.getFullYear(), month - 1, day).getTime()
+
+        if (target > today) {
+            target = new Date(now.getFullYear() - 1, month - 1, day).getTime()
+        }
+
+        return (today - target) / 86400000
+    }
+    // m-dd
     if (/^\d{1,2}-\d{1,2}$/.test(dateStr)) {
         const [month, day] = dateStr.split('-').map(Number)
-        let target = new Date(new Date().getFullYear(), month - 1, day).getTime()
-        const today = new Date().getTime()
+
+        let target = new Date(now.getFullYear(), month - 1, day).getTime()
+
         if (target > today) {
-            target = new Date(new Date().getFullYear() - 1, month - 1, day).getTime()
+            target = new Date(now.getFullYear() - 1, month - 1, day).getTime()
         }
         return (today - target) / 86400000
     }
-
+    // yyyy-m-d
     if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(dateStr)) {
         const [year, month, day] = dateStr.split('-').map(Number)
         const target = new Date(year, month - 1, day).getTime()
-        const today = new Date().getTime()
+
         return (today - target) / 86400000
     }
     return 0

@@ -1,13 +1,12 @@
 export type Item = ISwitchItem | INumberItem | IListItem | IEditorItem | IStringItem
 
-interface IBaseItem {
-    type: 'switch' | 'number' | 'radio' | 'editor'
-
+interface IBaseItem<T extends string> {
+    type: T
     id: string
 }
 
 // 开关功能
-export interface ISwitchItem extends IBaseItem {
+export interface ISwitchItem extends IBaseItem<'switch'> {
     // item类型
     type: 'switch'
 
@@ -44,7 +43,7 @@ export interface ISwitchItem extends IBaseItem {
 }
 
 // 数值设定功能
-export interface INumberItem extends IBaseItem {
+export interface INumberItem extends IBaseItem<'number'> {
     // 功能类型
     type: 'number'
 
@@ -89,7 +88,7 @@ export interface INumberItem extends IBaseItem {
 }
 
 // 文本设定功能
-export interface IStringItem extends IBaseItem {
+export interface IStringItem extends IBaseItem<'string'> {
     // 功能类型
     type: 'string'
 
@@ -122,7 +121,7 @@ export interface IStringItem extends IBaseItem {
 }
 
 // 单选功能
-export interface IListItem extends IBaseItem {
+export interface IListItem extends IBaseItem<'list'> {
     // item类型
     type: 'list'
 
@@ -155,7 +154,7 @@ export interface IListItem extends IBaseItem {
 }
 
 // 编辑器功能
-export interface IEditorItem extends IBaseItem {
+export interface IEditorItem extends IBaseItem<'editor'> {
     // 功能类型
     type: 'editor'
 

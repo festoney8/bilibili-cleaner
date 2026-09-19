@@ -72,12 +72,13 @@ export const convertDateToDays = (dateStr: string): number => {
         const day = Number(dayStr)
 
         let target = new Date(now.getFullYear(), month - 1, day).getTime()
+        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
 
-        if (target > today) {
+        if (target > startOfToday) {
             target = new Date(now.getFullYear() - 1, month - 1, day).getTime()
         }
 
-        return (today - target) / 86400000
+        return (startOfToday - target) / 86400000
     }
     // m-dd
     if (/^\d{1,2}-\d{1,2}$/.test(dateStr)) {

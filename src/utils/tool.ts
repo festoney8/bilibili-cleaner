@@ -39,8 +39,8 @@ export const convertTimeToSec = (timeStr: string): number => {
  * @returns 天数
  */
 export const convertDateToDays = (dateStr: string): number => {
-    dateStr = dateStr.replace('·', '').trim()
-    // xx小时前，xx天前
+    dateStr = dateStr.replace(/·/g, '').trim()
+    // xx小时前，xx分钟前
     if (/小时|小時|分钟|分鐘/.test(dateStr)) {
         return 0
     }
@@ -64,6 +64,9 @@ export const convertDateToDays = (dateStr: string): number => {
 
         return (today - target.getTime()) / 86400000
     }
+
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
+
     // m月d日
     const monthDayMatch = dateStr.match(/^(\d{1,2})月(\d{1,2})日$/)
     if (monthDayMatch) {
@@ -72,7 +75,6 @@ export const convertDateToDays = (dateStr: string): number => {
         const day = Number(dayStr)
 
         let target = new Date(now.getFullYear(), month - 1, day).getTime()
-        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
 
         if (target > startOfToday) {
             target = new Date(now.getFullYear() - 1, month - 1, day).getTime()
@@ -86,17 +88,17 @@ export const convertDateToDays = (dateStr: string): number => {
 
         let target = new Date(now.getFullYear(), month - 1, day).getTime()
 
-        if (target > today) {
+        if (target > startOfToday) {
             target = new Date(now.getFullYear() - 1, month - 1, day).getTime()
         }
-        return (today - target) / 86400000
+        return (startOfToday - target) / 86400000
     }
     // yyyy-m-d
     if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(dateStr)) {
         const [year, month, day] = dateStr.split('-').map(Number)
         const target = new Date(year, month - 1, day).getTime()
 
-        return (today - target) / 86400000
+        return (startOfToday - target) / 86400000
     }
     return 0
 }

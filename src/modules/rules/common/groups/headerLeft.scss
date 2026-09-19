@@ -91,7 +91,7 @@ html[common-hide-nav-homepage] {
     .left-entry-main .left-entry__item:nth-child(1) {
         .left-entry__item-trigger {
             > .trigger-text,
-            > svg {
+            > svg.trigger-arrow {
                 display: none !important;
             }
             > .big-logo {

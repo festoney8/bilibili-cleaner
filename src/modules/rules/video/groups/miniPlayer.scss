@@ -12,6 +12,14 @@ html[video-page-hide-bpx-player-mini-mode-danmaku] {
     }
 }
 
+// 播放结束时隐藏小窗
+html[video-page-hide-bpx-player-mini-when-ending] {
+    .bpx-player-container[data-screen='mini']:has(.bpx-player-ending-wrap[data-select='1']) {
+        visibility: hidden !important;
+        pointer-events: none !important;
+    }
+}
+
 // 滚轮调节大小
 html[video-page-bpx-player-mini-mode-wheel-adjust] {
     .bpx-player-container[data-screen='mini'] {

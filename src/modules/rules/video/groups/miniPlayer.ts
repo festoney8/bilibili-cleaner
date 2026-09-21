@@ -17,6 +17,11 @@ export const videoMiniPlayerItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'video-page-hide-bpx-player-mini-when-ending',
+        name: '播放结束时隐藏小窗',
+    },
+    {
+        type: 'switch',
         id: 'video-page-bpx-player-mini-mode-wheel-adjust',
         name: '滚轮调节大小',
         enableFn: async () => {

@@ -213,6 +213,11 @@ html[screen-scrollable-move-header-bottom] {
         .fixed-header .bili-header__bar {
             position: relative !important;
         }
+
+        // 新版顶栏
+        .bili-header.bili-header--fixed .bili-header__bar {
+            position: relative !important;
+        }
         #mirror-vdcon {
             padding-top: 64px !important;
         }

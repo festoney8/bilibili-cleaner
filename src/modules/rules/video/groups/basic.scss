@@ -3,4 +3,9 @@ html[video-page-hide-fixed-header] {
     .fixed-header .bili-header__bar {
         position: relative !important;
     }
+
+    // 新版顶栏
+    .bili-header.bili-header--fixed .bili-header__bar {
+        position: relative !important;
+    }
 }

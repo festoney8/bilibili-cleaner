@@ -8,6 +8,11 @@ html[hide-dynamic-page-fixed-header] {
     aside.right section.sticky {
         top: 15px !important;
     }
+
+    // 新版顶栏
+    .bili-header.bili-header--fixed .bili-header__bar {
+        position: relative !important;
+    }
 }
 
 // 交换 左栏与右栏位置

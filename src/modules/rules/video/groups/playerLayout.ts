@@ -31,7 +31,7 @@ for (const eventName of ['mousewheel', 'DOMMouseScroll', 'wheel']) {
         (e: WheelEvent) => {
             // 选集区域允许滚动
             const target = e.target as HTMLElement
-            if (typeof target.className === 'string' && target.className.startsWith('bpx-player-ctrl-eplist')) {
+            if (target instanceof Element && target.closest('.bpx-player-ctrl-eplist')) {
                 return
             }
             if (preventVolumeTune && isWebScreen() && !isMiniScreen()) {
@@ -233,7 +233,7 @@ export const videoPlayerLayoutItems: Item[] = [
         type: 'switch',
         id: 'screen-scrollable-enable-mini-player',
         name: '网页全屏滚动时 启用小窗播放器',
-        description: ['实验功能，不支持真全屏'],
+        description: ['会导致播放器内选集列表滚动失效', '实验功能，不支持真全屏'],
         enableFn: () => {
             // 劫持 getBoundingClientRect
             // 网页全屏滚动时，对小窗触发元素强行返回 top=999999
@@ -244,7 +244,11 @@ export const videoPlayerLayoutItems: Item[] = [
                     (this.id === 'arc_toolbar_report' || this.id === 'playlistToolbar')
                 ) {
                     const rect = origGetBoundingClientRect.call(this)
-                    return { ...rect, top: 999999 }
+                    return new Proxy(rect, {
+                        get(target, prop) {
+                            return prop === 'top' ? 999999 : target[prop as keyof DOMRect]
+                        },
+                    })
                 }
                 return origGetBoundingClientRect.call(this)
             }

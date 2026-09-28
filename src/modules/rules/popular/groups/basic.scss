@@ -20,13 +20,42 @@ html[homepage-hide-banner] {
                     .zhuzhan-icon {
                         color: #00aeec !important;
                     }
-                }
-                .right-entry .right-entry__outside {
-                    .right-entry-icon {
+
+                    // 新版顶栏
+                    .home-page-entry .trigger-icon {
+                        color: #00aeec !important;
+                    }
+                    .trigger-icon {
                         color: var(--text1, #18191c) !important;
                     }
-                    .right-entry-text {
-                        color: var(--text2, #61666d) !important;
+                    .trigger-text {
+                        color: var(--text1, #18191c) !important;
+                    }
+                }
+                .right-entry {
+                    .right-entry__outside {
+                        .right-entry-icon {
+                            color: var(--text1, #18191c) !important;
+                        }
+                        .right-entry-text {
+                            color: var(--text2, #61666d) !important;
+                        }
+                    }
+
+                    // 新版顶栏
+                    .trigger-icon {
+                        color: var(--text1, #18191c) !important;
+                    }
+                    .trigger-text {
+                        color: var(--text1, #18191c) !important;
+                    }
+                    .right-upload-entry {
+                        .trigger-text {
+                            color: white !important;
+                        }
+                        .trigger-icon {
+                            color: white !important;
+                        }
                     }
                 }
             }
@@ -37,6 +66,11 @@ html[homepage-hide-banner] {
                 & > * {
                     display: none !important;
                 }
+            }
+
+            // 新版顶栏，移除动画
+            &.bili-header--slide-down .bili-header__bar {
+                animation: unset !important;
             }
         }
     }

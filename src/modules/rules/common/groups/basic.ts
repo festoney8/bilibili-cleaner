@@ -134,6 +134,8 @@ export const commonBasicItems: Item[] = [
                         keysToRemove.add('bbid')
                         keysToRemove.add('ts')
                         keysToRemove.add('-Arouter')
+                        keysToRemove.add('wxfid')
+                        keysToRemove.add('share_times')
                     }
                     // watchlater page new params
                     if (isPageWatchlater()) {

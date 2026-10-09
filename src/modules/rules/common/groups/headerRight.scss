@@ -46,8 +46,11 @@ html[common-hide-nav-message-red-num] {
     }
 
     // 新版顶栏
-    .right-entry__main .message-entry .red-num {
-        display: none !important;
+    .right-entry__main .message-entry {
+        .red-num,
+        .red-point {
+            display: none !important;
+        }
     }
 }
 

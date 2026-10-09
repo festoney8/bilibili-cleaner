@@ -59,9 +59,14 @@ html[common-hide-nav-search-trending] {
     }
 }
 
-// 修复 搜索框居中
+// 搜索框 强制居中
 html[common-nav-search-middle-justify] {
-    .center-search__bar {
-        margin: 0 auto !important;
+    .bili-header {
+        position: relative !important;
+        .center-search-container {
+            position: absolute !important;
+            left: calc(50vw - 37px) !important;
+            transform: translateX(-50%) !important;
+        }
     }
 }

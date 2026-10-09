@@ -87,6 +87,7 @@ export const commonHeaderCenterItems: Item[] = [
     {
         type: 'switch',
         id: 'common-nav-search-middle-justify',
-        name: '修复 搜索框居中',
+        name: '搜索框 强制居中',
+        description: ['不被搜索框两侧空白影响位置'],
     },
 ]

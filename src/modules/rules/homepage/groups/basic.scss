@@ -89,12 +89,9 @@ html[homepage-hide-banner] {
 // https://greasyfork.org/zh-CN/scripts/479861/discussions/306649
 html[homepage-hide-recommend-swipe] {
     .recommended-swipe {
-        visibility: hidden !important;
-        pointer-events: none !important;
-        height: 0 !important;
-        width: 0 !important;
-        position: absolute !important;
-        opacity: 0 !important;
+        grid-column: auto !important;
+        grid-row: auto !important;
+        display: none !important;
     }
     .recommended-container_floor-aside .container {
         // 布局调整

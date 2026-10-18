@@ -94,9 +94,8 @@ html[common-hide-nav-homepage] {
             > svg.trigger-arrow {
                 display: none !important;
             }
-            > .big-logo {
-                margin-right: 8px !important;
-            }
+
+            margin-right: -16px !important; // 避免和隐藏banner功能冲突
         }
     }
 }

@@ -260,7 +260,7 @@ Firefox 无需操作，Edge / Chrome 操作如下：
 
 - 环境要求
     - node.js >= 24
-    - pnpm >= 12.10
+    - pnpm >= 12.14
     - 使用新版 Chrome / Edge / Firefox，安装 tampermonkey 或 violentmonkey
 
 - 编译运行

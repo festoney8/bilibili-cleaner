@@ -13,6 +13,11 @@ export const liveHeaderRightItems: Item[] = [
     },
     {
         type: 'switch',
+        id: 'live-page-header-platform-service',
+        name: '隐藏 平台服务',
+    },
+    {
+        type: 'switch',
         id: 'live-page-header-recharge',
         name: '隐藏 购买电池',
     },

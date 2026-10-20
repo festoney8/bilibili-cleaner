@@ -2,6 +2,7 @@ import { unsafeWindow } from '$'
 import { Item } from '@/types/item'
 import { waitForHead } from '@/utils/init'
 import { logger } from '@/utils/logger'
+import { isPageLive } from '@/utils/pageType'
 
 let observer: MutationObserver | undefined
 
@@ -10,6 +11,12 @@ export const liveBasicItems: Item[] = [
         type: 'switch',
         id: 'live-page-sidebar-vm',
         name: '隐藏 页面右侧按钮 实验室/关注',
+        defaultEnable: true,
+    },
+    {
+        type: 'switch',
+        id: 'live-page-hide-swiper',
+        name: '隐藏 直播首页横幅',
         defaultEnable: true,
     },
     {
@@ -112,6 +119,33 @@ export const liveBasicItems: Item[] = [
             setTimeout(qualityFn, 2000)
         },
         enableFnRunAt: 'document-end',
+    },
+    {
+        type: 'switch',
+        id: 'live-page-mute-home-player',
+        name: '直播首页 播放器自动静音',
+        defaultEnable: true,
+        noStyle: true,
+        enableFn: () => {
+            if (!(isPageLive() && location.pathname === '/')) {
+                return
+            }
+            const proto = HTMLMediaElement.prototype
+            const original = Object.getOwnPropertyDescriptor(proto, 'muted')
+            if (original?.set && original.configurable) {
+                Object.defineProperty(proto, 'muted', {
+                    ...original,
+                    set(this: HTMLMediaElement, _value: boolean) {
+                        if (this instanceof HTMLVideoElement) {
+                            original.set!.call(this, true)
+                            Object.defineProperty(proto, 'muted', original)
+                        } else {
+                            original.set!.call(this, _value)
+                        }
+                    },
+                })
+            }
+        },
     },
     {
         type: 'number',

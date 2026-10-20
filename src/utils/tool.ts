@@ -1,5 +1,7 @@
 import { unsafeWindow } from '$'
 import config from '@/config'
+import { uniq } from 'es-toolkit/array'
+import { clamp } from 'es-toolkit/math'
 import { bigram } from 'n-gram'
 import { logger } from './logger'
 
@@ -180,15 +182,6 @@ export const waitForEle = async (
         })
         observer.observe(watchEle, { childList: true, subtree: true })
     })
-}
-
-/**
- * 对Array去重并保持原序
- * @param arr 输入Array
- * @returns 去重后Array
- */
-export const orderedUniq = <T = unknown>(arr: T[]): T[] => {
-    return Array.from(new Set(arr))
 }
 
 /**
@@ -392,7 +385,7 @@ export const calcVideoRelativity = (
     const segmenter = new Intl.Segmenter(VIDEO_RELATIVITY_PARAMS.tokenization.segmenterLocale, {
         granularity: VIDEO_RELATIVITY_PARAMS.tokenization.segmenterGranularity,
     })
-    const queryTokens = Array.from(new Set(tokenizeVideoRelativityText(keyword, segmenter)))
+    const queryTokens = uniq(tokenizeVideoRelativityText(keyword, segmenter))
     if (!queryTokens.length) {
         return undefined
     }
@@ -418,5 +411,5 @@ export const calcVideoRelativity = (
         authorWeight * authorScore +
         descriptionWeight * descriptionScore
 
-    return Math.max(0, Math.min(1, finalScore))
+    return clamp(finalScore, 0, 1)
 }

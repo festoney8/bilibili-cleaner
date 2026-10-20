@@ -5,6 +5,13 @@ html[live-page-sidebar-vm] {
     }
 }
 
+// 隐藏 直播首页横幅
+html[live-page-hide-swiper] {
+    main > .yl-skeleton {
+        display: none !important;
+    }
+}
+
 // 禁用 播放器皮肤
 html[live-page-default-skin] {
     #control-panel-ctnr-box .icon-left-part svg {

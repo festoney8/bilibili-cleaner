@@ -31,8 +31,8 @@
 <script setup lang="ts">
 import { IEditorItem } from '@/types/item'
 import { logger } from '@/utils/logger'
-import { orderedUniq } from '@/utils/tool'
 import { GM_getValue, GM_setValue } from '$'
+import { uniq } from 'es-toolkit/array'
 import { onUnmounted, ref, type WatchStopHandle } from 'vue'
 import { watchDebounced } from '@vueuse/core'
 import PanelComp from './PanelComp.vue'
@@ -57,7 +57,7 @@ const openEditor = (item: IEditorItem) => {
                 return
             }
             try {
-                const data = orderedUniq(value.split('\n').filter((v) => v.trim() !== ''))
+                const data = uniq(value.split('\n').filter((v) => v.trim() !== ''))
                 GM_setValue(currentItem.value.id, data)
                 currentItem.value.saveFn()
             } catch (err) {
@@ -73,7 +73,7 @@ const openEditor = (item: IEditorItem) => {
 const closeEditor = () => {
     if (currentItem.value) {
         try {
-            const data = orderedUniq(editorData.value.split('\n').filter((v) => v.trim() !== ''))
+            const data = uniq(editorData.value.split('\n').filter((v) => v.trim() !== ''))
             GM_setValue(currentItem.value.id, data)
             currentItem.value.saveFn()
         } catch (err) {

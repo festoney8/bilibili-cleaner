@@ -94,10 +94,14 @@ html[common-hide-nav-homepage] {
             > svg.trigger-arrow {
                 display: none !important;
             }
-            > .big-logo {
-                margin-right: 8px !important;
-            }
+
+            margin-right: -16px !important; // 避免和隐藏banner功能冲突
         }
+    }
+
+    // 新版直播首页
+    .link-navbar #main-ctnr .nav-titles .nav-title:nth-child(1) {
+        display: none !important;
     }
 }
 
@@ -115,6 +119,11 @@ html[common-hide-nav-anime] {
     .left-entry-main .left-entry__item:nth-child(2) {
         display: none !important;
     }
+
+    // 新版直播首页
+    .link-navbar #main-ctnr .nav-titles .nav-title:nth-child(2) {
+        display: none !important;
+    }
 }
 
 // 隐藏 直播
@@ -129,6 +138,11 @@ html[common-hide-nav-live] {
 
     // 新版顶栏
     .left-entry-main .left-entry__item:nth-child(3) {
+        display: none !important;
+    }
+
+    // 新版直播首页
+    .link-navbar #main-ctnr .nav-titles .nav-title:nth-child(3) {
         display: none !important;
     }
 }
@@ -150,6 +164,11 @@ html[common-hide-nav-game] {
     .left-entry-main .left-entry__item:nth-child(4) {
         display: none !important;
     }
+
+    // 新版直播首页
+    .link-navbar #main-ctnr .nav-titles .nav-title:nth-child(4) {
+        display: none !important;
+    }
 }
 
 // 隐藏 会员购
@@ -164,6 +183,11 @@ html[common-hide-nav-vipshop] {
 
     // 新版顶栏
     .left-entry-main .left-entry__item:nth-child(5) {
+        display: none !important;
+    }
+
+    // 新版直播首页
+    .link-navbar #main-ctnr .nav-titles .nav-title:nth-child(5) {
         display: none !important;
     }
 }
@@ -182,6 +206,11 @@ html[common-hide-nav-manga] {
     .left-entry-main .left-entry__item:nth-child(6) {
         display: none !important;
     }
+
+    // 新版直播首页
+    .link-navbar #main-ctnr .nav-titles .nav-title:nth-child(6) {
+        display: none !important;
+    }
 }
 
 // 隐藏 赛事
@@ -197,6 +226,11 @@ html[common-hide-nav-match] {
 
     // 新版顶栏
     .left-entry-main .left-entry__item:nth-child(7) {
+        display: none !important;
+    }
+
+    // 新版直播首页
+    .link-navbar #main-ctnr .nav-titles .nav-title:nth-child(7) {
         display: none !important;
     }
 }

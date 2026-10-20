@@ -12,6 +12,13 @@ html[live-page-header-follow-panel] {
     }
 }
 
+// 隐藏 平台服务
+html[live-page-header-platform-service] {
+    #right-part .platform-service-ctnr {
+        display: none;
+    }
+}
+
 // 隐藏 购买电池
 html[live-page-header-recharge] {
     #right-part .shortcut-item:has(.item-icon-recharge) {

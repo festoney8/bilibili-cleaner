@@ -2,10 +2,10 @@ import config from '@/config'
 import { SubFilterPair } from '@/types/filter'
 import { hideEle, showEle } from '@/utils/tool'
 import { useThrottleFn } from '@vueuse/core'
-import pLimit from 'p-limit'
+import { limitAsync } from 'es-toolkit/promise'
 
 // 限制并发
-const limit = pLimit(10)
+const limit = limitAsync((fn: () => Promise<void>) => fn(), 10)
 
 const rawCheck = async (
     elements: HTMLElement[],

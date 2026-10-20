@@ -6,7 +6,8 @@ import fetchHook from '@/utils/fetch'
 import { logger } from '@/utils/logger'
 import { isPageSearch } from '@/utils/pageType'
 import { GM_getValue, GM_setValue, unsafeWindow } from '$'
-import { calcVideoRelativity, convertTimeToSec, matchBvid, orderedUniq, showEle, waitForEle } from '@/utils/tool'
+import { uniq } from 'es-toolkit/array'
+import { calcVideoRelativity, convertTimeToSec, matchBvid, showEle, waitForEle } from '@/utils/tool'
 import {
     VideoBvidFilter,
     VideoDurationFilter,
@@ -697,7 +698,7 @@ export const videoFilterSearchHandler: ContextMenuTargetHandler = (target: HTMLE
                             mainFilter.checkFull()
                             const arr: string[] = GM_getValue(GM_KEYS.black.uploader.valueKey, [])
                             arr.unshift(uploader)
-                            GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
+                            GM_setValue(GM_KEYS.black.uploader.valueKey, uniq(arr))
                         } catch (err) {
                             logger.error(`videoFilterSearchHandler add uploader ${uploader} failed`, err)
                         }
@@ -713,7 +714,7 @@ export const videoFilterSearchHandler: ContextMenuTargetHandler = (target: HTMLE
                             mainFilter.checkFull()
                             const arr: string[] = GM_getValue(GM_KEYS.white.uploader.valueKey, [])
                             arr.unshift(uploader)
-                            GM_setValue(GM_KEYS.white.uploader.valueKey, orderedUniq(arr))
+                            GM_setValue(GM_KEYS.white.uploader.valueKey, uniq(arr))
                         } catch (err) {
                             logger.error(`videoFilterSearchHandler add white uploader ${uploader} failed`, err)
                         }
@@ -747,7 +748,7 @@ export const videoFilterSearchHandler: ContextMenuTargetHandler = (target: HTMLE
                             mainFilter.checkFull()
                             const arr: string[] = GM_getValue(GM_KEYS.black.uploader.valueKey, [])
                             arr.unshift(uploader)
-                            GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
+                            GM_setValue(GM_KEYS.black.uploader.valueKey, uniq(arr))
                         } catch (err) {
                             logger.error(`videoFilterSearchHandler add uploader ${uploader} failed`, err)
                         }
@@ -763,7 +764,7 @@ export const videoFilterSearchHandler: ContextMenuTargetHandler = (target: HTMLE
                             mainFilter.checkFull()
                             const arr: string[] = GM_getValue(GM_KEYS.white.uploader.valueKey, [])
                             arr.unshift(uploader)
-                            GM_setValue(GM_KEYS.white.uploader.valueKey, orderedUniq(arr))
+                            GM_setValue(GM_KEYS.white.uploader.valueKey, uniq(arr))
                         } catch (err) {
                             logger.error(`videoFilterSearchHandler add white uploader ${uploader} failed`, err)
                         }
@@ -793,7 +794,7 @@ export const videoFilterSearchHandler: ContextMenuTargetHandler = (target: HTMLE
                             mainFilter.checkFull()
                             const arr: string[] = GM_getValue(GM_KEYS.black.bvid.valueKey, [])
                             arr.unshift(bvid)
-                            GM_setValue(GM_KEYS.black.bvid.valueKey, orderedUniq(arr))
+                            GM_setValue(GM_KEYS.black.bvid.valueKey, uniq(arr))
                         } catch (err) {
                             logger.error(`videoFilterSearchHandler add bvid ${bvid} failed`, err)
                         }

@@ -4,7 +4,8 @@ import { Group } from '@/types/collection'
 import { ContextMenuTargetHandler, FilterContextMenu, IMainFilter, SelectorResult, SubFilterPair } from '@/types/filter'
 import { logger } from '@/utils/logger'
 import { GM_getValue, GM_setValue } from '$'
-import { orderedUniq, showEle, waitForEle } from '@/utils/tool'
+import { uniq } from 'es-toolkit/array'
+import { showEle, waitForEle } from '@/utils/tool'
 import { ArticleAuthorFilter, ArticleAuthorKeywordFilter, ArticleTitleKeywordFilter } from '../subFilters/black'
 import { ArticleAuthorWhiteFilter, ArticleTitleKeywordWhiteFilter } from '../subFilters/white'
 
@@ -340,7 +341,7 @@ export const articleFilterHandler: ContextMenuTargetHandler = (target: HTMLEleme
                             mainFilter.checkFull()
                             const arr: string[] = GM_getValue(GM_KEYS.black.author.valueKey, [])
                             arr.unshift(author)
-                            GM_setValue(GM_KEYS.black.author.valueKey, orderedUniq(arr))
+                            GM_setValue(GM_KEYS.black.author.valueKey, uniq(arr))
                         } catch (err) {
                             logger.error(`articleFilterHandler add author ${author} failed`, err)
                         }
@@ -356,7 +357,7 @@ export const articleFilterHandler: ContextMenuTargetHandler = (target: HTMLEleme
                             mainFilter.checkFull()
                             const arr: string[] = GM_getValue(GM_KEYS.white.author.valueKey, [])
                             arr.unshift(author)
-                            GM_setValue(GM_KEYS.white.author.valueKey, orderedUniq(arr))
+                            GM_setValue(GM_KEYS.white.author.valueKey, uniq(arr))
                         } catch (err) {
                             logger.error(`articleFilterHandler add white author ${author} failed`, err)
                         }

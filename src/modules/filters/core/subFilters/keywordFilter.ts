@@ -1,6 +1,7 @@
 import { ISubFilter, SelectorFn } from '@/types/filter'
 import { logger } from '@/utils/logger'
 import { toHalfWidth } from '@/utils/tool'
+import { escapeRegExp } from 'es-toolkit/string'
 
 export class KeywordFilter implements ISubFilter {
     isEnable = false
@@ -28,7 +29,7 @@ export class KeywordFilter implements ISubFilter {
             if (word.startsWith('/') && word.endsWith('/')) {
                 word = word.slice(1, -1)
             } else {
-                word = word.replace(/[*+?^${}().|[\]\\]/g, '\\$&') // 转义
+                word = escapeRegExp(word)
             }
             if (word.trim() === '') {
                 continue

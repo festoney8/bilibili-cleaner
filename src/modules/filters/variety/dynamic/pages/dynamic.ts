@@ -5,7 +5,8 @@ import { ContextMenuTargetHandler, FilterContextMenu, IMainFilter, SelectorResul
 import { logger } from '@/utils/logger'
 import { isPageDynamic } from '@/utils/pageType'
 import { GM_getValue, GM_setValue } from '$'
-import { convertTimeToSec, orderedUniq, showEle, waitForEle } from '@/utils/tool'
+import { uniq } from 'es-toolkit/array'
+import { convertTimeToSec, showEle, waitForEle } from '@/utils/tool'
 import {
     DynContentFilter,
     DynDurationFilter,
@@ -488,7 +489,7 @@ export const dynamicFilterDynamicHandler: ContextMenuTargetHandler = (target: HT
                         mainFilter.checkFull()
                         const arr: string[] = GM_getValue(GM_KEYS.black.uploader.valueKey, [])
                         arr.unshift(uploader)
-                        GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
+                        GM_setValue(GM_KEYS.black.uploader.valueKey, uniq(arr))
                     } catch (err) {
                         logger.error(`dynamicFilterDynamicHandler add uploader ${uploader} failed`, err)
                     }

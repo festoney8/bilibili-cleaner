@@ -5,7 +5,8 @@ import { ContextMenuTargetHandler, FilterContextMenu, IMainFilter, SelectorResul
 import { logger } from '@/utils/logger'
 import { isPageChannel } from '@/utils/pageType'
 import { GM_getValue, GM_setValue } from '$'
-import { convertDateToDays, convertTimeToSec, matchBvid, orderedUniq, showEle, waitForEle } from '@/utils/tool'
+import { uniq } from 'es-toolkit/array'
+import { convertDateToDays, convertTimeToSec, matchBvid, showEle, waitForEle } from '@/utils/tool'
 import {
     VideoBvidFilter,
     VideoDurationFilter,
@@ -522,7 +523,7 @@ export const videoFilterChannelHandler: ContextMenuTargetHandler = (target: HTML
                             mainFilter.checkFull()
                             const arr: string[] = GM_getValue(GM_KEYS.black.uploader.valueKey, [])
                             arr.unshift(uploader)
-                            GM_setValue(GM_KEYS.black.uploader.valueKey, orderedUniq(arr))
+                            GM_setValue(GM_KEYS.black.uploader.valueKey, uniq(arr))
                         } catch (err) {
                             logger.error(`videoFilterChannelHandler add uploader ${uploader} failed`, err)
                         }
@@ -538,7 +539,7 @@ export const videoFilterChannelHandler: ContextMenuTargetHandler = (target: HTML
                             mainFilter.checkFull()
                             const arr: string[] = GM_getValue(GM_KEYS.white.uploader.valueKey, [])
                             arr.unshift(uploader)
-                            GM_setValue(GM_KEYS.white.uploader.valueKey, orderedUniq(arr))
+                            GM_setValue(GM_KEYS.white.uploader.valueKey, uniq(arr))
                         } catch (err) {
                             logger.error(`videoFilterChannelHandler add white uploader ${uploader} failed`, err)
                         }
@@ -569,7 +570,7 @@ export const videoFilterChannelHandler: ContextMenuTargetHandler = (target: HTML
                             mainFilter.checkFull()
                             const arr: string[] = GM_getValue(GM_KEYS.black.bvid.valueKey, [])
                             arr.unshift(bvid)
-                            GM_setValue(GM_KEYS.black.bvid.valueKey, orderedUniq(arr))
+                            GM_setValue(GM_KEYS.black.bvid.valueKey, uniq(arr))
                         } catch (err) {
                             logger.error(`videoFilterChannelHandler add bvid ${bvid} failed`, err)
                         }

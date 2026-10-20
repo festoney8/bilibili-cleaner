@@ -14,7 +14,9 @@ import {
 } from '@/utils/pageType'
 import ShadowInstance from '@/utils/shadow'
 import { GM_getValue, GM_setValue } from '$'
-import { orderedUniq, showEle } from '@/utils/tool'
+import { showEle } from '@/utils/tool'
+import { uniq } from 'es-toolkit/array'
+import { clamp } from 'es-toolkit/math'
 import { bots, botsSet } from '../extra/bots'
 import {
     CommentAdFilter,
@@ -404,7 +406,7 @@ class CommentFilterCommon implements IMainFilter {
         this.commentContentFilter.setParam(GM_getValue(GM_KEYS.black.content.valueKey, []))
         this.commentLevelFilter.setParam(GM_getValue(GM_KEYS.black.level.valueKey, 0))
         const chainLevel = GM_getValue(GM_KEYS.black.chain.valueKey, 1)
-        this.commentChainLevel = typeof chainLevel === 'number' ? Math.min(10, Math.max(0, chainLevel)) : 1
+        this.commentChainLevel = typeof chainLevel === 'number' ? clamp(chainLevel, 0, 10) : 1
         this.commentBotFilter.setParam(bots)
         this.commentAdFilter.setParam([`/(bili2233\\.cn|b23\\.tv)\\/(mall-|cm-)|领券|gaoneng\\.bilibili\\.com/`])
     }
@@ -996,7 +998,7 @@ export const commentFilterCommonGroups: Group[] = [
                 defaultValue: 1,
                 disableValue: 0,
                 fn: (value: number) => {
-                    mainFilter.commentChainLevel = Math.min(10, Math.max(0, value))
+                    mainFilter.commentChainLevel = clamp(value, 0, 10)
                     commentRpidLevelMap.clear()
                     mainFilter.check('full')
                 },
@@ -1123,7 +1125,7 @@ export const commentFilterCommonHandler: ContextMenuTargetHandler = (target: HTM
                         mainFilter.check('full')
                         const arr: string[] = GM_getValue(GM_KEYS.black.username.valueKey, [])
                         arr.unshift(username)
-                        GM_setValue(GM_KEYS.black.username.valueKey, orderedUniq(arr))
+                        GM_setValue(GM_KEYS.black.username.valueKey, uniq(arr))
                     } catch (err) {
                         logger.error(`commentFilterCommonHandler add username ${username} failed`, err)
                     }

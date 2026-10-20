@@ -3,6 +3,7 @@ import { Item } from '@/types/item'
 import { waitForHead } from '@/utils/init'
 import { logger } from '@/utils/logger'
 import { isPageLive } from '@/utils/pageType'
+import { once } from 'es-toolkit/function'
 
 let observer: MutationObserver | undefined
 
@@ -126,17 +127,17 @@ export const liveBasicItems: Item[] = [
         name: '直播首页 播放器自动静音',
         defaultEnable: true,
         noStyle: true,
-        enableFn: () => {
+        enableFn: once(() => {
             if (!(isPageLive() && location.pathname === '/')) {
                 return
             }
-            const proto = HTMLMediaElement.prototype
+            const proto = unsafeWindow.HTMLMediaElement.prototype
             const original = Object.getOwnPropertyDescriptor(proto, 'muted')
             if (original?.set && original.configurable) {
                 Object.defineProperty(proto, 'muted', {
                     ...original,
                     set(this: HTMLMediaElement, _value: boolean) {
-                        if (this instanceof HTMLVideoElement) {
+                        if (this instanceof unsafeWindow.HTMLVideoElement) {
                             original.set!.call(this, true)
                             Object.defineProperty(proto, 'muted', original)
                         } else {
@@ -145,7 +146,7 @@ export const liveBasicItems: Item[] = [
                     },
                 })
             }
-        },
+        }),
     },
     {
         type: 'number',

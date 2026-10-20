@@ -27,6 +27,7 @@
         "@thedutchcoder/postcss-rem-to-px": "^0.0.2",
         "@types/node": "^25.9.9",
         "@vitejs/plugin-vue": "^6.0.10",
+        "es-toolkit": "^1.52.0",
         "eslint": "^10.13.0",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-vue": "^10.11.1",

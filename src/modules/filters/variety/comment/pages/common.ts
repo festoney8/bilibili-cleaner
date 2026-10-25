@@ -124,6 +124,30 @@ const GM_KEYS = {
 // https://b23.tv/av113195607985861
 const emojiPattern = emojiRegex()
 
+/**
+ * 移除评论中的 @用户名
+ * 不能直接用 /@[^@\s]+/ 匹配：@用户名 与正文之间不一定有空格，会把正文一起删掉
+ * 正文为空导致后续过滤全部失效
+ *
+ * 优先抹除有效的@（即可以点击跳转的），最后兜底无效的（老评论的@没有跳转功能，自己拼的@或者@被拉黑的）
+ *
+ * content.at_name_to_mid 是评论数据里的一张映射表：被 @ 的用户名 → 该用户的 mid
+ * content.at_name_to_mid中的被 @ 的用户名与页面中 <a data-type="mention"> 的昵称一一对应
+ */
+const removeMentions = (message?: string, atNameToMid?: Record<string, string | number>): string | undefined => {
+    if (typeof message !== 'string') {
+        return undefined
+    }
+    let result = message
+    // 优先删除更长的@用户名
+    const names = Object.keys(atNameToMid ?? {}).sort((a, b) => b.length - a.length)
+    for (const name of names) {
+        result = result.split(`@${name}`).join(' ')
+    }
+    // 兜底：没有对应锚点的 @（如手动输入、旧数据）
+    return result.replace(/@[^@\s]+/g, ' ')
+}
+
 // 记录当前评论区已被过滤的二级评论及其连坐层级
 const commentRpidLevelMap = new Map<string, number>()
 
@@ -133,12 +157,9 @@ const selectorFns = {
             return (comment as any).__data?.member?.uname?.trim()
         },
         content: (comment: HTMLElement): SelectorResult => {
-            return (
-                (comment as any).__data?.content?.message
-                    ?.replace(/@[^@\s]+/g, ' ')
-                    // ?.replace(/(\[[^[\]]+\])+/g, ' ') // 去除官方表情包
-                    .trim()
-            )
+            const content = (comment as any).__data?.content
+            // ?.replace(/(\[[^[\]]+\])+/g, ' ') // 去除官方表情包
+            return removeMentions(content?.message, content?.at_name_to_mid)?.trim()
         },
         noface: (comment: HTMLElement): SelectorResult => {
             return (
@@ -163,21 +184,23 @@ const selectorFns = {
             return !!(comment as any).__data?.content?.members?.[0]
         },
         callUserOnly: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.content?.message?.replace(/@[^@\s]+/g, ' ').trim() === ''
+            const content = (comment as any).__data?.content
+            return removeMentions(content?.message, content?.at_name_to_mid)?.trim() === ''
         },
         callUserOnlyNoReply: (comment: HTMLElement): SelectorResult => {
             if ((comment as any).__data?.rcount !== 0) {
                 return false
             }
-            return (comment as any).__data?.content?.message?.replace(/@[^@\s]+/g, ' ').trim() === ''
+            const content = (comment as any).__data?.content
+            return removeMentions(content?.message, content?.at_name_to_mid)?.trim() === ''
         },
         level: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.member?.level_info?.current_level
         },
         emojiOnly: (comment: HTMLElement): SelectorResult => {
+            const content = (comment as any).__data?.content
             return (
-                (comment as any).__data?.content?.message
-                    ?.replace(/@[^@\s]+/g, ' ')
+                removeMentions(content?.message, content?.at_name_to_mid)
                     ?.replace(/(\[[^[\]]+\])+/g, ' ')
                     ?.replace(emojiPattern, ' ')
                     .trim() === ''
@@ -235,14 +258,12 @@ const selectorFns = {
             return (comment as any).__data?.member?.uname?.trim()
         },
         content: (comment: HTMLElement): SelectorResult => {
-            return (
-                (comment as any).__data?.content?.message
-                    ?.trim()
-                    ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
-                    ?.replace(/@[^@\s]+/g, ' ')
-                    // ?.replace(/(\[[^[\]]+\])+/g, ' ') // 去除官方表情包
-                    .trim()
-            )
+            const content = (comment as any).__data?.content
+            // ?.replace(/(\[[^[\]]+\])+/g, ' ') // 去除官方表情包
+            return removeMentions(
+                content?.message?.trim()?.replace(/^回复\s?@[^@\s]+\s?:/, ''),
+                content?.at_name_to_mid,
+            )?.trim()
         },
         noface: (comment: HTMLElement): SelectorResult => {
             return (
@@ -270,31 +291,23 @@ const selectorFns = {
                 ?.match(/@[^@\s]+/)
         },
         callUserOnly: (comment: HTMLElement): SelectorResult => {
-            return (
-                (comment as any).__data?.content?.message
-                    ?.trim()
-                    ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
-                    ?.replace(/@[^@\s]+/g, ' ')
-                    .trim() === ''
-            )
+            const content = (comment as any).__data?.content
+            const message = content?.message?.trim()?.replace(/^回复\s?@[^@\s]+\s?:/, '')
+            return removeMentions(message, content?.at_name_to_mid)?.trim() === ''
         },
         callUserOnlyNoReply: (comment: HTMLElement): SelectorResult => {
-            return (
-                (comment as any).__data?.content?.message
-                    ?.trim()
-                    ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
-                    ?.replace(/@[^@\s]+/g, ' ')
-                    .trim() === ''
-            )
+            const content = (comment as any).__data?.content
+            const message = content?.message?.trim()?.replace(/^回复\s?@[^@\s]+\s?:/, '')
+            return removeMentions(message, content?.at_name_to_mid)?.trim() === ''
         },
         level: (comment: HTMLElement): SelectorResult => {
             return (comment as any).__data?.member?.level_info?.current_level
         },
         emojiOnly: (comment: HTMLElement): SelectorResult => {
+            const content = (comment as any).__data?.content
+            const message = content?.message?.replace(/^回复\s?@[^@\s]+\s?:/, '')
             return (
-                (comment as any).__data?.content?.message
-                    ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
-                    ?.replace(/@[^@\s]+/g, ' ')
+                removeMentions(message, content?.at_name_to_mid)
                     ?.replace(/(\[[^[\]]+\])+/g, ' ')
                     ?.replace(emojiPattern, ' ')
                     .trim() === ''

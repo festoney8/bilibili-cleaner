@@ -41,6 +41,7 @@ import {
     CommentIsPinFilter,
     CommentIsUpFilter,
 } from '../subFilters/white'
+import { escapeRegExp } from 'es-toolkit/string'
 
 const GM_KEYS = {
     black: {
@@ -124,6 +125,61 @@ const GM_KEYS = {
 // https://b23.tv/av113195607985861
 const emojiPattern = emojiRegex()
 
+// 获取被回复用户的用户名（回复 @XXX : xxxxxxxxx）
+const getReplyUserName = (comment: HTMLElement): string | undefined => {
+    const replyUserName = (comment as any).__data?.parent_reply_member?.name?.trim()
+    if (replyUserName) {
+        return replyUserName
+    }
+    const message = (comment as any).__data?.content?.message?.trim()
+    return message?.match(/^回复\s*@([^@\s:]+)\s*:/)?.[1]
+}
+
+// 获取评论中 @ 的用户名列表（不含被回复用户）
+const getAtUserNames = (comment: HTMLElement): string[] => {
+    const replyUserName = getReplyUserName(comment)
+    const atUserNames =
+        (
+            comment as {
+                __data?: {
+                    content?: {
+                        members?: Array<{ uname: string }>
+                    }
+                }
+            }
+        ).__data?.content?.members?.map((v) => v.uname.trim()) ?? []
+    return uniq(atUserNames)
+        .filter((v) => v !== replyUserName)
+        .filter(Boolean)
+        .sort((a, b) => b.length - a.length)
+}
+
+// 获取不含被回复前缀、不含 @用户名 内容的纯净评论 message
+const getPureCommentMessage = (comment: HTMLElement): string => {
+    const replyUserName = getReplyUserName(comment)
+    const atUserNames = getAtUserNames(comment)
+    let message = ((comment as any).__data?.content?.message ?? '').trim() as string
+    // 去除回复前缀
+    if (replyUserName) {
+        try {
+            const re = new RegExp(String.raw`^回复\s*@${escapeRegExp(replyUserName)}\s*:`)
+            message = message.replace(re, '').trim()
+        } catch (err) {
+            logger.error('getPureCommentMessage remove replyUserName error', err)
+        }
+    }
+    // 去除多个 @XXXX 内容
+    if (atUserNames.length > 0) {
+        try {
+            const re = new RegExp(String.raw`\s*@(?:${atUserNames.map(escapeRegExp).join('|')})\s*`, 'g')
+            message = message.replace(re, ' ')
+        } catch (err) {
+            logger.error('getPureCommentMessage remove atUserNames error', err)
+        }
+    }
+    return message.trim()
+}
+
 // 记录当前评论区已被过滤的二级评论及其连坐层级
 const commentRpidLevelMap = new Map<string, number>()
 
@@ -133,12 +189,7 @@ const selectorFns = {
             return (comment as any).__data?.member?.uname?.trim()
         },
         content: (comment: HTMLElement): SelectorResult => {
-            return (
-                (comment as any).__data?.content?.message
-                    ?.replace(/@[^@\s]+/g, ' ')
-                    // ?.replace(/(\[[^[\]]+\])+/g, ' ') // 去除官方表情包
-                    .trim()
-            )
+            return getPureCommentMessage(comment)
         },
         noface: (comment: HTMLElement): SelectorResult => {
             return (
@@ -235,14 +286,7 @@ const selectorFns = {
             return (comment as any).__data?.member?.uname?.trim()
         },
         content: (comment: HTMLElement): SelectorResult => {
-            return (
-                (comment as any).__data?.content?.message
-                    ?.trim()
-                    ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
-                    ?.replace(/@[^@\s]+/g, ' ')
-                    // ?.replace(/(\[[^[\]]+\])+/g, ' ') // 去除官方表情包
-                    .trim()
-            )
+            return getPureCommentMessage(comment)
         },
         noface: (comment: HTMLElement): SelectorResult => {
             return (

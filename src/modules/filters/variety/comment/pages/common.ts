@@ -23,9 +23,7 @@ import {
     CommentBotFilter,
     CommentCallBotFilter,
     CommentCallUserFilter,
-    CommentCallUserNoReplyFilter,
     CommentCallUserOnlyFilter,
-    CommentCallUserOnlyNoReplyFilter,
     CommentContentFilter,
     CommentEmojiOnlyFilter,
     CommentLevelFilter,
@@ -73,14 +71,8 @@ const GM_KEYS = {
         callUser: {
             statusKey: 'video-comment-call-user-filter-status',
         },
-        callUserNoReply: {
-            statusKey: 'video-comment-call-user-noreply-filter-status',
-        },
         callUserOnly: {
             statusKey: 'video-comment-call-user-only-filter-status',
-        },
-        callUserOnlyNoReply: {
-            statusKey: 'video-comment-call-user-only-noreply-filter-status',
         },
         isAD: {
             statusKey: 'video-comment-ad-filter-status',
@@ -207,19 +199,7 @@ const selectorFns = {
         callUser: (comment: HTMLElement): SelectorResult => {
             return !!(comment as any).__data?.content?.members?.[0]
         },
-        callUserNoReply: (comment: HTMLElement): SelectorResult => {
-            if ((comment as any).__data?.rcount !== 0) {
-                return false
-            }
-            return !!(comment as any).__data?.content?.members?.[0]
-        },
         callUserOnly: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.content?.message?.replace(/@[^@\s]+/g, ' ').trim() === ''
-        },
-        callUserOnlyNoReply: (comment: HTMLElement): SelectorResult => {
-            if ((comment as any).__data?.rcount !== 0) {
-                return false
-            }
             return (comment as any).__data?.content?.message?.replace(/@[^@\s]+/g, ' ').trim() === ''
         },
         level: (comment: HTMLElement): SelectorResult => {
@@ -307,22 +287,7 @@ const selectorFns = {
                 ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
                 ?.match(/@[^@\s]+/)
         },
-        callUserNoReply: (comment: HTMLElement): SelectorResult => {
-            return !!(comment as any).__data?.content?.message
-                ?.trim()
-                ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
-                ?.match(/@[^@\s]+/)
-        },
         callUserOnly: (comment: HTMLElement): SelectorResult => {
-            return (
-                (comment as any).__data?.content?.message
-                    ?.trim()
-                    ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
-                    ?.replace(/@[^@\s]+/g, ' ')
-                    .trim() === ''
-            )
-        },
-        callUserOnlyNoReply: (comment: HTMLElement): SelectorResult => {
             return (
                 (comment as any).__data?.content?.message
                     ?.trim()
@@ -430,9 +395,7 @@ class CommentFilterCommon implements IMainFilter {
     commentBotFilter = new CommentBotFilter()
     commentCallBotFilter = new CommentCallBotFilter()
     commentCallUserFilter = new CommentCallUserFilter()
-    commentCallUserNoReplyFilter = new CommentCallUserNoReplyFilter()
     commentCallUserOnlyFilter = new CommentCallUserOnlyFilter()
-    commentCallUserOnlyNoReplyFilter = new CommentCallUserOnlyNoReplyFilter()
     commentEmojiOnlyFilter = new CommentEmojiOnlyFilter()
     commentChainFilter = new CommentChainFilter()
     commentChainLevel = 1
@@ -473,9 +436,7 @@ class CommentFilterCommon implements IMainFilter {
             this.commentBotFilter.isEnable ||
             this.commentCallBotFilter.isEnable ||
             this.commentCallUserFilter.isEnable ||
-            this.commentCallUserNoReplyFilter.isEnable ||
             this.commentCallUserOnlyFilter.isEnable ||
-            this.commentCallUserOnlyNoReplyFilter.isEnable ||
             this.commentEmojiOnlyFilter.isEnable
         )) {
             revertAll = true
@@ -502,9 +463,7 @@ class CommentFilterCommon implements IMainFilter {
                         `username: ${selectorFns.root.username(v)}`,
                         `content: ${selectorFns.root.content(v)}`,
                         `callUser: ${selectorFns.root.callUser(v)}`,
-                        `callUserNoReply: ${selectorFns.root.callUserNoReply(v)}`,
                         `callUserOnly: ${selectorFns.root.callUserOnly(v)}`,
-                        `callUserOnlyNoReply: ${selectorFns.root.callUserOnlyNoReply(v)}`,
                         `level: ${selectorFns.root.level(v)}`,
                         `noface: ${selectorFns.root.noface(v)}`,
                         `isUp: ${selectorFns.root.isUp(v)}`,
@@ -532,12 +491,8 @@ class CommentFilterCommon implements IMainFilter {
         this.commentNoFaceFilter.isEnable && blackPairs.push([this.commentNoFaceFilter, selectorFns.root.noface])
         this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.root.callBot])
         this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns.root.callUser])
-        this.commentCallUserNoReplyFilter.isEnable &&
-            blackPairs.push([this.commentCallUserNoReplyFilter, selectorFns.root.callUserNoReply])
         this.commentCallUserOnlyFilter.isEnable &&
             blackPairs.push([this.commentCallUserOnlyFilter, selectorFns.root.callUserOnly])
-        this.commentCallUserOnlyNoReplyFilter.isEnable &&
-            blackPairs.push([this.commentCallUserOnlyNoReplyFilter, selectorFns.root.callUserOnlyNoReply])
         this.commentEmojiOnlyFilter.isEnable &&
             blackPairs.push([this.commentEmojiOnlyFilter, selectorFns.root.emojiOnly])
 
@@ -588,9 +543,7 @@ class CommentFilterCommon implements IMainFilter {
             this.commentBotFilter.isEnable ||
             this.commentCallBotFilter.isEnable ||
             this.commentCallUserFilter.isEnable ||
-            this.commentCallUserNoReplyFilter.isEnable ||
             this.commentCallUserOnlyFilter.isEnable ||
-            this.commentCallUserOnlyNoReplyFilter.isEnable ||
             this.commentEmojiOnlyFilter.isEnable ||
             this.commentChainFilter.isEnable
         )) {
@@ -618,9 +571,7 @@ class CommentFilterCommon implements IMainFilter {
                         `username: ${selectorFns.sub.username(v)}`,
                         `content: ${selectorFns.sub.content(v)}`,
                         `callUser: ${selectorFns.sub.callUser(v)}`,
-                        `callUserNoReply: ${selectorFns.sub.callUserNoReply(v)}`,
                         `callUserOnly: ${selectorFns.sub.callUserOnly(v)}`,
-                        `callUserOnlyNoReply: ${selectorFns.sub.callUserOnlyNoReply(v)}`,
                         `level: ${selectorFns.sub.level(v)}`,
                         `noface: ${selectorFns.sub.noface(v)}`,
                         `isUp: ${selectorFns.sub.isUp(v)}`,
@@ -647,12 +598,8 @@ class CommentFilterCommon implements IMainFilter {
         this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns.sub.username])
         this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.sub.callBot])
         this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns.sub.callUser])
-        this.commentCallUserNoReplyFilter.isEnable &&
-            blackPairs.push([this.commentCallUserNoReplyFilter, selectorFns.sub.callUserNoReply])
         this.commentCallUserOnlyFilter.isEnable &&
             blackPairs.push([this.commentCallUserOnlyFilter, selectorFns.sub.callUserOnly])
-        this.commentCallUserOnlyNoReplyFilter.isEnable &&
-            blackPairs.push([this.commentCallUserOnlyNoReplyFilter, selectorFns.sub.callUserOnlyNoReply])
         this.commentEmojiOnlyFilter.isEnable &&
             blackPairs.push([this.commentEmojiOnlyFilter, selectorFns.sub.emojiOnly])
 
@@ -937,20 +884,6 @@ export const commentFilterCommonGroups: Group[] = [
             },
             {
                 type: 'switch',
-                id: GM_KEYS.black.callUserOnlyNoReply.statusKey,
-                name: '过滤 只含 @其他用户 的无回复评论',
-                noStyle: true,
-                enableFn: () => {
-                    mainFilter.commentCallUserOnlyNoReplyFilter.enable()
-                    mainFilter.check('full')
-                },
-                disableFn: () => {
-                    mainFilter.commentCallUserOnlyNoReplyFilter.disable()
-                    mainFilter.check('full')
-                },
-            },
-            {
-                type: 'switch',
                 id: GM_KEYS.black.callUser.statusKey,
                 name: '过滤 包含 @其他用户 的全部评论',
                 noStyle: true,
@@ -960,20 +893,6 @@ export const commentFilterCommonGroups: Group[] = [
                 },
                 disableFn: () => {
                     mainFilter.commentCallUserFilter.disable()
-                    mainFilter.check('full')
-                },
-            },
-            {
-                type: 'switch',
-                id: GM_KEYS.black.callUserNoReply.statusKey,
-                name: '过滤 包含 @其他用户 的无回复评论',
-                noStyle: true,
-                enableFn: () => {
-                    mainFilter.commentCallUserNoReplyFilter.enable()
-                    mainFilter.check('full')
-                },
-                disableFn: () => {
-                    mainFilter.commentCallUserNoReplyFilter.disable()
                     mainFilter.check('full')
                 },
             },

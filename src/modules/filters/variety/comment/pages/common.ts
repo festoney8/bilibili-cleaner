@@ -23,9 +23,7 @@ import {
     CommentBotFilter,
     CommentCallBotFilter,
     CommentCallUserFilter,
-    CommentCallUserNoReplyFilter,
     CommentCallUserOnlyFilter,
-    CommentCallUserOnlyNoReplyFilter,
     CommentContentFilter,
     CommentEmojiOnlyFilter,
     CommentLevelFilter,
@@ -41,6 +39,7 @@ import {
     CommentIsPinFilter,
     CommentIsUpFilter,
 } from '../subFilters/white'
+import { escapeRegExp } from 'es-toolkit/string'
 
 const GM_KEYS = {
     black: {
@@ -72,14 +71,8 @@ const GM_KEYS = {
         callUser: {
             statusKey: 'video-comment-call-user-filter-status',
         },
-        callUserNoReply: {
-            statusKey: 'video-comment-call-user-noreply-filter-status',
-        },
         callUserOnly: {
             statusKey: 'video-comment-call-user-only-filter-status',
-        },
-        callUserOnlyNoReply: {
-            statusKey: 'video-comment-call-user-only-noreply-filter-status',
         },
         isAD: {
             statusKey: 'video-comment-ad-filter-status',
@@ -124,222 +117,152 @@ const GM_KEYS = {
 // https://b23.tv/av113195607985861
 const emojiPattern = emojiRegex()
 
+// 获取被回复用户的用户名（回复 @XXX : xxxxxxxxx）
+const getReplyUserName = (comment: HTMLElement): string | undefined => {
+    const replyUserName = (comment as any).__data?.parent_reply_member?.name?.trim()
+    if (replyUserName) {
+        return replyUserName
+    }
+    const message = (comment as any).__data?.content?.message?.trim()
+    return message?.match(/^回复\s*@([^@\s:]+)\s*:/)?.[1]
+}
+
+// 获取评论中 @ 的用户名列表（不含被回复用户）
+const getAtUserNames = (comment: HTMLElement): string[] => {
+    const replyUserName = getReplyUserName(comment)
+    const atUserNames =
+        (
+            comment as {
+                __data?: {
+                    content?: {
+                        members?: Array<{ uname: string }>
+                    }
+                }
+            }
+        ).__data?.content?.members?.map((v) => v.uname.trim()) ?? []
+    return uniq(atUserNames)
+        .filter((v) => v !== replyUserName)
+        .filter(Boolean)
+        .sort((a, b) => b.length - a.length)
+}
+
+// 获取不含被回复前缀、不含 @用户名 内容的纯净评论 message
+const getPureCommentMessage = (comment: HTMLElement): string => {
+    const replyUserName = getReplyUserName(comment)
+    const atUserNames = getAtUserNames(comment)
+    let message = ((comment as any).__data?.content?.message ?? '').trim() as string
+    // 去除回复前缀
+    if (replyUserName) {
+        try {
+            const re = new RegExp(String.raw`^回复\s*@${escapeRegExp(replyUserName)}\s*:`)
+            message = message.replace(re, '').trim()
+        } catch (err) {
+            logger.error('getPureCommentMessage remove replyUserName error', err)
+        }
+    }
+    // 去除多个 @XXXX 内容
+    if (atUserNames.length > 0) {
+        try {
+            const re = new RegExp(String.raw`\s*@(?:${atUserNames.map(escapeRegExp).join('|')})\s*`, 'g')
+            message = message.replace(re, ' ')
+        } catch (err) {
+            logger.error('getPureCommentMessage remove atUserNames error', err)
+        }
+    }
+    return message.trim()
+}
+
 // 记录当前评论区已被过滤的二级评论及其连坐层级
 const commentRpidLevelMap = new Map<string, number>()
 
 const selectorFns = {
-    root: {
-        username: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.member?.uname?.trim()
-        },
-        content: (comment: HTMLElement): SelectorResult => {
-            return (
-                (comment as any).__data?.content?.message
-                    ?.replace(/@[^@\s]+/g, ' ')
-                    // ?.replace(/(\[[^[\]]+\])+/g, ' ') // 去除官方表情包
-                    .trim()
-            )
-        },
-        noface: (comment: HTMLElement): SelectorResult => {
-            return (
-                (comment as any).__data?.member?.avatar?.endsWith('noface.jpg') &&
-                (comment as any).__data?.member?.vip?.vipStatus === 0
-            )
-        },
-        callBot: (comment: HTMLElement): SelectorResult => {
-            const members = (comment as any).__data?.content?.members
-            if (members?.length) {
-                return members.some((v: { uname: string }) => botsSet.has(v.uname))
-            }
-            return false
-        },
-        callUser: (comment: HTMLElement): SelectorResult => {
-            return !!(comment as any).__data?.content?.members?.[0]
-        },
-        callUserNoReply: (comment: HTMLElement): SelectorResult => {
-            if ((comment as any).__data?.rcount !== 0) {
-                return false
-            }
-            return !!(comment as any).__data?.content?.members?.[0]
-        },
-        callUserOnly: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.content?.message?.replace(/@[^@\s]+/g, ' ').trim() === ''
-        },
-        callUserOnlyNoReply: (comment: HTMLElement): SelectorResult => {
-            if ((comment as any).__data?.rcount !== 0) {
-                return false
-            }
-            return (comment as any).__data?.content?.message?.replace(/@[^@\s]+/g, ' ').trim() === ''
-        },
-        level: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.member?.level_info?.current_level
-        },
-        emojiOnly: (comment: HTMLElement): SelectorResult => {
-            return (
-                (comment as any).__data?.content?.message
-                    ?.replace(/@[^@\s]+/g, ' ')
-                    ?.replace(/(\[[^[\]]+\])+/g, ' ')
-                    ?.replace(emojiPattern, ' ')
-                    .trim() === ''
-            )
-        },
-        isUp: (comment: HTMLElement): SelectorResult => {
-            const mid = (comment as any).__data?.mid
-            const upMid = (comment as any).__upMid
-            return typeof mid === 'number' && mid === upMid
-        },
-        isPin: (comment: HTMLElement): SelectorResult => {
-            return !!(comment as any).__data?.reply_control?.is_up_top
-        },
-        isNote: (comment: HTMLElement): SelectorResult => {
-            return !!(comment as any).__data?.reply_control?.is_note_v2
-        },
-        isLink: (comment: HTMLElement): SelectorResult => {
-            const jump_url = (comment as any).__data?.content?.jump_url
-            if (jump_url) {
-                for (const k of Object.keys(jump_url)) {
-                    if (!jump_url[k]?.pc_url?.includes('search.bilibili.com')) {
-                        return true
-                    }
-                }
-            }
-            return false
-        },
-        // 自己发布 or @自己 的评论
-        isMe: (comment: HTMLElement): SelectorResult => {
-            const me = (comment as any).__user?.uname
-            if (!me) {
-                return false
-            }
-            if (
-                (comment as any).__data?.member?.uname === me ||
-                (comment as any).__data?.content?.message?.includes(`@${me}`)
-            ) {
-                return true
-            }
-            return false
-        },
+    username: (comment: HTMLElement): SelectorResult => {
+        return (comment as any).__data?.member?.uname?.trim()
     },
-    sub: {
-        rpid: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.rpid_str
-        },
-        parent: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.parent_str
-        },
-        isReplyToFiltered: (comment: HTMLElement): SelectorResult => {
-            const parent = (comment as any).__data?.parent_str
-            return typeof parent === 'string' && commentRpidLevelMap.has(parent)
-        },
-        username: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.member?.uname?.trim()
-        },
-        content: (comment: HTMLElement): SelectorResult => {
-            return (
-                (comment as any).__data?.content?.message
-                    ?.trim()
-                    ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
-                    ?.replace(/@[^@\s]+/g, ' ')
-                    // ?.replace(/(\[[^[\]]+\])+/g, ' ') // 去除官方表情包
-                    .trim()
-            )
-        },
-        noface: (comment: HTMLElement): SelectorResult => {
-            return (
-                (comment as any).__data?.member?.avatar?.endsWith('noface.jpg') &&
-                (comment as any).__data?.member?.vip?.vipStatus === 0
-            )
-        },
-        callBot: (comment: HTMLElement): SelectorResult => {
-            const members = (comment as any).__data?.content?.members
-            if (members.length) {
-                return members.some((v: { uname: string }) => botsSet.has(v.uname))
-            }
+    content: (comment: HTMLElement): SelectorResult => {
+        return getPureCommentMessage(comment)
+    },
+    noface: (comment: HTMLElement): SelectorResult => {
+        return (
+            (comment as any).__data?.member?.avatar?.endsWith('noface.jpg') &&
+            (comment as any).__data?.member?.vip?.vipStatus === 0
+        )
+    },
+    callBot: (comment: HTMLElement): SelectorResult => {
+        return getAtUserNames(comment).some((v) => botsSet.has(v))
+    },
+    callUser: (comment: HTMLElement): SelectorResult => {
+        return getAtUserNames(comment).length > 0
+    },
+    callUserOnly: (comment: HTMLElement): SelectorResult => {
+        return getAtUserNames(comment).length > 0 && getPureCommentMessage(comment) === ''
+    },
+    level: (comment: HTMLElement): SelectorResult => {
+        return (comment as any).__data?.member?.level_info?.current_level
+    },
+    emojiOnly: (comment: HTMLElement): SelectorResult => {
+        const message = getPureCommentMessage(comment)
+        if (!message) {
             return false
-        },
-        callUser: (comment: HTMLElement): SelectorResult => {
-            return !!(comment as any).__data?.content?.message
-                ?.trim()
-                ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
-                ?.match(/@[^@\s]+/)
-        },
-        callUserNoReply: (comment: HTMLElement): SelectorResult => {
-            return !!(comment as any).__data?.content?.message
-                ?.trim()
-                ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
-                ?.match(/@[^@\s]+/)
-        },
-        callUserOnly: (comment: HTMLElement): SelectorResult => {
-            return (
-                (comment as any).__data?.content?.message
-                    ?.trim()
-                    ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
-                    ?.replace(/@[^@\s]+/g, ' ')
-                    .trim() === ''
-            )
-        },
-        callUserOnlyNoReply: (comment: HTMLElement): SelectorResult => {
-            return (
-                (comment as any).__data?.content?.message
-                    ?.trim()
-                    ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
-                    ?.replace(/@[^@\s]+/g, ' ')
-                    .trim() === ''
-            )
-        },
-        level: (comment: HTMLElement): SelectorResult => {
-            return (comment as any).__data?.member?.level_info?.current_level
-        },
-        emojiOnly: (comment: HTMLElement): SelectorResult => {
-            return (
-                (comment as any).__data?.content?.message
-                    ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
-                    ?.replace(/@[^@\s]+/g, ' ')
-                    ?.replace(/(\[[^[\]]+\])+/g, ' ')
-                    ?.replace(emojiPattern, ' ')
-                    .trim() === ''
-            )
-        },
-        isUp: (comment: HTMLElement): SelectorResult => {
-            const mid = (comment as any).__data?.mid
-            const upMid = (comment as any).__upMid
-            return typeof mid === 'number' && mid === upMid
-        },
-        isLink: (comment: HTMLElement): SelectorResult => {
-            const urls = (comment as any).__data?.content?.jump_url
-            if (urls) {
-                for (const k of Object.keys(urls)) {
-                    if (!urls[k]?.pc_url?.includes('search.bilibili.com')) {
-                        return true
-                    }
+        }
+        return (
+            message
+                .replace(/(\[[^[\]]+\])+/g, ' ')
+                .replace(emojiPattern, ' ')
+                .trim() === ''
+        )
+    },
+    isUp: (comment: HTMLElement): SelectorResult => {
+        const mid = (comment as any).__data?.mid
+        const upMid = (comment as any).__upMid
+        return typeof mid === 'number' && mid === upMid
+    },
+    isLink: (comment: HTMLElement): SelectorResult => {
+        const jump_url = (comment as any).__data?.content?.jump_url
+        if (jump_url) {
+            for (const k of Object.keys(jump_url)) {
+                if (!jump_url[k]?.pc_url?.includes('search.bilibili.com')) {
+                    return true
                 }
             }
+        }
+        return false
+    },
+    // 自己发布 or @自己 的评论
+    isMe: (comment: HTMLElement): SelectorResult => {
+        const me = (comment as any).__user?.uname
+        if (!me) {
             return false
-        },
-        // 自己发布 or @自己 的评论
-        isMe: (comment: HTMLElement): SelectorResult => {
-            const me = (comment as any).__user?.uname
-            if (!me) {
-                return false
-            }
-            if (
-                (comment as any).__data?.member?.uname === me ||
-                (comment as any).__data?.content?.message
-                    ?.trim()
-                    ?.replace(/^回复\s?@[^@\s]+\s?:/, '')
-                    .includes(`@${me}`)
-            ) {
-                return true
-            }
-            return false
-        },
+        }
+        if ((comment as any).__data?.member?.uname === me || getAtUserNames(comment).includes(me)) {
+            return true
+        }
+        return false
+    },
+    // 仅一级评论使用
+    isPin: (comment: HTMLElement): SelectorResult => {
+        return !!(comment as any).__data?.reply_control?.is_up_top
+    },
+    isNote: (comment: HTMLElement): SelectorResult => {
+        return !!(comment as any).__data?.reply_control?.is_note_v2
+    },
+    // 仅二级评论使用
+    rpid: (comment: HTMLElement): SelectorResult => {
+        return (comment as any).__data?.rpid_str
+    },
+    parent: (comment: HTMLElement): SelectorResult => {
+        return (comment as any).__data?.parent_str
+    },
+    isReplyToFiltered: (comment: HTMLElement): SelectorResult => {
+        const parent = (comment as any).__data?.parent_str
+        return typeof parent === 'string' && commentRpidLevelMap.has(parent)
     },
 }
 
 const updateCommentRpidLevelMap = (comments: HTMLElement[], hiddenIndexes: Set<number>, initial: boolean) => {
     hiddenIndexes.forEach((index) => {
         const comment = comments[index]
-        const rpid = selectorFns.sub.rpid(comment)
+        const rpid = selectorFns.rpid(comment)
         if (typeof rpid !== 'string' || !rpid) {
             return
         }
@@ -352,7 +275,7 @@ const updateCommentRpidLevelMap = (comments: HTMLElement[], hiddenIndexes: Set<n
             return
         }
 
-        const parent = selectorFns.sub.parent(comment)
+        const parent = selectorFns.parent(comment)
         if (typeof parent !== 'string') {
             return
         }
@@ -386,9 +309,7 @@ class CommentFilterCommon implements IMainFilter {
     commentBotFilter = new CommentBotFilter()
     commentCallBotFilter = new CommentCallBotFilter()
     commentCallUserFilter = new CommentCallUserFilter()
-    commentCallUserNoReplyFilter = new CommentCallUserNoReplyFilter()
     commentCallUserOnlyFilter = new CommentCallUserOnlyFilter()
-    commentCallUserOnlyNoReplyFilter = new CommentCallUserOnlyNoReplyFilter()
     commentEmojiOnlyFilter = new CommentEmojiOnlyFilter()
     commentChainFilter = new CommentChainFilter()
     commentChainLevel = 1
@@ -429,9 +350,7 @@ class CommentFilterCommon implements IMainFilter {
             this.commentBotFilter.isEnable ||
             this.commentCallBotFilter.isEnable ||
             this.commentCallUserFilter.isEnable ||
-            this.commentCallUserNoReplyFilter.isEnable ||
             this.commentCallUserOnlyFilter.isEnable ||
-            this.commentCallUserOnlyNoReplyFilter.isEnable ||
             this.commentEmojiOnlyFilter.isEnable
         )) {
             revertAll = true
@@ -455,20 +374,18 @@ class CommentFilterCommon implements IMainFilter {
                 logger.debug(
                     [
                         `CommentFilterCommon rootComments`,
-                        `username: ${selectorFns.root.username(v)}`,
-                        `content: ${selectorFns.root.content(v)}`,
-                        `callUser: ${selectorFns.root.callUser(v)}`,
-                        `callUserNoReply: ${selectorFns.root.callUserNoReply(v)}`,
-                        `callUserOnly: ${selectorFns.root.callUserOnly(v)}`,
-                        `callUserOnlyNoReply: ${selectorFns.root.callUserOnlyNoReply(v)}`,
-                        `level: ${selectorFns.root.level(v)}`,
-                        `noface: ${selectorFns.root.noface(v)}`,
-                        `isUp: ${selectorFns.root.isUp(v)}`,
-                        `isPin: ${selectorFns.root.isPin(v)}`,
-                        `isNote: ${selectorFns.root.isNote(v)}`,
-                        `isLink: ${selectorFns.root.isLink(v)}`,
-                        `isMe: ${selectorFns.root.isMe(v)}`,
-                        `emojiOnly: ${selectorFns.root.emojiOnly(v)}`,
+                        `username: ${selectorFns.username(v)}`,
+                        `content: ${selectorFns.content(v)}`,
+                        `callUser: ${selectorFns.callUser(v)}`,
+                        `callUserOnly: ${selectorFns.callUserOnly(v)}`,
+                        `level: ${selectorFns.level(v)}`,
+                        `noface: ${selectorFns.noface(v)}`,
+                        `isUp: ${selectorFns.isUp(v)}`,
+                        `isPin: ${selectorFns.isPin(v)}`,
+                        `isNote: ${selectorFns.isNote(v)}`,
+                        `isLink: ${selectorFns.isLink(v)}`,
+                        `isMe: ${selectorFns.isMe(v)}`,
+                        `emojiOnly: ${selectorFns.emojiOnly(v)}`,
                     ].join('\n'),
                 )
             })
@@ -480,33 +397,28 @@ class CommentFilterCommon implements IMainFilter {
         }
 
         const blackPairs: SubFilterPair[] = []
-        this.commentUsernameFilter.isEnable && blackPairs.push([this.commentUsernameFilter, selectorFns.root.username])
+        this.commentUsernameFilter.isEnable && blackPairs.push([this.commentUsernameFilter, selectorFns.username])
         this.commentUsernameKeywordFilter.isEnable &&
-            blackPairs.push([this.commentUsernameKeywordFilter, selectorFns.root.username])
-        this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns.root.content])
-        this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns.root.level])
-        this.commentNoFaceFilter.isEnable && blackPairs.push([this.commentNoFaceFilter, selectorFns.root.noface])
-        this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.root.callBot])
-        this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns.root.callUser])
-        this.commentCallUserNoReplyFilter.isEnable &&
-            blackPairs.push([this.commentCallUserNoReplyFilter, selectorFns.root.callUserNoReply])
+            blackPairs.push([this.commentUsernameKeywordFilter, selectorFns.username])
+        this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns.content])
+        this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns.level])
+        this.commentNoFaceFilter.isEnable && blackPairs.push([this.commentNoFaceFilter, selectorFns.noface])
+        this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.callBot])
+        this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns.callUser])
         this.commentCallUserOnlyFilter.isEnable &&
-            blackPairs.push([this.commentCallUserOnlyFilter, selectorFns.root.callUserOnly])
-        this.commentCallUserOnlyNoReplyFilter.isEnable &&
-            blackPairs.push([this.commentCallUserOnlyNoReplyFilter, selectorFns.root.callUserOnlyNoReply])
-        this.commentEmojiOnlyFilter.isEnable &&
-            blackPairs.push([this.commentEmojiOnlyFilter, selectorFns.root.emojiOnly])
+            blackPairs.push([this.commentCallUserOnlyFilter, selectorFns.callUserOnly])
+        this.commentEmojiOnlyFilter.isEnable && blackPairs.push([this.commentEmojiOnlyFilter, selectorFns.emojiOnly])
 
         const whitePairs: SubFilterPair[] = []
-        this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns.root.isUp])
-        this.commentIsPinFilter.isEnable && whitePairs.push([this.commentIsPinFilter, selectorFns.root.isPin])
-        this.commentIsNoteFilter.isEnable && whitePairs.push([this.commentIsNoteFilter, selectorFns.root.isNote])
-        this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns.root.isLink])
-        this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns.root.isMe])
+        this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns.isUp])
+        this.commentIsPinFilter.isEnable && whitePairs.push([this.commentIsPinFilter, selectorFns.isPin])
+        this.commentIsNoteFilter.isEnable && whitePairs.push([this.commentIsNoteFilter, selectorFns.isNote])
+        this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns.isLink])
+        this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns.isMe])
 
         const forceBlackPairs: SubFilterPair[] = []
-        this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns.root.content])
-        this.commentBotFilter.isEnable && forceBlackPairs.push([this.commentBotFilter, selectorFns.root.username])
+        this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns.content])
+        this.commentBotFilter.isEnable && forceBlackPairs.push([this.commentBotFilter, selectorFns.username])
 
         const rootBlackIdxSet = await coreCheck(
             rootComments,
@@ -544,9 +456,7 @@ class CommentFilterCommon implements IMainFilter {
             this.commentBotFilter.isEnable ||
             this.commentCallBotFilter.isEnable ||
             this.commentCallUserFilter.isEnable ||
-            this.commentCallUserNoReplyFilter.isEnable ||
             this.commentCallUserOnlyFilter.isEnable ||
-            this.commentCallUserOnlyNoReplyFilter.isEnable ||
             this.commentEmojiOnlyFilter.isEnable ||
             this.commentChainFilter.isEnable
         )) {
@@ -571,18 +481,16 @@ class CommentFilterCommon implements IMainFilter {
                 logger.debug(
                     [
                         `CommentFilterCommon subComments`,
-                        `username: ${selectorFns.sub.username(v)}`,
-                        `content: ${selectorFns.sub.content(v)}`,
-                        `callUser: ${selectorFns.sub.callUser(v)}`,
-                        `callUserNoReply: ${selectorFns.sub.callUserNoReply(v)}`,
-                        `callUserOnly: ${selectorFns.sub.callUserOnly(v)}`,
-                        `callUserOnlyNoReply: ${selectorFns.sub.callUserOnlyNoReply(v)}`,
-                        `level: ${selectorFns.sub.level(v)}`,
-                        `noface: ${selectorFns.sub.noface(v)}`,
-                        `isUp: ${selectorFns.sub.isUp(v)}`,
-                        `isLink: ${selectorFns.sub.isLink(v)}`,
-                        `isMe: ${selectorFns.sub.isMe(v)}`,
-                        `emojiOnly: ${selectorFns.sub.emojiOnly(v)}`,
+                        `username: ${selectorFns.username(v)}`,
+                        `content: ${selectorFns.content(v)}`,
+                        `callUser: ${selectorFns.callUser(v)}`,
+                        `callUserOnly: ${selectorFns.callUserOnly(v)}`,
+                        `level: ${selectorFns.level(v)}`,
+                        `noface: ${selectorFns.noface(v)}`,
+                        `isUp: ${selectorFns.isUp(v)}`,
+                        `isLink: ${selectorFns.isLink(v)}`,
+                        `isMe: ${selectorFns.isMe(v)}`,
+                        `emojiOnly: ${selectorFns.emojiOnly(v)}`,
                     ].join('\n'),
                 )
             })
@@ -594,31 +502,26 @@ class CommentFilterCommon implements IMainFilter {
         }
 
         const blackPairs: SubFilterPair[] = []
-        this.commentUsernameFilter.isEnable && blackPairs.push([this.commentUsernameFilter, selectorFns.sub.username])
+        this.commentUsernameFilter.isEnable && blackPairs.push([this.commentUsernameFilter, selectorFns.username])
         this.commentUsernameKeywordFilter.isEnable &&
-            blackPairs.push([this.commentUsernameKeywordFilter, selectorFns.sub.username])
-        this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns.sub.content])
-        this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns.sub.level])
-        this.commentNoFaceFilter.isEnable && blackPairs.push([this.commentNoFaceFilter, selectorFns.sub.noface])
-        this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns.sub.username])
-        this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.sub.callBot])
-        this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns.sub.callUser])
-        this.commentCallUserNoReplyFilter.isEnable &&
-            blackPairs.push([this.commentCallUserNoReplyFilter, selectorFns.sub.callUserNoReply])
+            blackPairs.push([this.commentUsernameKeywordFilter, selectorFns.username])
+        this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns.content])
+        this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns.level])
+        this.commentNoFaceFilter.isEnable && blackPairs.push([this.commentNoFaceFilter, selectorFns.noface])
+        this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns.username])
+        this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns.callBot])
+        this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns.callUser])
         this.commentCallUserOnlyFilter.isEnable &&
-            blackPairs.push([this.commentCallUserOnlyFilter, selectorFns.sub.callUserOnly])
-        this.commentCallUserOnlyNoReplyFilter.isEnable &&
-            blackPairs.push([this.commentCallUserOnlyNoReplyFilter, selectorFns.sub.callUserOnlyNoReply])
-        this.commentEmojiOnlyFilter.isEnable &&
-            blackPairs.push([this.commentEmojiOnlyFilter, selectorFns.sub.emojiOnly])
+            blackPairs.push([this.commentCallUserOnlyFilter, selectorFns.callUserOnly])
+        this.commentEmojiOnlyFilter.isEnable && blackPairs.push([this.commentEmojiOnlyFilter, selectorFns.emojiOnly])
 
         const whitePairs: SubFilterPair[] = []
-        this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns.sub.isUp])
-        this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns.sub.isLink])
-        this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns.sub.isMe])
+        this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns.isUp])
+        this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns.isLink])
+        this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns.isMe])
 
         const forceBlackPairs: SubFilterPair[] = []
-        this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns.sub.content])
+        this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns.content])
 
         const subBlackIdxSet = await coreCheck(
             subComments,
@@ -637,7 +540,7 @@ class CommentFilterCommon implements IMainFilter {
             for (let round = 1; round <= this.commentChainLevel; round++) {
                 const chainBlackPairs = [
                     ...blackPairs,
-                    [this.commentChainFilter, selectorFns.sub.isReplyToFiltered] as SubFilterPair,
+                    [this.commentChainFilter, selectorFns.isReplyToFiltered] as SubFilterPair,
                 ]
                 chainBlackIdxSet = await coreCheck(
                     subComments,
@@ -893,20 +796,6 @@ export const commentFilterCommonGroups: Group[] = [
             },
             {
                 type: 'switch',
-                id: GM_KEYS.black.callUserOnlyNoReply.statusKey,
-                name: '过滤 只含 @其他用户 的无回复评论',
-                noStyle: true,
-                enableFn: () => {
-                    mainFilter.commentCallUserOnlyNoReplyFilter.enable()
-                    mainFilter.check('full')
-                },
-                disableFn: () => {
-                    mainFilter.commentCallUserOnlyNoReplyFilter.disable()
-                    mainFilter.check('full')
-                },
-            },
-            {
-                type: 'switch',
                 id: GM_KEYS.black.callUser.statusKey,
                 name: '过滤 包含 @其他用户 的全部评论',
                 noStyle: true,
@@ -916,20 +805,6 @@ export const commentFilterCommonGroups: Group[] = [
                 },
                 disableFn: () => {
                     mainFilter.commentCallUserFilter.disable()
-                    mainFilter.check('full')
-                },
-            },
-            {
-                type: 'switch',
-                id: GM_KEYS.black.callUserNoReply.statusKey,
-                name: '过滤 包含 @其他用户 的无回复评论',
-                noStyle: true,
-                enableFn: () => {
-                    mainFilter.commentCallUserNoReplyFilter.enable()
-                    mainFilter.check('full')
-                },
-                disableFn: () => {
-                    mainFilter.commentCallUserNoReplyFilter.disable()
                     mainFilter.check('full')
                 },
             },

@@ -21,11 +21,7 @@ export class CommentCallBotFilter extends BooleanFilter {}
 
 export class CommentCallUserFilter extends BooleanFilter {}
 
-export class CommentCallUserNoReplyFilter extends BooleanFilter {}
-
 export class CommentCallUserOnlyFilter extends BooleanFilter {}
-
-export class CommentCallUserOnlyNoReplyFilter extends BooleanFilter {}
 
 export class CommentEmojiOnlyFilter extends BooleanFilter {}
 

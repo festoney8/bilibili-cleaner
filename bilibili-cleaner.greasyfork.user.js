@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bilibili 页面净化大师
 // @namespace    http://tampermonkey.net/
-// @version      4.5.14
+// @version      4.5.15
 // @author       festoney8
 // @description  净化 B站/哔哩哔哩 页面，支持「精简功能、播放器净化、过滤视频、过滤评论、全站黑白名单」，提供 300+ 功能，定制自己的 B 站
 // @license      MIT
@@ -1988,10 +1988,51 @@
 		error: wrapper(console.error),
 		debug: config_default.isDebugMode ? wrapper(console.debug) : () => {}
 	};
+	var Queue = class {
+		#head = null;
+		#tail = null;
+		#size = 0;
+		get size() {
+			return this.#size;
+		}
+		enqueue(value) {
+			const node = {
+				v: value,
+				n: null
+			};
+			if (this.#tail === null) this.#head = node;
+			else this.#tail.n = node;
+			this.#tail = node;
+			this.#size++;
+		}
+		dequeue() {
+			const node = this.#head;
+			if (node === null) return;
+			this.#head = node.n;
+			if (this.#head === null) this.#tail = null;
+			this.#size--;
+			return node.v;
+		}
+		peek() {
+			return this.#head?.v;
+		}
+		clear() {
+			this.#head = null;
+			this.#tail = null;
+			this.#size = 0;
+		}
+		*[Symbol.iterator]() {
+			let node = this.#head;
+			while (node !== null) {
+				yield node.v;
+				node = node.n;
+			}
+		}
+	};
 	var Semaphore = class {
 		capacity;
 		available;
-		deferredTasks = [];
+		deferredTasks = new Queue();
 		constructor(capacity) {
 			this.capacity = capacity;
 			this.available = capacity;
@@ -2002,11 +2043,11 @@
 				return;
 			}
 			return new Promise((resolve) => {
-				this.deferredTasks.push(resolve);
+				this.deferredTasks.enqueue(resolve);
 			});
 		}
 		release() {
-			const deferredTask = this.deferredTasks.shift();
+			const deferredTask = this.deferredTasks.dequeue();
 			if (deferredTask != null) {
 				deferredTask();
 				return;
@@ -3985,9 +4026,7 @@
 	var CommentBotFilter = class extends StringFilter {};
 	var CommentCallBotFilter = class extends BooleanFilter {};
 	var CommentCallUserFilter = class extends BooleanFilter {};
-	var CommentCallUserNoReplyFilter = class extends BooleanFilter {};
 	var CommentCallUserOnlyFilter = class extends BooleanFilter {};
-	var CommentCallUserOnlyNoReplyFilter = class extends BooleanFilter {};
 	var CommentEmojiOnlyFilter = class extends BooleanFilter {};
 	var CommentChainFilter = class extends BooleanFilter {};
 	var CommentIsUpFilter = class extends BooleanFilter {};
@@ -4017,9 +4056,7 @@
 			bot: { statusKey: "video-comment-bot-filter-status" },
 			callBot: { statusKey: "video-comment-call-bot-filter-status" },
 			callUser: { statusKey: "video-comment-call-user-filter-status" },
-			callUserNoReply: { statusKey: "video-comment-call-user-noreply-filter-status" },
 			callUserOnly: { statusKey: "video-comment-call-user-only-filter-status" },
-			callUserOnlyNoReply: { statusKey: "video-comment-call-user-only-noreply-filter-status" },
 			isAD: { statusKey: "video-comment-ad-filter-status" },
 			emojiOnly: { statusKey: "video-comment-emoji-only-filter-status" },
 			chain: {
@@ -4037,142 +4074,107 @@
 		}
 	};
 	var emojiPattern = emoji_regex_xs_default();
+	var getReplyUserName = (comment) => {
+		const replyUserName = comment.__data?.parent_reply_member?.name?.trim();
+		if (replyUserName) return replyUserName;
+		return (comment.__data?.content?.message?.trim())?.match(/^回复\s*@([^@\s:]+)\s*:/)?.[1];
+	};
+	var getAtUserNames = (comment) => {
+		const replyUserName = getReplyUserName(comment);
+		return uniq(comment.__data?.content?.members?.map((v) => v.uname.trim()) ?? []).filter((v) => v !== replyUserName).filter(Boolean).sort((a, b) => b.length - a.length);
+	};
+	var getPureCommentMessage = (comment) => {
+		const replyUserName = getReplyUserName(comment);
+		const atUserNames = getAtUserNames(comment);
+		let message = (comment.__data?.content?.message ?? "").trim();
+		if (replyUserName) try {
+			const re = new RegExp(String.raw`^回复\s*@${escapeRegExp(replyUserName)}\s*:`);
+			message = message.replace(re, "").trim();
+		} catch (err) {
+			logger.error("getPureCommentMessage remove replyUserName error", err);
+		}
+		if (atUserNames.length > 0) try {
+			const re = new RegExp(String.raw`\s*@(?:${atUserNames.map(escapeRegExp).join("|")})\s*`, "g");
+			message = message.replace(re, " ");
+		} catch (err) {
+			logger.error("getPureCommentMessage remove atUserNames error", err);
+		}
+		return message.trim();
+	};
 	var commentRpidLevelMap = new Map();
 	var selectorFns$10 = {
-		root: {
-			username: (comment) => {
-				return comment.__data?.member?.uname?.trim();
-			},
-			content: (comment) => {
-				return comment.__data?.content?.message?.replace(/@[^@\s]+/g, " ").trim();
-			},
-			noface: (comment) => {
-				return comment.__data?.member?.avatar?.endsWith("noface.jpg") && comment.__data?.member?.vip?.vipStatus === 0;
-			},
-			callBot: (comment) => {
-				const members = comment.__data?.content?.members;
-				if (members?.length) return members.some((v) => botsSet.has(v.uname));
-				return false;
-			},
-			callUser: (comment) => {
-				return !!comment.__data?.content?.members?.[0];
-			},
-			callUserNoReply: (comment) => {
-				if (comment.__data?.rcount !== 0) return false;
-				return !!comment.__data?.content?.members?.[0];
-			},
-			callUserOnly: (comment) => {
-				return comment.__data?.content?.message?.replace(/@[^@\s]+/g, " ").trim() === "";
-			},
-			callUserOnlyNoReply: (comment) => {
-				if (comment.__data?.rcount !== 0) return false;
-				return comment.__data?.content?.message?.replace(/@[^@\s]+/g, " ").trim() === "";
-			},
-			level: (comment) => {
-				return comment.__data?.member?.level_info?.current_level;
-			},
-			emojiOnly: (comment) => {
-				return comment.__data?.content?.message?.replace(/@[^@\s]+/g, " ")?.replace(/(\[[^[\]]+\])+/g, " ")?.replace(emojiPattern, " ").trim() === "";
-			},
-			isUp: (comment) => {
-				const mid = comment.__data?.mid;
-				const upMid = comment.__upMid;
-				return typeof mid === "number" && mid === upMid;
-			},
-			isPin: (comment) => {
-				return !!comment.__data?.reply_control?.is_up_top;
-			},
-			isNote: (comment) => {
-				return !!comment.__data?.reply_control?.is_note_v2;
-			},
-			isLink: (comment) => {
-				const jump_url = comment.__data?.content?.jump_url;
-				if (jump_url) {
-					for (const k of Object.keys(jump_url)) if (!jump_url[k]?.pc_url?.includes("search.bilibili.com")) return true;
-				}
-				return false;
-			},
-			isMe: (comment) => {
-				const me = comment.__user?.uname;
-				if (!me) return false;
-				if (comment.__data?.member?.uname === me || comment.__data?.content?.message?.includes(`@${me}`)) return true;
-				return false;
-			}
+		username: (comment) => {
+			return comment.__data?.member?.uname?.trim();
 		},
-		sub: {
-			rpid: (comment) => {
-				return comment.__data?.rpid_str;
-			},
-			parent: (comment) => {
-				return comment.__data?.parent_str;
-			},
-			isReplyToFiltered: (comment) => {
-				const parent = comment.__data?.parent_str;
-				return typeof parent === "string" && commentRpidLevelMap.has(parent);
-			},
-			username: (comment) => {
-				return comment.__data?.member?.uname?.trim();
-			},
-			content: (comment) => {
-				return comment.__data?.content?.message?.trim()?.replace(/^回复\s?@[^@\s]+\s?:/, "")?.replace(/@[^@\s]+/g, " ").trim();
-			},
-			noface: (comment) => {
-				return comment.__data?.member?.avatar?.endsWith("noface.jpg") && comment.__data?.member?.vip?.vipStatus === 0;
-			},
-			callBot: (comment) => {
-				const members = comment.__data?.content?.members;
-				if (members.length) return members.some((v) => botsSet.has(v.uname));
-				return false;
-			},
-			callUser: (comment) => {
-				return !!comment.__data?.content?.message?.trim()?.replace(/^回复\s?@[^@\s]+\s?:/, "")?.match(/@[^@\s]+/);
-			},
-			callUserNoReply: (comment) => {
-				return !!comment.__data?.content?.message?.trim()?.replace(/^回复\s?@[^@\s]+\s?:/, "")?.match(/@[^@\s]+/);
-			},
-			callUserOnly: (comment) => {
-				return comment.__data?.content?.message?.trim()?.replace(/^回复\s?@[^@\s]+\s?:/, "")?.replace(/@[^@\s]+/g, " ").trim() === "";
-			},
-			callUserOnlyNoReply: (comment) => {
-				return comment.__data?.content?.message?.trim()?.replace(/^回复\s?@[^@\s]+\s?:/, "")?.replace(/@[^@\s]+/g, " ").trim() === "";
-			},
-			level: (comment) => {
-				return comment.__data?.member?.level_info?.current_level;
-			},
-			emojiOnly: (comment) => {
-				return comment.__data?.content?.message?.replace(/^回复\s?@[^@\s]+\s?:/, "")?.replace(/@[^@\s]+/g, " ")?.replace(/(\[[^[\]]+\])+/g, " ")?.replace(emojiPattern, " ").trim() === "";
-			},
-			isUp: (comment) => {
-				const mid = comment.__data?.mid;
-				const upMid = comment.__upMid;
-				return typeof mid === "number" && mid === upMid;
-			},
-			isLink: (comment) => {
-				const urls = comment.__data?.content?.jump_url;
-				if (urls) {
-					for (const k of Object.keys(urls)) if (!urls[k]?.pc_url?.includes("search.bilibili.com")) return true;
-				}
-				return false;
-			},
-			isMe: (comment) => {
-				const me = comment.__user?.uname;
-				if (!me) return false;
-				if (comment.__data?.member?.uname === me || comment.__data?.content?.message?.trim()?.replace(/^回复\s?@[^@\s]+\s?:/, "").includes(`@${me}`)) return true;
-				return false;
+		content: (comment) => {
+			return getPureCommentMessage(comment);
+		},
+		noface: (comment) => {
+			return comment.__data?.member?.avatar?.endsWith("noface.jpg") && comment.__data?.member?.vip?.vipStatus === 0;
+		},
+		callBot: (comment) => {
+			return getAtUserNames(comment).some((v) => botsSet.has(v));
+		},
+		callUser: (comment) => {
+			return getAtUserNames(comment).length > 0;
+		},
+		callUserOnly: (comment) => {
+			return getAtUserNames(comment).length > 0 && getPureCommentMessage(comment) === "";
+		},
+		level: (comment) => {
+			return comment.__data?.member?.level_info?.current_level;
+		},
+		emojiOnly: (comment) => {
+			const message = getPureCommentMessage(comment);
+			if (!message) return false;
+			return message.replace(/(\[[^[\]]+\])+/g, " ").replace(emojiPattern, " ").trim() === "";
+		},
+		isUp: (comment) => {
+			const mid = comment.__data?.mid;
+			const upMid = comment.__upMid;
+			return typeof mid === "number" && mid === upMid;
+		},
+		isLink: (comment) => {
+			const jump_url = comment.__data?.content?.jump_url;
+			if (jump_url) {
+				for (const k of Object.keys(jump_url)) if (!jump_url[k]?.pc_url?.includes("search.bilibili.com")) return true;
 			}
+			return false;
+		},
+		isMe: (comment) => {
+			const me = comment.__user?.uname;
+			if (!me) return false;
+			if (comment.__data?.member?.uname === me || getAtUserNames(comment).includes(me)) return true;
+			return false;
+		},
+		isPin: (comment) => {
+			return !!comment.__data?.reply_control?.is_up_top;
+		},
+		isNote: (comment) => {
+			return !!comment.__data?.reply_control?.is_note_v2;
+		},
+		rpid: (comment) => {
+			return comment.__data?.rpid_str;
+		},
+		parent: (comment) => {
+			return comment.__data?.parent_str;
+		},
+		isReplyToFiltered: (comment) => {
+			const parent = comment.__data?.parent_str;
+			return typeof parent === "string" && commentRpidLevelMap.has(parent);
 		}
 	};
 	var updateCommentRpidLevelMap = (comments, hiddenIndexes, initial) => {
 		hiddenIndexes.forEach((index) => {
 			const comment = comments[index];
-			const rpid = selectorFns$10.sub.rpid(comment);
+			const rpid = selectorFns$10.rpid(comment);
 			if (typeof rpid !== "string" || !rpid) return;
 			if (initial) {
 				const currentLevel = commentRpidLevelMap.get(rpid);
 				if (currentLevel === void 0 || currentLevel > 0) commentRpidLevelMap.set(rpid, 0);
 				return;
 			}
-			const parent = selectorFns$10.sub.parent(comment);
+			const parent = selectorFns$10.parent(comment);
 			if (typeof parent !== "string") return;
 			const parentLevel = commentRpidLevelMap.get(parent);
 			if (parentLevel === void 0) return;
@@ -4194,9 +4196,7 @@
 		commentBotFilter = new CommentBotFilter();
 		commentCallBotFilter = new CommentCallBotFilter();
 		commentCallUserFilter = new CommentCallUserFilter();
-		commentCallUserNoReplyFilter = new CommentCallUserNoReplyFilter();
 		commentCallUserOnlyFilter = new CommentCallUserOnlyFilter();
-		commentCallUserOnlyNoReplyFilter = new CommentCallUserOnlyNoReplyFilter();
 		commentEmojiOnlyFilter = new CommentEmojiOnlyFilter();
 		commentChainFilter = new CommentChainFilter();
 		commentChainLevel = 1;
@@ -4218,7 +4218,7 @@
 		async checkRoot(mode) {
 			const timer = performance.now();
 			let revertAll = false;
-			if (!(this.commentUsernameFilter.isEnable || this.commentUsernameKeywordFilter.isEnable || this.commentContentFilter.isEnable || this.commentAdFilter.isEnable || this.commentLevelFilter.isEnable || this.commentNoFaceFilter.isEnable || this.commentBotFilter.isEnable || this.commentCallBotFilter.isEnable || this.commentCallUserFilter.isEnable || this.commentCallUserNoReplyFilter.isEnable || this.commentCallUserOnlyFilter.isEnable || this.commentCallUserOnlyNoReplyFilter.isEnable || this.commentEmojiOnlyFilter.isEnable)) revertAll = true;
+			if (!(this.commentUsernameFilter.isEnable || this.commentUsernameKeywordFilter.isEnable || this.commentContentFilter.isEnable || this.commentAdFilter.isEnable || this.commentLevelFilter.isEnable || this.commentNoFaceFilter.isEnable || this.commentBotFilter.isEnable || this.commentCallBotFilter.isEnable || this.commentCallUserFilter.isEnable || this.commentCallUserOnlyFilter.isEnable || this.commentEmojiOnlyFilter.isEnable)) revertAll = true;
 			let rootComments = [];
 			if (ShadowInstance.shadowStore.has("BILI-COMMENT-THREAD-RENDERER")) {
 				rootComments = Array.from(ShadowInstance.shadowStore.get("BILI-COMMENT-THREAD-RENDERER")).map((v) => v.host);
@@ -4228,20 +4228,18 @@
 			if (config_default.isDebugMode) rootComments.forEach((v) => {
 				logger.debug([
 					`CommentFilterCommon rootComments`,
-					`username: ${selectorFns$10.root.username(v)}`,
-					`content: ${selectorFns$10.root.content(v)}`,
-					`callUser: ${selectorFns$10.root.callUser(v)}`,
-					`callUserNoReply: ${selectorFns$10.root.callUserNoReply(v)}`,
-					`callUserOnly: ${selectorFns$10.root.callUserOnly(v)}`,
-					`callUserOnlyNoReply: ${selectorFns$10.root.callUserOnlyNoReply(v)}`,
-					`level: ${selectorFns$10.root.level(v)}`,
-					`noface: ${selectorFns$10.root.noface(v)}`,
-					`isUp: ${selectorFns$10.root.isUp(v)}`,
-					`isPin: ${selectorFns$10.root.isPin(v)}`,
-					`isNote: ${selectorFns$10.root.isNote(v)}`,
-					`isLink: ${selectorFns$10.root.isLink(v)}`,
-					`isMe: ${selectorFns$10.root.isMe(v)}`,
-					`emojiOnly: ${selectorFns$10.root.emojiOnly(v)}`
+					`username: ${selectorFns$10.username(v)}`,
+					`content: ${selectorFns$10.content(v)}`,
+					`callUser: ${selectorFns$10.callUser(v)}`,
+					`callUserOnly: ${selectorFns$10.callUserOnly(v)}`,
+					`level: ${selectorFns$10.level(v)}`,
+					`noface: ${selectorFns$10.noface(v)}`,
+					`isUp: ${selectorFns$10.isUp(v)}`,
+					`isPin: ${selectorFns$10.isPin(v)}`,
+					`isNote: ${selectorFns$10.isNote(v)}`,
+					`isLink: ${selectorFns$10.isLink(v)}`,
+					`isMe: ${selectorFns$10.isMe(v)}`,
+					`emojiOnly: ${selectorFns$10.emojiOnly(v)}`
 				].join("\n"));
 			});
 			if (isRootWhite || revertAll) {
@@ -4249,26 +4247,24 @@
 				return;
 			}
 			const blackPairs = [];
-			this.commentUsernameFilter.isEnable && blackPairs.push([this.commentUsernameFilter, selectorFns$10.root.username]);
-			this.commentUsernameKeywordFilter.isEnable && blackPairs.push([this.commentUsernameKeywordFilter, selectorFns$10.root.username]);
-			this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns$10.root.content]);
-			this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns$10.root.level]);
-			this.commentNoFaceFilter.isEnable && blackPairs.push([this.commentNoFaceFilter, selectorFns$10.root.noface]);
-			this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns$10.root.callBot]);
-			this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns$10.root.callUser]);
-			this.commentCallUserNoReplyFilter.isEnable && blackPairs.push([this.commentCallUserNoReplyFilter, selectorFns$10.root.callUserNoReply]);
-			this.commentCallUserOnlyFilter.isEnable && blackPairs.push([this.commentCallUserOnlyFilter, selectorFns$10.root.callUserOnly]);
-			this.commentCallUserOnlyNoReplyFilter.isEnable && blackPairs.push([this.commentCallUserOnlyNoReplyFilter, selectorFns$10.root.callUserOnlyNoReply]);
-			this.commentEmojiOnlyFilter.isEnable && blackPairs.push([this.commentEmojiOnlyFilter, selectorFns$10.root.emojiOnly]);
+			this.commentUsernameFilter.isEnable && blackPairs.push([this.commentUsernameFilter, selectorFns$10.username]);
+			this.commentUsernameKeywordFilter.isEnable && blackPairs.push([this.commentUsernameKeywordFilter, selectorFns$10.username]);
+			this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns$10.content]);
+			this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns$10.level]);
+			this.commentNoFaceFilter.isEnable && blackPairs.push([this.commentNoFaceFilter, selectorFns$10.noface]);
+			this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns$10.callBot]);
+			this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns$10.callUser]);
+			this.commentCallUserOnlyFilter.isEnable && blackPairs.push([this.commentCallUserOnlyFilter, selectorFns$10.callUserOnly]);
+			this.commentEmojiOnlyFilter.isEnable && blackPairs.push([this.commentEmojiOnlyFilter, selectorFns$10.emojiOnly]);
 			const whitePairs = [];
-			this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns$10.root.isUp]);
-			this.commentIsPinFilter.isEnable && whitePairs.push([this.commentIsPinFilter, selectorFns$10.root.isPin]);
-			this.commentIsNoteFilter.isEnable && whitePairs.push([this.commentIsNoteFilter, selectorFns$10.root.isNote]);
-			this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns$10.root.isLink]);
-			this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns$10.root.isMe]);
+			this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns$10.isUp]);
+			this.commentIsPinFilter.isEnable && whitePairs.push([this.commentIsPinFilter, selectorFns$10.isPin]);
+			this.commentIsNoteFilter.isEnable && whitePairs.push([this.commentIsNoteFilter, selectorFns$10.isNote]);
+			this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns$10.isLink]);
+			this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns$10.isMe]);
 			const forceBlackPairs = [];
-			this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns$10.root.content]);
-			this.commentBotFilter.isEnable && forceBlackPairs.push([this.commentBotFilter, selectorFns$10.root.username]);
+			this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns$10.content]);
+			this.commentBotFilter.isEnable && forceBlackPairs.push([this.commentBotFilter, selectorFns$10.username]);
 			const rootBlackIdxSet = await coreCheck(rootComments, true, "style", blackPairs, whitePairs, forceBlackPairs, true);
 			const time = (performance.now() - timer).toFixed(1);
 			logger.debug(`CommentFilterCommon hide ${rootBlackIdxSet.size} in ${rootComments.length} root comments, mode=${mode}, time=${time}`);
@@ -4277,7 +4273,7 @@
 			const timer = performance.now();
 			if (mode === "full") commentRpidLevelMap.clear();
 			let revertAll = false;
-			if (!(this.commentUsernameFilter.isEnable || this.commentUsernameKeywordFilter.isEnable || this.commentContentFilter.isEnable || this.commentAdFilter.isEnable || this.commentLevelFilter.isEnable || this.commentNoFaceFilter.isEnable || this.commentBotFilter.isEnable || this.commentCallBotFilter.isEnable || this.commentCallUserFilter.isEnable || this.commentCallUserNoReplyFilter.isEnable || this.commentCallUserOnlyFilter.isEnable || this.commentCallUserOnlyNoReplyFilter.isEnable || this.commentEmojiOnlyFilter.isEnable || this.commentChainFilter.isEnable)) revertAll = true;
+			if (!(this.commentUsernameFilter.isEnable || this.commentUsernameKeywordFilter.isEnable || this.commentContentFilter.isEnable || this.commentAdFilter.isEnable || this.commentLevelFilter.isEnable || this.commentNoFaceFilter.isEnable || this.commentBotFilter.isEnable || this.commentCallBotFilter.isEnable || this.commentCallUserFilter.isEnable || this.commentCallUserOnlyFilter.isEnable || this.commentEmojiOnlyFilter.isEnable || this.commentChainFilter.isEnable)) revertAll = true;
 			let subComments = [];
 			if (ShadowInstance.shadowStore.has("BILI-COMMENT-REPLY-RENDERER")) {
 				subComments = Array.from(ShadowInstance.shadowStore.get("BILI-COMMENT-REPLY-RENDERER")).map((v) => v.host);
@@ -4287,18 +4283,16 @@
 			if (config_default.isDebugMode) subComments.forEach((v) => {
 				logger.debug([
 					`CommentFilterCommon subComments`,
-					`username: ${selectorFns$10.sub.username(v)}`,
-					`content: ${selectorFns$10.sub.content(v)}`,
-					`callUser: ${selectorFns$10.sub.callUser(v)}`,
-					`callUserNoReply: ${selectorFns$10.sub.callUserNoReply(v)}`,
-					`callUserOnly: ${selectorFns$10.sub.callUserOnly(v)}`,
-					`callUserOnlyNoReply: ${selectorFns$10.sub.callUserOnlyNoReply(v)}`,
-					`level: ${selectorFns$10.sub.level(v)}`,
-					`noface: ${selectorFns$10.sub.noface(v)}`,
-					`isUp: ${selectorFns$10.sub.isUp(v)}`,
-					`isLink: ${selectorFns$10.sub.isLink(v)}`,
-					`isMe: ${selectorFns$10.sub.isMe(v)}`,
-					`emojiOnly: ${selectorFns$10.sub.emojiOnly(v)}`
+					`username: ${selectorFns$10.username(v)}`,
+					`content: ${selectorFns$10.content(v)}`,
+					`callUser: ${selectorFns$10.callUser(v)}`,
+					`callUserOnly: ${selectorFns$10.callUserOnly(v)}`,
+					`level: ${selectorFns$10.level(v)}`,
+					`noface: ${selectorFns$10.noface(v)}`,
+					`isUp: ${selectorFns$10.isUp(v)}`,
+					`isLink: ${selectorFns$10.isLink(v)}`,
+					`isMe: ${selectorFns$10.isMe(v)}`,
+					`emojiOnly: ${selectorFns$10.emojiOnly(v)}`
 				].join("\n"));
 			});
 			if (isSubWhite || revertAll) {
@@ -4306,29 +4300,27 @@
 				return;
 			}
 			const blackPairs = [];
-			this.commentUsernameFilter.isEnable && blackPairs.push([this.commentUsernameFilter, selectorFns$10.sub.username]);
-			this.commentUsernameKeywordFilter.isEnable && blackPairs.push([this.commentUsernameKeywordFilter, selectorFns$10.sub.username]);
-			this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns$10.sub.content]);
-			this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns$10.sub.level]);
-			this.commentNoFaceFilter.isEnable && blackPairs.push([this.commentNoFaceFilter, selectorFns$10.sub.noface]);
-			this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns$10.sub.username]);
-			this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns$10.sub.callBot]);
-			this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns$10.sub.callUser]);
-			this.commentCallUserNoReplyFilter.isEnable && blackPairs.push([this.commentCallUserNoReplyFilter, selectorFns$10.sub.callUserNoReply]);
-			this.commentCallUserOnlyFilter.isEnable && blackPairs.push([this.commentCallUserOnlyFilter, selectorFns$10.sub.callUserOnly]);
-			this.commentCallUserOnlyNoReplyFilter.isEnable && blackPairs.push([this.commentCallUserOnlyNoReplyFilter, selectorFns$10.sub.callUserOnlyNoReply]);
-			this.commentEmojiOnlyFilter.isEnable && blackPairs.push([this.commentEmojiOnlyFilter, selectorFns$10.sub.emojiOnly]);
+			this.commentUsernameFilter.isEnable && blackPairs.push([this.commentUsernameFilter, selectorFns$10.username]);
+			this.commentUsernameKeywordFilter.isEnable && blackPairs.push([this.commentUsernameKeywordFilter, selectorFns$10.username]);
+			this.commentContentFilter.isEnable && blackPairs.push([this.commentContentFilter, selectorFns$10.content]);
+			this.commentLevelFilter.isEnable && blackPairs.push([this.commentLevelFilter, selectorFns$10.level]);
+			this.commentNoFaceFilter.isEnable && blackPairs.push([this.commentNoFaceFilter, selectorFns$10.noface]);
+			this.commentBotFilter.isEnable && blackPairs.push([this.commentBotFilter, selectorFns$10.username]);
+			this.commentCallBotFilter.isEnable && blackPairs.push([this.commentCallBotFilter, selectorFns$10.callBot]);
+			this.commentCallUserFilter.isEnable && blackPairs.push([this.commentCallUserFilter, selectorFns$10.callUser]);
+			this.commentCallUserOnlyFilter.isEnable && blackPairs.push([this.commentCallUserOnlyFilter, selectorFns$10.callUserOnly]);
+			this.commentEmojiOnlyFilter.isEnable && blackPairs.push([this.commentEmojiOnlyFilter, selectorFns$10.emojiOnly]);
 			const whitePairs = [];
-			this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns$10.sub.isUp]);
-			this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns$10.sub.isLink]);
-			this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns$10.sub.isMe]);
+			this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns$10.isUp]);
+			this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns$10.isLink]);
+			this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns$10.isMe]);
 			const forceBlackPairs = [];
-			this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns$10.sub.content]);
+			this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns$10.content]);
 			const subBlackIdxSet = await coreCheck(subComments, false, "style", blackPairs, whitePairs, forceBlackPairs, true);
 			updateCommentRpidLevelMap(subComments, subBlackIdxSet, true);
 			let chainBlackIdxSet = new Set();
 			if (this.commentChainFilter.isEnable && this.commentChainLevel > 0) for (let round = 1; round <= this.commentChainLevel; round++) {
-				const chainBlackPairs = [...blackPairs, [this.commentChainFilter, selectorFns$10.sub.isReplyToFiltered]];
+				const chainBlackPairs = [...blackPairs, [this.commentChainFilter, selectorFns$10.isReplyToFiltered]];
 				chainBlackIdxSet = await coreCheck(subComments, false, "style", chainBlackPairs, whitePairs, forceBlackPairs, true);
 				updateCommentRpidLevelMap(subComments, chainBlackIdxSet, false);
 			}
@@ -4547,20 +4539,6 @@
 				},
 				{
 					type: "switch",
-					id: GM_KEYS$10.black.callUserOnlyNoReply.statusKey,
-					name: "过滤 只含 @其他用户 的无回复评论",
-					noStyle: true,
-					enableFn: () => {
-						mainFilter$10.commentCallUserOnlyNoReplyFilter.enable();
-						mainFilter$10.check("full");
-					},
-					disableFn: () => {
-						mainFilter$10.commentCallUserOnlyNoReplyFilter.disable();
-						mainFilter$10.check("full");
-					}
-				},
-				{
-					type: "switch",
 					id: GM_KEYS$10.black.callUser.statusKey,
 					name: "过滤 包含 @其他用户 的全部评论",
 					noStyle: true,
@@ -4570,20 +4548,6 @@
 					},
 					disableFn: () => {
 						mainFilter$10.commentCallUserFilter.disable();
-						mainFilter$10.check("full");
-					}
-				},
-				{
-					type: "switch",
-					id: GM_KEYS$10.black.callUserNoReply.statusKey,
-					name: "过滤 包含 @其他用户 的无回复评论",
-					noStyle: true,
-					enableFn: () => {
-						mainFilter$10.commentCallUserNoReplyFilter.enable();
-						mainFilter$10.check("full");
-					},
-					disableFn: () => {
-						mainFilter$10.commentCallUserNoReplyFilter.disable();
 						mainFilter$10.check("full");
 					}
 				}
@@ -12401,7 +12365,7 @@
 		return function(...args) {
 			if (!called) {
 				called = true;
-				cache = func(...args);
+				cache = func.apply(this, args);
 			}
 			return cache;
 		};

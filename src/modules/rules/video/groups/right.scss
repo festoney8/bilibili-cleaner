@@ -131,15 +131,20 @@ html[video-page-hide-right-container-multi-page-add-counter] {
 
 // 展开 视频合集 第二行标题
 html[video-page-right-container-section-unfold-title] {
-    .video-pod.video-pod .section .video-pod__item {
-        .title {
-            height: fit-content !important;
-        }
-        .title-txt {
-            -webkit-line-clamp: 2 !important;
-            line-height: 21px !important;
-            margin-top: 4px !important;
-            margin-bottom: 4px !important;
+    .video-pod.video-pod {
+        .section,
+        .multip {
+            .video-pod__item {
+                .title {
+                    height: fit-content !important;
+                }
+                .title-txt {
+                    -webkit-line-clamp: 2 !important;
+                    line-height: 21px !important;
+                    margin-top: 4px !important;
+                    margin-bottom: 4px !important;
+                }
+            }
         }
     }
 }

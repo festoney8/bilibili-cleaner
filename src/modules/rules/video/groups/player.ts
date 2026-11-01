@@ -3,6 +3,12 @@ import { Item } from '@/types/item'
 export const videoPlayerItems: Item[] = [
     {
         type: 'switch',
+        id: 'video-page-rotate-video-180',
+        name: '视频画面旋转 180°',
+        description: ['不影响弹幕、外挂字幕和控制栏，内嵌字幕随画面旋转', '开关即时生效，刷新后保留设置'],
+    },
+    {
+        type: 'switch',
         id: 'video-page-hide-bpx-player-bili-guide-all',
         name: '隐藏 一键三连',
     },

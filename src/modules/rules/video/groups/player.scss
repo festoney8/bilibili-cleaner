@@ -1,3 +1,11 @@
+// 视频画面旋转 180°，保留视频自身的居中、缩放和镜像变换
+html[video-page-rotate-video-180] {
+    #bilibili-player .bpx-player-video-wrap {
+        rotate: 180deg !important;
+        transform-origin: center center !important;
+    }
+}
+
 // 隐藏 一键三连
 html[video-page-hide-bpx-player-bili-guide-all] {
     .bili-follow-to-electric,

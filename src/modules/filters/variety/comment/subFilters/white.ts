@@ -12,3 +12,5 @@ export class CommentIsLinkFilter extends BooleanFilter {}
 export class CommentIsMeFilter extends BooleanFilter {}
 
 export class CommentLikeWhiteFilter extends NumberMaxFilter {}
+
+export class CommentRcountWhiteFilter extends NumberMaxFilter {}

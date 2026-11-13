@@ -46,6 +46,9 @@ watchThrottled(
                 if (!item.noStyle) {
                     document.documentElement.removeAttribute(item.attrName ?? item.id)
                 }
+                item.disableFn?.()?.catch((err) => {
+                    throw err
+                })
             } else if (currValue.value !== oldValue) {
                 item.fn(currValue.value)?.catch((err) => {
                     throw err

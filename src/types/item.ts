@@ -85,6 +85,9 @@ export interface INumberItem extends IBaseItem<'number'> {
      * @param value 当前数值
      */
     fn: (value: number) => Promise<void> | void
+
+    // 数值为禁用值时触发函数
+    disableFn?: () => Promise<void> | void
 }
 
 // 文本设定功能

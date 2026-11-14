@@ -114,23 +114,21 @@ html[homepage-hide-ad-card] main {
         display: none !important;
     }
 
-    // 布局调整
-    .recommended-container_floor-aside .container > *:nth-of-type(n + 5) {
-        margin-top: 0 !important;
-    }
+    .recommended-container_floor-aside .container {
+        // 布局调整
+        > *:nth-of-type(n + 5) {
+            margin-top: 0 !important;
+        }
 
-    // 完全展示10个推荐项
-    .recommended-container_floor-aside .container .feed-card:nth-of-type(n + 9) {
-        display: initial;
-    }
-    .recommended-container_floor-aside .container > *:nth-of-type(n + 13) {
-        margin-top: 0 !important;
-    }
-    .recommended-container_floor-aside .container .feed-card:nth-of-type(n + 12) {
-        display: initial;
-    }
-    .recommended-container_floor-aside .container .floor-single-card:first-of-type {
-        margin-top: 0 !important;
+        // 完全展示10个推荐项
+        .feed-card:nth-of-type(n + 9),
+        .feed-card:nth-of-type(n + 12) {
+            display: initial;
+        }
+        > *:nth-of-type(n + 13),
+        .floor-single-card:first-of-type {
+            margin-top: 0 !important;
+        }
     }
 }
 
@@ -138,8 +136,11 @@ html[homepage-hide-ad-card] main {
 html[homepage-hide-live-card-recommend] main {
     .bili-live-card,
     .bili-feed-card:has(.bili-live-card),
-    .floor-single-card:has([href^='//live.bilibili.com'], [href^='live.bilibili.com'], [href^='https://live.bilibili.com'])
-    {
+    .floor-single-card:has(
+        [href^='//live.bilibili.com'],
+        [href^='live.bilibili.com'],
+        [href^='https://live.bilibili.com']
+    ) {
         display: none !important;
     }
 }

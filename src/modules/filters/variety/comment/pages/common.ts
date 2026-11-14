@@ -38,6 +38,8 @@ import {
     CommentIsNoteFilter,
     CommentIsPinFilter,
     CommentIsUpFilter,
+    CommentLikeWhiteFilter,
+    CommentRcountWhiteFilter,
 } from '../subFilters/white'
 import { escapeRegExp } from 'es-toolkit/string'
 
@@ -103,6 +105,12 @@ const GM_KEYS = {
         },
         isLink: {
             statusKey: 'video-comment-link-whitelist-status',
+        },
+        like: {
+            valueKey: 'video-comment-like-whitelist-value',
+        },
+        rcount: {
+            valueKey: 'video-comment-rcount-whitelist-value',
         },
     },
 }
@@ -239,7 +247,14 @@ const selectorFns = {
         }
         return false
     },
+    // 点赞数
+    like: (comment: HTMLElement): SelectorResult => {
+        return (comment as any).__data?.like
+    },
     // 仅一级评论使用
+    rcount: (comment: HTMLElement): SelectorResult => {
+        return (comment as any).__data?.rcount
+    },
     isPin: (comment: HTMLElement): SelectorResult => {
         return !!(comment as any).__data?.reply_control?.is_up_top
     },
@@ -319,6 +334,8 @@ class CommentFilterCommon implements IMainFilter {
     commentIsNoteFilter = new CommentIsNoteFilter()
     commentIsLinkFilter = new CommentIsLinkFilter()
     commentIsMeFilter = new CommentIsMeFilter()
+    commentLikeWhiteFilter = new CommentLikeWhiteFilter()
+    commentRcountWhiteFilter = new CommentRcountWhiteFilter()
 
     init() {
         // 黑名单
@@ -330,6 +347,17 @@ class CommentFilterCommon implements IMainFilter {
         this.commentChainLevel = typeof chainLevel === 'number' ? clamp(chainLevel, 0, 10) : 1
         this.commentBotFilter.setParam(bots)
         this.commentAdFilter.setParam([`/(bili2233\\.cn|b23\\.tv)\\/(mall-|cm-)|领券|gaoneng\\.bilibili\\.com/`])
+        // 白名单
+        const likeWhiteThreshold = GM_getValue(GM_KEYS.white.like.valueKey, -1)
+        if (typeof likeWhiteThreshold === 'number' && likeWhiteThreshold >= 0) {
+            this.commentLikeWhiteFilter.setParam(likeWhiteThreshold)
+            this.commentLikeWhiteFilter.enable()
+        }
+        const rcountWhiteThreshold = GM_getValue(GM_KEYS.white.rcount.valueKey, -1)
+        if (typeof rcountWhiteThreshold === 'number' && rcountWhiteThreshold >= 0) {
+            this.commentRcountWhiteFilter.setParam(rcountWhiteThreshold)
+            this.commentRcountWhiteFilter.enable()
+        }
     }
 
     /**
@@ -379,6 +407,8 @@ class CommentFilterCommon implements IMainFilter {
                         `callUser: ${selectorFns.callUser(v)}`,
                         `callUserOnly: ${selectorFns.callUserOnly(v)}`,
                         `level: ${selectorFns.level(v)}`,
+                        `like: ${selectorFns.like(v)}`,
+                        `rcount: ${selectorFns.rcount(v)}`,
                         `noface: ${selectorFns.noface(v)}`,
                         `isUp: ${selectorFns.isUp(v)}`,
                         `isPin: ${selectorFns.isPin(v)}`,
@@ -415,6 +445,8 @@ class CommentFilterCommon implements IMainFilter {
         this.commentIsNoteFilter.isEnable && whitePairs.push([this.commentIsNoteFilter, selectorFns.isNote])
         this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns.isLink])
         this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns.isMe])
+        this.commentLikeWhiteFilter.isEnable && whitePairs.push([this.commentLikeWhiteFilter, selectorFns.like])
+        this.commentRcountWhiteFilter.isEnable && whitePairs.push([this.commentRcountWhiteFilter, selectorFns.rcount])
 
         const forceBlackPairs: SubFilterPair[] = []
         this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns.content])
@@ -486,6 +518,7 @@ class CommentFilterCommon implements IMainFilter {
                         `callUser: ${selectorFns.callUser(v)}`,
                         `callUserOnly: ${selectorFns.callUserOnly(v)}`,
                         `level: ${selectorFns.level(v)}`,
+                        `like: ${selectorFns.like(v)}`,
                         `noface: ${selectorFns.noface(v)}`,
                         `isUp: ${selectorFns.isUp(v)}`,
                         `isLink: ${selectorFns.isLink(v)}`,
@@ -519,6 +552,7 @@ class CommentFilterCommon implements IMainFilter {
         this.commentIsUpFilter.isEnable && whitePairs.push([this.commentIsUpFilter, selectorFns.isUp])
         this.commentIsLinkFilter.isEnable && whitePairs.push([this.commentIsLinkFilter, selectorFns.isLink])
         this.commentIsMeFilter.isEnable && whitePairs.push([this.commentIsMeFilter, selectorFns.isMe])
+        this.commentLikeWhiteFilter.isEnable && whitePairs.push([this.commentLikeWhiteFilter, selectorFns.like])
 
         const forceBlackPairs: SubFilterPair[] = []
         this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns.content])
@@ -964,6 +998,56 @@ export const commentFilterCommonGroups: Group[] = [
                 },
                 disableFn: () => {
                     mainFilter.commentIsLinkFilter.disable()
+                    mainFilter.check('full')
+                },
+            },
+            {
+                type: 'number',
+                id: GM_KEYS.white.like.valueKey,
+                name: '高赞评论 免过滤 (-1禁用)',
+                noStyle: true,
+                minValue: -1,
+                maxValue: 1000,
+                step: 1,
+                defaultValue: -1,
+                disableValue: -1,
+                addonText: '个',
+                fn: (value: number) => {
+                    if (value >= 0) {
+                        mainFilter.commentLikeWhiteFilter.setParam(value)
+                        mainFilter.commentLikeWhiteFilter.enable()
+                    } else {
+                        mainFilter.commentLikeWhiteFilter.disable()
+                    }
+                    mainFilter.check('full')
+                },
+                disableFn: () => {
+                    mainFilter.commentLikeWhiteFilter.disable()
+                    mainFilter.check('full')
+                },
+            },
+            {
+                type: 'number',
+                id: GM_KEYS.white.rcount.valueKey,
+                name: '高回复评论 免过滤 (-1禁用)',
+                noStyle: true,
+                minValue: -1,
+                maxValue: 100,
+                step: 1,
+                defaultValue: -1,
+                disableValue: -1,
+                addonText: '条',
+                fn: (value: number) => {
+                    if (value >= 0) {
+                        mainFilter.commentRcountWhiteFilter.setParam(value)
+                        mainFilter.commentRcountWhiteFilter.enable()
+                    } else {
+                        mainFilter.commentRcountWhiteFilter.disable()
+                    }
+                    mainFilter.check('full')
+                },
+                disableFn: () => {
+                    mainFilter.commentRcountWhiteFilter.disable()
                     mainFilter.check('full')
                 },
             },

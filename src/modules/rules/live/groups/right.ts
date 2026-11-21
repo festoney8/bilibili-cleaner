@@ -105,16 +105,6 @@ export const liveRightItems: Item[] = [
     },
     {
         type: 'switch',
-        id: 'live-page-chat-input-ctnr-medal-section',
-        name: '隐藏 发送框 粉丝勋章',
-    },
-    {
-        type: 'switch',
-        id: 'live-page-chat-input-ctnr-send-btn',
-        name: '隐藏 发送框 发送按钮 (回车发送)',
-    },
-    {
-        type: 'switch',
         id: 'live-page-chat-input-ctnr',
         name: '隐藏 发送框',
     },

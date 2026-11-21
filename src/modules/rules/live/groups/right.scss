@@ -89,8 +89,7 @@ html[live-page-rank-list-vm] {
 
 // 隐藏 系统提示
 html[live-page-convention-msg] {
-    .convention-msg.border-box,
-    .new-video-pk-item-dm {
+    #chat-history-list .room-entry-intro > div:nth-child(1) {
         display: none !important;
     }
 }

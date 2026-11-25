@@ -232,13 +232,21 @@ const getVideoEchoContext = (): VideoEchoContext => {
     return context
 }
 
+const getCommentRpid = (comment: HTMLElement): string => {
+    const data = (comment as any).__data
+    if (!data) {
+        return ''
+    }
+    return typeof data.rpid_str === 'string' ? data.rpid_str : String(data.rpid ?? '')
+}
+
 // 从已有 DOM / __data 提取端侧 AI 融合特征输入（不发额外请求）
 const extractAiInput = (comment: HTMLElement, isSub: boolean): CommentAiInput | undefined => {
     const data = (comment as any).__data
     if (!data) {
         return undefined
     }
-    const rpid = typeof data.rpid_str === 'string' ? data.rpid_str : String(data.rpid ?? '')
+    const rpid = getCommentRpid(comment)
     const uname = typeof data.member?.uname === 'string' ? data.member.uname.trim() : ''
     const level =
         typeof data.member?.level_info?.current_level === 'number' ? data.member.level_info.current_level : undefined
@@ -413,6 +421,35 @@ const updateCommentRpidLevelMap = (comments: HTMLElement[], hiddenIndexes: Set<n
 let isRootWhite = false
 let isSubWhite = false
 
+const isElementWhitelisted = async (el: HTMLElement, whitePairs: SubFilterPair[]): Promise<boolean> => {
+    for (const pair of whitePairs) {
+        try {
+            await pair[0].check(el, pair[1])
+        } catch {
+            return true
+        }
+    }
+    return false
+}
+
+const collectPreservedAiHiddenIndexes = async (
+    elements: HTMLElement[],
+    aiFilter: CommentAiFilter,
+    whitePairs: SubFilterPair[],
+): Promise<Set<number>> => {
+    const preserved = new Set<number>()
+    for (let i = 0; i < elements.length; i++) {
+        const rpid = getCommentRpid(elements[i])
+        if (!aiFilter.isCachedBlocked(rpid)) {
+            continue
+        }
+        if (!(await isElementWhitelisted(elements[i], whitePairs))) {
+            preserved.add(i)
+        }
+    }
+    return preserved
+}
+
 const runAiStage = async (
     elements: HTMLElement[],
     baseBlackIdxSet: Set<number>,
@@ -425,20 +462,11 @@ const runAiStage = async (
         if (baseBlackIdxSet.has(i)) {
             continue
         }
-        let whiteHit = false
-        for (const pair of whitePairs) {
-            try {
-                await pair[0].check(elements[i], pair[1])
-            } catch {
-                whiteHit = true
-                break
-            }
-        }
-        if (!whiteHit) {
+        if (!(await isElementWhitelisted(elements[i], whitePairs))) {
             candidateIndexes.push(i)
         }
     }
-    if (!candidateIndexes.length) {
+    if (!candidateIndexes.length || isStale()) {
         return new Set()
     }
     const aiResult = await coreCheck(
@@ -603,17 +631,28 @@ class CommentFilterCommon implements IMainFilter {
         this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns.content])
         this.commentBotFilter.isEnable && forceBlackPairs.push([this.commentBotFilter, selectorFns.username])
 
+        const shouldRunAi = this.commentAiFilter.isEnable && this.commentAiFilter.isReady()
+        const preserveAiHiddenIdx = shouldRunAi
+            ? await collectPreservedAiHiddenIndexes(rootComments, this.commentAiFilter, whitePairs)
+            : undefined
+        if (isStale()) {
+            return
+        }
         const rootBlackIdxSet = await coreCheck(
             rootComments,
-            true,
+            !shouldRunAi,
             'style',
             blackPairs,
             whitePairs,
             forceBlackPairs,
             true,
             isStale,
+            preserveAiHiddenIdx,
         )
-        const finalRootBlackIdxSet = this.commentAiFilter.isEnable
+        if (isStale()) {
+            return
+        }
+        const finalRootBlackIdxSet = shouldRunAi
             ? new Set([
                   ...rootBlackIdxSet,
                   ...(await runAiStage(
@@ -625,6 +664,17 @@ class CommentFilterCommon implements IMainFilter {
                   )),
               ])
             : rootBlackIdxSet
+        if (isStale()) {
+            return
+        }
+        if (shouldRunAi) {
+            requestAnimationFrame(() => {
+                if (isStale()) {
+                    return
+                }
+                rootComments.forEach((el) => el.setAttribute(config.filterVisitSign, ''))
+            })
+        }
         const time = (performance.now() - timer).toFixed(1)
         logger.debug(
             `CommentFilterCommon hide ${finalRootBlackIdxSet.size} in ${rootComments.length} root comments, mode=${mode}, time=${time}`,
@@ -724,6 +774,13 @@ class CommentFilterCommon implements IMainFilter {
         const forceBlackPairs: SubFilterPair[] = []
         this.commentAdFilter.isEnable && forceBlackPairs.push([this.commentAdFilter, selectorFns.content])
 
+        const shouldRunAi = this.commentAiFilter.isEnable && this.commentAiFilter.isReady()
+        const preserveAiHiddenIdx = shouldRunAi
+            ? await collectPreservedAiHiddenIndexes(subComments, this.commentAiFilter, whitePairs)
+            : undefined
+        if (isStale()) {
+            return
+        }
         const subBlackIdxSet = await coreCheck(
             subComments,
             false,
@@ -733,8 +790,12 @@ class CommentFilterCommon implements IMainFilter {
             forceBlackPairs,
             true,
             isStale,
+            preserveAiHiddenIdx,
         )
-        const finalSubBlackIdxSet = this.commentAiFilter.isEnable
+        if (isStale()) {
+            return
+        }
+        const finalSubBlackIdxSet = shouldRunAi
             ? new Set([
                   ...subBlackIdxSet,
                   ...(await runAiStage(
@@ -746,6 +807,9 @@ class CommentFilterCommon implements IMainFilter {
                   )),
               ])
             : subBlackIdxSet
+        if (isStale()) {
+            return
+        }
 
         // 更新rpid map，开始多轮链式过滤检查
         updateCommentRpidLevelMap(subComments, finalSubBlackIdxSet, true)
@@ -767,6 +831,9 @@ class CommentFilterCommon implements IMainFilter {
                     isStale,
                     finalSubBlackIdxSet,
                 )
+                if (isStale()) {
+                    return
+                }
                 updateCommentRpidLevelMap(subComments, chainBlackIdxSet, false)
             }
         }

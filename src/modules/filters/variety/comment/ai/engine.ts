@@ -74,7 +74,7 @@ class CommentAiEngine {
     }
 
     async dispose(): Promise<void> {
-        this.loadGeneration++
+        const disposedGeneration = ++this.loadGeneration
         this.status = 'idle'
         this.loadPromise = null
         this.readyCallbacks.length = 0
@@ -83,17 +83,21 @@ class CommentAiEngine {
         this.pendingByRpid.clear()
         this.tokenizer = null
         this.fusionConfig = null
-        await this.inferringChain.catch(() => {})
-        const session = this.session
+        const sessionToRelease = this.session
         this.session = null
-        if (session) {
-            await session.release().catch(() => {})
+        const blobUrlToRevoke = this.mjsBlobUrl
+        this.mjsBlobUrl = null
+        const chainToDrain = this.inferringChain
+        await chainToDrain.catch(() => {})
+        if (sessionToRelease) {
+            await sessionToRelease.release().catch(() => {})
         }
-        if (this.mjsBlobUrl) {
-            URL.revokeObjectURL(this.mjsBlobUrl)
-            this.mjsBlobUrl = null
+        if (blobUrlToRevoke) {
+            URL.revokeObjectURL(blobUrlToRevoke)
         }
-        ;(ort.env.wasm as { wasmBinary?: unknown }).wasmBinary = undefined
+        if (this.loadGeneration === disposedGeneration) {
+            ;(ort.env.wasm as { wasmBinary?: unknown }).wasmBinary = undefined
+        }
     }
 
     async ensureLoaded(onReady?: () => void): Promise<boolean> {
@@ -108,12 +112,14 @@ class CommentAiEngine {
             return this.loadPromise
         }
         this.status = 'loading'
-        this.loadPromise = this.doLoad(this.loadGeneration)
+        const generation = ++this.loadGeneration
+        this.loadPromise = this.doLoad(generation)
         return this.loadPromise
     }
 
     private async doLoad(generation: number): Promise<boolean> {
         const totalStart = performance.now()
+        let localBlobUrl: string | null = null
         try {
             const [modelAsset, vocabAsset, fusionAsset, ortMjsAsset, ortWasmAsset] = await Promise.all([
                 loadStaticAsset(AI_ASSETS.model),
@@ -122,6 +128,9 @@ class CommentAiEngine {
                 loadStaticAsset(AI_ASSETS.ortMjs),
                 loadStaticAsset(AI_ASSETS.ortWasm),
             ])
+            if (generation !== this.loadGeneration) {
+                return false
+            }
 
             const decoder = new TextDecoder()
             const vocabText = decoder.decode(vocabAsset.buffer)
@@ -130,29 +139,34 @@ class CommentAiEngine {
             const tokenizer = new WordPieceTokenizer(vocabText)
             const fusionConfig = validateFusionWeightsConfig(JSON.parse(fusionText))
 
-            if (this.mjsBlobUrl) {
-                URL.revokeObjectURL(this.mjsBlobUrl)
-            }
             const mjsBlob = new Blob([ortMjsAsset.buffer], { type: 'text/javascript' })
-            const mjsBlobUrl = URL.createObjectURL(mjsBlob)
-            this.mjsBlobUrl = mjsBlobUrl
+            localBlobUrl = URL.createObjectURL(mjsBlob)
 
             ort.env.wasm.numThreads = 1
             ort.env.wasm.proxy = false
-            ort.env.wasm.wasmPaths = { mjs: mjsBlobUrl }
+            ort.env.wasm.wasmPaths = { mjs: localBlobUrl }
             ort.env.wasm.wasmBinary = new Uint8Array(ortWasmAsset.buffer)
 
             const sessionStart = performance.now()
             const session = await ort.InferenceSession.create(new Uint8Array(modelAsset.buffer), {
                 executionProviders: ['wasm'],
             })
-            ;(ort.env.wasm as { wasmBinary?: unknown }).wasmBinary = undefined
+            if (generation === this.loadGeneration) {
+                ;(ort.env.wasm as { wasmBinary?: unknown }).wasmBinary = undefined
+            }
             const sessionMs = performance.now() - sessionStart
             if (generation !== this.loadGeneration) {
                 await session.release().catch(() => {})
+                URL.revokeObjectURL(localBlobUrl)
+                localBlobUrl = null
                 return false
             }
 
+            if (this.mjsBlobUrl) {
+                URL.revokeObjectURL(this.mjsBlobUrl)
+            }
+            this.mjsBlobUrl = localBlobUrl
+            localBlobUrl = null
             this.tokenizer = tokenizer
             this.fusionConfig = fusionConfig
             this.session = session
@@ -189,16 +203,15 @@ class CommentAiEngine {
             })
             return true
         } catch (err) {
+            if (localBlobUrl) {
+                URL.revokeObjectURL(localBlobUrl)
+            }
             if (generation === this.loadGeneration) {
                 this.status = 'failed'
                 this.loadPromise = null
+                this.readyCallbacks.length = 0
+                ;(ort.env.wasm as { wasmBinary?: unknown }).wasmBinary = undefined
             }
-            this.readyCallbacks.length = 0
-            if (this.mjsBlobUrl) {
-                URL.revokeObjectURL(this.mjsBlobUrl)
-                this.mjsBlobUrl = null
-            }
-            ;(ort.env.wasm as { wasmBinary?: unknown }).wasmBinary = undefined
             logger.error('[AI] Failed to initialize OjinjinNet-Nano', err)
             return false
         }
@@ -309,14 +322,18 @@ class CommentAiEngine {
                 }
                 const inputIdsTensor = new ort.Tensor('int64', ids, [sub.length, maxSeqLen])
                 const maskTensor = new ort.Tensor('int64', mask, [sub.length, maxSeqLen])
-                const inferStart = performance.now()
-                const results = await session.run({ input_ids: inputIdsTensor, attention_mask: maskTensor })
-                inferMs += performance.now() - inferStart
-                const outData = results.logits.data as Float32Array
-                for (let b = 0; b < sub.length; b++) logits[sub[b]] = outData[b]
-                inputIdsTensor.dispose?.()
-                maskTensor.dispose?.()
-                results.logits.dispose?.()
+                let results: ort.InferenceSession.OnnxValueMapType | undefined
+                try {
+                    const inferStart = performance.now()
+                    results = await session.run({ input_ids: inputIdsTensor, attention_mask: maskTensor })
+                    inferMs += performance.now() - inferStart
+                    const outData = results.logits.data as Float32Array
+                    for (let b = 0; b < sub.length; b++) logits[sub[b]] = outData[b]
+                } finally {
+                    inputIdsTensor.dispose?.()
+                    maskTensor.dispose?.()
+                    results?.logits?.dispose?.()
+                }
                 const isLastSubBatch = bucketPos === sortedBuckets.length - 1 && offset + batchSize >= idxs.length
                 if (!isLastSubBatch && inferMs > 12) {
                     const yieldStart = performance.now()

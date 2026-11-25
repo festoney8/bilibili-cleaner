@@ -56,6 +56,18 @@ export class CommentAiFilter implements ISubFilter {
         this.threshold = value
     }
 
+    isReady(): boolean {
+        return commentAiEngine.isReady()
+    }
+
+    isCachedBlocked(rpid: string): boolean {
+        if (!this.isEnable || !rpid) {
+            return false
+        }
+        const score = commentAiEngine.getCachedScore(rpid)
+        return score !== undefined && score >= this.threshold
+    }
+
     triggerLoad(onReady?: () => void): void {
         if (onReady) {
             this.onReadyCallback = onReady

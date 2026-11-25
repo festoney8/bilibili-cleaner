@@ -1,11 +1,5 @@
-import { BooleanFilter } from '@/modules/filters/core/subFilters/booleanFilter'
-import { KeywordFilter } from '@/modules/filters/core/subFilters/keywordFilter'
-import { NumberMaxFilter } from '@/modules/filters/core/subFilters/numberMaxFilter'
-import { NumberMinFilter } from '@/modules/filters/core/subFilters/numberMinFilter'
-import { StringFilter } from '@/modules/filters/core/subFilters/stringFilter'
-
-export type SelectorResult = string | boolean | number | undefined
-export type SubFilterType = BooleanFilter | StringFilter | KeywordFilter | NumberMinFilter | NumberMaxFilter
+export type SelectorResult = string | boolean | number | object | undefined
+export type SubFilterType = ISubFilter
 export type SelectorFn = (el: HTMLElement) => SelectorResult
 export type SubFilterPair = [SubFilterType, SelectorFn]
 

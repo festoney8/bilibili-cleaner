@@ -16,6 +16,7 @@
         "@vueuse/integrations": "^14.4.0",
         "emoji-regex-xs": "^2.0.1",
         "n-gram": "^2.0.2",
+        "onnxruntime-web": "^1.31.1",
         "pinia": "^3.0.4",
         "tailwindcss": "^4.3.5",
         "universal-cookie": "^8.1.2",

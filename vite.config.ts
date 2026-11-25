@@ -48,6 +48,12 @@ export default defineConfig({
                 ],
                 icon: 'https://www.bilibili.com/favicon.ico',
                 'run-at': 'document-start',
+                connect: [
+                    'raw.githubusercontent.com',
+                    'cdn.jsdelivr.net',
+                    'registry.npmmirror.com',
+                    'cdn.npmmirror.com',
+                ],
                 downloadURL:
                     'https://update.greasyfork.org/scripts/479861/bilibili%20%E9%A1%B5%E9%9D%A2%E5%87%80%E5%8C%96%E5%A4%A7%E5%B8%88.user.js',
                 updateURL:
@@ -56,6 +62,7 @@ export default defineConfig({
             build: {
                 externalGlobals: {
                     vue: cdn.npmmirror('Vue', 'dist/vue.global.prod.js'),
+                    'onnxruntime-web': cdn.npmmirror('ort', 'dist/ort.wasm.min.js'),
                 },
             },
         }),

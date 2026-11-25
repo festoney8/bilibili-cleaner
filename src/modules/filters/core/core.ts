@@ -14,6 +14,8 @@ const rawCheck = async (
     blackPairs: SubFilterPair[],
     whitePairs?: SubFilterPair[],
     forceBlackPairs?: SubFilterPair[],
+    isStale?: () => boolean,
+    preserveHiddenIdx?: Set<number>,
 ): Promise<Set<number>> => {
     const toHideIdx = new Set<number>()
 
@@ -52,8 +54,13 @@ const rawCheck = async (
         .finally(() => {
             // 隐藏元素、标记已访问
             requestAnimationFrame(() => {
+                if (isStale?.()) {
+                    return
+                }
                 for (let i = 0; i < elements.length; i++) {
-                    toHideIdx.has(i) ? hideEle(elements[i], hideMode) : showEle(elements[i], hideMode)
+                    toHideIdx.has(i) || preserveHiddenIdx?.has(i)
+                        ? hideEle(elements[i], hideMode)
+                        : showEle(elements[i], hideMode)
                     enableFilterVisitSign && elements[i].setAttribute(config.filterVisitSign, '')
                 }
             })
@@ -82,12 +89,21 @@ export const coreCheck = async (
     whitePairs?: SubFilterPair[],
     forceBlackPairs?: SubFilterPair[],
     noThrottle?: boolean,
+    isStale?: () => boolean,
+    preserveHiddenIdx?: Set<number>,
 ): Promise<Set<number>> => {
+    const args = [
+        elements,
+        enableFilterVisitSign,
+        hideMode,
+        blackPairs,
+        whitePairs,
+        forceBlackPairs,
+        isStale,
+        preserveHiddenIdx,
+    ] as const
     if (noThrottle) {
-        return rawCheck(elements, enableFilterVisitSign, hideMode, blackPairs, whitePairs, forceBlackPairs)
+        return rawCheck(...args)
     }
-    return (
-        (await throttledCheck(elements, enableFilterVisitSign, hideMode, blackPairs, whitePairs, forceBlackPairs)) ??
-        new Set<number>()
-    )
+    return (await throttledCheck(...args)) ?? new Set<number>()
 }

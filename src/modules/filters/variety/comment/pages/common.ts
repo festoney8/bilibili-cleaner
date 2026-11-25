@@ -13,13 +13,16 @@ import {
     isPageVideo,
 } from '@/utils/pageType'
 import ShadowInstance from '@/utils/shadow'
-import { GM_getValue, GM_setValue } from '$'
+import { GM_getValue, GM_setValue, unsafeWindow } from '$'
 import { showEle } from '@/utils/tool'
 import { uniq } from 'es-toolkit/array'
 import { clamp } from 'es-toolkit/math'
+import { AI_THRESHOLD_MAP, AiFilterLevel } from '../ai/constants'
+import { CommentAiInput, getEchoIndex } from '../ai/fusion'
 import { bots, botsSet } from '../extra/bots'
 import {
     CommentAdFilter,
+    CommentAiFilter,
     CommentBotFilter,
     CommentCallBotFilter,
     CommentCallUserFilter,
@@ -85,6 +88,10 @@ const GM_KEYS = {
         chain: {
             statusKey: 'video-comment-chain-filter-status',
             valueKey: 'video-comment-chain-level-value',
+        },
+        ai: {
+            statusKey: 'video-comment-ai-filter-status',
+            levelKey: 'video-comment-ai-filter-level',
         },
     },
     white: {
@@ -180,12 +187,107 @@ const getPureCommentMessage = (comment: HTMLElement): string => {
     return message.trim()
 }
 
+// 查找二级评论所属的一级评论宿主节点
+const findRootThreadElement = (subComment: HTMLElement): HTMLElement | undefined => {
+    let cur: Node | null = subComment.parentNode
+    while (cur) {
+        if (cur instanceof HTMLElement && cur.tagName === 'BILI-COMMENT-THREAD-RENDERER') {
+            return cur
+        }
+        cur = cur.parentNode ?? (cur instanceof ShadowRoot ? cur.host : null)
+    }
+    return undefined
+}
+
+interface VideoEchoContext {
+    title?: string
+    desc?: string
+    titleEchoIndex: Set<string> | null
+    descEchoIndex: Set<string> | null
+}
+
+let videoEchoContextUrl = ''
+let videoEchoContextCache: VideoEchoContext | null = null
+
+const getVideoEchoContext = (): VideoEchoContext => {
+    if (videoEchoContextCache && videoEchoContextUrl === location.href) {
+        return videoEchoContextCache
+    }
+    const videoData = (unsafeWindow as any).__INITIAL_STATE__?.videoData
+    const title =
+        (typeof videoData?.title === 'string' && videoData.title) ||
+        document.querySelector<HTMLElement>('h1.video-title')?.textContent?.trim() ||
+        undefined
+    const desc = typeof videoData?.desc === 'string' ? videoData.desc : undefined
+    const context = {
+        title,
+        desc,
+        titleEchoIndex: getEchoIndex(title),
+        descEchoIndex: getEchoIndex(desc),
+    }
+    if (title || desc) {
+        videoEchoContextUrl = location.href
+        videoEchoContextCache = context
+    }
+    return context
+}
+
+// 从已有 DOM / __data 提取端侧 AI 融合特征输入（不发额外请求）
+const extractAiInput = (comment: HTMLElement, isSub: boolean): CommentAiInput | undefined => {
+    const data = (comment as any).__data
+    if (!data) {
+        return undefined
+    }
+    const rpid = typeof data.rpid_str === 'string' ? data.rpid_str : String(data.rpid ?? '')
+    const uname = typeof data.member?.uname === 'string' ? data.member.uname.trim() : ''
+    const level =
+        typeof data.member?.level_info?.current_level === 'number' ? data.member.level_info.current_level : undefined
+    const message = typeof data.content?.message === 'string' ? data.content.message : ''
+
+    let rootMessage: string | undefined
+    let rootUname: string | undefined
+    if (isSub) {
+        const rootEl = findRootThreadElement(comment)
+        const rootData = (rootEl as any)?.__data
+        if (typeof rootData?.content?.message === 'string') {
+            rootMessage = rootData.content.message
+        }
+        if (typeof rootData?.member?.uname === 'string') {
+            rootUname = rootData.member.uname.trim()
+        }
+    }
+
+    const videoContext = getVideoEchoContext()
+    const videoTitle = videoContext.title
+    const videoDesc = videoContext.desc
+
+    return {
+        rpid,
+        uname,
+        level,
+        message,
+        isSub,
+        rootMessage,
+        rootUname,
+        videoTitle,
+        videoDesc,
+        videoTitleEchoIndex: videoContext.titleEchoIndex,
+        videoDescEchoIndex: videoContext.descEchoIndex,
+    }
+}
+
 // 记录当前评论区已被过滤的二级评论及其连坐层级
 const commentRpidLevelMap = new Map<string, number>()
 
 const selectorFns = {
     username: (comment: HTMLElement): SelectorResult => {
         return (comment as any).__data?.member?.uname?.trim()
+    },
+    aiRoot: (comment: HTMLElement): SelectorResult => {
+        return extractAiInput(comment, false)
+    },
+    aiSub: (comment: HTMLElement): SelectorResult => {
+        return extractAiInput(comment, true)
     },
     content: (comment: HTMLElement): SelectorResult => {
         return getPureCommentMessage(comment)
@@ -311,7 +413,50 @@ const updateCommentRpidLevelMap = (comments: HTMLElement[], hiddenIndexes: Set<n
 let isRootWhite = false
 let isSubWhite = false
 
+const runAiStage = async (
+    elements: HTMLElement[],
+    baseBlackIdxSet: Set<number>,
+    whitePairs: SubFilterPair[],
+    aiPair: SubFilterPair,
+    isStale: () => boolean,
+): Promise<Set<number>> => {
+    const candidateIndexes: number[] = []
+    for (let i = 0; i < elements.length; i++) {
+        if (baseBlackIdxSet.has(i)) {
+            continue
+        }
+        let whiteHit = false
+        for (const pair of whitePairs) {
+            try {
+                await pair[0].check(elements[i], pair[1])
+            } catch {
+                whiteHit = true
+                break
+            }
+        }
+        if (!whiteHit) {
+            candidateIndexes.push(i)
+        }
+    }
+    if (!candidateIndexes.length) {
+        return new Set()
+    }
+    const aiResult = await coreCheck(
+        candidateIndexes.map((i) => elements[i]),
+        false,
+        'style',
+        [aiPair],
+        undefined,
+        undefined,
+        true,
+        isStale,
+    )
+    return new Set([...aiResult].map((i) => candidateIndexes[i]))
+}
+
 class CommentFilterCommon implements IMainFilter {
+    private rootScanGeneration = 0
+    private subScanGeneration = 0
     target: HTMLElement | undefined
 
     // 黑名单
@@ -327,6 +472,7 @@ class CommentFilterCommon implements IMainFilter {
     commentCallUserOnlyFilter = new CommentCallUserOnlyFilter()
     commentEmojiOnlyFilter = new CommentEmojiOnlyFilter()
     commentChainFilter = new CommentChainFilter()
+    commentAiFilter = new CommentAiFilter()
     commentChainLevel = 1
     // 白名单
     commentIsUpFilter = new CommentIsUpFilter()
@@ -345,6 +491,8 @@ class CommentFilterCommon implements IMainFilter {
         this.commentLevelFilter.setParam(GM_getValue(GM_KEYS.black.level.valueKey, 0))
         const chainLevel = GM_getValue(GM_KEYS.black.chain.valueKey, 1)
         this.commentChainLevel = typeof chainLevel === 'number' ? clamp(chainLevel, 0, 10) : 1
+        const aiLevel = GM_getValue<string>(GM_KEYS.black.ai.levelKey, 'balanced')
+        this.commentAiFilter.setParam(AI_THRESHOLD_MAP[aiLevel as AiFilterLevel] ?? AI_THRESHOLD_MAP.balanced)
         this.commentBotFilter.setParam(bots)
         this.commentAdFilter.setParam([`/(bili2233\\.cn|b23\\.tv)\\/(mall-|cm-)|领券|gaoneng\\.bilibili\\.com/`])
         // 白名单
@@ -366,6 +514,8 @@ class CommentFilterCommon implements IMainFilter {
      * @returns
      */
     async checkRoot(mode?: 'full' | 'incr') {
+        const generation = ++this.rootScanGeneration
+        const isStale = () => generation !== this.rootScanGeneration
         const timer = performance.now()
         let revertAll = false
         if (!(
@@ -379,7 +529,8 @@ class CommentFilterCommon implements IMainFilter {
             this.commentCallBotFilter.isEnable ||
             this.commentCallUserFilter.isEnable ||
             this.commentCallUserOnlyFilter.isEnable ||
-            this.commentEmojiOnlyFilter.isEnable
+            this.commentEmojiOnlyFilter.isEnable ||
+            this.commentAiFilter.isEnable
         )) {
             revertAll = true
         }
@@ -460,10 +611,23 @@ class CommentFilterCommon implements IMainFilter {
             whitePairs,
             forceBlackPairs,
             true,
+            isStale,
         )
+        const finalRootBlackIdxSet = this.commentAiFilter.isEnable
+            ? new Set([
+                  ...rootBlackIdxSet,
+                  ...(await runAiStage(
+                      rootComments,
+                      rootBlackIdxSet,
+                      whitePairs,
+                      [this.commentAiFilter, selectorFns.aiRoot],
+                      isStale,
+                  )),
+              ])
+            : rootBlackIdxSet
         const time = (performance.now() - timer).toFixed(1)
         logger.debug(
-            `CommentFilterCommon hide ${rootBlackIdxSet.size} in ${rootComments.length} root comments, mode=${mode}, time=${time}`,
+            `CommentFilterCommon hide ${finalRootBlackIdxSet.size} in ${rootComments.length} root comments, mode=${mode}, time=${time}`,
         )
     }
 
@@ -473,6 +637,8 @@ class CommentFilterCommon implements IMainFilter {
      * @returns
      */
     async checkSub(mode?: 'full' | 'incr') {
+        const generation = ++this.subScanGeneration
+        const isStale = () => generation !== this.subScanGeneration
         const timer = performance.now()
         if (mode === 'full') {
             commentRpidLevelMap.clear()
@@ -490,7 +656,8 @@ class CommentFilterCommon implements IMainFilter {
             this.commentCallUserFilter.isEnable ||
             this.commentCallUserOnlyFilter.isEnable ||
             this.commentEmojiOnlyFilter.isEnable ||
-            this.commentChainFilter.isEnable
+            this.commentChainFilter.isEnable ||
+            this.commentAiFilter.isEnable
         )) {
             revertAll = true
         }
@@ -565,10 +732,23 @@ class CommentFilterCommon implements IMainFilter {
             whitePairs,
             forceBlackPairs,
             true,
+            isStale,
         )
+        const finalSubBlackIdxSet = this.commentAiFilter.isEnable
+            ? new Set([
+                  ...subBlackIdxSet,
+                  ...(await runAiStage(
+                      subComments,
+                      subBlackIdxSet,
+                      whitePairs,
+                      [this.commentAiFilter, selectorFns.aiSub],
+                      isStale,
+                  )),
+              ])
+            : subBlackIdxSet
 
         // 更新rpid map，开始多轮链式过滤检查
-        updateCommentRpidLevelMap(subComments, subBlackIdxSet, true)
+        updateCommentRpidLevelMap(subComments, finalSubBlackIdxSet, true)
         let chainBlackIdxSet = new Set<number>()
         if (this.commentChainFilter.isEnable && this.commentChainLevel > 0) {
             for (let round = 1; round <= this.commentChainLevel; round++) {
@@ -584,13 +764,15 @@ class CommentFilterCommon implements IMainFilter {
                     whitePairs,
                     forceBlackPairs,
                     true,
+                    isStale,
+                    finalSubBlackIdxSet,
                 )
                 updateCommentRpidLevelMap(subComments, chainBlackIdxSet, false)
             }
         }
         const time = (performance.now() - timer).toFixed(1)
         logger.debug(
-            `CommentFilterCommon hide ${new Set([...subBlackIdxSet, ...chainBlackIdxSet]).size} in ${subComments.length} sub comments, mode=${mode}, time=${time}`,
+            `CommentFilterCommon hide ${new Set([...finalSubBlackIdxSet, ...chainBlackIdxSet]).size} in ${subComments.length} sub comments, mode=${mode}, time=${time}`,
         )
     }
 
@@ -771,6 +953,46 @@ export const commentFilterCommonGroups: Group[] = [
                     mainFilter.commentBotFilter.disable()
                     mainFilter.check('full')
                 },
+            },
+            {
+                type: 'switch',
+                id: GM_KEYS.black.ai.statusKey,
+                name: '启用 本地AI评论过滤 (实验功能)',
+                description: [
+                    '基于 OjinjinNet-Nano v1.2 在浏览器端纯本地识别隐蔽AI评论',
+                    '首次开启需下载约 1.24 MB 模型；完整 WASM 运行时首次网络传输约 4–6 MB，本地缓存约 15 MB',
+                ],
+                defaultEnable: false,
+                noStyle: true,
+                enableFn: () => {
+                    mainFilter.commentAiFilter.enable()
+                    mainFilter.commentAiFilter.triggerLoad(() => {
+                        mainFilter.check('full')
+                    })
+                },
+                disableFn: () => {
+                    mainFilter.commentAiFilter.disable()
+                    mainFilter.check('full')
+                },
+            },
+            {
+                type: 'list',
+                id: GM_KEYS.black.ai.levelKey,
+                name: '本地AI评论过滤 灵敏度',
+                description: ['保守(0.85)极低误杀，均衡(0.65)默认推荐，激进(0.50)更高召回'],
+                defaultValue: 'balanced',
+                disableValue: '',
+                options: (['conservative', 'balanced', 'aggressive'] as AiFilterLevel[]).map((level) => ({
+                    value: level,
+                    name:
+                        level === 'conservative' ? '保守 (0.85)' : level === 'balanced' ? '均衡 (0.65)' : '激进 (0.50)',
+                    fn: () => {
+                        mainFilter.commentAiFilter.setParam(AI_THRESHOLD_MAP[level])
+                        if (mainFilter.commentAiFilter.isEnable) {
+                            mainFilter.check('full')
+                        }
+                    },
+                })),
             },
             {
                 type: 'switch',

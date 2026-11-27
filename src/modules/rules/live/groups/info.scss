@@ -7,25 +7,15 @@ html[live-page-head-info-avatar-pendant] {
 
 // 隐藏 关注主播/加粉丝团
 html[live-page-head-info-vm-upper-row-follow-ctnr] {
-    #head-info-vm .left-anchor-section .follow-ctnr {
+    #head-info-vm .header-left .follow-ctnr {
         display: none !important;
     }
 }
 
-// 隐藏 榜单
-html[live-page-head-info-vm-upper-row-hotrank] {
-    #head-info-vm #LiveRoomHotrankEntries {
-        display: none !important;
-    }
-}
-
-// 隐藏 活动
+// 隐藏 榜单/活动
 html[live-page-head-info-vm-upper-row-activity] {
-    #head-info-vm {
-        .activity-entry,
-        .right-dynamic-modules {
-            display: none !important;
-        }
+    #head-info-vm .header-center * {
+        display: none !important;
     }
 }
 
@@ -35,10 +25,10 @@ html[live-page-head-info-vm] {
         display: none !important;
     }
 
-    // 补齐圆角, 不可important
-    #player-ctnr {
-        border-top-left-radius: 12px;
-        border-top-right-radius: 12px;
+    // 补齐圆角
+    body.pure_room_root:not(.player-full-win) .fullscreen-container-paddingbox {
+        border-top-left-radius: 16px;
+        border-top-right-radius: 16px;
         overflow: hidden;
     }
 }

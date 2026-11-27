@@ -63,9 +63,6 @@ html[live-page-rank-list-vm-fold] {
     .chat-history-panel {
         flex: 1;
     }
-    .chat-history-panel .danmaku-at-prompt {
-        bottom: 160px;
-    }
 }
 
 // 隐藏 排行榜/大航海
@@ -82,15 +79,11 @@ html[live-page-rank-list-vm] {
     .chat-history-panel {
         flex: 1;
     }
-    .chat-history-panel .danmaku-at-prompt {
-        bottom: 160px;
-    }
 }
 
 // 隐藏 系统提示
 html[live-page-convention-msg] {
-    .convention-msg.border-box,
-    .new-video-pk-item-dm {
+    #chat-history-list .room-entry-intro > div:nth-child(1) {
         display: none !important;
     }
 }
@@ -104,42 +97,42 @@ html[live-page-welcome-msg] {
 
 // 隐藏 用户排名
 html[live-page-rank-icon] {
-    .chat-item .rank-icon {
+    #chat-items .chat-item .rank-icon {
         display: none !important;
     }
 }
 
 // 隐藏 头衔装扮
 html[live-page-title-label] {
-    .chat-item .title-label {
+    #chat-items .chat-item .title-label {
         display: none !important;
     }
 }
 
 // 隐藏 用户等级
 html[live-page-wealth-medal-ctnr] {
-    .chat-item .wealth-medal-ctnr {
+    #chat-items .chat-item .wealth-medal-ctnr {
         display: none !important;
     }
 }
 
 // 隐藏 团体勋章
 html[live-page-group-medal-ctnr] {
-    .chat-item .group-medal-ctnr {
+    #chat-items .chat-item .group-medal-ctnr {
         display: none !important;
     }
 }
 
 // 隐藏 粉丝牌
 html[live-page-fans-medal-item-ctnr] {
-    .chat-item .fans-medal-item-ctnr {
+    #chat-items .chat-item .fans-medal-item-ctnr {
         display: none !important;
     }
 }
 
 // 隐藏 弹幕高亮底色
 html[live-page-chat-item-background-color] {
-    .chat-item {
+    #chat-items .chat-item {
         background-color: unset !important;
         border-image-source: unset !important;
         > div[style*='height: 62px']:has(+ .danmaku-item-left) {
@@ -153,15 +146,17 @@ html[live-page-chat-item-background-color] {
 
 // 隐藏 礼物弹幕
 html[live-page-gift-item] {
-    .chat-item.gift-item,
-    .chat-item.common-danmuku-msg {
-        display: none !important;
+    #chat-items {
+        .chat-item.gift-item,
+        .chat-item.common-danmuku-msg {
+            display: none !important;
+        }
     }
 }
 
 // 隐藏 大表情弹幕
 html[live-page-bulge-danmaku] {
-    .chat-item {
+    #chat-items .chat-item {
         &.bulge-emoticon,
         &.chat-emoticon {
             display: none !important;
@@ -171,7 +166,7 @@ html[live-page-bulge-danmaku] {
 
 // 隐藏 高能用户提示
 html[live-page-chat-item-top3-notice] {
-    .chat-item.top3-notice {
+    #chat-items .chat-item.top3-notice {
         display: none !important;
     }
 }
@@ -197,61 +192,8 @@ html[live-page-combo-card] {
 
 // 隐藏 发送框 功能按钮
 html[live-page-control-panel-icon-row] {
-    .control-panel-icon-row {
+    #control-panel-ctnr-box .icon-right-part {
         display: none !important;
-    }
-    #chat-control-panel-vm {
-        // height: 115px;
-        min-height: unset !important;
-        .chat-input-ctnr {
-            margin-top: 0 !important;
-        }
-    }
-
-    // 弹幕栏
-    body:not(.hide-aside-area.player-full-win) #aside-area-vm {
-        display: flex;
-        flex-direction: column;
-    }
-    .chat-history-panel {
-        flex: 1;
-    }
-    .chat-history-panel .danmaku-at-prompt {
-        bottom: 100px;
-    }
-}
-
-// 隐藏 发送框 粉丝勋章
-html[live-page-chat-input-ctnr-medal-section] {
-    .medal-section {
-        display: none !important;
-    }
-    .chat-input-area textarea {
-        padding: 9px 0 0 !important;
-    }
-}
-
-// 隐藏 发送框 发送按钮 (回车发送)
-html[live-page-chat-input-ctnr-send-btn] {
-    .bottom-actions,
-    .send-btn-wrapper {
-        display: none !important;
-    }
-    #chat-control-panel-vm {
-        height: fit-content !important;
-        min-height: unset !important;
-    }
-
-    // 弹幕栏
-    body:not(.hide-aside-area.player-full-win) #aside-area-vm {
-        display: flex;
-        flex-direction: column;
-    }
-    .chat-history-panel {
-        flex: 1;
-    }
-    .chat-history-panel .danmaku-at-prompt {
-        bottom: 120px;
     }
 }
 
@@ -274,9 +216,6 @@ html[live-page-chat-input-ctnr] {
     .chat-history-panel {
         flex: 1;
     }
-    .chat-history-panel .danmaku-at-prompt {
-        bottom: 70px;
-    }
 }
 
 // 隐藏 弹幕栏底部全部功能
@@ -295,8 +234,5 @@ html[live-page-chat-control-panel] {
         flex: 1;
         border-bottom-left-radius: 12px;
         border-bottom-right-radius: 12px;
-    }
-    .chat-history-panel .danmaku-at-prompt {
-        bottom: 20px !important;
     }
 }

@@ -155,6 +155,7 @@ const getAtUserNames = (comment: HTMLElement): string[] => {
 }
 
 // 获取不含被回复前缀、不含 @用户名 内容的纯净评论 message
+const atUserNameRegExp = /@[\p{L}\p{M}\p{N}_-]{2,30}(?![\p{L}\p{M}\p{N}_-])/gu
 const getPureCommentMessage = (comment: HTMLElement): string => {
     const replyUserName = getReplyUserName(comment)
     const atUserNames = getAtUserNames(comment)
@@ -176,6 +177,10 @@ const getPureCommentMessage = (comment: HTMLElement): string => {
         } catch (err) {
             logger.error('getPureCommentMessage remove atUserNames error', err)
         }
+    }
+    // 去除超链接失效的 @XXXX 内容
+    if (message.includes('@')) {
+        message = message.replace(atUserNameRegExp, ' ')
     }
     return message.trim()
 }

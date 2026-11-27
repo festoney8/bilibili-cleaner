@@ -41,13 +41,8 @@ export const liveInfoItems: Item[] = [
     },
     {
         type: 'switch',
-        id: 'live-page-head-info-vm-upper-row-hotrank',
-        name: '隐藏 榜单',
-    },
-    {
-        type: 'switch',
         id: 'live-page-head-info-vm-upper-row-activity',
-        name: '隐藏 活动',
+        name: '隐藏 榜单/活动',
     },
     {
         type: 'switch',
